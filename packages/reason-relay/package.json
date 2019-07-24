@@ -1,0 +1,51 @@
+{
+  "name": "reason-relay",
+  "version": "0.1.0-alpha.0",
+  "main": "src/ReasonRelay.re",
+  "license": "MIT",
+  "author": "Gabriel Nordeborn",
+  "sideEffects": false,
+  "repository": "https://github.com/zth/reason-relay",
+  "description": "Use Relay with ReasonML.",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "graphql",
+    "relay",
+    "relaymodern",
+    "react",
+    "reason",
+    "reasonml"
+  ],
+  "bin": {
+    "reason-relay-compiler": "compiler/compiler-cli.js"
+  },
+  "scripts": {
+    "build": "bsb -clean-world -make-world"
+  },
+  "devDependencies": {
+    "bs-platform": "6.0.3",
+    "react": "16.8.6",
+    "react-relay": "^5.0.0",
+    "reason-react": "^0.7.0",
+    "relay-compiler": "^5.0.0",
+    "relay-hooks": "^1.2.1",
+    "relay-runtime": "^5.0.0",
+    "graphql": "^14.4.2"
+  },
+  "peerDependencies": {
+    "bs-platform": "^6.0.3",
+    "react": "^16.8.1",
+    "react-relay": "^5.0.0",
+    "reason-react": "^0.7.0",
+    "relay-compiler": "^5.0.0",
+    "relay-hooks": "^1.2.1",
+    "relay-runtime": "^5.0.0",
+    "graphql": "^14.4.2"
+  },
+  "dependencies": {
+    "mkdirp-sync": "^0.0.3",
+    "reason": "^3.3.4"
+  }
+}

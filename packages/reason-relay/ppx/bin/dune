@@ -1,0 +1,6 @@
+(executable
+  (name bin)
+  (public_name reason-relay-ppx)
+  (libraries reason-relay-ppx.lib)
+  (ocamlopt_flags ( -linkall ))
+)
