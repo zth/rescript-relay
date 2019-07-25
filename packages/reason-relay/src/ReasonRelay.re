@@ -20,7 +20,7 @@ module RecordProxy = {
   type arguments('a) = jsObj('a);
 
   [@bs.send] external _copyFieldsFrom: (t, t) => unit = "copyFieldsFrom";
-  let copyFieldsFrom = (~sourceRecord: t, t) =>
+  let copyFieldsFrom = (t, ~sourceRecord: t) =>
     _copyFieldsFrom(t, sourceRecord);
 
   [@bs.send] external _getDataID: t => dataId = "getDataID";
@@ -31,7 +31,7 @@ module RecordProxy = {
     (t, string, option(arguments('a))) => Js.Nullable.t(t) =
     "getLinkedRecord";
 
-  let getLinkedRecord = (~name, ~arguments, t): option(t) =>
+  let getLinkedRecord = (t, ~name, ~arguments): option(t) =>
     _getLinkedRecord(t, name, arguments) |> toOpt;
 
   [@bs.send]
@@ -40,7 +40,7 @@ module RecordProxy = {
     Js.Nullable.t(array(Js.Nullable.t(t))) =
     "getLinkedRecords";
 
-  let getLinkedRecords = (~name, ~arguments, t): option(array(option(t))) =>
+  let getLinkedRecords = (t, ~name, ~arguments): option(array(option(t))) =>
     switch (_getLinkedRecords(t, name, arguments) |> toOpt) {
     | Some(records) => Some(records |> Array.map(v => v |> toOpt))
     | None => None
@@ -51,7 +51,7 @@ module RecordProxy = {
     (t, string, string, option(arguments('a))) => t =
     "getOrCreateLinkedRecord";
 
-  let getOrCreateLinkedRecord = (~name, ~typeName, ~arguments, t) =>
+  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments) =>
     _getOrCreateLinkedRecord(t, name, typeName, arguments);
 
   [@bs.send] external _getType: t => string = "getType";
@@ -62,79 +62,79 @@ module RecordProxy = {
     (t, string, option(arguments('a))) => Js.Nullable.t('value) =
     "getValue";
 
-  let _getValueArr = (~name, ~arguments, t) =>
+  let _getValueArr = (t, ~name, ~arguments) =>
     switch (_getValue(t, name, arguments) |> toOpt) {
     | Some(arr) =>
       Some(arr |> Array.map(value => value |> Js.Nullable.toOption))
     | None => None
     };
 
-  let getValueString = (~name, ~arguments, t): option(string) =>
+  let getValueString = (t, ~name, ~arguments): option(string) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueStringArray =
-      (~name, ~arguments, t): option(array(option(string))) =>
+      (t, ~name, ~arguments): option(array(option(string))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueInt = (~name, ~arguments, t): option(int) =>
+  let getValueInt = (t, ~name, ~arguments): option(int) =>
     _getValue(t, name, arguments) |> toOpt;
 
-  let getValueIntArray = (~name, ~arguments, t): option(array(option(int))) =>
+  let getValueIntArray = (t, ~name, ~arguments): option(array(option(int))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueFloat = (~name, ~arguments, t): option(float) =>
+  let getValueFloat = (t, ~name, ~arguments): option(float) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueFloatArray =
-      (~name, ~arguments, t): option(array(option(float))) =>
+      (t, ~name, ~arguments): option(array(option(float))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueBool = (~name, ~arguments, t): option(bool) =>
+  let getValueBool = (t, ~name, ~arguments): option(bool) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueBoolArray =
-      (~name, ~arguments, t): option(array(option(bool))) =>
+      (t, ~name, ~arguments): option(array(option(bool))) =>
     _getValueArr(~name, ~arguments, t);
 
   [@bs.send]
   external _setLinkedRecord: (t, t, string, option(arguments('a))) => t =
     "setLinkedRecord";
-  let setLinkedRecord = (~record, ~name, ~arguments, t) =>
+  let setLinkedRecord = (t, ~record, ~name, ~arguments) =>
     _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
   external _setLinkedRecords:
     (t, array(option(t)), string, option(arguments('a))) => t =
     "setLinkedRecords";
-  let setLinkedRecords = (~records, ~name, ~arguments, t) =>
+  let setLinkedRecords = (t, ~records, ~name, ~arguments) =>
     _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
   external _setValue: (t, 'value, string, option(arguments('a))) => t =
     "setValue";
 
-  let setValueString = (~value: string, ~name, ~arguments, t) =>
+  let setValueString = (t, ~value: string, ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueStringArray = (~value: array(string), ~name, ~arguments, t) =>
+  let setValueStringArray = (t, ~value: array(string), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueInt = (~value: int, ~name, ~arguments, t) =>
+  let setValueInt = (t, ~value: int, ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueIntArray = (~value: array(int), ~name, ~arguments, t) =>
+  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloat = (~value: float, ~name, ~arguments, t) =>
+  let setValueFloat = (t, ~value: float, ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloatArray = (~value: array(float), ~name, ~arguments, t) =>
+  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBool = (~value: bool, ~name, ~arguments, t) =>
+  let setValueBool = (t, ~value: bool, ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBoolArray = (~value: array(bool), ~name, ~arguments, t) =>
+  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
 };
 
@@ -142,22 +142,22 @@ module RecordSourceSelectorProxy = {
   type t;
 
   [@bs.send] external _create: (t, dataId, string) => RecordProxy.t = "create";
-  let create = (~dataId, ~typeName: string, t) =>
+  let create = (t, ~dataId, ~typeName: string) =>
     _create(t, dataId, typeName);
 
   [@bs.send] external _delete: (t, dataId) => unit = "delete";
-  let delete = (~dataId, t) => _delete(t, dataId);
+  let delete = (t, ~dataId) => _delete(t, dataId);
 
   [@bs.send]
   external _get: (t, dataId) => Js.Nullable.t(RecordProxy.t) = "get";
-  let get = (~dataId, t): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
+  let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 
   [@bs.send]
   external _getRootField: (t, string) => Js.Nullable.t(RecordProxy.t) =
     "getRootField";
-  let getRootField = (~fieldName, t): option(RecordProxy.t) =>
+  let getRootField = (t, ~fieldName): option(RecordProxy.t) =>
     _getRootField(t, fieldName) |> toOpt;
 
   [@bs.send]
@@ -166,7 +166,7 @@ module RecordSourceSelectorProxy = {
     "getPluralRootField";
 
   let getPluralRootField =
-      (~fieldName, t): option(array(option(RecordProxy.t))) =>
+      (t, ~fieldName): option(array(option(RecordProxy.t))) =>
     switch (_getPluralRootField(t, fieldName) |> toOpt) {
     | Some(arr) => Some(arr |> Array.map(v => v |> toOpt))
     | None => None
@@ -177,15 +177,15 @@ module RecordSourceProxy = {
   type t;
 
   [@bs.send] external _create: (t, dataId, string) => RecordProxy.t = "create";
-  let create = (~dataId, ~typeName: string, t) =>
+  let create = (t, ~dataId, ~typeName: string) =>
     _create(t, dataId, typeName);
 
   [@bs.send] external _delete: (t, dataId) => unit = "delete";
-  let delete = (~dataId, t) => _delete(t, dataId);
+  let delete = (t, ~dataId) => _delete(t, dataId);
 
   [@bs.send]
   external _get: (t, dataId) => Js.Nullable.t(RecordProxy.t) = "get";
-  let get = (~dataId, t): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
+  let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 };

@@ -240,7 +240,7 @@ Just like you'd use `commitMutation` from regular Relay, you can do the mutation
 without needing to use a hook inside of a React component. `commitMutation` returns a promise that 
 resolves with the mutation result.
 
-```
+```reason
 UpdateBookMutation.commitMutation(
   ~environment=SomeModuleWithMyEnv.environment, 
   ~variables={
@@ -380,8 +380,7 @@ mutate(
     open ReasonRelay;
 
     let mutationRes =
-      store
-      |> RecordSourceSelectorProxy.getRootField(
+      store->RecordSourceSelectorProxy.getRootField(
            ~fieldName="addBook",
          );
          
@@ -396,12 +395,12 @@ mutate(
 ```reason
 commitLocalUpdate(~environment=SomeModuleWithMyEnv.environment, ~updater=store => {
   open ReasonRelay;
-  let root = store |> RecordSourceSelectorProxy.getRoot;
-  let someRootRecord = root |> RecordProxy.getLinkedRecord(~name="someFieldName", ~arguments=None);
+  let root = store->RecordSourceSelectorProxy.getRoot;
+  let someRootRecord = root->RecordProxy.getLinkedRecord(~name="someFieldName", ~arguments=None);
   
   switch (someRootRecord) {
     | Some(recordProxy) => {      
-      recordProxy |> RecordProxy.setValueString(~name="someFieldThatIsAString", ~value="New value", ~arguments=None);
+      recordProxy->RecordProxy.setValueString(~name="someFieldThatIsAString", ~value="New value", ~arguments=None);
     }
     | None => ...
   }
@@ -414,11 +413,15 @@ meaning that `recordProxy.getValue("someKey")` in the JS version of Relay can re
 However, Reason does not allow more than one type to be returned from a function call. So, in ReasonRelay, 
 `getValue` and `setValue` is replaced with one function for each primitive type:
 ```reason
-let someBoolValue = recordProxy |> RecordProxy.getValueBool(~name="someFieldThatIsABoolean", ~arguments=None);
-let someStringValue = recordProxy |> RecordProxy.getValueString(~name="someFieldThatIsAString", ~arguments=None);
+let someBoolValue = recordProxy->RecordProxy.getValueBool(~name="someFieldThatIsABoolean", ~arguments=None);
+let someStringValue = recordProxy->RecordProxy.getValueString(~name="someFieldThatIsAString", ~arguments=None);
   
-recordProxy |> RecordProxy.setValueInt(~name="someFieldThatIsAnInt", ~value=1, ~arguments=None);
-recordProxy |> RecordProxy.setValueFloat(~name="someFieldThatIsAFloat", ~value=2.0, ~arguments=None);
+recordProxy->RecordProxy.setValueInt(~name="someFieldThatIsAnInt", ~value=1, ~arguments=None);
+recordProxy->RecordProxy.setValueFloat(~name="someFieldThatIsAFloat", ~value=2.0, ~arguments=None);
+
+// There's also functions for retrieving and setting arrays of primitives
+let someStringArrayValue = recordProxy->RecordProxy.getValueStringArray(~name="someFieldThatIsAString", ~arguments=None);
+
 ```
 
 ## Developing

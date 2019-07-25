@@ -135,47 +135,44 @@ let make = () => {
               open ReasonRelay;
 
               let mutationRes =
-                store
-                |> RecordSourceSelectorProxy.getRootField(
-                     ~fieldName="addBook",
-                   );
+                store->RecordSourceSelectorProxy.getRootField(
+                  ~fieldName="addBook",
+                );
 
-              let rootNode = store |> RecordSourceSelectorProxy.getRoot;
+              let rootNode = store->RecordSourceSelectorProxy.getRoot;
               let rootBooks =
-                rootNode
-                |> RecordProxy.getLinkedRecords(
-                     ~name="books",
-                     ~arguments=None,
-                   );
+                rootNode->RecordProxy.getLinkedRecords(
+                  ~name="books",
+                  ~arguments=None,
+                );
 
               let addedBook =
                 switch (mutationRes) {
                 | Some(res) =>
-                  res
-                  |> RecordProxy.getLinkedRecord(
-                       ~name="book",
-                       ~arguments=None,
-                     )
+                  res->RecordProxy.getLinkedRecord(
+                    ~name="book",
+                    ~arguments=None,
+                  )
                 | None => None
                 };
 
               switch (rootBooks, addedBook) {
               | (Some(rootBooks), Some(addedBook)) =>
                 rootNode
-                |> RecordProxy.setLinkedRecords(
-                     ~name="books",
-                     ~records=Array.append(rootBooks, [|Some(addedBook)|]),
-                     ~arguments=None,
-                   )
-                |> ignore
+                ->RecordProxy.setLinkedRecords(
+                    ~name="books",
+                    ~records=Array.append(rootBooks, [|Some(addedBook)|]),
+                    ~arguments=None,
+                  )
+                ->ignore
               | (None, Some(addedBook)) =>
                 rootNode
-                |> RecordProxy.setLinkedRecords(
-                     ~name="books",
-                     ~records=[|Some(addedBook)|],
-                     ~arguments=None,
-                   )
-                |> ignore
+                ->RecordProxy.setLinkedRecords(
+                    ~name="books",
+                    ~records=[|Some(addedBook)|],
+                    ~arguments=None,
+                  )
+                ->ignore
               | _ => ()
               };
 

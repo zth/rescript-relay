@@ -56,7 +56,7 @@ A few things are worth noting of the bindings and how they're designed:
 
 * We're not necessarily going for a 1-to-1 binding to Relay's API, but rather we're focusing on productivity in Reason. This means that we likely _won't bind things that would be very complicated in Reason_, if there's viable alternatives.
 * As much as possible of what's in the bindings is hooks based. This means we won't bind the various Relay containers, the `QueryRenderer` component and so on.
-* We prefer `data last` APIs in Reason (`someThing |> someFunc` vs `someThing->someFunc`). This is just a choice at this point, and might be changed before we hit stable if there's a good case for it. It's mostly for cohesiveness.
+* We prefer `data first` APIs in Reason (`someThing->someFunc` vs `someThing |> someFunc`). This is because the BuckleScript APIs prefer data first and we want to be in line with them.
 * We prefer exposing core primitives through type safe wrappers where possible. This means it's unlikely we'll ever expose the underlying `useQuery` hook, and instead we only expose `QueryModule.use` which is `useQuery` but wrapped in a type-safe way for that particular query.
 
 Other than that, we aim to cover as much of Relay as we can, and we also don't mind adding our own, opinionated APIs on top, if it makes sense.

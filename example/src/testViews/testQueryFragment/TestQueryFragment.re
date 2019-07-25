@@ -55,29 +55,27 @@ module BookViewer = {
               ~updater=store => {
                 open ReasonRelay; // We open ReasonRelay to simplify working with RecordSourceSelectorProxy etc
                 let bookNode =
-                  store
-                  |> RecordSourceSelectorProxy.get(
-                       ~dataId=makeDataId(book##id),
-                     );
+                  store->RecordSourceSelectorProxy.get(
+                    ~dataId=makeDataId(book##id),
+                  );
 
                 switch (bookNode) {
                 | Some(bookNode) =>
                   let currentTitle =
-                    bookNode
-                    |> RecordProxy.getValueString(
-                         ~name="title",
-                         ~arguments=None,
-                       );
+                    bookNode->RecordProxy.getValueString(
+                      ~name="title",
+                      ~arguments=None,
+                    );
 
                   switch (currentTitle) {
                   | Some(currentTitle) =>
                     bookNode
-                    |> RecordProxy.setValueString(
-                         ~name="title",
-                         ~value=currentTitle ++ " " ++ title,
-                         ~arguments=None,
-                       )
-                    |> ignore
+                    ->RecordProxy.setValueString(
+                        ~name="title",
+                        ~value=currentTitle ++ " " ++ title,
+                        ~arguments=None,
+                      )
+                    ->ignore
                   | None => ()
                   };
                 | None => ()

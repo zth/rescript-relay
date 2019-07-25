@@ -23,127 +23,121 @@ let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
 
 /**
- * We modify most store primitives to return options instead of nullables,
- * and to take labeled arguments and for use with data-last |> pipe.
- *
- * The data-last approach is important to have in mind here, because it means
- * that we flip the [@bs.send] bindings around. This might not be a good idea/might
- * be confusing, but for various reasons I prefer data-last, so I'll keep it
- * like that for now.
+ * We modify most store primitives to return options instead of nullables.
  */
 module RecordProxy: {
   type t;
   type arguments('a) = jsObj('a) constraint 'a = {..};
 
-  let copyFieldsFrom: (~sourceRecord: t, t) => unit;
+  let copyFieldsFrom: (t, ~sourceRecord: t) => unit;
 
   let getDataId: t => dataId;
 
   let getLinkedRecord:
-    (~name: string, ~arguments: option(arguments({..})), t) => option(t);
+    (t, ~name: string, ~arguments: option(arguments({..}))) => option(t);
 
   let getLinkedRecords:
-    (~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~name: string, ~arguments: option(arguments({..}))) =>
     option(array(option(t)));
 
   let getOrCreateLinkedRecord:
     (
+      t,
       ~name: string,
       ~typeName: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 
   let getType: t => string;
 
   let getValueString:
-    (~name: string, ~arguments: option(arguments({..})), t) => option(string);
+    (t, ~name: string, ~arguments: option(arguments({..}))) => option(string);
 
   let getValueStringArray:
-    (~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~name: string, ~arguments: option(arguments({..}))) =>
     option(array(option(string)));
 
   let getValueInt:
-    (~name: string, ~arguments: option(arguments({..})), t) => option(int);
+    (t, ~name: string, ~arguments: option(arguments({..}))) => option(int);
 
   let getValueIntArray:
-    (~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~name: string, ~arguments: option(arguments({..}))) =>
     option(array(option(int)));
 
   let getValueFloat:
-    (~name: string, ~arguments: option(arguments({..})), t) => option(float);
+    (t, ~name: string, ~arguments: option(arguments({..}))) => option(float);
 
   let getValueFloatArray:
-    (~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~name: string, ~arguments: option(arguments({..}))) =>
     option(array(option(float)));
 
   let getValueBool:
-    (~name: string, ~arguments: option(arguments({..})), t) => option(bool);
+    (t, ~name: string, ~arguments: option(arguments({..}))) => option(bool);
 
   let getValueBoolArray:
-    (~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~name: string, ~arguments: option(arguments({..}))) =>
     option(array(option(bool)));
 
   let setLinkedRecord:
-    (~record: t, ~name: string, ~arguments: option(arguments({..})), t) => t;
+    (t, ~record: t, ~name: string, ~arguments: option(arguments({..}))) => t;
 
   let setLinkedRecords:
     (
+      t,
       ~records: array(option(t)),
       ~name: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 
   let setValueString:
-    (~value: string, ~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~value: string, ~name: string, ~arguments: option(arguments({..}))) =>
     t;
 
   let setValueStringArray:
     (
+      t,
       ~value: array(string),
       ~name: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 
   let setValueInt:
-    (~value: int, ~name: string, ~arguments: option(arguments({..})), t) => t;
+    (t, ~value: int, ~name: string, ~arguments: option(arguments({..}))) => t;
 
   let setValueIntArray:
     (
+      t,
       ~value: array(int),
       ~name: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 
   let setValueFloat:
-    (~value: float, ~name: string, ~arguments: option(arguments({..})), t) =>
+    (t, ~value: float, ~name: string, ~arguments: option(arguments({..}))) =>
     t;
 
   let setValueFloatArray:
     (
+      t,
       ~value: array(float),
       ~name: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 
   let setValueBool:
-    (~value: bool, ~name: string, ~arguments: option(arguments({..})), t) => t;
+    (t, ~value: bool, ~name: string, ~arguments: option(arguments({..}))) => t;
 
   let setValueBoolArray:
     (
+      t,
       ~value: array(bool),
       ~name: string,
-      ~arguments: option(arguments({..})),
-      t
+      ~arguments: option(arguments({..}))
     ) =>
     t;
 };
@@ -151,28 +145,28 @@ module RecordProxy: {
 module RecordSourceSelectorProxy: {
   type t;
 
-  let create: (~dataId: dataId, ~typeName: string, t) => RecordProxy.t;
+  let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t;
 
-  let delete: (~dataId: dataId, t) => unit;
+  let delete: (t, ~dataId: dataId) => unit;
 
-  let get: (~dataId: dataId, t) => option(RecordProxy.t);
+  let get: (t, ~dataId: dataId) => option(RecordProxy.t);
 
   let getRoot: t => RecordProxy.t;
 
-  let getRootField: (~fieldName: string, t) => option(RecordProxy.t);
+  let getRootField: (t, ~fieldName: string) => option(RecordProxy.t);
 
   let getPluralRootField:
-    (~fieldName: string, t) => option(array(option(RecordProxy.t)));
+    (t, ~fieldName: string) => option(array(option(RecordProxy.t)));
 };
 
 module RecordSourceProxy: {
   type t;
 
-  let create: (~dataId: dataId, ~typeName: string, t) => RecordProxy.t;
+  let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t;
 
-  let delete: (~dataId: dataId, t) => unit;
+  let delete: (t, ~dataId: dataId) => unit;
 
-  let get: (~dataId: dataId, t) => option(RecordProxy.t);
+  let get: (t, ~dataId: dataId) => option(RecordProxy.t);
 
   let getRoot: t => RecordProxy.t;
 };
