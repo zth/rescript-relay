@@ -426,5 +426,50 @@ let someStringArrayValue = recordProxy->RecordProxy.getValueStringArray(~name="s
 
 ```
 
+## Utilities, helpers and tips & tricks
+Working with GraphQL can be a bit repetitive and verbose at times (I'm looking at you nullable connections). We think it's tedious enough that we want to maintain a set of utilities that makes it easier to work with ReasonRelay, even if the utilities technically are not specifically about Relay.
+
+### ReasonRelayUtils
+ReasonRelay ships a module called ReasonRelayUtils that contains a bunch of functions that's designed to make your life working with Relay easier.
+
+#### Working with connections
+Connections are great, but their nested nullable structure make them quite a pain and in need of lots of boilerplate. More often than not what you want to do with a connection is to extract all non-null nodes from all edges and put them in a new array. ReasonRelayUtils contains two helpers to deal with that:
+
+Imagine a response like this:
+```reason
+type response = {
+  "someConnection": Js.Nullable.t({
+    "edges": Js.Nullable.t(array(Js.Nullable.t({
+      "node": Js.Nullable.t({
+        "somePropOnNode": string
+      })
+    })))
+  })
+};
+```
+
+All you want is to get a list of the nodes, which is `type node = { "somePropOnNode": string }`. But in order to get that, you need to walk multiple levels of nullability, iterate arrays etc. Fear not! ReasonRelayUtils ships `collectConnectionNodesFromNullable` and `collectConnectionNodes`: 
+
+```reason
+/**
+ * Here we know that someConnection is nullable in itself too. 
+ * This call to collectConnectionNodesFromNullable will result in let nodes: array({ "somePropOnNode": string }).
+ * All nulls taken care of, and no edges. Yay!
+ */ 
+ 
+let nodes = ReasonRelayUtils.collectConnectionNodesFromNullable(response##someConnection);
+
+/** 
+ * There's also `collectConnectionNodes` that you can use on any object that is not nullable itself.
+ * We're using collectConnectionNodesFromNullable because "someConnection" is modeled as nullable in the 
+ * response above.
+ */
+```
+
+#### Working with nullable arrays
+There's also a simple helper that removes all nulls from a regular array called `collectNodes` and `collectNodesFromNullable`. 
+It works on `Js.Nullable.t(array(Js.Nullable.t('someTypeInArray)))` (the `fromNullable` version) and gives you back 
+a clean array of `array('someTypeInArray)`.   
+
 ## Developing
 Instructions coming soon.

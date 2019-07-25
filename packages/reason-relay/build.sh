@@ -18,6 +18,8 @@ mkdir -p dist/src;
 # copy bindings and readme
 cp src/ReasonRelay.re dist/src/;
 cp src/ReasonRelay.rei dist/src/;
+cp src/ReasonRelayUtils.re dist/src/;
+cp src/ReasonRelayUtils.rei dist/src/;
 cp ./../../README.md dist/;
 
 # copy ppx
