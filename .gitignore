@@ -8,3 +8,4 @@ _release
 *.byte
 *.native
 *.install
+*.bs.js
