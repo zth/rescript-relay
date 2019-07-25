@@ -60,14 +60,30 @@ module RecordProxy: {
   let getValueString:
     (~name: string, ~arguments: option(arguments({..})), t) => option(string);
 
+  let getValueStringArray:
+    (~name: string, ~arguments: option(arguments({..})), t) =>
+    option(array(option(string)));
+
   let getValueInt:
     (~name: string, ~arguments: option(arguments({..})), t) => option(int);
+
+  let getValueIntArray:
+    (~name: string, ~arguments: option(arguments({..})), t) =>
+    option(array(option(int)));
 
   let getValueFloat:
     (~name: string, ~arguments: option(arguments({..})), t) => option(float);
 
+  let getValueFloatArray:
+    (~name: string, ~arguments: option(arguments({..})), t) =>
+    option(array(option(float)));
+
   let getValueBool:
     (~name: string, ~arguments: option(arguments({..})), t) => option(bool);
+
+  let getValueBoolArray:
+    (~name: string, ~arguments: option(arguments({..})), t) =>
+    option(array(option(bool)));
 
   let setLinkedRecord:
     (~record: t, ~name: string, ~arguments: option(arguments({..})), t) => t;
@@ -85,15 +101,51 @@ module RecordProxy: {
     (~value: string, ~name: string, ~arguments: option(arguments({..})), t) =>
     t;
 
+  let setValueStringArray:
+    (
+      ~value: array(string),
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      t
+    ) =>
+    t;
+
   let setValueInt:
     (~value: int, ~name: string, ~arguments: option(arguments({..})), t) => t;
+
+  let setValueIntArray:
+    (
+      ~value: array(int),
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      t
+    ) =>
+    t;
 
   let setValueFloat:
     (~value: float, ~name: string, ~arguments: option(arguments({..})), t) =>
     t;
 
+  let setValueFloatArray:
+    (
+      ~value: array(float),
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      t
+    ) =>
+    t;
+
   let setValueBool:
     (~value: bool, ~name: string, ~arguments: option(arguments({..})), t) => t;
+
+  let setValueBoolArray:
+    (
+      ~value: array(bool),
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      t
+    ) =>
+    t;
 };
 
 module RecordSourceSelectorProxy: {
@@ -126,25 +178,18 @@ module RecordSourceProxy: {
 };
 
 module ConnectionHandler: {
-  type t;
   type filters('a) = jsObj('a) constraint 'a = {..};
 
   let getConnection:
-    (
-      ~record: RecordProxy.t,
-      ~key: string,
-      ~filters: option(filters({..})),
-      t
-    ) =>
-    Js.Nullable.t(RecordProxy.t);
+    (~record: RecordProxy.t, ~key: string, ~filters: option(filters({..}))) =>
+    option(RecordProxy.t);
 
   let createEdge:
     (
       ~store: RecordSourceProxy.t,
       ~connection: RecordProxy.t,
       ~node: RecordProxy.t,
-      ~edgeType: string,
-      t
+      ~edgeType: string
     ) =>
     RecordProxy.t;
 
@@ -152,8 +197,7 @@ module ConnectionHandler: {
     (
       ~connection: RecordProxy.t,
       ~newEdge: RecordProxy.t,
-      ~cursor: option(string),
-      t
+      ~cursor: option(string)
     ) =>
     unit;
 
@@ -161,12 +205,11 @@ module ConnectionHandler: {
     (
       ~connection: RecordProxy.t,
       ~newEdge: RecordProxy.t,
-      ~cursor: option(string),
-      t
+      ~cursor: option(string)
     ) =>
     unit;
 
-  let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId, t) => unit;
+  let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit;
 };
 
 /**

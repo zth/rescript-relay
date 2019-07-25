@@ -62,17 +62,39 @@ module RecordProxy = {
     (t, string, option(arguments('a))) => Js.Nullable.t('value) =
     "getValue";
 
+  let _getValueArr = (~name, ~arguments, t) =>
+    switch (_getValue(t, name, arguments) |> toOpt) {
+    | Some(arr) =>
+      Some(arr |> Array.map(value => value |> Js.Nullable.toOption))
+    | None => None
+    };
+
   let getValueString = (~name, ~arguments, t): option(string) =>
     _getValue(t, name, arguments) |> toOpt;
+
+  let getValueStringArray =
+      (~name, ~arguments, t): option(array(option(string))) =>
+    _getValueArr(~name, ~arguments, t);
 
   let getValueInt = (~name, ~arguments, t): option(int) =>
     _getValue(t, name, arguments) |> toOpt;
 
+  let getValueIntArray = (~name, ~arguments, t): option(array(option(int))) =>
+    _getValueArr(~name, ~arguments, t);
+
   let getValueFloat = (~name, ~arguments, t): option(float) =>
     _getValue(t, name, arguments) |> toOpt;
 
+  let getValueFloatArray =
+      (~name, ~arguments, t): option(array(option(float))) =>
+    _getValueArr(~name, ~arguments, t);
+
   let getValueBool = (~name, ~arguments, t): option(bool) =>
     _getValue(t, name, arguments) |> toOpt;
+
+  let getValueBoolArray =
+      (~name, ~arguments, t): option(array(option(bool))) =>
+    _getValueArr(~name, ~arguments, t);
 
   [@bs.send]
   external _setLinkedRecord: (t, t, string, option(arguments('a))) => t =
@@ -94,13 +116,25 @@ module RecordProxy = {
   let setValueString = (~value: string, ~name, ~arguments, t) =>
     _setValue(t, value, name, arguments);
 
+  let setValueStringArray = (~value: array(string), ~name, ~arguments, t) =>
+    _setValue(t, value, name, arguments);
+
   let setValueInt = (~value: int, ~name, ~arguments, t) =>
+    _setValue(t, value, name, arguments);
+
+  let setValueIntArray = (~value: array(int), ~name, ~arguments, t) =>
     _setValue(t, value, name, arguments);
 
   let setValueFloat = (~value: float, ~name, ~arguments, t) =>
     _setValue(t, value, name, arguments);
 
+  let setValueFloatArray = (~value: array(float), ~name, ~arguments, t) =>
+    _setValue(t, value, name, arguments);
+
   let setValueBool = (~value: bool, ~name, ~arguments, t) =>
+    _setValue(t, value, name, arguments);
+
+  let setValueBoolArray = (~value: array(bool), ~name, ~arguments, t) =>
     _setValue(t, value, name, arguments);
 };
 
@@ -158,7 +192,11 @@ module RecordSourceProxy = {
 
 module ConnectionHandler = {
   type t;
+
   type filters('a) = jsObj('a);
+
+  [@bs.module "relay-runtime"]
+  external connectionHandler: t = "ConnectionHandler";
 
   [@bs.send]
   external _getConnection:
@@ -166,8 +204,9 @@ module ConnectionHandler = {
     Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
-  let getConnection = (~record, ~key, ~filters, t) =>
-    _getConnection(t, record, key, filters);
+  let getConnection = (~record, ~key, ~filters) =>
+    _getConnection(connectionHandler, record, key, filters)
+    |> Js.Nullable.toOption;
 
   [@bs.send]
   external _createEdge:
@@ -175,30 +214,30 @@ module ConnectionHandler = {
     RecordProxy.t =
     "createEdge";
 
-  let createEdge = (~store, ~connection, ~node, ~edgeType, t) =>
-    _createEdge(t, store, connection, node, edgeType);
+  let createEdge = (~store, ~connection, ~node, ~edgeType) =>
+    _createEdge(connectionHandler, store, connection, node, edgeType);
 
   [@bs.send]
   external _insertEdgeBefore:
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeBefore";
 
-  let insertEdgeBefore = (~connection, ~newEdge, ~cursor, t) =>
-    _insertEdgeBefore(t, connection, newEdge, cursor);
+  let insertEdgeBefore = (~connection, ~newEdge, ~cursor) =>
+    _insertEdgeBefore(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
   external _insertEdgeAfter:
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeAfter";
 
-  let insertEdgeAfter = (~connection, ~newEdge, ~cursor, t) =>
-    _insertEdgeAfter(t, connection, newEdge, cursor);
+  let insertEdgeAfter = (~connection, ~newEdge, ~cursor) =>
+    _insertEdgeAfter(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
   external _deleteNode: (t, RecordProxy.t, dataId) => unit = "deleteNode";
 
-  let deleteNode = (~connection, ~nodeId, t) =>
-    _deleteNode(t, connection, nodeId);
+  let deleteNode = (~connection, ~nodeId) =>
+    _deleteNode(connectionHandler, connection, nodeId);
 };
 
 /**
