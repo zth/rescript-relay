@@ -64,7 +64,7 @@ let fetchQuery = ...; // Check out RelayEnv.re in the examples folder for an exa
 let network = ReasonRelay.Network.makePromiseBased(fetchQuery); // Eventually we'll support makeObservableBased network too
 let store = ReasonRelay.Store.make(ReasonRelay.RecordSource.make());
 
-let environment = ReasonRelay.Environment.make(~network, ~store);
+let environment = ReasonRelay.Environment.make(~network, ~store, ());
 ```
 
 You'll then need to make sure you wrap your app with Relays context provider, feeding it 

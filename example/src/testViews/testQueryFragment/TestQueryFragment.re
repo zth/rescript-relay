@@ -54,6 +54,7 @@ module BookViewer = {
               ~environment,
               ~updater=store => {
                 open ReasonRelay; // We open ReasonRelay to simplify working with RecordSourceSelectorProxy etc
+
                 let bookNode =
                   store->RecordSourceSelectorProxy.get(
                     ~dataId=makeDataId(book##id),

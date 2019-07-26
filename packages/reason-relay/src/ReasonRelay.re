@@ -456,22 +456,28 @@ module Store = {
 module Environment = {
   type t;
 
-  type config = {
-    network: Network.t,
-    store: Store.t,
-  };
-
-  type _config = {
-    .
-    "network": Network.t,
-    "store": Store.t,
-  };
-
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make: _config => t = "Environment";
+  external _make:
+    {
+      .
+      "network": Network.t,
+      "store": Store.t,
+      "UNSTABLE_DO_NOT_USE_getDataID": option(('a, string) => string),
+    } =>
+    t =
+    "Environment";
 
-  let make = (~network, ~store) =>
-    _make({"network": network, "store": store});
+  let make = (~network, ~store, ~getDataID=?, ()) =>
+    _make({
+      "network": network,
+      "store": store,
+      "UNSTABLE_DO_NOT_USE_getDataID":
+        switch (getDataID) {
+        | Some(getDataID) =>
+          Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
+        | None => None
+        },
+    });
 };
 
 module Context = {

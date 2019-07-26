@@ -42,6 +42,7 @@ let makeEnvironment = () =>
   ReasonRelay.Environment.make(
     ~network,
     ~store=ReasonRelay.Store.make(ReasonRelay.RecordSource.make()),
+    (),
   );
 
 let environment = makeEnvironment();

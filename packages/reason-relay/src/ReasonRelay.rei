@@ -322,11 +322,15 @@ module Store: {
 
 module Environment: {
   type t;
-  type config = {
-    network: Network.t,
-    store: Store.t,
-  };
-  let make: (~network: Network.t, ~store: Store.t) => t;
+
+  let make:
+    (
+      ~network: Network.t,
+      ~store: Store.t,
+      ~getDataID: (~nodeObj: 'a, ~typeName: string) => string=?,
+      unit
+    ) =>
+    t;
 };
 
 module Context: {
