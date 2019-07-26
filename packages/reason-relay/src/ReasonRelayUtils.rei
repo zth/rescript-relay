@@ -22,3 +22,11 @@ let collectNodes: array(Js.Nullable.t('a)) => array('a);
 /** Same as collectNodes, but takes a nullable array. */
 let collectNodesFromNullable:
   Js.Nullable.t(array(Js.Nullable.t('a))) => array('a);
+
+/** Tries to return a record from a nested path of linked records. */;
+let resolveNestedRecord:
+  (
+    ~rootRecord: ReasonRelay.RecordProxy.t,
+    ~path: list((string, option(ReasonRelay.RecordProxy.arguments('a))))
+  ) =>
+  option(ReasonRelay.RecordProxy.t);

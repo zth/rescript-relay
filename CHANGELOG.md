@@ -1,5 +1,5 @@
 # master
-...
+- Added `resolveNestedRecord` helper to ease resolving records in the store from a nested path.
 
 # 0.1.0-alpha.1
 - Fix bugs with `ConnectionHandler` bindings not working.

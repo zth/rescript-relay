@@ -366,7 +366,8 @@ If you want to use enums as _input values_, whether it's as a variable for query
 ```
 
 ### Interacting with the store
-ReasonRelay exposes a full interface to interacting with the store. 
+ReasonRelay exposes a full interface to interacting with the store. There's also a number of helper utilities 
+to make interacting with the store easier.
 
 #### Updater functions for mutations
 You can pass an updater function to mutations just like you'd normally do in Relay:
@@ -431,6 +432,32 @@ Working with GraphQL can be a bit repetitive and verbose at times (I'm looking a
 
 ### ReasonRelayUtils
 ReasonRelay ships a module called ReasonRelayUtils that contains a bunch of functions that's designed to make your life working with Relay easier.
+
+#### Working with the store
+ReasonRelayUtils contain a number of helpers for interacting with the store.
+
+##### resolveNestedRecord
+Often you'll want to traverse and get a deeply nested record from a response or similar. Doing so manually with the store is a bit tedious as each level of 
+records is optional, meaning you'll need lots and lots of switches. `resolveNestedRecord` does the heavy lifting for you:
+
+```reason
+let mutationResponse = store->ReasonRelay.RecordSourceSelectorProxy.getRootField("myMutationResponse");
+
+let addedBook = switch(mutationResponse) {
+  | Some(myMutationResponseProxy) => 
+      ReasonRelayUtils.resolveNestedRecord(
+        ~rootRecord=myMutationResponseProxy,
+        ~path=[
+          ("myMutation", None), 
+          ("addedBookEdge", None), 
+          ("addedBook", None)
+        ]
+      )
+  | None => None
+};
+```
+
+Each level of record is defined as a 2 item tuple of `(pathName: string, arguments: option(ReasonRelay.RecordProxy.arguments('a))`. It returns `option(ReasonRelay.RecordProxy.t)`.
 
 #### Working with connections
 Connections are great, but their nested nullable structure make them quite a pain and in need of lots of boilerplate. More often than not what you want to do with a connection is to extract all non-null nodes from all edges and put them in a new array. ReasonRelayUtils contains two helpers to deal with that:
