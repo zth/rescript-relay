@@ -41,6 +41,10 @@ Run the script via package.json like this:
 yarn relay
 ```
 
+## Examples
+- TodoMVC implemented in ReasonRelay: https://github.com/zth/relay-examples/tree/master/todo-reason
+- Various examples showing different types of usage: https://github.com/zth/reason-relay/tree/master/example
+
 ## Usage
 _Check out the `examples` folder for a complete example of setup and usage of most features._
 
