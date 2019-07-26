@@ -1,4 +1,7 @@
 # master
+...
+
+# 0.1.0-alpha.1
 - Fix bugs with `ConnectionHandler` bindings not working.
 - Add bindings for getting and setting arrays of primitives as values on `RecordProxy`.
 - Move from data-last to data-first to better adhere to what BuckleScript is pushing.
