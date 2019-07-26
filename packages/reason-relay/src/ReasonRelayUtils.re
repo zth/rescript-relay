@@ -29,21 +29,24 @@ let collectNodesFromNullable = maybeNodes =>
   | None => [||]
   };
 
-let resolveNestedRecord = (~rootRecord, ~path) => {
-  let currentRecord = ref(Some(rootRecord));
+let resolveNestedRecord = (~rootRecord, ~path) =>
+  switch (rootRecord) {
+  | Some(rootRecord) =>
+    let currentRecord = ref(Some(rootRecord));
 
-  path
-  |> List.iter(((name, arguments)) =>
-       switch (currentRecord^) {
-       | Some(foundRecord) =>
-         currentRecord :=
-           foundRecord->ReasonRelay.RecordProxy.getLinkedRecord(
-             ~name,
-             ~arguments,
-           )
-       | None => ()
-       }
-     );
+    path
+    |> List.iter(name =>
+         switch (currentRecord^) {
+         | Some(foundRecord) =>
+           currentRecord :=
+             foundRecord->ReasonRelay.RecordProxy.getLinkedRecord(
+               ~name,
+               ~arguments=None,
+             )
+         | None => ()
+         }
+       );
 
-  currentRecord^;
-};
+    currentRecord^;
+  | None => None
+  };

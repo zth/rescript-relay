@@ -441,23 +441,18 @@ Often you'll want to traverse and get a deeply nested record from a response or 
 records is optional, meaning you'll need lots and lots of switches. `resolveNestedRecord` does the heavy lifting for you:
 
 ```reason
-let mutationResponse = store->ReasonRelay.RecordSourceSelectorProxy.getRootField("myMutationResponse");
-
-let addedBook = switch(mutationResponse) {
-  | Some(myMutationResponseProxy) => 
-      ReasonRelayUtils.resolveNestedRecord(
-        ~rootRecord=myMutationResponseProxy,
-        ~path=[
-          ("myMutation", None), 
-          ("addedBookEdge", None), 
-          ("addedBook", None)
-        ]
-      )
-  | None => None
-};
+// resolveNestedRecord takes an option(RecordProxy.t) to make it easier to use with getRootField
+let addedBook = ReasonRelayUtils.resolveNestedRecord(
+  ~rootRecord=store->ReasonRelay.RecordSourceSelectorProxy.getRootField("myMutationResponse"),
+  ~path=[
+    "myMutation", 
+    "addedBookEdge", 
+    "addedBook"
+  ]
+);
 ```
 
-Each level of record is defined as a 2 item tuple of `(pathName: string, arguments: option(ReasonRelay.RecordProxy.arguments('a))`. It returns `option(ReasonRelay.RecordProxy.t)`.
+An `option(ReasonRelay.RecordProxy.t)` is returned.
 
 #### Working with connections
 Connections are great, but their nested nullable structure make them quite a pain and in need of lots of boilerplate. More often than not what you want to do with a connection is to extract all non-null nodes from all edges and put them in a new array. ReasonRelayUtils contains two helpers to deal with that:

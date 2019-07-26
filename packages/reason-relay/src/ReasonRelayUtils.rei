@@ -25,8 +25,5 @@ let collectNodesFromNullable:
 
 /** Tries to return a record from a nested path of linked records. */;
 let resolveNestedRecord:
-  (
-    ~rootRecord: ReasonRelay.RecordProxy.t,
-    ~path: list((string, option(ReasonRelay.RecordProxy.arguments('a))))
-  ) =>
+  (~rootRecord: option(ReasonRelay.RecordProxy.t), ~path: list(string)) =>
   option(ReasonRelay.RecordProxy.t);
