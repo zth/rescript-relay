@@ -1,4 +1,7 @@
 # master
+...
+
+# 0.1.1
 - Added `resolveNestedRecord` helper to ease resolving records in the store from a nested path.
 
 # 0.1.0-alpha.1

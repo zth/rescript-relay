@@ -1,6 +1,6 @@
 {
   "name": "reason-relay",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.1",
   "main": "src/ReasonRelay.re",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "bs-platform": "6.0.3",
+    "bsdoc": "^6.0.2-alpha",
     "graphql": "^14.4.2",
     "react": "16.8.6",
     "react-relay": "^5.0.0",
