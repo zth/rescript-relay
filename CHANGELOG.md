@@ -1,5 +1,5 @@
 # master
-...
+- Fix bug with generated fragmentSelector for plural fragments.
 
 # 0.1.1
 - Added `resolveNestedRecord` helper to ease resolving records in the store from a nested path.

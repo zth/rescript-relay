@@ -402,12 +402,18 @@ function createVisitor(options: TypeGeneratorOptions) {
           isPlural(node) ? makePluralFragment(type) : makeFragment(type)
         );
 
+        let fragmentRefSelectorType = `{.. "${getFragmentRefName(
+          node.name
+        )}": t } as 'a`;
+
         returnStr += `
         type t;
         type fragmentRef;
-        type fragmentRefSelector('a) = {.. "${getFragmentRefName(
-          node.name
-        )}": t } as 'a;
+        type fragmentRefSelector('a) = ${
+          isPlural(node)
+            ? `array(${fragmentRefSelectorType})`
+            : fragmentRefSelectorType
+        };
         external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
         `;
 
