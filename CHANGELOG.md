@@ -1,4 +1,7 @@
 # master
+...
+
+# 0.1.2
 - Fix bug with generated fragmentSelector for plural fragments.
 
 # 0.1.1
