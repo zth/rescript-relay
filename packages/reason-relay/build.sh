@@ -4,7 +4,7 @@ yarn build;
 # build ppx
 echo "Build PPX...";
 cd ppx;
-esy @ppx build;
+esy @ppx;
 cd ..;
 
 # build language plugin
