@@ -22,7 +22,8 @@
     "reason-relay-compiler": "compiler/compiler-cli.js"
   },
   "scripts": {
-    "build": "bsb -clean-world -make-world"
+    "build": "bsb -clean-world -make-world",
+    "postinstall": "node postinstall.js"
   },
   "devDependencies": {
     "bs-platform": "6.0.3",
