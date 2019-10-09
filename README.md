@@ -1,9 +1,9 @@
 # reason-relay
 Bindings and a compiler plugin for using Relay with ReasonML.
 
-_REQUIRES BuckleScript 6, which is currently in beta_
+_CURRENTLY HEAVILY WIP. I'm working towards a suitable 1.0 release that supports everything I want to support, and I decided I'd do that in master from now. That means that the docs below might not be accurate while I finish up the work around the first real release._
 
-_NOTE: This is alpha-grade software and various aspects of the API is likely to change in the near future. We're also missing support for a few core Relay features in waiting for the official Relay hooks based APIs. It is not recommended to use this for production apps yet, but you're welcome and encouraged to try it out and post your feedback._
+_REQUIRES BuckleScript 6, which is currently in beta_
 
 Please refer to ARCHITECTURE.md for a more thorough overview of the different parts and the reasoning behind them.
 
