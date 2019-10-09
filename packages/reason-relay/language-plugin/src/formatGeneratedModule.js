@@ -1,49 +1,12 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow
- * @format
- */
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Printer_gen_1 = require("./generator/Printer.gen");
+const processConcreteText_1 = require("./utils/processConcreteText");
+const formatGeneratedModule = ({ moduleName, documentType, docText, concreteText, typeText, kind, hash, sourceHash }) => {
+    return Printer_gen_1.printCode(`
+${typeText || ""}
 
-'use strict';
-
-// $FlowFixMe
-import type { FormatModule } from '../RelayLanguagePluginInterface';
-import { printCode } from './generator/Printer.gen';
-
-const formatGeneratedModule: FormatModule = ({
-  moduleName,
-  documentType,
-  docText,
-  concreteText,
-  typeText,
-  kind,
-  hash,
-  sourceHash
-}) => {
-  const modName = moduleName.split('_graphql')[0];
-
-  const opKind: null | 'fragment' | 'query' | 'mutation' =
-    kind === 'Fragment'
-      ? 'fragment'
-      : modName.endsWith('Query')
-        ? 'query'
-        : modName.endsWith('Mutation')
-          ? 'mutation'
-          : null;
-
-  if (!opKind) {
-    throw new Error('Something went wrong, uninterpreted module type: "' + moduleName + '"');
-  }
-
-  return printCode(`
-${typeText || ''}
-
-let node: ReasonRelay.${opKind}Node = [%bs.raw {| ${concreteText} |}];
+let node: operationType = [%bs.raw {| ${processConcreteText_1.processConcreteText(concreteText)} |}];
 `);
 };
-
 module.exports = formatGeneratedModule;

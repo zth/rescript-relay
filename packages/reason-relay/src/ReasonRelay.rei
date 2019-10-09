@@ -13,6 +13,7 @@ type any;
 type queryNode;
 type fragmentNode;
 type mutationNode;
+type subscriptionNode;
 
 /**
  * Store and updaters
@@ -23,6 +24,25 @@ let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
 
 /**
+ * Experimental stuff
+ */
+
+module ReactSuspenseConfig: {
+  type t;
+  let make:
+    (
+      ~timeOutMs: float,
+      ~busyDelayMs: float=?,
+      ~busyMinDurationMs: float=?,
+      unit
+    ) =>
+    t;
+};
+
+let unstable_withSuspenseConfig: (unit => unit, ReactSuspenseConfig.t) => unit;
+
+/**
+ * Store helpers.
  * We modify most store primitives to return options instead of nullables.
  */
 module RecordProxy: {
@@ -210,15 +230,37 @@ module ConnectionHandler: {
  * QUERY
  */
 
-type queryResponse('data) =
-  | Loading
-  | Error(Js.Exn.t)
-  | Data('data);
-type dataFrom =
-  | NetworkOnly
-  | StoreThenNetwork
+module Disposable: {
+  type t;
+  let dispose: t => unit;
+};
+
+module CacheConfig: {
+  type t;
+  type config = {
+    force: option(bool),
+    poll: option(int),
+    liveConfigId: option(string),
+    transactionId: option(string),
+  };
+
+  let make:
+    (
+      ~force: option(bool),
+      ~poll: option(int),
+      ~liveConfigId: option(string),
+      ~transactionId: option(string)
+    ) =>
+    t;
+
+  let getConfig: t => config;
+};
+
+type fetchPolicy =
+  | StoreOnly
   | StoreOrNetwork
-  | StoreOnly;
+  | StoreAndNetwork
+  | NetworkOnly;
 
 module type MakeUseQueryConfig = {
   type response;
@@ -232,8 +274,14 @@ module MakeUseQuery:
     type response = C.response;
     type variables = C.variables;
     let use:
-      (~variables: variables, ~dataFrom: dataFrom=?, unit) =>
-      queryResponse(response);
+      (
+        ~variables: variables,
+        ~fetchPolicy: fetchPolicy=?,
+        ~fetchKey: string=?,
+        ~networkCacheConfig: CacheConfig.t=?,
+        unit
+      ) =>
+      response;
   };
 
 /**
@@ -248,6 +296,73 @@ module type MakeUseFragmentConfig = {
 
 module MakeUseFragment:
   (C: MakeUseFragmentConfig) => {let use: C.fragmentRef => C.fragment;};
+
+/** Refetchable */
+type refetchFn('variables) =
+  (
+    ~variables: 'variables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option(Js.Exn.t) => unit=?,
+    unit
+  ) =>
+  unit;
+
+module type MakeUseRefetchableFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseRefetchableFragment:
+  (C: MakeUseRefetchableFragmentConfig) =>
+   {
+    let useRefetchable:
+      C.fragmentRef => (C.fragment, refetchFn(C.variables));
+  };
+
+/** Pagination */
+module type MakeUsePaginationFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+type paginationLoadMoreFn =
+  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
+  Disposable.t;
+
+type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+module MakeUsePaginationFragment:
+  (C: MakeUsePaginationFragmentConfig) =>
+   {
+    let useBlockingPagination:
+      C.fragmentRef =>
+      paginationBlockingFragmentReturn(C.fragment, C.variables);
+
+    let useLegacyPagination:
+      C.fragmentRef => paginationLegacyFragmentReturn(C.fragment, C.variables);
+  };
 
 /**
  * MUTATION
@@ -292,23 +407,67 @@ module MakeUseMutation:
       );
   };
 
+/**
+ * NETWORK
+ */
+
+module Observable: {
+  type t;
+
+  type sink('t) = {
+    next: 't => unit,
+    error: Js.Exn.t => unit,
+    completed: unit => unit,
+    closed: bool,
+  };
+
+  let make: (sink('t) => unit) => t;
+};
+
 module Network: {
   type t;
-  type cacheConfig = {
-    .
-    "force": Js.Nullable.t(bool),
-    "poll": Js.Nullable.t(int),
-  };
+
   type operation = {
     .
     "name": string,
     "operationKind": string,
     "text": string,
   };
+  type subscribeFn =
+    {
+      .
+      "request": operation,
+      "variables": Js.Json.t,
+      "cacheConfig": CacheConfig.t,
+    } =>
+    Observable.t;
+
   type fetchFunctionPromise =
-    (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
-  let makePromiseBased: fetchFunctionPromise => t;
+    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+
+  type fetchFunctionObservable =
+    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
+
+  let makePromiseBased:
+    (
+      ~fetchFunction: fetchFunctionPromise,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t;
+
+  let makeObservableBased:
+    (
+      ~observableFunction: fetchFunctionObservable,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t;
 };
+
+/**
+ * STORE
+ */
 
 module RecordSource: {
   type t;
@@ -320,6 +479,9 @@ module Store: {
   let make: RecordSource.t => t;
 };
 
+/**
+ * ENVIRONMENT
+ */
 module Environment: {
   type t;
 
@@ -391,3 +553,28 @@ let commitLocalUpdate:
 
 let fetchQuery:
   (Environment.t, queryNode, 'variables) => Js.Promise.t('response);
+
+/**
+ * SUBSCRIPTIONS
+ */
+module type SubscriptionConfig = {
+  type variables;
+  type response;
+  let node: subscriptionNode;
+};
+
+module MakeUseSubscription:
+  (C: SubscriptionConfig) =>
+   {
+    let subscribe:
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~onCompleted: unit => unit=?,
+        ~onError: Js.Exn.t => unit=?,
+        ~onNext: C.response => unit=?,
+        ~updater: updaterFn=?,
+        unit
+      ) =>
+      Disposable.t;
+  };

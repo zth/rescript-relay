@@ -6,6 +6,7 @@ type any;
 type queryNode;
 type fragmentNode;
 type mutationNode;
+type subscriptionNode;
 
 type dataId;
 
@@ -14,6 +15,35 @@ let dataIdToString = dataId => _dataIdToString(dataId);
 
 external _makeDataId: string => dataId = "%identity";
 let makeDataId = string => _makeDataId(string);
+
+module ReactSuspenseConfig = {
+  type t = {
+    .
+    "timeOutMs": float,
+    "busyDelayMs": option(float),
+    "busyMinDurationMs": option(float),
+  };
+
+  let make = (~timeOutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) => {
+    "timeOutMs": timeOutMs,
+    "busyDelayMs": busyDelayMs,
+    "busyMinDurationMs": busyMinDurationMs,
+  };
+};
+
+[@bs.module "react"]
+external unstable_withSuspenseConfig:
+  (
+    unit => unit,
+    {
+      .
+      "timeOutMs": float,
+      "busyDelayMs": option(float),
+      "busyMinDurationMs": option(float),
+    }
+  ) =>
+  unit =
+  "unstable_withSuspenseConfig";
 
 module RecordProxy = {
   type t;
@@ -243,34 +273,71 @@ module ConnectionHandler = {
 /**
  * QUERY
  */
+module Disposable = {
+  type t;
 
-type queryResponse('data) =
-  | Loading
-  | Error(Js.Exn.t)
-  | Data('data);
+  [@bs.send] external dispose: t => unit = "dispose";
+};
 
-type dataFrom =
-  | NetworkOnly
-  | StoreThenNetwork
+module CacheConfig = {
+  type t = {
+    .
+    "force": option(bool),
+    "poll": option(int),
+    "liveConfigId": option(string),
+    "transactionId": option(string),
+  };
+  type config = {
+    force: option(bool),
+    poll: option(int),
+    liveConfigId: option(string),
+    transactionId: option(string),
+  };
+
+  let make = (~force, ~poll, ~liveConfigId, ~transactionId) => {
+    "force": force,
+    "poll": poll,
+    "liveConfigId": liveConfigId,
+    "transactionId": transactionId,
+  };
+
+  let getConfig = t => {
+    force: t##force,
+    poll: t##poll,
+    liveConfigId: t##liveConfigId,
+    transactionId: t##transactionId,
+  };
+};
+
+type fetchPolicy =
+  | StoreOnly
   | StoreOrNetwork
-  | StoreOnly;
+  | StoreAndNetwork
+  | NetworkOnly;
 
-[@bs.module "relay-hooks"]
+let mapFetchPolicy = fetchPolicy =>
+  switch (fetchPolicy) {
+  | Some(StoreOnly) => Some("store-only")
+  | Some(StoreOrNetwork) => Some("store-or-network")
+  | Some(StoreAndNetwork) => Some("store-and-network")
+  | Some(NetworkOnly) => Some("network-only")
+  | None => None
+  };
+
+[@bs.module "./vendor/relay-experimental"]
 external _useQuery:
-  {
-    .
-    "query": queryNode,
-    "variables": 'variables,
-    "dataFrom": option(string),
-  } =>
-  {
-    .
-    "props": Js.Nullable.t('props),
-    "error": Js.Nullable.t(Js.Exn.t),
-    "retry": Js.Nullable.t(unit => unit),
-    "cached": bool,
-  } =
-  "useQuery";
+  (
+    queryNode,
+    'variables,
+    {
+      .
+      "fetchKey": option(string),
+      "fetchPolicy": option(string),
+      "networkCacheConfig": option(CacheConfig.t),
+    }
+  ) =>
+  'queryResponse =
+  "useLazyLoadQuery";
 
 module type MakeUseQueryConfig = {
   type response;
@@ -283,38 +350,30 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   type variables = C.variables;
 
   let use:
-    (~variables: variables, ~dataFrom: dataFrom=?, unit) =>
-    queryResponse(response) =
-    (~variables, ~dataFrom=?, ()) => {
-      let q =
-        _useQuery({
-          "dataFrom":
-            switch (dataFrom) {
-            | Some(StoreThenNetwork) => Some("STORE_THEN_NETWORK")
-            | Some(NetworkOnly) => Some("NETWORK_ONLY")
-            | Some(StoreOrNetwork) => Some("STORE_OR_NETWORK")
-            | Some(StoreOnly) => Some("STORE_ONLY")
-            | None => None
-            },
-          "query": C.query,
-          "variables": variables,
-        });
-
-      let res =
-        switch (q##props |> toOpt, q##error |> toOpt) {
-        | (None, None) => Loading
-        | (Some(data), None) => Data(data)
-        | (_, Some(err)) => Error(err)
-        };
-
-      res;
-    };
+    (
+      ~variables: variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: CacheConfig.t=?,
+      unit
+    ) =>
+    response =
+    (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
+      _useQuery(
+        C.query,
+        variables,
+        {
+          "fetchKey": fetchKey,
+          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+          "networkCacheConfig": networkCacheConfig,
+        },
+      );
 };
 
 /**
  * FRAGMENT
  */
-[@bs.module "relay-hooks"]
+[@bs.module "./vendor/relay-experimental"]
 external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
@@ -327,6 +386,176 @@ module type MakeUseFragmentConfig = {
 module MakeUseFragment = (C: MakeUseFragmentConfig) => {
   let use = (fr: C.fragmentRef): C.fragment =>
     _useFragment(C.fragmentSpec, fr);
+};
+
+/** Refetchable */
+type refetchFn('variables) =
+  (
+    ~variables: 'variables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option(Js.Exn.t) => unit=?,
+    unit
+  ) =>
+  unit;
+
+type refetchFnRaw('variables) =
+  (
+    'variables,
+    {
+      .
+      "fetchPolicy": option(string),
+      "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
+    }
+  ) =>
+  unit;
+
+let makeRefetchableFnOpts = (~fetchPolicy, ~onComplete) => {
+  "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+  "onComplete":
+    Some(
+      maybeExn =>
+        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
+        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
+        | _ => ()
+        },
+    ),
+};
+
+[@bs.module "./vendor/relay-experimental"]
+external _useRefetchableFragment:
+  (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
+  "useRefetchableFragment";
+
+module type MakeUseRefetchableFragmentConfig = {
+  type fragment;
+  type fragmentRef;
+  type variables;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
+  let useRefetchable = (fr: C.fragmentRef) => {
+    let (fragmentData, refetchFn) =
+      _useRefetchableFragment(C.fragmentSpec, fr);
+    (
+      fragmentData,
+      (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        refetchFn(
+          variables,
+          makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
+        ),
+    );
+  };
+};
+
+/** Pagination */
+module type MakeUsePaginationFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+type paginationLoadMoreFn =
+  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
+  Disposable.t;
+
+type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+[@bs.module "./vendor/relay-experimental"]
+external _useLegacyPaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  {
+    .
+    "data": 'fragmentData,
+    "loadNext": paginationLoadMoreFn,
+    "loadPrevious": paginationLoadMoreFn,
+    "hasNext": bool,
+    "hasPrevious": bool,
+    "isLoadingNext": bool,
+    "isLoadingPrevious": bool,
+    "refetch": refetchFnRaw('variables),
+  } =
+  "useLegacyPaginationFragment";
+
+[@bs.module "./vendor/relay-experimental"]
+external _useBlockingPaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  {
+    .
+    "data": 'fragmentData,
+    "loadNext": paginationLoadMoreFn,
+    "loadPrevious": paginationLoadMoreFn,
+    "hasNext": bool,
+    "hasPrevious": bool,
+    "isLoadingNext": bool,
+    "isLoadingPrevious": bool,
+    "refetch": refetchFnRaw('variables),
+  } =
+  "useBlockingPaginationFragment";
+
+module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
+  let useBlockingPagination =
+      (fr: C.fragmentRef)
+      : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
+    let p = _useBlockingPaginationFragment(C.fragmentSpec, fr);
+    {
+      data: p##data,
+      loadNext: p##loadNext,
+      loadPrevious: p##loadPrevious,
+      hasNext: p##hasNext,
+      hasPrevious: p##hasPrevious,
+      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        (),
+      /*
+       TODO: Make this work!
+       p##refetch(
+            variables,
+            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          ),*/
+    };
+  };
+
+  let useLegacyPagination =
+      (fr: C.fragmentRef)
+      : paginationLegacyFragmentReturn(C.fragment, C.variables) => {
+    let p = _useLegacyPaginationFragment(C.fragmentSpec, fr);
+    {
+      data: p##data,
+      loadNext: p##loadNext,
+      loadPrevious: p##loadPrevious,
+      hasNext: p##hasNext,
+      hasPrevious: p##hasPrevious,
+      isLoadingNext: p##isLoadingNext,
+      isLoadingPrevious: p##isLoadingPrevious,
+      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        (),
+      /*
+       TODO: Make this work!
+       p##refetch(
+            variables,
+            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          ),*/
+    };
+  };
 };
 
 /**
@@ -416,14 +645,41 @@ module MakeUseMutation = (C: MutationConfig) => {
 /**
  * Misc
  */
-module Network = {
+module Observable = {
   type t;
 
-  type cacheConfig = {
+  type _sink('t) = {
     .
-    "force": Js.Nullable.t(bool),
-    "poll": Js.Nullable.t(int),
+    "next": 't => unit,
+    "error": Js.Exn.t => unit,
+    "completed": unit => unit,
+    "closed": bool,
   };
+
+  type sink('t) = {
+    next: 't => unit,
+    error: Js.Exn.t => unit,
+    completed: unit => unit,
+    closed: bool,
+  };
+
+  [@bs.module "relay-runtime"] [@bs.scope "Observable"]
+  external create: (_sink('t) => option('a)) => t = "create";
+
+  let make = sinkFn =>
+    create(s => {
+      sinkFn({
+        next: s##next,
+        error: s##error,
+        completed: s##completed,
+        closed: s##closed,
+      });
+      None;
+    });
+};
+
+module Network = {
+  type t;
 
   type operation = {
     .
@@ -432,11 +688,35 @@ module Network = {
     "operationKind": string,
   };
 
+  type subscribeFn =
+    {
+      .
+      "request": operation,
+      "variables": Js.Json.t,
+      "cacheConfig": CacheConfig.t,
+    } =>
+    Observable.t;
+
   type fetchFunctionPromise =
-    (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
+    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+
+  type fetchFunctionObservable =
+    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
-  external makePromiseBased: fetchFunctionPromise => t = "create";
+  external makeFromPromise: (fetchFunctionPromise, option(subscribeFn)) => t =
+    "create";
+
+  let makePromiseBased = (~fetchFunction, ~subscriptionFunction=?, ()) =>
+    makeFromPromise(fetchFunction, subscriptionFunction);
+
+  [@bs.module "relay-runtime"] [@bs.scope "Network"]
+  external makeFromObservable:
+    (fetchFunctionObservable, option(subscribeFn)) => t =
+    "create";
+
+  let makeObservableBased = (~observableFunction, ~subscriptionFunction=?, ()) =>
+    makeFromObservable(observableFunction, subscriptionFunction);
 };
 
 module RecordSource = {
@@ -587,3 +867,48 @@ external _commitLocalUpdate:
 
 let commitLocalUpdate = (~environment, ~updater) =>
   _commitLocalUpdate(environment, updater);
+
+module type SubscriptionConfig = {
+  type variables;
+  type response;
+  let node: subscriptionNode;
+};
+
+type _subscriptionConfig('response, 'variables) = {
+  .
+  "subscription": subscriptionNode,
+  "variables": 'variables,
+  "onCompleted": option(unit => unit),
+  "onError": option(Js.Exn.t => unit),
+  "onNext": option('response => unit),
+  "updater": option(updaterFn),
+};
+
+[@bs.module "relay-runtime"]
+external requestSubscription:
+  (Environment.t, _subscriptionConfig('response, 'variables)) => Disposable.t =
+  "requestSubscription";
+
+module MakeUseSubscription = (C: SubscriptionConfig) => {
+  let subscribe =
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~onCompleted: option(unit => unit)=?,
+        ~onError: option(Js.Exn.t => unit)=?,
+        ~onNext: option(C.response => unit)=?,
+        ~updater: option(updaterFn)=?,
+        (),
+      ) =>
+    requestSubscription(
+      environment,
+      {
+        "subscription": C.node,
+        "variables": variables,
+        "onCompleted": onCompleted,
+        "onError": onError,
+        "onNext": onNext,
+        "updater": updater,
+      },
+    );
+};
