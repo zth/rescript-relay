@@ -83,7 +83,7 @@ async function runCompiler() {
         path.resolve(
           __dirname + "/../language-plugin/reason-relay-language-plugin.js"
         ),
-        args.find(a => a === "--watch")
+        process.argv.find(a => a === "--watch")
       ].filter(Boolean)
     );
   } else {
