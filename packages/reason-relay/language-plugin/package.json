@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf dist && yarn bs:clean && yarn bs:build && yarn ts:build && yarn babel",
+    "build": "rm -rf dist && yarn bs:clean && yarn bs:build && yarn webpack",
     "babel": "babel src --out-dir dist --ignore \"**/__tests__\"",
     "bs:build": "bsb -make-world",
     "bs:start": "bsb -make-world -w",
@@ -21,14 +21,22 @@
     "@types/graphql": "14.5.0",
     "@types/node": "^12.7.11",
     "@types/relay-compiler": "^6.0.1",
+    "@webpack-cli/init": "^0.2.2",
     "babel-jest": "^24.9.0",
     "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "gentype": "^2.40.1",
+    "html-webpack-plugin": "^3.2.0",
     "jest": "^24.9.0",
     "relay-compiler": "^6.0.0",
     "relay-runtime": "6.0.0",
     "relay-test-utils": "^6.0.0",
-    "relay-test-utils-internal": "^6.0.0"
+    "relay-test-utils-internal": "^6.0.0",
+    "ts-loader": "^6.2.0",
+    "webpack": "^4.41.1",
+    "webpack-bundle-analyzer": "^3.5.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2"
   },
   "dependencies": {
     "bs-flow-parser": "^0.91.0-1",
@@ -39,7 +47,7 @@
     "nullthrows": "^1.1.1",
     "reason": "^3.3.4",
     "tablecloth-bucklescript": "^0.0.6",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "resolutions": {
     "graphql": "14.5.0"

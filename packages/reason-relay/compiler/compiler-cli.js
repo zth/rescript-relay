@@ -7,12 +7,6 @@ const { spawn } = require("child_process");
 const { buildSchema, introspectionQuery, graphql } = require("graphql");
 const { generateSchemaAssets } = require("./generateSchemaAssets");
 
-if (process.argv.length > 1) {
-  console.warn(
-    "Warning: ReasonRelay compiler takes no CLI arguments. All configuration must be done through relay-config, preferably by creating a relay.config.js file at the project root."
-  );
-}
-
 let relayConfig = require("relay-config").loadConfig();
 
 if (!relayConfig) {
@@ -85,7 +79,9 @@ async function runCompiler() {
 
     runRelayCompiler([
       "--language",
-      path.resolve(__dirname + "/../language-plugin/index.js")
+      path.resolve(
+        __dirname + "/../language-plugin/reason-relay-language-plugin.js"
+      )
     ]);
   } else {
     runRelayCompiler(["--help"]);
