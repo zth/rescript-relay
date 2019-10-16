@@ -16,7 +16,7 @@ export function processConcreteText(concreteText: string): string {
 
   while ((result = requireRegexp.exec(concreteText)) !== null) {
     let [fullStr, _, moduleName] = result;
-    str = str.replace(fullStr, `require('./${moduleName}_graphql.bs.js')`);
+    str = str.replace(fullStr, `require('./${moduleName}_graphql.bs.js').node`);
   }
 
   return str;
