@@ -27,8 +27,8 @@ function parseFile(text: string, file: string) {
     // Removes {||} used in multiline Reason strings
     return matched.map(text => ({
       template: text.replace(/({\||\|})/g, ""),
-      keyName: "",
-      sourceLocationOffset: {line: 0, column: 0}
+      keyName: null,
+      sourceLocationOffset: { line: 1, column: 1 }
     }));
   }
 
