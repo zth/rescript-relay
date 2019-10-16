@@ -75,7 +75,7 @@ describe("extractTheSubscriptionName", ({test, _}) =>
 describe("extractFragmentRefetchableQueryName", ({test, _}) => {
   test(
     "it should extract the refetchable operation query name from a fragment with @refetchable",
-    ({expect}) =>
+    ({expect}) => {
     expect.option(
       Util.extractFragmentRefetchableQueryName(
         ~loc=makeMockLocObj(),
@@ -85,6 +85,25 @@ describe("extractFragmentRefetchableQueryName", ({test, _}) => {
       toBe(
       Some("SomeFragmentRefetchQuery"),
     )
+  
+
+  expect.option(
+      Util.extractFragmentRefetchableQueryName(
+        ~loc=makeMockLocObj(),
+        {|
+        fragment GroupEntrySingleDimensionEntry_dimension on Dimension
+          @argumentDefinitions(isRefetch: {type:"Boolean!"})
+          @refetchable(queryName: "GroupEntrySingleDimensionEntryRefetchQuery") {
+          identifier
+        }
+        |},
+      ),
+    ).
+      toBe(
+      Some("GroupEntrySingleDimensionEntryRefetchQuery"),
+    )
+
+    }
   );
 
   test(
