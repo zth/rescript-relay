@@ -27,6 +27,7 @@ var warning = require("fbjs/lib/warning");
 var _require = require('relay-runtime'),
     getPromiseForRequestInFlight = _require.__internal.getPromiseForRequestInFlight,
     getFragmentIdentifier = _require.getFragmentIdentifier,
+    getFragmentOwner = _require.getFragmentOwner,
     getSelector = _require.getSelector,
     isPromise = _require.isPromise,
     recycleNodesInto = _require.recycleNodesInto;
@@ -64,6 +65,18 @@ function getFragmentResult(cacheKey, snapshot) {
   };
 }
 
+function lookupFragment(environment, fragmentNode, fragmentRef, fragmentOwnerOrOwners, componentDisplayName) {
+  var selector = getSelector( // We get the variables from the fragment owner in the fragment ref, so we
+  // don't pass them here. This API can change once fragment ownership
+  // stops being optional
+  // TODO(T39494051)
+  fragmentNode, fragmentRef);
+  !(selector != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Relay: Expected to have received a valid ' + 'fragment reference for fragment `%s` declared in `%s`. Make sure ' + "that `%s`'s parent is passing the right fragment reference prop.", fragmentNode.name, componentDisplayName, componentDisplayName) : invariant(false) : void 0;
+  return selector.kind === 'PluralReaderSelector' ? selector.selectors.map(function (s) {
+    return environment.lookup(s);
+  }) : environment.lookup(selector);
+}
+
 function getPromiseForPendingOperationAffectingOwner(environment, request) {
   return environment.getOperationTracker().getPromiseForPendingOperationsAffectingOwner(request);
 }
@@ -85,7 +98,7 @@ function () {
   var _proto = FragmentResourceImpl.prototype;
 
   _proto.read = function read(fragmentNode, fragmentRef, componentDisplayName, fragmentKey) {
-    var _fragmentNode$metadat, _fragmentOwner$node$p;
+    var _fragmentNode$metadat, _ref;
 
     var environment = this._environment;
     var cacheKey = getFragmentIdentifier(fragmentNode, fragmentRef); // If fragmentRef is null or undefined, pass it directly through.
@@ -126,15 +139,13 @@ function () {
       return getFragmentResult(cacheKey, cachedValue);
     } // 2. If not, try reading the fragment from the Relay store.
     // If the snapshot has data, return it and save it in cache
+    // $FlowFixMe - TODO T39154660 Use FragmentPointer type instead of mixed
 
 
-    var fragmentSelector = getSelector(fragmentNode, fragmentRef);
-    !(fragmentSelector != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Relay: Expected to have received a valid ' + 'fragment reference for fragment `%s` declared in `%s`. Make sure ' + "that `%s`'s parent is passing the right fragment reference prop.", fragmentNode.name, componentDisplayName, componentDisplayName) : invariant(false) : void 0;
-    var snapshot = fragmentSelector.kind === 'PluralReaderSelector' ? fragmentSelector.selectors.map(function (s) {
-      return environment.lookup(s);
-    }) : environment.lookup(fragmentSelector);
-    var fragmentOwner = fragmentSelector.kind === 'PluralReaderSelector' ? fragmentSelector.selectors[0].owner : fragmentSelector.owner;
-    var parentQueryName = (_fragmentOwner$node$p = fragmentOwner.node.params.name) !== null && _fragmentOwner$node$p !== void 0 ? _fragmentOwner$node$p : 'Unknown Parent Query';
+    var fragmentOwnerOrOwners = getFragmentOwner(fragmentNode, fragmentRef);
+    var snapshot = lookupFragment(environment, fragmentNode, fragmentRef, fragmentOwnerOrOwners, componentDisplayName);
+    var fragmentOwner = Array.isArray(fragmentOwnerOrOwners) ? fragmentOwnerOrOwners[0] : fragmentOwnerOrOwners;
+    var parentQueryName = (_ref = fragmentOwner === null || fragmentOwner === void 0 ? void 0 : fragmentOwner.node.params.name) !== null && _ref !== void 0 ? _ref : 'Unknown Parent Query';
 
     if (!isMissingData(snapshot)) {
       this._cache.set(cacheKey, snapshot);
@@ -146,6 +157,8 @@ function () {
     // or subscription. If a promise exists, cache the promise and use it
     // to suspend.
 
+
+    !(fragmentOwner != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Relay: Tried reading fragment %s declared in ' + 'fragment container %s without a parent query. This usually means ' + " you didn't render %s as a descendant of a QueryRenderer", fragmentNode.name, componentDisplayName, componentDisplayName) : invariant(false) : void 0;
 
     var networkPromise = this._getAndSavePromiseForFragmentRequestInFlight(cacheKey, fragmentOwner);
 
@@ -229,12 +242,13 @@ function () {
   _proto.subscribeSpec = function subscribeSpec(fragmentResults, callback) {
     var _this3 = this;
 
-    var disposables = Object.keys(fragmentResults).map(function (key) {
-      return _this3.subscribe(fragmentResults[key], callback);
+    var disposables = mapObject(fragmentResults, function (fragmentResult) {
+      return _this3.subscribe(fragmentResult, callback);
     });
     return {
       dispose: function dispose() {
-        disposables.forEach(function (disposable) {
+        Object.keys(disposables).forEach(function (key) {
+          var disposable = disposables[key];
           disposable.dispose();
         });
       }
@@ -298,9 +312,12 @@ function () {
   _proto.checkMissedUpdatesSpec = function checkMissedUpdatesSpec(fragmentResults) {
     var _this4 = this;
 
-    return Object.keys(fragmentResults).some(function (key) {
-      return _this4.checkMissedUpdates(fragmentResults[key])[0];
+    var didMissUpdates = false;
+    Object.keys(fragmentResults).forEach(function (key) {
+      var fragmentResult = fragmentResults[key];
+      didMissUpdates = _this4.checkMissedUpdates(fragmentResult)[0];
     });
+    return didMissUpdates;
   };
 
   _proto._getAndSavePromiseForFragmentRequestInFlight = function _getAndSavePromiseForFragmentRequestInFlight(cacheKey, fragmentOwner) {

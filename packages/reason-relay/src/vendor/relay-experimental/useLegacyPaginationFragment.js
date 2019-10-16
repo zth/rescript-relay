@@ -20,7 +20,7 @@ var useLoadMoreFunction = require('./useLoadMoreFunction');
 
 var useRefetchableFragmentNode = require('./useRefetchableFragmentNode');
 
-var useStaticFragmentNodeWarning = require('./useStaticFragmentNodeWarning');
+var useStaticPropWarning = require('./useStaticPropWarning');
 
 var _require = require('react'),
     useCallback = _require.useCallback,
@@ -28,12 +28,13 @@ var _require = require('react'),
 
 var _require2 = require('relay-runtime'),
     getFragment = _require2.getFragment,
-    getFragmentIdentifier = _require2.getFragmentIdentifier;
+    getFragmentIdentifier = _require2.getFragmentIdentifier,
+    getFragmentOwner = _require2.getFragmentOwner;
 
 function useLegacyPaginationFragment(fragmentInput, parentFragmentRef) {
-  var fragmentNode = getFragment(fragmentInput);
-  useStaticFragmentNodeWarning(fragmentNode, 'first argument of useLegacyPaginationFragment()');
+  useStaticPropWarning(fragmentInput, 'first argument of useLegacyPaginationFragment()');
   var componentDisplayName = 'useLegacyPaginationFragment()';
+  var fragmentNode = getFragment(fragmentInput);
 
   var _getPaginationMetadat = getPaginationMetadata(fragmentNode, componentDisplayName),
       connectionPathInFragmentData = _getPaginationMetadat.connectionPathInFragmentData,
@@ -46,13 +47,15 @@ function useLegacyPaginationFragment(fragmentInput, parentFragmentRef) {
       fragmentRef = _useRefetchableFragme.fragmentRef,
       refetch = _useRefetchableFragme.refetch;
 
-  var fragmentIdentifier = getFragmentIdentifier(fragmentNode, fragmentRef); // Backward pagination
+  var fragmentIdentifier = getFragmentIdentifier(fragmentNode, fragmentRef); // $FlowFixMe - TODO T39154660 Use FragmentPointer type instead of mixed
+
+  var fragmentOwner = getFragmentOwner(fragmentNode, fragmentRef); // Backward pagination
 
   var _useLoadMore = useLoadMore({
     direction: 'backward',
     fragmentNode: fragmentNode,
-    fragmentRef: fragmentRef,
     fragmentIdentifier: fragmentIdentifier,
+    fragmentOwner: fragmentOwner,
     fragmentData: fragmentData,
     connectionPathInFragmentData: connectionPathInFragmentData,
     fragmentRefPathInResponse: fragmentRefPathInResponse,
@@ -69,8 +72,8 @@ function useLegacyPaginationFragment(fragmentInput, parentFragmentRef) {
   var _useLoadMore2 = useLoadMore({
     direction: 'forward',
     fragmentNode: fragmentNode,
-    fragmentRef: fragmentRef,
     fragmentIdentifier: fragmentIdentifier,
+    fragmentOwner: fragmentOwner,
     fragmentData: fragmentData,
     connectionPathInFragmentData: connectionPathInFragmentData,
     fragmentRefPathInResponse: fragmentRefPathInResponse,

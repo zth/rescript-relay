@@ -29,7 +29,7 @@ var _require2 = require('relay-runtime'),
 var useContext = React.useContext,
     useEffect = React.useEffect;
 
-function useLazyLoadQueryNode(args) {
+function useQueryNode(args) {
   var _args$fetchObservable;
 
   var environment = useRelayEnvironment();
@@ -72,4 +72,4 @@ function useLazyLoadQueryNode(args) {
   return data;
 }
 
-module.exports = useLazyLoadQueryNode;
+module.exports = useQueryNode;

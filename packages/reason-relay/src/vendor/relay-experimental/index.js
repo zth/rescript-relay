@@ -22,9 +22,9 @@ var useBlockingPaginationFragment = require('./useBlockingPaginationFragment');
 
 var useFragment = require('./useFragment');
 
-var useLazyLoadQuery = require('./useLazyLoadQuery');
-
 var useLegacyPaginationFragment = require('./useLegacyPaginationFragment');
+
+var useQuery = require('./useQuery');
 
 var useRefetchableFragment = require('./useRefetchableFragment');
 
@@ -35,7 +35,7 @@ module.exports = {
   ProfilerContext: ProfilerContext,
   RelayEnvironmentProvider: RelayEnvironmentProvider,
   fetchQuery: fetchQuery,
-  useLazyLoadQuery: useLazyLoadQuery,
+  useQuery: useQuery,
   useFragment: useFragment,
   useBlockingPaginationFragment: useBlockingPaginationFragment,
   usePaginationFragment: useLegacyPaginationFragment,

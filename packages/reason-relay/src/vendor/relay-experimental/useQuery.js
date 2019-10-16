@@ -10,20 +10,19 @@
  */
 'use strict';
 
-var useLazyLoadQueryNode = require('./useLazyLoadQueryNode');
-
 var useMemoOperationDescriptor = require('./useMemoOperationDescriptor');
 
-function useLazyLoadQuery(gqlQuery, variables, options) {
+var useQueryNode = require('./useQueryNode');
+
+function useQuery(gqlQuery, variables, options) {
   var query = useMemoOperationDescriptor(gqlQuery, variables);
-  var data = useLazyLoadQueryNode({
-    componentDisplayName: 'useLazyLoadQuery()',
+  var data = useQueryNode({
+    query: query,
     fetchKey: options === null || options === void 0 ? void 0 : options.fetchKey,
     fetchPolicy: options === null || options === void 0 ? void 0 : options.fetchPolicy,
-    networkCacheConfig: options === null || options === void 0 ? void 0 : options.networkCacheConfig,
-    query: query
+    componentDisplayName: 'useQuery()'
   });
   return data;
 }
 
-module.exports = useLazyLoadQuery;
+module.exports = useQuery;

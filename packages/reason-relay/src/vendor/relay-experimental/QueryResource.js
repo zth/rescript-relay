@@ -49,13 +49,12 @@ function getQueryResult(operation, cacheKey) {
   };
 }
 
-function createCacheEntry(cacheKey, operation, value, networkSubscription, onDispose) {
+function createQueryResourceCacheEntry(cacheKey, operation, value, onDispose) {
   var currentValue = value;
   var retainCount = 0;
   var permanentlyRetained = false;
   var retainDisposable = null;
   var releaseTemporaryRetain = null;
-  var currentNetworkSubscription = networkSubscription;
 
   var retain = function retain(environment) {
     retainCount++;
@@ -90,29 +89,15 @@ function createCacheEntry(cacheKey, operation, value, networkSubscription, onDis
     getRetainCount: function getRetainCount() {
       return retainCount;
     },
-    getNetworkSubscription: function getNetworkSubscription() {
-      return currentNetworkSubscription;
-    },
-    setNetworkSubscription: function setNetworkSubscription(subscription) {
-      if (currentNetworkSubscription != null) {
-        currentNetworkSubscription.unsubscribe();
-      }
-
-      currentNetworkSubscription = subscription;
-    },
     temporaryRetain: function temporaryRetain(environment) {
       // NOTE: If we're executing in a server environment, there's no need
       // to create temporary retains, since the component will never commit.
       if (!ExecutionEnvironment.canUseDOM) {
-        return {
-          dispose: function dispose() {}
-        };
+        return;
       }
 
       if (permanentlyRetained === true) {
-        return {
-          dispose: function dispose() {}
-        };
+        return;
       } // NOTE: temporaryRetain is called during the render phase. However,
       // given that we can't tell if this render will eventually commit or not,
       // we create a timer to autodispose of this retain in case the associated
@@ -136,7 +121,7 @@ function createCacheEntry(cacheKey, operation, value, networkSubscription, onDis
       // we only ever need a single temporary retain until the permanent retain is
       // established.
       // temporaryRetain may be called multiple times by React during the render
-      // phase, as well multiple times by other query components that are
+      // phase, as well multiple times by sibling query components that are
       // rendering the same query/variables.
 
       if (releaseTemporaryRetain != null) {
@@ -144,15 +129,6 @@ function createCacheEntry(cacheKey, operation, value, networkSubscription, onDis
       }
 
       releaseTemporaryRetain = localReleaseTemporaryRetain;
-      return {
-        dispose: function dispose() {
-          if (permanentlyRetained === true) {
-            return;
-          }
-
-          releaseTemporaryRetain && releaseTemporaryRetain();
-        }
-      };
     },
     permanentRetain: function permanentRetain(environment) {
       var disposable = retain(environment);
@@ -166,11 +142,6 @@ function createCacheEntry(cacheKey, operation, value, networkSubscription, onDis
       return {
         dispose: function dispose() {
           disposable.dispose();
-
-          if (retainCount <= 0 && currentNetworkSubscription != null) {
-            currentNetworkSubscription.unsubscribe();
-          }
-
           permanentlyRetained = false;
         }
       };
@@ -185,13 +156,43 @@ function () {
   function QueryResourceImpl(environment) {
     var _this = this;
 
-    (0, _defineProperty2["default"])(this, "_clearCacheEntry", function (cacheEntry) {
+    (0, _defineProperty2["default"])(this, "_onDispose", function (cacheEntry) {
       if (cacheEntry.getRetainCount() <= 0) {
         _this._cache["delete"](cacheEntry.cacheKey);
       }
     });
     this._environment = environment;
     this._cache = LRUCache.create(CACHE_CAPACITY);
+
+    if (process.env.NODE_ENV !== "production") {
+      this._logQueryResource = function (operation, fetchPolicy, renderPolicy, hasFullQuery, shouldFetch) {
+        if ( // Disable relay network logging while performing Server-Side
+        // Rendering (SSR)
+        !ExecutionEnvironment.canUseDOM) {
+          return;
+        }
+
+        var logger = environment.getLogger({
+          // $FlowFixMe
+          request: (0, _objectSpread2["default"])({}, operation.request.node.params, {
+            name: "".concat(operation.request.node.params.name, " (Store Cache)")
+          }),
+          variables: operation.request.variables,
+          cacheConfig: {}
+        });
+
+        if (!logger) {
+          return;
+        }
+
+        logger.log('Fetch Policy', fetchPolicy);
+        logger.log('Render Policy', renderPolicy);
+        logger.log('Query', hasFullQuery ? 'Fully cached' : 'Has missing data');
+        logger.log('Network Request', shouldFetch ? 'Required' : 'Skipped');
+        logger.log('Variables', operation.request.variables);
+        logger.flushLogs();
+      };
+    }
   }
   /**
    * This function should be called during a Component's render function,
@@ -218,35 +219,19 @@ function () {
 
     var cacheEntry = this._cache.get(cacheKey);
 
-    var temporaryRetainDisposable = null;
-
     if (cacheEntry == null) {
       // 2. If a cached value isn't available, try fetching the operation.
       // fetchAndSaveQuery will update the cache with either a Promise or
       // an Error to throw, or a FragmentResource to return.
-      cacheEntry = this._fetchAndSaveQuery(cacheKey, operation, fetchObservable, fetchPolicy, renderPolicy, (0, _objectSpread2["default"])({}, observer, {
-        unsubscribe: function unsubscribe(subscription) {
-          // 4. If the request is cancelled, make sure to dispose
-          // of the temporary retain; this will ensure that a promise
-          // doesn't remain unnecessarilly cached until the temporary retain
-          // expires. Not clearing the temporary retain might cause the
-          // query to incorrectly re-suspend.
-          if (temporaryRetainDisposable != null) {
-            temporaryRetainDisposable.dispose();
-          }
-
-          var observerUnsubscribe = observer === null || observer === void 0 ? void 0 : observer.unsubscribe;
-          observerUnsubscribe && observerUnsubscribe(subscription);
-        }
-      }));
-    } // 3. Temporarily retain here in render phase. When the Component reading
-    // the operation is committed, we will transfer ownership of data retention
-    // to the component.
-    // In case the component never commits (mounts or updates) from this render,
+      cacheEntry = this._fetchAndSaveQuery(cacheKey, operation, fetchObservable, fetchPolicy, renderPolicy, observer);
+    } // Retain here in render phase. When the Component reading the operation
+    // is committed, we will transfer ownership of data retention to the
+    // component.
+    // In case the component never mounts or updates from this render,
     // this data retention hold will auto-release itself afer a timeout.
 
 
-    temporaryRetainDisposable = cacheEntry.temporaryRetain(environment);
+    cacheEntry.temporaryRetain(environment);
     var cachedValue = cacheEntry.getValue();
 
     if (isPromise(cachedValue) || cachedValue instanceof Error) {
@@ -263,16 +248,27 @@ function () {
   ;
 
   _proto.retain = function retain(queryResult) {
+    var _this2 = this;
+
     var environment = this._environment;
     var cacheKey = queryResult.cacheKey,
         operation = queryResult.operation;
 
-    var cacheEntry = this._getOrCreateCacheEntry(cacheKey, operation, queryResult, null);
+    var cacheEntry = this._cache.get(cacheKey);
+
+    if (cacheEntry == null) {
+      cacheEntry = createQueryResourceCacheEntry(cacheKey, operation, queryResult, this._onDispose);
+
+      this._cache.set(cacheKey, cacheEntry);
+    }
 
     var disposable = cacheEntry.permanentRetain(environment);
     return {
       dispose: function dispose() {
         disposable.dispose();
+        !(cacheEntry != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Relay: Expected to have cached a result when disposing query.' + "If you're seeing this, this is likely a bug in Relay.") : invariant(false) : void 0;
+
+        _this2._onDispose(cacheEntry);
       }
     };
   };
@@ -285,20 +281,15 @@ function () {
     return this._cache.get(cacheKey);
   };
 
-  _proto._getOrCreateCacheEntry = function _getOrCreateCacheEntry(cacheKey, operation, value, networkSubscription) {
-    var cacheEntry = this._cache.get(cacheKey);
+  _proto._cacheResult = function _cacheResult(operation, cacheKey) {
+    var queryResult = getQueryResult(operation, cacheKey);
+    var cacheEntry = createQueryResourceCacheEntry(cacheKey, operation, queryResult, this._onDispose);
 
-    if (cacheEntry == null) {
-      cacheEntry = createCacheEntry(cacheKey, operation, value, networkSubscription, this._clearCacheEntry);
-
-      this._cache.set(cacheKey, cacheEntry);
-    }
-
-    return cacheEntry;
+    this._cache.set(cacheKey, cacheEntry);
   };
 
   _proto._fetchAndSaveQuery = function _fetchAndSaveQuery(cacheKey, operation, fetchObservable, fetchPolicy, renderPolicy, observer) {
-    var _this2 = this;
+    var _this3 = this;
 
     var environment = this._environment; // NOTE: Running `check` will write missing data to the store using any
     // missing data handlers specified on the environment;
@@ -348,86 +339,80 @@ function () {
 
 
     if (shouldAllowRender) {
-      var queryResult = getQueryResult(operation, cacheKey);
-
-      var _cacheEntry = createCacheEntry(cacheKey, operation, queryResult, null, this._clearCacheEntry);
-
-      this._cache.set(cacheKey, _cacheEntry);
+      this._cacheResult(operation, cacheKey);
     }
 
-    environment.__log({
-      name: 'queryresource.fetch',
-      operation: operation,
-      fetchPolicy: fetchPolicy,
-      renderPolicy: renderPolicy,
-      hasFullQuery: hasFullQuery,
-      shouldFetch: shouldFetch
-    });
+    if (process.env.NODE_ENV !== "production") {
+      switch (fetchPolicy) {
+        case 'store-only':
+        case 'store-or-network':
+        case 'store-and-network':
+          this._logQueryResource && this._logQueryResource(operation, fetchPolicy, renderPolicy, hasFullQuery, shouldFetch);
+          break;
+
+        default:
+          break;
+      }
+    }
 
     if (shouldFetch) {
-      var _queryResult = getQueryResult(operation, cacheKey);
-
-      var networkSubscription;
+      var queryResult = getQueryResult(operation, cacheKey);
       fetchObservable.subscribe({
-        start: function start(subscription) {
-          networkSubscription = subscription;
-
-          var cacheEntry = _this2._cache.get(cacheKey);
-
-          if (cacheEntry) {
-            cacheEntry.setNetworkSubscription(networkSubscription);
-          }
-
-          var observerStart = observer === null || observer === void 0 ? void 0 : observer.start;
-          observerStart && observerStart(subscription);
-        },
+        start: observer === null || observer === void 0 ? void 0 : observer.start,
         next: function next() {
           var snapshot = environment.lookup(operation.fragment);
 
-          var cacheEntry = _this2._getOrCreateCacheEntry(cacheKey, operation, _queryResult, networkSubscription);
+          if (!snapshot.isMissingData) {
+            var _this$_cache$get;
 
-          cacheEntry.setValue(_queryResult);
-          resolveNetworkPromise();
+            var _cacheEntry2 = (_this$_cache$get = _this3._cache.get(cacheKey)) !== null && _this$_cache$get !== void 0 ? _this$_cache$get : createQueryResourceCacheEntry(cacheKey, operation, queryResult, _this3._onDispose);
+
+            _cacheEntry2.setValue(queryResult);
+
+            _this3._cache.set(cacheKey, _cacheEntry2);
+
+            resolveNetworkPromise();
+          }
+
           var observerNext = observer === null || observer === void 0 ? void 0 : observer.next;
           observerNext && observerNext(snapshot);
         },
         error: function error(_error) {
-          var cacheEntry = _this2._getOrCreateCacheEntry(cacheKey, operation, _error, networkSubscription);
+          var _this$_cache$get2;
 
+          var cacheEntry = (_this$_cache$get2 = _this3._cache.get(cacheKey)) !== null && _this$_cache$get2 !== void 0 ? _this$_cache$get2 : createQueryResourceCacheEntry(cacheKey, operation, _error, _this3._onDispose);
           cacheEntry.setValue(_error);
+
+          _this3._cache.set(cacheKey, cacheEntry);
+
           resolveNetworkPromise();
-          networkSubscription = null;
-          cacheEntry.setNetworkSubscription(null);
           var observerError = observer === null || observer === void 0 ? void 0 : observer.error;
           observerError && observerError(_error);
         },
         complete: function complete() {
           resolveNetworkPromise();
-          networkSubscription = null;
-
-          var cacheEntry = _this2._cache.get(cacheKey);
-
-          if (cacheEntry) {
-            cacheEntry.setNetworkSubscription(null);
-          }
-
           var observerComplete = observer === null || observer === void 0 ? void 0 : observer.complete;
           observerComplete && observerComplete();
         },
-        unsubscribe: observer === null || observer === void 0 ? void 0 : observer.unsubscribe
+        unsubscribe: function unsubscribe(subscription) {
+          _this3._cache["delete"](cacheKey);
+
+          var observerUnsubscribe = observer === null || observer === void 0 ? void 0 : observer.unsubscribe;
+          observerUnsubscribe && observerUnsubscribe(subscription);
+        }
       });
 
-      var _cacheEntry2 = this._cache.get(cacheKey);
+      var _cacheEntry = this._cache.get(cacheKey);
 
-      if (!_cacheEntry2) {
+      if (!_cacheEntry) {
         var networkPromise = new Promise(function (resolve) {
           resolveNetworkPromise = resolve;
         }); // $FlowExpectedError Expando to annotate Promises.
 
         networkPromise.displayName = 'Relay(' + operation.fragment.node.name + ')';
-        _cacheEntry2 = createCacheEntry(cacheKey, operation, networkPromise, networkSubscription, this._clearCacheEntry);
+        _cacheEntry = createQueryResourceCacheEntry(cacheKey, operation, networkPromise, this._onDispose);
 
-        this._cache.set(cacheKey, _cacheEntry2);
+        this._cache.set(cacheKey, _cacheEntry);
       }
     } else {
       var observerComplete = observer === null || observer === void 0 ? void 0 : observer.complete;

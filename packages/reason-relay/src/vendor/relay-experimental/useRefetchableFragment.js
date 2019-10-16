@@ -12,14 +12,14 @@
 
 var useRefetchableFragmentNode = require('./useRefetchableFragmentNode');
 
-var useStaticFragmentNodeWarning = require('./useStaticFragmentNodeWarning');
+var useStaticPropWarning = require('./useStaticPropWarning');
 
 var _require = require('relay-runtime'),
     getFragment = _require.getFragment;
 
 function useRefetchableFragment(fragmentInput, fragmentRef) {
+  useStaticPropWarning(fragmentInput, 'first argument of useRefetchableFragment()');
   var fragmentNode = getFragment(fragmentInput);
-  useStaticFragmentNodeWarning(fragmentNode, 'first argument of useRefetchableFragment()');
 
   var _useRefetchableFragme = useRefetchableFragmentNode(fragmentNode, fragmentRef, 'useRefetchableFragment()'),
       fragmentData = _useRefetchableFragme.fragmentData,
