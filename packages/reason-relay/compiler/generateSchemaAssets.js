@@ -1,3 +1,7 @@
+let fs = require("fs");
+let path = require("path");
+let { printRE, parseRE } = require("reason");
+
 function generateSchemaAssets(schema, targetPath) {
   let enums = schema.data.__schema.types
     .filter(({ kind, name }) => kind === "ENUM" && !name.startsWith("_"))
