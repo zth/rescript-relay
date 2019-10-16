@@ -77,12 +77,15 @@ async function runCompiler() {
       }
     );
 
-    runRelayCompiler([
-      "--language",
-      path.resolve(
-        __dirname + "/../language-plugin/reason-relay-language-plugin.js"
-      )
-    ]);
+    runRelayCompiler(
+      [
+        "--language",
+        path.resolve(
+          __dirname + "/../language-plugin/reason-relay-language-plugin.js"
+        ),
+        args.find(a => a === "--watch")
+      ].filter(Boolean)
+    );
   } else {
     runRelayCompiler(["--help"]);
   }
