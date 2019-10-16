@@ -9,7 +9,11 @@ import { ScalarTypeMapping } from "relay-compiler/lib/language/javascript/RelayF
 import { maskDots } from "./generator/Utils.gen";
 
 function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
-  const newCustomScalars = { ...customScalars };
+  const newCustomScalars: ScalarTypeMapping = {
+    Int: "int",
+    Float: "float",
+    ...customScalars
+  };
   Object.keys(newCustomScalars).forEach(key => {
     newCustomScalars[key] = maskDots(newCustomScalars[key]);
   });
