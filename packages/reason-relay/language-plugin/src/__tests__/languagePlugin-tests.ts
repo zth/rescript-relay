@@ -1,15 +1,19 @@
-const { buildSchema } = require("graphql");
-const fs = require("fs");
-const path = require("path");
-const RelayReasonGenerator = require("../RelayReasonGenerator");
-const { printCode } = require("../generator/Printer.gen");
+import { buildSchema } from "graphql";
+import * as fs from "fs";
+import * as path from "path";
+import * as RelayReasonGenerator from "../RelayReasonGenerator";
+import { printCode } from "../generator/Printer.gen";
 
+// @ts-ignore
 const GraphQLCompilerContext = require("relay-compiler/lib/core/GraphQLCompilerContext");
-const RelayFlowGenerator = require("relay-compiler/lib/language/javascript/RelayFlowGenerator");
-const RelayIRTransforms = require("relay-compiler/lib/core/RelayIRTransforms");
+// @ts-ignore
+import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/RelayFlowGenerator";
+// @ts-ignore
+import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";
 
-const { transformASTSchema } = require("relay-compiler/lib/core/ASTConvert");
-const { parseGraphQLText } = require("relay-test-utils-internal");
+import { transformASTSchema } from "relay-compiler/lib/core/ASTConvert";
+// @ts-ignore
+import { parseGraphQLText } from "relay-test-utils-internal";
 
 const testSchema = buildSchema(
   fs.readFileSync(
@@ -18,11 +22,11 @@ const testSchema = buildSchema(
   )
 );
 
-function collapseString(str) {
+function collapseString(str: string) {
   return str.replace(/\r?\n|\r|\t/g, "").replace(/\s+/g, " ");
 }
 
-function generate(text, options, extraDefs = "") {
+function generate(text: string, options?: any, extraDefs: string = "") {
   const schema = transformASTSchema(testSchema, [
     ...RelayIRTransforms.schemaExtensions,
     extraDefs
@@ -33,7 +37,7 @@ function generate(text, options, extraDefs = "") {
     .applyTransforms(RelayFlowGenerator.transforms)
     .documents()
     .map(
-      doc =>
+      (doc: any) =>
         `// ${doc.name}.graphql\n${printCode(
           RelayReasonGenerator.generate(doc, {
             customScalars: {},
@@ -408,6 +412,22 @@ describe("Language plugin tests", () => {
       expect(
         generated.includes("type union_response_participantById_wrapped;")
       ).toBe(true);
+    });
+  });
+
+  describe("Misc", () => {
+    it("generates required top level fields as not nullable", () => {
+      let generated = generate(
+        `query SomeQuery {
+          users {
+            firstName
+          }
+        }`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response = {. "users": array({. "firstName": string})};`
+      );
     });
   });
 });

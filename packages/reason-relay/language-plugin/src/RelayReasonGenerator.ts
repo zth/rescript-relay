@@ -21,7 +21,7 @@ function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
   return newCustomScalars;
 }
 
-function generate(
+export function generate(
   node: Node | Fragment,
   options: TypeGeneratorOptions
 ): string {
@@ -36,7 +36,4 @@ function generate(
   });
 }
 
-module.exports = {
-  generate,
-  transforms: RelayFlowGenerator.transforms
-};
+export const transforms = RelayFlowGenerator.transforms;

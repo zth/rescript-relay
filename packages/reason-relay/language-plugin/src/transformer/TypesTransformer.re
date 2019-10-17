@@ -105,7 +105,7 @@ let rec mapObjProp =
       id: Unqualified((_, "$ReadOnlyArray")),
       targs: Some((_, [typ])),
     }) => {
-      nullable: true,
+      nullable: optional,
       propType:
         Array(typ |> mapObjProp(~controls, ~state, ~path, ~optional=false)),
     }
@@ -208,6 +208,7 @@ and makeObjShape =
   props
   |> List.iter((prop: Flow_ast.Type.Object.property('a, 'b)) =>
        switch (prop) {
+       // Map all $fragmentRefs. These are either a single type (+$fragmentRefs: SomeFragment_someType$ref), or an intersection of types (+$fragmentRefs: SomeFragment_someType$ref & SomeOtherFragment_someType$ref)
        | Property((
            _,
            {value: Init((_, typ)), key: Identifier((_, "$fragmentRefs"))},
@@ -232,6 +233,7 @@ and makeObjShape =
               );
          | _ => ()
          }
+       // Do not add any props that start with "$". These are usually internal Flow types that we don't need/use in Reason
        | Property((_, {key: Identifier((_, id))}))
            when Tablecloth.String.startsWith(~prefix="$", id) =>
          ()

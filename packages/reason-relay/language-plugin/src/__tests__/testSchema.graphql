@@ -16,6 +16,7 @@ type Query {
   user(id: ID!): User
   userByLocation(location: LocationBounds!): User
   participantById(id: ID!): Participant
+  users: [User!]!
 }
 
 type Mutation {

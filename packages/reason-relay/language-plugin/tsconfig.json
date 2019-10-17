@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "jsx": "preserve",
+    "outDir": "./lib/ts",
     "strict": true,
     "esModuleInterop": false
   }
