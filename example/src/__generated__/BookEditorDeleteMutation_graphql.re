@@ -1,13 +1,17 @@
-module Unions = {};
-type input_DeleteBookInput = {
-  .
-  "clientMutationId": option(string),
-  "id": string,
-};
-type variables = {. "input": input_DeleteBookInput};
 type response = {. "deleteBook": {. "deleted": bool}};
+type variables = {
+  .
+  "input": {
+    .
+    "id": string,
+    "clientMutationId": option(string),
+  },
+};
+type operationType = ReasonRelay.mutationNode;
 
-let node: ReasonRelay.mutationNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

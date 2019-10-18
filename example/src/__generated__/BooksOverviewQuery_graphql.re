@@ -1,16 +1,18 @@
-module Unions = {};
-type variables = unit;
 type response = {
   .
   "books":
     array({
       .
-      "id": string,
       "__$fragment_ref__BookDisplayer_book": BookDisplayer_book_graphql.t,
+      "id": string,
     }),
 };
+type variables = unit;
+type operationType = ReasonRelay.queryNode;
 
-let node: ReasonRelay.queryNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = {
   "kind": "ScalarField",

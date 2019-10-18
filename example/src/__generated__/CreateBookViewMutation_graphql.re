@@ -1,11 +1,3 @@
-module Unions = {};
-type input_AddBookInput = {
-  .
-  "clientMutationId": option(string),
-  "title": string,
-  "author": string,
-};
-type variables = {. "input": input_AddBookInput};
 type response = {
   .
   "addBook": {
@@ -13,14 +5,26 @@ type response = {
     "book":
       Js.Nullable.t({
         .
-        "title": string,
-        "author": string,
         "shelf": {. "name": string},
+        "author": string,
+        "title": string,
       }),
   },
 };
+type variables = {
+  .
+  "input": {
+    .
+    "author": string,
+    "title": string,
+    "clientMutationId": option(string),
+  },
+};
+type operationType = ReasonRelay.mutationNode;
 
-let node: ReasonRelay.mutationNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

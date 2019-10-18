@@ -1,13 +1,15 @@
-module Unions = {};
-type fragment = {. "name": string};
-
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__ShelfDisplayer_shelf": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-let node: ReasonRelay.fragmentNode = [%bs.raw
+type fragment = {. "name": string};
+type operationType = ReasonRelay.fragmentNode;
+
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
   "name": "ShelfDisplayer_shelf",

@@ -1,13 +1,3 @@
-module Unions = {};
-type input_UpdateBookInput = {
-  .
-  "clientMutationId": option(string),
-  "id": string,
-  "title": string,
-  "author": string,
-  "status": option(SchemaAssets.Enum_BookStatus.wrapped),
-};
-type variables = {. "input": input_UpdateBookInput};
 type response = {
   .
   "updateBook": {
@@ -15,14 +5,28 @@ type response = {
     "book":
       Js.Nullable.t({
         .
-        "title": string,
-        "author": string,
         "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+        "author": string,
+        "title": string,
       }),
   },
 };
+type variables = {
+  .
+  "input": {
+    .
+    "status": option(SchemaAssets.Enum_BookStatus.wrapped),
+    "author": string,
+    "title": string,
+    "id": string,
+    "clientMutationId": option(string),
+  },
+};
+type operationType = ReasonRelay.mutationNode;
 
-let node: ReasonRelay.mutationNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

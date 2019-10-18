@@ -1,23 +1,25 @@
-module Unions = {};
-type fragment = {
-  .
-  "title": string,
-  "author": string,
-  "shelf": {
-    .
-    "__$fragment_ref__ShelfDisplayer_shelf": ShelfDisplayer_shelf_graphql.t,
-  },
-  "id": Js.Nullable.t(string),
-  "__$fragment_ref__BookEditor_book": BookEditor_book_graphql.t,
-};
-
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__BookDisplayer_book": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-let node: ReasonRelay.fragmentNode = [%bs.raw
+type fragment = {
+  .
+  "__$fragment_ref__BookEditor_book": BookEditor_book_graphql.t,
+  "id": Js.Nullable.t(string),
+  "shelf": {
+    .
+    "__$fragment_ref__ShelfDisplayer_shelf": ShelfDisplayer_shelf_graphql.t,
+  },
+  "author": string,
+  "title": string,
+};
+type operationType = ReasonRelay.fragmentNode;
+
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
   "name": "BookDisplayer_book",
@@ -25,7 +27,7 @@ let node: ReasonRelay.fragmentNode = [%bs.raw
   "metadata": {
     "refetch": {
       "connection": null,
-      "operation": require('./BookDisplayerRefetchQuery_graphql.bs.js'),
+      "operation": require('./BookDisplayerRefetchQuery_graphql.bs.js').node,
       "fragmentPathInResult": [
         "node"
       ]

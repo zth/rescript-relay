@@ -1,18 +1,20 @@
-module Unions = {};
-type variables = unit;
 type response = {
   .
   "books":
     array({
       .
-      "id": string,
-      "title": string,
-      "author": string,
       "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+      "author": string,
+      "title": string,
+      "id": string,
     }),
 };
+type variables = unit;
+type operationType = ReasonRelay.queryNode;
 
-let node: ReasonRelay.queryNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

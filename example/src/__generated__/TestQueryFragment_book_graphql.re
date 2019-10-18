@@ -1,18 +1,20 @@
-module Unions = {};
-type fragment = {
-  .
-  "id": string,
-  "title": string,
-  "author": string,
-};
-
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TestQueryFragment_book": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-let node: ReasonRelay.fragmentNode = [%bs.raw
+type fragment = {
+  .
+  "author": string,
+  "title": string,
+  "id": string,
+};
+type operationType = ReasonRelay.fragmentNode;
+
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
   "name": "TestQueryFragment_book",

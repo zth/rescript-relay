@@ -1,16 +1,18 @@
-module Unions = {};
-type variables = {. "bookId": string};
 type response = {
   .
   "book":
     Js.Nullable.t({
       .
-      "__$fragment_ref__BookDisplayer_book": BookDisplayer_book_graphql.t,
       "__$fragment_ref__BookEditor_book": BookEditor_book_graphql.t,
+      "__$fragment_ref__BookDisplayer_book": BookDisplayer_book_graphql.t,
     }),
 };
+type variables = {. "bookId": string};
+type operationType = ReasonRelay.queryNode;
 
-let node: ReasonRelay.queryNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

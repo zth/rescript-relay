@@ -1,17 +1,19 @@
-module Unions = {};
-type fragment = {
-  .
-  "title": string,
-  "author": string,
-};
-
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__CreateBookViewExistingBookDisplayer_book": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-let node: ReasonRelay.fragmentNode = [%bs.raw
+type fragment = {
+  .
+  "author": string,
+  "title": string,
+};
+type operationType = ReasonRelay.fragmentNode;
+
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
   "name": "CreateBookViewExistingBookDisplayer_book",

@@ -1,16 +1,18 @@
-module Unions = {};
-type variables = unit;
 type response = {
   .
   "bookAdded": {
     .
-    "id": string,
-    "title": string,
     "author": string,
+    "title": string,
+    "id": string,
   },
 };
+type variables = unit;
+type operationType = ReasonRelay.subscriptionNode;
 
-let node: ReasonRelay.subscriptionNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

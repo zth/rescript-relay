@@ -67,7 +67,7 @@ let make = () => {
        fromShelf
        |> Array.mapi((index, item) =>
             <div key={string_of_int(index)}>
-              {switch (item |> Query.Union_fromShelf.unwrap) {
+              {switch (item |> Query.Union_response_fromShelf.unwrap) {
                | `Book(book) =>
                  <p>
                    <strong> {React.string("Book: " ++ book##title)} </strong>
@@ -77,16 +77,7 @@ let make = () => {
                    <strong>
                      {React.string(
                         "Collection size: "
-                        ++ string_of_int(
-                             Array.length(
-                               switch (
-                                 bookCollection##books |> Js.Nullable.toOption
-                               ) {
-                               | Some(books) => books
-                               | None => [||]
-                               },
-                             ),
-                           ),
+                        ++ string_of_int(Array.length(bookCollection##books)),
                       )}
                    </strong>
                  </p>

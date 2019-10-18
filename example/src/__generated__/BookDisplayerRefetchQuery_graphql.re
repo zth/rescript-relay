@@ -1,5 +1,3 @@
-module Unions = {};
-type variables = {. "id": string};
 type response = {
   .
   "node":
@@ -8,8 +6,12 @@ type response = {
       "__$fragment_ref__BookDisplayer_book": BookDisplayer_book_graphql.t,
     }),
 };
+type variables = {. "id": string};
+type operationType = ReasonRelay.queryNode;
 
-let node: ReasonRelay.queryNode = [%bs.raw
+module Unions = {};
+
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {

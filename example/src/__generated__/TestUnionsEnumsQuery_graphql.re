@@ -1,8 +1,49 @@
-module Unions = {
-  module Union_fromShelf = {
-    type wrapped;
+type union_response_fromShelf_wrapped;
+type response = {
+  .
+  "fromShelf": Js.Nullable.t(array(union_response_fromShelf_wrapped)),
+  "books":
+    array({
+      .
+      "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+      "title": string,
+      "id": string,
+    }),
+};
+type variables = {
+  .
+  "shelfId": string,
+  "bookStatus": SchemaAssets.Enum_BookStatus.wrapped,
+};
+type operationType = ReasonRelay.queryNode;
 
-    external __unwrap_union: wrapped => {. "__typename": string} =
+module Unions = {
+  module Union_response_fromShelf: {
+    type type_Book = {
+      .
+      "id": string,
+      "title": string,
+      "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+    };
+    type type_BookCollection = {
+      .
+      "id": string,
+      "books":
+        array({
+          .
+          "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+          "title": string,
+        }),
+    };
+    type t = [
+      | `Book(type_Book)
+      | `BookCollection(type_BookCollection)
+      | `UnmappedUnionMember
+    ];
+    let unwrap: union_response_fromShelf_wrapped => t;
+  } = {
+    external __unwrap_union:
+      union_response_fromShelf_wrapped => {. "__typename": string} =
       "%identity";
     type type_Book = {
       .
@@ -14,24 +55,22 @@ module Unions = {
       .
       "id": string,
       "books":
-        Js.Nullable.t(
-          array({
-            .
-            "title": string,
-            "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
-          }),
-        ),
+        array({
+          .
+          "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
+          "title": string,
+        }),
     };
-    external __unwrap_Book: wrapped => type_Book = "%identity";
-    external __unwrap_BookCollection: wrapped => type_BookCollection =
-      "%identity";
-
     type t = [
       | `Book(type_Book)
       | `BookCollection(type_BookCollection)
       | `UnmappedUnionMember
     ];
-
+    external __unwrap_Book: union_response_fromShelf_wrapped => type_Book =
+      "%identity";
+    external __unwrap_BookCollection:
+      union_response_fromShelf_wrapped => type_BookCollection =
+      "%identity";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
@@ -43,25 +82,8 @@ module Unions = {
     };
   };
 };
-open Unions;
-type variables = {
-  .
-  "bookStatus": SchemaAssets.Enum_BookStatus.wrapped,
-  "shelfId": string,
-};
-type response = {
-  .
-  "books":
-    array({
-      .
-      "id": string,
-      "title": string,
-      "status": Js.Nullable.t(SchemaAssets.Enum_BookStatus.wrapped),
-    }),
-  "fromShelf": Js.Nullable.t(array(Union_fromShelf.wrapped)),
-};
 
-let node: ReasonRelay.queryNode = [%bs.raw
+let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
   {
