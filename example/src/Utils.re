@@ -1,1 +1,0 @@
-let toOpt = Js.Nullable.toOption;
