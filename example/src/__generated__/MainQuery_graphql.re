@@ -191,24 +191,44 @@ return {
                     "name": "assignee",
                     "storageKey": null,
                     "args": null,
-                    "concreteType": "User",
+                    "concreteType": null,
                     "plural": false,
                     "selections": [
+                      (v4/*: any*/),
+                      (v0/*: any*/),
                       {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "avatarUrl",
-                        "args": null,
-                        "storageKey": null
+                        "kind": "InlineFragment",
+                        "type": "User",
+                        "selections": [
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "avatarUrl",
+                            "args": null,
+                            "storageKey": null
+                          },
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "fullName",
+                            "args": null,
+                            "storageKey": null
+                          }
+                        ]
                       },
                       {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "fullName",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      (v0/*: any*/)
+                        "kind": "InlineFragment",
+                        "type": "WorkingGroup",
+                        "selections": [
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "name",
+                            "args": null,
+                            "storageKey": null
+                          }
+                        ]
+                      }
                     ]
                   },
                   {
@@ -259,8 +279,8 @@ return {
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "todos",
-        "storageKey": "todos(after:\"\",first:10)",
+        "name": "todosConnection",
+        "storageKey": "todosConnection(after:\"\",first:10)",
         "args": (v6/*: any*/),
         "concreteType": "TodoItemConnection",
         "plural": false,
@@ -310,10 +330,10 @@ return {
       {
         "kind": "LinkedHandle",
         "alias": null,
-        "name": "todos",
+        "name": "todosConnection",
         "args": (v6/*: any*/),
         "handle": "connection",
-        "key": "TodoList_query_todos",
+        "key": "TodoList_query_todosConnection",
         "filters": null
       }
     ]
@@ -322,7 +342,7 @@ return {
     "operationKind": "query",
     "name": "MainQuery",
     "id": null,
-    "text": "query MainQuery {\n  siteStatistics {\n    ...TopCardsDisplayer_siteStatistics\n    id\n  }\n  ...RecentTickets_query\n  ...TodoList_query\n}\n\nfragment TopCardsDisplayer_siteStatistics on SiteStatistics {\n  weeklySales\n  weeklyOrders\n  currentVisitorsOnline\n}\n\nfragment RecentTickets_query on Query {\n  tickets(first: 2, after: \"\") {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment TodoList_query on Query {\n  todos(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTodo_todoItem\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTodo_todoItem on TodoItem {\n  id\n  text\n  completed\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    ...Avatar_user\n    id\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
+    "text": "query MainQuery {\n  siteStatistics {\n    ...TopCardsDisplayer_siteStatistics\n    id\n  }\n  ...RecentTickets_query\n  ...TodoList_query\n}\n\nfragment TopCardsDisplayer_siteStatistics on SiteStatistics {\n  weeklySales\n  weeklyOrders\n  currentVisitorsOnline\n}\n\nfragment RecentTickets_query on Query {\n  tickets(first: 2, after: \"\") {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment TodoList_query on Query {\n  todosConnection(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTodo_todoItem\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTodo_todoItem on TodoItem {\n  id\n  text\n  completed\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      name\n    }\n    ... on Node {\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
     "metadata": {}
   }
 };

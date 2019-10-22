@@ -45,6 +45,13 @@ v2 = {
   "name": "id",
   "args": null,
   "storageKey": null
+},
+v3 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "__typename",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
@@ -126,24 +133,44 @@ return {
                     "name": "assignee",
                     "storageKey": null,
                     "args": null,
-                    "concreteType": "User",
+                    "concreteType": null,
                     "plural": false,
                     "selections": [
+                      (v3/*: any*/),
+                      (v2/*: any*/),
                       {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "avatarUrl",
-                        "args": null,
-                        "storageKey": null
+                        "kind": "InlineFragment",
+                        "type": "User",
+                        "selections": [
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "avatarUrl",
+                            "args": null,
+                            "storageKey": null
+                          },
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "fullName",
+                            "args": null,
+                            "storageKey": null
+                          }
+                        ]
                       },
                       {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "fullName",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      (v2/*: any*/)
+                        "kind": "InlineFragment",
+                        "type": "WorkingGroup",
+                        "selections": [
+                          {
+                            "kind": "ScalarField",
+                            "alias": null,
+                            "name": "name",
+                            "args": null,
+                            "storageKey": null
+                          }
+                        ]
+                      }
                     ]
                   },
                   {
@@ -174,13 +201,7 @@ return {
                     "args": null,
                     "storageKey": null
                   },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "__typename",
-                    "args": null,
-                    "storageKey": null
-                  }
+                  (v3/*: any*/)
                 ]
               },
               {
@@ -209,7 +230,7 @@ return {
     "operationKind": "query",
     "name": "RecentTicketsRefetchQuery",
     "id": null,
-    "text": "query RecentTicketsRefetchQuery(\n  $first: Int! = 2\n  $after: String! = \"\"\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  tickets(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    ...Avatar_user\n    id\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
+    "text": "query RecentTicketsRefetchQuery(\n  $first: Int! = 2\n  $after: String! = \"\"\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  tickets(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      name\n    }\n    ... on Node {\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
     "metadata": {
       "derivedFrom": "RecentTickets_query",
       "isRefetchableQuery": true

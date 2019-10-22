@@ -6,7 +6,7 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 type fragment = {
   .
-  "todos": {
+  "todosConnection": {
     .
     "edges":
       Js.Nullable.t(
@@ -40,7 +40,7 @@ let node: operationType = [%bs.raw
         "cursor": "after",
         "direction": "forward",
         "path": [
-          "todos"
+          "todosConnection"
         ]
       }
     ]
@@ -62,8 +62,8 @@ let node: operationType = [%bs.raw
   "selections": [
     {
       "kind": "LinkedField",
-      "alias": "todos",
-      "name": "__TodoList_query_todos_connection",
+      "alias": "todosConnection",
+      "name": "__TodoList_query_todosConnection_connection",
       "storageKey": null,
       "args": null,
       "concreteType": "TodoItemConnection",

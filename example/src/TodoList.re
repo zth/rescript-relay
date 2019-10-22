@@ -6,8 +6,8 @@ module TodoListFragment = [%relay.fragment
       after: {type: "String!", defaultValue: ""}
     )
   {
-    todos(first: $first, after: $after)
-      @connection(key: "TodoList_query_todos")
+    todosConnection(first: $first, after: $after)
+      @connection(key: "TodoList_query_todosConnection")
     {
       edges {
         node {
@@ -74,7 +74,7 @@ let make = (~query as queryRef) => {
                       ~connections=[
                         {
                           parentID: ReasonRelay.storeRootId,
-                          key: "TodoList_query_todos",
+                          key: "TodoList_query_todosConnection",
                         },
                       ],
                       ~edgeName="TodoItemEdge",
@@ -119,7 +119,7 @@ let make = (~query as queryRef) => {
       </form>
       <div className="list-wrapper">
         <ul className="d-flex flex-column-reverse todo-list todo-list-custom">
-          {todoListData##todos
+          {todoListData##todosConnection
            |> ReasonRelayUtils.collectConnectionNodes
            |> Array.map(todoItem =>
                 <SingleTodo key=todoItem##id todoItem checked=true />

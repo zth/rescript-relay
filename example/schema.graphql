@@ -8,6 +8,15 @@ type AddTodoItemPayload {
   clientMutationId: String
 }
 
+union AssigneeType = User | WorkingGroup
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the
+`date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO
+8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
 input DeleteTodoItemInput {
   id: ID!
   clientMutationId: String
@@ -53,7 +62,8 @@ type Query {
   ): Node
   siteStatistics: SiteStatistics!
   tickets(status: TicketStatus, after: String, first: Int, before: String, last: Int): TicketConnection!
-  todos(after: String, first: Int, before: String, last: Int): TodoItemConnection!
+  todosConnection(after: String, first: Int, before: String, last: Int): TodoItemConnection!
+  todos(limit: Int!, offset: Int!): [TodoItem]!
 }
 
 type SiteStatistics implements Node {
@@ -64,13 +74,18 @@ type SiteStatistics implements Node {
   currentVisitorsOnline: Int!
 }
 
+type Subscription {
+  siteStatisticsUpdated: SiteStatistics
+}
+
 type Ticket implements Node {
   """The ID of an object"""
   id: ID!
-  assignee: User
+  dbId: ID!
+  assignee: AssigneeType
   status: TicketStatus!
   subject: String!
-  lastUpdated: String!
+  lastUpdated: DateTime
   trackingId: String!
 }
 
@@ -102,6 +117,7 @@ enum TicketStatus {
 type TodoItem implements Node {
   """The ID of an object"""
   id: ID!
+  dbId: ID!
   completed: Boolean
   text: String!
 }
@@ -139,7 +155,35 @@ type UpdateTodoItemPayload {
 type User implements Node {
   """The ID of an object"""
   id: ID!
+  dbId: ID!
   avatarUrl: String
   fullName: String!
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge"""
+  node: User
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type WorkingGroup implements Node {
+  """The ID of an object"""
+  id: ID!
+  dbId: ID!
+  name: String!
+  membersConnection: UserConnection
+  members(limit: Int!, offset: Int!): [User]
 }
 
