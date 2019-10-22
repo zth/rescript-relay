@@ -24,6 +24,13 @@ let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
 
 /**
+ * Constants
+ */
+
+let storeRootId: dataId;
+let storeRootType: string;
+
+/**
  * Experimental stuff
  */
 

@@ -45,6 +45,9 @@ external unstable_withSuspenseConfig:
   unit =
   "unstable_withSuspenseConfig";
 
+[@bs.module "relay-runtime"] external storeRootId: dataId = "ROOT_ID";
+[@bs.module "relay-runtime"] external storeRootType: string = "ROOT_TYPE";
+
 module RecordProxy = {
   type t;
   type arguments('a) = jsObj('a);
