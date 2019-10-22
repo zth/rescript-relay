@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "mkdirp-sync": "^0.0.3",
-    "reason": "^3.3.4"
+    "reason": "^3.3.4",
+    "relay-utils": "^0.1.0"
   }
 }
