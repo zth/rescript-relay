@@ -1,6 +1,6 @@
 {
   "name": "reason-relay",
-  "version": "0.2.1-relay-experimental",
+  "version": "0.2.2-relay-experimental",
   "main": "src/ReasonRelay.re",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
