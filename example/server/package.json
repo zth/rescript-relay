@@ -1,0 +1,18 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "yarn tsc",
+    "start": "yarn build && node dist/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.6",
+    "graphql": "^14.5.8",
+    "graphql-relay": "^0.6.0",
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/graphql-relay": "^0.4.11",
+    "@types/node": "^12.11.1"
+  }
+}
