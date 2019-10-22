@@ -1,3 +1,5 @@
+open ReasonRelay;
+
 let collectConnectionNodes = obj =>
   switch (obj##edges |> Js.Nullable.toOption) {
   | Some(edges) =>
@@ -14,39 +16,99 @@ let collectConnectionNodes = obj =>
   | None => [||]
   };
 
-let collectConnectionNodesFromNullable = maybeObj =>
-  switch (maybeObj |> Js.Nullable.toOption) {
-  | Some(obj) => collectConnectionNodes(obj)
-  | None => [||]
-  };
-
-let collectNodes = nodes =>
-  nodes->Belt.Array.keepMap(node => node |> Js.Nullable.toOption);
-
-let collectNodesFromNullable = maybeNodes =>
-  switch (maybeNodes |> Js.Nullable.toOption) {
-  | Some(nodes) => collectNodes(nodes)
-  | None => [||]
-  };
+/**
+   * resolveNestedRecords
+   */
+[@bs.module "relay-utils"]
+external _resolveNestedRecord:
+  (option(RecordProxy.t), array(string)) => Js.Nullable.t(RecordProxy.t) =
+  "resolveNestedRecord";
 
 let resolveNestedRecord = (~rootRecord, ~path) =>
-  switch (rootRecord) {
-  | Some(rootRecord) =>
-    let currentRecord = ref(Some(rootRecord));
+  _resolveNestedRecord(rootRecord, path->Belt.List.toArray)
+  |> Js.Nullable.toOption;
 
-    path
-    |> List.iter(name =>
-         switch (currentRecord^) {
-         | Some(foundRecord) =>
-           currentRecord :=
-             foundRecord->ReasonRelay.RecordProxy.getLinkedRecord(
-               ~name,
-               ~arguments=None,
-             )
+/**
+ * Handling nodes in connections
+ */
+
+type insertAt =
+  | Start
+  | End;
+
+type connectionConfig = {
+  parentID: dataId,
+  key: string,
+};
+
+let removeNodeFromConnections = (~store, ~node, ~connections) =>
+  connections
+  |> List.iter(connectionConfig =>
+       switch (
+         store->RecordSourceSelectorProxy.get(
+           ~dataId=connectionConfig.parentID,
+         )
+       ) {
+       | Some(owner) =>
+         switch (
+           ConnectionHandler.getConnection(
+             ~record=owner,
+             ~key=connectionConfig.key,
+             ~filters=None,
+           )
+         ) {
+         | Some(connection) =>
+           ConnectionHandler.deleteNode(
+             ~connection,
+             ~nodeId=node->RecordProxy.getDataId,
+           )
          | None => ()
          }
-       );
+       | None => ()
+       }
+     );
 
-    currentRecord^;
-  | None => None
-  };
+let createAndAddEdgeToConnections =
+    (~store, ~node, ~connections, ~edgeName, ~insertAt) =>
+  connections
+  |> List.iter(connectionConfig =>
+       switch (
+         store->RecordSourceSelectorProxy.get(
+           ~dataId=connectionConfig.parentID,
+         )
+       ) {
+       | Some(connectionOwner) =>
+         switch (
+           ConnectionHandler.getConnection(
+             ~record=connectionOwner,
+             ~key=connectionConfig.key,
+             ~filters=None,
+           )
+         ) {
+         | Some(connection) =>
+           let edge =
+             ConnectionHandler.createEdge(
+               ~store,
+               ~connection,
+               ~node,
+               ~edgeType=edgeName,
+             );
+           switch (insertAt) {
+           | Start =>
+             ConnectionHandler.insertEdgeAfter(
+               ~connection,
+               ~newEdge=edge,
+               ~cursor=None,
+             )
+           | End =>
+             ConnectionHandler.insertEdgeBefore(
+               ~connection,
+               ~newEdge=edge,
+               ~cursor=None,
+             )
+           };
+         | None => ()
+         }
+       | None => ()
+       }
+     );
