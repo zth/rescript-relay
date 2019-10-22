@@ -233,8 +233,7 @@ module ConnectionHandler = {
 
   [@bs.send]
   external _getConnection:
-    (t, RecordProxy.t, string, option(filters('a))) =>
-    Js.Nullable.t(RecordProxy.t) =
+    (t, RecordProxy.t, string, option({..})) => Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
   let getConnection = (~record, ~key, ~filters) =>
@@ -243,7 +242,7 @@ module ConnectionHandler = {
 
   [@bs.send]
   external _createEdge:
-    (t, RecordSourceProxy.t, RecordProxy.t, RecordProxy.t, string) =>
+    (t, RecordSourceSelectorProxy.t, RecordProxy.t, RecordProxy.t, string) =>
     RecordProxy.t =
     "createEdge";
 

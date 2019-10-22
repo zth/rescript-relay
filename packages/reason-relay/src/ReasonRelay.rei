@@ -202,12 +202,12 @@ module ConnectionHandler: {
   type filters('a) = jsObj('a) constraint 'a = {..};
 
   let getConnection:
-    (~record: RecordProxy.t, ~key: string, ~filters: option(filters({..}))) =>
+    (~record: RecordProxy.t, ~key: string, ~filters: option({..})) =>
     option(RecordProxy.t);
 
   let createEdge:
     (
-      ~store: RecordSourceProxy.t,
+      ~store: RecordSourceSelectorProxy.t,
       ~connection: RecordProxy.t,
       ~node: RecordProxy.t,
       ~edgeType: string
