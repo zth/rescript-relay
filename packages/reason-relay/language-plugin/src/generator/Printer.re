@@ -92,12 +92,76 @@ and printObject = (~obj, ~optType: objectOptionalType) => {
 and printArray = (~propValue, ~optType) =>
   "array(" ++ printPropValue(~propValue, ~optType) ++ ")";
 
+let printRefetchVariablesMaker = (obj: object_) => {
+  let str = ref("");
+  let addToStr = s => str := str^ ++ s;
+
+  addToStr("type refetchVariables = ");
+  addToStr(
+    printObject(
+      ~obj={
+        values:
+          obj.values
+          |> Array.map(value =>
+               switch (value) {
+               | Prop(name, {nullable: false} as propValue) =>
+                 Prop(name, {...propValue, nullable: true})
+               | a => a
+               }
+             ),
+      },
+      ~optType=Option,
+    ),
+  );
+  addToStr(";");
+
+  addToStr("let makeRefetchVariables = (");
+
+  obj.values
+  |> Array.iteri((index, p) => {
+       if (index > 0) {
+         addToStr(",");
+       };
+
+       addToStr(
+         switch (p) {
+         | Prop(name, _) => "~" ++ name ++ "=?"
+         | FragmentRef(_) => ""
+         },
+       );
+     });
+
+  addToStr(", ()): refetchVariables => {");
+
+  obj.values
+  |> Array.iteri((index, p) => {
+       if (index > 0) {
+         addToStr(",");
+       };
+
+       addToStr(
+         switch (p) {
+         | Prop(name, _) => "\"" ++ name ++ "\": " ++ name
+         | FragmentRef(_) => ""
+         },
+       );
+     });
+
+  addToStr("}");
+  str^;
+};
+
 let printRootType = rootType =>
   switch (rootType) {
   | Operation(obj) =>
     "type response = " ++ printObject(~obj, ~optType=JsNullable) ++ ";"
   | Variables(obj) =>
     "type variables = " ++ printObject(~obj, ~optType=Option) ++ ";"
+  | RefetchVariables(obj) =>
+    switch (obj.values |> Array.length) {
+    | 0 => ""
+    | _ => printRefetchVariablesMaker(obj) ++ ";"
+    }
   | InputObject(name, obj) =>
     "type " ++ name ++ " = " ++ printObject(~obj, ~optType=Option) ++ ";"
   | Fragment(obj) =>

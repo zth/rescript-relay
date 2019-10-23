@@ -31,6 +31,12 @@ let storeRootId: dataId;
 let storeRootType: string;
 
 /**
+ * Helpers
+ */
+
+let cleanObjectFromUndefined: jsObj('a) => jsObj('a);
+
+/**
  * Experimental stuff
  */
 

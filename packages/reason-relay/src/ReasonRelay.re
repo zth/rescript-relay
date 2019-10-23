@@ -16,6 +16,27 @@ let dataIdToString = dataId => _dataIdToString(dataId);
 external _makeDataId: string => dataId = "%identity";
 let makeDataId = string => _makeDataId(string);
 
+/**
+ * Various helpers.
+ */
+
+// We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
+let cleanObjectFromUndefined = [%bs.raw
+  {|
+  function cleanObj(obj) {
+    var newObj = {};
+
+    Object.keys(obj).forEach(function(key) {
+      if (typeof obj[key] !== 'undefined') {
+        newObj[key] = obj[key];
+      }
+    });
+
+    return newObj;
+  }
+|}
+];
+
 module ReactSuspenseConfig = {
   type t = {
     .
@@ -443,7 +464,7 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
       fragmentData,
       (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         refetchFn(
-          variables,
+          variables |> cleanObjectFromUndefined,
           makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
         ),
     );

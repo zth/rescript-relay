@@ -60,6 +60,18 @@ type response = {
       \\"id\\": string,
     }),
 };
+type refetchVariables = {
+  .
+  \\"location\\":
+    option({
+      .
+      \\"lng\\": float,
+      \\"lat\\": float,
+    }),
+};
+let makeRefetchVariables = (~location=?, ()): refetchVariables => {
+  \\"location\\": location,
+};
 type variables = {
   .
   \\"location\\": {
@@ -84,6 +96,10 @@ type response = {
       \\"firstName\\": string,
       \\"id\\": string,
     }),
+};
+type refetchVariables = {. \\"userId\\": option(string)};
+let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
+  \\"userId\\": userId,
 };
 type variables = {. \\"userId\\": string};
 type operationType = ReasonRelay.queryNode;

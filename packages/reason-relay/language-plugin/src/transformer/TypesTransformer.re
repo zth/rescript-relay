@@ -522,6 +522,24 @@ let printFromFlowTypes = (~content, ~operationType) => {
   | None => ()
   };
 
+  // Adds refetchVariables only to query output
+  switch (state^.variables, operationType) {
+  | (Some(variables), Query(_)) =>
+    addDefinition(
+      Types.(
+        RefetchVariables(
+          variables
+          |> makeObjShape(
+               ~controls,
+               ~state=state^,
+               ~path=["refetchVariables"],
+             ),
+        )
+      ),
+    )
+  | _ => ()
+  };
+
   switch (state^.response) {
   | Some(response) =>
     addDefinition(

@@ -288,7 +288,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             ReasonRelay.MakeUseRefetchableFragment({
               type fragment = Operation.fragment;
               type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.variables;
+              type variables = RefetchableOperation.refetchVariables;
               let fragmentSpec = Operation.node;
             })
         ]
@@ -302,7 +302,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             ReasonRelay.MakeUsePaginationFragment({
               type fragment = Operation.fragment;
               type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.variables;
+              type variables = RefetchableOperation.refetchVariables;
               let fragmentSpec = Operation.node;
             })
         ]
@@ -345,6 +345,15 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         %stri
         ()
       },
+      switch (refetchableQueryName, hasConnection) {
+      | (_, true)
+      | (Some(_), _) => [%stri
+          let makeRefetchVariables = RefetchableOperation.makeRefetchVariables
+        ]
+      | _ =>
+        %stri
+        ()
+      }
     ]),
   );
 

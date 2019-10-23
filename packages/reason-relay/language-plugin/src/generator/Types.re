@@ -8,7 +8,7 @@ type operationType =
   | Mutation(string)
   | Subscription(string)
   | Query(string);
-  
+
 type unionMember = {
   name: string,
   shape: object_,
@@ -45,6 +45,7 @@ and rootType =
   | Operation(object_)
   | Fragment(object_)
   | Variables(object_)
+  | RefetchVariables(object_)
   | InputObject(string, object_)
   | PluralFragment(object_);
 
