@@ -347,7 +347,7 @@ let mapFetchPolicy = fetchPolicy =>
   | None => None
   };
 
-[@bs.module "./vendor/relay-experimental"]
+[@bs.module "react-relay/hooks"]
 external _useQuery:
   (
     queryNode,
@@ -360,7 +360,7 @@ external _useQuery:
     }
   ) =>
   'queryResponse =
-  "useQuery";
+  "useLazyLoadQuery";
 
 module type MakeUseQueryConfig = {
   type response;
@@ -396,7 +396,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
 /**
  * FRAGMENT
  */
-[@bs.module "./vendor/relay-experimental"]
+[@bs.module "react-relay/hooks"]
 external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
@@ -444,7 +444,7 @@ let makeRefetchableFnOpts = (~fetchPolicy, ~onComplete) => {
     ),
 };
 
-[@bs.module "./vendor/relay-experimental"]
+[@bs.module "react-relay/hooks"]
 external _useRefetchableFragment:
   (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
   "useRefetchableFragment";
@@ -503,7 +503,7 @@ type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
   refetch: refetchFn('variables),
 };
 
-[@bs.module "./vendor/relay-experimental"]
+[@bs.module "react-relay/hooks"]
 external _useLegacyPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
@@ -519,7 +519,7 @@ external _useLegacyPaginationFragment:
   } =
   "useLegacyPaginationFragment";
 
-[@bs.module "./vendor/relay-experimental"]
+[@bs.module "react-relay/hooks"]
 external _useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
