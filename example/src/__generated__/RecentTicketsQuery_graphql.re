@@ -2,15 +2,6 @@ type response = {
   .
   "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
 };
-type refetchVariables = {
-  .
-  "after": option(string),
-  "first": option(int),
-};
-let makeRefetchVariables = (~after=?, ~first=?, ()): refetchVariables => {
-  "after": after,
-  "first": first,
-};
 type variables = {
   .
   "after": string,
@@ -66,7 +57,7 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "RecentTicketsRefetchQuery",
+    "name": "RecentTicketsQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
@@ -80,7 +71,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "RecentTicketsRefetchQuery",
+    "name": "RecentTicketsQuery",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
@@ -237,9 +228,9 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "RecentTicketsRefetchQuery",
+    "name": "RecentTicketsQuery",
     "id": null,
-    "text": "query RecentTicketsRefetchQuery(\n  $first: Int! = 2\n  $after: String! = \"\"\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  tickets(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
+    "text": "query RecentTicketsQuery(\n  $first: Int! = 2\n  $after: String! = \"\"\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  tickets(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      name\n    }\n    ... on Node {\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n",
     "metadata": {
       "derivedFrom": "RecentTickets_query",
       "isRefetchableQuery": true

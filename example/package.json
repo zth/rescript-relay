@@ -14,7 +14,7 @@
     "graphql": "^14.5.8",
     "react-relay": "^6.0.0",
     "reason-react": "^0.7.0",
-    "reason-relay": "0.2.2-relay-experimental",
+    "reason-relay": "0.2.3-relay-experimental",
     "relay-compiler": "^6.0.0",
     "relay-config": "^6.0.0",
     "relay-hooks": "^1.3.0",

@@ -9,7 +9,7 @@ module TicketFragment = [%relay.fragment
       }
 
       ... on WorkingGroup {
-        name
+        ...SingleTicketWorkingGroup_workingGroup
       }
     }
     id
@@ -31,11 +31,10 @@ let make = (~ticket as ticketRef) => {
        | Some(assignee) =>
          switch (assignee |> TicketFragment.Union_response_assignee.unwrap) {
          | `User(user) => <Avatar user />
-         | `WorkingGroup(wg) =>
-           <>
-             <div> <strong> {React.string("Group: ")} </strong> </div>
-             {React.string(wg##name)}
-           </>
+         | `WorkingGroup(workingGroup) =>
+           <React.Suspense fallback={<Loading />}>
+             <SingleTicketWorkingGroup workingGroup />
+           </React.Suspense>
          | `UnmappedUnionMember => <span> {React.string("-")} </span>
          }
        | None => <em> {React.string("Unassigned")} </em>

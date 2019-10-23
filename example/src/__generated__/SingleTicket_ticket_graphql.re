@@ -21,7 +21,10 @@ module Unions = {
       .
       "__$fragment_ref__Avatar_user": Avatar_user_graphql.t,
     };
-    type type_WorkingGroup = {. "name": string};
+    type type_WorkingGroup = {
+      .
+      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+    };
     type t = [
       | `User(type_User)
       | `WorkingGroup(type_WorkingGroup)
@@ -36,7 +39,10 @@ module Unions = {
       .
       "__$fragment_ref__Avatar_user": Avatar_user_graphql.t,
     };
-    type type_WorkingGroup = {. "name": string};
+    type type_WorkingGroup = {
+      .
+      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+    };
     type t = [
       | `User(type_User)
       | `WorkingGroup(type_WorkingGroup)
@@ -98,11 +104,9 @@ let node: operationType = [%bs.raw
           "type": "WorkingGroup",
           "selections": [
             {
-              "kind": "ScalarField",
-              "alias": null,
-              "name": "name",
-              "args": null,
-              "storageKey": null
+              "kind": "FragmentSpread",
+              "name": "SingleTicketWorkingGroup_workingGroup",
+              "args": null
             }
           ]
         }
