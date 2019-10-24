@@ -320,8 +320,8 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       ],
       hasConnection
         ? [%stri
-          let useLegacyPagination = fRef =>
-            UsePaginationFragment.useLegacyPagination(
+          let usePagination = fRef =>
+            UsePaginationFragment.usePagination(
               fRef |> Operation.getFragmentRef,
             )
         ]
@@ -374,15 +374,9 @@ let makeQuery = (~loc, ~moduleName) =>
           })
       ],
       [%stri let use = UseQuery.use],
-      [%stri
-        let fetch =
-            (
-              ~environment: ReasonRelay.Environment.t,
-              ~variables: Operation.variables,
-            )
-            : Js.Promise.t(Operation.response) =>
-          ReasonRelay.fetchQuery(environment, Operation.node, variables)
-      ],
+      [%stri let fetch = UseQuery.fetch],
+      [%stri let preload = UseQuery.preload],
+      [%stri let usePreloaded = UseQuery.usePreloaded],
     ]),
   );
 

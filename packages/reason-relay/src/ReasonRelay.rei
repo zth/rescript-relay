@@ -240,13 +240,8 @@ module ConnectionHandler: {
 };
 
 /**
- * QUERY
+ * NETWORK
  */
-
-module Disposable: {
-  type t;
-  let dispose: t => unit;
-};
 
 module CacheConfig: {
   type t;
@@ -268,161 +263,6 @@ module CacheConfig: {
 
   let getConfig: t => config;
 };
-
-type fetchPolicy =
-  | StoreOnly
-  | StoreOrNetwork
-  | StoreAndNetwork
-  | NetworkOnly;
-
-module type MakeUseQueryConfig = {
-  type response;
-  type variables;
-  let query: queryNode;
-};
-
-module MakeUseQuery:
-  (C: MakeUseQueryConfig) =>
-   {
-    type response = C.response;
-    type variables = C.variables;
-    let use:
-      (
-        ~variables: variables,
-        ~fetchPolicy: fetchPolicy=?,
-        ~fetchKey: string=?,
-        ~networkCacheConfig: CacheConfig.t=?,
-        unit
-      ) =>
-      response;
-  };
-
-/**
- * FRAGMENT
- */
-
-module type MakeUseFragmentConfig = {
-  type fragment;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-};
-
-module MakeUseFragment:
-  (C: MakeUseFragmentConfig) => {let use: C.fragmentRef => C.fragment;};
-
-/** Refetchable */
-type refetchFn('variables) =
-  (
-    ~variables: 'variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option(Js.Exn.t) => unit=?,
-    unit
-  ) =>
-  unit;
-
-module type MakeUseRefetchableFragmentConfig = {
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-};
-
-module MakeUseRefetchableFragment:
-  (C: MakeUseRefetchableFragmentConfig) =>
-   {
-    let useRefetchable:
-      C.fragmentRef => (C.fragment, refetchFn(C.variables));
-  };
-
-/** Pagination */
-module type MakeUsePaginationFragmentConfig = {
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-};
-
-type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
-  Disposable.t;
-
-type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch: refetchFn('variables),
-};
-
-type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  isLoadingNext: bool,
-  isLoadingPrevious: bool,
-  refetch: refetchFn('variables),
-};
-
-module MakeUsePaginationFragment:
-  (C: MakeUsePaginationFragmentConfig) =>
-   {
-    let useBlockingPagination:
-      C.fragmentRef =>
-      paginationBlockingFragmentReturn(C.fragment, C.variables);
-
-    let useLegacyPagination:
-      C.fragmentRef => paginationLegacyFragmentReturn(C.fragment, C.variables);
-  };
-
-/**
- * MUTATION
- */
-
-module type MutationConfig = {
-  type variables;
-  type response;
-  let node: mutationNode;
-};
-
-type updaterFn = RecordSourceSelectorProxy.t => unit;
-
-type mutationError = {. "message": string};
-
-type mutationState('response) =
-  | Loading
-  | Error(mutationError)
-  | Success(option('response));
-
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
-
-type useMutationConfigType('variables) = {variables: 'variables};
-
-module MakeUseMutation:
-  (C: MutationConfig) =>
-   {
-    let use:
-      unit =>
-      (
-        (
-          ~variables: C.variables,
-          ~optimisticResponse: C.response=?,
-          ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
-          ~updater: updaterFn=?,
-          unit
-        ) =>
-        Js.Promise.t(mutationResult(C.response)),
-        mutationState(C.response),
-      );
-  };
-
-/**
- * NETWORK
- */
 
 module Observable: {
   type t;
@@ -507,6 +347,191 @@ module Environment: {
     ) =>
     t;
 };
+
+/**
+ * QUERY
+ */
+
+module Disposable: {
+  type t;
+  let dispose: t => unit;
+};
+
+type fetchPolicy =
+  | StoreOnly
+  | StoreOrNetwork
+  | StoreAndNetwork
+  | NetworkOnly;
+
+module type MakeUseQueryConfig = {
+  type response;
+  type variables;
+  let query: queryNode;
+};
+
+module MakeUseQuery:
+  (C: MakeUseQueryConfig) =>
+   {
+    type response = C.response;
+    type variables = C.variables;
+    type preloadToken;
+
+    let use:
+      (
+        ~variables: variables,
+        ~fetchPolicy: fetchPolicy=?,
+        ~fetchKey: string=?,
+        ~networkCacheConfig: CacheConfig.t=?,
+        unit
+      ) =>
+      response;
+
+    let fetch:
+      (~environment: Environment.t, ~variables: C.variables) =>
+      Js.Promise.t(C.response);
+
+    let preload:
+      (
+        ~environment: Environment.t,
+        ~variables: variables,
+        ~fetchPolicy: fetchPolicy=?,
+        ~fetchKey: string=?,
+        ~networkCacheConfig: CacheConfig.t=?,
+        unit
+      ) =>
+      preloadToken;
+
+    let usePreloaded: preloadToken => C.response;
+  };
+
+/**
+ * FRAGMENT
+ */
+
+module type MakeUseFragmentConfig = {
+  type fragment;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseFragment:
+  (C: MakeUseFragmentConfig) => {let use: C.fragmentRef => C.fragment;};
+
+/** Refetchable */
+type refetchFn('variables) =
+  (
+    ~variables: 'variables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option(Js.Exn.t) => unit=?,
+    unit
+  ) =>
+  unit;
+
+module type MakeUseRefetchableFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseRefetchableFragment:
+  (C: MakeUseRefetchableFragmentConfig) =>
+   {
+    let useRefetchable:
+      C.fragmentRef => (C.fragment, refetchFn(C.variables));
+  };
+
+/** Pagination */
+module type MakeUsePaginationFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+type paginationLoadMoreFn =
+  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
+  Disposable.t;
+
+type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+type paginationFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+module MakeUsePaginationFragment:
+  (C: MakeUsePaginationFragmentConfig) =>
+   {
+    let useBlockingPagination:
+      C.fragmentRef =>
+      paginationBlockingFragmentReturn(C.fragment, C.variables);
+
+    let usePagination:
+      C.fragmentRef => paginationFragmentReturn(C.fragment, C.variables);
+  };
+
+/**
+ * MUTATION
+ */
+
+module type MutationConfig = {
+  type variables;
+  type response;
+  let node: mutationNode;
+};
+
+type updaterFn = RecordSourceSelectorProxy.t => unit;
+
+type mutationError = {. "message": string};
+
+type mutationState('response) =
+  | Idle
+  | Loading
+  | Error(array(mutationError))
+  | Success(option('response));
+
+type mutationResult('response) =
+  | Success('response)
+  | Error(Js.Promise.error);
+
+type useMutationConfigType('variables) = {variables: 'variables};
+
+module MakeUseMutation:
+  (C: MutationConfig) =>
+   {
+    let use:
+      unit =>
+      (
+        (
+          ~variables: C.variables,
+          ~optimisticResponse: C.response=?,
+          ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
+          ~updater: updaterFn=?,
+          unit
+        ) =>
+        Js.Promise.t(mutationResult(C.response)),
+        mutationState(C.response),
+        unit => unit,
+      );
+  };
+
+/**
+   * Context
+   */
 
 module Context: {
   type t;

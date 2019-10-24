@@ -332,339 +332,6 @@ module CacheConfig = {
   };
 };
 
-type fetchPolicy =
-  | StoreOnly
-  | StoreOrNetwork
-  | StoreAndNetwork
-  | NetworkOnly;
-
-let mapFetchPolicy = fetchPolicy =>
-  switch (fetchPolicy) {
-  | Some(StoreOnly) => Some("store-only")
-  | Some(StoreOrNetwork) => Some("store-or-network")
-  | Some(StoreAndNetwork) => Some("store-and-network")
-  | Some(NetworkOnly) => Some("network-only")
-  | None => None
-  };
-
-[@bs.module "./vendor/relay-experimental"]
-external _useQuery:
-  (
-    queryNode,
-    'variables,
-    {
-      .
-      "fetchKey": option(string),
-      "fetchPolicy": option(string),
-      "networkCacheConfig": option(CacheConfig.t),
-    }
-  ) =>
-  'queryResponse =
-  "useQuery";
-
-module type MakeUseQueryConfig = {
-  type response;
-  type variables;
-  let query: queryNode;
-};
-
-module MakeUseQuery = (C: MakeUseQueryConfig) => {
-  type response = C.response;
-  type variables = C.variables;
-
-  let use:
-    (
-      ~variables: variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~fetchKey: string=?,
-      ~networkCacheConfig: CacheConfig.t=?,
-      unit
-    ) =>
-    response =
-    (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
-      _useQuery(
-        C.query,
-        variables,
-        {
-          "fetchKey": fetchKey,
-          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-          "networkCacheConfig": networkCacheConfig,
-        },
-      );
-};
-
-/**
- * FRAGMENT
- */
-[@bs.module "./vendor/relay-experimental"]
-external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "useFragment";
-
-module type MakeUseFragmentConfig = {
-  type fragment;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-};
-
-module MakeUseFragment = (C: MakeUseFragmentConfig) => {
-  let use = (fr: C.fragmentRef): C.fragment =>
-    _useFragment(C.fragmentSpec, fr);
-};
-
-/** Refetchable */
-type refetchFn('variables) =
-  (
-    ~variables: 'variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option(Js.Exn.t) => unit=?,
-    unit
-  ) =>
-  unit;
-
-type refetchFnRaw('variables) =
-  (
-    'variables,
-    {
-      .
-      "fetchPolicy": option(string),
-      "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-    }
-  ) =>
-  unit;
-
-let makeRefetchableFnOpts = (~fetchPolicy, ~onComplete) => {
-  "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-  "onComplete":
-    Some(
-      maybeExn =>
-        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
-        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
-        | _ => ()
-        },
-    ),
-};
-
-[@bs.module "./vendor/relay-experimental"]
-external _useRefetchableFragment:
-  (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
-  "useRefetchableFragment";
-
-module type MakeUseRefetchableFragmentConfig = {
-  type fragment;
-  type fragmentRef;
-  type variables;
-  let fragmentSpec: fragmentNode;
-};
-
-module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
-  let useRefetchable = (fr: C.fragmentRef) => {
-    let (fragmentData, refetchFn) =
-      _useRefetchableFragment(C.fragmentSpec, fr);
-    (
-      fragmentData,
-      (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
-        refetchFn(
-          variables |> cleanObjectFromUndefined,
-          makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
-        ),
-    );
-  };
-};
-
-/** Pagination */
-module type MakeUsePaginationFragmentConfig = {
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-};
-
-type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
-  Disposable.t;
-
-type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch: refetchFn('variables),
-};
-
-type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  isLoadingNext: bool,
-  isLoadingPrevious: bool,
-  refetch: refetchFn('variables),
-};
-
-[@bs.module "./vendor/relay-experimental"]
-external _useLegacyPaginationFragment:
-  (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": paginationLoadMoreFn,
-    "loadPrevious": paginationLoadMoreFn,
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch": refetchFnRaw('variables),
-  } =
-  "useLegacyPaginationFragment";
-
-[@bs.module "./vendor/relay-experimental"]
-external _useBlockingPaginationFragment:
-  (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": paginationLoadMoreFn,
-    "loadPrevious": paginationLoadMoreFn,
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch": refetchFnRaw('variables),
-  } =
-  "useBlockingPaginationFragment";
-
-module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
-  let useBlockingPagination =
-      (fr: C.fragmentRef)
-      : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
-    let p = _useBlockingPaginationFragment(C.fragmentSpec, fr);
-    {
-      data: p##data,
-      loadNext: p##loadNext,
-      loadPrevious: p##loadPrevious,
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
-      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
-        (),
-      /*
-       TODO: Make this work!
-       p##refetch(
-            variables,
-            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
-          ),*/
-    };
-  };
-
-  let useLegacyPagination =
-      (fr: C.fragmentRef)
-      : paginationLegacyFragmentReturn(C.fragment, C.variables) => {
-    let p = _useLegacyPaginationFragment(C.fragmentSpec, fr);
-    {
-      data: p##data,
-      loadNext: p##loadNext,
-      loadPrevious: p##loadPrevious,
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
-      isLoadingNext: p##isLoadingNext,
-      isLoadingPrevious: p##isLoadingPrevious,
-      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
-        (),
-      /*
-       TODO: Make this work!
-       p##refetch(
-            variables,
-            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
-          ),*/
-    };
-  };
-};
-
-/**
- * MUTATION
- */
-module type MutationConfig = {
-  type variables;
-  type response;
-  let node: mutationNode;
-};
-
-type updaterFn = RecordSourceSelectorProxy.t => unit;
-
-type mutationConfig('variables, 'response) = {
-  .
-  "variables": 'variables,
-  "optimisticResponse": option('response),
-  "updater": option(updaterFn),
-  "optimisticUpdater": option(updaterFn),
-};
-
-type mutationError = {. "message": string};
-
-type mutationStateRaw('response) = {
-  .
-  "loading": bool,
-  "data": Js.Nullable.t('response),
-  "error": Js.Nullable.t(mutationError),
-};
-
-type mutateFn('variables, 'response) =
-  mutationConfig('variables, 'response) => Js.Promise.t('response);
-
-[@bs.module "relay-hooks"]
-external _useMutation:
-  mutationNode =>
-  (mutateFn('variables, 'response), mutationStateRaw('response)) =
-  "useMutation";
-
-type mutationState('response) =
-  | Loading
-  | Error(mutationError)
-  | Success(option('response));
-
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
-
-type useMutationConfigType('variables) = {variables: 'variables};
-
-module MakeUseMutation = (C: MutationConfig) => {
-  let use = () => {
-    let (mutate, rawState) = _useMutation(C.node);
-    let makeMutation =
-        (
-          ~variables: C.variables,
-          ~optimisticResponse=?,
-          ~optimisticUpdater=?,
-          ~updater=?,
-          (),
-        )
-        : Js.Promise.t(mutationResult(C.response)) =>
-      mutate({
-        "variables": variables,
-        "optimisticResponse": optimisticResponse,
-        "optimisticUpdater": optimisticUpdater,
-        "updater": updater,
-      })
-      |> Js.Promise.then_(res => Js.Promise.resolve(Success(res)))
-      |> Js.Promise.catch(err => Js.Promise.resolve(Error(err)));
-    (
-      makeMutation,
-      switch (
-        rawState##loading,
-        rawState##data |> toOpt,
-        rawState##error |> toOpt,
-      ) {
-      | (true, _, _) => Loading
-      | (_, Some(data), _) => Success(Some(data))
-      | (_, _, Some(error)) => Error(error)
-      | (false, None, None) => Success(None)
-      },
-    );
-  };
-};
-
 /**
  * Misc
  */
@@ -814,10 +481,365 @@ let useEnvironmentFromContext = () => {
   };
 };
 
+type fetchPolicy =
+  | StoreOnly
+  | StoreOrNetwork
+  | StoreAndNetwork
+  | NetworkOnly;
+
+let mapFetchPolicy = fetchPolicy =>
+  switch (fetchPolicy) {
+  | Some(StoreOnly) => Some("store-only")
+  | Some(StoreOrNetwork) => Some("store-or-network")
+  | Some(StoreAndNetwork) => Some("store-and-network")
+  | Some(NetworkOnly) => Some("network-only")
+  | None => None
+  };
+
 [@bs.module "relay-runtime"]
 external fetchQuery:
   (Environment.t, queryNode, 'variables) => Js.Promise.t('response) =
   "fetchQuery";
+
+[@bs.module "react-relay/hooks"]
+external _useQuery:
+  (
+    queryNode,
+    'variables,
+    {
+      .
+      "fetchKey": option(string),
+      "fetchPolicy": option(string),
+      "networkCacheConfig": option(CacheConfig.t),
+    }
+  ) =>
+  'queryResponse =
+  "useLazyLoadQuery";
+
+[@bs.module "react-relay/hooks"]
+external _preloadQuery:
+  (
+    Environment.t,
+    queryNode,
+    'variables,
+    {
+      .
+      "fetchKey": option(string),
+      "fetchPolicy": option(string),
+      "networkCacheConfig": option(CacheConfig.t),
+    }
+  ) =>
+  'queryResponse =
+  "preloadQuery";
+
+[@bs.module "react-relay/hooks"]
+external _usePreloadedQuery: (queryNode, 'token) => 'queryResponse =
+  "usePreloadedQuery";
+
+module type MakeUseQueryConfig = {
+  type response;
+  type variables;
+  let query: queryNode;
+};
+
+module MakeUseQuery = (C: MakeUseQueryConfig) => {
+  type response = C.response;
+  type variables = C.variables;
+  type preloadToken;
+
+  let use:
+    (
+      ~variables: variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: CacheConfig.t=?,
+      unit
+    ) =>
+    response =
+    (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
+      _useQuery(
+        C.query,
+        variables,
+        {
+          "fetchKey": fetchKey,
+          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+          "networkCacheConfig": networkCacheConfig,
+        },
+      );
+
+  let preload:
+    (
+      ~environment: Environment.t,
+      ~variables: variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: CacheConfig.t=?,
+      unit
+    ) =>
+    preloadToken =
+    (
+      ~environment,
+      ~variables,
+      ~fetchPolicy=?,
+      ~fetchKey=?,
+      ~networkCacheConfig=?,
+      (),
+    ) =>
+      _preloadQuery(
+        environment,
+        C.query,
+        variables,
+        {
+          "fetchKey": fetchKey,
+          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+          "networkCacheConfig": networkCacheConfig,
+        },
+      );
+
+  let usePreloaded = (token: preloadToken) =>
+    _usePreloadedQuery(C.query, token);
+
+  let fetch =
+      (~environment: Environment.t, ~variables: C.variables)
+      : Js.Promise.t(C.response) =>
+    fetchQuery(environment, C.query, variables);
+};
+
+/**
+ * FRAGMENT
+ */
+[@bs.module "react-relay/hooks"]
+external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
+  "useFragment";
+
+module type MakeUseFragmentConfig = {
+  type fragment;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseFragment = (C: MakeUseFragmentConfig) => {
+  let use = (fr: C.fragmentRef): C.fragment =>
+    _useFragment(C.fragmentSpec, fr);
+};
+
+/** Refetchable */
+type refetchFn('variables) =
+  (
+    ~variables: 'variables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option(Js.Exn.t) => unit=?,
+    unit
+  ) =>
+  unit;
+
+type refetchFnRaw('variables) =
+  (
+    'variables,
+    {
+      .
+      "fetchPolicy": option(string),
+      "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
+    }
+  ) =>
+  unit;
+
+let makeRefetchableFnOpts = (~fetchPolicy, ~onComplete) => {
+  "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+  "onComplete":
+    Some(
+      maybeExn =>
+        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
+        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
+        | _ => ()
+        },
+    ),
+};
+
+[@bs.module "react-relay/hooks"]
+external _useRefetchableFragment:
+  (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
+  "useRefetchableFragment";
+
+module type MakeUseRefetchableFragmentConfig = {
+  type fragment;
+  type fragmentRef;
+  type variables;
+  let fragmentSpec: fragmentNode;
+};
+
+module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
+  let useRefetchable = (fr: C.fragmentRef) => {
+    let (fragmentData, refetchFn) =
+      _useRefetchableFragment(C.fragmentSpec, fr);
+    (
+      fragmentData,
+      (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        refetchFn(
+          variables |> cleanObjectFromUndefined,
+          makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
+        ),
+    );
+  };
+};
+
+/** Pagination */
+module type MakeUsePaginationFragmentConfig = {
+  type fragment;
+  type variables;
+  type fragmentRef;
+  let fragmentSpec: fragmentNode;
+};
+
+type paginationLoadMoreFn =
+  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
+  Disposable.t;
+
+type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+type paginationFragmentReturn('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: paginationLoadMoreFn,
+  loadPrevious: paginationLoadMoreFn,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: refetchFn('variables),
+};
+
+[@bs.module "react-relay/hooks"]
+external _usePaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  {
+    .
+    "data": 'fragmentData,
+    "loadNext": paginationLoadMoreFn,
+    "loadPrevious": paginationLoadMoreFn,
+    "hasNext": bool,
+    "hasPrevious": bool,
+    "isLoadingNext": bool,
+    "isLoadingPrevious": bool,
+    "refetch": refetchFnRaw('variables),
+  } =
+  "usePaginationFragment";
+
+[@bs.module "react-relay/hooks"]
+external _useBlockingPaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  {
+    .
+    "data": 'fragmentData,
+    "loadNext": paginationLoadMoreFn,
+    "loadPrevious": paginationLoadMoreFn,
+    "hasNext": bool,
+    "hasPrevious": bool,
+    "isLoadingNext": bool,
+    "isLoadingPrevious": bool,
+    "refetch": refetchFnRaw('variables),
+  } =
+  "useBlockingPaginationFragment";
+
+module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
+  let useBlockingPagination =
+      (fr: C.fragmentRef)
+      : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
+    let p = _useBlockingPaginationFragment(C.fragmentSpec, fr);
+    {
+      data: p##data,
+      loadNext: p##loadNext,
+      loadPrevious: p##loadPrevious,
+      hasNext: p##hasNext,
+      hasPrevious: p##hasPrevious,
+      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        (),
+      /*
+       TODO: Make this work!
+       p##refetch(
+            variables,
+            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          ),*/
+    };
+  };
+
+  let usePagination =
+      (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
+    let p = _usePaginationFragment(C.fragmentSpec, fr);
+    {
+      data: p##data,
+      loadNext: p##loadNext,
+      loadPrevious: p##loadPrevious,
+      hasNext: p##hasNext,
+      hasPrevious: p##hasPrevious,
+      isLoadingNext: p##isLoadingNext,
+      isLoadingPrevious: p##isLoadingPrevious,
+      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+        (),
+      /*
+       TODO: Make this work!
+       p##refetch(
+            variables,
+            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          ),*/
+    };
+  };
+};
+
+/**
+ * MUTATION
+ */
+module type MutationConfig = {
+  type variables;
+  type response;
+  let node: mutationNode;
+};
+
+type updaterFn = RecordSourceSelectorProxy.t => unit;
+
+type mutationConfig('variables, 'response) = {
+  .
+  "variables": 'variables,
+  "optimisticResponse": option('response),
+  "updater": option(updaterFn),
+  "optimisticUpdater": option(updaterFn),
+};
+
+type mutationError = {. "message": string};
+
+type mutationStateRaw('response) = {
+  .
+  "loading": bool,
+  "data": Js.Nullable.t('response),
+  "error": Js.Nullable.t(mutationError),
+};
+
+type mutateFn('variables, 'response) =
+  mutationConfig('variables, 'response) => Js.Promise.t('response);
+
+[@bs.module "relay-hooks"]
+external _useMutation:
+  mutationNode =>
+  (mutateFn('variables, 'response), mutationStateRaw('response)) =
+  "useMutation";
+
+type mutationState('response) =
+  | Idle
+  | Loading
+  | Error(array(mutationError))
+  | Success(option('response));
+
+type mutationResult('response) =
+  | Success('response)
+  | Error(Js.Promise.error);
+
+type useMutationConfigType('variables) = {variables: 'variables};
 
 type _commitMutationConfig('variables, 'response) = {
   .
@@ -836,12 +858,74 @@ type _commitMutationConfig('variables, 'response) = {
 
 exception Mutation_failed(array(mutationError));
 
-module MakeCommitMutation = (C: MutationConfig) => {
-  [@bs.module "relay-runtime"]
-  external _commitMutation:
-    (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
-    "commitMutation";
+[@bs.module "relay-runtime"]
+external _commitMutation:
+  (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
+  "commitMutation";
 
+module MakeUseMutation = (C: MutationConfig) => {
+  let use = () => {
+    let environment = useEnvironmentFromContext();
+    let (mutationState: mutationState(C.response), setMutationState) =
+      React.useState(() => Idle);
+
+    let resetMutationState = () => setMutationState(_ => Idle);
+
+    let makeMutation =
+        (
+          ~variables: C.variables,
+          ~optimisticResponse=?,
+          ~optimisticUpdater=?,
+          ~updater=?,
+          (),
+        )
+        : Js.Promise.t(mutationResult(C.response)) =>
+      Js.Promise.make((~resolve, ~reject) => {
+        setMutationState(_ => Loading);
+
+        _commitMutation(
+          environment,
+          {
+            "variables": variables,
+            "mutation": C.node,
+            "onCompleted":
+              Some(
+                (res, errors) =>
+                  switch (res |> toOpt, errors |> toOpt) {
+                  | (_, Some(errors)) =>
+                    setMutationState(_ => Error(errors));
+                    reject(. Mutation_failed(errors));
+                  | (Some(res), None) =>
+                    setMutationState(_ => Success(Some(res)));
+                    resolve(. Success(res));
+                  | (None, None) =>
+                    setMutationState(_ => Error([||]));
+                    reject(. Mutation_failed([||]));
+                  },
+              ),
+            "onError":
+              Some(
+                error =>
+                  switch (error |> toOpt) {
+                  | Some(error) =>
+                    setMutationState(_ => Error([|error|]));
+                    reject(. Mutation_failed([|error|]));
+                  | None =>
+                    setMutationState(_ => Error([||]));
+                    reject(. Mutation_failed([||]));
+                  },
+              ),
+            "optimisticResponse": optimisticResponse,
+            "optimisticUpdater": optimisticUpdater,
+            "updater": updater,
+          },
+        );
+      });
+    (makeMutation, mutationState, resetMutationState);
+  };
+};
+
+module MakeCommitMutation = (C: MutationConfig) => {
   let commitMutation =
       (
         ~environment: Environment.t,
