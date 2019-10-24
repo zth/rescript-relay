@@ -499,8 +499,9 @@ type updaterFn = RecordSourceSelectorProxy.t => unit;
 type mutationError = {. "message": string};
 
 type mutationState('response) =
+  | Idle
   | Loading
-  | Error(mutationError)
+  | Error(array(mutationError))
   | Success(option('response));
 
 type mutationResult('response) =
@@ -524,6 +525,7 @@ module MakeUseMutation:
         ) =>
         Js.Promise.t(mutationResult(C.response)),
         mutationState(C.response),
+        unit => unit,
       );
   };
 

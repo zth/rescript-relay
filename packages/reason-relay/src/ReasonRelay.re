@@ -450,6 +450,37 @@ module Environment = {
     });
 };
 
+module Context = {
+  type t;
+
+  type contextShape = {. "environment": Environment.t};
+
+  [@bs.module "react-relay"]
+  external context: React.Context.t(option(contextShape)) =
+    "ReactRelayContext";
+  let provider = React.Context.provider(context);
+
+  module Provider = {
+    [@react.component]
+    let make = (~environment: Environment.t, ~children) =>
+      React.createElement(
+        provider,
+        {"value": Some({"environment": environment}), "children": children},
+      );
+  };
+};
+
+exception EnvironmentNotFoundInContext;
+
+let useEnvironmentFromContext = () => {
+  let context = React.useContext(Context.context);
+
+  switch (context) {
+  | Some(ctx) => ctx##environment
+  | None => raise(EnvironmentNotFoundInContext)
+  };
+};
+
 type fetchPolicy =
   | StoreOnly
   | StoreOrNetwork
@@ -799,8 +830,9 @@ external _useMutation:
   "useMutation";
 
 type mutationState('response) =
+  | Idle
   | Loading
-  | Error(mutationError)
+  | Error(array(mutationError))
   | Success(option('response));
 
 type mutationResult('response) =
@@ -808,73 +840,6 @@ type mutationResult('response) =
   | Error(Js.Promise.error);
 
 type useMutationConfigType('variables) = {variables: 'variables};
-
-module MakeUseMutation = (C: MutationConfig) => {
-  let use = () => {
-    let (mutate, rawState) = _useMutation(C.node);
-    let makeMutation =
-        (
-          ~variables: C.variables,
-          ~optimisticResponse=?,
-          ~optimisticUpdater=?,
-          ~updater=?,
-          (),
-        )
-        : Js.Promise.t(mutationResult(C.response)) =>
-      mutate({
-        "variables": variables,
-        "optimisticResponse": optimisticResponse,
-        "optimisticUpdater": optimisticUpdater,
-        "updater": updater,
-      })
-      |> Js.Promise.then_(res => Js.Promise.resolve(Success(res)))
-      |> Js.Promise.catch(err => Js.Promise.resolve(Error(err)));
-    (
-      makeMutation,
-      switch (
-        rawState##loading,
-        rawState##data |> toOpt,
-        rawState##error |> toOpt,
-      ) {
-      | (true, _, _) => Loading
-      | (_, Some(data), _) => Success(Some(data))
-      | (_, _, Some(error)) => Error(error)
-      | (false, None, None) => Success(None)
-      },
-    );
-  };
-};
-
-module Context = {
-  type t;
-
-  type contextShape = {. "environment": Environment.t};
-
-  [@bs.module "react-relay"]
-  external context: React.Context.t(option(contextShape)) =
-    "ReactRelayContext";
-  let provider = React.Context.provider(context);
-
-  module Provider = {
-    [@react.component]
-    let make = (~environment: Environment.t, ~children) =>
-      React.createElement(
-        provider,
-        {"value": Some({"environment": environment}), "children": children},
-      );
-  };
-};
-
-exception EnvironmentNotFoundInContext;
-
-let useEnvironmentFromContext = () => {
-  let context = React.useContext(Context.context);
-
-  switch (context) {
-  | Some(ctx) => ctx##environment
-  | None => raise(EnvironmentNotFoundInContext)
-  };
-};
 
 type _commitMutationConfig('variables, 'response) = {
   .
@@ -893,12 +858,74 @@ type _commitMutationConfig('variables, 'response) = {
 
 exception Mutation_failed(array(mutationError));
 
-module MakeCommitMutation = (C: MutationConfig) => {
-  [@bs.module "relay-runtime"]
-  external _commitMutation:
-    (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
-    "commitMutation";
+[@bs.module "relay-runtime"]
+external _commitMutation:
+  (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
+  "commitMutation";
 
+module MakeUseMutation = (C: MutationConfig) => {
+  let use = () => {
+    let environment = useEnvironmentFromContext();
+    let (mutationState: mutationState(C.response), setMutationState) =
+      React.useState(() => Idle);
+
+    let resetMutationState = () => setMutationState(_ => Idle);
+
+    let makeMutation =
+        (
+          ~variables: C.variables,
+          ~optimisticResponse=?,
+          ~optimisticUpdater=?,
+          ~updater=?,
+          (),
+        )
+        : Js.Promise.t(mutationResult(C.response)) =>
+      Js.Promise.make((~resolve, ~reject) => {
+        setMutationState(_ => Loading);
+
+        _commitMutation(
+          environment,
+          {
+            "variables": variables,
+            "mutation": C.node,
+            "onCompleted":
+              Some(
+                (res, errors) =>
+                  switch (res |> toOpt, errors |> toOpt) {
+                  | (_, Some(errors)) =>
+                    setMutationState(_ => Error(errors));
+                    reject(. Mutation_failed(errors));
+                  | (Some(res), None) =>
+                    setMutationState(_ => Success(Some(res)));
+                    resolve(. Success(res));
+                  | (None, None) =>
+                    setMutationState(_ => Error([||]));
+                    reject(. Mutation_failed([||]));
+                  },
+              ),
+            "onError":
+              Some(
+                error =>
+                  switch (error |> toOpt) {
+                  | Some(error) =>
+                    setMutationState(_ => Error([|error|]));
+                    reject(. Mutation_failed([|error|]));
+                  | None =>
+                    setMutationState(_ => Error([||]));
+                    reject(. Mutation_failed([||]));
+                  },
+              ),
+            "optimisticResponse": optimisticResponse,
+            "optimisticUpdater": optimisticUpdater,
+            "updater": updater,
+          },
+        );
+      });
+    (makeMutation, mutationState, resetMutationState);
+  };
+};
+
+module MakeCommitMutation = (C: MutationConfig) => {
   let commitMutation =
       (
         ~environment: Environment.t,
