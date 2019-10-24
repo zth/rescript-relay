@@ -5,13 +5,17 @@ import * as RelayReasonGenerator from "../RelayReasonGenerator";
 import { printCode } from "../generator/Printer.gen";
 
 // @ts-ignore
-const GraphQLCompilerContext = require("relay-compiler/lib/core/GraphQLCompilerContext");
+const GraphQLCompilerContext = require("../../../src/vendor/relay-compiler/lib/core/GraphQLCompilerContext");
 // @ts-ignore
-import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/RelayFlowGenerator";
+import * as RelayFlowGenerator from "../../../src/vendor/relay-compiler/lib/language/javascript/RelayFlowGenerator";
 // @ts-ignore
-import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";
+import * as RelayIRTransforms from "../../../src/vendor/relay-compiler/lib/core/RelayIRTransforms";
 
-import { transformASTSchema } from "relay-compiler/lib/core/ASTConvert";
+// @ts-ignore
+import { transformASTSchema } from "../../../src/vendor/relay-compiler/lib/core/ASTConvert";
+
+// @ts-ignore
+import * as Schema from "../../../src/vendor/relay-compiler/lib/core/Schema";
 // @ts-ignore
 import { parseGraphQLText } from "relay-test-utils-internal";
 
@@ -32,6 +36,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     extraDefs
   ]);
   const { definitions } = parseGraphQLText(schema, text);
+  const compilerSchema = Schema.DEPRECATED__create(testSchema, schema);
   return new GraphQLCompilerContext(testSchema, schema)
     .addAll(definitions)
     .applyTransforms(RelayFlowGenerator.transforms)
@@ -39,7 +44,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     .map(
       (doc: any) =>
         `// ${doc.name}.graphql\n${printCode(
-          RelayReasonGenerator.generate(doc, {
+          RelayReasonGenerator.generate(compilerSchema, doc, {
             customScalars: {},
             optionalInputFields: [],
             existingFragmentNames: new Set([]),

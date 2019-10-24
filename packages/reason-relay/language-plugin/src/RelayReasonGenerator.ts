@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/RelayFlowGenerator";
+import * as RelayFlowGenerator from "../../src/vendor/relay-compiler/lib/language/javascript/RelayFlowGenerator";
 
 import { Fragment, Node } from "relay-compiler";
 import { TypeGeneratorOptions } from "relay-compiler/lib/language/RelayLanguagePluginInterface";
@@ -22,10 +22,11 @@ function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
 }
 
 export function generate(
+  schema: any,
   node: Node | Fragment,
   options: TypeGeneratorOptions
 ): string {
-  let flowTypes = RelayFlowGenerator.generate(node, {
+  let flowTypes = RelayFlowGenerator.generate(schema, node, {
     ...options,
     customScalars: mapCustomScalars(options.customScalars)
   });
