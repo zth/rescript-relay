@@ -673,7 +673,7 @@ type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   refetch: refetchFn('variables),
 };
 
-type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
+type paginationFragmentReturn('fragmentData, 'variables) = {
   data: 'fragmentData,
   loadNext: paginationLoadMoreFn,
   loadPrevious: paginationLoadMoreFn,
@@ -685,7 +685,7 @@ type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
 };
 
 [@bs.module "react-relay/hooks"]
-external _useLegacyPaginationFragment:
+external _usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
     .
@@ -698,7 +698,7 @@ external _useLegacyPaginationFragment:
     "isLoadingPrevious": bool,
     "refetch": refetchFnRaw('variables),
   } =
-  "useLegacyPaginationFragment";
+  "usePaginationFragment";
 
 [@bs.module "react-relay/hooks"]
 external _useBlockingPaginationFragment:
@@ -738,10 +738,9 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     };
   };
 
-  let useLegacyPagination =
-      (fr: C.fragmentRef)
-      : paginationLegacyFragmentReturn(C.fragment, C.variables) => {
-    let p = _useLegacyPaginationFragment(C.fragmentSpec, fr);
+  let usePagination =
+      (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
+    let p = _usePaginationFragment(C.fragmentSpec, fr);
     {
       data: p##data,
       loadNext: p##loadNext,

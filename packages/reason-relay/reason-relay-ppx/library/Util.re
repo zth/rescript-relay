@@ -320,8 +320,8 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       ],
       hasConnection
         ? [%stri
-          let useLegacyPagination = fRef =>
-            UsePaginationFragment.useLegacyPagination(
+          let usePagination = fRef =>
+            UsePaginationFragment.usePagination(
               fRef |> Operation.getFragmentRef,
             )
         ]

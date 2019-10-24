@@ -462,7 +462,7 @@ type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   refetch: refetchFn('variables),
 };
 
-type paginationLegacyFragmentReturn('fragmentData, 'variables) = {
+type paginationFragmentReturn('fragmentData, 'variables) = {
   data: 'fragmentData,
   loadNext: paginationLoadMoreFn,
   loadPrevious: paginationLoadMoreFn,
@@ -480,8 +480,8 @@ module MakeUsePaginationFragment:
       C.fragmentRef =>
       paginationBlockingFragmentReturn(C.fragment, C.variables);
 
-    let useLegacyPagination:
-      C.fragmentRef => paginationLegacyFragmentReturn(C.fragment, C.variables);
+    let usePagination:
+      C.fragmentRef => paginationFragmentReturn(C.fragment, C.variables);
   };
 
 /**
