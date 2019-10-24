@@ -332,6 +332,124 @@ module CacheConfig = {
   };
 };
 
+/**
+ * Misc
+ */
+module Observable = {
+  type t;
+
+  type _sink('t) = {
+    .
+    "next": 't => unit,
+    "error": Js.Exn.t => unit,
+    "completed": unit => unit,
+    "closed": bool,
+  };
+
+  type sink('t) = {
+    next: 't => unit,
+    error: Js.Exn.t => unit,
+    completed: unit => unit,
+    closed: bool,
+  };
+
+  [@bs.module "relay-runtime"] [@bs.scope "Observable"]
+  external create: (_sink('t) => option('a)) => t = "create";
+
+  let make = sinkFn =>
+    create(s => {
+      sinkFn({
+        next: s##next,
+        error: s##error,
+        completed: s##completed,
+        closed: s##closed,
+      });
+      None;
+    });
+};
+
+module Network = {
+  type t;
+
+  type operation = {
+    .
+    "text": string,
+    "name": string,
+    "operationKind": string,
+  };
+
+  type subscribeFn =
+    {
+      .
+      "request": operation,
+      "variables": Js.Json.t,
+      "cacheConfig": CacheConfig.t,
+    } =>
+    Observable.t;
+
+  type fetchFunctionPromise =
+    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+
+  type fetchFunctionObservable =
+    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
+
+  [@bs.module "relay-runtime"] [@bs.scope "Network"]
+  external makeFromPromise: (fetchFunctionPromise, option(subscribeFn)) => t =
+    "create";
+
+  let makePromiseBased = (~fetchFunction, ~subscriptionFunction=?, ()) =>
+    makeFromPromise(fetchFunction, subscriptionFunction);
+
+  [@bs.module "relay-runtime"] [@bs.scope "Network"]
+  external makeFromObservable:
+    (fetchFunctionObservable, option(subscribeFn)) => t =
+    "create";
+
+  let makeObservableBased = (~observableFunction, ~subscriptionFunction=?, ()) =>
+    makeFromObservable(observableFunction, subscriptionFunction);
+};
+
+module RecordSource = {
+  type t;
+
+  [@bs.module "relay-runtime"] [@bs.new]
+  external make: unit => t = "RecordSource";
+};
+
+module Store = {
+  type t;
+
+  [@bs.module "relay-runtime"] [@bs.new]
+  external make: RecordSource.t => t = "Store";
+};
+
+module Environment = {
+  type t;
+
+  [@bs.module "relay-runtime"] [@bs.new]
+  external _make:
+    {
+      .
+      "network": Network.t,
+      "store": Store.t,
+      "UNSTABLE_DO_NOT_USE_getDataID": option(('a, string) => string),
+    } =>
+    t =
+    "Environment";
+
+  let make = (~network, ~store, ~getDataID=?, ()) =>
+    _make({
+      "network": network,
+      "store": store,
+      "UNSTABLE_DO_NOT_USE_getDataID":
+        switch (getDataID) {
+        | Some(getDataID) =>
+          Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
+        | None => None
+        },
+    });
+};
+
 type fetchPolicy =
   | StoreOnly
   | StoreOrNetwork
@@ -346,6 +464,11 @@ let mapFetchPolicy = fetchPolicy =>
   | Some(NetworkOnly) => Some("network-only")
   | None => None
   };
+
+[@bs.module "relay-runtime"]
+external fetchQuery:
+  (Environment.t, queryNode, 'variables) => Js.Promise.t('response) =
+  "fetchQuery";
 
 [@bs.module "react-relay/hooks"]
 external _useQuery:
@@ -362,6 +485,26 @@ external _useQuery:
   'queryResponse =
   "useLazyLoadQuery";
 
+[@bs.module "react-relay/hooks"]
+external _preloadQuery:
+  (
+    Environment.t,
+    queryNode,
+    'variables,
+    {
+      .
+      "fetchKey": option(string),
+      "fetchPolicy": option(string),
+      "networkCacheConfig": option(CacheConfig.t),
+    }
+  ) =>
+  'queryResponse =
+  "preloadQuery";
+
+[@bs.module "react-relay/hooks"]
+external _usePreloadedQuery: (queryNode, 'token) => 'queryResponse =
+  "usePreloadedQuery";
+
 module type MakeUseQueryConfig = {
   type response;
   type variables;
@@ -371,6 +514,7 @@ module type MakeUseQueryConfig = {
 module MakeUseQuery = (C: MakeUseQueryConfig) => {
   type response = C.response;
   type variables = C.variables;
+  type preloadToken;
 
   let use:
     (
@@ -391,6 +535,43 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
           "networkCacheConfig": networkCacheConfig,
         },
       );
+
+  let preload:
+    (
+      ~environment: Environment.t,
+      ~variables: variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: CacheConfig.t=?,
+      unit
+    ) =>
+    preloadToken =
+    (
+      ~environment,
+      ~variables,
+      ~fetchPolicy=?,
+      ~fetchKey=?,
+      ~networkCacheConfig=?,
+      (),
+    ) =>
+      _preloadQuery(
+        environment,
+        C.query,
+        variables,
+        {
+          "fetchKey": fetchKey,
+          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+          "networkCacheConfig": networkCacheConfig,
+        },
+      );
+
+  let usePreloaded = (token: preloadToken) =>
+    _usePreloadedQuery(C.query, token);
+
+  let fetch =
+      (~environment: Environment.t, ~variables: C.variables)
+      : Js.Promise.t(C.response) =>
+    fetchQuery(environment, C.query, variables);
 };
 
 /**
@@ -665,124 +846,6 @@ module MakeUseMutation = (C: MutationConfig) => {
   };
 };
 
-/**
- * Misc
- */
-module Observable = {
-  type t;
-
-  type _sink('t) = {
-    .
-    "next": 't => unit,
-    "error": Js.Exn.t => unit,
-    "completed": unit => unit,
-    "closed": bool,
-  };
-
-  type sink('t) = {
-    next: 't => unit,
-    error: Js.Exn.t => unit,
-    completed: unit => unit,
-    closed: bool,
-  };
-
-  [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external create: (_sink('t) => option('a)) => t = "create";
-
-  let make = sinkFn =>
-    create(s => {
-      sinkFn({
-        next: s##next,
-        error: s##error,
-        completed: s##completed,
-        closed: s##closed,
-      });
-      None;
-    });
-};
-
-module Network = {
-  type t;
-
-  type operation = {
-    .
-    "text": string,
-    "name": string,
-    "operationKind": string,
-  };
-
-  type subscribeFn =
-    {
-      .
-      "request": operation,
-      "variables": Js.Json.t,
-      "cacheConfig": CacheConfig.t,
-    } =>
-    Observable.t;
-
-  type fetchFunctionPromise =
-    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
-
-  type fetchFunctionObservable =
-    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
-
-  [@bs.module "relay-runtime"] [@bs.scope "Network"]
-  external makeFromPromise: (fetchFunctionPromise, option(subscribeFn)) => t =
-    "create";
-
-  let makePromiseBased = (~fetchFunction, ~subscriptionFunction=?, ()) =>
-    makeFromPromise(fetchFunction, subscriptionFunction);
-
-  [@bs.module "relay-runtime"] [@bs.scope "Network"]
-  external makeFromObservable:
-    (fetchFunctionObservable, option(subscribeFn)) => t =
-    "create";
-
-  let makeObservableBased = (~observableFunction, ~subscriptionFunction=?, ()) =>
-    makeFromObservable(observableFunction, subscriptionFunction);
-};
-
-module RecordSource = {
-  type t;
-
-  [@bs.module "relay-runtime"] [@bs.new]
-  external make: unit => t = "RecordSource";
-};
-
-module Store = {
-  type t;
-
-  [@bs.module "relay-runtime"] [@bs.new]
-  external make: RecordSource.t => t = "Store";
-};
-
-module Environment = {
-  type t;
-
-  [@bs.module "relay-runtime"] [@bs.new]
-  external _make:
-    {
-      .
-      "network": Network.t,
-      "store": Store.t,
-      "UNSTABLE_DO_NOT_USE_getDataID": option(('a, string) => string),
-    } =>
-    t =
-    "Environment";
-
-  let make = (~network, ~store, ~getDataID=?, ()) =>
-    _make({
-      "network": network,
-      "store": store,
-      "UNSTABLE_DO_NOT_USE_getDataID":
-        switch (getDataID) {
-        | Some(getDataID) =>
-          Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
-        | None => None
-        },
-    });
-};
-
 module Context = {
   type t;
 
@@ -813,11 +876,6 @@ let useEnvironmentFromContext = () => {
   | None => raise(EnvironmentNotFoundInContext)
   };
 };
-
-[@bs.module "relay-runtime"]
-external fetchQuery:
-  (Environment.t, queryNode, 'variables) => Js.Promise.t('response) =
-  "fetchQuery";
 
 type _commitMutationConfig('variables, 'response) = {
   .

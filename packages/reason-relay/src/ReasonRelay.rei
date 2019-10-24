@@ -240,13 +240,8 @@ module ConnectionHandler: {
 };
 
 /**
- * QUERY
+ * NETWORK
  */
-
-module Disposable: {
-  type t;
-  let dispose: t => unit;
-};
 
 module CacheConfig: {
   type t;
@@ -269,6 +264,99 @@ module CacheConfig: {
   let getConfig: t => config;
 };
 
+module Observable: {
+  type t;
+
+  type sink('t) = {
+    next: 't => unit,
+    error: Js.Exn.t => unit,
+    completed: unit => unit,
+    closed: bool,
+  };
+
+  let make: (sink('t) => unit) => t;
+};
+
+module Network: {
+  type t;
+
+  type operation = {
+    .
+    "name": string,
+    "operationKind": string,
+    "text": string,
+  };
+  type subscribeFn =
+    {
+      .
+      "request": operation,
+      "variables": Js.Json.t,
+      "cacheConfig": CacheConfig.t,
+    } =>
+    Observable.t;
+
+  type fetchFunctionPromise =
+    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+
+  type fetchFunctionObservable =
+    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
+
+  let makePromiseBased:
+    (
+      ~fetchFunction: fetchFunctionPromise,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t;
+
+  let makeObservableBased:
+    (
+      ~observableFunction: fetchFunctionObservable,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t;
+};
+
+/**
+ * STORE
+ */
+
+module RecordSource: {
+  type t;
+  let make: unit => t;
+};
+
+module Store: {
+  type t;
+  let make: RecordSource.t => t;
+};
+
+/**
+ * ENVIRONMENT
+ */
+module Environment: {
+  type t;
+
+  let make:
+    (
+      ~network: Network.t,
+      ~store: Store.t,
+      ~getDataID: (~nodeObj: 'a, ~typeName: string) => string=?,
+      unit
+    ) =>
+    t;
+};
+
+/**
+ * QUERY
+ */
+
+module Disposable: {
+  type t;
+  let dispose: t => unit;
+};
+
 type fetchPolicy =
   | StoreOnly
   | StoreOrNetwork
@@ -286,6 +374,8 @@ module MakeUseQuery:
    {
     type response = C.response;
     type variables = C.variables;
+    type preloadToken;
+
     let use:
       (
         ~variables: variables,
@@ -295,6 +385,23 @@ module MakeUseQuery:
         unit
       ) =>
       response;
+
+    let fetch:
+      (~environment: Environment.t, ~variables: C.variables) =>
+      Js.Promise.t(C.response);
+
+    let preload:
+      (
+        ~environment: Environment.t,
+        ~variables: variables,
+        ~fetchPolicy: fetchPolicy=?,
+        ~fetchKey: string=?,
+        ~networkCacheConfig: CacheConfig.t=?,
+        unit
+      ) =>
+      preloadToken;
+
+    let usePreloaded: preloadToken => C.response;
   };
 
 /**
@@ -421,92 +528,8 @@ module MakeUseMutation:
   };
 
 /**
- * NETWORK
- */
-
-module Observable: {
-  type t;
-
-  type sink('t) = {
-    next: 't => unit,
-    error: Js.Exn.t => unit,
-    completed: unit => unit,
-    closed: bool,
-  };
-
-  let make: (sink('t) => unit) => t;
-};
-
-module Network: {
-  type t;
-
-  type operation = {
-    .
-    "name": string,
-    "operationKind": string,
-    "text": string,
-  };
-  type subscribeFn =
-    {
-      .
-      "request": operation,
-      "variables": Js.Json.t,
-      "cacheConfig": CacheConfig.t,
-    } =>
-    Observable.t;
-
-  type fetchFunctionPromise =
-    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
-
-  type fetchFunctionObservable =
-    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
-
-  let makePromiseBased:
-    (
-      ~fetchFunction: fetchFunctionPromise,
-      ~subscriptionFunction: subscribeFn=?,
-      unit
-    ) =>
-    t;
-
-  let makeObservableBased:
-    (
-      ~observableFunction: fetchFunctionObservable,
-      ~subscriptionFunction: subscribeFn=?,
-      unit
-    ) =>
-    t;
-};
-
-/**
- * STORE
- */
-
-module RecordSource: {
-  type t;
-  let make: unit => t;
-};
-
-module Store: {
-  type t;
-  let make: RecordSource.t => t;
-};
-
-/**
- * ENVIRONMENT
- */
-module Environment: {
-  type t;
-
-  let make:
-    (
-      ~network: Network.t,
-      ~store: Store.t,
-      ~getDataID: (~nodeObj: 'a, ~typeName: string) => string=?,
-      unit
-    ) =>
-    t;
-};
+   * Context
+   */
 
 module Context: {
   type t;
