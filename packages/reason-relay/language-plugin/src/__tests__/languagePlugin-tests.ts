@@ -1,4 +1,4 @@
-import { buildSchema } from "graphql";
+import { buildSchema, GraphQLSchema, extendSchema, parse } from "graphql";
 import * as fs from "fs";
 import * as path from "path";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
@@ -12,12 +12,39 @@ import * as RelayFlowGenerator from "../../../src/vendor/relay-compiler/lib/lang
 import * as RelayIRTransforms from "../../../src/vendor/relay-compiler/lib/core/RelayIRTransforms";
 
 // @ts-ignore
+import * as Schema from "../../../src/vendor/relay-compiler/lib/core/Schema";
+
+// @ts-ignore
 import { transformASTSchema } from "../../../src/vendor/relay-compiler/lib/core/ASTConvert";
 
 // @ts-ignore
-import * as Schema from "../../../src/vendor/relay-compiler/lib/core/Schema";
-// @ts-ignore
-import { parseGraphQLText } from "relay-test-utils-internal";
+import {
+  Parser,
+  convertASTDocuments,
+  Root,
+  Fragment
+  // @ts-ignore
+} from "../../../src/vendor/relay-compiler";
+
+function parseGraphQLText(
+  schema: GraphQLSchema,
+  text: string
+): {
+  definitions: ReadonlyArray<Fragment | Root>;
+  schema: GraphQLSchema;
+} {
+  const ast = parse(text);
+  const extendedSchema = extendSchema(schema, ast, { assumeValid: true });
+  const definitions = convertASTDocuments(
+    Schema.DEPRECATED__create(schema, extendedSchema),
+    [ast],
+    Parser.transform.bind(Parser)
+  );
+  return {
+    definitions,
+    schema: extendedSchema
+  };
+}
 
 const testSchema = buildSchema(
   fs.readFileSync(
@@ -31,13 +58,13 @@ function collapseString(str: string) {
 }
 
 function generate(text: string, options?: any, extraDefs: string = "") {
-  const schema = transformASTSchema(testSchema, [
+  const relaySchema = transformASTSchema(testSchema, [
     ...RelayIRTransforms.schemaExtensions,
     extraDefs
   ]);
-  const { definitions } = parseGraphQLText(schema, text);
-  const compilerSchema = Schema.DEPRECATED__create(testSchema, schema);
-  return new GraphQLCompilerContext(testSchema, schema)
+  const { definitions } = parseGraphQLText(relaySchema, text);
+  const compilerSchema = Schema.DEPRECATED__create(testSchema, relaySchema);
+  return new GraphQLCompilerContext(compilerSchema)
     .addAll(definitions)
     .applyTransforms(RelayFlowGenerator.transforms)
     .documents()
