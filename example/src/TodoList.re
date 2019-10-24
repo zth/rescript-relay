@@ -39,7 +39,7 @@ let make = (~query as queryRef) => {
   let todoListData = TodoListFragment.use(queryRef);
 
   let (newTodoText, setNewTodoText) = React.useState(() => "");
-  let (mutate, mutationStatus) = AddTodoMutation.use();
+  let (mutate, mutationStatus, resetMutationState) = AddTodoMutation.use();
 
   <div className="card">
     <div className="card-body">
@@ -87,6 +87,7 @@ let make = (~query as queryRef) => {
           )
           |> Js.Promise.then_(_ => {
                setNewTodoText(_ => "");
+               resetMutationState();
                Js.Promise.resolve();
              })
           |> ignore;

@@ -27,7 +27,7 @@ module Fragment = [%relay.fragment
 [@react.component]
 let make = (~query as queryRef) => {
   let ReasonRelay.{data, hasNext, isLoadingNext, loadNext} =
-    Fragment.useLegacyPagination(queryRef);
+    Fragment.usePagination(queryRef);
 
   <div className="card">
     <div className="card-body">
