@@ -7,12 +7,8 @@
 
 module.exports = {
   docs: {
-    Introduction: [
-      "introduction",
-      "a-relay-primer",
-      "philosophy",
-      "getting-started"
-    ],
+    Introduction: ["start-here", "getting-started"],
+    Guides: ["making-queries", "refetching-data"],
     "API Reference": [
       "relay-environment",
       "network-layer",
@@ -25,7 +21,6 @@ module.exports = {
       "enums",
       "unions",
       "the-compiler"
-    ],
-    Guides: []
+    ]
   }
 };

@@ -19,29 +19,25 @@ const features = [
     imageUrl: "img/undraw_docusaurus_mountain.svg",
     description: (
       <>
-        Convenient and fully type-safe interaction with Relay through ReasonML.
+        Combining Relay's type-safety-first approach with ReasonML's incredible
+        type system and inference makes for a great developer experience.
       </>
     )
   },
   {
-    title: <>Focus on What Matters</>,
+    title: <>Batteries Included</>,
     imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        ReasonRelay brings tools and utilities to make common patterns in Relay
+        as easy as possible.
       </>
     )
   },
   {
-    title: <>Powered by React</>,
+    title: <>...</>,
     imageUrl: "img/undraw_docusaurus_react.svg",
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
-    )
+    description: <>TBD.</>
   }
 ];
 
@@ -63,7 +59,7 @@ function Home() {
                 "button button--outline button--secondary button--lg",
                 styles.getStarted
               )}
-              to={withBaseUrl("docs/doc1")}
+              to={withBaseUrl("docs/start-here")}
             >
               Get Started
             </Link>
