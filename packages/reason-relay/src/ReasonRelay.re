@@ -37,6 +37,19 @@ let cleanObjectFromUndefined = [%bs.raw
 |}
 ];
 
+// Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
+let cleanVariables = [%bs.raw
+  {|
+  function cleanVariables(variables) {
+    if (typeof variables !== "object" || variables == null) {
+      return {};
+    }
+
+    return variables;
+  }
+|}
+];
+
 module ReactSuspenseConfig = {
   type t = {
     .
@@ -559,7 +572,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
       _useQuery(
         C.query,
-        variables,
+        variables |> cleanVariables,
         {
           "fetchKey": fetchKey,
           "fetchPolicy": fetchPolicy |> mapFetchPolicy,
@@ -588,7 +601,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       _preloadQuery(
         environment,
         C.query,
-        variables,
+        variables |> cleanVariables,
         {
           "fetchKey": fetchKey,
           "fetchPolicy": fetchPolicy |> mapFetchPolicy,
@@ -676,7 +689,7 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
       fragmentData,
       (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         refetchFn(
-          variables |> cleanObjectFromUndefined,
+          variables |> cleanVariables |> cleanObjectFromUndefined,
           makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
         ),
     );
@@ -886,7 +899,7 @@ module MakeUseMutation = (C: MutationConfig) => {
         _commitMutation(
           environment,
           {
-            "variables": variables,
+            "variables": variables |> cleanVariables,
             "mutation": C.node,
             "onCompleted":
               Some(
@@ -940,7 +953,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
       _commitMutation(
         environment,
         {
-          "variables": variables,
+          "variables": variables |> cleanVariables,
           "mutation": C.node,
           "onCompleted":
             Some(
@@ -1011,7 +1024,7 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       environment,
       {
         "subscription": C.node,
-        "variables": variables,
+        "variables": variables |> cleanVariables,
         "onCompleted": onCompleted,
         "onError": onError,
         "onNext": onNext,

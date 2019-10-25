@@ -35,6 +35,7 @@ let storeRootType: string;
  */
 
 let cleanObjectFromUndefined: jsObj('a) => jsObj('a);
+let cleanVariables: 'a => 'a;
 
 /**
  * Experimental stuff
