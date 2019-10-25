@@ -12,6 +12,11 @@ let resolveNestedRecord:
   (~rootRecord: option(ReasonRelay.RecordProxy.t), ~path: list(string)) =>
   option(ReasonRelay.RecordProxy.t);
 
+/** Tries to return a record from a nested path of linked records, starting from the root. */;
+let resolveNestedRecordFromRoot:
+  (~store: ReasonRelay.RecordSourceSelectorProxy.t, ~path: list(string)) =>
+  option(ReasonRelay.RecordProxy.t);
+
 /** Helpers for handling connections. */
 type insertAt =
   | Start

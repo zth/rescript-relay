@@ -17,16 +17,59 @@ let collectConnectionNodes = obj =>
   };
 
 /**
-   * resolveNestedRecords
-   */
-[@bs.module "relay-utils"]
-external _resolveNestedRecord:
-  (option(RecordProxy.t), array(string)) => Js.Nullable.t(RecordProxy.t) =
-  "resolveNestedRecord";
+ * resolveNestedRecord
+ */
 
-let resolveNestedRecord = (~rootRecord, ~path) =>
-  _resolveNestedRecord(rootRecord, path->Belt.List.toArray)
-  |> Js.Nullable.toOption;
+let resolveNestedRecord =
+    (~rootRecord: option(ReasonRelay.RecordProxy.t), ~path: list(string)) => {
+  let currentRecord = ref(rootRecord);
+  let pathLength = List.length(path);
+
+  switch (pathLength) {
+  | 0 => ()
+  | _ =>
+    for (i in 0 to pathLength - 1) {
+      let currentPath = path->Belt.List.get(i);
+      switch (currentRecord^, currentPath) {
+      | (Some(record), Some(currentPath)) =>
+        currentRecord :=
+          record->ReasonRelay.RecordProxy.getLinkedRecord(
+            ~name=currentPath,
+            ~arguments=None,
+          )
+      | _ => currentRecord := None
+      };
+    }
+  };
+
+  currentRecord^;
+};
+
+/**
+ * resolveNestedRecordFromRoot
+ */
+
+let resolveNestedRecordFromRoot = (~store, ~path: list(string)) =>
+  switch (path) {
+  | [] => None
+  | [rootRecordPath] =>
+    switch (
+      store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
+        ~fieldName=rootRecordPath,
+      )
+    ) {
+    | Some(rootRecord) => Some(rootRecord)
+    | None => None
+    }
+  | [rootRecordPath, ...restPath] =>
+    resolveNestedRecord(
+      ~rootRecord=
+        store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
+          ~fieldName=rootRecordPath,
+        ),
+      ~path=restPath,
+    )
+  };
 
 /**
  * Handling nodes in connections
