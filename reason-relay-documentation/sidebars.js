@@ -21,6 +21,7 @@ module.exports = {
       "enums",
       "unions",
       "the-compiler"
-    ]
+    ],
+    "Tips & tricks": ["quirks-of-reason-relay"]
   }
 };

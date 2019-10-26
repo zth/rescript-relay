@@ -4,11 +4,22 @@ title: Getting Started with Reason Relay
 sidebar_label: Getting Started
 ---
 
-Getting started with ReasonRelay is much like getting started with Relay, with a few additional steps.
+Relay is made up of two parts:
+
+1. The framework Relay that runs on the client and integrates with React.
+2. The _Relay compiler_, that takes the GraphQL definitions you write and generate artifacts that Relay uses at runtime.
+
+This means that the workflow for using Relay (and ReasonRelay by extension) is:
+
+1. You write Relay code
+2. The compiler finds and compiles your Relay code
+3. Repeat
+
+You really don't need to care too much about the generated artifacts though (ReasonRelay hides them pretty well from you), but remember the compiler! It needs to run. Luckily it's fast and it has an excellent watch mode.
 
 ## Installation
 
-First things first - ReasonRelay _requires BuckleScript 6_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, but you probably figured that out already.
+First things first - ReasonRelay _requires BuckleScript 6_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, but you probably figured that out already. Currently we depend on Relay version 7. Lets start by installing the dependencies:
 
 ```bash
 # Add reason-relay and dependencies to the project
@@ -27,34 +38,33 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 
 ## Configuring Relay
 
-Now, we're going to configure Relay. Add a `relay.config.js` to your project root with the following in it:
+Lets configure Relay! Add a `relay.config.js` to your project root with the following in it:
 
 ```js
 // relay.config.js
 module.exports = {
   src: "./src", // Path to the folder containing your Reason files
-  schema: "./schema.graphql", // Path to the schema.graphql you've exported from your API
+  schema: "./schema.graphql", // Path to the schema.graphql you've exported from your API. Don't know what this is? run `npx get-graphql-schema http://path/to/my/graphql/server > schema.graphql` in your root
   artifactDirectory: "./src/__generated__" // The directory where all generated files will be emitted
 };
 ```
 
-All configuration options can be seen by running `yarn relay-compiler --help` in your project. Please note that ReasonRelay enforces two things that RelayJS does not enforce:
+> All configuration options can be seen by running `yarn relay-compiler --help` in your project.
+
+Please note that ReasonRelay enforces two things that RelayJS does not enforce:
 
 1. You must provide an `artifactDirectory`.
 2. You cannot provide your own language plugin.
 
 You can [read more about the Relay compiler here](https://relay.dev/docs/en/graphql-in-relay.html#relay-compiler).
 
-### Development cycle of using Relay
+#### Tangent: A short introduction of the Relay Compiler
 
-Relay has a compiler that's responsible for taking all GraphQL operations defined in your code, analyze their relationships, check their validity, and compile them to generated files with thin artifacts that's what Relay actually use in runtime. Therefore, developing with Relay looks like this:
+Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships + check their validity, and compile them to generated files containing optimized artifacts that's what Relay actually use in runtime.
 
-1. Write your Relay-code (your GraphQL operations)
-2. Run the Relay Compiler
+In addition to emitting runtime artifacts, the compiler also emits ReasonML types describing your operations and their relationships. ReasonRelay takes these types and uses them to enforce type safety.
 
-In addition to emitting runtime artifacts, the compiler also emits ReasonML types describing your operations and their relationships. So, remember the compiler! It needs to run. Luckily it's fast and it can be put in watch mode. More about that below.
-
-> The ahead of time compilation is actually one of the things that make Relay great - it forces you to write GraphQL that can be statically analyzed, and therefore as much work as possible can be pushed from runtime to compile time, meaning that Relay can stay lean and performant.
+You really don't have to think about the generated artifacts as ReasonRelay does the heavy lifting of using them for you, but if you're interested, have a look at the files in your `artifactDirectory`.
 
 ## Setting up the Relay environment
 
@@ -77,6 +87,8 @@ let environment =
 
 `fetchQuery` has the signature `ReasonRelay.Network.fetchFunctionPromise`, and you can find [an example of how that can look here in the example folder](https://github.com/zth/reason-relay/blob/master/example/src/RelayEnv.re).
 
+## Almost ready to make some queries!
+
 There, we now have a Relay environment! The last thing we need to do before we can start making queries is to put our `environment` into React's context by wrapping our app in `<ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>` You're encouraged to put the context provider as far up the tree as possible. Here's an example:
 
 ```reason
@@ -88,4 +100,4 @@ ReactDOMRe.renderToElementWithId(
 );
 ```
 
-There, we're actually all set and ready to go! Next thing up is to [make your first query](querying).
+There, we're all set and ready to go! Next thing up is to [make your first query](querying).

@@ -34,17 +34,25 @@ let make = (~userId) => {
 }
 ```
 
-This is what a query definition looks like in ReasonRelay. The PPX together with the compiler will then take that definition and transform that into a module that exposes a number of hooks and functions to use your query in various ways. You can [read more about exactly what's exposed here](#api-reference).
+This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways. You can [read more about exactly what's exposed here](#api-reference).
 
-For this particular example, we're using `Query.use`, which is a React hook that will _deliver the query data to the component_. It's integrated with suspense, which means that it'll suspend your component if the data's not already there.
+For this particular example, we're using `Query.use`, which is a React hook that will _deliver the query data to the component_. It's integrated with suspense, which means that it'll suspend your component if the data's not already there. The query will be made again if you change your variables, and there's a bunch of things (like how you want Relay to resolve your data, from network or the store only) you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
+
+### Type-safety
+
+Everything is fully type-safe by default, which means that `variables` and the type of `queryData` will match what you define in your GraphQL operation. This also means that the Reason compiler will guide you through what to pass to which function, and how to use the data you get back.
+
+## Our first query is done
+
+There, that's all it takes to do your first query! Continue reading on this page for more information about querying (including a full [API reference](#api-reference)), or continue to the next part
 
 ## Preloaded queries
 
-Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your data until that component actually renders. There's a concept in Relay called _preloaded queries_, which means that you start _preloading your query_ as soon as you can, rather than waiting for UI to render, just to trigger a query. The rationale is that you want to start fetching your data as soon as you possibly can, to increase the likelihood of it already being there when your UI actually renders.
+Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your data until that component actually renders. There's a concept in Relay called _preloaded queries_, which means that you start _preloading your query_ as soon as you can, rather than waiting for UI to render, just to trigger a query. The rationale is that you want to increase the likelihood of your data already being there when your UI actually renders.
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `[%relay.query]` node automatically generates a `Query.preload()` function that you can call with the same parameters as the `use` hook (plus you'll need to supply `environment` as `preload` runs outside of React's context). `preload` gives you back a token, which you can then pass to `Query.usePreloaded(tokenHere)`. This will either suspend the component (if the data's not ready) or render it right away if the data's already there.
+In ReasonRelay, every `[%relay.query]` node automatically generates a `Query.preload()` function that you can call with the same parameters as the `use` hook (plus passing your `environment`, as `preload` runs outside of React's context). `preload` gives you back a reference, which you can then pass to `Query.usePreloaded(reference)`. This will either suspend the component (if the data's not ready) or render it right away if the data's already there.
 
 A very useful pattern that's encouraged over using the lazy approach. In short, use `preload` as much as you can where it makes sense.
 
