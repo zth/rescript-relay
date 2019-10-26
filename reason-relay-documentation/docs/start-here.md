@@ -39,4 +39,4 @@ You're also encouraged to read [this excellent part of the Relay documentation](
 
 ## The next step
 
-Ok, enough introduction! Let's move on to [getting started](getting-started) and start setting ReasonRelay up in your project.
+Ok, enough introduction! Let's move on to [getting started](getting-started) and start setting up ReasonRelay in your project.

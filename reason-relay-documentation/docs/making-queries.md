@@ -40,11 +40,9 @@ let make = (~userId) => {
 }
 ```
 
-This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways. You can [read more about exactly what's exposed here](#api-reference).
+This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)).
 
-For this particular example, we're using `Query.use`, which is a React hook that will _dispatch the query to the server and deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
-
-### Type-safety
+For this particular example, we're going with `Query.use`, which is a React hook that will _dispatch the query to the server and then deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will be re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
 
 Interacting with your query is fully type-safe, which means that `variables` and the type of `queryData` will match what you define in your GraphQL operation. This also means that the ReasonML compiler will guide you through what to pass to which function, and how to use the data you get back.
 
@@ -85,7 +83,7 @@ _Please note that this function must be called with an ending unit `()` if not a
 
 ### `fetch`
 
-Sometimes you just need the query data outside of React. `fetch` Let's you make the query and get the data back in a promise.
+Sometimes you just need the query data outside of React. `fetch` lets you make the query and get the data back in a promise.
 
 Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching data](refetching-data).
 
