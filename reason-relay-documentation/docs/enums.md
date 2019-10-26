@@ -4,4 +4,4 @@ title: Enums
 sidebar_label: Enums
 ---
 
-_WIP_.
+_This page is a WIP._

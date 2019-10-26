@@ -8,20 +8,22 @@
 module.exports = {
   docs: {
     Introduction: ["start-here", "getting-started"],
-    Guides: [
+    "Using Reason Relay": [
       "making-queries",
       "using-fragments",
       "mutations",
-      "refetching-data"
-    ],
-    "API Reference": [
-      "relay-environment",
-      "network-layer",
+      "refetching-data",
+      "pagination",
       "subscriptions",
       "enums",
-      "unions",
-      "the-compiler"
+      "unions"
     ],
-    "Tips & tricks": ["quirks-of-reason-relay"]
+    "API Reference": ["api-reference"],
+    Guides: [
+      "using-with-hasura",
+      "using-with-schemas-that-dont-conform-to-the-relay-spec",
+      "coming-from-reason-apollo"
+    ],
+    Misc: ["quirks-of-reason-relay", "examples"]
   }
 };

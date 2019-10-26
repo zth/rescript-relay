@@ -4,23 +4,39 @@ title: Start Here
 sidebar_label: Start Here
 ---
 
-Welcome to ReasonRelay! This section will introduce you to ReasonRelay, it's current state and what to expect.
+ReasonRelay is a way to use [Relay](https://relay.dev), a JavaScript client-side framework for building data-driven applications using GraphQL, together with [ReasonML](https://reasonml.github.io/). This page will briefly introduce the documentation, how it's structured and what to expect.
 
-If you feel you already know Reason, React (including Suspense + Concurrent Mode) and Relay, and just want to jump into the actual code, you can [go to getting started right away](getting-started).
+### A starting pointer
+
+ReasonRelay tries to be a fairly thin layer on top of Relay. This means that if you don't know Relay that well, most of your time will likely be spent _trying to understand Relay_. That's why there's quite a lot of recommended background reading from the [Relay documentation](https://relay.dev) spread out through this documentation.
+
+And, before we start, the following is worth keeping in mind:
+_ReasonRelay is to be seen as experimental software until React and Relay release the experimental APIs we rely on as stable_. And since we're early in the life of ReasonRelay, _breaking changes in some of the APIs may occur_ as we iterate on them.
+
+With that said, the _goal is to make ReasonRelay a viable and attractive alternative for doing GraphQL with ReasonML in production_. That means that we'll do what we can to improve the bindings in a sane way without breaking things.
+
+## Structure
+
+The documentation is roughly divided into 3 parts:
+
+##### 1. A walkthrough setting up ReasonRelay and introducing the main features
+
+Each page in the walkthrough will introduce a concept from Relay and explain how to achieve the same thing in ReasonRelay. Each page will also have a section of _recommended background reading_ that you're encouraged to look into if you're not familiar with the concepts explained.
+
+##### 2. An API reference covering the full ReasonRelay API surface
+
+This will detail all modules, functions and concepts of ReasonRelay in good, old plain table form.
+
+##### 3. Guides, tips and tricks
+
+Here you'll find resources for making life with ReasonRelay easier.
 
 ## This is bleeding edge; React Suspense and Concurrent Mode, experimental Relay API's
 
-The Relay API's we bind to are currently experimental, and implemented using React's experimental Suspense and Concurrent Mode features. You're encouraged to [read this section of the React documentation](https://reactjs.org/docs/concurrent-mode-intro.html) explaining Suspense and Concurrent Mode. This documentation will assume familiarity with both.
+The Relay API's we bind to are currently experimental, and implemented using React's experimental Suspense and Concurrent Mode features. You're encouraged to [read this section of the React documentation](https://reactjs.org/docs/concurrent-mode-intro.html) explaining Suspense and Concurrent Mode. This documentation will assume some familiarity with both.
 
 You're also encouraged to read [this excellent part of the Relay documentation](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay), guiding you through thinking in Relay and using the hooks API that's what ReasonRelay binds to.
 
-_This means that the current version of ReasonRelay is to be seen as experimental until the point where React and Relay release their experimental API's as stable_. This is worth keeping in mind.
+## The next step
 
-## An opinionated binding to Relay
-
-ReasonRelay does _not_ aim to be a 1-to-1 binding of all of Relay. Rather, we take the following approach:
-
-- Focus on binding the parts that lend themselves well to ReasonML's type system. In our case, this means _we only bind Relay's hooks, not their higher-order components_.
-- Include tools and utilities that help make life with Relay easier. This includes simplifying common patterns like updating the store, dealing with connections and so on.
-
-This means there's quite a large part of the API surface we won't cover. Rest assured though, what we won't cover will only be _additional ways of doing the same thing_.
+Ok, enough introduction! Let's move on to [getting started](getting-started) and start setting ReasonRelay up in your project.

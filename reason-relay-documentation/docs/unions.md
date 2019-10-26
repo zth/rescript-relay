@@ -4,4 +4,4 @@ title: Unions
 sidebar_label: Unions
 ---
 
-_WIP_.
+_This page is a WIP._
