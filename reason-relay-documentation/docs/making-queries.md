@@ -44,7 +44,7 @@ Everything is fully type-safe by default, which means that `variables` and the t
 
 ## Our first query is done
 
-There, that's all it takes to do your first query! Continue reading on this page for more information about querying (including a full [API reference](#api-reference)), or continue to the next part
+There, that's all it takes to do your first query! Continue reading on this page for more information about querying (including a full [API reference](#api-reference)), or continue to the next part on [using fragments](using-fragments).
 
 ## Preloaded queries
 

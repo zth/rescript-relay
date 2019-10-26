@@ -8,15 +8,15 @@
 module.exports = {
   docs: {
     Introduction: ["start-here", "getting-started"],
-    Guides: ["making-queries", "refetching-data"],
+    Guides: [
+      "making-queries",
+      "using-fragments",
+      "mutations",
+      "refetching-data"
+    ],
     "API Reference": [
       "relay-environment",
       "network-layer",
-      "querying",
-      "fragments",
-      "mutations",
-      "refetching",
-      "pagination",
       "subscriptions",
       "enums",
       "unions",
