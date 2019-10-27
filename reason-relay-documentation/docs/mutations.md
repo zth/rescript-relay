@@ -4,8 +4,6 @@ title: Mutations
 sidebar_label: Mutations
 ---
 
-_This page is a WIP_.
-
 #### Recommended background reading
 
 - [Queries and mutations in GraphQL](https://graphql.org/learn/queries/)
@@ -42,17 +40,13 @@ let make = (...) => {
                 "input": {
                     "clientMutationId": None,
                     "id": todoItem##id,
-                    "text": todoItem##text,
+                    "text": newText,
                 },
             },
             (),
         )
         |> Js.Promise.then_(res => {
                 Js.log(res);
-                Js.Promise.resolve();
-            })
-        |> Js.Promise.catch(err => {
-                Js.log(err);
                 Js.Promise.resolve();
             })
         |> ignore
@@ -70,7 +64,7 @@ There's lots of code stripped in this example, but hopefully you get the gist of
 3. We get back a `Js.Promise.t(response)` - a promise carrying the mutation result.
 4. We end with an `ignore`, because we don't care about the return value right now, and `onClick` expects `unit` to be returned.
 
-So, that's a very basic mutation. And, since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component that uses that particular todo item's `text`.
+Since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component using that.
 Neat!
 
 But, there's plenty more to mutations than this. Let's move along and look at some more advanced uses of mutations.
@@ -121,15 +115,9 @@ So, what's going on here?
 
 There, now we have a basic optimistic update set up! Instead of waiting for the mutation to complete, Relay will update all parts of the UI using that particular todo item's `text` field right away, and it'll roll back to the old value appropriately if the mutation fails.
 
-But we picked a pretty simple case for optimistic updates here, didn't we? Let's move on to more advanced optimistic updates.
+## More information
 
-## Advanced optimistic updates
-
-Updating objects is simple enough in Relay - you don't really have to do anything in particular for Relay to sync your UI as long as you get back the updated fields in your response. But what about when you want to add or remove things from the store optimistically? Deleting an item, adding an item. There are multiple common cases where you'd want to do a more advanced type of optimistic update.
-
-_This section is a WIP_.
-
-Check out the [Relay docs on optimistic updates](https://relay.dev/docs/en/mutations#optimistic-updates) for more information on optimistic updates in Relay.
+There's plenty of more advanced things you can do with optimistic updates in Relay. We won't be covering them in detail here, but you're encouraged to read [the Relay documentation on optimistic updates here](https://relay.dev/docs/en/mutations#optimistic-updates), and then check out [interacting with the store in ReasonRelay](interacting-with-the-store).
 
 ## API Reference
 
