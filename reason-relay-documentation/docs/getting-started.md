@@ -62,7 +62,7 @@ Add a `relay.config.js` to your project root with the following in it:
 // relay.config.js
 module.exports = {
   src: "./src", // Path to the folder containing your Reason files
-  schema: "./schema.graphql", // Path to the schema.graphql you've exported from your API. Don't know what this is? run `npx get-graphql-schema http://path/to/my/graphql/server > schema.graphql` in your root
+  schema: "./schema.graphql", // Path to the schema.graphql you've exported from your API. Don't know what this is? It's a saved introspection of what your schema looks like. You can run `npx get-graphql-schema http://path/to/my/graphql/server > schema.graphql` in your root to generate it
   artifactDirectory: "./src/__generated__" // The directory where all generated files will be emitted
 };
 ```
@@ -81,7 +81,7 @@ We'll also add a script to our `package.json` to run the Relay compiler:
 ...
 "scripts": {
   "relay": "reason-relay-compiler",
-  "relay:watch": "reason-relay-compiler --watch",
+  "relay:watch": "reason-relay-compiler --watch"
 }
 ```
 
@@ -91,7 +91,7 @@ You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a
 
 #### Tangent: A short introduction of the Relay Compiler
 
-Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that's what Relay actually use in runtime to make queries and understand the responses.
+Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that Relay uses at runtime to make queries and understand the response.
 
 In addition to emitting runtime artifacts, the compiler also _emits ReasonML types through ReasonRelay's language plugin for the compiler_, describing your operations and their relationships. ReasonRelay takes these types and uses them to enforce type safety.
 
@@ -101,11 +101,54 @@ You can [read more about the Relay compiler here](https://relay.dev/docs/en/grap
 
 ## Setting up the Relay environment
 
-Finally time for some actual code. Next thing is setting up the Relay environment. The Relay environment consists of a network layer responsible for dispatching your GraphQL queries, and a store responsible for storing data and supplying it to your components. Setting it up looks like this:
+Finally time for some actual code. Next thing is setting up the Relay environment. The Relay environment consists of a network layer responsible for dispatching your GraphQL queries, and a store responsible for storing data and supplying it to your components.
+
+You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `bs-fetch` for fetching, which you can find [installation instructions for here](https://github.com/reasonml-community/bs-fetch)):
 
 ```reason
-/* Check out an example of a fetchQuery function in the examples folder (link in the text below). */
-let fetchQuery = ...;
+/* RelayEnv.re */
+// This is just a custom exception to indicate that something went wrong.
+exception Graphql_error(string);
+
+/**
+ * A standard fetch that sends our operation and variables to the
+ * GraphQL server, and then decodes and returns the response.
+ */
+let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
+  (operation, variables, _cacheConfig) =>
+    Fetch.(
+      fetchWithInit(
+        "http://localhost:4000/graphql",
+        Fetch.RequestInit.make(
+          ~method_=Post,
+          ~body=
+            Js.Dict.fromList([
+              ("query", Js.Json.string(operation##text)),
+              ("variables", variables),
+            ])
+            |> Js.Json.object_
+            |> Js.Json.stringify
+            |> Fetch.BodyInit.make,
+          ~headers=
+            Fetch.HeadersInit.make({
+              "content-type": "application/json",
+              "accept": "application/json",
+            }),
+          (),
+        ),
+      )
+      |> Js.Promise.then_(resp =>
+           if (Response.ok(resp)) {
+             Response.json(resp);
+           } else {
+             Js.Promise.reject(
+               Graphql_error(
+                 "Request failed: " ++ Response.statusText(resp),
+               ),
+             );
+           }
+         )
+    );
 
 let network =
   ReasonRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ());
@@ -117,8 +160,6 @@ let environment =
     (),
   );
 ```
-
-`fetchQuery` has the signature `ReasonRelay.Network.fetchFunctionPromise`, and you can find [an example of how a fetchQuery function can look here in the example folder](https://github.com/zth/reason-relay/blob/master/example/src/RelayEnv.re).
 
 ## Almost ready to make our first query
 

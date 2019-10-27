@@ -8,10 +8,8 @@ ReasonRelay is a way to use [Relay](https://relay.dev), a JavaScript client-side
 
 ### A starting pointer
 
-ReasonRelay tries to be a fairly thin layer on top of Relay. This means that if you don't know Relay that well, most of your time will likely be spent _trying to understand Relay_. That's why there's quite a lot of recommended background reading from the [Relay documentation](https://relay.dev) spread out through this documentation.
-
-And, before we start, the following is worth keeping in mind:
-_ReasonRelay is to be seen as experimental software until React and Relay release the experimental APIs we rely on as stable_. And since we're early in the life of ReasonRelay, _breaking changes in some of the APIs may occur_ as we iterate on them.
+The following is worth keeping in mind:
+ReasonRelay is to be seen as experimental software until React and Relay release the experimental APIs we rely on as stable. And since we're early in the life of ReasonRelay, breaking changes in some of the APIs may occur as we iterate on them.
 
 With that said, the _goal is to make ReasonRelay a viable and attractive alternative for doing GraphQL with ReasonML in production_. That means that we'll do what we can to improve the bindings in a sane way without breaking things.
 
