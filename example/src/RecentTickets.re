@@ -6,8 +6,8 @@ module Fragment = [%relay.fragment
       first: {type: "Int!", defaultValue: 2},
       after: {type: "String!", defaultValue: ""}
     ) {
-    tickets(first: $first, after: $after)
-      @connection(key: "RecentTickets_tickets")
+    ticketsConnection(first: $first, after: $after)
+      @connection(key: "RecentTickets_ticketsConnection")
     {
       pageInfo {
         endCursor
@@ -44,7 +44,7 @@ let make = (~query as queryRef) => {
             </tr>
           </thead>
           <tbody>
-            {data##tickets
+            {data##ticketsConnection
              |> ReasonRelayUtils.collectConnectionNodes
              |> Array.map(ticket => <SingleTicket key=ticket##id ticket />)
              |> React.array}

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "webpack -w",
+    "start": "webpack-dev-server",
     "relay": "reason-relay-compiler"
   },
   "dependencies": {
@@ -14,7 +14,7 @@
     "graphql": "^14.5.8",
     "react-relay": "^0.0.0-experimental-29f4e27d",
     "reason-react": "^0.7.0",
-    "reason-relay": "0.3.0-relay-experimental",
+    "reason-relay": "0.4.0",
     "relay-compiler": "7.0.0",
     "relay-config": "7.0.0",
     "relay-runtime": "7.0.0",
@@ -22,8 +22,10 @@
   },
   "devDependencies": {
     "bs-platform": "6.2.1",
+    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0"
   },
   "author": "bootstrapdash",
   "url": "http://www.bootstrapdash.com/",

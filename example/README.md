@@ -12,7 +12,7 @@ npm install -g graphql-client-example-server && graphql-client-example-server
 
 ### Run client
 
-This workflow will be improved soon, but right now you'll need to start 3 separate processes:
+You'll need to start 3 separate processes:
 
 1. The Relay compiler
    `yarn relay --watch`
@@ -23,4 +23,4 @@ This workflow will be improved soon, but right now you'll need to start 3 separa
 3. Webpack
    `yarn start`
 
-...and finally, there's no web server, so open up `index.html` in your favorite browser, right from the file system.
+...this will start a development server through webpack. Start coding away!

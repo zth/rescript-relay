@@ -27,7 +27,7 @@ let make = (~title, ~subText, ~icon, ~variant) => {
   <div className={"card card-img-holder text-white " ++ variantAsBgClass}>
     <div className="card-body">
       <img
-        src="assets/images/dashboard/circle.svg"
+        src="/images/dashboard/circle.svg"
         className="card-img-absolute"
         alt="circle-image"
       />

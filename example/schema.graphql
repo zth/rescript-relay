@@ -60,8 +60,10 @@ type Query {
     """The ID of an object"""
     id: ID!
   ): Node
+  userById(id: ID!): User
   siteStatistics: SiteStatistics!
-  tickets(status: TicketStatus, after: String, first: Int, before: String, last: Int): TicketConnection!
+  ticketsConnection(status: TicketStatus, after: String, first: Int, before: String, last: Int): TicketConnection!
+  tickets(status: TicketStatus, limit: Int!, offset: Int!): [Ticket]!
   todosConnection(after: String, first: Int, before: String, last: Int): TodoItemConnection!
   todos(limit: Int!, offset: Int!): [TodoItem]!
 }

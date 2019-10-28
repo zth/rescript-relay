@@ -6,7 +6,7 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 type fragment = {
   .
-  "tickets": {
+  "ticketsConnection": {
     .
     "edges":
       Js.Nullable.t(
@@ -36,7 +36,7 @@ module Unions = {};
 let node: operationType = [%bs.raw
   {| (function(){
 var v0 = [
-  "tickets"
+  "ticketsConnection"
 ];
 return {
   "kind": "Fragment",
@@ -81,8 +81,8 @@ return {
   "selections": [
     {
       "kind": "LinkedField",
-      "alias": "tickets",
-      "name": "__RecentTickets_tickets_connection",
+      "alias": "ticketsConnection",
+      "name": "__RecentTickets_ticketsConnection_connection",
       "storageKey": null,
       "args": null,
       "concreteType": "TicketConnection",
