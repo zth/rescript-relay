@@ -6,7 +6,7 @@ external _useTransition:
     "busyDelayMs": option(int),
     "busyMinDurationMs": option(int),
   } =>
-  (unit => unit, bool) =
+  ((unit => unit) => unit, bool) =
   "useTransition";
 
 let useTransition = (~timeoutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) =>
@@ -45,11 +45,15 @@ let useDeferredValue =
 external _getElementById: string => option(Dom.element) =
   "document.getElementById";
 
-[@bs.module "react-dom"]
-external createRoot: (ReasonReact.reactElement, Dom.element) => unit =
-  "createRoot";
+module ConcurrentModeRoot = {
+  type t = {. "render": [@bs.meth] (React.element => unit)};
+  let render = (t: t, element) => t##render(element);
+};
 
-let createRootAtElementWithId = (reactElement, id) =>
+[@bs.module "react-dom"]
+external createRoot: Dom.element => ConcurrentModeRoot.t = "createRoot";
+
+let renderConcurrentRootAtElementWithId = (reactElement, id) =>
   switch (_getElementById(id)) {
   | None =>
     raise(
@@ -59,7 +63,8 @@ let createRootAtElementWithId = (reactElement, id) =>
         ++ " found in the HTML.",
       ),
     )
-  | Some(element) => createRoot(reactElement, element)
+  | Some(element) =>
+    createRoot(element)->ConcurrentModeRoot.render(reactElement)
   };
 
 module Suspense = {
@@ -72,7 +77,13 @@ module Suspense = {
 
 module SuspenseList = {
   type revealOrder = [ | `forwards | `backwards | `together];
-  type tail = [ | `collapsed | `hidden];
+
+  module Component = {
+    [@react.component] [@bs.module "react"]
+    external make:
+      (~children: React.element, ~revealOrder: string) => React.element =
+      "SuspenseList";
+  };
 
   let mapRevealOrder = revealOrder =>
     switch (revealOrder) {
@@ -81,27 +92,9 @@ module SuspenseList = {
     | `together => "together"
     };
 
-  let mapTail = tail =>
-    switch (tail) {
-    | `collapsed => "collapsed"
-    | `hidden => "hidden"
-    };
-
-  [@react.component] [@bs.module "react"]
-  external _make:
-    (~children: React.element, ~revealOrder: string, ~tail: string=?) =>
-    React.element =
-    "Suspense";
-
   [@react.component]
-  let make = (~children, ~revealOrder, ~tail=?) =>
-    _make({
-      "children": children,
-      "revealOrder": revealOrder |> mapRevealOrder,
-      "tail":
-        switch (tail) {
-        | Some(tail) => Some(tail |> mapTail)
-        | None => None
-        },
-    });
+  let make = (~children, ~revealOrder: revealOrder) =>
+    <Component revealOrder={revealOrder |> mapRevealOrder}>
+      children
+    </Component>;
 };

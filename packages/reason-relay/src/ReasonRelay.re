@@ -740,7 +740,18 @@ external _usePaginationFragment:
     "hasPrevious": bool,
     "isLoadingNext": bool,
     "isLoadingPrevious": bool,
-    "refetch": refetchFnRaw('variables),
+    "refetch":
+      [@bs.meth] (
+        (
+          'variables,
+          {
+            .
+            "fetchPolicy": option(string),
+            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
+          }
+        ) =>
+        unit
+      ),
   } =
   "usePaginationFragment";
 
@@ -756,7 +767,18 @@ external _useBlockingPaginationFragment:
     "hasPrevious": bool,
     "isLoadingNext": bool,
     "isLoadingPrevious": bool,
-    "refetch": refetchFnRaw('variables),
+    "refetch":
+      [@bs.meth] (
+        (
+          'variables,
+          {
+            .
+            "fetchPolicy": option(string),
+            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
+          }
+        ) =>
+        unit
+      ),
   } =
   "useBlockingPaginationFragment";
 
@@ -772,13 +794,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
-        (),
-      /*
-       TODO: Make this work!
-       p##refetch(
-            variables,
-            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
-          ),*/
+        p##refetch(
+          variables,
+          makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+        ),
     };
   };
 
@@ -794,13 +813,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       isLoadingNext: p##isLoadingNext,
       isLoadingPrevious: p##isLoadingPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
-        (),
-      /*
-       TODO: Make this work!
-       p##refetch(
-            variables,
-            makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
-          ),*/
+        p##refetch(
+          variables,
+          makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+        ),
     };
   };
 };

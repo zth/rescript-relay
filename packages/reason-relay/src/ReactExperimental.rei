@@ -1,6 +1,6 @@
 let useTransition:
   (~timeoutMs: int, ~busyDelayMs: int=?, ~busyMinDurationMs: int=?, unit) =>
-  (unit => unit, bool);
+  ((unit => unit) => unit, bool);
 
 let useDeferredValue:
   (
@@ -12,9 +12,15 @@ let useDeferredValue:
   ) =>
   'value;
 
-let createRoot: (ReasonReact.reactElement, Dom.element) => unit;
+module ConcurrentModeRoot: {
+  type t;
+  let render: (t, ReasonReact.reactElement) => unit;
+};
 
-let createRootAtElementWithId: (ReasonReact.reactElement, string) => unit;
+let createRoot: Dom.element => ConcurrentModeRoot.t;
+
+let renderConcurrentRootAtElementWithId:
+  (ReasonReact.reactElement, string) => unit;
 
 module Suspense: {
   [@react.component]
@@ -28,14 +34,9 @@ module Suspense: {
 
 module SuspenseList: {
   type revealOrder = [ | `forwards | `backwards | `together];
-  type tail = [ | `collapsed | `hidden];
 
   [@react.component]
   let make:
-    (
-      ~children: ReasonReact.reactElement,
-      ~revealOrder: revealOrder,
-      ~tail: tail=?
-    ) =>
+    (~children: ReasonReact.reactElement, ~revealOrder: revealOrder) =>
     ReasonReact.reactElement;
 };
