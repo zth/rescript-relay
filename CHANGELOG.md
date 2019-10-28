@@ -1,3 +1,4 @@
 # master
 
-- Added `ReactExperimental` module for binding experimental React APIs like `useTransition`, that're needed for using the experimental Relay APIs.
+- Added `useTransition`, `useDeferredValue`, `<Suspense />`, `<SuspenseList />`, `createRoot` and `createRootAtElementWithId` experimental API bindings to `ReactExperimental`.
+- Added `ReactExperimental` module for binding experimental React APIs.
