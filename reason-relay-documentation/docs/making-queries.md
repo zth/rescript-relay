@@ -85,7 +85,7 @@ _Please note that this function must be called with an ending unit `()` if not a
 
 Sometimes you just need the query data outside of React. `fetch` lets you make the query and get the data back in a promise.
 
-Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching data](refetching-data).
+Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching and loading more data](refetching-and-loading-more-data).
 
 Returns `Js.Promise.t(response)`.
 

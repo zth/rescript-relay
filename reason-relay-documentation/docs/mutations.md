@@ -119,6 +119,10 @@ There, now we have a basic optimistic update set up! Instead of waiting for the 
 
 There's plenty of more advanced things you can do with optimistic updates in Relay. We won't be covering them in detail here, but you're encouraged to read [the Relay documentation on optimistic updates here](https://relay.dev/docs/en/mutations#optimistic-updates), and then check out [interacting with the store in ReasonRelay](interacting-with-the-store).
 
+## The next step
+
+Now would be a good time to have a look at how ReasonRelay handles [enums](enums) and [unions](unions). After that, you should continue by reading up on how to [refetch and load more data](refetching-and-loading-more-data).
+
 ## API Reference
 
 `[%relay.mutation]` is expanded to a module containing the following functions:

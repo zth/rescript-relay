@@ -1,7 +1,7 @@
 ---
-id: refetching-data
-title: Refetching Data
-sidebar_label: Refetching Data
+id: refetching-and-loading-more-data
+title: Refetching and Loading More Data
+sidebar_label: Refetching and Loading More Data
 ---
 
 #### Recommended background reading
@@ -10,7 +10,7 @@ sidebar_label: Refetching Data
 - [A Guided Tour of Relay: Re-Rendering Fragments with Different Data](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#re-rendering-fragments-with-different-data)
 - [React documentation: Suspense for Data Fetching](https://reactjs.org/docs/concurrent-mode-suspense.html)
 
-## Refetching Data
+## Refetching and Loading More Data
 
 > Some of the following features comes with some constraints if your GraphQL server schema does not follow the [Relay specification](https://relay.dev/docs/en/experimental/graphql-server-specification.html). Read more about using ReasonRelay with schemas that don't conform to the Relay specification [here](using-with-schemas-that-dont-conform-to-the-relay-spec).
 

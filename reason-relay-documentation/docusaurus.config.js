@@ -17,7 +17,7 @@ module.exports = {
     navbar: {
       title: "Reason Relay",
       links: [
-        { to: "docs/introduction", label: "Docs", position: "left" },
+        { to: "docs/start-here", label: "Docs", position: "left" },
         { to: "blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/zth/reason-relay",

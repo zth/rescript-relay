@@ -12,7 +12,7 @@ module.exports = {
       "making-queries",
       "using-fragments",
       "mutations",
-      "refetching-data",
+      "refetching-and-loading-more-data",
       "pagination",
       "subscriptions",
       "enums",
@@ -24,6 +24,6 @@ module.exports = {
       "using-with-schemas-that-dont-conform-to-the-relay-spec",
       "coming-from-reason-apollo"
     ],
-    Misc: ["quirks-of-reason-relay", "examples"]
+    Misc: ["the-compiler", "quirks-of-reason-relay", "examples"]
   }
 };

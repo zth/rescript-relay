@@ -11,20 +11,29 @@ sidebar_label: Getting Started
 
 #### Want to follow along with code?
 
-You're encouraged to follow along this walkthrough with a sample project of your own. The easiest way to get started is to clone [the ReasonRelay repository](https://github.com/zth/reason-relay), open the `example` folder and then follow [the instructions](https://github.com/zth/reason-relay/blob/master/example/README.md) to start the example locally.
+You're encouraged to follow along this walkthrough and play with the concepts through actual code if you can. The easiest way to get started is to use the example that's available in the ReasonRelay repository. Do the following:
+
+- Clone [the ReasonRelay repository](https://github.com/zth/reason-relay)
+- Open the `example` folder and then follow [the instructions](https://github.com/zth/reason-relay/blob/master/example/README.md) to start the example locally.
 
 ## Getting Started
 
 Let's get started!
 
-#### A short note on Relay
+#### Concurrent Mode is required
+
+There are currently no official bindings for the React experimental API's in `reason-react`. ReasonRelay therefore ships `ReactExperimental`, a module with bindings to suspense and concurrent mode-related React API's. You're encouraged to use this until there's an official alternative, which likely won't be shipped until React's API's are released as stable.
+
+This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
+
+#### A short note on the workflow of using Relay
 
 You can view Relay as being made up of two parts:
 
 1. The framework Relay that runs on the client and integrates with React.
 2. The _Relay compiler_, that takes the GraphQL definitions you write and generate artifacts _at build time_. These artifacts are then used by Relay at runtime.
 
-This means that the workflow for using ReasonRelay is:
+ReasonRelay adds a thin layer on top of the Relay compiler ([read more about that here](the-compiler)). This means that the workflow for using ReasonRelay is:
 
 1. You write code including GraphQL definitions that Relay will use
 2. The Relay compiler finds and compiles your Relay code
@@ -34,11 +43,14 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 6_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, but you probably figured that out already. Currently we depend on Relay version 7. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 6_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
-# Add reason-relay and dependencies to the project
+# Add React and ReactDOM experimental versions
+yarn add react@experimental react-dom@experimental
 
+# Add reason-relay and dependencies to the project
+# We currently depend on Relay version 7, so install that exact version
 yarn add reason-relay graphql relay-runtime@7.0.0 relay-compiler@7.0.0 react-relay@experimental relay-config@7.0.0
 ```
 
@@ -50,6 +62,26 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 "bs-dependencies": ["reason-react", "reason-relay"],
 ...
 ```
+
+#### Using experimental React versions
+
+You may need to tell `yarn` to prefer the experimental versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `reason-react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
+
+Ensure that only the experimental versions are used by doing the following:
+
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `^0.0.0-experimental-f6b8d31a7` - copy that version number.
+2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
+
+```json
+...
+"resolutions": {
+    "react": "^0.0.0-experimental-f6b8d31a7",
+    "react-dom": "^0.0.0-experimental-f6b8d31a7"
+  }
+}
+```
+
+Remember, the version number for `experimental` releases change pretty often, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
 
 ## Configuring Relay
 
@@ -82,21 +114,13 @@ We'll also add a script to our `package.json` to run the Relay compiler:
 }
 ```
 
-> Notice that we're calling `reason-relay-compiler`, and not `relay-compiler`. This is because there's a few things ReasonRelay need to do (like emitting a `SchemaAssets.re` file [for your enums](enums)) in addition to what the standard Relay compiler does.
+> Notice that we're calling `reason-relay-compiler`, and not `relay-compiler`. This is because ReasonRelay adds a thin layer on top of the regular `relay-compiler`. Read more about [the Relay compiler and how ReasonRelay uses it here](the-compiler).
 
 Now you have two scripts set up; one for running the compiler once, and one for running it in watch-mode.
 
 You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a separate terminal. _Please note that you'll need to be aware of the output from the compiler_ as it will tell you when there are issues you'll need to fix.
 
-#### Tangent: A short introduction of the Relay Compiler
-
-Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that Relay uses at runtime to make queries and understand the response. This means that Relay moves work like parsing and understanding how responses to queries are structured to compile time. A good example of how Relay treats performance as a core feature.
-
-In addition to emitting runtime artifacts, the compiler also _emits ReasonML types through ReasonRelay's language plugin for the compiler_, describing your operations and their relationships. ReasonRelay takes these types and uses them to enforce type safety. This means that Relay and ReasonRelay can _guarantee type-safety_ when interacting with all data, and that you'll get a great developer experience through the tooling that types enable.
-
-As said before, you really don't have to think about the generated artifacts as ReasonRelay does the heavy lifting of using them for you, but if you're interested, have a look at the files in your `artifactDirectory`.
-
-You can [read more about the Relay compiler here](https://relay.dev/docs/en/graphql-in-relay.html#relay-compiler).
+The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how ReasonRelay uses it [here](the-compiler).
 
 ## Setting up the Relay environment
 
@@ -106,7 +130,8 @@ You're encouraged to put this in a separate file like `RelayEnv.re` or similar. 
 
 ```reason
 /* RelayEnv.re */
-// This is just a custom exception to indicate that something went wrong.
+
+/* This is just a custom exception to indicate that something went wrong. */
 exception Graphql_error(string);
 
 /**
@@ -162,11 +187,15 @@ let environment =
 
 ## Almost ready to make our first query
 
-There, we now have a Relay environment! The last thing we need to do before we can start making queries is to put our `environment` into React's context by wrapping our app in a `<ReasonRelay.Context.Provider />`:
+There, we now have a Relay environment! We only have two more things to fix before we can start making queries.
+
+##### 1. Adding our Relay environment to React's context
+
+Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<ReasonRelay.Context.Provider />`:
 
 ```reason
 /* Index.re */
-ReactDOMRe.renderToElementWithId(
+ReactExperimental.renderConcurrentRootAtElementWithId(
   <ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />
   </ReasonRelay.Context.Provider>,
@@ -174,4 +203,10 @@ ReactDOMRe.renderToElementWithId(
 );
 ```
 
-All set and ready to go! Time to [make your first query](making-queries).
+##### 2. Rendering your app in Concurrent Mode
+
+We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-required), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
+
+## Time to make your first query
+
+There, all set up and ready to go! Time to [make your first query](making-queries).
