@@ -11,10 +11,7 @@ sidebar_label: Getting Started
 
 #### Want to follow along with code?
 
-You're encouraged to follow along this walkthrough with a sample project of your own. Although you won't be able to copy-paste everything from the sample code here (a lot of code is omitted), you're still encouraged to play with ReasonRelay locally as you read the documentation. If you're interested, do the following:
-
-- Setup a new `reason-react` project using the "Getting started with ReasonReact" link above. _However, remember to install `bs-platform@6` instead of just `bs-platform`_.
-- Install and run [graphql-client-example-server](https://github.com/zth/graphql-client-example-server), a basic GraphQL server with some sample data, supporting everything Relay ideally wants your server to support, and being runnable without any setup. Do the following: `npm install -g graphql-client-example-server && graphql-client-example-server` and you'll have the server up and running locally.
+You're encouraged to follow along this walkthrough with a sample project of your own. The easiest way to get started is to clone [the ReasonRelay repository](https://github.com/zth/reason-relay), open the `example` folder and then follow [the instructions](https://github.com/zth/reason-relay/blob/master/example/README.md) to start the example locally.
 
 ## Getting Started
 
@@ -85,15 +82,17 @@ We'll also add a script to our `package.json` to run the Relay compiler:
 }
 ```
 
+> Notice that we're calling `reason-relay-compiler`, and not `relay-compiler`. This is because there's a few things ReasonRelay need to do (like emitting a `SchemaAssets.re` file [for your enums](enums)) in addition to what the standard Relay compiler does.
+
 Now you have two scripts set up; one for running the compiler once, and one for running it in watch-mode.
 
 You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a separate terminal. _Please note that you'll need to be aware of the output from the compiler_ as it will tell you when there are issues you'll need to fix.
 
 #### Tangent: A short introduction of the Relay Compiler
 
-Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that Relay uses at runtime to make queries and understand the response.
+Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that Relay uses at runtime to make queries and understand the response. This means that Relay moves work like parsing and understanding how responses to queries are structured to compile time. A good example of how Relay treats performance as a core feature.
 
-In addition to emitting runtime artifacts, the compiler also _emits ReasonML types through ReasonRelay's language plugin for the compiler_, describing your operations and their relationships. ReasonRelay takes these types and uses them to enforce type safety.
+In addition to emitting runtime artifacts, the compiler also _emits ReasonML types through ReasonRelay's language plugin for the compiler_, describing your operations and their relationships. ReasonRelay takes these types and uses them to enforce type safety. This means that Relay and ReasonRelay can _guarantee type-safety_ when interacting with all data, and that you'll get a great developer experience through the tooling that types enable.
 
 As said before, you really don't have to think about the generated artifacts as ReasonRelay does the heavy lifting of using them for you, but if you're interested, have a look at the files in your `artifactDirectory`.
 
