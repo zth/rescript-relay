@@ -21,6 +21,8 @@ module WorkingGroupFragment = [%relay.fragment
 [@react.component]
 let make = (~workingGroup as wgRef) => {
   let (workingGroup, refetch) = WorkingGroupFragment.useRefetchable(wgRef);
+  let (startTransition, isPending) =
+    ReactExperimental.useTransition(~timeoutMs=5000, ());
 
   <div>
     <strong> {React.string(workingGroup##name)} </strong>
@@ -39,16 +41,18 @@ let make = (~workingGroup as wgRef) => {
          <button
            type_="button"
            onClick={_ =>
-             refetch(
-               ~variables=
-                 WorkingGroupFragment.makeRefetchVariables(
-                   ~includeMembers=true,
-                   (),
-                 ),
-               (),
+             startTransition(() =>
+               refetch(
+                 ~variables=
+                   WorkingGroupFragment.makeRefetchVariables(
+                     ~includeMembers=true,
+                     (),
+                   ),
+                 (),
+               )
              )
            }>
-           {React.string("See members")}
+           {React.string(isPending ? "Loading..." : "See members")}
          </button>
        }}
     </div>

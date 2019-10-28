@@ -12,9 +12,11 @@
     "bootstrap": "^4.3.1",
     "bs-fetch": "^0.5.0",
     "graphql": "^14.5.8",
+    "react": "^0.0.0-experimental-f6b8d31a7",
+    "react-dom": "^0.0.0-experimental-f6b8d31a7",
     "react-relay": "^0.0.0-experimental-29f4e27d",
     "reason-react": "^0.7.0",
-    "reason-relay": "0.4.0",
+    "reason-relay": "0.4.2",
     "relay-compiler": "7.0.0",
     "relay-config": "7.0.0",
     "relay-runtime": "7.0.0",
@@ -30,5 +32,9 @@
   "author": "bootstrapdash",
   "url": "http://www.bootstrapdash.com/",
   "copyright": "",
-  "license": ""
+  "license": "",
+  "resolutions": {
+    "react": "^0.0.0-experimental-f6b8d31a7",
+    "react-dom": "^0.0.0-experimental-f6b8d31a7"
+  }
 }

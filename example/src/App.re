@@ -7,10 +7,10 @@
 let make = () => {
   <div className="container-scroller">
     <div className="container-fluid page-body-wrapper">
-      <React.Suspense
-        maxDuration=1000 fallback={<div> {React.string("Loading...")} </div>}>
+      <ReactExperimental.Suspense
+        fallback={<div> {React.string("Loading...")} </div>}>
         <Main />
-      </React.Suspense>
+      </ReactExperimental.Suspense>
     </div>
   </div>;
 };

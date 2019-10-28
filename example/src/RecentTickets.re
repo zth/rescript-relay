@@ -48,19 +48,17 @@ let make = (~query as queryRef) => {
              |> ReasonRelayUtils.collectConnectionNodes
              |> Array.map(ticket => <SingleTicket key=ticket##id ticket />)
              |> React.array}
-            {hasNext
-               ? <button
-                   className="btn btn-gradient-primary font-weight-bold"
-                   id="add-task"
-                   onClick={_ =>
-                     loadNext(~count=2, ~onComplete=None) |> ignore
-                   }
-                   disabled=isLoadingNext>
-                   {React.string("More")}
-                 </button>
-               : React.null}
           </tbody>
         </table>
+        {hasNext
+           ? <button
+               className="btn btn-gradient-primary font-weight-bold"
+               id="add-task"
+               onClick={_ => loadNext(~count=2, ~onComplete=None) |> ignore}
+               disabled=isLoadingNext>
+               {React.string("More")}
+             </button>
+           : React.null}
       </div>
     </div>
   </div>;
