@@ -2,6 +2,10 @@
 
 ...
 
+## 0.4.2
+
+- `ReactExperimental` is now included in the distributed package.
+
 ## 0.4.1
 
 - ReasonRelay now depends on `react@experimental` and `react-dom@experimental`.

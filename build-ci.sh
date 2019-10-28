@@ -15,10 +15,7 @@ cd ./language-plugin/; yarn; yarn test; yarn build; cd ..;
 
 # copy bindings and readme
 echo "Copying bindings and assets..."
-cp src/ReasonRelay.re ../../_release/src/;
-cp src/ReasonRelay.rei ../../_release/src/;
-cp src/ReasonRelayUtils.re ../../_release/src/;
-cp src/ReasonRelayUtils.rei ../../_release/src/;
+cp src/*.re* ../../_release/src/;
 cp ../../README.md ../../_release/;
 cp -rf src/vendor ../../_release/src/vendor;
 
