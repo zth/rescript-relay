@@ -26,7 +26,11 @@ module Query = [%relay.query {|
     }
   }
 |}];
+```
 
+This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
+
+```reason
 [@react.component]
 let make = (~userId) => {
   let queryData = Query.use(~variables={
@@ -37,16 +41,12 @@ let make = (~userId) => {
     | Some(user) => <div>{React.string(user##firstName ++ " " ++ user##lastName)}</div>
     | None => React.null
   };
-}
+};
 ```
 
-This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)).
-
-For this particular example, we're going with `Query.use`, which is a React hook that will _dispatch the query to the server and then deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will be re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
+Nothing that fancy here. We call `Query.use` to with a variable `userId`, just as defined in our GraphQL query. `use` is a React hook that will _dispatch the query to the server and then deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will be re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
 
 Interacting with your query is fully type-safe, which means that `variables` and the type of `queryData` will match what you define in your GraphQL operation. This also means that the ReasonML compiler will guide you through what to pass to which function, and how to use the data you get back.
-
-## Our first query
 
 There, that's all it takes to do your first query! Continue reading on this page for more information about querying (including a full [API reference](#api-reference)), or continue to the next part on [using fragments](using-fragments).
 
