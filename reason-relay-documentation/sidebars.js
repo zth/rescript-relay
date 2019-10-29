@@ -16,7 +16,8 @@ module.exports = {
       "pagination",
       "subscriptions",
       "enums",
-      "unions"
+      "unions",
+      "interacting-with-the-store"
     ],
     "API Reference": ["api-reference"],
     Guides: [
