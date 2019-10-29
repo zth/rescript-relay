@@ -4,13 +4,19 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "webpack-dev-server",
-    "relay": "reason-relay-compiler"
+    "start": "yarn bs:clean && yarn bs:build && concurrently \"yarn relay:watch\" \"yarn webpack\" \"yarn bs:watch\"",
+    "bs:build": "bsb -make-world",
+    "bs:watch": "bsb -make-world -w",
+    "bs:clean": "bsb -clean-world",
+    "webpack": "webpack-dev-server",
+    "relay": "reason-relay-compiler",
+    "relay:watch": "reason-relay-compiler --watch"
   },
   "dependencies": {
     "@mdi/font": "3.7.95",
     "bootstrap": "^4.3.1",
     "bs-fetch": "^0.5.0",
+    "concurrently": "^5.0.0",
     "graphql": "^14.5.8",
     "react": "^0.0.0-experimental-f6b8d31a7",
     "react-dom": "^0.0.0-experimental-f6b8d31a7",
@@ -19,8 +25,7 @@
     "reason-relay": "0.4.2",
     "relay-compiler": "7.0.0",
     "relay-config": "7.0.0",
-    "relay-runtime": "7.0.0",
-    "typescript": "^3.6.4"
+    "relay-runtime": "7.0.0"
   },
   "devDependencies": {
     "bs-platform": "6.2.1",

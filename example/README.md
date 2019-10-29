@@ -12,15 +12,4 @@ npm install -g graphql-client-example-server && graphql-client-example-server
 
 ### Run client
 
-You'll need to start 3 separate processes:
-
-1. The Relay compiler
-   `yarn relay --watch`
-
-2. BuckleScript
-   `yarn bsb -make-world -w`
-
-3. Webpack
-   `yarn start`
-
-...this will start a development server through webpack. Start coding away!
+`yarn && yarn start` will install all dependencies and start BuckleScript, Webpack and the Relay compiler.
