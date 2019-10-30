@@ -13,6 +13,56 @@ sidebar_label: Using Fragments
 
 One of the main things that make Relay so powerful is using _GraphQL fragments_ to co-locate the data-demands of your components with your actual component code. This leads to well-isolated components that are very portable and easy to maintain.
 
+### A high-level overview of fragments
+
+Fragments are GraphQL snippets that can be reused throughout your GraphQL operations. At it's core, a fragment is a _selection of fields_ on a specific _GraphQL type_.
+
+Let's examplify through a basic query, first without fragments:
+
+```graphql
+query {
+  me {
+    firstName
+    lastName
+    friendCount
+    avatarUrl
+  }
+}
+```
+
+Here's a very basic query that selects a bunch of fields on the logged in `User`. Let's look at the same query, but using fragments representing the various components that would display the data:
+
+```graphql
+fragment UserNameDisplayer on User {
+  firstName
+  lastName
+}
+
+fragment Avatar on User {
+  firstName # needed for a nice alt-tag
+  lastName
+  avatarUrl
+}
+
+fragment FriendCountDisplayer on User {
+  friendCount
+}
+
+query {
+  me {
+    ...UserNameDisplayer
+    ...Avatar
+    ...FriendCountDisplayer
+  }
+}
+```
+
+See the difference? We've split our data demands on `me` into fragments responsible for displaying a certain part of the `User`, much like we'd do with React components, delegating displaying different parts of the UI to different, specialized components.
+
+If you want to dive deeper into GraphQL fragments you're encouraged to read through [the official documentation on fragments in GraphQL](https://graphql.org/learn/queries/#fragments).
+
+### Fragments in ReasonRelay
+
 Fragments are defined in ReasonRelay by using the `[%relay.fragment]` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
 ```reason
