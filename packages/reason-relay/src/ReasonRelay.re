@@ -433,7 +433,12 @@ module Store = {
   type t;
 
   [@bs.module "relay-runtime"] [@bs.new]
-  external make: RecordSource.t => t = "Store";
+  external _make:
+    (RecordSource.t, {. "gcReleaseBufferSize": option(int)}) => t =
+    "Store";
+
+  let make = (~source, ~gcReleaseBufferSize=?, ()) =>
+    _make(source, {"gcReleaseBufferSize": gcReleaseBufferSize});
 };
 
 module Environment = {

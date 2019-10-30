@@ -330,7 +330,7 @@ module RecordSource: {
 
 module Store: {
   type t;
-  let make: RecordSource.t => t;
+  let make: (~source: RecordSource.t, ~gcReleaseBufferSize: int=?, unit) => t;
 };
 
 /**
