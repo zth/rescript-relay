@@ -10,7 +10,7 @@ There's a few things to keep in mind when coming from Reason Apollo, that might 
 
 ### The Relay compiler replaces `graphql_ppx`
 
-In Reason Apollo, `graphql_ppx` is responsible for both providing GraphQL validation via your `schema.graphql` for each GraphQL operation, as well as emitting encoders/decoders from JS to ReasonML, and emitting type information for each defined operation. In ReasonRelay, all of the above is handled by the [Relay compiler](the-compiler) instead. The only exception is generating decoders and encoders, as ReasonRelay does not do any encoding or decoding from JS to ReasonML by itself. You can read more about this in [quirks of ReasonRelay](quirks-of-reason-relay), but this in short means that you'll need to do more manual steps when working with ReasonRelay as compared to Reason Apollo.
+In Reason Apollo, `graphql_ppx` is responsible for both providing GraphQL validation via your `schema.graphql` for each GraphQL operation, as well as emitting encoders/decoders from JS to ReasonML, and emitting type information for each defined operation. In ReasonRelay, all of the above is handled by the [Relay compiler](the-compiler) instead. The only exception is generating decoders and encoders, as ReasonRelay does not do any encoding or decoding from JS to ReasonML by itself. You can read more about this in [quirks of ReasonRelay](quirks-of-reason-relay).
 
 ### No `@bsRecord`
 
