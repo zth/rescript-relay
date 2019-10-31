@@ -17,7 +17,7 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
     Fetch.(
       fetchWithInit(
         "http://localhost:4000/graphql",
-        Fetch.RequestInit.make(
+        RequestInit.make(
           ~method_=Post,
           ~body=
             Js.Dict.fromList([
@@ -26,9 +26,9 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
             ])
             |> Js.Json.object_
             |> Js.Json.stringify
-            |> Fetch.BodyInit.make,
+            |> BodyInit.make,
           ~headers=
-            Fetch.HeadersInit.make({
+            HeadersInit.make({
               "content-type": "application/json",
               "accept": "application/json",
             }),
@@ -69,6 +69,7 @@ let network =
 let environment =
   ReasonRelay.Environment.make(
     ~network,
-    ~store=ReasonRelay.Store.make(ReasonRelay.RecordSource.make()),
+    ~store=
+      ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
     (),
   );

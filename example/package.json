@@ -22,7 +22,7 @@
     "react-dom": "^0.0.0-experimental-f6b8d31a7",
     "react-relay": "^0.0.0-experimental-29f4e27d",
     "reason-react": "^0.7.0",
-    "reason-relay": "0.4.2",
+    "reason-relay": "0.4.3",
     "relay-compiler": "7.0.0",
     "relay-config": "7.0.0",
     "relay-runtime": "7.0.0"
