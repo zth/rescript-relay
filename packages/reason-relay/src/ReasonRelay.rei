@@ -23,6 +23,8 @@ type dataId;
 let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
 
+type recordSourceRecords;
+
 /**
  * Constants
  */
@@ -307,12 +309,14 @@ module Network: {
 
 module RecordSource: {
   type t;
-  let make: unit => t;
+  let make: (~records: recordSourceRecords=?, unit) => t;
+  let toJSON: t => recordSourceRecords;
 };
 
 module Store: {
   type t;
   let make: (~source: RecordSource.t, ~gcReleaseBufferSize: int=?, unit) => t;
+  let getSource: t => RecordSource.t;
 };
 
 /**
@@ -329,6 +333,8 @@ module Environment: {
       unit
     ) =>
     t;
+
+  let getStore: t => Store.t;
 };
 
 /**

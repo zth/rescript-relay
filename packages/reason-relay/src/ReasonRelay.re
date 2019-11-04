@@ -10,6 +10,8 @@ type subscriptionNode;
 
 type dataId;
 
+type recordSourceRecords;
+
 external _dataIdToString: dataId => string = "%identity";
 let dataIdToString = dataId => _dataIdToString(dataId);
 
@@ -397,7 +399,11 @@ module RecordSource = {
   type t;
 
   [@bs.module "relay-runtime"] [@bs.new]
-  external make: unit => t = "RecordSource";
+  external _make: option(recordSourceRecords) => t = "RecordSource";
+
+  let make = (~records=?, ()) => _make(records);
+
+  [@bs.send] external toJSON: t => recordSourceRecords = "toJSON";
 };
 
 module Store = {
@@ -410,6 +416,8 @@ module Store = {
 
   let make = (~source, ~gcReleaseBufferSize=?, ()) =>
     _make(source, {"gcReleaseBufferSize": gcReleaseBufferSize});
+
+  [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
 
 module Environment = {
@@ -437,6 +445,8 @@ module Environment = {
         | None => None
         },
     });
+
+  [@bs.send] external getStore: t => Store.t = "getStore";
 };
 
 module Context = {
