@@ -1,5 +1,9 @@
 # master
 
+...
+
+# 0.4.4
+
 - Moved `ReactSuspenseConfig` module to `ReactExperimental` and renamed it to simply `SuspenseConfig`.
 - Added abstract type `recordSourceRecords` to represent the records from the store serialized to a saveable format.
 - Allow passing initial `recordSourceRecords` to `RecordSource.make()`.
