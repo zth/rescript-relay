@@ -38,24 +38,6 @@ let cleanObjectFromUndefined: jsObj('a) => jsObj('a);
 let cleanVariables: 'a => 'a;
 
 /**
- * Experimental stuff
- */
-
-module ReactSuspenseConfig: {
-  type t;
-  let make:
-    (
-      ~timeOutMs: float,
-      ~busyDelayMs: float=?,
-      ~busyMinDurationMs: float=?,
-      unit
-    ) =>
-    t;
-};
-
-let unstable_withSuspenseConfig: (unit => unit, ReactSuspenseConfig.t) => unit;
-
-/**
  * Store helpers.
  * We modify most store primitives to return options instead of nullables.
  */

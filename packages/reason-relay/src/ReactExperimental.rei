@@ -40,3 +40,17 @@ module SuspenseList: {
     (~children: ReasonReact.reactElement, ~revealOrder: revealOrder) =>
     ReasonReact.reactElement;
 };
+
+module SuspenseConfig: {
+  type t;
+  let make:
+    (
+      ~timeOutMs: float,
+      ~busyDelayMs: float=?,
+      ~busyMinDurationMs: float=?,
+      unit
+    ) =>
+    t;
+};
+
+let unstable_withSuspenseConfig: (unit => unit, SuspenseConfig.t) => unit;

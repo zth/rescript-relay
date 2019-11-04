@@ -50,35 +50,6 @@ let cleanVariables = [%bs.raw
 |}
 ];
 
-module ReactSuspenseConfig = {
-  type t = {
-    .
-    "timeOutMs": float,
-    "busyDelayMs": option(float),
-    "busyMinDurationMs": option(float),
-  };
-
-  let make = (~timeOutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) => {
-    "timeOutMs": timeOutMs,
-    "busyDelayMs": busyDelayMs,
-    "busyMinDurationMs": busyMinDurationMs,
-  };
-};
-
-[@bs.module "react"]
-external unstable_withSuspenseConfig:
-  (
-    unit => unit,
-    {
-      .
-      "timeOutMs": float,
-      "busyDelayMs": option(float),
-      "busyMinDurationMs": option(float),
-    }
-  ) =>
-  unit =
-  "unstable_withSuspenseConfig";
-
 [@bs.module "relay-runtime"] external storeRootId: dataId = "ROOT_ID";
 [@bs.module "relay-runtime"] external storeRootType: string = "ROOT_TYPE";
 
