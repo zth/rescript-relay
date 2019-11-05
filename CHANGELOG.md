@@ -7,7 +7,7 @@
 - Moved `ReactSuspenseConfig` module to `ReactExperimental` and renamed it to simply `SuspenseConfig`.
 - Added abstract type `recordSourceRecords` to represent the records from the store serialized to a saveable format.
 - Allow passing initial `recordSourceRecords` to `RecordSource.make()`.
-- Add full chain of methods needed to serialize the records from the store of the current environment, like: `environment->Environment.getStore->Store.getSource->RecordSource->toJSON`.
+- Add full chain of methods needed to serialize the records from the store of the current environment, like: `environment->Environment.getStore->Store.getSource->RecordSource.toJSON`.
 
 ## 0.4.3
 
