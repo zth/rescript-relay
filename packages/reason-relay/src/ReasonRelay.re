@@ -23,7 +23,7 @@ let makeDataId = string => _makeDataId(string);
  */
 
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let cleanObjectFromUndefined = [%bs.raw
+let _cleanObjectFromUndefined = [%bs.raw
   {|
   function cleanObj(obj) {
     var newObj = {};
@@ -40,7 +40,7 @@ let cleanObjectFromUndefined = [%bs.raw
 ];
 
 // Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let cleanVariables = [%bs.raw
+let _cleanVariables = [%bs.raw
   {|
   function cleanVariables(variables) {
     if (typeof variables !== "object" || variables == null) {
@@ -558,7 +558,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
       _useQuery(
         C.query,
-        variables |> cleanVariables,
+        variables |> _cleanVariables,
         {
           "fetchKey": fetchKey,
           "fetchPolicy": fetchPolicy |> mapFetchPolicy,
@@ -587,7 +587,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       _preloadQuery(
         environment,
         C.query,
-        variables |> cleanVariables,
+        variables |> _cleanVariables,
         {
           "fetchKey": fetchKey,
           "fetchPolicy": fetchPolicy |> mapFetchPolicy,
@@ -675,7 +675,7 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
       fragmentData,
       (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         refetchFn(
-          variables |> cleanVariables |> cleanObjectFromUndefined,
+          variables |> _cleanVariables |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
         ),
     );
@@ -901,7 +901,7 @@ module MakeUseMutation = (C: MutationConfig) => {
         _commitMutation(
           environment,
           {
-            "variables": variables |> cleanVariables,
+            "variables": variables |> _cleanVariables,
             "mutation": C.node,
             "onCompleted":
               Some(
@@ -955,7 +955,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
       _commitMutation(
         environment,
         {
-          "variables": variables |> cleanVariables,
+          "variables": variables |> _cleanVariables,
           "mutation": C.node,
           "onCompleted":
             Some(
@@ -1026,7 +1026,7 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       environment,
       {
         "subscription": C.node,
-        "variables": variables |> cleanVariables,
+        "variables": variables |> _cleanVariables,
         "onCompleted": onCompleted,
         "onError": onError,
         "onNext": onNext,

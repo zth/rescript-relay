@@ -91,7 +91,7 @@ let make = (~query as queryRef) => {
 Whew, plenty more to break down:
 
 1. Just like with anything [using fragments](using-fragments), we'll need a fragment reference to pass to our fragment.
-2. We pass our fragment reference into `Fragment.usePagination`. This gives us a record back containing functions and props that'll help us with our pagination. Notice `ReasonRelay.{...}` - that's a _hint_ to tell the compiler where to find the record we're using, which in turn is because the compiler cannot infer what record we're trying to destructure from, so we need to give it a hint. TODO: CHECK OUT REFERENCE
+2. We pass our fragment reference into `Fragment.usePagination`. This gives us a record back containing functions and props that'll help us with our pagination. Notice `ReasonRelay.{...}` - that's a _hint_ to tell the compiler where to find the record we're using, which in turn is because the compiler cannot infer what record we're trying to destructure from, so we need to give it a hint. Check out the [full API reference here](#api-reference).
 3. We gather up all the connection nodes we have by using the `ReasonRelayUtils.collectConnectionNodes` helper, which collects all available nodes on a connection to a normal array for you. Read more about [utilites provided by ReasonRelay here](utilities).
 4. We render each node using the `<SingleTicket />` component, who's data demands we spread on the `node` of our refetchable fragment.
 5. Finally, we use the helpers provided by `usePagination` to render a _Load more-button_ if there's more data to load, and disable it if a request is already in flight.

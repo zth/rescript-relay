@@ -16,33 +16,44 @@ type mutationNode;
 type subscriptionNode;
 
 /**
- * Store and updaters
+ * The type of the id's Relay uses to identify records.
  */
 type dataId;
 
+/**
+ * Converting back and forth between dataId's and strings (they are actually string).
+ * We're hiding the string behind the abstract dataId type.
+ */
 let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
 
+/**
+ * An abstract type representing all records in the store serialized to JSON in a way
+ * that you can use to re-hydrate the store.
+ */
 type recordSourceRecords;
 
 /**
  * Constants
  */
 
+/**
+ * The `dataId` for the Relay store's root.
+ * Useful when for example referencing the `parentID` of a connection that's on the store root.
+ * */
 let storeRootId: dataId;
+
+/** The `type` for the Relay store's root `RecordProxy`. */
 let storeRootType: string;
 
-/**
- * Helpers
- */
-
-let cleanObjectFromUndefined: jsObj('a) => jsObj('a);
-let cleanVariables: 'a => 'a;
+let _cleanObjectFromUndefined: jsObj('a) => jsObj('a);
+let _cleanVariables: 'a => 'a;
 
 /**
- * Store helpers.
- * We modify most store primitives to return options instead of nullables.
+ * Read the following section on working with the Relay store:
+ * https://relay.dev/docs/en/relay-store
  */
+
 module RecordProxy: {
   type t;
   type arguments('a) = jsObj('a) constraint 'a = {..};
@@ -160,6 +171,10 @@ module RecordProxy: {
     t;
 };
 
+/**
+ * RecordSourceSelectorProxy and RecordSourceProxy are the two
+ * modules representing the store, with various capabilities.
+ */
 module RecordSourceSelectorProxy: {
   type t;
 
@@ -189,6 +204,9 @@ module RecordSourceProxy: {
   let getRoot: t => RecordProxy.t;
 };
 
+/**
+ * https://relay.dev/docs/en/relay-store#connectionhandler
+ */
 module ConnectionHandler: {
   type filters('a) = jsObj('a) constraint 'a = {..};
 
@@ -228,6 +246,9 @@ module ConnectionHandler: {
  * NETWORK
  */
 
+/**
+ * A module representing cache configs you can use when fetching data.
+ */
 module CacheConfig: {
   type t;
   type config = {
@@ -249,6 +270,9 @@ module CacheConfig: {
   let getConfig: t => config;
 };
 
+/**
+ * A Relay observable, used for subscriptions and a few other things.
+ */
 module Observable: {
   type t;
 
@@ -262,6 +286,9 @@ module Observable: {
   let make: (sink('t) => unit) => t;
 };
 
+/**
+ * Represents the network layer.
+ */
 module Network: {
   type t;
 
@@ -304,7 +331,9 @@ module Network: {
 };
 
 /**
- * STORE
+ * RecordSource is the source of records used by the store.
+ * Can be initiated with or without prior records; eg. hydrating
+ * the store with prior data.
  */
 
 module RecordSource: {
@@ -313,6 +342,9 @@ module RecordSource: {
   let toJSON: t => recordSourceRecords;
 };
 
+/**
+ * The actual store module, with configuration for the store.
+ */
 module Store: {
   type t;
   let make: (~source: RecordSource.t, ~gcReleaseBufferSize: int=?, unit) => t;
@@ -320,7 +352,9 @@ module Store: {
 };
 
 /**
- * ENVIRONMENT
+ * Module representing the environment, which you'll need to use and
+ * pass to various functions. Takes a few configuration options like store
+ * and network layer.
  */
 module Environment: {
   type t;
@@ -338,20 +372,28 @@ module Environment: {
 };
 
 /**
- * QUERY
+ * Disposable is a module you'll get back when issuing requests.
+ * Disposable allow you to dispose of the request when/if you don't need
+ * it anymore.
  */
-
 module Disposable: {
   type t;
   let dispose: t => unit;
 };
 
+/**
+ * fetchPolicy controls how you want Relay to resolve your data.
+ */
 type fetchPolicy =
-  | StoreOnly
-  | StoreOrNetwork
-  | StoreAndNetwork
-  | NetworkOnly;
+  | StoreOnly // Resolve only from the store
+  | StoreOrNetwork // Resolve from the store if all data is there, otherwise make a network request
+  | StoreAndNetwork // Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not
+  | NetworkOnly; // Always make a request, discard what's in the store
 
+/**
+ * Internally used functors and configs.
+ * You won't need to know about these.
+ */
 module type MakeUseQueryConfig = {
   type response;
   type variables;
@@ -519,9 +561,8 @@ module MakeUseMutation:
   };
 
 /**
-   * Context
-   */
-
+ * Context provider for the Relay environment.
+ */
 module Context: {
   type t;
   type contextShape = {. "environment": Environment.t};
@@ -552,6 +593,9 @@ module Context: {
 
 exception EnvironmentNotFoundInContext;
 
+/**
+ * Hook for getting the current environment from context.
+ */
 let useEnvironmentFromContext: unit => Environment.t;
 
 exception Mutation_failed(array(mutationError));
@@ -571,6 +615,9 @@ module MakeCommitMutation:
       Js.Promise.t(C.response);
   };
 
+/**
+ * A way of committing a local update to the store.
+ */
 let commitLocalUpdate:
   (
     ~environment: Environment.t,
@@ -578,6 +625,9 @@ let commitLocalUpdate:
   ) =>
   unit;
 
+/**
+ * fetchQuery is used internally only.
+ */
 let fetchQuery:
   (Environment.t, queryNode, 'variables) => Js.Promise.t('response);
 

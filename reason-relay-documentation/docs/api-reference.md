@@ -6,6 +6,19 @@ sidebar_label: API Reference
 
 _This section is currently very incomplete as we work on a way to autogenerate this from the Reason source files._
 
+For now, please have a look at [this annotated interface file](https://github.com/zth/reason-relay/blob/master/packages/reason-relay/src/ReasonRelay.rei) in waiting for a proper API reference.
+
+# Constants
+
+Here's a reference of constants provided by ReasonRelay.
+
+| Name            | Explanation                                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `storeRootId`   | The `dataId` for the Relay store's root. Useful when for example referencing the `parentID` of a connection that's on the store root. |
+| `storeRootType` | The `type` for the Relay store's root `RecordProxy`.                                                                                  |
+
+# The store
+
 ## fetchPolicy
 
 A variant for controlling how Relay resolves data.
