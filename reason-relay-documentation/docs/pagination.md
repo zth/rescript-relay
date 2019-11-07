@@ -53,7 +53,7 @@ Quite a few directives and annotations used here. Let's break down what's going 
 2. We make our fragment _refetchable_ by adding the `@refetchable` directive to it. You're encouraged to read [refetching and loading more data](refetching-and-loading-more-data) for more information on making fragments refetchable.
 3. We add another directive, `@argumentDefinitions`, where we define two arguments that we need for pagination, `count` and `cursor`. This component is responsible for paginating itself, so we want anyone to be able to use this fragment without providing those arguments for the initial render. To solve that we add default values to our arguments. [You're encouraged to read more about `@argumentDefinitions` here](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#arguments-and-argumentdefinitions).
 4. We select the `ticketsConnection` field on `Query` and pass it our pagination arguments. We also add a `@connection` directive to the field. This is important, because it tells Relay that we want it to help us paginate this particular field. By annotating with `@connection` and passing a `keyName`, Relay will understand how to find and use the field for pagination. This in turn means we'll get access to a bunch of hooks and functions for paginating and dealing with the pagination in the store. You can read more about `@connection` [here](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#adding-and-removing-items-from-a-connection).
-5. Finally, we spread another component fragment `SingleTicket_ticket` on the connection's `node`, since that's the component we'll use to display each ticket.
+5. Finally, we spread another component's fragment `SingleTicket_ticket` on the connection's `node`, since that's the component we'll use to display each ticket.
 
 We've now added everything we need to enable pagination for this fragment.
 
@@ -91,8 +91,53 @@ let make = (~query as queryRef) => {
 Whew, plenty more to break down:
 
 1. Just like with anything [using fragments](using-fragments), we'll need a fragment reference to pass to our fragment.
-2. We pass our fragment reference into `Fragment.usePagination`. Here's a few extra things to break down:
-   1. There are 2 types of pagination in Relay - _blocking using suspense_ or _non-blocking without suspense_. We'll address this further down, but for now keep in mind that we're using the _non-blocking_ one in this example. The hook exposed for non-blocking pagination is called `usePagination`, as seen in the example above.
-   2. We get a record back from `usePagination` that we can destruct and just bring out the things we need.
+2. We pass our fragment reference into `Fragment.usePagination`. This gives us a record back containing functions and props that'll help us with our pagination. Notice `ReasonRelay.{...}` - that's a _hint_ to tell the compiler where to find the record we're using, which in turn is because the compiler cannot infer what record we're trying to destructure from, so we need to give it a hint. TODO: CHECK OUT REFERENCE
+3. We gather up all the connection nodes we have by using the `ReasonRelayUtils.collectConnectionNodes` helper, which collects all available nodes on a connection to a normal array for you. Read more about [utilites provided by ReasonRelay here](utilities).
+4. We render each node using the `<SingleTicket />` component, who's data demands we spread on the `node` of our refetchable fragment.
+5. Finally, we use the helpers provided by `usePagination` to render a _Load more-button_ if there's more data to load, and disable it if a request is already in flight.
 
-_WIP_
+There, basic pagination! Relay really does all the heavy lifting for us here, which is great. Continue reading for some advanced pagination concepts and a full API reference, or move on to [subscriptions](subscriptions).
+
+## Two types of pagination
+
+Relay provides two types of pagination by default;
+
+1. _"Normal"_ pagination, which we saw above using `usePagination`. This type of pagination is _not integrated with suspense_, and will give you two flags `isLoadingNext` and `isLoadingPrevious` to indicate whether a request is in flight.
+2. _Blocking_ pagination, which is done via `useBlockingPagination` and _is integrated with suspense_. This is more suitable for a "load all"-type of pagination.
+
+You're encouraged to read more in the [official Relay documentation on pagination](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#pagination) for more information on the two types of pagination.
+
+## API Reference
+
+A `[%relay.fragment]` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
+
+### `usePagination`
+
+As shown above, `usePagination` provides helpers for paginating your fragment/connection.
+
+> `usePagination` uses Relay's `usePaginationFragment` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepaginationfragment).
+
+##### Parameters
+
+`usePagination` returns a record with the following properties.
+
+| Name                | Type                                                                                                      | Note                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `data`              | `'fragmentData`                                                                                           | The data as defined by the fragment.                                 |
+| `loadNext`          | `(~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) => Disposable.t;`                           | A function for loading the next `count` nodes of the connection.     |
+| `loadPrevious`      | `(~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) => Disposable.t;`                           | A function for loading the previous `count` nodes of the connection. |
+| `hasNext`           | `bool`                                                                                                    | Are there more nodes forward in the connection to fetch?             |
+| `hasPrevious`       | `bool`                                                                                                    | Are there more nodes backwards in the connection to fetch?           |
+| `isLoadingNext`     | `bool`                                                                                                    |                                                                      |
+| `isLoadingPrevious` | `bool`                                                                                                    |                                                                      |
+| `refetch`           | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>` | Refetch the entire connection with potentially new variables.        |
+
+### `useBlockingPagination`
+
+Integrated with _suspense_, meaning it will suspend the component if used.
+
+> `useBlockingPagination` uses Relay's `useBlockingPaginationFragment` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#useblockingpaginationfragment).
+
+##### Parameters
+
+`useBlockingPagination` returns a record with the same properties as [usePagination](#usepagination), _excluding_ `isLoadingNext` and `isLoadingPrevious`, as that is handled by suspense.
