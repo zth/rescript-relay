@@ -66,7 +66,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
   const compilerSchema = Schema.DEPRECATED__create(testSchema, relaySchema);
   return new GraphQLCompilerContext(compilerSchema)
     .addAll(definitions)
-    .applyTransforms(RelayFlowGenerator.transforms)
+    .applyTransforms(RelayReasonGenerator.transforms)
     .documents()
     .map(
       (doc: any) =>
@@ -460,6 +460,67 @@ describe("Language plugin tests", () => {
       expect(collapseString(generated)).toMatch(
         `type response = {. "users": array({. "firstName": string})};`
       );
+    });
+  });
+
+  describe("Field names", () => {
+    describe("Cannot start with uppercase letter", () => {
+      it("throws when trying to use a field name starting with an uppercase", () => {
+        expect.assertions(1);
+
+        try {
+          generate(
+            `query SomeQuery {
+            Observer(id: "123") {
+              id
+            }
+            Obs: Observer(id: "123") {
+              id
+            }
+          }`
+          );
+        } catch (e) {
+          expect(e).toBeDefined();
+        }
+      });
+
+      it("allows field names starting with uppercase letters when aliased properly", () => {
+        generate(
+          `query SomeQuery {
+          observer: Observer(id: "123") {
+            id
+          }
+        }`
+        );
+      });
+    });
+
+    describe("Reserved keywords", () => {
+      it("throws when trying to use a field name that's a reserved keyword", () => {
+        expect.assertions(1);
+
+        try {
+          generate(
+            `query SomeQuery {
+              user(id: "123") {
+                new
+              }
+            }`
+          );
+        } catch (e) {
+          expect(e).toBeDefined();
+        }
+      });
+
+      it("allows reserved keywords as field names when aliased properly", () => {
+        generate(
+          `query SomeQuery {
+            user(id: "123") {
+              isNew: new
+            }
+          }`
+        );
+      });
     });
   });
 });

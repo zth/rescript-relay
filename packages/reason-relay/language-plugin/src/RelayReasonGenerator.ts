@@ -7,6 +7,7 @@ import { printFromFlowTypes } from "./transformer/TypesTransformer.gen";
 import { makeOperationDescriptor } from "./transformer/transformerUtils";
 import { ScalarTypeMapping } from "relay-compiler/lib/language/javascript/RelayFlowTypeTransformers";
 import { maskDots } from "./generator/Utils.gen";
+import * as DisallowReservedReasonWordsTransform from "./transforms/DisallowReservedReasonWordsTransform";
 
 function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
   const newCustomScalars: ScalarTypeMapping = {
@@ -37,4 +38,7 @@ export function generate(
   });
 }
 
-export const transforms = RelayFlowGenerator.transforms;
+export const transforms = [
+  DisallowReservedReasonWordsTransform.transform,
+  ...RelayFlowGenerator.transforms
+];

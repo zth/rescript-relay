@@ -17,6 +17,7 @@ type Query {
   userByLocation(location: LocationBounds!): User
   participantById(id: ID!): Participant
   users: [User!]!
+  Observer(id: ID!): Observer
 }
 
 type Mutation {
@@ -54,6 +55,7 @@ type User {
   location: Location!
   role: UserRole!
   favoriteColor: Color!
+  new: Boolean!
 }
 
 type Observer {
