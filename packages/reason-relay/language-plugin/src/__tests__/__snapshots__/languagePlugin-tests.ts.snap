@@ -1,5 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Language plugin tests Explicit __typename selection throws when selecting a union without an explicit __typename selection 1`] = `
+[GraphQLError: Unions and interfaces must have the field __typename explicitly selected. Please add __typename to the fields selected by "participantById" in your operation.
+
+Source: GraphQL request (2:13)
+1: query SomeQuery {
+2:             participantById(id: "123") {
+               ^
+3:               ... on User {
+]
+`;
+
+exports[`Language plugin tests Field names Cannot start with uppercase letter throws when trying to use a field name starting with an uppercase 1`] = `
+[GraphQLError: Found an invalid field name: Field names may not start with an uppercase letter. Please alias the 'Observer' field to something starting with a lowercase letter.
+
+Source: GraphQL request (2:13)
+1: query SomeQuery {
+2:             Observer(id: "123") {
+               ^
+3:               id
+]
+`;
+
+exports[`Language plugin tests Field names Reserved keywords throws when trying to use a field name that's a reserved keyword 1`] = `
+[GraphQLError: Found an invalid field name: 'new' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.
+
+Source: GraphQL request (3:17)
+2:               user(id: "123") {
+3:                 new
+                   ^
+4:               }
+]
+`;
+
 exports[`Language plugin tests Fragment prints the correct fragment ref extractor helpers and base types 1`] = `
 "// SomeComponent_user.graphql
 type t;

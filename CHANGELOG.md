@@ -1,6 +1,7 @@
 # master
 
-...
+- Adds validation for illegal field names (reserved words and capitalized words are illegal as field names in Reason) to the Relay compiler.
+- Moves validation of explicit `__typename` selection to Relay compiler, from the PPX.
 
 # 0.4.4
 

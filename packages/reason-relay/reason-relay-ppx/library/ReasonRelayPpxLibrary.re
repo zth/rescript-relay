@@ -15,11 +15,6 @@ let queryExtension =
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
 
-      operationStr
-      |> ensureOperationHasCorrectInlineFragmentDefinitions(
-           ~loc=operationStrLoc,
-         );
-
       makeQuery(
         ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
         ~loc=operationStrLoc,
@@ -35,11 +30,6 @@ let fragmentExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
-
-      operationStr
-      |> ensureOperationHasCorrectInlineFragmentDefinitions(
-           ~loc=operationStrLoc,
-         );
 
       let refetchableQueryName =
         operationStr
@@ -72,11 +62,6 @@ let mutationExtension =
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
 
-      operationStr
-      |> ensureOperationHasCorrectInlineFragmentDefinitions(
-           ~loc=operationStrLoc,
-         );
-
       makeMutation(
         ~moduleName=
           operationStr |> extractTheMutationName(~loc=operationStrLoc),
@@ -93,11 +78,6 @@ let subscriptionExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
-
-      operationStr
-      |> ensureOperationHasCorrectInlineFragmentDefinitions(
-           ~loc=operationStrLoc,
-         );
 
       makeSubscription(
         ~moduleName=

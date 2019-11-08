@@ -466,7 +466,7 @@ describe("Language plugin tests", () => {
   describe("Field names", () => {
     describe("Cannot start with uppercase letter", () => {
       it("throws when trying to use a field name starting with an uppercase", () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         try {
           generate(
@@ -481,6 +481,7 @@ describe("Language plugin tests", () => {
           );
         } catch (e) {
           expect(e).toBeDefined();
+          expect(e).toMatchSnapshot();
         }
       });
 
@@ -497,7 +498,7 @@ describe("Language plugin tests", () => {
 
     describe("Reserved keywords", () => {
       it("throws when trying to use a field name that's a reserved keyword", () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         try {
           generate(
@@ -509,6 +510,7 @@ describe("Language plugin tests", () => {
           );
         } catch (e) {
           expect(e).toBeDefined();
+          expect(e).toMatchSnapshot();
         }
       });
 
@@ -521,6 +523,49 @@ describe("Language plugin tests", () => {
           }`
         );
       });
+    });
+  });
+
+  describe("Explicit __typename selection", () => {
+    it("throws when selecting a union without an explicit __typename selection", () => {
+      expect.assertions(2);
+
+      try {
+        generate(
+          `query SomeQuery {
+            participantById(id: "123") {
+              ... on User {
+                id
+              }
+
+              ... on Observer {
+                id
+              }
+            }
+          }`
+        );
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e).toMatchSnapshot();
+      }
+    });
+
+    it("allows union when __typename is selected", () => {
+      generate(
+        `query SomeQuery {
+            participantById(id: "123") {
+              __typename
+              
+              ... on User {
+                id
+              }
+
+              ... on Observer {
+                id
+              }
+            }
+          }`
+      );
     });
   });
 });
