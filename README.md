@@ -24,13 +24,8 @@ let make = (~user as userRef) => {
 
   <img
     className="avatar"
-    src={
-      user##avatarUrl;
-    }
-    alt={
-          user##firstName ++ " ";
-          user##lastName;
-        }
+    src={user##avatarUrl}
+    alt={user##firstName ++ " " user##lastName}
   />;
 };
 ```
@@ -71,7 +66,7 @@ let make = (~user as userRef) => {
 };
 ```
 
-Finally, you make a query using `[%relay.query]` to get the data needed to render the entire tree of components.
+Finally, you make a query using `[%relay.query]` and include the fragments needed to render the entire tree of components.
 
 ```reason
 /* Dashboard.re */
@@ -79,7 +74,7 @@ module Query = [%relay.query
   {|
   query DashboardQuery {
     me {
-      ...UserProfile_user # UserProfile_user includes the data demands of <Avatar /> in addition to its own data demands
+      ...UserProfile_user
     }
   }
 |}
