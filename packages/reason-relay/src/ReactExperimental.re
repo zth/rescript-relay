@@ -1,8 +1,7 @@
 type suspenseConfig = {
-  .
-  "timeoutMs": int,
-  "busyDelayMs": option(int),
-  "busyMinDurationMs": option(int),
+  timeoutMs: int,
+  busyDelayMs: option(int),
+  busyMinDurationMs: option(int),
 };
 
 [@bs.module "react"]
@@ -10,11 +9,7 @@ external _useTransition: suspenseConfig => ((unit => unit) => unit, bool) =
   "useTransition";
 
 let useTransition = (~timeoutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) =>
-  _useTransition({
-    "timeoutMs": timeoutMs,
-    "busyDelayMs": busyDelayMs,
-    "busyMinDurationMs": busyMinDurationMs,
-  });
+  _useTransition({timeoutMs, busyDelayMs, busyMinDurationMs});
 
 [@bs.module "react"]
 external _useDeferredValue: ('value, suspenseConfig) => 'value =
@@ -22,14 +17,7 @@ external _useDeferredValue: ('value, suspenseConfig) => 'value =
 
 let useDeferredValue =
     (~value, ~timeoutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) =>
-  _useDeferredValue(
-    value,
-    {
-      "timeoutMs": timeoutMs,
-      "busyDelayMs": busyDelayMs,
-      "busyMinDurationMs": busyMinDurationMs,
-    },
-  );
+  _useDeferredValue(value, {timeoutMs, busyDelayMs, busyMinDurationMs});
 
 [@bs.val] [@bs.return nullable]
 external _getElementById: string => option(Dom.element) =
@@ -89,31 +77,6 @@ module SuspenseList = {
     </Component>;
 };
 
-module SuspenseConfig = {
-  type t = {
-    .
-    "timeOutMs": float,
-    "busyDelayMs": option(float),
-    "busyMinDurationMs": option(float),
-  };
-
-  let make = (~timeOutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) => {
-    "timeOutMs": timeOutMs,
-    "busyDelayMs": busyDelayMs,
-    "busyMinDurationMs": busyMinDurationMs,
-  };
-};
-
 [@bs.module "react"]
-external unstable_withSuspenseConfig:
-  (
-    unit => unit,
-    {
-      .
-      "timeOutMs": float,
-      "busyDelayMs": option(float),
-      "busyMinDurationMs": option(float),
-    }
-  ) =>
-  unit =
+external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
   "unstable_withSuspenseConfig";
