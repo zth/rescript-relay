@@ -26,7 +26,7 @@
     "postinstall": "node postinstall.js"
   },
   "devDependencies": {
-    "bs-platform": "6.2.1",
+    "bs-platform": "^7.0.1",
     "graphql": "14.5.0",
     "react": "^0.0.0-experimental-f6b8d31a7",
     "react-dom": "^0.0.0-experimental-f6b8d31a7",
@@ -37,7 +37,7 @@
     "relay-runtime": "7.0.0"
   },
   "peerDependencies": {
-    "bs-platform": "^6.2.0",
+    "bs-platform": "^7.0.1",
     "graphql": "^14.4.2",
     "react": "^0.0.0-experimental-f6b8d31a7",
     "react-dom": "^0.0.0-experimental-f6b8d31a7",
