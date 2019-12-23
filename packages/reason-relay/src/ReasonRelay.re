@@ -288,34 +288,11 @@ module Disposable = {
   [@bs.send] external dispose: t => unit = "dispose";
 };
 
-module CacheConfig = {
-  type t = {
-    .
-    "force": option(bool),
-    "poll": option(int),
-    "liveConfigId": option(string),
-    "transactionId": option(string),
-  };
-  type config = {
-    force: option(bool),
-    poll: option(int),
-    liveConfigId: option(string),
-    transactionId: option(string),
-  };
-
-  let make = (~force, ~poll, ~liveConfigId, ~transactionId) => {
-    "force": force,
-    "poll": poll,
-    "liveConfigId": liveConfigId,
-    "transactionId": transactionId,
-  };
-
-  let getConfig = t => {
-    force: t##force,
-    poll: t##poll,
-    liveConfigId: t##liveConfigId,
-    transactionId: t##transactionId,
-  };
+type cacheConfig = {
+  force: option(bool),
+  poll: option(int),
+  liveConfigId: option(string),
+  transactionId: option(string),
 };
 
 /**
@@ -323,14 +300,6 @@ module CacheConfig = {
  */
 module Observable = {
   type t;
-
-  type _sink('t) = {
-    .
-    "next": 't => unit,
-    "error": Js.Exn.t => unit,
-    "completed": unit => unit,
-    "closed": bool,
-  };
 
   type sink('t) = {
     next: 't => unit,
@@ -340,15 +309,15 @@ module Observable = {
   };
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external create: (_sink('t) => option('a)) => t = "create";
+  external create: (sink('t) => option('a)) => t = "create";
 
   let make = sinkFn =>
     create(s => {
       sinkFn({
-        next: s##next,
-        error: s##error,
-        completed: s##completed,
-        closed: s##closed,
+        next: s.next,
+        error: s.error,
+        completed: s.completed,
+        closed: s.closed,
       });
       None;
     });
@@ -358,26 +327,24 @@ module Network = {
   type t;
 
   type operation = {
-    .
-    "text": string,
-    "name": string,
-    "operationKind": string,
+    text: string,
+    name: string,
+    operationKind: string,
   };
 
-  type subscribeFn =
-    {
-      .
-      "request": operation,
-      "variables": Js.Json.t,
-      "cacheConfig": CacheConfig.t,
-    } =>
-    Observable.t;
+  type subscribeFnConfig = {
+    request: operation,
+    variables: Js.Json.t,
+    cacheConfig,
+  };
+
+  type subscribeFn = subscribeFnConfig => Observable.t;
 
   type fetchFunctionPromise =
-    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
 
   type fetchFunctionObservable =
-    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
+    (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
   external makeFromPromise: (fetchFunctionPromise, option(subscribeFn)) => t =
@@ -409,13 +376,13 @@ module RecordSource = {
 module Store = {
   type t;
 
+  type storeConfig = {gcReleaseBufferSize: option(int)};
+
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make:
-    (RecordSource.t, {. "gcReleaseBufferSize": option(int)}) => t =
-    "Store";
+  external _make: (RecordSource.t, storeConfig) => t = "Store";
 
   let make = (~source, ~gcReleaseBufferSize=?, ()) =>
-    _make(source, {"gcReleaseBufferSize": gcReleaseBufferSize});
+    _make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
@@ -423,22 +390,21 @@ module Store = {
 module Environment = {
   type t;
 
+  type environmentConfig('a) = {
+    network: Network.t,
+    store: Store.t,
+    [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
+    getDataID: option(('a, string) => string),
+  };
+
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make:
-    {
-      .
-      "network": Network.t,
-      "store": Store.t,
-      "UNSTABLE_DO_NOT_USE_getDataID": option(('a, string) => string),
-    } =>
-    t =
-    "Environment";
+  external _make: environmentConfig('a) => t = "Environment";
 
   let make = (~network, ~store, ~getDataID=?, ()) =>
     _make({
-      "network": network,
-      "store": store,
-      "UNSTABLE_DO_NOT_USE_getDataID":
+      network,
+      store,
+      getDataID:
         switch (getDataID) {
         | Some(getDataID) =>
           Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
@@ -500,35 +466,19 @@ external fetchQuery:
   (Environment.t, queryNode, 'variables) => Js.Promise.t('response) =
   "fetchQuery";
 
+type useQueryConfig = {
+  fetchKey: option(string),
+  fetchPolicy: option(string),
+  networkCacheConfig: option(cacheConfig),
+};
+
 [@bs.module "react-relay/hooks"]
-external _useQuery:
-  (
-    queryNode,
-    'variables,
-    {
-      .
-      "fetchKey": option(string),
-      "fetchPolicy": option(string),
-      "networkCacheConfig": option(CacheConfig.t),
-    }
-  ) =>
-  'queryResponse =
+external _useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
 [@bs.module "react-relay/hooks"]
 external _preloadQuery:
-  (
-    Environment.t,
-    queryNode,
-    'variables,
-    {
-      .
-      "fetchKey": option(string),
-      "fetchPolicy": option(string),
-      "networkCacheConfig": option(CacheConfig.t),
-    }
-  ) =>
-  'queryResponse =
+  (Environment.t, queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "preloadQuery";
 
 [@bs.module "react-relay/hooks"]
@@ -551,7 +501,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       ~variables: variables,
       ~fetchPolicy: fetchPolicy=?,
       ~fetchKey: string=?,
-      ~networkCacheConfig: CacheConfig.t=?,
+      ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
     response =
@@ -560,9 +510,9 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         C.query,
         variables |> _cleanVariables,
         {
-          "fetchKey": fetchKey,
-          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-          "networkCacheConfig": networkCacheConfig,
+          fetchKey,
+          fetchPolicy: fetchPolicy |> mapFetchPolicy,
+          networkCacheConfig,
         },
       );
 
@@ -572,7 +522,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       ~variables: variables,
       ~fetchPolicy: fetchPolicy=?,
       ~fetchKey: string=?,
-      ~networkCacheConfig: CacheConfig.t=?,
+      ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
     preloadToken =
@@ -589,9 +539,9 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         C.query,
         variables |> _cleanVariables,
         {
-          "fetchKey": fetchKey,
-          "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-          "networkCacheConfig": networkCacheConfig,
+          fetchKey,
+          fetchPolicy: fetchPolicy |> mapFetchPolicy,
+          networkCacheConfig,
         },
       );
 
@@ -819,11 +769,10 @@ module type MutationConfig = {
 type updaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationConfig('variables, 'response) = {
-  .
-  "variables": 'variables,
-  "optimisticResponse": option('response),
-  "updater": option(updaterFn),
-  "optimisticUpdater": option(updaterFn),
+  variables: 'variables,
+  optimisticResponse: option('response),
+  updater: option(updaterFn),
+  optimisticUpdater: option(updaterFn),
 };
 
 type mutationError = {. "message": string};
