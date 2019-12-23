@@ -766,22 +766,22 @@ module type MutationConfig = {
   let node: mutationNode;
 };
 
-type updaterFn = RecordSourceSelectorProxy.t => unit;
+type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
+type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationConfig('variables, 'response) = {
   variables: 'variables,
   optimisticResponse: option('response),
-  updater: option(updaterFn),
-  optimisticUpdater: option(updaterFn),
+  updater: option(updaterFn('response)),
+  optimisticUpdater: option(optimisticUpdaterFn),
 };
 
-type mutationError = {. "message": string};
+type mutationError = {message: string};
 
 type mutationStateRaw('response) = {
-  .
-  "loading": bool,
-  "data": Js.Nullable.t('response),
-  "error": Js.Nullable.t(mutationError),
+  loading: bool,
+  data: Js.Nullable.t('response),
+  error: Js.Nullable.t(mutationError),
 };
 
 type mutateFn('variables, 'response) =
@@ -806,18 +806,17 @@ type mutationResult('response) =
 type useMutationConfigType('variables) = {variables: 'variables};
 
 type _commitMutationConfig('variables, 'response) = {
-  .
-  "mutation": mutationNode,
-  "variables": 'variables,
-  "onCompleted":
+  mutation: mutationNode,
+  variables: 'variables,
+  onCompleted:
     option(
       (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
       unit,
     ),
-  "onError": option(Js.Nullable.t(mutationError) => unit),
-  "optimisticResponse": option('response),
-  "optimisticUpdater": option(RecordSourceSelectorProxy.t => unit),
-  "updater": option(RecordSourceSelectorProxy.t => unit),
+  onError: option(Js.Nullable.t(mutationError) => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
 };
 
 exception Mutation_failed(array(mutationError));
@@ -850,9 +849,9 @@ module MakeUseMutation = (C: MutationConfig) => {
         _commitMutation(
           environment,
           {
-            "variables": variables |> _cleanVariables,
-            "mutation": C.node,
-            "onCompleted":
+            variables: variables |> _cleanVariables,
+            mutation: C.node,
+            onCompleted:
               Some(
                 (res, errors) =>
                   switch (res |> toOpt, errors |> toOpt) {
@@ -867,7 +866,7 @@ module MakeUseMutation = (C: MutationConfig) => {
                     reject(. Mutation_failed([||]));
                   },
               ),
-            "onError":
+            onError:
               Some(
                 error =>
                   switch (error |> toOpt) {
@@ -879,9 +878,9 @@ module MakeUseMutation = (C: MutationConfig) => {
                     reject(. Mutation_failed([||]));
                   },
               ),
-            "optimisticResponse": optimisticResponse,
-            "optimisticUpdater": optimisticUpdater,
-            "updater": updater,
+            optimisticResponse,
+            optimisticUpdater,
+            updater,
           },
         );
       });
@@ -904,9 +903,9 @@ module MakeCommitMutation = (C: MutationConfig) => {
       _commitMutation(
         environment,
         {
-          "variables": variables |> _cleanVariables,
-          "mutation": C.node,
-          "onCompleted":
+          variables: variables |> _cleanVariables,
+          mutation: C.node,
+          onCompleted:
             Some(
               (res, errors) =>
                 switch (res |> toOpt, errors |> toOpt) {
@@ -915,7 +914,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
                 | (None, None) => reject(. Mutation_failed([||]))
                 },
             ),
-          "onError":
+          onError:
             Some(
               error =>
                 switch (error |> toOpt) {
@@ -923,9 +922,9 @@ module MakeCommitMutation = (C: MutationConfig) => {
                 | None => reject(. Mutation_failed([||]))
                 },
             ),
-          "optimisticResponse": optimisticResponse,
-          "optimisticUpdater": optimisticUpdater,
-          "updater": updater,
+          optimisticResponse,
+          optimisticUpdater,
+          updater,
         },
       )
     );
@@ -952,7 +951,7 @@ type _subscriptionConfig('response, 'variables) = {
   "onCompleted": option(unit => unit),
   "onError": option(Js.Exn.t => unit),
   "onNext": option('response => unit),
-  "updater": option(updaterFn),
+  "updater": option(updaterFn('response)),
 };
 
 [@bs.module "relay-runtime"]
@@ -968,7 +967,7 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
         ~onCompleted: option(unit => unit)=?,
         ~onError: option(Js.Exn.t => unit)=?,
         ~onNext: option(C.response => unit)=?,
-        ~updater: option(updaterFn)=?,
+        ~updater: option(updaterFn(C.response))=?,
         (),
       ) =>
     requestSubscription(

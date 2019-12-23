@@ -507,9 +507,10 @@ module type MutationConfig = {
   let node: mutationNode;
 };
 
-type updaterFn = RecordSourceSelectorProxy.t => unit;
+type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
+type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
-type mutationError = {. "message": string};
+type mutationError = {message: string};
 
 type mutationState('response) =
   | Idle
@@ -532,8 +533,8 @@ module MakeUseMutation:
         (
           ~variables: C.variables,
           ~optimisticResponse: C.response=?,
-          ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
-          ~updater: updaterFn=?,
+          ~optimisticUpdater: optimisticUpdaterFn=?,
+          ~updater: updaterFn(C.response)=?,
           unit
         ) =>
         Js.Promise.t(mutationResult(C.response)),
@@ -589,9 +590,9 @@ module MakeCommitMutation:
       (
         ~environment: Environment.t,
         ~variables: C.variables,
-        ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
+        ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
-        ~updater: RecordSourceSelectorProxy.t => unit=?,
+        ~updater: updaterFn(C.response)=?,
         unit
       ) =>
       Js.Promise.t(C.response);
@@ -632,7 +633,7 @@ module MakeUseSubscription:
         ~onCompleted: unit => unit=?,
         ~onError: Js.Exn.t => unit=?,
         ~onNext: C.response => unit=?,
-        ~updater: updaterFn=?,
+        ~updater: updaterFn(C.response)=?,
         unit
       ) =>
       Disposable.t;
