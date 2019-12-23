@@ -1,3 +1,9 @@
+type suspenseConfig = {
+  timeoutMs: int,
+  busyDelayMs: option(int),
+  busyMinDurationMs: option(int),
+};
+
 let useTransition:
   (~timeoutMs: int, ~busyDelayMs: int=?, ~busyMinDurationMs: int=?, unit) =>
   ((unit => unit) => unit, bool);
@@ -41,16 +47,4 @@ module SuspenseList: {
     ReasonReact.reactElement;
 };
 
-module SuspenseConfig: {
-  type t;
-  let make:
-    (
-      ~timeOutMs: float,
-      ~busyDelayMs: float=?,
-      ~busyMinDurationMs: float=?,
-      unit
-    ) =>
-    t;
-};
-
-let unstable_withSuspenseConfig: (unit => unit, SuspenseConfig.t) => unit;
+let unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit;

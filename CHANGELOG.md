@@ -2,6 +2,8 @@
 
 - Adds validation for illegal field names (reserved words and capitalized words are illegal as field names in Reason) to the Relay compiler.
 - Moves validation of explicit `__typename` selection to Relay compiler, from the PPX.
+- Upgrade to BuckleScript 7, and convert lots of things to use records instead of `Js.t` under the hood.
+- Add `'response` as second parameter to mutation/subscription `updater` functions. This was simply not bound before in ReasonRelay, but Relay has always provided it.
 
 # 0.4.4
 

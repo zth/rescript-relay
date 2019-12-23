@@ -246,28 +246,11 @@ module ConnectionHandler: {
  * NETWORK
  */
 
-/**
- * A module representing cache configs you can use when fetching data.
- */
-module CacheConfig: {
-  type t;
-  type config = {
-    force: option(bool),
-    poll: option(int),
-    liveConfigId: option(string),
-    transactionId: option(string),
-  };
-
-  let make:
-    (
-      ~force: option(bool),
-      ~poll: option(int),
-      ~liveConfigId: option(string),
-      ~transactionId: option(string)
-    ) =>
-    t;
-
-  let getConfig: t => config;
+type cacheConfig = {
+  force: option(bool),
+  poll: option(int),
+  liveConfigId: option(string),
+  transactionId: option(string),
 };
 
 /**
@@ -293,25 +276,24 @@ module Network: {
   type t;
 
   type operation = {
-    .
-    "name": string,
-    "operationKind": string,
-    "text": string,
+    text: string,
+    name: string,
+    operationKind: string,
   };
-  type subscribeFn =
-    {
-      .
-      "request": operation,
-      "variables": Js.Json.t,
-      "cacheConfig": CacheConfig.t,
-    } =>
-    Observable.t;
+
+  type subscribeFnConfig = {
+    request: operation,
+    variables: Js.Json.t,
+    cacheConfig,
+  };
+
+  type subscribeFn = subscribeFnConfig => Observable.t;
 
   type fetchFunctionPromise =
-    (operation, Js.Json.t, CacheConfig.t) => Js.Promise.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
 
   type fetchFunctionObservable =
-    (operation, Js.Json.t, CacheConfig.t) => Observable.t;
+    (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   let makePromiseBased:
     (
@@ -412,7 +394,7 @@ module MakeUseQuery:
         ~variables: variables,
         ~fetchPolicy: fetchPolicy=?,
         ~fetchKey: string=?,
-        ~networkCacheConfig: CacheConfig.t=?,
+        ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
       response;
@@ -427,7 +409,7 @@ module MakeUseQuery:
         ~variables: variables,
         ~fetchPolicy: fetchPolicy=?,
         ~fetchKey: string=?,
-        ~networkCacheConfig: CacheConfig.t=?,
+        ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
       preloadToken;
@@ -525,9 +507,10 @@ module type MutationConfig = {
   let node: mutationNode;
 };
 
-type updaterFn = RecordSourceSelectorProxy.t => unit;
+type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
+type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
-type mutationError = {. "message": string};
+type mutationError = {message: string};
 
 type mutationState('response) =
   | Idle
@@ -550,8 +533,8 @@ module MakeUseMutation:
         (
           ~variables: C.variables,
           ~optimisticResponse: C.response=?,
-          ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
-          ~updater: updaterFn=?,
+          ~optimisticUpdater: optimisticUpdaterFn=?,
+          ~updater: updaterFn(C.response)=?,
           unit
         ) =>
         Js.Promise.t(mutationResult(C.response)),
@@ -607,9 +590,9 @@ module MakeCommitMutation:
       (
         ~environment: Environment.t,
         ~variables: C.variables,
-        ~optimisticUpdater: RecordSourceSelectorProxy.t => unit=?,
+        ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
-        ~updater: RecordSourceSelectorProxy.t => unit=?,
+        ~updater: updaterFn(C.response)=?,
         unit
       ) =>
       Js.Promise.t(C.response);
@@ -650,7 +633,7 @@ module MakeUseSubscription:
         ~onCompleted: unit => unit=?,
         ~onError: Js.Exn.t => unit=?,
         ~onNext: C.response => unit=?,
-        ~updater: updaterFn=?,
+        ~updater: updaterFn(C.response)=?,
         unit
       ) =>
       Disposable.t;
