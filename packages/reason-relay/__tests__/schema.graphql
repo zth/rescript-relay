@@ -51,6 +51,10 @@ type UpdateUserAvatarPayload {
   user: User
 }
 
+type UserUpdatedPayload {
+  user: User
+}
+
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
@@ -67,4 +71,8 @@ type Mutation {
   updateUserAvatar(avatarUrl: String): UpdateUserAvatarPayload
   addFriend(friendId: ID!): AddFriendPayload
   removeFriend(friendId: ID!): RemoveFriendPayload
+}
+
+type Subscription {
+  userUpdated(id: ID!): UserUpdatedPayload
 }

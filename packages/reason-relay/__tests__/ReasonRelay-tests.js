@@ -1,8 +1,10 @@
 require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
+const React = require("react");
 const queryMock = require("./queryMock");
 
 const { test_1 } = require("./Test_1.bs");
+const { test_2 } = require("./Test_2.bs");
 
 describe("Test_1", () => {
   const getMockedQuery = () => ({
@@ -206,6 +208,47 @@ describe("Test_1", () => {
       resolvePagination();
 
       await t.screen.findByText("Third Friend");
+    });
+  });
+});
+
+describe("Test_2", () => {
+  describe("subscriptions", () => {
+    test("it handles basic subscriptions", async () => {
+      queryMock.mockQuery({
+        name: "Test2_Query",
+        data: {
+          loggedInUser: {
+            id: "user-1",
+            firstName: "Some",
+            lastName: "User",
+            avatarUrl: null
+          }
+        }
+      });
+
+      const testAssets = test_2();
+      t.render(testAssets.render());
+      await t.screen.findByText("Some User");
+      expect(t.screen.queryByAltText("avatar")).toBeNull();
+
+      const sink = testAssets.getSink();
+      expect(sink).toBeDefined();
+      
+      sink.next({
+        data: {
+          userUpdated: {
+            user: {
+              id: "user-1",
+              firstName: "Some",
+              lastName: "User",
+              avatarUrl: "http://some/avatar.png"
+            }
+          }
+        }
+      });
+
+      await t.screen.findByAltText("avatar");
     });
   });
 });
