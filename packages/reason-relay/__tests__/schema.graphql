@@ -1,0 +1,70 @@
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+enum OnlineStatus {
+  Online
+  Idle
+  Offline
+}
+
+type User implements Node {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  avatarUrl: String
+  isOnline: Boolean
+  friendsConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): UserConnection!
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge]
+}
+
+type UserEdge {
+  node: User
+  cursor: String!
+}
+
+type AddFriendPayload {
+  addedFriend: User
+}
+
+type RemoveFriendPayload {
+  removedFriendId: ID
+}
+
+type UpdateUserAvatarPayload {
+  user: User
+}
+
+type Query {
+  node(id: ID!): Node
+  loggedInUser: User!
+  users(
+    status: OnlineStatus
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): UserConnection
+}
+
+type Mutation {
+  updateUserAvatar(avatarUrl: String): UpdateUserAvatarPayload
+  addFriend(friendId: ID!): AddFriendPayload
+  removeFriend(friendId: ID!): RemoveFriendPayload
+}
