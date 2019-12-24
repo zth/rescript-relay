@@ -3,8 +3,7 @@
     "target": "es2017",
     "module": "commonjs",
     "lib": ["es2017", "dom"],
-    "jsx": "preserve",
-    "outDir": "./lib/ts",
+    "jsx": "react",
     "strict": true,
     "esModuleInterop": false
   }

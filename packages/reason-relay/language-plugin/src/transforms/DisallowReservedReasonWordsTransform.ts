@@ -1,7 +1,7 @@
-const IRTransformer = require("../../../src/vendor/relay-compiler/lib/core/GraphQLIRTransformer");
+const IRTransformer = require("relay-compiler/lib/core/GraphQLIRTransformer");
 const {
   createUserError
-} = require("../../../src/vendor/relay-compiler/lib/core/RelayCompilerError");
+} = require("relay-compiler/lib/core/RelayCompilerError");
 
 type DisallowedResult = {
   disallowed: boolean;

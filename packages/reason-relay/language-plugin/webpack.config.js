@@ -1,6 +1,7 @@
 const path = require("path");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   mode: "production",
@@ -21,14 +22,9 @@ module.exports = {
     ]
   },
   externals: [
-    "graphql",
-    "reason",
-    "relay-compiler",
-    "relay-compiler/lib",
-    "relay-runtime",
-    /^@babel\/.+$/,
-    /^relay-compiler\/.+$/,
-    "immutable"
+    nodeExternals({
+      whitelist: [/bs-flow-parser/, /tablecloth-bucklescript/]
+    })
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js"]

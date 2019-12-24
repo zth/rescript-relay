@@ -1,4 +1,4 @@
-open BsFlowParser;
+open GabnorBsFlowParser;
 
 exception Missing_typename_field_on_union;
 exception Could_not_map_number;

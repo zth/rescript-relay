@@ -5,17 +5,16 @@ import * as RelayReasonGenerator from "../RelayReasonGenerator";
 import { printCode } from "../generator/Printer.gen";
 
 // @ts-ignore
-const GraphQLCompilerContext = require("../../../src/vendor/relay-compiler/lib/core/GraphQLCompilerContext");
-// @ts-ignore
-import * as RelayFlowGenerator from "../../../src/vendor/relay-compiler/lib/language/javascript/RelayFlowGenerator";
-// @ts-ignore
-import * as RelayIRTransforms from "../../../src/vendor/relay-compiler/lib/core/RelayIRTransforms";
+const GraphQLCompilerContext = require("relay-compiler/lib/core/GraphQLCompilerContext");
 
 // @ts-ignore
-import * as Schema from "../../../src/vendor/relay-compiler/lib/core/Schema";
+import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";
 
 // @ts-ignore
-import { transformASTSchema } from "../../../src/vendor/relay-compiler/lib/core/ASTConvert";
+import * as Schema from "relay-compiler/lib/core/Schema";
+
+// @ts-ignore
+import { transformASTSchema } from "relay-compiler/lib/core/ASTConvert";
 
 // @ts-ignore
 import {
@@ -24,7 +23,7 @@ import {
   Root,
   Fragment
   // @ts-ignore
-} from "../../../src/vendor/relay-compiler";
+} from "../../../src/vendor/relay-compiler/relay-compiler";
 
 function parseGraphQLText(
   schema: GraphQLSchema,
@@ -36,6 +35,7 @@ function parseGraphQLText(
   const ast = parse(text);
   const extendedSchema = extendSchema(schema, ast, { assumeValid: true });
   const definitions = convertASTDocuments(
+    // @ts-ignore
     Schema.DEPRECATED__create(schema, extendedSchema),
     [ast],
     Parser.transform.bind(Parser)
@@ -63,6 +63,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     extraDefs
   ]);
   const { definitions } = parseGraphQLText(relaySchema, text);
+  // @ts-ignore
   const compilerSchema = Schema.DEPRECATED__create(testSchema, relaySchema);
   return new GraphQLCompilerContext(compilerSchema)
     .addAll(definitions)

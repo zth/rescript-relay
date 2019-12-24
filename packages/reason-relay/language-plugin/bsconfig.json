@@ -10,12 +10,13 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": ["bs-flow-parser", "tablecloth-bucklescript"],
+  "bs-dependencies": ["@gabnor/bs-flow-parser", "tablecloth-bucklescript"],
   "warnings": {
     "error": "+101"
   },
   "refmt": 3,
   "gentypeconfig": {
+    "module": "commonjs",
     "language": "typescript",
     "shims": {
       "Js": "Js"

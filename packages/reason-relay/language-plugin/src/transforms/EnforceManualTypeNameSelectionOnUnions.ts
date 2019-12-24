@@ -1,11 +1,11 @@
-const IRTransformer = require("../../../src/vendor/relay-compiler/lib/core/GraphQLIRTransformer");
+const IRTransformer = require("relay-compiler/lib/core/GraphQLIRTransformer");
 const {
   createUserError
-} = require("../../../src/vendor/relay-compiler/lib/core/RelayCompilerError");
+} = require("relay-compiler/lib/core/RelayCompilerError");
 
 const {
   hasUnaliasedSelection
-} = require("../../../src/vendor/relay-compiler/lib/transforms/TransformUtils");
+} = require("relay-compiler/lib/transforms/TransformUtils");
 
 const TYPENAME_KEY = "__typename";
 
