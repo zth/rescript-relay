@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const path = require("path");
 const fs = require("fs");
-const { parseRE, printRE } = require("reason");
 const mkdir = require("mkdirp-sync");
 const { spawn } = require("child_process");
 const { buildSchema, introspectionQuery, graphql } = require("graphql");
