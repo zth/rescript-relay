@@ -3,3 +3,4 @@ dist
 node_modules
 src/Dummy.re*
 .bsb.lock
+*.log

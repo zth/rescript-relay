@@ -21,7 +21,7 @@ cp -rf src/vendor ../../_release/src/vendor;
 
 # copy config files
 echo "Copying config files..."
-cp bsconfig.json ../../_release/;
+cp bsconfig.release.json ../../_release/bsconfig.json;
 cp package.json ../../_release/;
 cp yarn.lock ../../_release/;
 
