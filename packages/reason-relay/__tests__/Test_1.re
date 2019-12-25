@@ -91,13 +91,7 @@ module FriendList = {
       {hasNext
          ? <button
              onClick={_ =>
-               loadNext(
-                 ~count=2,
-                 ~onComplete={
-                   Some(_ => Js.log("Done!"));
-                 },
-               )
-               |> ignore
+               loadNext(~count=2, ~onComplete=_ => Js.log("Done!")) |> ignore
              }>
              {React.string("Load more friends")}
            </button>
