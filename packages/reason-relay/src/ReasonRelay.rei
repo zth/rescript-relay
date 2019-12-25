@@ -463,8 +463,7 @@ module type MakeUsePaginationFragmentConfig = {
 };
 
 type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(option(Js.Exn.t) => unit)) =>
-  Disposable.t;
+  (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;
 
 type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   data: 'fragmentData,
