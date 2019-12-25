@@ -21,6 +21,7 @@ type User implements Node {
   lastName: String!
   avatarUrl: String
   isOnline: Boolean
+  nicknames: [String!]!
   friendsConnection(
     after: String
     first: Int

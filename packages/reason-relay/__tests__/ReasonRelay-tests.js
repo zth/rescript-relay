@@ -5,6 +5,7 @@ const queryMock = require("./queryMock");
 
 const { test_1 } = require("./Test_1.bs");
 const { test_2 } = require("./Test_2.bs");
+const { test_3 } = require("./Test_3.bs");
 
 describe("Test_1", () => {
   const getMockedQuery = () => ({
@@ -234,7 +235,7 @@ describe("Test_2", () => {
 
       const sink = testAssets.getSink();
       expect(sink).toBeDefined();
-      
+
       sink.next({
         data: {
           userUpdated: {
@@ -250,5 +251,96 @@ describe("Test_2", () => {
 
       await t.screen.findByAltText("avatar");
     });
+  });
+});
+
+describe("Test_3", () => {
+  const getMockedQuery = () => ({
+    name: "Test3_Query",
+    data: {
+      loggedInUser: {
+        id: "user-1",
+        firstName: "Some",
+        lastName: "User",
+        nicknames: ["Jiggy", "Diggy"],
+        friendsConnection: {
+          pageInfo: {
+            hasNextPage: true,
+            endCursor: "friend-2"
+          },
+          edges: [
+            {
+              cursor: "friend-1",
+              node: {
+                __typename: "User",
+                id: "friend-1",
+                firstName: "First",
+                lastName: "Friend"
+              }
+            },
+            {
+              cursor: "friend-2",
+              node: {
+                __typename: "User",
+                id: "friend-2",
+                firstName: "Second",
+                lastName: "Friend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  });
+
+  const getMockedMutation = () => ({
+    name: "Test3_AddFriendMutation",
+    variables: {
+      friendId: "friend-3"
+    },
+    data: {
+      addFriend: {
+        addedFriend: {
+          id: "friend-3",
+          firstName: "Third",
+          lastName: "Friend"
+        }
+      }
+    }
+  });
+
+  test("using raw updaters work", async () => {
+    queryMock.mockQuery(getMockedQuery());
+    queryMock.mockQuery(getMockedMutation());
+
+    t.render(test_3().render());
+    await t.screen.findByText("Some User");
+    await t.screen.findByText("First Friend");
+
+    t.fireEvent.click(t.screen.getByText("Add friend using raw store updater"));
+    await t.screen.findByText("Third Friend");
+  });
+
+  test("using utils work to add to connection", async () => {
+    queryMock.mockQuery(getMockedQuery());
+    queryMock.mockQuery(getMockedMutation());
+
+    t.render(test_3().render());
+    await t.screen.findByText("Some User");
+    await t.screen.findByText("First Friend");
+
+    t.fireEvent.click(t.screen.getByText("Add friend using utils"));
+    await t.screen.findByText("Third Friend");
+  });
+
+  test("updating locally works", async () => {
+    queryMock.mockQuery(getMockedQuery());
+
+    t.render(test_3().render());
+    await t.screen.findByText("Some User");
+    await t.screen.findByText("Nicknames: Jiggy, Diggy");
+
+    t.fireEvent.click(t.screen.getByText("Update nicknames locally"));
+    await t.screen.findByText("Nicknames: Jiggy, Diggy, Siggy");
   });
 });
