@@ -1,0 +1,23 @@
+{
+  "name": "reason-relay",
+  "version": "0.1.0",
+  "namespace": false,
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": [
+    {
+      "dir": "src"
+    }
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "bs-dependencies": ["reason-react"],
+  "suffix": ".bs.js",
+  "warnings": {
+    "error": "+101"
+  },
+  "refmt": 3
+}
