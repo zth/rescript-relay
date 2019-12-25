@@ -3,9 +3,9 @@
 - Adds validation for illegal field names (reserved words and capitalized words are illegal as field names in Reason) to the Relay compiler.
 - Moves validation of explicit `__typename` selection to Relay compiler, from the PPX.
 - Upgrade to BuckleScript 7, and convert lots of things to use records instead of `Js.t` under the hood.
-- Add `'response` as second parameter to mutation/subscription `updater` functions. This was simply not bound before in ReasonRelay, but Relay has always provided it.
-- Change signature of `loadNext` / `loadPrevious` pagination functions to follow the convention of providing only the arguments wanted and applying the function manually via `unit`. This: `loadNext(~count=2, ~onComplete=None)` will now instead be applied like `loadNext(~count=2, ())`.
-- Replace module `SuspenseConfig` with simple record `suspenseConfig`.
+- _BREAKING CHANGE_ Add `'response` as second parameter to mutation/subscription `updater` functions. This was simply not bound before in ReasonRelay, but Relay has always provided it.
+- _BREAKING CHANGE_ Change signature of `loadNext` / `loadPrevious` pagination functions to follow the convention of providing only the arguments wanted and applying the function manually via `unit`. This: `loadNext(~count=2, ~onComplete=None)` will now instead be applied like `loadNext(~count=2, ())`.
+- _BREAKING CHANGE_ Replace module `SuspenseConfig` with simple record `suspenseConfig`.
 
 # 0.4.4
 
