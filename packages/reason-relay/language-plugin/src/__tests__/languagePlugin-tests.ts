@@ -1,42 +1,35 @@
-import { buildSchema, GraphQLSchema, extendSchema, parse } from "graphql";
+import { Source, parse } from "graphql";
 import * as fs from "fs";
 import * as path from "path";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
 import { printCode } from "../generator/Printer.gen";
 
-// @ts-ignore
-const GraphQLCompilerContext = require("relay-compiler/lib/core/GraphQLCompilerContext");
+const CompilerContext = require("relay-compiler/lib/core/CompilerContext");
 
-// @ts-ignore
 import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";
 
-// @ts-ignore
-import * as Schema from "relay-compiler/lib/core/Schema";
-
-// @ts-ignore
-import { transformASTSchema } from "relay-compiler/lib/core/ASTConvert";
-
-// @ts-ignore
 import {
   Parser,
+  // @ts-ignore
   convertASTDocuments,
   Root,
+  Schema,
   Fragment
-  // @ts-ignore
-} from "../../../src/vendor/relay-compiler/relay-compiler";
+} from "relay-compiler";
+
+const create = require("relay-compiler").Schema.create;
 
 function parseGraphQLText(
-  schema: GraphQLSchema,
+  schema: any,
   text: string
 ): {
   definitions: ReadonlyArray<Fragment | Root>;
-  schema: GraphQLSchema;
+  schema: any;
 } {
   const ast = parse(text);
-  const extendedSchema = extendSchema(schema, ast, { assumeValid: true });
+  const extendedSchema = schema.extend(ast);
   const definitions = convertASTDocuments(
-    // @ts-ignore
-    Schema.DEPRECATED__create(schema, extendedSchema),
+    extendedSchema,
     [ast],
     Parser.transform.bind(Parser)
   );
@@ -46,10 +39,12 @@ function parseGraphQLText(
   };
 }
 
-const testSchema = buildSchema(
-  fs.readFileSync(
-    path.resolve(path.join(__dirname, "testSchema.graphql")),
-    "utf8"
+const testSchema = create(
+  new Source(
+    fs.readFileSync(
+      path.resolve(path.join(__dirname, "testSchema.graphql")),
+      "utf8"
+    )
   )
 );
 
@@ -58,21 +53,23 @@ function collapseString(str: string) {
 }
 
 function generate(text: string, options?: any, extraDefs: string = "") {
-  const relaySchema = transformASTSchema(testSchema, [
+  const relaySchema = testSchema.extend([
     ...RelayIRTransforms.schemaExtensions,
     extraDefs
   ]);
-  const { definitions } = parseGraphQLText(relaySchema, text);
-  // @ts-ignore
-  const compilerSchema = Schema.DEPRECATED__create(testSchema, relaySchema);
-  return new GraphQLCompilerContext(compilerSchema)
+  const { definitions, schema: extendedSchema } = parseGraphQLText(
+    relaySchema,
+    text
+  );
+
+  return new CompilerContext(extendedSchema)
     .addAll(definitions)
     .applyTransforms(RelayReasonGenerator.transforms)
     .documents()
     .map(
       (doc: any) =>
         `// ${doc.name}.graphql\n${printCode(
-          RelayReasonGenerator.generate(compilerSchema, doc, {
+          RelayReasonGenerator.generate(extendedSchema, doc, {
             customScalars: {},
             optionalInputFields: [],
             existingFragmentNames: new Set([]),
