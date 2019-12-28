@@ -2401,7 +2401,7 @@ function () {
    */
   ;
 
-  _proto.deleteExtraFiles = function deleteExtraFiles(isGeneratedFile) {
+  _proto.deleteExtraFiles = function deleteExtraFiles(keepExtraFile) {
     var _this3 = this;
 
     Profiler.run('CodegenDirectory.deleteExtraFiles', function () {
@@ -2423,7 +2423,7 @@ function () {
           }
 
           _this3._filesystem.readdirSync(firstLevelPath).forEach(function (actualFile) {
-            if (isGeneratedFile && isGeneratedFile(actualFile)) {
+            if (keepExtraFile && keepExtraFile(actualFile)) {
               return;
             }
 
@@ -2444,7 +2444,7 @@ function () {
         });
       } else {
         _this3._filesystem.readdirSync(_this3._dir).forEach(function (actualFile) {
-          if (isGeneratedFile && isGeneratedFile(actualFile)) {
+          if (keepExtraFile && keepExtraFile(actualFile)) {
             return;
           }
 
@@ -8839,7 +8839,7 @@ function getRelayFileWriter(baseDir, languagePlugin, noFutureProofEnums, outputD
           function () {
             var _persistQuery = _asyncToGenerator(function* (text) {
               var id = yield persistImplmentation(text);
-              !(typeof id === 'string') ?  true ?  true ?  true ? invariant(false, 'Expected persist function to return a string, got `%s`.', id) : undefined : undefined : undefined : void 0;
+              !(typeof id === 'string') ?  true ? invariant(false, 'Expected persist function to return a string, got `%s`.', id) : undefined : void 0;
               queryMap.set(id, text);
               return id;
             });
@@ -9263,7 +9263,7 @@ function () {
 
         if (baseParsers) {
           baseParsers.forEach(function (baseParserName) {
-            !(_this5.parsers[baseParserName] != null) ?  true ?  true ?  true ? invariant(false, 'Trying to access an uncompiled base parser config: %s', baseParserName) : undefined : undefined : undefined : void 0;
+            !(_this5.parsers[baseParserName] != null) ?  true ? invariant(false, 'Trying to access an uncompiled base parser config: %s', baseParserName) : undefined : void 0;
             baseDocuments = baseDocuments.merge(_this5.parsers[baseParserName].documents());
           });
         }
@@ -9313,7 +9313,7 @@ function () {
 
                 var _filePath2 = dir.getPath(filename);
 
-                !isGeneratedFile(_filePath2) ?  true ?  true ?  true ? invariant(false, 'CodegenRunner: %s returned false for isGeneratedFile, ' + 'but was in generated directory', _filePath2) : undefined : undefined : undefined : void 0;
+                !isGeneratedFile(_filePath2) ?  true ? invariant(false, 'CodegenRunner: %s returned false for isGeneratedFile, ' + 'but was in generated directory', _filePath2) : undefined : void 0;
               }
             } catch (err) {
               _didIteratorError3 = true;
@@ -9405,7 +9405,7 @@ function () {
       /*#__PURE__*/
       function () {
         var _ref4 = _asyncToGenerator(function* (files) {
-          !(_this6.parsers[parserName] != null) ?  true ?  true ?  true ? invariant(false, 'Trying to watch an uncompiled parser config: %s', parserName) : undefined : undefined : undefined : void 0;
+          !(_this6.parsers[parserName] != null) ?  true ? invariant(false, 'Trying to watch an uncompiled parser config: %s', parserName) : undefined : void 0;
 
           if (firstChange) {
             firstChange = false;
@@ -12011,7 +12011,7 @@ function writeAll(_ref2) {
       }
 
       allOutputDirectories.forEach(function (dir) {
-        dir.deleteExtraFiles(languagePlugin.isGeneratedFile);
+        dir.deleteExtraFiles(languagePlugin.keepExtraFile);
       });
 
       if (sourceControl && !onlyValidate) {
@@ -13633,7 +13633,7 @@ function getConcreteType(node) {
 
     default:
       node;
-       true ?  true ?  true ?  true ? invariant(false, 'Unexpected GeneratedNode kind: `%s`.', node.kind) : undefined : undefined : undefined : undefined;
+       true ?  true ? invariant(false, 'Unexpected GeneratedNode kind: `%s`.', node.kind) : undefined : undefined;
   }
 }
 
@@ -13708,7 +13708,7 @@ function _writeRelayGeneratedFile() {
         switch (generatedNode.kind) {
           case RelayConcreteNode.REQUEST:
             var _text = generatedNode.params.text;
-            !(_text != null) ?  true ?  true ?  true ? invariant(false, 'writeRelayGeneratedFile: Expected `text` in order to persist query') : undefined : undefined : undefined : void 0;
+            !(_text != null) ?  true ? invariant(false, 'writeRelayGeneratedFile: Expected `text` in order to persist query') : undefined : void 0;
             generatedNode = (0, _objectSpread2["default"])({}, generatedNode, {
               params: {
                 operationKind: generatedNode.params.operationKind,

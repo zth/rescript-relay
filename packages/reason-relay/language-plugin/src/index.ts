@@ -33,6 +33,8 @@ module.exports = () => ({
     fileName.endsWith("_graphql.re") ||
     fileName.endsWith(".bs.js") ||
     fileName.startsWith("SchemaAssets."),
+  keepExtraFile: (fileName: string) =>
+    fileName.endsWith(".bs.js") || fileName.startsWith("SchemaAssets."),
   getFileFilter,
   getModuleName: (operationName: string) => `${operationName}_graphql`
 });
