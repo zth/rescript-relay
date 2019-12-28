@@ -1,5 +1,5 @@
 /**
- * Relay v7.0.0
+ * Relay v8.0.0
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *

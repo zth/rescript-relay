@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Relay v7.0.0
+ * Relay v8.0.0
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -91,7 +91,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 48);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -114,6 +114,7 @@ module.exports = require("@babel/runtime/helpers/interopRequireDefault");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(7),
@@ -272,7 +273,7 @@ function printLocations(locations) {
         default:
           {
             sourceLocation;
-            throw createCompilerError("RelayCompilerError: cannot print location '".concat(String(sourceLocation), "'."));
+            throw createCompilerError("CompilerError: cannot print location '".concat(String(sourceLocation), "'."));
           }
       }
     }
@@ -403,6 +404,7 @@ module.exports = require("@babel/runtime/helpers/objectSpread");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -633,6 +635,18 @@ function () {
 
         break;
 
+      case 'ListValue':
+        nextNode = this._traverseChildren(prevNode, ['items']);
+        break;
+
+      case 'ObjectFieldValue':
+        nextNode = this._traverseChildren(prevNode, null, ['value']);
+        break;
+
+      case 'ObjectValue':
+        nextNode = this._traverseChildren(prevNode, ['fields']);
+        break;
+
       case 'Condition':
         nextNode = this._traverseChildren(prevNode, ['directives', 'selections'], ['condition']);
 
@@ -666,7 +680,7 @@ function () {
 
       default:
         prevNode;
-         true ?  true ? invariant(false, 'GraphQLIRTransformer: Unknown kind `%s`.', prevNode.kind) : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'IRTransformer: Unknown kind `%s`.', prevNode.kind) : undefined : undefined : undefined : undefined;
     }
 
     return nextNode;
@@ -683,7 +697,7 @@ function () {
         return;
       }
 
-      !Array.isArray(prevItems) ?  true ? invariant(false, 'GraphQLIRTransformer: Expected data for `%s` to be an array, got `%s`.', key, prevItems) : undefined : void 0;
+      !Array.isArray(prevItems) ?  true ?  true ?  true ? invariant(false, 'IRTransformer: Expected data for `%s` to be an array, got `%s`.', key, prevItems) : undefined : undefined : undefined : void 0;
 
       var nextItems = _this._map(prevItems);
 
@@ -728,7 +742,7 @@ function () {
   };
 
   _proto._getState = function _getState() {
-    !this._states.length ?  true ? invariant(false, 'GraphQLIRTransformer: Expected a current state to be set but found none. ' + 'This is usually the result of mismatched number of pushState()/popState() ' + 'calls.') : undefined : void 0;
+    !this._states.length ?  true ?  true ?  true ? invariant(false, 'IRTransformer: Expected a current state to be set but found none. ' + 'This is usually the result of mismatched number of pushState()/popState() ' + 'calls.') : undefined : undefined : undefined : void 0;
     return this._states[this._states.length - 1];
   };
 
@@ -765,9 +779,10 @@ module.exports = require("@babel/runtime/helpers/toConsumableArray");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var invariant = __webpack_require__(4);
 /**
@@ -1020,8 +1035,8 @@ function end(traceIdx) {
     return;
   }
 
-  !(trace.ph === 'B') ?  true ? invariant(false, 'Begin trace phase') : undefined : void 0;
-  !(stack.pop() === trace) ?  true ? invariant(false, 'GraphQLCompilerProfiler: The profile trace %s ended before nested traces. ' + 'If it is async, try using Profile.waitFor or Profile.profileWait.', trace.name) : undefined : void 0;
+  !(trace.ph === 'B') ?  true ?  true ?  true ? invariant(false, 'Begin trace phase') : undefined : undefined : undefined : void 0;
+  !(stack.pop() === trace) ?  true ?  true ?  true ? invariant(false, 'GraphQLCompilerProfiler: The profile trace %s ended before nested traces. ' + 'If it is async, try using Profile.waitFor or Profile.profileWait.', trace.name) : undefined : undefined : undefined : void 0;
   var prevTrace = traces[traces.length - 1];
 
   if (trace === prevTrace) {
@@ -1073,18 +1088,6 @@ module.exports = require("path");
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
-
-module.exports = require("relay-runtime");
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("@babel/runtime/helpers/asyncToGenerator");
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1097,6 +1100,7 @@ module.exports = require("@babel/runtime/helpers/asyncToGenerator");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var ID = 'id';
@@ -1173,6 +1177,18 @@ module.exports = {
 };
 
 /***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("relay-runtime");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("@babel/runtime/helpers/asyncToGenerator");
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
@@ -1204,6 +1220,7 @@ module.exports = require("immutable");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(7),
@@ -1256,6 +1273,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 // Copy of Variables type from '../../../react-relay/classic/tools/RelayTypes'
@@ -1287,17 +1305,18 @@ module.exports = getLiteralArgumentValues;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var GraphQLCompilerContext = __webpack_require__(19);
+var CompilerContext = __webpack_require__(19);
 
-var GraphQLIRVisitor = __webpack_require__(15);
+var IRVisitor = __webpack_require__(15);
 
-var SchemaUtils = __webpack_require__(11);
+var SchemaUtils = __webpack_require__(9);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError;
@@ -1327,7 +1346,7 @@ function inferRootArgumentDefinitions(context) {
   // Because @argument values don't matter (only variable names/types),
   // each reachable fragment only has to be checked once.
   var transformed = new Map();
-  var nextContext = new GraphQLCompilerContext(context.getSchema());
+  var nextContext = new CompilerContext(context.getSchema());
   return nextContext.addAll(Array.from(context.documents(), function (node) {
     switch (node.kind) {
       case 'Fragment':
@@ -1441,7 +1460,7 @@ function transformFragmentArguments(context, transformed, fragment) {
 }
 
 function visit(context, transformed, argumentDefinitions, node) {
-  GraphQLIRVisitor.visit(node, {
+  IRVisitor.visit(node, {
     FragmentSpread: function FragmentSpread(fragmentSpread) {
       var fragment = context.getFragment(fragmentSpread.name, fragmentSpread.loc);
       var referencedFragmentArguments = transformFragmentArguments(context, transformed, fragment); // Detect root variables being passed as the value of @arguments;
@@ -1492,36 +1511,55 @@ function visit(context, transformed, argumentDefinitions, node) {
       }
     },
     Argument: function Argument(argument) {
-      var _variable$type;
-
-      if (argument.value.kind !== 'Variable') {
+      if (argument.value.kind === 'Literal') {
         return false;
       }
 
-      var variable = argument.value;
-      var type = (_variable$type = variable.type) !== null && _variable$type !== void 0 ? _variable$type : argument.type;
+      var values = [argument.value];
 
-      if (type == null) {
-        return;
-      }
+      while (values.length > 0) {
+        var currentValue = values.pop();
 
-      if (!argumentDefinitions.has(variable.variableName)) {
-        // root variable
-        argumentDefinitions.set(variable.variableName, {
-          kind: 'RootArgumentDefinition',
-          loc: {
-            kind: 'Derived',
-            source: argument.loc
-          },
-          name: variable.variableName,
-          type: type
-        });
+        if (currentValue.kind === 'Variable') {
+          var _currentValue$type;
+
+          var type = (_currentValue$type = currentValue.type) !== null && _currentValue$type !== void 0 ? _currentValue$type : argument.type;
+
+          if (type == null) {
+            continue;
+          }
+
+          if (!argumentDefinitions.has(currentValue.variableName)) {
+            // root variable
+            argumentDefinitions.set(currentValue.variableName, {
+              kind: 'RootArgumentDefinition',
+              loc: {
+                kind: 'Derived',
+                source: argument.loc
+              },
+              name: currentValue.variableName,
+              type: type
+            });
+          }
+        } else if (currentValue.kind === 'ObjectValue') {
+          currentValue.fields.forEach(function (fieldValue) {
+            if (fieldValue.value.kind !== 'Literal') {
+              values.push(fieldValue.value);
+            }
+          });
+        } else if (currentValue.kind === 'ListValue') {
+          currentValue.items.forEach(function (listValue) {
+            if (listValue.kind !== 'Literal') {
+              values.push(listValue);
+            }
+          });
+        }
       }
 
       return false;
     },
     Condition: function Condition(condition) {
-      var _variable$type2;
+      var _variable$type;
 
       var variable = condition.condition;
 
@@ -1529,7 +1567,7 @@ function visit(context, transformed, argumentDefinitions, node) {
         return;
       }
 
-      var type = (_variable$type2 = variable.type) !== null && _variable$type2 !== void 0 ? _variable$type2 : SchemaUtils.getNonNullBooleanInput(context.getSchema());
+      var type = (_variable$type = variable.type) !== null && _variable$type !== void 0 ? _variable$type : SchemaUtils.getNonNullBooleanInput(context.getSchema());
 
       if (!argumentDefinitions.has(variable.variableName)) {
         // root variable
@@ -1553,13 +1591,13 @@ function visit(context, transformed, argumentDefinitions, node) {
 
       var defaultType = SchemaUtils.getNonNullBooleanInput(context.getSchema());
       [stream["if"], stream.initialCount].forEach(function (variable) {
-        var _variable$type3;
+        var _variable$type2;
 
         if (variable == null || variable.kind !== 'Variable') {
           return;
         }
 
-        var type = (_variable$type3 = variable.type) !== null && _variable$type3 !== void 0 ? _variable$type3 : defaultType;
+        var type = (_variable$type2 = variable.type) !== null && _variable$type2 !== void 0 ? _variable$type2 : defaultType;
 
         if (!argumentDefinitions.has(variable.variableName)) {
           // root variable
@@ -1576,7 +1614,7 @@ function visit(context, transformed, argumentDefinitions, node) {
       });
     },
     Defer: function Defer(defer) {
-      var _variable$type4;
+      var _variable$type3;
 
       var variable = defer["if"];
 
@@ -1584,7 +1622,7 @@ function visit(context, transformed, argumentDefinitions, node) {
         return;
       }
 
-      var type = (_variable$type4 = variable.type) !== null && _variable$type4 !== void 0 ? _variable$type4 : SchemaUtils.getNonNullBooleanInput(context.getSchema());
+      var type = (_variable$type3 = variable.type) !== null && _variable$type3 !== void 0 ? _variable$type3 : SchemaUtils.getNonNullBooleanInput(context.getSchema());
 
       if (!argumentDefinitions.has(variable.variableName)) {
         // root variable
@@ -1601,13 +1639,13 @@ function visit(context, transformed, argumentDefinitions, node) {
     },
     Stream: function Stream(stream) {
       [stream["if"], stream.initialCount].forEach(function (variable) {
-        var _variable$type5;
+        var _variable$type4;
 
         if (variable == null || variable.kind !== 'Variable') {
           return;
         }
 
-        var type = (_variable$type5 = variable.type) !== null && _variable$type5 !== void 0 ? _variable$type5 : SchemaUtils.getNonNullBooleanInput(context.getSchema());
+        var type = (_variable$type4 = variable.type) !== null && _variable$type4 !== void 0 ? _variable$type4 : SchemaUtils.getNonNullBooleanInput(context.getSchema());
 
         if (!argumentDefinitions.has(variable.variableName)) {
           // root variable
@@ -1629,7 +1667,7 @@ function visit(context, transformed, argumentDefinitions, node) {
       }
 
       field.handles.forEach(function (handle) {
-        var _variable$type6;
+        var _variable$type5;
 
         var variable = handle.dynamicKey;
 
@@ -1637,7 +1675,7 @@ function visit(context, transformed, argumentDefinitions, node) {
           return;
         }
 
-        var type = (_variable$type6 = variable.type) !== null && _variable$type6 !== void 0 ? _variable$type6 : SchemaUtils.getNullableStringInput(context.getSchema());
+        var type = (_variable$type5 = variable.type) !== null && _variable$type5 !== void 0 ? _variable$type5 : SchemaUtils.getNullableStringInput(context.getSchema());
 
         if (!argumentDefinitions.has(variable.variableName)) {
           // root variable
@@ -1673,13 +1711,14 @@ module.exports = inferRootArgumentDefinitions;
  * @format
  * @emails oncall+relay
  */
+// flowlint ambiguous-object-type:error
 
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
-var childProcess = __webpack_require__(53);
+var childProcess = __webpack_require__(52);
 
-var watchman = __webpack_require__(54);
+var watchman = __webpack_require__(53);
 
 var MAX_ATTEMPT_LIMIT = 5;
 
@@ -1835,6 +1874,7 @@ module.exports = GraphQLWatchmanClient;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var Profiler = __webpack_require__(6);
@@ -1852,10 +1892,10 @@ var _require2 = __webpack_require__(14),
  * An immutable representation of a corpus of documents being compiled together.
  * For each document, the context stores the IR and any validation errors.
  */
-var GraphQLCompilerContext =
+var CompilerContext =
 /*#__PURE__*/
 function () {
-  function GraphQLCompilerContext(schema) {
+  function CompilerContext(schema) {
     this._isMutable = false;
     this._documents = new ImmutableOrderedMap();
     this._withTransform = new WeakMap();
@@ -1866,7 +1906,7 @@ function () {
    */
 
 
-  var _proto = GraphQLCompilerContext.prototype;
+  var _proto = CompilerContext.prototype;
 
   _proto.documents = function documents() {
     return this._documents.toArray();
@@ -1878,14 +1918,14 @@ function () {
 
   _proto.replace = function replace(node) {
     return this._update(this._documents.update(node.name, function (existing) {
-      !existing ?  true ? invariant(false, 'GraphQLCompilerContext: Expected to replace existing node %s, but ' + 'one was not found in the context.', node.name) : undefined : void 0;
+      !existing ?  true ?  true ?  true ? invariant(false, 'CompilerContext: Expected to replace existing node %s, but ' + 'one was not found in the context.', node.name) : undefined : undefined : undefined : void 0;
       return node;
     }));
   };
 
   _proto.add = function add(node) {
     return this._update(this._documents.update(node.name, function (existing) {
-      !!existing ?  true ? invariant(false, 'GraphQLCompilerContext: Duplicate document named `%s`. GraphQL ' + 'fragments and roots must have unique names.', node.name) : undefined : void 0;
+      !!existing ?  true ?  true ?  true ? invariant(false, 'CompilerContext: Duplicate document named `%s`. GraphQL ' + 'fragments and roots must have unique names.', node.name) : undefined : undefined : undefined : void 0;
       return node;
     }));
   };
@@ -1978,7 +2018,7 @@ function () {
   };
 
   _proto._update = function _update(documents) {
-    var context = this._isMutable ? this : new GraphQLCompilerContext(this.getSchema());
+    var context = this._isMutable ? this : new CompilerContext(this.getSchema());
     context._documents = documents;
     return context;
   };
@@ -1987,10 +2027,10 @@ function () {
     return this._schema;
   };
 
-  return GraphQLCompilerContext;
+  return CompilerContext;
 }();
 
-module.exports = GraphQLCompilerContext;
+module.exports = CompilerContext;
 
 /***/ }),
 /* 20 */
@@ -2012,6 +2052,7 @@ module.exports = require("nullthrows");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 function buildFragmentSpread(fragment) {
@@ -2122,11 +2163,12 @@ module.exports = require("@babel/runtime/helpers/defineProperty");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
@@ -2136,7 +2178,8 @@ var crypto = __webpack_require__(12);
 
 var invariant = __webpack_require__(4);
 
-var path = __webpack_require__(8);
+var path = __webpack_require__(8); // flowlint nonstrict-import:warn
+
 
 var CodegenDirectory =
 /*#__PURE__*/
@@ -2466,212 +2509,11 @@ module.exports = CodegenDirectory;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var Profiler = __webpack_require__(6);
+var Profiler = __webpack_require__(6); // $FlowFixMe: Immutable is not typed
 
-var _require = __webpack_require__(11),
-    isExecutableDefinitionAST = _require.isExecutableDefinitionAST,
-    isSchemaDefinitionAST = _require.isSchemaDefinitionAST;
-
-var _require2 = __webpack_require__(7),
-    extendSchema = _require2.extendSchema,
-    parse = _require2.parse,
-    print = _require2.print,
-    visit = _require2.visit;
-
-function convertASTDocuments(schema, documents, transform) {
-  return Profiler.run('ASTConvert.convertASTDocuments', function () {
-    var definitions = definitionsFromDocuments(documents);
-    var astDefinitions = [];
-    documents.forEach(function (doc) {
-      doc.definitions.forEach(function (definition) {
-        if (isExecutableDefinitionAST(definition)) {
-          astDefinitions.push(definition);
-        }
-      });
-    });
-    return convertASTDefinitions(schema, definitions, transform);
-  });
-}
-
-function convertASTDocumentsWithBase(schema, baseDocuments, documents, transform) {
-  return Profiler.run('ASTConvert.convertASTDocumentsWithBase', function () {
-    var baseDefinitions = definitionsFromDocuments(baseDocuments);
-    var definitions = definitionsFromDocuments(documents);
-    var requiredDefinitions = new Map();
-    var baseMap = new Map();
-    baseDefinitions.forEach(function (definition) {
-      if (isExecutableDefinitionAST(definition)) {
-        var definitionName = definition.name && definition.name.value; // If there's no name, no reason to put in the map
-
-        if (definitionName != null) {
-          if (baseMap.has(definitionName)) {
-            throw new Error("Duplicate definition of '".concat(definitionName, "'."));
-          }
-
-          baseMap.set(definitionName, definition);
-        }
-      }
-    });
-    var definitionsToVisit = [];
-    definitions.forEach(function (definition) {
-      if (isExecutableDefinitionAST(definition)) {
-        definitionsToVisit.push(definition);
-      }
-    });
-
-    while (definitionsToVisit.length > 0) {
-      var definition = definitionsToVisit.pop();
-      var name = definition.name && definition.name.value;
-
-      if (name == null) {
-        continue;
-      }
-
-      if (requiredDefinitions.has(name)) {
-        if (requiredDefinitions.get(name) !== definition) {
-          throw new Error("Duplicate definition of '".concat(name, "'."));
-        }
-
-        continue;
-      }
-
-      requiredDefinitions.set(name, definition);
-      visit(definition, {
-        FragmentSpread: function FragmentSpread(spread) {
-          var baseDefinition = baseMap.get(spread.name.value);
-
-          if (baseDefinition) {
-            // We only need to add those definitions not already included
-            // in definitions
-            definitionsToVisit.push(baseDefinition);
-          }
-        }
-      });
-    }
-
-    var definitionsToConvert = [];
-    requiredDefinitions.forEach(function (definition) {
-      return definitionsToConvert.push(definition);
-    });
-    return convertASTDefinitions(schema, definitionsToConvert, transform);
-  });
-}
-
-function convertASTDefinitions(schema, definitions, transform) {
-  var operationDefinitions = [];
-  definitions.forEach(function (definition) {
-    if (isExecutableDefinitionAST(definition)) {
-      operationDefinitions.push(definition);
-    }
-  });
-  return transform(schema, operationDefinitions);
-}
-
-function definitionsFromDocuments(documents) {
-  var definitions = [];
-  documents.forEach(function (doc) {
-    doc.definitions.forEach(function (definition) {
-      return definitions.push(definition);
-    });
-  });
-  return definitions;
-}
-/**
- * Extends a GraphQLSchema with a list of schema extensions in string form.
- */
-
-
-function transformASTSchema(schema, schemaExtensions) {
-  return Profiler.run('ASTConvert.transformASTSchema', function () {
-    if (schemaExtensions.length === 0) {
-      return schema;
-    }
-
-    var extension = schemaExtensions.join('\n');
-    return cachedExtend(schema, extension, function () {
-      return extendSchema(schema, parse(extension));
-    });
-  });
-}
-/**
- * Extends a GraphQLSchema with a list of schema extensions in AST form.
- */
-
-
-function extendASTSchema(baseSchema, documents) {
-  return Profiler.run('ASTConvert.extendASTSchema', function () {
-    var schemaExtensions = [];
-    documents.forEach(function (doc) {
-      doc.definitions.forEach(function (definition) {
-        if (isSchemaDefinitionAST(definition)) {
-          schemaExtensions.push(definition);
-        }
-      });
-    });
-
-    if (schemaExtensions.length === 0) {
-      return baseSchema;
-    }
-
-    var key = schemaExtensions.map(print).join('\n');
-    return cachedExtend(baseSchema, key, function () {
-      return extendSchema(baseSchema, {
-        kind: 'Document',
-        definitions: schemaExtensions
-      }, // TODO T24511737 figure out if this is dangerous
-      {
-        assumeValid: true
-      });
-    });
-  });
-}
-
-var extendedSchemas = new Map();
-
-function cachedExtend(schema, key, compute) {
-  var cache = extendedSchemas.get(schema);
-
-  if (!cache) {
-    cache = {};
-    extendedSchemas.set(schema, cache);
-  }
-
-  var extendedSchema = cache[key];
-
-  if (!extendedSchema) {
-    extendedSchema = compute();
-    cache[key] = extendedSchema;
-  }
-
-  return extendedSchema;
-}
-
-module.exports = {
-  convertASTDocuments: convertASTDocuments,
-  convertASTDocumentsWithBase: convertASTDocumentsWithBase,
-  extendASTSchema: extendASTSchema,
-  transformASTSchema: transformASTSchema
-};
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
-
-
-var Profiler = __webpack_require__(6);
 
 var _require = __webpack_require__(14),
     ImmutableMap = _require.Map;
@@ -2731,7 +2573,7 @@ function () {
 module.exports = ASTCache;
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2744,6 +2586,7 @@ module.exports = ASTCache;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -2754,11 +2597,11 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var Profiler = __webpack_require__(6);
 
-var orList = __webpack_require__(62);
+var orList = __webpack_require__(61);
 
-var partitionArray = __webpack_require__(28);
+var partitionArray = __webpack_require__(27);
 
-var _require = __webpack_require__(29),
+var _require = __webpack_require__(28),
     DEFAULT_HANDLE_KEY = _require.DEFAULT_HANDLE_KEY;
 
 var _require2 = __webpack_require__(1),
@@ -2766,10 +2609,10 @@ var _require2 = __webpack_require__(1),
     createUserError = _require2.createUserError,
     eachWithCombinedError = _require2.eachWithCombinedError;
 
-var _require3 = __webpack_require__(11),
+var _require3 = __webpack_require__(9),
     isExecutableDefinitionAST = _require3.isExecutableDefinitionAST;
 
-var _require4 = __webpack_require__(30),
+var _require4 = __webpack_require__(29),
     getFieldDefinitionLegacy = _require4.getFieldDefinitionLegacy;
 
 var _require5 = __webpack_require__(7),
@@ -2802,9 +2645,8 @@ var IF = 'if';
  */
 
 function parse(schema, text, filename) {
-  var ast = parseGraphQL(new Source(text, filename)); // TODO T24511737 figure out if this is dangerous
-
-  var parser = new RelayParser(schema.DEPRECATED__extend(ast), ast.definitions);
+  var ast = parseGraphQL(new Source(text, filename));
+  var parser = new RelayParser(schema.extend(ast), ast.definitions);
   return parser.transform();
 }
 /**
@@ -3828,29 +3670,55 @@ function transformNonNullLiteral(schema, ast, type, transformVariable, options) 
 
     var itemType = schema.assertInputType(schema.getListItemType(nullableType));
     var literalList = [];
+    var items = [];
+    var areAllItemsScalar = true;
     ast.values.forEach(function (item) {
       var itemValue = transformValue(schema, item, itemType, transformVariable, options);
 
       if (itemValue.kind === 'Literal') {
         literalList.push(itemValue.value);
-      } else if (itemValue.kind === 'Variable') {
-        throw createUserError('Complex argument values (Lists or InputObjects with nested variables) are not supported.', null, [item]);
       }
+
+      items.push(itemValue);
+      areAllItemsScalar = areAllItemsScalar && itemValue.kind === 'Literal';
     });
-    return {
-      kind: 'Literal',
-      loc: buildLocation(ast.loc),
-      value: literalList
-    };
+
+    if (areAllItemsScalar) {
+      return {
+        kind: 'Literal',
+        loc: buildLocation(ast.loc),
+        value: literalList
+      };
+    } else {
+      return {
+        kind: 'ListValue',
+        loc: buildLocation(ast.loc),
+        items: items
+      };
+    }
   } else if (schema.isInputObject(nullableType)) {
     if (ast.kind !== 'ObjectValue') {
       throw createUserError("Expected a value matching type '".concat(schema.getTypeString(type), "'."), null, [ast]);
     }
 
     var literalObject = {};
+    var fields = [];
+    var areAllFieldsScalar = true;
     var inputType = schema.assertInputObjectType(nullableType);
+    var requiredFieldNames = new Set(schema.getFields(inputType).filter(function (field) {
+      return schema.isNonNull(schema.getFieldType(field));
+    }).map(function (field) {
+      return schema.getFieldName(field);
+    }));
+    var seenFields = new Map();
     ast.fields.forEach(function (field) {
       var fieldName = getName(field);
+      var seenField = seenFields.get(fieldName);
+
+      if (seenField) {
+        throw createUserError("Duplicated field name '".concat(fieldName, "' in the input object."), null, [field, seenField]);
+      }
+
       var fieldID = schema.getFieldByName(inputType, fieldName);
 
       if (!fieldID) {
@@ -3863,15 +3731,39 @@ function transformNonNullLiteral(schema, ast, type, transformVariable, options) 
 
       if (fieldValue.kind === 'Literal') {
         literalObject[field.name.value] = fieldValue.value;
-      } else if (fieldValue.kind === 'Variable') {
-        throw createUserError('Complex argument values (Lists or InputObjects with nested variables) are not supported.', null, [field.value]);
       }
+
+      fields.push({
+        kind: 'ObjectFieldValue',
+        loc: buildLocation(field.loc),
+        name: fieldName,
+        value: fieldValue
+      });
+      seenFields.set(fieldName, field);
+      requiredFieldNames["delete"](fieldName);
+      areAllFieldsScalar = areAllFieldsScalar && fieldValue.kind === 'Literal';
     });
-    return {
-      kind: 'Literal',
-      loc: buildLocation(ast.loc),
-      value: literalObject
-    };
+
+    if (requiredFieldNames.size > 0) {
+      var requiredFieldStr = Array.from(requiredFieldNames).map(function (item) {
+        return "'".concat(item, "'");
+      }).join(', ');
+      throw createUserError("Missing non-optional field".concat(requiredFieldNames.size > 1 ? 's:' : '', " ").concat(requiredFieldStr, " for input type '").concat(schema.getTypeString(inputType), "'."), null, [ast]);
+    }
+
+    if (areAllFieldsScalar) {
+      return {
+        kind: 'Literal',
+        loc: buildLocation(ast.loc),
+        value: literalObject
+      };
+    } else {
+      return {
+        kind: 'ObjectValue',
+        loc: buildLocation(ast.loc),
+        fields: fields
+      };
+    }
   } else if (schema.isId(nullableType)) {
     // GraphQLID's parseLiteral() always returns the string value. However
     // the int/string distinction may be important at runtime, so this
@@ -4095,7 +3987,7 @@ function checkFragmentSpreadTypeCompatibility(schema, fragmentType, parentType, 
     var suggestedTypesMessage = '';
 
     if (possibleConcreteTypes.length !== 0) {
-      suggestedTypesMessage = " Possible concrete types include ".concat(possibleConcreteTypes.slice(0, 3).map(function (type) {
+      suggestedTypesMessage = " Possible concrete types include ".concat(possibleConcreteTypes.sort().slice(0, 3).map(function (type) {
         return "'".concat(schema.getTypeString(type), "'");
       }).join(', '), ", etc.");
     }
@@ -4110,7 +4002,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4123,6 +4015,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 /**
  * Partitions an array given a predicate. All elements satisfying the predicate
@@ -4150,6 +4043,27 @@ function partitionArray(array, predicate) {
 module.exports = partitionArray;
 
 /***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+module.exports = {
+  DEFAULT_HANDLE_KEY: ''
+};
+
+/***/ }),
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4163,26 +4077,7 @@ module.exports = partitionArray;
  * 
  * @format
  */
-
-
-module.exports = {
-  DEFAULT_HANDLE_KEY: ''
-};
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(1),
@@ -4325,7 +4220,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4338,16 +4233,17 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var invariant = __webpack_require__(4);
 
-var _require = __webpack_require__(29),
+var _require = __webpack_require__(28),
     DEFAULT_HANDLE_KEY = _require.DEFAULT_HANDLE_KEY;
 
 var INDENT = '  ';
 /**
- * Converts a GraphQLIR node into a GraphQL string. Custom Relay
+ * Converts an IR node into a GraphQL string. Custom Relay
  * extensions (directives) are not supported; to print fragments with
  * variables or fragment spreads with arguments, transform the node
  * prior to printing.
@@ -4366,7 +4262,7 @@ function print(schema, node) {
 
     default:
       node;
-       true ?  true ? invariant(false, 'GraphQLIRPrinter: Unsupported IR node `%s`.', node.kind) : undefined : undefined;
+       true ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Unsupported IR node `%s`.', node.kind) : undefined : undefined : undefined : undefined;
   }
 }
 
@@ -4451,7 +4347,7 @@ function printSelection(schema, selection, indent, options) {
   } else if (selection.kind === 'Condition') {
     var value = printValue(schema, selection.condition, null); // For Flow
 
-    !(value != null) ?  true ? invariant(false, 'GraphQLIRPrinter: Expected a variable for condition, got a literal `null`.') : undefined : void 0;
+    !(value != null) ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Expected a variable for condition, got a literal `null`.') : undefined : undefined : undefined : void 0;
     var condStr = selection.passingValue ? ' @include' : ' @skip';
     condStr += '(if: ' + value + ')';
     condStr += parentDirectives; // For multi-selection conditions, pushes the condition down to each
@@ -4524,7 +4420,7 @@ function printSelection(schema, selection, indent, options) {
       });
     }
   } else if (selection.kind === 'ClientExtension') {
-    !(isClientExtension === false) ?  true ? invariant(false, 'GraphQLIRPrinter: Did not expect to encounter a ClientExtension node ' + 'as a descendant of another ClientExtension node.') : undefined : void 0;
+    !(isClientExtension === false) ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Did not expect to encounter a ClientExtension node ' + 'as a descendant of another ClientExtension node.') : undefined : undefined : undefined : void 0;
     str = '# Client-only selections:\n' + indent + INDENT + selection.selections.map(function (sel) {
       return printSelection(schema, sel, indent, {
         parentDirectives: parentDirectives,
@@ -4533,7 +4429,7 @@ function printSelection(schema, selection, indent, options) {
     }).join('\n' + indent + INDENT);
   } else {
     selection;
-     true ?  true ? invariant(false, 'GraphQLIRPrinter: Unknown selection kind `%s`.', selection.kind) : undefined : undefined;
+     true ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Unknown selection kind `%s`.', selection.kind) : undefined : undefined : undefined : undefined;
   }
 
   return str;
@@ -4622,6 +4518,21 @@ function printValue(schema, value, type) {
 
   if (value.kind === 'Variable') {
     return '$' + value.variableName;
+  } else if (value.kind === 'ObjectValue') {
+    !(type && schema.isInputObject(type)) ?  true ?  true ?  true ? invariant(false, 'GraphQLIRPrinter: Need an InputObject type to print objects.') : undefined : undefined : undefined : void 0;
+    var inputType = schema.assertInputObjectType(type);
+    var pairs = value.fields.map(function (field) {
+      var fieldConfig = type != null ? schema.hasField(inputType, field.name) ? schema.getFieldConfig(schema.expectField(inputType, field.name)) : null : null;
+      var innerValue = fieldConfig && printValue(schema, field.value, fieldConfig.type);
+      return innerValue == null ? null : field.name + ': ' + innerValue;
+    }).filter(Boolean);
+    return '{' + pairs.join(', ') + '}';
+  } else if (value.kind === 'ListValue') {
+    !(type && schema.isList(type)) ?  true ?  true ?  true ? invariant(false, 'GraphQLIRPrinter: Need a type in order to print arrays.') : undefined : undefined : undefined : void 0;
+    var innerType = schema.getListItemType(type);
+    return "[".concat(value.items.map(function (i) {
+      return printValue(schema, i, innerType);
+    }).join(', '), "]");
   } else if (value.value != null) {
     return printLiteral(schema, value.value, type);
   } else {
@@ -4652,7 +4563,7 @@ function printLiteral(schema, value, type) {
       result = value;
     }
 
-    !(typeof result === 'string') ?  true ? invariant(false, 'GraphQLIRPrinter: Expected value of type %s to be a valid enum value, got `%s`.', schema.getTypeString(type), (_JSON$stringify2 = JSON.stringify(value)) !== null && _JSON$stringify2 !== void 0 ? _JSON$stringify2 : 'null') : undefined : void 0;
+    !(typeof result === 'string') ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Expected value of type %s to be a valid enum value, got `%s`.', schema.getTypeString(type), (_JSON$stringify2 = JSON.stringify(value)) !== null && _JSON$stringify2 !== void 0 ? _JSON$stringify2 : 'null') : undefined : undefined : undefined : void 0;
     return result;
   } else if (type && (schema.isId(type) || schema.isInt(type))) {
     var _JSON$stringify3;
@@ -4665,7 +4576,7 @@ function printLiteral(schema, value, type) {
 
     return (_JSON$stringify4 = JSON.stringify(_result)) !== null && _JSON$stringify4 !== void 0 ? _JSON$stringify4 : '';
   } else if (Array.isArray(value)) {
-    !(type && schema.isList(type)) ?  true ? invariant(false, 'GraphQLIRPrinter: Need a type in order to print arrays.') : undefined : void 0;
+    !(type && schema.isList(type)) ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Need a type in order to print arrays.') : undefined : undefined : undefined : void 0;
     var itemType = schema.getListItemType(type);
     return '[' + value.map(function (item) {
       return printLiteral(schema, item, itemType);
@@ -4676,7 +4587,7 @@ function printLiteral(schema, value, type) {
     return printLiteral(schema, value, schema.getListItemType(type));
   } else if (typeof value === 'object' && value != null) {
     var fields = [];
-    !(type && schema.isInputObject(type)) ?  true ? invariant(false, 'GraphQLIRPrinter: Need an InputObject type to print objects.') : undefined : void 0;
+    !(type && schema.isInputObject(type)) ?  true ?  true ?  true ? invariant(false, 'IRPrinter: Need an InputObject type to print objects.') : undefined : undefined : undefined : void 0;
     var inputType = schema.assertInputObjectType(type);
 
     for (var key in value) {
@@ -4702,7 +4613,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4715,6 +4626,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 /**
  * Marks a string of code as code to be replaced later.
@@ -4787,7 +4699,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4800,6 +4712,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 /**
  * Based on implementations by Gary Court and Austin Appleby, 2011, MIT.
@@ -4878,7 +4791,7 @@ function murmurHash(str) {
 module.exports = murmurHash;
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4891,6 +4804,7 @@ module.exports = murmurHash;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -4904,10 +4818,10 @@ var IRTransformer = __webpack_require__(3);
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(35),
+var _require2 = __webpack_require__(34),
     buildConnectionMetadata = _require2.buildConnectionMetadata;
 
-var _require3 = __webpack_require__(9),
+var _require3 = __webpack_require__(10),
     ConnectionInterface = _require3.ConnectionInterface;
 
 var SCHEMA_EXTENSION = "\n  directive @connection_resolver(label: String!) on FIELD\n  directive @stream_connection_resolver(\n    label: String!\n    initial_count: Int!\n    if: Boolean = true\n  ) on FIELD\n";
@@ -5159,7 +5073,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5172,6 +5086,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -5182,9 +5097,9 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var IRTransformer = __webpack_require__(3);
 
-var RelayParser = __webpack_require__(27);
+var RelayParser = __webpack_require__(26);
 
-var SchemaUtils = __webpack_require__(11);
+var SchemaUtils = __webpack_require__(9);
 
 var getLiteralArgumentValues = __webpack_require__(16);
 
@@ -5195,7 +5110,7 @@ var _require = __webpack_require__(1),
 var _require2 = __webpack_require__(7),
     parse = _require2.parse;
 
-var _require3 = __webpack_require__(9),
+var _require3 = __webpack_require__(10),
     ConnectionInterface = _require3.ConnectionInterface,
     RelayFeatureFlags = _require3.RelayFeatureFlags;
 
@@ -5815,7 +5730,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5828,17 +5743,18 @@ module.exports = {
  * @format
  * 
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
-var areEqual = __webpack_require__(81);
+var areEqual = __webpack_require__(80);
 
-var getIdentifierForSelection = __webpack_require__(37);
+var getIdentifierForSelection = __webpack_require__(36);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError,
@@ -5858,7 +5774,7 @@ function flattenTransformImpl(context, options) {
     parentType: null
   };
   var visitorFn = memoizedFlattenSelection(new Map());
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     Condition: visitorFn,
     Connection: visitorFn,
     ConnectionField: visitorFn,
@@ -6153,7 +6069,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6166,11 +6082,12 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var invariant = __webpack_require__(4);
 
-var _require = __webpack_require__(31),
+var _require = __webpack_require__(30),
     printArguments = _require.printArguments,
     printDirectives = _require.printDirectives;
 
@@ -6201,11 +6118,38 @@ function getIdentifierForSelection(schema, node) {
   } else if (node.kind === 'Condition') {
     return 'Condition:' + (node.condition.kind === 'Variable' ? '$' + node.condition.variableName : String(node.condition.value)) + String(node.passingValue);
   } else {
-     true ?  true ? invariant(false, 'getIdentifierForSelection: Unexpected kind `%s`.', node.kind) : undefined : undefined;
+     true ?  true ?  true ?  true ? invariant(false, 'getIdentifierForSelection: Unexpected kind `%s`.', node.kind) : undefined : undefined : undefined : undefined;
   }
 }
 
 module.exports = getIdentifierForSelection;
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+function hasUnaliasedSelection(field, fieldName) {
+  return field.selections.some(function (selection) {
+    return selection.kind === 'ScalarField' && selection.alias === fieldName && selection.name === fieldName;
+  });
+}
+
+module.exports = {
+  hasUnaliasedSelection: hasUnaliasedSelection
+};
 
 /***/ }),
 /* 38 */
@@ -6221,32 +6165,7 @@ module.exports = getIdentifierForSelection;
  * 
  * @format
  */
-
-
-function hasUnaliasedSelection(field, fieldName) {
-  return field.selections.some(function (selection) {
-    return selection.kind === 'ScalarField' && selection.alias === fieldName && selection.name === fieldName;
-  });
-}
-
-module.exports = {
-  hasUnaliasedSelection: hasUnaliasedSelection
-};
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -6257,7 +6176,7 @@ var IRTransformer = __webpack_require__(3);
 
 var invariant = __webpack_require__(4);
 
-var joinArgumentDefinitions = __webpack_require__(86);
+var joinArgumentDefinitions = __webpack_require__(85);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
@@ -6295,7 +6214,7 @@ function visitFragmentSpread(fragmentSpread, state) {
     return fragmentSpread;
   }
 
-  !(fragmentSpread.args.length === 0) ?  true ? invariant(false, 'MaskTransform: Cannot unmask fragment spread `%s` with ' + 'arguments. Use the `ApplyFragmentArgumentTransform` before flattening', fragmentSpread.name) : undefined : void 0;
+  !(fragmentSpread.args.length === 0) ?  true ?  true ?  true ? invariant(false, 'MaskTransform: Cannot unmask fragment spread `%s` with ' + 'arguments. Use the `ApplyFragmentArgumentTransform` before flattening', fragmentSpread.name) : undefined : undefined : undefined : void 0;
   var context = this.getContext();
   var fragment = context.getFragment(fragmentSpread.name);
   var result = {
@@ -6364,7 +6283,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6377,6 +6296,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -6389,12 +6309,12 @@ var IRTransformer = __webpack_require__(3);
 
 var getLiteralArgumentValues = __webpack_require__(16);
 
-var getNormalizationOperationName = __webpack_require__(41);
+var getNormalizationOperationName = __webpack_require__(40);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(9),
+var _require2 = __webpack_require__(10),
     getModuleComponentKey = _require2.getModuleComponentKey,
     getModuleOperationKey = _require2.getModuleOperationKey;
 
@@ -6725,6 +6645,29 @@ module.exports = {
 };
 
 /***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+function getNormalizationOperationName(name) {
+  return "".concat(name, "$normalization");
+}
+
+module.exports = getNormalizationOperationName;
+
+/***/ }),
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6738,35 +6681,14 @@ module.exports = {
  * 
  * @format
  */
-
-
-function getNormalizationOperationName(name) {
-  return "".concat(name, "$normalization");
-}
-
-module.exports = getNormalizationOperationName;
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var GraphQLIRVisitor = __webpack_require__(15);
+var IRVisitor = __webpack_require__(15);
 
 var getLiteralArgumentValues = __webpack_require__(16);
 
@@ -6776,7 +6698,7 @@ var _require = __webpack_require__(1),
     createUserError = _require.createUserError,
     eachWithCombinedError = _require.eachWithCombinedError;
 
-var _require2 = __webpack_require__(87),
+var _require2 = __webpack_require__(86),
     buildRefetchOperation = _require2.buildRefetchOperation;
 
 var SCHEMA_EXTENSION = "\n  directive @refetchable(\n    queryName: String!\n  ) on FRAGMENT_DEFINITION\n";
@@ -6882,7 +6804,7 @@ function extractConnectionMetadata(schema, fragment) {
   var fields = [];
   var connectionField = null;
   var path = null;
-  GraphQLIRVisitor.visit(fragment, {
+  IRVisitor.visit(fragment, {
     ConnectionField: {
       enter: function enter(field) {
         fields.push(field); // Disallow connections within plurals
@@ -7022,7 +6944,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7035,6 +6957,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -7086,8 +7009,8 @@ function visitRelayMetadata(metadataFn) {
 function fragmentMetadata(_ref2) {
   var mask = _ref2.mask,
       plural = _ref2.plural;
-  !(plural === undefined || typeof plural === 'boolean') ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "plural" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : void 0;
-  !(mask === undefined || typeof mask === 'boolean') ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "mask" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : void 0;
+  !(plural === undefined || typeof plural === 'boolean') ?  true ?  true ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "plural" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : undefined : undefined : void 0;
+  !(mask === undefined || typeof mask === 'boolean') ?  true ?  true ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "mask" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : undefined : undefined : void 0;
   return {
     mask: mask,
     plural: plural
@@ -7096,7 +7019,7 @@ function fragmentMetadata(_ref2) {
 
 function fragmentSpreadMetadata(_ref3) {
   var mask = _ref3.mask;
-  !(mask === undefined || typeof mask === 'boolean') ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "mask" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : void 0;
+  !(mask === undefined || typeof mask === 'boolean') ?  true ?  true ?  true ? invariant(false, 'RelayDirectiveTransform: Expected the "mask" argument to @relay ' + 'to be a boolean literal if specified.') : undefined : undefined : undefined : void 0;
   return {
     mask: mask
   };
@@ -7109,7 +7032,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7122,6 +7045,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -7130,46 +7054,47 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var ConnectionFieldTransform = __webpack_require__(34);
+var ConnectionFieldTransform = __webpack_require__(33);
 
-var FlattenTransform = __webpack_require__(36);
+var FlattenTransform = __webpack_require__(35);
 
 var IRVisitor = __webpack_require__(15);
 
-var MaskTransform = __webpack_require__(39);
+var MaskTransform = __webpack_require__(38);
 
-var MatchTransform = __webpack_require__(40);
+var MatchTransform = __webpack_require__(39);
 
 var Profiler = __webpack_require__(6);
 
-var RefetchableFragmentTransform = __webpack_require__(42);
+var RefetchableFragmentTransform = __webpack_require__(41);
 
-var RelayDirectiveTransform = __webpack_require__(43);
+var RelayDirectiveTransform = __webpack_require__(42);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(45),
+var _require2 = __webpack_require__(44),
     anyTypeAlias = _require2.anyTypeAlias,
     declareExportOpaqueType = _require2.declareExportOpaqueType,
     exactObjectTypeAnnotation = _require2.exactObjectTypeAnnotation,
     exportType = _require2.exportType,
     exportTypes = _require2.exportTypes,
     importTypes = _require2.importTypes,
+    inexactObjectTypeAnnotation = _require2.inexactObjectTypeAnnotation,
     intersectionTypeAnnotation = _require2.intersectionTypeAnnotation,
     lineComments = _require2.lineComments,
     readOnlyArrayOfType = _require2.readOnlyArrayOfType,
     readOnlyObjectTypeProperty = _require2.readOnlyObjectTypeProperty,
     unionTypeAnnotation = _require2.unionTypeAnnotation;
 
-var _require3 = __webpack_require__(91),
+var _require3 = __webpack_require__(90),
     transformInputType = _require3.transformInputType,
     transformScalarType = _require3.transformScalarType;
 
-var _require4 = __webpack_require__(9),
+var _require4 = __webpack_require__(10),
     ConnectionInterface = _require4.ConnectionInterface;
 
-var babelGenerator = __webpack_require__(92)["default"];
+var babelGenerator = __webpack_require__(91)["default"];
 
 var t = __webpack_require__(22);
 
@@ -7288,7 +7213,7 @@ function selectionsToBabel(schema, selections, state, unmasked, fragmentTypeName
       props.push(readOnlyObjectTypeProperty('$refType', t.genericTypeAnnotation(t.identifier(fragmentTypeName))));
     }
 
-    return unmasked ? t.objectTypeAnnotation(props) : exactObjectTypeAnnotation(props);
+    return unmasked ? inexactObjectTypeAnnotation(props) : exactObjectTypeAnnotation(props);
   }));
 }
 
@@ -7437,7 +7362,7 @@ function createVisitor(schema, options) {
               var _step3$value = _step3.value,
                   key = _step3$value[0],
                   ast = _step3$value[1];
-              babelNodes.push(t.typeAlias(t.identifier(key), null, ast));
+              babelNodes.push(exportType(key, ast));
             }
           } catch (err) {
             _didIteratorError3 = true;
@@ -7484,7 +7409,7 @@ function createVisitor(schema, options) {
         refTypeDataProperty.optional = true;
         var refTypeFragmentRefProperty = readOnlyObjectTypeProperty('$fragmentRefs', t.genericTypeAnnotation(t.identifier(getOldFragmentTypeName(node.name))));
         var isPluralFragment = isPlural(node);
-        var refType = t.objectTypeAnnotation([refTypeDataProperty, refTypeFragmentRefProperty]);
+        var refType = inexactObjectTypeAnnotation([refTypeDataProperty, refTypeFragmentRefProperty]);
         var dataTypeName = getDataTypeName(node.name);
         var dataType = t.genericTypeAnnotation(t.identifier(node.name));
         var unmasked = node.metadata != null && node.metadata.mask === false;
@@ -7659,26 +7584,10 @@ function selectionsToRawResponseBabel(schema, selections, state, nodeTypeName) {
 
     var _loop2 = function _loop2(concreteType) {
       var mergedSeletions = Array.from(mergeSelections(baseFieldsMap, selectionsToMap(byConcreteType[concreteType]), false).values());
-      var moduleImport = mergedSeletions.find(function (sel) {
-        return sel.kind === 'ModuleImport';
-      });
-
-      if (moduleImport) {
-        types.push(exactObjectTypeAnnotation(mergedSeletions.map(function (selection) {
-          return makeRawResponseProp(schema, selection, state, concreteType);
-        }))); // Generate an extra opaque type for client 3D fields
-
-        state.runtimeImports.add('Local3DPayload');
-        types.push(t.genericTypeAnnotation(t.identifier('Local3DPayload'), t.typeParameterInstantiation([t.stringLiteralTypeAnnotation(moduleImport.documentName), exactObjectTypeAnnotation(mergedSeletions.filter(function (sel) {
-          return sel.schemaName !== 'js';
-        }).map(function (selection) {
-          return makeRawResponseProp(schema, selection, state, concreteType);
-        }))])));
-      } else {
-        types.push(exactObjectTypeAnnotation(mergedSeletions.map(function (selection) {
-          return makeRawResponseProp(schema, selection, state, concreteType);
-        })));
-      }
+      types.push(exactObjectTypeAnnotation(mergedSeletions.map(function (selection) {
+        return makeRawResponseProp(schema, selection, state, concreteType);
+      })));
+      appendLocal3DPayload(types, mergedSeletions, schema, state, concreteType);
     };
 
     for (var concreteType in byConcreteType) {
@@ -7686,13 +7595,30 @@ function selectionsToRawResponseBabel(schema, selections, state, nodeTypeName) {
     }
   }
 
-  if (baseFields.length) {
+  if (baseFields.length > 0) {
     types.push(exactObjectTypeAnnotation(baseFields.map(function (selection) {
-      return makeRawResponseProp(schema, selection, state, isTypenameSelection(selection) ? nodeTypeName : null);
+      return makeRawResponseProp(schema, selection, state, nodeTypeName);
     })));
+    appendLocal3DPayload(types, baseFields, schema, state, nodeTypeName);
   }
 
   return unionTypeAnnotation(types);
+}
+
+function appendLocal3DPayload(types, selections, schema, state, currentType) {
+  var moduleImport = selections.find(function (sel) {
+    return sel.kind === 'ModuleImport';
+  });
+
+  if (moduleImport) {
+    // Generate an extra opaque type for client 3D fields
+    state.runtimeImports.add('Local3DPayload');
+    types.push(t.genericTypeAnnotation(t.identifier('Local3DPayload'), t.typeParameterInstantiation([t.stringLiteralTypeAnnotation(moduleImport.documentName), exactObjectTypeAnnotation(selections.filter(function (sel) {
+      return sel.schemaName !== 'js';
+    }).map(function (selection) {
+      return makeRawResponseProp(schema, selection, state, currentType);
+    }))])));
+  }
 } // Visitor for generating raw response type
 
 
@@ -7738,7 +7664,7 @@ function createRawResponseTypeVisitor(schema, state) {
         return visitRawResposneModuleImport(schema, node, state);
       },
       FragmentSpread: function FragmentSpread(node) {
-         true ?  true ? invariant(false, 'A fragment spread is found when traversing the AST, ' + 'make sure you are passing the codegen IR') : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'A fragment spread is found when traversing the AST, ' + 'make sure you are passing the codegen IR') : undefined : undefined : undefined : undefined;
       }
     }
   };
@@ -7793,7 +7719,7 @@ function flattenArray(arrayOfArrays) {
 function generateInputObjectTypes(state) {
   return Object.keys(state.generatedInputObjectTypes).map(function (typeIdentifier) {
     var inputObjectType = state.generatedInputObjectTypes[typeIdentifier];
-    !(typeof inputObjectType !== 'string') ?  true ? invariant(false, 'RelayCompilerFlowGenerator: Expected input object type to have been' + ' defined before calling `generateInputObjectTypes`') : undefined : void 0;
+    !(typeof inputObjectType !== 'string') ?  true ?  true ?  true ? invariant(false, 'RelayCompilerFlowGenerator: Expected input object type to have been' + ' defined before calling `generateInputObjectTypes`') : undefined : undefined : undefined : void 0;
     return exportType(typeIdentifier, inputObjectType);
   });
 }
@@ -8006,7 +7932,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8019,6 +7945,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var invariant = __webpack_require__(4);
@@ -8041,6 +7968,19 @@ function anyTypeAlias(name) {
 function exactObjectTypeAnnotation(props) {
   var typeAnnotation = t.objectTypeAnnotation(props);
   typeAnnotation.exact = true;
+  return typeAnnotation;
+}
+/**
+ * {
+ *   PROPS
+ *   ...
+ * }
+ */
+
+
+function inexactObjectTypeAnnotation(props) {
+  var typeAnnotation = t.objectTypeAnnotation(props);
+  typeAnnotation.inexact = true;
   return typeAnnotation;
 }
 /**
@@ -8091,7 +8031,7 @@ function importTypes(names, module) {
 
 
 function intersectionTypeAnnotation(types) {
-  !(types.length > 0) ?  true ? invariant(false, 'RelayFlowBabelFactories: cannot create an intersection of 0 types') : undefined : void 0;
+  !(types.length > 0) ?  true ?  true ?  true ? invariant(false, 'RelayFlowBabelFactories: cannot create an intersection of 0 types') : undefined : undefined : undefined : void 0;
   return types.length === 1 ? types[0] : t.intersectionTypeAnnotation(types);
 }
 
@@ -8137,7 +8077,7 @@ function stringLiteralTypeAnnotation(value) {
 
 
 function unionTypeAnnotation(types) {
-  !(types.length > 0) ?  true ? invariant(false, 'RelayFlowBabelFactories: cannot create a union of 0 types') : undefined : void 0;
+  !(types.length > 0) ?  true ?  true ?  true ? invariant(false, 'RelayFlowBabelFactories: cannot create a union of 0 types') : undefined : undefined : undefined : void 0;
   return types.length === 1 ? types[0] : t.unionTypeAnnotation(types);
 }
 
@@ -8145,6 +8085,7 @@ module.exports = {
   anyTypeAlias: anyTypeAlias,
   declareExportOpaqueType: declareExportOpaqueType,
   exactObjectTypeAnnotation: exactObjectTypeAnnotation,
+  inexactObjectTypeAnnotation: inexactObjectTypeAnnotation,
   exportType: exportType,
   exportTypes: exportTypes,
   importTypes: importTypes,
@@ -8157,7 +8098,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8170,6 +8111,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var invariant = __webpack_require__(4);
@@ -8310,6 +8252,21 @@ function () {
 
         break;
 
+      case 'ListValue':
+        this._traverseChildren(prevNode, ['items']);
+
+        break;
+
+      case 'ObjectFieldValue':
+        this._traverseChildren(prevNode, null, ['value']);
+
+        break;
+
+      case 'ObjectValue':
+        this._traverseChildren(prevNode, ['fields']);
+
+        break;
+
       case 'Condition':
         this._traverseChildren(prevNode, ['directives', 'selections'], ['condition']);
 
@@ -8338,7 +8295,7 @@ function () {
 
       default:
         prevNode;
-         true ?  true ? invariant(false, 'GraphQLIRValidator: Unknown kind `%s`.', prevNode.kind) : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'IRValidator: Unknown kind `%s`.', prevNode.kind) : undefined : undefined : undefined : undefined;
     }
   };
 
@@ -8352,7 +8309,7 @@ function () {
         return;
       }
 
-      !Array.isArray(prevItems) ?  true ? invariant(false, 'GraphQLIRValidator: Expected data for `%s` to be an array, got `%s`.', key, prevItems) : undefined : void 0;
+      !Array.isArray(prevItems) ?  true ?  true ?  true ? invariant(false, 'IRValidator: Expected data for `%s` to be an array, got `%s`.', key, prevItems) : undefined : undefined : undefined : void 0;
       prevItems.forEach(function (prevItem) {
         return _this._visit(prevItem);
       });
@@ -8369,7 +8326,7 @@ function () {
   };
 
   _proto._getState = function _getState() {
-    !this._states.length ?  true ? invariant(false, 'GraphQLIRValidator: Expected a current state to be set but found none. ' + 'This is usually the result of mismatched number of pushState()/popState() ' + 'calls.') : undefined : void 0;
+    !this._states.length ?  true ?  true ?  true ? invariant(false, 'IRValidator: Expected a current state to be set but found none. ' + 'This is usually the result of mismatched number of pushState()/popState() ' + 'calls.') : undefined : undefined : undefined : void 0;
     return this._states[this._states.length - 1];
   };
 
@@ -8381,13 +8338,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("util");
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8400,11 +8357,12 @@ module.exports = require("util");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var yargs = __webpack_require__(49);
+var yargs = __webpack_require__(48);
 
-var _require = __webpack_require__(50),
+var _require = __webpack_require__(49),
     main = _require.main;
 
 var RelayConfig;
@@ -8518,13 +8476,13 @@ main(argv)["catch"](function (error) {
 });
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("yargs");
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8537,11 +8495,12 @@ module.exports = require("yargs");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(23));
 
@@ -8549,19 +8508,19 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var CodegenRunner = __webpack_require__(51);
+var CodegenRunner = __webpack_require__(50);
 
-var ConsoleReporter = __webpack_require__(58);
+var ConsoleReporter = __webpack_require__(56);
 
-var DotGraphQLParser = __webpack_require__(60);
+var DotGraphQLParser = __webpack_require__(58);
 
-var RelayFileWriter = __webpack_require__(61);
+var RelayFileWriter = __webpack_require__(59);
 
-var RelayIRTransforms = __webpack_require__(72);
+var RelayIRTransforms = __webpack_require__(71);
 
-var RelayLanguagePluginJavaScript = __webpack_require__(104);
+var RelayLanguagePluginJavaScript = __webpack_require__(103);
 
-var RelaySourceModuleParser = __webpack_require__(108);
+var RelaySourceModuleParser = __webpack_require__(107);
 
 var WatchmanClient = __webpack_require__(18);
 
@@ -8583,7 +8542,7 @@ var commonTransforms = RelayIRTransforms.commonTransforms,
     fragmentTransforms = RelayIRTransforms.fragmentTransforms,
     printTransforms = RelayIRTransforms.printTransforms,
     queryTransforms = RelayIRTransforms.queryTransforms,
-    schemaExtensions = RelayIRTransforms.schemaExtensions;
+    relaySchemaExtensions = RelayIRTransforms.schemaExtensions;
 
 function buildWatchExpression(config) {
   return ['allof', ['type', 'f'], ['anyof'].concat((0, _toConsumableArray2["default"])(config.extensions.map(function (ext) {
@@ -8603,7 +8562,7 @@ function getFilepathsFromGlob(baseDir, config) {
     return "".concat(inc, "/*.+(").concat(extensions.join('|'), ")");
   });
 
-  var glob = __webpack_require__(113);
+  var glob = __webpack_require__(112);
 
   return glob.sync(patterns, {
     cwd: baseDir,
@@ -8757,7 +8716,11 @@ function _getWatchConfig() {
 
     if (config.watch) {
       if (!watchman) {
-        throw new Error('Watchman is required to watch for changes.');
+        console.error('Watchman is required to watch for changes. Running with watch mode disabled.');
+        return (0, _objectSpread2["default"])({}, config, {
+          watch: false,
+          watchman: false
+        });
       }
 
       if (!module.exports.hasWatchmanRootFile(config.src)) {
@@ -8808,6 +8771,7 @@ function getCodegenRunner(config) {
     return filePath.endsWith('.graphql.' + outputExtension) && filePath.includes(generatedDirectoryName);
   };
 
+  var schemaExtensions = languagePlugin.schemaExtensions ? [].concat((0, _toConsumableArray2["default"])(languagePlugin.schemaExtensions), (0, _toConsumableArray2["default"])(relaySchemaExtensions)) : relaySchemaExtensions;
   var parserConfigs = (_parserConfigs = {}, (0, _defineProperty2["default"])(_parserConfigs, sourceParserName, {
     baseDir: config.src,
     getFileFilter: sourceModuleParser.getFileFilter,
@@ -8888,6 +8852,7 @@ function getRelayFileWriter(baseDir, languagePlugin, noFutureProofEnums, outputD
           }();
         }
 
+        var schemaExtensions = languagePlugin.schemaExtensions ? [].concat((0, _toConsumableArray2["default"])(languagePlugin.schemaExtensions), (0, _toConsumableArray2["default"])(relaySchemaExtensions)) : relaySchemaExtensions;
         var results = yield RelayFileWriter.writeAll({
           config: {
             baseDir: baseDir,
@@ -9014,7 +8979,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9027,17 +8992,18 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var CodegenDirectory = __webpack_require__(24);
 
-var CodegenWatcher = __webpack_require__(52);
+var CodegenWatcher = __webpack_require__(51);
 
 var GraphQLWatchmanClient = __webpack_require__(18);
 
@@ -9047,7 +9013,7 @@ var invariant = __webpack_require__(4);
 
 var path = __webpack_require__(8);
 
-var _require = __webpack_require__(55),
+var _require = __webpack_require__(54),
     createSchema = _require.create; // $FlowFixMe - importing immutable, which is untyped (and flow is sad about it)
 
 
@@ -9297,7 +9263,7 @@ function () {
 
         if (baseParsers) {
           baseParsers.forEach(function (baseParserName) {
-            !(_this5.parsers[baseParserName] != null) ?  true ? invariant(false, 'Trying to access an uncompiled base parser config: %s', baseParserName) : undefined : void 0;
+            !(_this5.parsers[baseParserName] != null) ?  true ?  true ?  true ? invariant(false, 'Trying to access an uncompiled base parser config: %s', baseParserName) : undefined : undefined : undefined : void 0;
             baseDocuments = baseDocuments.merge(_this5.parsers[baseParserName].documents());
           });
         }
@@ -9347,7 +9313,7 @@ function () {
 
                 var _filePath2 = dir.getPath(filename);
 
-                !isGeneratedFile(_filePath2) ?  true ? invariant(false, 'CodegenRunner: %s returned false for isGeneratedFile, ' + 'but was in generated directory', _filePath2) : undefined : void 0;
+                !isGeneratedFile(_filePath2) ?  true ?  true ?  true ? invariant(false, 'CodegenRunner: %s returned false for isGeneratedFile, ' + 'but was in generated directory', _filePath2) : undefined : undefined : undefined : void 0;
               }
             } catch (err) {
               _didIteratorError3 = true;
@@ -9439,7 +9405,7 @@ function () {
       /*#__PURE__*/
       function () {
         var _ref4 = _asyncToGenerator(function* (files) {
-          !(_this6.parsers[parserName] != null) ?  true ? invariant(false, 'Trying to watch an uncompiled parser config: %s', parserName) : undefined : void 0;
+          !(_this6.parsers[parserName] != null) ?  true ?  true ?  true ? invariant(false, 'Trying to watch an uncompiled parser config: %s', parserName) : undefined : undefined : undefined : void 0;
 
           if (firstChange) {
             firstChange = false;
@@ -9495,7 +9461,7 @@ function anyFileFilter(file) {
 module.exports = CodegenRunner;
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9508,9 +9474,10 @@ module.exports = CodegenRunner;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var GraphQLWatchmanClient = __webpack_require__(18);
 
@@ -9779,19 +9746,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = require("child_process");
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = require("fb-watchman");
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9805,32 +9772,29 @@ module.exports = require("fb-watchman");
  * @format
  * @emails oncall+relay
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(56));
-
-var ASTConvert = __webpack_require__(25);
-
-var nullthrows = __webpack_require__(57);
+var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(55));
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError;
 
-var _require2 = __webpack_require__(7),
-    GraphQLEnumType = _require2.GraphQLEnumType,
-    GraphQLInputObjectType = _require2.GraphQLInputObjectType,
-    GraphQLInterfaceType = _require2.GraphQLInterfaceType,
-    GraphQLObjectType = _require2.GraphQLObjectType,
-    GraphQLScalarType = _require2.GraphQLScalarType,
-    GraphQLSchema = _require2.GraphQLSchema,
-    GraphQLUnionType = _require2.GraphQLUnionType,
-    buildASTSchema = _require2.buildASTSchema,
-    extendSchema = _require2.extendSchema,
-    parse = _require2.parse,
-    parseType = _require2.parseType,
-    print = _require2.print;
+var _require2 = __webpack_require__(9),
+    isSchemaDefinitionAST = _require2.isSchemaDefinitionAST;
+
+var _require3 = __webpack_require__(7),
+    GraphQLFloat = _require3.GraphQLFloat,
+    GraphQLInt = _require3.GraphQLInt,
+    GraphQLBoolean = _require3.GraphQLBoolean,
+    GraphQLString = _require3.GraphQLString,
+    GraphQLID = _require3.GraphQLID,
+    parse = _require3.parse,
+    parseType = _require3.parseType,
+    print = _require3.print,
+    valueFromASTUntyped = _require3.valueFromASTUntyped;
 
 /**
  * @private
@@ -9838,8 +9802,9 @@ var _require2 = __webpack_require__(7),
 var Type =
 /*#__PURE__*/
 function () {
-  function Type(name) {
+  function Type(name, isClient) {
     this.name = name;
+    this.isClient = isClient;
   }
 
   var _proto = Type.prototype;
@@ -9880,8 +9845,12 @@ var EnumType =
 function (_Type2) {
   (0, _inheritsLoose2["default"])(EnumType, _Type2);
 
-  function EnumType() {
-    return _Type2.apply(this, arguments) || this;
+  function EnumType(name, values, isClient) {
+    var _this;
+
+    _this = _Type2.call(this, name, isClient) || this;
+    _this.values = values;
+    return _this;
   }
 
   return EnumType;
@@ -10005,19 +9974,12 @@ function () {
  */
 
 
-var Field = function Field(schema, name, type, belongsTo, argDefs) {
+var Field = function Field(schema, name, type, belongsTo, args, isClient) {
   this.name = name;
   this.type = type;
   this.belongsTo = belongsTo;
-  this.args = new Map(argDefs.map(function (arg) {
-    var _arg$astNode;
-
-    return [arg.name, {
-      name: arg.name,
-      type: schema.assertInputType(schema.expectTypeFromAST(nullthrows((_arg$astNode = arg.astNode) === null || _arg$astNode === void 0 ? void 0 : _arg$astNode.type))),
-      defaultValue: arg.defaultValue
-    }];
-  }));
+  this.isClient = isClient;
+  this.args = parseInputArgumentDefinitionsMap(schema, args);
 };
 /**
  * @private
@@ -10058,6 +10020,9 @@ function getConcreteTypes(schema, type) {
 
 var TYPENAME_FIELD = '__typename';
 var CLIENT_ID_FIELD = '__id';
+var QUERY_TYPE_KEY = Symbol('Query');
+var MUTATION_TYPE_KEY = Symbol('Mutation');
+var SUBSCRIPTION_TYPE_KEY = Symbol('Subscription');
 
 function _isScalar(type) {
   return type instanceof ScalarType;
@@ -10109,38 +10074,29 @@ function () {
   /**
    * @private
    */
-  function Schema(baseSchema, extendedSchema, typeMap, fieldsMap, typeNameMap, clientIdMap, possibleTypesMap, directivesMap, QUERY_TYPE_KEY, MUTATION_TYPE_KEY, SUBSCRIPTION_TYPE_KEY) {
-    var _this = this;
+  function Schema(typeMap) {
+    var _this2 = this;
 
-    var _directivesMap;
-
-    this.QUERY_TYPE_KEY = QUERY_TYPE_KEY;
-    this.MUTATION_TYPE_KEY = MUTATION_TYPE_KEY;
-    this.SUBSCRIPTION_TYPE_KEY = SUBSCRIPTION_TYPE_KEY;
-    this._baseSchema = baseSchema;
-    this._extendedSchema = extendedSchema;
     this._typeMap = typeMap;
-    this._fieldsMap = fieldsMap;
-    this._typeNameMap = typeNameMap;
-    this._clientIdMap = clientIdMap;
-    this._possibleTypesMap = possibleTypesMap;
-    this._directivesMap = (_directivesMap = directivesMap) !== null && _directivesMap !== void 0 ? _directivesMap : new Map(this._extendedSchema.getDirectives().map(function (directive) {
+    this._typeWrappersMap = new Map();
+    this._fieldsMap = new Map();
+    this._typeNameMap = new Map();
+    this._clientIdMap = new Map();
+    this._directiveMap = new Map(typeMap.getDirectives().map(function (directive) {
       return [directive.name, {
-        clientOnlyDirective: _this._baseSchema.getDirective(directive.name) == null,
-        name: directive.name,
         locations: directive.locations,
-        args: directive.args.map(function (arg) {
-          return {
-            name: arg.name,
-            type: _this.assertInputType(arg.astNode ? _this.expectTypeFromAST(arg.astNode.type) : _this.expectTypeFromString(String(arg.type))),
-            defaultValue: arg.defaultValue
-          };
-        })
+        args: parseInputArgumentDefinitions(_this2, directive.args),
+        name: directive.name,
+        isClient: directive.isClient
       }];
     }));
   }
 
   var _proto4 = Schema.prototype;
+
+  _proto4.getTypes = function getTypes() {
+    return this._typeMap.getTypes();
+  };
 
   _proto4.getTypeFromAST = function getTypeFromAST(typeNode) {
     if (typeNode.kind === 'NonNullType') {
@@ -10156,7 +10112,7 @@ function () {
 
       var cacheKey = "".concat(this.getTypeString(innerType), "!");
 
-      var type = this._typeMap.get(cacheKey);
+      var type = this._typeWrappersMap.get(cacheKey);
 
       if (type) {
         return type;
@@ -10164,7 +10120,7 @@ function () {
 
       type = new NonNull(innerType);
 
-      this._typeMap.set(cacheKey, type);
+      this._typeWrappersMap.set(cacheKey, type);
 
       return type;
     } else if (typeNode.kind === 'ListType') {
@@ -10176,7 +10132,7 @@ function () {
 
       var _cacheKey = "[".concat(this.getTypeString(_innerType), "]");
 
-      var _type = this._typeMap.get(_cacheKey);
+      var _type = this._typeWrappersMap.get(_cacheKey);
 
       if (_type) {
         return _type;
@@ -10184,52 +10140,16 @@ function () {
 
       _type = new List(_innerType);
 
-      this._typeMap.set(_cacheKey, _type);
+      this._typeWrappersMap.set(_cacheKey, _type);
 
       return _type;
-    } else {
-      var name = typeNode.name.value;
-
-      var _type2 = this._typeMap.get(name);
-
-      if (_type2) {
-        return _type2;
-      }
-
-      var graphQLType = this._extendedSchema.getType(name);
-
-      if (!graphQLType) {
-        return;
-      }
-
-      var TypeClass = Type;
-
-      if (graphQLType instanceof GraphQLScalarType) {
-        TypeClass = ScalarType;
-      } else if (graphQLType instanceof GraphQLInputObjectType) {
-        TypeClass = InputObjectType;
-      } else if (graphQLType instanceof GraphQLEnumType) {
-        TypeClass = EnumType;
-      } else if (graphQLType instanceof GraphQLUnionType) {
-        TypeClass = UnionType;
-      } else if (graphQLType instanceof GraphQLInterfaceType) {
-        TypeClass = InterfaceType;
-      } else if (graphQLType instanceof GraphQLObjectType) {
-        TypeClass = ObjectType;
-      } else {
-        throw createCompilerError("Unknown GraphQL type: ".concat(graphQLType));
-      }
-
-      _type2 = new TypeClass(name);
-
-      this._typeMap.set(name, _type2);
-
-      return _type2;
     }
+
+    return this._typeMap.getTypeByName(typeNode.name.value);
   };
 
   _proto4._getRawType = function _getRawType(typeName) {
-    var type = this._typeMap.get(typeName);
+    var type = this._typeWrappersMap.get(typeName);
 
     if (type) {
       return type;
@@ -10238,23 +10158,17 @@ function () {
     if (typeof typeName === 'string') {
       return this.getTypeFromAST(parseType(typeName));
     } else {
-      var graphQLType;
+      var operationType;
 
-      if (typeName === this.QUERY_TYPE_KEY) {
-        graphQLType = this._baseSchema.getQueryType();
-      } else if (typeName === this.MUTATION_TYPE_KEY) {
-        graphQLType = this._baseSchema.getMutationType();
-      } else if (typeName === this.SUBSCRIPTION_TYPE_KEY) {
-        graphQLType = this._baseSchema.getSubscriptionType();
+      if (typeName === QUERY_TYPE_KEY) {
+        operationType = this._typeMap.getQueryType();
+      } else if (typeName === MUTATION_TYPE_KEY) {
+        operationType = this._typeMap.getMutationType();
+      } else if (typeName === SUBSCRIPTION_TYPE_KEY) {
+        operationType = this._typeMap.getSubscriptionType();
       }
 
-      if (graphQLType) {
-        var operationType = new ObjectType(graphQLType.name);
-
-        this._typeMap.set(typeName, operationType);
-
-        this._typeMap.set(graphQLType.name, operationType);
-
+      if (operationType instanceof ObjectType) {
         return operationType;
       }
     }
@@ -10291,7 +10205,7 @@ function () {
 
     var cacheKey = "".concat(String(type), "!");
 
-    var nonNullType = this._typeMap.get(cacheKey);
+    var nonNullType = this._typeWrappersMap.get(cacheKey);
 
     if (nonNullType) {
       return nonNullType;
@@ -10299,7 +10213,7 @@ function () {
 
     nonNullType = new NonNull(type);
 
-    this._typeMap.set(cacheKey, nonNullType);
+    this._typeWrappersMap.set(cacheKey, nonNullType);
 
     return nonNullType;
   };
@@ -10357,10 +10271,10 @@ function () {
   };
 
   _proto4.implementsInterface = function implementsInterface(type, interfaceType) {
-    var _this2 = this;
+    var _this3 = this;
 
     return this.getInterfaces(type).some(function (typeInterface) {
-      return _this2.areEqualTypes(typeInterface, interfaceType);
+      return _this3.areEqualTypes(typeInterface, interfaceType);
     });
   };
 
@@ -10427,7 +10341,7 @@ function () {
   ;
 
   _proto4.doTypesOverlap = function doTypesOverlap(typeA, typeB) {
-    var _this3 = this;
+    var _this4 = this;
 
     // Equivalent types overlap
     if (typeA === typeB) {
@@ -10440,7 +10354,7 @@ function () {
         // between possible concrete types of each.
         return Array.from(this.getPossibleTypes(typeA)).some(function (type) {
           if (_isObject(type)) {
-            return _this3.isPossibleType(typeB, type);
+            return _this4.isPossibleType(typeB, type);
           }
         });
       } // Determine if the latter type is a possible concrete type of the former.
@@ -10459,7 +10373,7 @@ function () {
   };
 
   _proto4.isPossibleType = function isPossibleType(superType, maybeSubType) {
-    return this._getPossibleTypeSet(superType).has(maybeSubType);
+    return this._typeMap.getPossibleTypeSet(superType).has(maybeSubType);
   };
 
   _proto4.assertScalarFieldType = function assertScalarFieldType(type) {
@@ -10640,7 +10554,7 @@ function () {
   };
 
   _proto4.getQueryType = function getQueryType() {
-    var queryType = this._getRawType(this.QUERY_TYPE_KEY);
+    var queryType = this._getRawType(QUERY_TYPE_KEY);
 
     if (queryType && _isObject(queryType)) {
       return queryType;
@@ -10648,7 +10562,7 @@ function () {
   };
 
   _proto4.getMutationType = function getMutationType() {
-    var mutationType = this._getRawType(this.MUTATION_TYPE_KEY);
+    var mutationType = this._getRawType(MUTATION_TYPE_KEY);
 
     if (mutationType && _isObject(mutationType)) {
       return mutationType;
@@ -10656,7 +10570,7 @@ function () {
   };
 
   _proto4.getSubscriptionType = function getSubscriptionType() {
-    var subscriptionType = this._getRawType(this.SUBSCRIPTION_TYPE_KEY);
+    var subscriptionType = this._getRawType(SUBSCRIPTION_TYPE_KEY);
 
     if (subscriptionType && _isObject(subscriptionType)) {
       return subscriptionType;
@@ -10793,15 +10707,13 @@ function () {
       return true;
     }
 
-    var name = type.name;
-
-    var gqlType = this._extendedSchema.getType(name);
-
-    if (gqlType instanceof GraphQLObjectType || gqlType instanceof GraphQLInterfaceType || gqlType instanceof GraphQLInputObjectType) {
-      return gqlType.getFields()[fieldName] != null;
+    if (type instanceof ObjectType || type instanceof InterfaceType) {
+      return this._typeMap.getField(type, fieldName) != null;
+    } else if (type instanceof InputObjectType) {
+      return this._typeMap.getInputField(type, fieldName) != null;
     }
 
-    throw createCompilerError('hasField(): Expected a concrete type or interface, ' + "got type ".concat(type.name));
+    return false;
   };
 
   _proto4.hasId = function hasId(type) {
@@ -10820,8 +10732,6 @@ function () {
   };
 
   _proto4._getFieldsMap = function _getFieldsMap(type) {
-    var _this4 = this;
-
     var cachedMap = this._fieldsMap.get(type);
 
     if (cachedMap != null) {
@@ -10829,38 +10739,75 @@ function () {
     }
 
     var fieldsMap = new Map();
-    var name = type.name;
 
-    var gqlType = this._extendedSchema.getType(name);
+    if (type instanceof ObjectType || type instanceof InterfaceType) {
+      var fields = this._typeMap.getFieldMap(type);
 
-    if (gqlType instanceof GraphQLObjectType || gqlType instanceof GraphQLInterfaceType) {
-      var typeFields = gqlType.getFields();
-      var fieldNames = Object.keys(typeFields);
-      fieldNames.forEach(function (fieldName) {
-        var field = typeFields[fieldName];
+      if (fields) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-        if (field == null) {
-          return;
+        try {
+          for (var _iterator = fields[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _step$value = _step.value,
+                fieldName = _step$value[0],
+                fieldDefinition = _step$value[1];
+            var fieldType = this.expectTypeFromAST(fieldDefinition.type);
+            fieldsMap.set(fieldName, new Field(this, fieldName, fieldType, this.assertCompositeType(type), fieldDefinition.arguments, fieldDefinition.isClient));
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
         }
+      }
+    } else if (type instanceof InputObjectType) {
+      var _fields = this._typeMap.getInputFieldMap(type);
 
-        var fieldType = field.astNode ? _this4.expectTypeFromAST(field.astNode.type) : _this4.expectTypeFromString(String(field.type));
-        fieldsMap.set(fieldName, new Field(_this4, fieldName, fieldType, _this4.assertCompositeType(type), field.args));
-      });
-    } else if (gqlType instanceof GraphQLInputObjectType) {
-      var _typeFields = gqlType.getFields();
+      if (_fields) {
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-      var _fieldNames = Object.keys(_typeFields);
+        try {
+          for (var _iterator2 = _fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _step2$value = _step2.value,
+                fieldName = _step2$value[0],
+                typeNode = _step2$value[1];
 
-      _fieldNames.forEach(function (fieldName) {
-        var field = _typeFields[fieldName];
+            var _fieldType = this.expectTypeFromAST(typeNode);
 
-        if (field == null) {
-          return;
+            fieldsMap.set(fieldName, new Field(this, fieldName, _fieldType, type, [], false));
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+              _iterator2["return"]();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
         }
+      }
+    }
 
-        var fieldType = field.astNode ? _this4.expectTypeFromAST(field.astNode.type) : _this4.expectTypeFromString(String(field.type));
-        fieldsMap.set(fieldName, new Field(_this4, fieldName, fieldType, type, []));
-      });
+    if (fieldsMap.size === 0) {
+      throw createCompilerError("_getFieldsMap: Type '".concat(type.name, "' should have fields."));
     }
 
     this._fieldsMap.set(type, fieldsMap);
@@ -10879,7 +10826,7 @@ function () {
       var typename = this._typeNameMap.get(type);
 
       if (!typename) {
-        typename = new Field(this, TYPENAME_FIELD, this.getNonNullType(this.expectStringType()), type, []);
+        typename = new Field(this, TYPENAME_FIELD, this.getNonNullType(this.expectStringType()), type, [], false);
 
         this._typeNameMap.set(type, typename);
       }
@@ -10891,7 +10838,7 @@ function () {
       var clientId = this._clientIdMap.get(type);
 
       if (!clientId) {
-        clientId = new Field(this, CLIENT_ID_FIELD, this.getNonNullType(this.expectIdType()), type, []);
+        clientId = new Field(this, CLIENT_ID_FIELD, this.getNonNullType(this.expectIdType()), type, [], true);
 
         this._clientIdMap.set(type, clientId);
       }
@@ -10946,238 +10893,736 @@ function () {
   };
 
   _proto4.getEnumValues = function getEnumValues(type) {
-    var gqlType = this._extendedSchema.getType(type.name);
-
-    if (gqlType instanceof GraphQLEnumType) {
-      return gqlType.getValues().map(function (_ref) {
-        var value = _ref.value;
-        return String(value);
-      });
-    }
-
-    throw createCompilerError("Expected '".concat(type.name, "' to be an enum."));
+    return type.values;
   };
 
   _proto4.getUnionTypes = function getUnionTypes(type) {
-    var _this5 = this;
-
-    var gqlType = this._extendedSchema.getType(type.name);
-
-    if (gqlType instanceof GraphQLUnionType) {
-      return gqlType.getTypes().map(function (typeFromUnion) {
-        return _this5.expectTypeFromString(typeFromUnion.name);
-      });
-    }
-
-    throw createCompilerError("Unable to get union types for type '".concat(this.getTypeString(type), "'."));
+    return Array.from(this._typeMap.getPossibleTypeSet(type));
   };
 
   _proto4.getInterfaces = function getInterfaces(type) {
-    var _this6 = this;
-
-    var gqlType = this._extendedSchema.getType(type.name);
-
-    if (gqlType instanceof GraphQLObjectType) {
-      return gqlType.getInterfaces().map(function (typeInterface) {
-        return _this6.expectTypeFromString(typeInterface.name);
-      });
+    if (type instanceof ObjectType) {
+      return this._typeMap.getInterfaces(type);
     }
 
     return [];
   };
 
-  _proto4._getPossibleTypeSet = function _getPossibleTypeSet(type) {
-    var _this7 = this;
-
-    var possibleTypes = this._possibleTypesMap.get(type);
-
-    if (!possibleTypes) {
-      var gqlType = this._extendedSchema.getType(type.name);
-
-      if (gqlType instanceof GraphQLUnionType || gqlType instanceof GraphQLInterfaceType) {
-        possibleTypes = new Set(this._extendedSchema.getPossibleTypes(gqlType).map(function (possibleType) {
-          return _this7.assertObjectType(_this7.expectTypeFromString(possibleType.name));
-        }));
-
-        this._possibleTypesMap.set(type, possibleTypes);
-      } else {
-        throw createCompilerError("Expected \"".concat(this.getTypeString(type), "\" to be an Abstract type."));
-      }
-    }
-
-    return possibleTypes;
-  };
-
   _proto4.getPossibleTypes = function getPossibleTypes(type) {
-    return this._getPossibleTypeSet(type);
+    return this._typeMap.getPossibleTypeSet(type);
   };
 
   _proto4.parseLiteral = function parseLiteral(type, valueNode) {
-    var gqlType = this._extendedSchema.getType(type.name);
-
-    if (gqlType instanceof GraphQLEnumType || gqlType instanceof GraphQLScalarType) {
-      return gqlType.parseLiteral(valueNode);
+    if (type instanceof EnumType && valueNode.kind === 'EnumValue') {
+      return this.parseValue(type, valueNode.value);
+    } else if (type instanceof ScalarType) {
+      if (valueNode.kind === 'BooleanValue' && type.name === 'Boolean') {
+        return GraphQLBoolean.parseLiteral(valueNode);
+      } else if (valueNode.kind === 'FloatValue' && type.name === 'Float') {
+        return GraphQLFloat.parseLiteral(valueNode);
+      } else if (valueNode.kind === 'IntValue' && (type.name === 'Int' || type.name === 'ID' || type.name === 'Float')) {
+        return GraphQLInt.parseLiteral(valueNode);
+      } else if (valueNode.kind === 'StringValue' && (type.name === 'String' || type.name === 'ID')) {
+        return GraphQLString.parseLiteral(valueNode);
+      } else if (!isDefaultScalar(type.name)) {
+        return valueFromASTUntyped(valueNode);
+      }
     }
-
-    throw createCompilerError("parseLiteral(...) is used with invalid type: ".concat(this.getTypeString(type), "."));
   };
 
   _proto4.parseValue = function parseValue(type, value) {
-    var gqlType = this._extendedSchema.getType(type.name);
+    if (type instanceof EnumType) {
+      return type.values.includes(value) ? value : undefined;
+    } else if (type instanceof ScalarType) {
+      switch (type.name) {
+        case 'Boolean':
+          return GraphQLBoolean.parseValue(value);
 
-    if (gqlType instanceof GraphQLEnumType || gqlType instanceof GraphQLScalarType) {
-      return gqlType.parseValue(value);
+        case 'Float':
+          return GraphQLFloat.parseValue(value);
+
+        case 'Int':
+          return GraphQLInt.parseValue(value);
+
+        case 'String':
+          return GraphQLString.parseValue(value);
+
+        case 'ID':
+          return GraphQLID.parseValue(value);
+
+        default:
+          return value;
+      }
     }
-
-    throw createCompilerError("parseValue(...) is used with invalid type: ".concat(this.getTypeString(type), "."));
   };
 
   _proto4.serialize = function serialize(type, value) {
-    var gqlType = this._extendedSchema.getType(type.name);
+    if (type instanceof EnumType) {
+      return type.values.includes(value) ? value : undefined;
+    } else if (type instanceof ScalarType) {
+      switch (type.name) {
+        case 'Boolean':
+          return GraphQLBoolean.serialize(value);
 
-    if (gqlType instanceof GraphQLEnumType || gqlType instanceof GraphQLScalarType) {
-      return gqlType.serialize(value);
+        case 'Float':
+          return GraphQLFloat.serialize(value);
+
+        case 'Int':
+          return GraphQLInt.serialize(value);
+
+        case 'String':
+          return GraphQLString.serialize(value);
+
+        case 'ID':
+          return GraphQLID.serialize(value);
+
+        default:
+          return value;
+      }
     }
-
-    throw createCompilerError("parseValue(...) is used with invalid type: ".concat(this.getTypeString(type), "."));
   };
 
   _proto4.getDirectives = function getDirectives() {
-    return Array.from(this._directivesMap.values());
+    return Array.from(this._directiveMap.values());
   };
 
   _proto4.getDirective = function getDirective(directiveName) {
-    return this._directivesMap.get(directiveName);
+    return this._directiveMap.get(directiveName);
   };
 
   _proto4.isServerType = function isServerType(type) {
-    var name = this.getTypeString(type);
-    return this._baseSchema.getType(name) != null;
-  };
-
-  _proto4.isServerField = function isServerField(field) {
-    var fieldName = field.name; // Allow metadata fields and fields defined on classic "fat" interfaces
-
-    if (['__typename'].includes(fieldName)) {
-      return true;
-    }
-
-    var fieldRawTypeName = this.getTypeString(unwrap(field.type));
-    var fieldParentTypeName = this.getTypeString(unwrap(field.belongsTo)); // Field type is client-only
-
-    if (!this._baseSchema.getType(fieldRawTypeName)) {
-      return false;
-    }
-
-    var serverType = this._baseSchema.getType(fieldParentTypeName); // Parent type is client-only
-
-
-    if (serverType == null) {
-      return false;
-    } else {
-      if (serverType instanceof GraphQLObjectType || serverType instanceof GraphQLInterfaceType || serverType instanceof GraphQLInputObjectType) {
-        // Field is not available in the server schema
-        if (!serverType.getFields()[fieldName]) {
-          return false;
-        }
-      } else {
-        return false;
-      }
+    if (_isObject(type)) {
+      return type.isClient === false;
+    } else if (_isEnum(type)) {
+      return type.isClient === false;
     }
 
     return true;
   };
 
-  _proto4.isServerDirective = function isServerDirective(directiveName) {
-    var directive = this._directivesMap.get(directiveName);
+  _proto4.isServerField = function isServerField(field) {
+    return field.isClient === false;
+  };
 
-    return (directive === null || directive === void 0 ? void 0 : directive.clientOnlyDirective) === false;
+  _proto4.isServerDirective = function isServerDirective(directiveName) {
+    var directive = this._directiveMap.get(directiveName);
+
+    return (directive === null || directive === void 0 ? void 0 : directive.isClient) === false;
   };
 
   _proto4.isServerDefinedField = function isServerDefinedField(type, field) {
-    return this.isAbstractType(type) && field.directives.some(function (_ref2) {
-      var name = _ref2.name;
+    return this.isAbstractType(type) && field.directives.some(function (_ref) {
+      var name = _ref.name;
       return name === 'fixme_fat_interface';
     }) || this.hasField(type, field.name) && this.isServerField(this.expectField(type, field.name));
   };
 
   _proto4.isClientDefinedField = function isClientDefinedField(type, field) {
     return !this.isServerDefinedField(type, field);
-  }
-  /**
-   * The only consumer of this is RelayParser.parse(...)
-   * We should either refactor RelayParser.parse(...) to not-rely on the `
-   * extendSchema` method. Or actually implement it here.
-   */
-  ;
+  };
 
-  _proto4.DEPRECATED__extend = function DEPRECATED__extend(document) {
-    var extendedSchema = extendSchema(this._extendedSchema, document, {
-      assumeValid: true
+  _proto4.extend = function extend(extensions) {
+    var doc = Array.isArray(extensions) ? parse(extensions.join('\n')) : extensions;
+    var schemaExtensions = [];
+    doc.definitions.forEach(function (definition) {
+      if (isSchemaDefinitionAST(definition)) {
+        schemaExtensions.push(definition);
+      }
     });
-    return new Schema(this._baseSchema, extendedSchema, this._typeMap, this._fieldsMap, this._typeNameMap, this._clientIdMap, this._possibleTypesMap, this._directivesMap, this.QUERY_TYPE_KEY, this.MUTATION_TYPE_KEY, this.SUBSCRIPTION_TYPE_KEY);
+
+    if (schemaExtensions.length > 0) {
+      return new Schema(this._typeMap.extend(schemaExtensions));
+    }
+
+    return this;
   };
 
   return Schema;
 }();
 
-var localGraphQLSchemaCache = new Map();
+var TypeMap =
+/*#__PURE__*/
+function () {
+  function TypeMap(source, extensions) {
+    this._types = new Map([['ID', new ScalarType('ID', false)], ['String', new ScalarType('String', false)], ['Boolean', new ScalarType('Boolean', false)], ['Float', new ScalarType('Float', false)], ['Int', new ScalarType('Int', false)]]);
+    this._typeInterfaces = new Map();
+    this._unionTypes = new Map();
+    this._interfaceImplementations = new Map();
+    this._fields = new Map();
+    this._inputFields = new Map();
+    this._directives = new Map([['include', {
+      name: 'include',
+      isClient: false,
+      locations: ['FIELD', 'FRAGMENT_SPREAD', 'INLINE_FRAGMENT'],
+      args: [{
+        name: 'if',
+        typeNode: parseType('Boolean!'),
+        defaultValue: undefined
+      }]
+    }], ['skip', {
+      name: 'skip',
+      isClient: false,
+      locations: ['FIELD', 'FRAGMENT_SPREAD', 'INLINE_FRAGMENT'],
+      args: [{
+        name: 'if',
+        typeNode: parseType('Boolean!'),
+        defaultValue: undefined
+      }]
+    }], ['deprecated', {
+      name: 'deprecated',
+      isClient: false,
+      locations: ['FIELD_DEFINITION', 'ENUM_VALUE'],
+      args: [{
+        name: 'reason',
+        typeNode: parseType('String'),
+        defaultValue: {
+          kind: 'StringValue',
+          value: 'No longer supported'
+        }
+      }]
+    }]]);
+    this._queryTypeName = 'Query';
+    this._mutationTypeName = 'Mutation';
+    this._subscriptionTypeName = 'Subscription';
+    this._source = source;
+    this._extensions = extensions;
 
-function DEPRECATED__buildGraphQLSchema(source) {
-  var schema = localGraphQLSchemaCache.get(source);
+    this._parse(source);
 
-  if (schema != null) {
-    return schema;
+    this._extend(extensions);
   }
 
-  try {
-    schema = buildASTSchema(parse(source), {
-      assumeValid: true
+  var _proto5 = TypeMap.prototype;
+
+  _proto5._parse = function _parse(source) {
+    var _this5 = this;
+
+    var document = parse(source, {
+      noLocation: true
     });
-    localGraphQLSchemaCache.set(source, schema);
-    return schema;
-  } catch (error) {
-    throw Object.assign(error, {
-      message: "Caught an error \"".concat(error.message, "\" while loading and parsing schema file: ").concat(source.name, ". Please make sure that schema is valid.")
+    document.definitions.forEach(function (definition) {
+      switch (definition.kind) {
+        case 'SchemaDefinition':
+          {
+            _this5._parseSchemaDefinition(definition);
+
+            break;
+          }
+
+        case 'ScalarTypeDefinition':
+          {
+            _this5._parseScalarNode(definition, false);
+
+            break;
+          }
+
+        case 'EnumTypeDefinition':
+          {
+            _this5._parseEnumNode(definition, false);
+
+            break;
+          }
+
+        case 'ObjectTypeDefinition':
+          {
+            _this5._parseObjectTypeNode(definition, false);
+
+            break;
+          }
+
+        case 'InputObjectTypeDefinition':
+          {
+            _this5._parseInputObjectTypeNode(definition, false);
+
+            break;
+          }
+
+        case 'UnionTypeDefinition':
+          {
+            _this5._parseUnionNode(definition, false);
+
+            break;
+          }
+
+        case 'InterfaceTypeDefinition':
+          {
+            _this5._parseInterfaceNode(definition, false);
+
+            break;
+          }
+
+        case 'DirectiveDefinition':
+          {
+            _this5._parseDirective(definition, false);
+
+            break;
+          }
+      }
     });
-  }
-}
-/**
- * We need this in order to make unit-test works
- * In most of the unit-tests the schema is created from the instance of the
- * GraphQLSchema.
- */
+  };
+
+  _proto5._parseSchemaDefinition = function _parseSchemaDefinition(node) {
+    var _this6 = this;
+
+    node.operationTypes.forEach(function (operationType) {
+      switch (operationType.operation) {
+        case 'query':
+          _this6._queryTypeName = operationType.type.name.value;
+          break;
+
+        case 'mutation':
+          _this6._mutationTypeName = operationType.type.name.value;
+          break;
+
+        case 'subscription':
+          _this6._subscriptionTypeName = operationType.type.name.value;
+          break;
+      }
+    });
+  };
+
+  _proto5._parseScalarNode = function _parseScalarNode(node, isClient) {
+    var name = node.name.value;
+
+    if (!isDefaultScalar(name) && this._types.has(name)) {
+      throw createCompilerError("_parseScalarNode: Duplicate definition for type ".concat(name, "."), null, [node]);
+    }
+
+    this._types.set(name, new ScalarType(name, isClient));
+  };
+
+  _proto5._parseEnumNode = function _parseEnumNode(node, isClient) {
+    var name = node.name.value;
+
+    if (this._types.has(name)) {
+      throw createCompilerError("_parseEnumNode: Duplicate definition for type ".concat(name, "."), null, [node]);
+    } // SDL doesn't have information about the actual ENUM values
 
 
-function DEPRECATED__create(baseSchema, extendedSchema) {
-  var _extendedSchema;
+    var values = node.values ? node.values.map(function (value) {
+      return value.name.value;
+    }) : [];
 
-  return new Schema(baseSchema, (_extendedSchema = extendedSchema) !== null && _extendedSchema !== void 0 ? _extendedSchema : baseSchema, new Map(), new Map(), new Map(), new Map(), new Map(), null, Symbol('Query'), Symbol('Mutation'), Symbol('Subsription'));
-}
+    this._types.set(name, new EnumType(name, values, isClient));
+  };
+
+  _proto5._parseObjectTypeNode = function _parseObjectTypeNode(node, isClient) {
+    var _this7 = this;
+
+    var _this$_types$get;
+
+    var name = node.name.value; // Objects may be created by _parseUnionNode
+
+    var type = (_this$_types$get = this._types.get(name)) !== null && _this$_types$get !== void 0 ? _this$_types$get : new ObjectType(name, isClient);
+
+    if (!(type instanceof ObjectType)) {
+      throw createCompilerError("_parseObjectTypeNode: Expected object type, got ".concat(String(type)), null, [node]);
+    }
+
+    if (type.isClient !== isClient) {
+      throw createCompilerError("_parseObjectTypeNode: Cannot create object type '".concat(name, "' defined as a client type."), null, [node]);
+    }
+
+    var typeInterfaces = [];
+    node.interfaces && node.interfaces.forEach(function (interfaceTypeNode) {
+      var _this$_interfaceImple;
+
+      var interfaceName = interfaceTypeNode.name.value;
+
+      var interfaceType = _this7._types.get(interfaceName);
+
+      if (!interfaceType) {
+        interfaceType = new InterfaceType(interfaceName, isClient);
+
+        _this7._types.set(interfaceName, interfaceType);
+      }
+
+      if (!(interfaceType instanceof InterfaceType)) {
+        throw createCompilerError('_parseObjectTypeNode: Expected interface type', null, [interfaceTypeNode]);
+      }
+
+      var implementations = (_this$_interfaceImple = _this7._interfaceImplementations.get(interfaceType)) !== null && _this$_interfaceImple !== void 0 ? _this$_interfaceImple : new Set();
+      implementations.add(type);
+
+      _this7._interfaceImplementations.set(interfaceType, implementations);
+
+      typeInterfaces.push(interfaceType);
+    });
+
+    this._typeInterfaces.set(type, typeInterfaces);
+
+    this._types.set(name, type);
+
+    node.fields && this._handleTypeFieldsStrict(type, node.fields, isClient);
+  };
+
+  _proto5._parseInputObjectTypeNode = function _parseInputObjectTypeNode(node, isClient) {
+    var name = node.name.value;
+
+    if (this._types.has(name)) {
+      throw createCompilerError('_parseInputObjectTypeNode: Unable to parse schema file. Duplicate definition for object type', null, [node]);
+    }
+
+    var type = new InputObjectType(name, isClient);
+
+    this._types.set(name, type);
+
+    this._parseInputObjectFields(type, node);
+  };
+
+  _proto5._parseUnionNode = function _parseUnionNode(node, isClient) {
+    var _this8 = this;
+
+    var name = node.name.value;
+
+    if (this._types.has(name)) {
+      throw createCompilerError('_parseUnionNode: Unable to parse schema file. Duplicate definition for object type', null, [node]);
+    }
+
+    var union = new UnionType(name, isClient);
+
+    this._types.set(name, union);
+
+    this._unionTypes.set(union, new Set(node.types ? node.types.map(function (typeInUnion) {
+      var _this$_types$get2;
+
+      var typeInUnionName = typeInUnion.name.value;
+      var object = (_this$_types$get2 = _this8._types.get(typeInUnionName)) !== null && _this$_types$get2 !== void 0 ? _this$_types$get2 : new ObjectType(typeInUnionName, false);
+
+      if (!(object instanceof ObjectType)) {
+        throw createCompilerError('_parseUnionNode: Expected object type', null, [typeInUnion]);
+      }
+
+      _this8._types.set(typeInUnionName, object);
+
+      return object;
+    }) : []));
+  };
+
+  _proto5._parseInterfaceNode = function _parseInterfaceNode(node, isClient) {
+    var name = node.name.value;
+
+    var type = this._types.get(name);
+
+    if (!type) {
+      type = new InterfaceType(name, isClient);
+
+      this._types.set(name, type);
+    }
+
+    if (!(type instanceof InterfaceType)) {
+      throw createCompilerError("_parseInterfaceNode: Expected interface type. Got ".concat(String(type)), null, [node]);
+    }
+
+    if (type.isClient !== isClient) {
+      throw createCompilerError("_parseInterfaceNode: Cannot create interface '".concat(name, "' defined as a client interface"), null, [node]);
+    }
+
+    node.fields && this._handleTypeFieldsStrict(type, node.fields, isClient);
+  };
+
+  _proto5._handleTypeFieldsStrict = function _handleTypeFieldsStrict(type, fields, isClient) {
+    if (this._fields.has(type)) {
+      throw createCompilerError('_handleTypeFieldsStrict: Unable to parse schema file. Duplicate definition for object type');
+    }
+
+    this._handleTypeFields(type, fields, isClient);
+  };
+
+  _proto5._handleTypeFields = function _handleTypeFields(type, fields, isClient) {
+    var _this$_fields$get;
+
+    var fieldsMap = (_this$_fields$get = this._fields.get(type)) !== null && _this$_fields$get !== void 0 ? _this$_fields$get : new Map();
+    fields.forEach(function (fieldNode) {
+      var fieldName = fieldNode.name.value;
+
+      if (fieldsMap.has(fieldName)) {
+        throw createCompilerError("_handleTypeFields: Duplicate definition for field '".concat(fieldName, "'."));
+      }
+
+      fieldsMap.set(fieldName, {
+        arguments: fieldNode.arguments ? fieldNode.arguments.map(function (arg) {
+          return {
+            name: arg.name.value,
+            typeNode: arg.type,
+            defaultValue: arg.defaultValue
+          };
+        }) : [],
+        type: fieldNode.type,
+        isClient: isClient
+      });
+    });
+
+    this._fields.set(type, fieldsMap);
+  };
+
+  _proto5._parseInputObjectFields = function _parseInputObjectFields(type, node) {
+    if (this._inputFields.has(type)) {
+      throw createCompilerError('_parseInputObjectFields: Unable to parse schema file. Duplicate definition for type', null, [node]);
+    }
+
+    var fields = new Map();
+
+    if (node.fields) {
+      node.fields.forEach(function (fieldNode) {
+        fields.set(fieldNode.name.value, fieldNode.type);
+      });
+    }
+
+    this._inputFields.set(type, fields);
+  };
+
+  _proto5._parseDirective = function _parseDirective(node, isClient) {
+    var name = node.name.value;
+
+    this._directives.set(name, {
+      name: name,
+      args: node.arguments ? node.arguments.map(function (arg) {
+        return {
+          name: arg.name.value,
+          typeNode: arg.type,
+          defaultValue: arg.defaultValue
+        };
+      }) : [],
+      locations: node.locations.map(function (location) {
+        switch (location.value) {
+          case 'QUERY':
+          case 'MUTATION':
+          case 'SUBSCRIPTION':
+          case 'FIELD':
+          case 'FRAGMENT_DEFINITION':
+          case 'FRAGMENT_SPREAD':
+          case 'INLINE_FRAGMENT':
+          case 'VARIABLE_DEFINITION':
+          case 'SCHEMA':
+          case 'SCALAR':
+          case 'OBJECT':
+          case 'FIELD_DEFINITION':
+          case 'ARGUMENT_DEFINITION':
+          case 'INTERFACE':
+          case 'UNION':
+          case 'ENUM':
+          case 'ENUM_VALUE':
+          case 'INPUT_OBJECT':
+          case 'INPUT_FIELD_DEFINITION':
+            return location.value;
+
+          default:
+            throw createCompilerError('Invalid directive location');
+        }
+      }),
+      isClient: isClient
+    });
+  };
+
+  _proto5._parseObjectTypeExtension = function _parseObjectTypeExtension(node) {
+    var type = this._types.get(node.name.value);
+
+    if (!(type instanceof ObjectType)) {
+      throw createCompilerError("_parseObjectTypeExtension: Expected to find type with the name '".concat(node.name.value, "'"), null, [node]);
+    }
+
+    node.fields && this._handleTypeFields(type, node.fields, true
+    /** client fields */
+    );
+  };
+
+  _proto5._parseInterfaceTypeExtension = function _parseInterfaceTypeExtension(node) {
+    var type = this._types.get(node.name.value);
+
+    if (!(type instanceof InterfaceType)) {
+      throw createCompilerError('_parseInterfaceTypeExtension: Expected to have an interface type');
+    }
+
+    node.fields && this._handleTypeFields(type, node.fields, true);
+  };
+
+  _proto5._extend = function _extend(extensions) {
+    var _this9 = this;
+
+    extensions.forEach(function (definition) {
+      if (definition.kind === 'ObjectTypeDefinition') {
+        _this9._parseObjectTypeNode(definition, true);
+      } else if (definition.kind === 'InterfaceTypeDefinition') {
+        _this9._parseInterfaceNode(definition, true);
+      } else if (definition.kind === 'ScalarTypeDefinition') {
+        _this9._parseScalarNode(definition, true);
+      } else if (definition.kind === 'EnumTypeDefinition') {
+        _this9._parseEnumNode(definition, true);
+      } else if (definition.kind === 'InterfaceTypeExtension') {
+        _this9._parseInterfaceTypeExtension(definition);
+      } else if (definition.kind === 'ObjectTypeExtension') {
+        _this9._parseObjectTypeExtension(definition);
+      } else if (definition.kind === 'DirectiveDefinition') {
+        _this9._parseDirective(definition, true
+        /* client directive */
+        );
+      } else {
+        throw createCompilerError("Unexpected extension kind: '".concat(definition.kind, "'"), null, [definition]);
+      }
+    });
+  };
+
+  _proto5.getTypes = function getTypes() {
+    return Array.from(this._types.values());
+  };
+
+  _proto5.getTypeByName = function getTypeByName(typename) {
+    return this._types.get(typename);
+  };
+
+  _proto5.getInterfaces = function getInterfaces(type) {
+    var _this$_typeInterfaces;
+
+    return (_this$_typeInterfaces = this._typeInterfaces.get(type)) !== null && _this$_typeInterfaces !== void 0 ? _this$_typeInterfaces : [];
+  };
+
+  _proto5.getPossibleTypeSet = function getPossibleTypeSet(type) {
+    var set;
+
+    if (type instanceof InterfaceType) {
+      var _this$_interfaceImple2;
+
+      set = (_this$_interfaceImple2 = this._interfaceImplementations.get(type)) !== null && _this$_interfaceImple2 !== void 0 ? _this$_interfaceImple2 : new Set();
+    } else if (type instanceof UnionType) {
+      var _this$_unionTypes$get;
+
+      set = (_this$_unionTypes$get = this._unionTypes.get(type)) !== null && _this$_unionTypes$get !== void 0 ? _this$_unionTypes$get : new Set();
+    } else {
+      throw createCompilerError('Invalid type supplied to "getPossibleTypeSet"');
+    }
+
+    if (!set) {
+      throw createCompilerError("Unable to find possible types for ".concat(type.name));
+    }
+
+    return set;
+  };
+
+  _proto5.getQueryType = function getQueryType() {
+    return this._types.get(this._queryTypeName);
+  };
+
+  _proto5.getMutationType = function getMutationType() {
+    return this._types.get(this._mutationTypeName);
+  };
+
+  _proto5.getSubscriptionType = function getSubscriptionType() {
+    return this._types.get(this._subscriptionTypeName);
+  };
+
+  _proto5.getField = function getField(type, fieldName) {
+    var fields = this._fields.get(type);
+
+    if (fields) {
+      return fields.get(fieldName);
+    }
+  };
+
+  _proto5.getFieldMap = function getFieldMap(type) {
+    return this._fields.get(type);
+  };
+
+  _proto5.getInputField = function getInputField(type, fieldName) {
+    var inputFields = this._inputFields.get(type);
+
+    if (inputFields) {
+      return inputFields.get(fieldName);
+    }
+  };
+
+  _proto5.getInputFieldMap = function getInputFieldMap(type) {
+    return this._inputFields.get(type);
+  };
+
+  _proto5.getDirectives = function getDirectives() {
+    return Array.from(this._directives.values());
+  };
+
+  _proto5.extend = function extend(extensions) {
+    return new TypeMap(this._source, this._extensions.concat(extensions));
+  };
+
+  return TypeMap;
+}();
 
 function create(baseSchema, schemaExtensionDocuments, schemaExtensions) {
-  var _schemaExtensions, _schemaExtensionDocum;
+  var extensions = [];
+  schemaExtensions && schemaExtensions.forEach(function (source) {
+    var doc = parse(source, {
+      noLocation: true
+    });
+    doc.definitions.forEach(function (definition) {
+      if (isSchemaDefinitionAST(definition)) {
+        extensions.push(definition);
+      }
+    });
+  });
+  schemaExtensionDocuments && schemaExtensionDocuments.forEach(function (doc) {
+    doc.definitions.forEach(function (definition) {
+      if (isSchemaDefinitionAST(definition)) {
+        extensions.push(definition);
+      }
+    });
+  });
+  return new Schema(new TypeMap(baseSchema, extensions));
+}
 
-  var schema = DEPRECATED__buildGraphQLSchema(baseSchema);
-  var transformedSchema = ASTConvert.transformASTSchema(schema, (_schemaExtensions = schemaExtensions) !== null && _schemaExtensions !== void 0 ? _schemaExtensions : []);
-  var extendedSchema = ASTConvert.extendASTSchema(transformedSchema, (_schemaExtensionDocum = schemaExtensionDocuments) !== null && _schemaExtensionDocum !== void 0 ? _schemaExtensionDocum : []);
-  return new Schema(schema, extendedSchema, new Map(), new Map(), new Map(), new Map(), new Map(), null, Symbol('Query'), Symbol('Mutation'), Symbol('Subsription'));
+function parseInputArgumentDefinitions(schema, args) {
+  return args.map(function (arg) {
+    var argType = schema.assertInputType(schema.expectTypeFromAST(arg.typeNode));
+    var defaultValue;
+    var defaultValueNode = arg.defaultValue;
+
+    if (defaultValueNode != null) {
+      var nullableType = schema.getNullableType(argType);
+      var isNullable = schema.isNonNull(argType) === false;
+
+      if (isNullable && defaultValueNode.kind === 'NullValue') {
+        defaultValue = null;
+      } else {
+        if (nullableType instanceof ScalarType || nullableType instanceof EnumType) {
+          defaultValue = schema.parseLiteral(nullableType, defaultValueNode);
+        } else if (nullableType instanceof List && defaultValueNode.kind === 'ListValue' || nullableType instanceof InputObjectType && defaultValueNode.kind === 'ObjectValue') {
+          defaultValue = valueFromASTUntyped(defaultValueNode);
+        }
+      }
+
+      if (defaultValue === undefined) {
+        throw createCompilerError("parseInputArgumentDefinitions: Unexpected default value: ".concat(String(defaultValueNode), ". Expected to have a value of type ").concat(String(nullableType), "."));
+      }
+    }
+
+    return {
+      name: arg.name,
+      type: argType,
+      defaultValue: defaultValue
+    };
+  });
+}
+
+function parseInputArgumentDefinitionsMap(schema, args) {
+  return new Map(parseInputArgumentDefinitions(schema, args).map(function (arg) {
+    return [arg.name, arg];
+  }));
+}
+
+function isDefaultScalar(name) {
+  return new Set(['ID', 'String', 'Boolean', 'Int', 'Float']).has(name);
 }
 
 module.exports = {
-  DEPRECATED__buildGraphQLSchema: DEPRECATED__buildGraphQLSchema,
-  DEPRECATED__create: DEPRECATED__create,
   create: create
 };
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = require("@babel/runtime/helpers/inheritsLoose");
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11190,37 +11635,10 @@ module.exports = require("@babel/runtime/helpers/inheritsLoose");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-function nullthrows(x) {
-  var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'Got unexpected null or undefined';
-
-  if (x == null) {
-    throw new Error(message);
-  }
-
-  return x;
-}
-
-module.exports = nullthrows;
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
-
-
-var chalk = __webpack_require__(59);
+var chalk = __webpack_require__(57);
 
 function getMemoryUsageString() {
   return chalk.blue(Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'Mb');
@@ -11273,13 +11691,13 @@ function leftPad(len, str) {
 module.exports = ConsoleReporter;
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = require("chalk");
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11292,9 +11710,10 @@ module.exports = require("chalk");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var ASTCache = __webpack_require__(26);
+var ASTCache = __webpack_require__(25);
 
 var fs = __webpack_require__(13);
 
@@ -11324,7 +11743,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11337,15 +11756,16 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var ASTConvert = __webpack_require__(25);
+var ASTConvert = __webpack_require__(60);
 
 var CodegenDirectory = __webpack_require__(24);
 
@@ -11353,9 +11773,9 @@ var CompilerContext = __webpack_require__(19);
 
 var Profiler = __webpack_require__(6);
 
-var RelayParser = __webpack_require__(27);
+var RelayParser = __webpack_require__(26);
 
-var compileRelayArtifacts = __webpack_require__(63);
+var compileRelayArtifacts = __webpack_require__(62);
 
 var crypto = __webpack_require__(12);
 
@@ -11367,12 +11787,12 @@ var nullthrows = __webpack_require__(20);
 
 var path = __webpack_require__(8);
 
-var writeRelayGeneratedFile = __webpack_require__(68);
+var writeRelayGeneratedFile = __webpack_require__(67);
 
-var _require = __webpack_require__(71),
+var _require = __webpack_require__(70),
     getReaderSourceDefinitionName = _require.getReaderSourceDefinitionName;
 
-var _require2 = __webpack_require__(11),
+var _require2 = __webpack_require__(9),
     isExecutableDefinitionAST = _require2.isExecutableDefinitionAST;
 
 var _require3 = __webpack_require__(14),
@@ -11456,7 +11876,7 @@ function writeAll(_ref2) {
       var artifact = nullthrows(artifactMap.get(definitionName));
       var sourceName = getReaderSourceDefinitionName(artifact);
       var definitionMeta = definitionsMeta.get(sourceName);
-      !definitionMeta ?  true ?  true ?  true ? invariant(false, 'RelayFileWriter: Could not determine source for definition: `%s`.', definitionName) : undefined : undefined : undefined : void 0;
+      !definitionMeta ?  true ? invariant(false, 'RelayFileWriter: Could not determine source for definition: `%s`.', definitionName) : undefined : void 0;
       return definitionMeta;
     };
 
@@ -11539,7 +11959,7 @@ function writeAll(_ref2) {
       /*#__PURE__*/
       function () {
         var _ref7 = _asyncToGenerator(function* (_ref5) {
-          var _writerConfig$repersi;
+          var _writerConfig$repersi, _writerConfig$writeQu;
 
           var definition = _ref5[0],
               node = _ref5[1];
@@ -11564,7 +11984,7 @@ function writeAll(_ref2) {
           var sourceHash = Profiler.run('hashGraphQL', function () {
             return md5(graphql.print(getDefinitionMeta(nodeName).ast));
           });
-          yield writeRelayGeneratedFile(schema, getGeneratedDirectory(nodeName), definition, node, formatModule, typeText, persistQuery, writerConfig.platform, sourceHash, writerConfig.extension, writerConfig.printModuleDependency, (_writerConfig$repersi = writerConfig.repersist) !== null && _writerConfig$repersi !== void 0 ? _writerConfig$repersi : false, languagePlugin);
+          yield writeRelayGeneratedFile(schema, getGeneratedDirectory(nodeName), definition, node, formatModule, typeText, persistQuery, writerConfig.platform, sourceHash, writerConfig.extension, writerConfig.printModuleDependency, (_writerConfig$repersi = writerConfig.repersist) !== null && _writerConfig$repersi !== void 0 ? _writerConfig$repersi : false, languagePlugin, (_writerConfig$writeQu = writerConfig.writeQueryParameters) !== null && _writerConfig$writeQu !== void 0 ? _writerConfig$writeQu : function noop() {});
         });
 
         return function (_x) {
@@ -11578,7 +11998,7 @@ function writeAll(_ref2) {
           var configDirectory = writerConfig.outputDir;
           generateExtraFiles(function (dir) {
             var outputDirectory = dir || configDirectory;
-            !outputDirectory ?  true ?  true ?  true ? invariant(false, 'RelayFileWriter: cannot generate extra files without specifying ' + 'an outputDir in the config or passing it in.') : undefined : undefined : undefined : void 0;
+            !outputDirectory ?  true ? invariant(false, 'RelayFileWriter: cannot generate extra files without specifying ' + 'an outputDir in the config or passing it in.') : undefined : void 0;
             var outputDir = allOutputDirectories.get(outputDirectory);
 
             if (!outputDir) {
@@ -11625,7 +12045,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 62 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11638,6 +12058,211 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
+
+
+var Profiler = __webpack_require__(6);
+
+var _require = __webpack_require__(9),
+    isExecutableDefinitionAST = _require.isExecutableDefinitionAST,
+    isSchemaDefinitionAST = _require.isSchemaDefinitionAST;
+
+var _require2 = __webpack_require__(7),
+    extendSchema = _require2.extendSchema,
+    parse = _require2.parse,
+    print = _require2.print,
+    visit = _require2.visit;
+
+function convertASTDocuments(schema, documents, transform) {
+  return Profiler.run('ASTConvert.convertASTDocuments', function () {
+    var definitions = definitionsFromDocuments(documents);
+    var astDefinitions = [];
+    documents.forEach(function (doc) {
+      doc.definitions.forEach(function (definition) {
+        if (isExecutableDefinitionAST(definition)) {
+          astDefinitions.push(definition);
+        }
+      });
+    });
+    return convertASTDefinitions(schema, definitions, transform);
+  });
+}
+
+function convertASTDocumentsWithBase(schema, baseDocuments, documents, transform) {
+  return Profiler.run('ASTConvert.convertASTDocumentsWithBase', function () {
+    var baseDefinitions = definitionsFromDocuments(baseDocuments);
+    var definitions = definitionsFromDocuments(documents);
+    var requiredDefinitions = new Map();
+    var baseMap = new Map();
+    baseDefinitions.forEach(function (definition) {
+      if (isExecutableDefinitionAST(definition)) {
+        var definitionName = definition.name && definition.name.value; // If there's no name, no reason to put in the map
+
+        if (definitionName != null) {
+          if (baseMap.has(definitionName)) {
+            throw new Error("Duplicate definition of '".concat(definitionName, "'."));
+          }
+
+          baseMap.set(definitionName, definition);
+        }
+      }
+    });
+    var definitionsToVisit = [];
+    definitions.forEach(function (definition) {
+      if (isExecutableDefinitionAST(definition)) {
+        definitionsToVisit.push(definition);
+      }
+    });
+
+    while (definitionsToVisit.length > 0) {
+      var definition = definitionsToVisit.pop();
+      var name = definition.name && definition.name.value;
+
+      if (name == null) {
+        continue;
+      }
+
+      if (requiredDefinitions.has(name)) {
+        if (requiredDefinitions.get(name) !== definition) {
+          throw new Error("Duplicate definition of '".concat(name, "'."));
+        }
+
+        continue;
+      }
+
+      requiredDefinitions.set(name, definition);
+      visit(definition, {
+        FragmentSpread: function FragmentSpread(spread) {
+          var baseDefinition = baseMap.get(spread.name.value);
+
+          if (baseDefinition) {
+            // We only need to add those definitions not already included
+            // in definitions
+            definitionsToVisit.push(baseDefinition);
+          }
+        }
+      });
+    }
+
+    var definitionsToConvert = [];
+    requiredDefinitions.forEach(function (definition) {
+      return definitionsToConvert.push(definition);
+    });
+    return convertASTDefinitions(schema, definitionsToConvert, transform);
+  });
+}
+
+function convertASTDefinitions(schema, definitions, transform) {
+  var operationDefinitions = [];
+  definitions.forEach(function (definition) {
+    if (isExecutableDefinitionAST(definition)) {
+      operationDefinitions.push(definition);
+    }
+  });
+  return transform(schema, operationDefinitions);
+}
+
+function definitionsFromDocuments(documents) {
+  var definitions = [];
+  documents.forEach(function (doc) {
+    doc.definitions.forEach(function (definition) {
+      return definitions.push(definition);
+    });
+  });
+  return definitions;
+}
+/**
+ * Extends a GraphQLSchema with a list of schema extensions in string form.
+ */
+
+
+function transformASTSchema(schema, schemaExtensions) {
+  return Profiler.run('ASTConvert.transformASTSchema', function () {
+    if (schemaExtensions.length === 0) {
+      return schema;
+    }
+
+    var extension = schemaExtensions.join('\n');
+    return cachedExtend(schema, extension, function () {
+      return extendSchema(schema, parse(extension));
+    });
+  });
+}
+/**
+ * Extends a GraphQLSchema with a list of schema extensions in AST form.
+ */
+
+
+function extendASTSchema(baseSchema, documents) {
+  return Profiler.run('ASTConvert.extendASTSchema', function () {
+    var schemaExtensions = [];
+    documents.forEach(function (doc) {
+      doc.definitions.forEach(function (definition) {
+        if (isSchemaDefinitionAST(definition)) {
+          schemaExtensions.push(definition);
+        }
+      });
+    });
+
+    if (schemaExtensions.length === 0) {
+      return baseSchema;
+    }
+
+    var key = schemaExtensions.map(print).join('\n');
+    return cachedExtend(baseSchema, key, function () {
+      return extendSchema(baseSchema, {
+        kind: 'Document',
+        definitions: schemaExtensions
+      }, // TODO T24511737 figure out if this is dangerous
+      {
+        assumeValid: true
+      });
+    });
+  });
+}
+
+var extendedSchemas = new Map();
+
+function cachedExtend(schema, key, compute) {
+  var cache = extendedSchemas.get(schema);
+
+  if (!cache) {
+    cache = {};
+    extendedSchemas.set(schema, cache);
+  }
+
+  var extendedSchema = cache[key];
+
+  if (!extendedSchema) {
+    extendedSchema = compute();
+    cache[key] = extendedSchema;
+  }
+
+  return extendedSchema;
+}
+
+module.exports = {
+  convertASTDocuments: convertASTDocuments,
+  convertASTDocumentsWithBase: convertASTDocumentsWithBase,
+  extendASTSchema: extendASTSchema,
+  transformASTSchema: transformASTSchema
+};
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
 
 
 var OR_LIST_MAX_LENGTH = 5;
@@ -11666,7 +12291,7 @@ function orList(items) {
 module.exports = orList;
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11679,19 +12304,20 @@ module.exports = orList;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var Printer = __webpack_require__(31);
+var Printer = __webpack_require__(30);
 
 var Profiler = __webpack_require__(6);
 
-var RelayCodeGenerator = __webpack_require__(64);
+var RelayCodeGenerator = __webpack_require__(63);
 
-var filterContextForNode = __webpack_require__(67);
+var filterContextForNode = __webpack_require__(66);
 
 function createFragmentContext(context, transforms, reporter) {
   // The fragment is used for reading data from the normalized store.
@@ -11846,7 +12472,7 @@ function compileRelayArtifacts(context, transforms, reporter) {
 module.exports = compileRelayArtifacts;
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11859,11 +12485,12 @@ module.exports = compileRelayArtifacts;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var NormalizationCodeGenerator = __webpack_require__(65);
+var NormalizationCodeGenerator = __webpack_require__(64);
 
-var ReaderCodeGenerator = __webpack_require__(66);
+var ReaderCodeGenerator = __webpack_require__(65);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError;
@@ -11908,7 +12535,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11921,6 +12548,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -11933,7 +12561,7 @@ var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError,
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(9),
+var _require2 = __webpack_require__(10),
     ConnectionInterface = _require2.ConnectionInterface,
     getStorageKey = _require2.getStorageKey,
     stableCopy = _require2.stableCopy;
@@ -12243,6 +12871,7 @@ function generateModuleImport(node, key) {
 function generateScalarField(node) {
   var _node$metadata;
 
+  // flowlint-next-line sketchy-null-mixed:off
   if ((_node$metadata = node.metadata) === null || _node$metadata === void 0 ? void 0 : _node$metadata.skipNormalizationNode) {
     return [];
   } // Note: it is important that the arguments of this field be sorted to
@@ -12316,6 +12945,46 @@ function generateArgumentValue(name, value) {
         value: stableCopy(value.value)
       };
 
+    case 'ObjectValue':
+      {
+        var objectKeys = value.fields.map(function (field) {
+          return field.name;
+        }).sort();
+        var objectValues = new Map(value.fields.map(function (field) {
+          return [field.name, field.value];
+        }));
+        return {
+          kind: 'ObjectValue',
+          name: name,
+          fields: objectKeys.map(function (fieldName) {
+            var _generateArgumentValu2;
+
+            var fieldValue = objectValues.get(fieldName);
+
+            if (fieldValue == null) {
+              throw createCompilerError('Expected to have object field value');
+            }
+
+            return (_generateArgumentValu2 = generateArgumentValue(fieldName, fieldValue)) !== null && _generateArgumentValu2 !== void 0 ? _generateArgumentValu2 : {
+              kind: 'Literal',
+              name: fieldName,
+              value: null
+            };
+          })
+        };
+      }
+
+    case 'ListValue':
+      {
+        return {
+          kind: 'ListValue',
+          name: name,
+          items: value.items.map(function (item, index) {
+            return generateArgumentValue("".concat(name, ".").concat(index), item);
+          })
+        };
+      }
+
     default:
       throw createUserError('NormalizationCodeGenerator: Complex argument values (Lists or ' + 'InputObjects with nested variables) are not supported.', [value.loc]);
   }
@@ -12368,7 +13037,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12381,19 +13050,20 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var CodeMarker = __webpack_require__(32);
+var CodeMarker = __webpack_require__(31);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError,
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(9),
+var _require2 = __webpack_require__(10),
     ConnectionInterface = _require2.ConnectionInterface,
     getStorageKey = _require2.getStorageKey,
     stableCopy = _require2.stableCopy;
@@ -12401,7 +13071,7 @@ var _require2 = __webpack_require__(9),
 /**
  * @public
  *
- * Converts a GraphQLIR node into a plain JS object representation that can be
+ * Converts an IR node into a plain JS object representation that can be
  * used at runtime.
  */
 function generate(schema, node) {
@@ -12747,33 +13417,71 @@ function generateScalarField(schema, node) {
   return field;
 }
 
-function generateArgument(node) {
-  var value = node.value;
-
+function generateArgument(name, value) {
   switch (value.kind) {
     case 'Variable':
       return {
         kind: 'Variable',
-        name: node.name,
+        name: name,
         variableName: value.variableName
       };
 
     case 'Literal':
       return value.value === null ? null : {
         kind: 'Literal',
-        name: node.name,
+        name: name,
         value: stableCopy(value.value)
       };
 
+    case 'ObjectValue':
+      {
+        var objectKeys = value.fields.map(function (field) {
+          return field.name;
+        }).sort();
+        var objectValues = new Map(value.fields.map(function (field) {
+          return [field.name, field.value];
+        }));
+        return {
+          kind: 'ObjectValue',
+          name: name,
+          fields: objectKeys.map(function (fieldName) {
+            var _generateArgument;
+
+            var fieldValue = objectValues.get(fieldName);
+
+            if (fieldValue == null) {
+              throw createCompilerError('Expected to have object field value');
+            }
+
+            return (_generateArgument = generateArgument(fieldName, fieldValue)) !== null && _generateArgument !== void 0 ? _generateArgument : {
+              kind: 'Literal',
+              name: fieldName,
+              value: null
+            };
+          })
+        };
+      }
+
+    case 'ListValue':
+      {
+        return {
+          kind: 'ListValue',
+          name: name,
+          items: value.items.map(function (item, index) {
+            return generateArgument("".concat(name, ".").concat(index), item);
+          })
+        };
+      }
+
     default:
-      throw createUserError('ReaderCodeGenerator: Complex argument values (Lists or ' + 'InputObjects with nested variables) are not supported.', [node.value.loc]);
+      throw createUserError('ReaderCodeGenerator: Complex argument values (Lists or ' + 'InputObjects with nested variables) are not supported.', [value.loc]);
   }
 }
 
 function generateArgs(args) {
   var concreteArguments = [];
   args.forEach(function (arg) {
-    var concreteArgument = generateArgument(arg);
+    var concreteArgument = generateArgument(arg.name, arg.value);
 
     if (concreteArgument !== null) {
       concreteArguments.push(concreteArgument);
@@ -12817,7 +13525,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12830,20 +13538,21 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var GraphQLCompilerContext = __webpack_require__(19);
+var CompilerContext = __webpack_require__(19);
 
 var _require = __webpack_require__(15),
     visit = _require.visit;
 
 /**
- * Returns a GraphQLCompilerContext containing only the documents referenced
+ * Returns a CompilerContext containing only the documents referenced
  * by and including the provided node.
  */
 function filterContextForNode(node, context) {
   var queue = [node];
-  var filteredContext = new GraphQLCompilerContext(context.getSchema()).add(node);
+  var filteredContext = new CompilerContext(context.getSchema()).add(node);
 
   var visitFragmentSpread = function visitFragmentSpread(fragmentSpread) {
     var name = fragmentSpread.name;
@@ -12871,7 +13580,7 @@ function filterContextForNode(node, context) {
 module.exports = filterContextForNode;
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12884,27 +13593,28 @@ module.exports = filterContextForNode;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
-var _asyncToGenerator = __webpack_require__(10);
+var _asyncToGenerator = __webpack_require__(11);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var CodeMarker = __webpack_require__(32);
+var CodeMarker = __webpack_require__(31);
 
 var Profiler = __webpack_require__(6);
 
-var createPrintRequireModuleDependency = __webpack_require__(69);
+var createPrintRequireModuleDependency = __webpack_require__(68);
 
 var crypto = __webpack_require__(12);
 
-var dedupeJSONStringify = __webpack_require__(70);
+var dedupeJSONStringify = __webpack_require__(69);
 
 var invariant = __webpack_require__(4);
 
-var _require = __webpack_require__(9),
+var _require = __webpack_require__(10),
     RelayConcreteNode = _require.RelayConcreteNode;
 
 function getConcreteType(node) {
@@ -12936,6 +13646,7 @@ function _writeRelayGeneratedFile() {
     var printModuleDependency = arguments.length > 10 && arguments[10] !== undefined ? arguments[10] : createPrintRequireModuleDependency(extension);
     var shouldRepersist = arguments.length > 11 ? arguments[11] : undefined;
     var languagePlugin = arguments.length > 12 ? arguments[12] : undefined;
+    var writeQueryParameters = arguments.length > 13 ? arguments[13] : undefined;
     var generatedNode = _generatedNode; // Copy to const so Flow can refine.
 
     var persistQuery = _persistQuery;
@@ -12943,6 +13654,7 @@ function _writeRelayGeneratedFile() {
     var moduleName = languagePlugin.getModuleName ? languagePlugin.getModuleName(operationName) : operationName + '.graphql';
     var platformName = platform != null && platform.length > 0 ? moduleName + '.' + platform : moduleName;
     var filename = platformName + '.' + extension;
+    var queryParametersFilename = generatedNode.kind === 'Request' ? generatedNode.params.name + '$Parameters' + (platform != null ? '.' + platform : '') + ".".concat(extension) : null;
     var typeName = getConcreteType(generatedNode);
     var docText;
 
@@ -12977,6 +13689,11 @@ function _writeRelayGeneratedFile() {
 
       if (!shouldRepersist && hash === oldHash) {
         codegenDir.markUnchanged(filename);
+
+        if (writeQueryParameters && oldRequestParameters && queryParametersFilename != null && generatedNode.kind === RelayConcreteNode.REQUEST && generatedNode.params.operationKind === 'query') {
+          writeQueryParameters(codegenDir, queryParametersFilename, moduleName, oldRequestParameters);
+        }
+
         return oldRequestParameters ? (0, _objectSpread2["default"])({}, generatedNode, {
           params: oldRequestParameters
         }) : null;
@@ -13027,6 +13744,11 @@ function _writeRelayGeneratedFile() {
       schema: schema
     });
     codegenDir.writeFile(filename, moduleText, shouldRepersist);
+
+    if (writeQueryParameters && queryParametersFilename != null && generatedNode.kind === RelayConcreteNode.REQUEST && generatedNode.params.operationKind === 'query') {
+      writeQueryParameters(codegenDir, queryParametersFilename, moduleName, generatedNode.params);
+    }
+
     return generatedNode;
   });
   return _writeRelayGeneratedFile.apply(this, arguments);
@@ -13071,6 +13793,31 @@ function extractRelayRequestParams(text) {
 module.exports = writeRelayGeneratedFile;
 
 /***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+function createPrintRequireModuleDependency(extension) {
+  return function (moduleName) {
+    return "require('./".concat(moduleName, ".").concat(extension, "')");
+  };
+}
+
+module.exports = createPrintRequireModuleDependency;
+
+/***/ }),
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13084,30 +13831,7 @@ module.exports = writeRelayGeneratedFile;
  * 
  * @format
  */
-
-
-function createPrintRequireModuleDependency(extension) {
-  return function (moduleName) {
-    return "require('./".concat(moduleName, ".").concat(extension, "')");
-  };
-}
-
-module.exports = createPrintRequireModuleDependency;
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 /**
  * This function works similar to JSON.stringify except that for the case there
@@ -13257,7 +13981,7 @@ function dedupeJSONStringify(jsonValue) {
 module.exports = dedupeJSONStringify;
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13270,6 +13994,7 @@ module.exports = dedupeJSONStringify;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 /**
@@ -13302,7 +14027,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13315,65 +14040,66 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var ApplyFragmentArgumentTransform = __webpack_require__(73);
+var ApplyFragmentArgumentTransform = __webpack_require__(72);
 
-var ClientExtensionsTransform = __webpack_require__(76);
+var ClientExtensionsTransform = __webpack_require__(75);
 
-var ConnectionFieldTransform = __webpack_require__(34);
+var ConnectionFieldTransform = __webpack_require__(33);
 
-var ConnectionTransform = __webpack_require__(35);
+var ConnectionTransform = __webpack_require__(34);
 
-var DeferStreamTransform = __webpack_require__(77);
+var DeferStreamTransform = __webpack_require__(76);
 
-var DisallowIdAsAlias = __webpack_require__(78);
+var DisallowIdAsAlias = __webpack_require__(77);
 
-var FieldHandleTransform = __webpack_require__(79);
+var FieldHandleTransform = __webpack_require__(78);
 
-var FilterDirectivesTransform = __webpack_require__(80);
+var FilterDirectivesTransform = __webpack_require__(79);
 
-var FlattenTransform = __webpack_require__(36);
+var FlattenTransform = __webpack_require__(35);
 
-var GenerateIDFieldTransform = __webpack_require__(82);
+var GenerateIDFieldTransform = __webpack_require__(81);
 
-var GenerateTypeNameTransform = __webpack_require__(83);
+var GenerateTypeNameTransform = __webpack_require__(82);
 
-var InlineDataFragmentTransform = __webpack_require__(84);
+var InlineDataFragmentTransform = __webpack_require__(83);
 
-var InlineFragmentsTransform = __webpack_require__(85);
+var InlineFragmentsTransform = __webpack_require__(84);
 
-var MaskTransform = __webpack_require__(39);
+var MaskTransform = __webpack_require__(38);
 
-var MatchTransform = __webpack_require__(40);
+var MatchTransform = __webpack_require__(39);
 
-var RefetchableFragmentTransform = __webpack_require__(42);
+var RefetchableFragmentTransform = __webpack_require__(41);
 
-var RelayDirectiveTransform = __webpack_require__(43);
+var RelayDirectiveTransform = __webpack_require__(42);
 
-var RelayFlowGenerator = __webpack_require__(44);
+var RelayFlowGenerator = __webpack_require__(43);
 
-var SkipClientExtensionsTransform = __webpack_require__(93);
+var SkipClientExtensionsTransform = __webpack_require__(92);
 
-var SkipHandleFieldTransform = __webpack_require__(94);
+var SkipHandleFieldTransform = __webpack_require__(93);
 
-var SkipRedundantNodesTransform = __webpack_require__(95);
+var SkipRedundantNodesTransform = __webpack_require__(94);
 
-var SkipUnreachableNodeTransform = __webpack_require__(96);
+var SkipUnreachableNodeTransform = __webpack_require__(95);
 
-var SkipUnusedVariablesTransform = __webpack_require__(97);
+var SkipUnusedVariablesTransform = __webpack_require__(96);
 
-var SplitModuleImportTransform = __webpack_require__(98);
+var SplitModuleImportTransform = __webpack_require__(97);
 
-var TestOperationTransform = __webpack_require__(99);
+var TestOperationTransform = __webpack_require__(98);
 
-var ValidateGlobalVariablesTransform = __webpack_require__(100);
+var ValidateGlobalVariablesTransform = __webpack_require__(99);
 
-var ValidateRequiredArgumentsTransform = __webpack_require__(101);
+var ValidateRequiredArgumentsTransform = __webpack_require__(100);
 
-var ValidateServerOnlyDirectivesTransform = __webpack_require__(102);
+var ValidateServerOnlyDirectivesTransform = __webpack_require__(101);
 
-var ValidateUnusedVariablesTransform = __webpack_require__(103);
+var ValidateUnusedVariablesTransform = __webpack_require__(102);
 
 // Transforms applied to the code used to process a query response.
 var relaySchemaExtensions = [ConnectionTransform.SCHEMA_EXTENSION, MatchTransform.SCHEMA_EXTENSION, ConnectionFieldTransform.SCHEMA_EXTENSION, RelayDirectiveTransform.SCHEMA_EXTENSION, RefetchableFragmentTransform.SCHEMA_EXTENSION, TestOperationTransform.SCHEMA_EXTENSION, InlineDataFragmentTransform.SCHEMA_EXTENSION, RelayFlowGenerator.SCHEMA_EXTENSION, ValidateUnusedVariablesTransform.SCHEMA_EXTENSION]; // Transforms applied to both operations and fragments for both reading and
@@ -13408,7 +14134,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13421,6 +14147,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -13431,11 +14158,11 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var IRTransformer = __webpack_require__(3);
 
-var RelayCompilerScope = __webpack_require__(74);
+var RelayCompilerScope = __webpack_require__(73);
 
-var getIdentifierForArgumentValue = __webpack_require__(75);
+var getIdentifierForArgumentValue = __webpack_require__(74);
 
-var murmurHash = __webpack_require__(33);
+var murmurHash = __webpack_require__(32);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError,
@@ -13695,6 +14422,20 @@ function transformValue(scope, value, errorContext) {
     }
 
     return scopeValue;
+  } else if (value.kind === 'ObjectValue') {
+    return (0, _objectSpread2["default"])({}, value, {
+      fields: value.fields.map(function (field) {
+        return (0, _objectSpread2["default"])({}, field, {
+          value: transformValue(scope, field.value, errorContext)
+        });
+      })
+    });
+  } else if (value.kind === 'ListValue') {
+    return (0, _objectSpread2["default"])({}, value, {
+      items: value.items.map(function (item) {
+        return transformValue(scope, item, errorContext);
+      })
+    });
   }
 
   return value;
@@ -13787,7 +14528,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13800,6 +14541,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(1),
@@ -13941,7 +14683,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13954,6 +14696,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var invariant = __webpack_require__(4);
@@ -13974,15 +14717,32 @@ function getIdentifierForArgumentValue(value) {
         value: value.value
       };
 
+    case 'ListValue':
+      return {
+        list: value.items.map(function (item) {
+          return getIdentifierForArgumentValue(item);
+        })
+      };
+
+    case 'ObjectValue':
+      return {
+        object: value.fields.map(function (field) {
+          return {
+            name: field.name,
+            value: getIdentifierForArgumentValue(field.value)
+          };
+        })
+      };
+
     default:
-       true ?  true ? invariant(false, 'getIdentifierForArgumentValue(): Unsupported AST kind `%s`.', value.kind) : undefined : undefined;
+       true ?  true ?  true ?  true ? invariant(false, 'getIdentifierForArgumentValue(): Unsupported AST kind `%s`.', value.kind) : undefined : undefined : undefined : undefined;
   }
 }
 
 module.exports = getIdentifierForArgumentValue;
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13995,6 +14755,7 @@ module.exports = getIdentifierForArgumentValue;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -14003,7 +14764,7 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 var _require = __webpack_require__(1),
     createCompilerError = _require.createCompilerError,
@@ -14013,7 +14774,7 @@ var cachesByNode = new Map();
 
 function clientExtensionTransform(context) {
   cachesByNode = new Map();
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     Fragment: traverseDefinition,
     Root: traverseDefinition,
     SplitOperation: traverseDefinition
@@ -14213,7 +14974,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14226,6 +14987,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -14236,12 +14998,12 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var IRTransformer = __webpack_require__(3);
 
-var murmurHash = __webpack_require__(33);
+var murmurHash = __webpack_require__(32);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(9),
+var _require2 = __webpack_require__(10),
     ConnectionInterface = _require2.ConnectionInterface;
 
 /**
@@ -14511,6 +15273,52 @@ module.exports = {
 };
 
 /***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+var IRTransformer = __webpack_require__(3);
+
+var _require = __webpack_require__(1),
+    createUserError = _require.createUserError;
+
+function visitField(field) {
+  if (field.alias === 'id' && field.name !== 'id') {
+    throw createUserError('Relay does not allow aliasing fields to `id`. ' + 'This name is reserved for the globally unique `id` field on ' + '`Node`.', [field.loc]);
+  }
+
+  return this.traverse(field);
+}
+/**
+ * This is not an actual transform (but more a validation)
+ * Relay does not allow aliasing fields to `id`.
+ */
+
+
+function disallowIdAsAlias(context) {
+  return IRTransformer.transform(context, {
+    ScalarField: visitField,
+    LinkedField: visitField
+  });
+}
+
+module.exports = {
+  transform: disallowIdAsAlias
+};
+
+/***/ }),
 /* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14524,51 +15332,7 @@ module.exports = {
  * 
  * @format
  */
-
-
-var GraphQLIRTransformer = __webpack_require__(3);
-
-var _require = __webpack_require__(1),
-    createUserError = _require.createUserError;
-
-function visitField(field) {
-  if (field.alias === 'id' && field.name !== 'id') {
-    throw createUserError('Relay does not allow aliasing fields to `id`. ' + 'This name is reserved for the globally unique `id` field on ' + '`Node`.', [field.loc]);
-  }
-
-  return field;
-}
-/**
- * This is not an actual transform (but more a validation)
- * Relay does not allow aliasing fields to `id`.
- */
-
-
-function disallowIdAsAlias(context) {
-  return GraphQLIRTransformer.transform(context, {
-    ScalarField: visitField,
-    LinkedField: visitField
-  });
-}
-
-module.exports = {
-  transform: disallowIdAsAlias
-};
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -14577,13 +15341,13 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var IRTransformer = __webpack_require__(3);
 
-var SchemaUtils = __webpack_require__(11);
+var SchemaUtils = __webpack_require__(9);
 
 var invariant = __webpack_require__(4);
 
 var nullthrows = __webpack_require__(20);
 
-var _require = __webpack_require__(9),
+var _require = __webpack_require__(10),
     getRelayHandleKey = _require.getRelayHandleKey;
 
 function fieldHandleTransform(context) {
@@ -14606,7 +15370,7 @@ function visitField(field) {
   } // ensure exactly one handle
 
 
-  !(handles.length === 1) ?  true ? invariant(false, 'FieldHandleTransform: Expected fields to have at most one ' + '"handle" property, got `%s`.', handles.join(', ')) : undefined : void 0;
+  !(handles.length === 1) ?  true ?  true ?  true ? invariant(false, 'FieldHandleTransform: Expected fields to have at most one ' + '"handle" property, got `%s`.', handles.join(', ')) : undefined : undefined : undefined : void 0;
   var context = this.getContext();
   var schema = context.getSchema();
   var alias = nextField.alias;
@@ -14640,6 +15404,53 @@ module.exports = {
 };
 
 /***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+var IRTransformer = __webpack_require__(3);
+
+/**
+ * A transform that removes any directives that were not present in the
+ * server schema.
+ */
+function filterDirectivesTransform(context) {
+  var schemaDirectives = new Set(context.getSchema().getDirectives().filter(function (directive) {
+    return !directive.isClient;
+  }).map(function (schemaDirective) {
+    return schemaDirective.name;
+  }));
+
+  var visitDirective = function visitDirective(directive) {
+    if (schemaDirectives.has(directive.name)) {
+      return directive;
+    }
+
+    return null;
+  };
+
+  return IRTransformer.transform(context, {
+    Directive: visitDirective
+  });
+}
+
+module.exports = {
+  transform: filterDirectivesTransform
+};
+
+/***/ }),
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14653,52 +15464,7 @@ module.exports = {
  * 
  * @format
  */
-
-
-var GraphQLIRTransformer = __webpack_require__(3);
-
-/**
- * A transform that removes any directives that were not present in the
- * server schema.
- */
-function filterDirectivesTransform(context) {
-  var schemaDirectives = new Set(context.getSchema().getDirectives().filter(function (directive) {
-    return !directive.clientOnlyDirective;
-  }).map(function (schemaDirective) {
-    return schemaDirective.name;
-  }));
-
-  var visitDirective = function visitDirective(directive) {
-    if (schemaDirectives.has(directive.name)) {
-      return directive;
-    }
-
-    return null;
-  };
-
-  return GraphQLIRTransformer.transform(context, {
-    Directive: visitDirective
-  });
-}
-
-module.exports = {
-  transform: filterDirectivesTransform
-};
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var aStackPool = [];
@@ -14824,7 +15590,7 @@ function eq(a, b, aStack, bStack) {
 module.exports = areEqual;
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14837,6 +15603,7 @@ module.exports = areEqual;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -14847,9 +15614,9 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var IRTransformer = __webpack_require__(3);
 
-var SchemaUtils = __webpack_require__(11);
+var SchemaUtils = __webpack_require__(9);
 
-var _require = __webpack_require__(38),
+var _require = __webpack_require__(37),
     hasUnaliasedSelection = _require.hasUnaliasedSelection;
 
 var generateIDField = SchemaUtils.generateIDField;
@@ -14947,7 +15714,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14960,6 +15727,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -14970,7 +15738,7 @@ var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
 var IRTransformer = __webpack_require__(3);
 
-var _require = __webpack_require__(38),
+var _require = __webpack_require__(37),
     hasUnaliasedSelection = _require.hasUnaliasedSelection;
 
 var TYPENAME_KEY = '__typename';
@@ -15031,7 +15799,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15044,13 +15812,14 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
@@ -15063,7 +15832,7 @@ var SCHEMA_EXTENSION = "\ndirective @inline on FRAGMENT_DEFINITION\n";
  */
 
 function inlineDataFragmentTransform(context) {
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     // $FlowFixMe - this visitor intentionally changes node types
     FragmentSpread: visitFragmentSpread,
     Fragment: visitFragment
@@ -15135,7 +15904,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15148,9 +15917,10 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 var invariant = __webpack_require__(4);
 
@@ -15159,7 +15929,7 @@ var invariant = __webpack_require__(4);
  */
 function inlineFragmentsTransform(context) {
   var visitFragmentSpread = fragmentSpreadVisitor(new Map());
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     Fragment: visitFragment,
     FragmentSpread: visitFragmentSpread
   });
@@ -15177,7 +15947,7 @@ function fragmentSpreadVisitor(cache) {
       return traverseResult;
     }
 
-    !(fragmentSpread.args.length === 0) ?  true ? invariant(false, 'InlineFragmentsTransform: Cannot flatten fragment spread `%s` with ' + 'arguments. Use the `ApplyFragmentArgumentTransform` before flattening', fragmentSpread.name) : undefined : void 0;
+    !(fragmentSpread.args.length === 0) ?  true ?  true ?  true ? invariant(false, 'InlineFragmentsTransform: Cannot flatten fragment spread `%s` with ' + 'arguments. Use the `ApplyFragmentArgumentTransform` before flattening', fragmentSpread.name) : undefined : undefined : undefined : void 0;
     var fragment = this.getContext().getFragment(fragmentSpread.name, fragmentSpread.loc);
     var result = {
       kind: 'InlineFragment',
@@ -15201,7 +15971,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15214,6 +15984,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(1),
@@ -15270,7 +16041,7 @@ function joinArgumentDefinition(schema, prevArgDef, nextArgDef, directiveName) {
 module.exports = joinArgumentDefinitions;
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15283,13 +16054,14 @@ module.exports = joinArgumentDefinitions;
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var NodeQueryGenerator = __webpack_require__(88);
+var NodeQueryGenerator = __webpack_require__(87);
 
-var QueryQueryGenerator = __webpack_require__(89);
+var QueryQueryGenerator = __webpack_require__(88);
 
-var ViewerQueryGenerator = __webpack_require__(90);
+var ViewerQueryGenerator = __webpack_require__(89);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
@@ -15320,7 +16092,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15333,6 +16105,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -15341,7 +16114,7 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var SchemaUtils = __webpack_require__(11);
+var SchemaUtils = __webpack_require__(9);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
@@ -15476,7 +16249,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15489,6 +16262,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(21),
@@ -15528,7 +16302,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15541,6 +16315,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _require = __webpack_require__(1),
@@ -15562,8 +16337,9 @@ function buildRefetchOperation(schema, fragment, queryName) {
   var queryType = schema.expectQueryType();
   var viewerType = schema.getTypeFromString(VIEWER_TYPE_NAME);
   var viewerField = schema.getFieldConfig(schema.expectField(queryType, VIEWER_FIELD_NAME));
+  var viewerFieldType = schema.getNullableType(viewerField.type);
 
-  if (!(viewerType && schema.isObject(viewerType) && schema.isObject(viewerField.type) && schema.areEqualTypes(viewerField.type, viewerType) && viewerField.args.length === 0 && schema.areEqualTypes(fragment.type, viewerType))) {
+  if (!(viewerType && schema.isObject(viewerType) && schema.isObject(viewerFieldType) && schema.areEqualTypes(viewerFieldType, viewerType) && viewerField.args.length === 0 && schema.areEqualTypes(fragment.type, viewerType))) {
     throw createUserError("Invalid use of @refetchable on fragment '".concat(fragment.name, "', check ") + "that your schema defines a 'Viewer' object type and has a " + "'viewer: Viewer' field on the query type.", [fragment.loc]);
   }
 
@@ -15594,7 +16370,7 @@ function buildRefetchOperation(schema, fragment, queryName) {
         metadata: null,
         name: VIEWER_FIELD_NAME,
         selections: [buildFragmentSpread(fragment)],
-        type: schema.assertLinkedFieldType(viewerType)
+        type: schema.assertLinkedFieldType(viewerField.type)
       }],
       type: queryType
     },
@@ -15608,7 +16384,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15621,11 +16397,12 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var t = __webpack_require__(22);
 
-var _require = __webpack_require__(45),
+var _require = __webpack_require__(44),
     exactObjectTypeAnnotation = _require.exactObjectTypeAnnotation,
     readOnlyArrayOfType = _require.readOnlyArrayOfType;
 
@@ -15734,13 +16511,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = require("@babel/generator");
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15753,12 +16530,13 @@ module.exports = require("@babel/generator");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 function skipClientExtensionTransform(context) {
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     Fragment: visitFragment,
     ClientExtension: visitClientExtension
   });
@@ -15783,7 +16561,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15796,6 +16574,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -15832,7 +16611,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15845,6 +16624,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -15853,13 +16633,13 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 var IMap = __webpack_require__(14).Map;
 
-var partitionArray = __webpack_require__(28);
+var partitionArray = __webpack_require__(27);
 
-var getIdentifierForSelection = __webpack_require__(37);
+var getIdentifierForSelection = __webpack_require__(36);
 
 var invariant = __webpack_require__(4);
 
@@ -15955,7 +16735,7 @@ var invariant = __webpack_require__(4);
  * 1 can be skipped because it is already fetched at the outer level.
  */
 function skipRedundantNodesTransform(context) {
-  return GraphQLIRTransformer.transform(context, {
+  return IRTransformer.transform(context, {
     Root: visitNode,
     Fragment: visitNode
   });
@@ -16050,7 +16830,7 @@ function transformNode(schema, node, selectionMap) {
 
       default:
         selection;
-         true ?  true ? invariant(false, 'SkipRedundantNodesTransform: Unexpected node kind `%s`.', selection.kind) : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'SkipRedundantNodesTransform: Unexpected node kind `%s`.', selection.kind) : undefined : undefined : undefined : undefined;
     }
   });
   var nextNode = selections.length ? (0, _objectSpread2["default"])({}, node, {
@@ -16089,7 +16869,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16102,6 +16882,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -16110,7 +16891,7 @@ var _objectSpread2 = _interopRequireDefault(__webpack_require__(2));
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var GraphQLIRTransformer = __webpack_require__(3);
+var IRTransformer = __webpack_require__(3);
 
 var invariant = __webpack_require__(4);
 
@@ -16127,7 +16908,7 @@ var VARIABLE = 'variable';
 
 function skipUnreachableNodeTransform(context) {
   var fragments = new Map();
-  var nextContext = GraphQLIRTransformer.transform(context, {
+  var nextContext = IRTransformer.transform(context, {
     Root: function Root(node) {
       return transformNode(context, fragments, node);
     },
@@ -16216,12 +16997,12 @@ function transformNode(context, fragments, node) {
         break;
 
       case 'InlineDataFragmentSpread':
-         true ?  true ? invariant(false, 'SkipUnreachableNodeTransform: Did not expect an ' + 'InlineDataFragmentSpread here. Only expecting ' + 'InlineDataFragmentSpread in reader ASTs and this transform to ' + 'run only on normalization ASTs.') : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'SkipUnreachableNodeTransform: Did not expect an ' + 'InlineDataFragmentSpread here. Only expecting ' + 'InlineDataFragmentSpread in reader ASTs and this transform to ' + 'run only on normalization ASTs.') : undefined : undefined : undefined : undefined;
       // fallthrough
 
       default:
         selection.kind;
-         true ?  true ? invariant(false, 'SkipUnreachableNodeTransform: Unexpected selection kind `%s`.', selection.kind) : undefined : undefined;
+         true ?  true ?  true ?  true ? invariant(false, 'SkipUnreachableNodeTransform: Unexpected selection kind `%s`.', selection.kind) : undefined : undefined : undefined : undefined;
     }
 
     if (nextSelection) {
@@ -16257,7 +17038,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16270,6 +17051,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -16343,7 +17125,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16356,11 +17138,12 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var IRTransformer = __webpack_require__(3);
 
-var getNormalizationOperationName = __webpack_require__(41);
+var getNormalizationOperationName = __webpack_require__(40);
 
 /**
  * This transform creates a SplitOperation root for every ModuleImport.
@@ -16430,7 +17213,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16444,6 +17227,7 @@ module.exports = {
  * @format
  * @emails oncall+relay
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -16579,7 +17363,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16592,6 +17376,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var inferRootArgumentDefinitions = __webpack_require__(17);
@@ -16689,7 +17474,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16702,21 +17487,22 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var GraphQLIRValidator = __webpack_require__(46);
+var IRValidator = __webpack_require__(45);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
 
-var _require2 = __webpack_require__(30),
+var _require2 = __webpack_require__(29),
     getFieldDefinitionStrict = _require2.getFieldDefinitionStrict;
 
 /*
  * Validate required arguments are provided after transforms filling in arguments
  */
 function validateRequiredArguments(context) {
-  GraphQLIRValidator.validate(context, {
+  IRValidator.validate(context, {
     Directive: visitDirective,
     ConnectionField: visitField,
     InlineFragment: visitInlineFragment,
@@ -16789,7 +17575,7 @@ function validateRequiredArgumentsOnNode(schema, node, definitionArgs, rootNode)
     for (var _iterator = definitionArgs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var arg = _step.value;
 
-      if (schema.isNonNull(arg.type) && !nodeArgsSet.has(arg.name)) {
+      if (arg.defaultValue == null && schema.isNonNull(arg.type) && !nodeArgsSet.has(arg.name)) {
         throw createUserError("Required argument '".concat(arg.name, ": ").concat(schema.getTypeString(arg.type), "' ") + "is missing on '".concat(node.name, "' in '").concat(rootNode.name, "'."), [node.loc, rootNode.loc]);
       }
     }
@@ -16814,7 +17600,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16827,9 +17613,10 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var GraphQLIRValidator = __webpack_require__(46);
+var IRValidator = __webpack_require__(45);
 
 var _require = __webpack_require__(1),
     createUserError = _require.createUserError;
@@ -16843,7 +17630,7 @@ var NODEKIND_DIRECTIVE_MAP = {
  */
 
 function validateServerOnlyDirectives(context) {
-  GraphQLIRValidator.validate(context, {
+  IRValidator.validate(context, {
     ClientExtension: visitClientExtension,
     Defer: visitTransformedDirective,
     Stream: visitTransformedDirective,
@@ -16943,7 +17730,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16956,6 +17743,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var inferRootArgumentDefinitions = __webpack_require__(17);
@@ -17058,6 +17846,40 @@ module.exports = {
 };
 
 /***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ * @format
+ */
+// flowlint ambiguous-object-type:error
+
+
+var RelayFlowGenerator = __webpack_require__(43);
+
+var formatGeneratedModule = __webpack_require__(104);
+
+var _require = __webpack_require__(105),
+    find = _require.find;
+
+module.exports = function () {
+  return {
+    inputExtensions: ['js', 'jsx'],
+    outputExtension: 'js',
+    typeGenerator: RelayFlowGenerator,
+    formatModule: formatGeneratedModule,
+    findGraphQLTags: find
+  };
+};
+
+/***/ }),
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17071,24 +17893,24 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var RelayFlowGenerator = __webpack_require__(44);
-
-var formatGeneratedModule = __webpack_require__(105);
-
-var _require = __webpack_require__(106),
-    find = _require.find;
-
-module.exports = function () {
-  return {
-    inputExtensions: ['js', 'jsx'],
-    outputExtension: 'js',
-    typeGenerator: RelayFlowGenerator,
-    formatModule: formatGeneratedModule,
-    findGraphQLTags: find
-  };
+var formatGeneratedModule = function formatGeneratedModule(_ref) {
+  var moduleName = _ref.moduleName,
+      documentType = _ref.documentType,
+      docText = _ref.docText,
+      concreteText = _ref.concreteText,
+      typeText = _ref.typeText,
+      hash = _ref.hash,
+      sourceHash = _ref.sourceHash;
+  var documentTypeImport = documentType ? "import type { ".concat(documentType, " } from 'relay-runtime';") : '';
+  var docTextComment = docText != null ? '\n/*\n' + docText.trim() + '\n*/\n' : '';
+  var hashText = hash != null ? "\n * ".concat(hash) : '';
+  return "/**\n * ".concat('@', "flow", hashText, "\n */\n\n/* eslint-disable */\n\n'use strict';\n\n/*::\n").concat(documentTypeImport, "\n").concat(typeText || '', "\n*/\n\n").concat(docTextComment, "\nconst node/*: ").concat(documentType || 'empty', "*/ = ").concat(concreteText, ";\n// prettier-ignore\n(node/*: any*/).hash = '").concat(sourceHash, "';\nmodule.exports = node;\n");
 };
+
+module.exports = formatGeneratedModule;
 
 /***/ }),
 /* 105 */
@@ -17104,45 +17926,14 @@ module.exports = function () {
  * 
  * @format
  */
-
-
-var formatGeneratedModule = function formatGeneratedModule(_ref) {
-  var moduleName = _ref.moduleName,
-      documentType = _ref.documentType,
-      docText = _ref.docText,
-      concreteText = _ref.concreteText,
-      typeText = _ref.typeText,
-      hash = _ref.hash,
-      sourceHash = _ref.sourceHash;
-  var documentTypeImport = documentType ? "import type { ".concat(documentType, " } from 'relay-runtime';") : '';
-  var docTextComment = docText ? '\n/*\n' + docText.trim() + '\n*/\n' : '';
-  var hashText = hash ? "\n * ".concat(hash) : '';
-  return "/**\n * ".concat('@', "flow", hashText, "\n */\n\n/* eslint-disable */\n\n'use strict';\n\n/*::\n").concat(documentTypeImport, "\n").concat(typeText || '', "\n*/\n\n").concat(docTextComment, "\nconst node/*: ").concat(documentType || 'empty', "*/ = ").concat(concreteText, ";\n// prettier-ignore\n(node/*: any*/).hash = '").concat(sourceHash, "';\nmodule.exports = node;\n");
-};
-
-module.exports = formatGeneratedModule;
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- * @format
- */
+// flowlint ambiguous-object-type:error
 
 
 var Profiler = __webpack_require__(6);
 
-var babylon = __webpack_require__(107);
+var babylon = __webpack_require__(106);
 
-var util = __webpack_require__(47);
+var util = __webpack_require__(46);
 
 // Attempt to be as inclusive as possible of source text.
 var BABYLON_OPTIONS = {
@@ -17173,8 +17964,8 @@ function find(text) {
 
       if (fragments.type === 'ObjectExpression') {
         fragments.properties.forEach(function (property) {
-          !(property.type === 'ObjectProperty' && property.key.type === 'Identifier' && property.value.type === 'TaggedTemplateExpression') ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be ' + '`key: graphql`.', node.callee.name) : undefined : void 0;
-          !isGraphQLModernOrDeprecatedTag(property.value.tag) ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be tagged ' + 'with `graphql`, got `%s`.', node.callee.name, getSourceTextForLocation(text, property.value.tag.loc)) : undefined : void 0;
+          !(property.type === 'ObjectProperty' && property.key.type === 'Identifier' && property.value.type === 'TaggedTemplateExpression') ?  true ?  true ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be ' + '`key: graphql`.', node.callee.name) : undefined : undefined : undefined : void 0;
+          !isGraphQLModernOrDeprecatedTag(property.value.tag) ?  true ?  true ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be tagged ' + 'with `graphql`, got `%s`.', node.callee.name, getSourceTextForLocation(text, property.value.tag.loc)) : undefined : undefined : undefined : void 0;
 
           if (isGraphQLTag(property.value.tag)) {
             result.push({
@@ -17185,8 +17976,8 @@ function find(text) {
           }
         });
       } else {
-        !(fragments && fragments.type === 'TaggedTemplateExpression') ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects a second argument of fragment ' + 'definitions.', node.callee.name) : undefined : void 0;
-        !isGraphQLModernOrDeprecatedTag(fragments.tag) ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be tagged ' + 'with `graphql`, got `%s`.', node.callee.name, getSourceTextForLocation(text, fragments.tag.loc)) : undefined : void 0;
+        !(fragments && fragments.type === 'TaggedTemplateExpression') ?  true ?  true ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects a second argument of fragment ' + 'definitions.', node.callee.name) : undefined : undefined : undefined : void 0;
+        !isGraphQLModernOrDeprecatedTag(fragments.tag) ?  true ?  true ?  true ? invariant(false, 'FindGraphQLTags: `%s` expects fragment definitions to be tagged ' + 'with `graphql`, got `%s`.', node.callee.name, getSourceTextForLocation(text, fragments.tag.loc)) : undefined : undefined : undefined : void 0;
         result.push({
           keyName: null,
           template: getGraphQLText(fragments.quasi),
@@ -17245,7 +18036,7 @@ function isGraphQLModernOrDeprecatedTag(tag) {
 
 function getTemplateNode(quasi) {
   var quasis = quasi.quasis;
-  !(quasis && quasis.length === 1) ?  true ? invariant(false, 'FindGraphQLTags: Substitutions are not allowed in graphql tags.') : undefined : void 0;
+  !(quasis && quasis.length === 1) ?  true ?  true ?  true ? invariant(false, 'FindGraphQLTags: Substitutions are not allowed in graphql tags.') : undefined : undefined : undefined : void 0;
   return quasis[0];
 }
 
@@ -17319,13 +18110,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports) {
 
 module.exports = require("@babel/parser");
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17338,13 +18129,14 @@ module.exports = require("@babel/parser");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
 
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
 
-var ASTCache = __webpack_require__(26);
+var ASTCache = __webpack_require__(25);
 
 var GraphQL = __webpack_require__(7);
 
@@ -17356,7 +18148,7 @@ var invariant = __webpack_require__(4);
 
 var path = __webpack_require__(8);
 
-var _require = __webpack_require__(109),
+var _require = __webpack_require__(108),
     memoizedFind = _require.memoizedFind;
 
 var parseGraphQL = Profiler.instrument(GraphQL.parse, 'GraphQL.parse');
@@ -17380,7 +18172,7 @@ module.exports = function (tagFinder, getFileFilter) {
     try {
       text = fs.readFileSync(filePath, 'utf8');
     } catch (_unused) {
-       true ?  true ?  true ?  true ? invariant(false, 'RelaySourceModuleParser: Files should be filtered before passed to the ' + 'parser, got unfiltered file `%s`.', file.relPath) : undefined : undefined : undefined : undefined;
+       true ?  true ? invariant(false, 'RelaySourceModuleParser: Files should be filtered before passed to the ' + 'parser, got unfiltered file `%s`.', file.relPath) : undefined : undefined;
     }
 
     var astDefinitions = [];
@@ -17388,7 +18180,7 @@ module.exports = function (tagFinder, getFileFilter) {
     memoizedTagFinder(text, baseDir, file).forEach(function (template) {
       var source = new GraphQL.Source(template, file.relPath);
       var ast = parseGraphQL(source);
-      !ast.definitions.length ?  true ?  true ?  true ? invariant(false, 'RelaySourceModuleParser: Expected GraphQL text to contain at least one ' + 'definition (fragment, mutation, query, subscription), got `%s`.', template) : undefined : undefined : undefined : void 0;
+      !ast.definitions.length ?  true ? invariant(false, 'RelaySourceModuleParser: Expected GraphQL text to contain at least one ' + 'definition (fragment, mutation, query, subscription), got `%s`.', template) : undefined : void 0;
       sources.push(source.body);
       astDefinitions.push.apply(astDefinitions, (0, _toConsumableArray2["default"])(ast.definitions));
     });
@@ -17434,7 +18226,7 @@ module.exports = function (tagFinder, getFileFilter) {
 };
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17447,22 +18239,23 @@ module.exports = function (tagFinder, getFileFilter) {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
-var RelayCompilerCache = __webpack_require__(110);
+var RelayCompilerCache = __webpack_require__(109);
 
-var getModuleName = __webpack_require__(112);
+var getModuleName = __webpack_require__(111);
 
 var graphql = __webpack_require__(7);
 
 var path = __webpack_require__(8);
 
-var util = __webpack_require__(47);
+var util = __webpack_require__(46);
 
 var cache = new RelayCompilerCache('RelayFindGraphQLTags', 'v1');
 
 function memoizedFind(tagFinder, text, baseDir, file) {
-  !file.exists ?  true ? invariant(false, 'RelayFindGraphQLTags: Called with non-existent file `%s`', file.relPath) : undefined : void 0;
+  !file.exists ?  true ?  true ?  true ? invariant(false, 'RelayFindGraphQLTags: Called with non-existent file `%s`', file.relPath) : undefined : undefined : undefined : void 0;
   return cache.getOrCompute(file.hash, find.bind(null, tagFinder, text, path.join(baseDir, file.relPath)));
 }
 
@@ -17484,17 +18277,17 @@ function validateTemplate(_ref, moduleName, filePath) {
   var ast = graphql.parse(new graphql.Source(template, filePath, sourceLocationOffset));
   ast.definitions.forEach(function (def) {
     if (def.kind === 'OperationDefinition') {
-      !(def.name != null) ?  true ? invariant(false, 'RelayFindGraphQLTags: In module `%s`, an operation requires a name.', moduleName, def.kind) : undefined : void 0;
+      !(def.name != null) ?  true ?  true ?  true ? invariant(false, 'RelayFindGraphQLTags: In module `%s`, an operation requires a name.', moduleName, def.kind) : undefined : undefined : undefined : void 0;
       var definitionName = def.name.value;
       var operationNameParts = definitionName.match(/^(.*)(Mutation|Query|Subscription)$/);
-      !(operationNameParts && definitionName.startsWith(moduleName)) ?  true ? invariant(false, 'RelayFindGraphQLTags: Operation names in graphql tags must be prefixed ' + 'with the module name and end in "Mutation", "Query", or ' + '"Subscription". Got `%s` in module `%s`.', definitionName, moduleName) : undefined : void 0;
+      !(operationNameParts && definitionName.startsWith(moduleName)) ?  true ?  true ?  true ? invariant(false, 'RelayFindGraphQLTags: Operation names in graphql tags must be prefixed ' + 'with the module name and end in "Mutation", "Query", or ' + '"Subscription". Got `%s` in module `%s`.', definitionName, moduleName) : undefined : undefined : undefined : void 0;
     } else if (def.kind === 'FragmentDefinition') {
       var _definitionName = def.name.value;
 
       if (keyName != null) {
-        !(_definitionName === moduleName + '_' + keyName) ?  true ? invariant(false, 'RelayFindGraphQLTags: Container fragment names must be ' + '`<ModuleName>_<propName>`. Got `%s`, expected `%s`.', _definitionName, moduleName + '_' + keyName) : undefined : void 0;
+        !(_definitionName === moduleName + '_' + keyName) ?  true ?  true ?  true ? invariant(false, 'RelayFindGraphQLTags: Container fragment names must be ' + '`<ModuleName>_<propName>`. Got `%s`, expected `%s`.', _definitionName, moduleName + '_' + keyName) : undefined : undefined : undefined : void 0;
       } else {
-        !_definitionName.startsWith(moduleName) ?  true ? invariant(false, 'RelayFindGraphQLTags: Fragment names in graphql tags must be prefixed ' + 'with the module name. Got `%s` in module `%s`.', _definitionName, moduleName) : undefined : void 0;
+        !_definitionName.startsWith(moduleName) ?  true ?  true ?  true ? invariant(false, 'RelayFindGraphQLTags: Fragment names in graphql tags must be prefixed ' + 'with the module name. Got `%s` in module `%s`.', _definitionName, moduleName) : undefined : undefined : undefined : void 0;
       }
     }
   });
@@ -17518,7 +18311,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17531,6 +18324,7 @@ module.exports = {
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var _interopRequireDefault = __webpack_require__(0);
@@ -17543,7 +18337,7 @@ var crypto = __webpack_require__(12);
 
 var fs = __webpack_require__(13);
 
-var os = __webpack_require__(111);
+var os = __webpack_require__(110);
 
 var path = __webpack_require__(8);
 /**
@@ -17623,13 +18417,13 @@ function () {
 module.exports = RelayCompilerCache;
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports) {
 
 module.exports = require("os");
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17642,6 +18436,7 @@ module.exports = require("os");
  * 
  * @format
  */
+// flowlint ambiguous-object-type:error
 
 
 var path = __webpack_require__(8);
@@ -17668,7 +18463,7 @@ function getModuleName(filePath) {
 module.exports = getModuleName;
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports) {
 
 module.exports = require("fast-glob");

@@ -38,22 +38,22 @@
     "node-fetch": "^2.6.0",
     "react": "0.0.0-experimental-f6b8d31a7",
     "react-dom": "0.0.0-experimental-f6b8d31a7",
-    "react-relay": "0.0.0-experimental-29f4e27d",
+    "react-relay": "0.0.0-experimental-5f1cb628",
     "reason-react": "^0.7.0",
-    "relay-compiler": "7.0.0",
-    "relay-config": "7.0.0",
-    "relay-runtime": "7.0.0"
+    "relay-compiler": "8.0.0",
+    "relay-config": "8.0.0",
+    "relay-runtime": "8.0.0"
   },
   "peerDependencies": {
     "bs-platform": "^7.0.1",
     "graphql": "^14.4.2",
-    "react": "^0.0.0-experimental-f6b8d31a7",
-    "react-dom": "^0.0.0-experimental-f6b8d31a7",
-    "react-relay": "^0.0.0-experimental-29f4e27d",
+    "react": "0.0.0-experimental-f6b8d31a7",
+    "react-dom": "0.0.0-experimental-f6b8d31a7",
+    "react-relay": "0.0.0-experimental-5f1cb628",
     "reason-react": "^0.7.0",
-    "relay-compiler": "7.0.0",
-    "relay-config": "7.0.0",
-    "relay-runtime": "7.0.0"
+    "relay-compiler": "8.0.0",
+    "relay-config": "8.0.0",
+    "relay-runtime": "8.0.0"
   },
   "dependencies": {
     "mkdirp-sync": "^0.0.3",
