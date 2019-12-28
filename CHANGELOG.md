@@ -6,6 +6,7 @@
 - _BREAKING CHANGE_ Add `'response` as second parameter to mutation/subscription `updater` functions. This was simply not bound before in ReasonRelay, but Relay has always provided it.
 - _BREAKING CHANGE_ Change signature of `loadNext` / `loadPrevious` pagination functions to follow the convention of providing only the arguments wanted and applying the function manually via `unit`. This: `loadNext(~count=2, ~onComplete=None)` will now instead be applied like `loadNext(~count=2, ())`.
 - _BREAKING CHANGE_ Replace module `SuspenseConfig` with simple record `suspenseConfig`.
+- _BREAKING CHANGE_ Bump Relay versions to `8.0.0` and `react-relay` to `0.0.0-experimental-5f1cb628`.
 
 # 0.4.4
 
