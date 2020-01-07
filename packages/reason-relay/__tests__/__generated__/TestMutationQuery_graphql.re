@@ -1,21 +1,56 @@
-type response = {
-  .
-  "loggedInUser": {
-    .
-    "__$fragment_ref__Test2_User_user": Test2_User_user_graphql.t,
-  },
-};
-type variables = unit;
-type operationType = ReasonRelay.queryNode;
+/* @generated */
 
-module Unions = {};
+module Types = {
+  type loggedInUser;
+};
+
+open Types;
+
+type response = {loggedInUser};
+type variables = unit;
+
+module FragmentConverters: {
+  let loggedInUser_getFragments:
+    loggedInUser =>
+    {. "__$fragment_ref__TestMutation_user": TestMutation_user_graphql.t};
+} = {
+  external loggedInUser_getFragments:
+    loggedInUser =>
+    {. "__$fragment_ref__TestMutation_user": TestMutation_user_graphql.t} =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
   {| {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "Test2_Query",
+    "name": "TestMutationQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": [],
@@ -31,7 +66,7 @@ let node: operationType = [%bs.raw
         "selections": [
           {
             "kind": "FragmentSpread",
-            "name": "Test2_User_user",
+            "name": "TestMutation_user",
             "args": null
           }
         ]
@@ -40,7 +75,7 @@ let node: operationType = [%bs.raw
   },
   "operation": {
     "kind": "Operation",
-    "name": "Test2_Query",
+    "name": "TestMutationQuery",
     "argumentDefinitions": [],
     "selections": [
       {
@@ -69,14 +104,7 @@ let node: operationType = [%bs.raw
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "lastName",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "avatarUrl",
+            "name": "onlineStatus",
             "args": null,
             "storageKey": null
           }
@@ -86,9 +114,9 @@ let node: operationType = [%bs.raw
   },
   "params": {
     "operationKind": "query",
-    "name": "Test2_Query",
+    "name": "TestMutationQuery",
     "id": null,
-    "text": "query Test2_Query {\n  loggedInUser {\n    ...Test2_User_user\n    id\n  }\n}\n\nfragment Test2_User_user on User {\n  id\n  firstName\n  lastName\n  avatarUrl\n}\n",
+    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n",
     "metadata": {}
   }
 } |}

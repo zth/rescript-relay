@@ -21,8 +21,10 @@ type User implements Node {
   lastName: String!
   avatarUrl: String
   isOnline: Boolean
+  onlineStatus: OnlineStatus
   nicknames: [String!]!
   friendsConnection(
+    statuses: [OnlineStatus!]
     after: String
     first: Int
     before: String
@@ -30,13 +32,39 @@ type User implements Node {
   ): UserConnection!
 }
 
+type Group implements Node {
+  id: ID!
+  name: String!
+  avatarUrl: String
+  adminsConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): UserConnection!
+}
+
+union Member = User | Group
+
 type UserConnection {
+  totalCount: Int!
   pageInfo: PageInfo!
   edges: [UserEdge]
 }
 
 type UserEdge {
   node: User
+  cursor: String!
+}
+
+type MemberConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [MemberEdge]
+}
+
+type MemberEdge {
+  node: Member
   cursor: String!
 }
 
@@ -56,9 +84,21 @@ type UserUpdatedPayload {
   user: User
 }
 
+type SetOnlineStatusPayload {
+  user: User
+}
+
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
+  members(
+    groupId: ID!
+    onlineStatuses: [OnlineStatus]
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): MemberConnection
   users(
     status: OnlineStatus
     after: String
@@ -72,6 +112,7 @@ type Mutation {
   updateUserAvatar(avatarUrl: String): UpdateUserAvatarPayload
   addFriend(friendId: ID!): AddFriendPayload
   removeFriend(friendId: ID!): RemoveFriendPayload
+  setOnlineStatus(onlineStatus: OnlineStatus!): SetOnlineStatusPayload
 }
 
 type Subscription {

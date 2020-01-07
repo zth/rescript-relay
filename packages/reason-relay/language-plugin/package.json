@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@gabnor/bs-flow-parser": "0.91.0-1",
-    "bs-platform": "^7.0.1",
+    "bs-platform": "^7.0.2-dev.1",
     "graphql": "14.5.0",
     "reason": "^3.3.4",
     "tablecloth-bucklescript": "^0.0.6",

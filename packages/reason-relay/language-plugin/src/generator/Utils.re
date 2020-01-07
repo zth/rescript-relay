@@ -1,3 +1,5 @@
+open Types;
+
 let makeAddToStr = (container, newStr) => container := container^ ++ newStr;
 let makeAddToList = (container, newMember) =>
   container := [newMember, ...container^];
@@ -16,3 +18,149 @@ let maskDots = str =>
 [@gentype]
 let unmaskDots = str =>
   Tablecloth.String.(str |> split(~on="__oo__") |> join(~sep="."));
+
+let makeObjName = (next, current) => current ++ "_" ++ next;
+
+exception Unique_name_creation_failed(int);
+
+/**
+ * This tries to find the simplest unique name given a list of existing names
+ * and a path. It's used to create the names of the records produced by the type
+ * generator, since they need to be unique (but still make sense to the developer
+ * as you occasionally may need to reference them).
+ */
+let findAppropriateObjName =
+    (~usedRecordNames: list(string), ~path: list(string), ~prefix) => {
+  let getName = n =>
+    switch (prefix) {
+    | Some(prefix) => prefix ++ "_" ++ n
+    | None => n
+    };
+
+  let isUnique = name => !List.exists(n => n == name, usedRecordNames);
+
+  switch (path) {
+  | [] => raise(Unique_name_creation_failed(1))
+  | [name, ..._] when isUnique(getName(name)) => getName(name)
+  | [initialName, ...rest] =>
+    let currentName = ref(initialName);
+    let uniqueName = ref(None);
+
+    rest
+    |> List.iter(name => {
+         switch (uniqueName^) {
+         | Some(_) => ()
+         | None =>
+           currentName := makeObjName(currentName^, name);
+
+           if (isUnique(currentName^ |> getName)) {
+             uniqueName := Some(currentName^ |> getName);
+           };
+         }
+       });
+
+    switch (uniqueName^) {
+    | Some(name) => name
+    | None => raise(Unique_name_creation_failed(3))
+    };
+  };
+};
+
+[@gentype]
+let findObjName = (~usedRecordNames: array(string), ~path: array(string)) =>
+  findAppropriateObjName(
+    ~usedRecordNames=Tablecloth.Array.toList(usedRecordNames),
+    ~path=Tablecloth.Array.toList(path),
+  );
+
+/**
+ * This extracts information about a connection by parsing our internal (weird)
+ * format for transporting information through the generated Flow types... Yes
+ * it's weird...
+ */
+[@gentype]
+let extractConnectionInfo = (str): option(Types.connectionInfo) =>
+  Tablecloth.(
+    switch (
+      str |> String.startsWith(~prefix=Constants.connectionIndicatorKey)
+    ) {
+    | false => None
+    | true =>
+      let config =
+        str
+        |> String.dropLeft(
+             ~count=String.length(Constants.connectionIndicatorKey),
+           )
+        |> String.split(~on="$$$")
+        |> List.filterMap(~f=s =>
+             switch (s |> String.split(~on="__$$__")) {
+             | [key, value] => Some((key, value))
+             | _ => None
+             }
+           )
+        |> Js.Dict.fromList;
+
+      switch (config->Js.Dict.get("name"), config->Js.Dict.get("key")) {
+      | (Some(name), Some(key)) => Some({name, key})
+      | _ => None
+      };
+    }
+  );
+
+let extractNestedObjects = (obj: object_): list(object_) => {
+  let objects = ref([]);
+  let addObject = o => objects := [o, ...objects^];
+
+  let rec traverseProp = prop =>
+    switch (prop) {
+    | Array({propType: Object(obj)})
+    | Object(obj) =>
+      addObject(obj);
+      findObj(obj);
+    | _ => ()
+    }
+  and findObj = (o: Types.object_) => {
+    o.values
+    |> Tablecloth.Array.forEach(~f=v =>
+         switch (v) {
+         | FragmentRef(_) => ()
+         | Prop(_, {propType}) => propType |> traverseProp
+         }
+       );
+  };
+
+  findObj(obj);
+  objects^;
+};
+
+let rec mapPropType = (~path, propType) =>
+  switch (propType) {
+  | Object(obj) =>
+    let newObj = {...obj, atPath: path} |> adjustObjectPath(~path);
+    Object(newObj);
+  | Array({propType: Object(obj)} as pv) =>
+    let newObj = {...obj, atPath: path} |> adjustObjectPath(~path);
+    Array({...pv, propType: Object(newObj)});
+  | v => v
+  }
+and adjustObjectPath = (~path: list(string), obj: object_): object_ => {
+  {
+    ...obj,
+    atPath: path,
+    values:
+      obj.values
+      ->Belt.Array.map(v =>
+          switch (v) {
+          | Prop(name, {propType} as pv) =>
+            Prop(
+              name,
+              {
+                ...pv,
+                propType: mapPropType(~path=[name, ...path], propType),
+              },
+            )
+          | v => v
+          }
+        ),
+  };
+};

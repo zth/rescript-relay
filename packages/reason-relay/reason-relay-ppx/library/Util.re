@@ -229,15 +229,19 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         %stri
         ()
       },
-      [%stri include Operation.Unions],
+      [%stri include Operation.FragmentConverters],
+      [%stri module Types = Operation.Types],
       switch (refetchableQueryName) {
       | Some(queryName) => [%stri
           module UseRefetchableFragment =
             ReasonRelay.MakeUseRefetchableFragment({
+              type fragmentRaw = Operation.Internal.fragmentRaw;
               type fragment = Operation.fragment;
               type fragmentRef = Operation.fragmentRef;
               type variables = RefetchableOperation.refetchVariables;
               let fragmentSpec = Operation.node;
+              let convertFragment = Operation.Internal.convertFragment;
+              let convertVariables = RefetchableOperation.Internal.convertVariables;
             })
         ]
       | None =>
@@ -248,19 +252,24 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         ? [%stri
           module UsePaginationFragment =
             ReasonRelay.MakeUsePaginationFragment({
+              type fragmentRaw = Operation.Internal.fragmentRaw;
               type fragment = Operation.fragment;
               type fragmentRef = Operation.fragmentRef;
               type variables = RefetchableOperation.refetchVariables;
               let fragmentSpec = Operation.node;
+              let convertFragment = Operation.Internal.convertFragment;
+              let convertVariables = RefetchableOperation.Internal.convertVariables;
             })
         ]
         : [%stri ()],
       [%stri
         module UseFragment =
           ReasonRelay.MakeUseFragment({
+            type fragmentRaw = Operation.Internal.fragmentRaw;
             type fragment = Operation.fragment;
             type fragmentRef = Operation.fragmentRef;
             let fragmentSpec = Operation.node;
+            let convertFragment = Operation.Internal.convertFragment;
           })
       ],
       [%stri
@@ -312,13 +321,17 @@ let makeQuery = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
+      [%stri include Operation.FragmentConverters],
+      [%stri module Types = Operation.Types],
       [%stri
         module UseQuery =
           ReasonRelay.MakeUseQuery({
+            type responseRaw = Operation.Internal.responseRaw;
             type response = Operation.response;
             type variables = Operation.variables;
             let query = Operation.node;
+            let convertResponse = Operation.Internal.convertResponse;
+            let convertVariables = Operation.Internal.convertVariables;
           })
       ],
       [%stri let use = UseQuery.use],
@@ -335,24 +348,32 @@ let makeMutation = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
+      [%stri include Operation.FragmentConverters],
+      [%stri module Types = Operation.Types],
       [%stri
         module Mutation =
           ReasonRelay.MakeCommitMutation({
             type variables = Operation.variables;
+            type responseRaw = Operation.Internal.responseRaw;
             type response = Operation.response;
             let node = Operation.node;
+            let convertResponse = Operation.Internal.convertResponse;
+            let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertVariables = Operation.Internal.convertVariables;
           })
       ],
       [%stri
         module UseMutation =
           ReasonRelay.MakeUseMutation({
             type variables = Operation.variables;
+            type responseRaw = Operation.Internal.responseRaw;
             type response = Operation.response;
             let node = Operation.node;
+            let convertResponse = Operation.Internal.convertResponse;
+            let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertVariables = Operation.Internal.convertVariables;
           })
       ],
-      [%stri let use = UseMutation.use],
       [%stri let commitMutation = Mutation.commitMutation],
     ]),
   );
@@ -364,13 +385,17 @@ let makeSubscription = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
+      [%stri include Operation.FragmentConverters],
+      [%stri module Types = Operation.Types],
       [%stri
         module Subscription =
           ReasonRelay.MakeUseSubscription({
             type variables = Operation.variables;
+            type responseRaw = Operation.Internal.responseRaw;
             type response = Operation.response;
             let node = Operation.node;
+            let convertResponse = Operation.Internal.convertResponse;
+            let convertVariables = Operation.Internal.convertResponse;
           })
       ],
       [%stri let subscribe = Subscription.subscribe],

@@ -8,6 +8,7 @@
 - _BREAKING CHANGE_ Replace module `SuspenseConfig` with simple record `suspenseConfig`.
 - _BREAKING CHANGE_ Bump Relay versions to `8.0.0` and `react-relay` to `0.0.0-experimental-5f1cb628`.
 - Fix bug with unused generated files not being deleted by the Relay compiler.
+- Bind `generateClientID`, `generateUniqueClientID` and `isClientID` helpers.
 
 # 0.4.4
 

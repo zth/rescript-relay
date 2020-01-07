@@ -1,3 +1,7 @@
+interface Node {
+  id: ID!
+}
+
 schema {
   query: Query
   mutation: Mutation
@@ -18,6 +22,7 @@ type Query {
   participantById(id: ID!): Participant
   users: [User!]!
   Observer(id: ID!): Observer
+  node(id: ID!): Node
 }
 
 type Mutation {
@@ -48,7 +53,7 @@ type SetUserLocationPayload {
   changedUser: User
 }
 
-type User {
+type User implements Node {
   id: ID!
   firstName: String!
   lastName: String!
@@ -56,11 +61,23 @@ type User {
   role: UserRole!
   favoriteColor: Color!
   new: Boolean!
+  friendsConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): UserConnection
 }
 
-type Observer {
+type Observer implements Node {
   id: ID!
   name: String!
+  observingUsersConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): UserConnection
 }
 
 union Participant = User | Observer
@@ -74,4 +91,21 @@ type Location {
 input LocationBounds {
   lat: Float!
   lng: Float!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge]
+}
+
+type UserEdge {
+  node: User
+  cursor: String!
 }

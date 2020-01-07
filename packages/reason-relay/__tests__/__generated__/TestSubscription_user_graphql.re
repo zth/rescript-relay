@@ -1,24 +1,45 @@
+/* @generated */
+
+module Types = {};
+
+type fragment = {
+  id: string,
+  firstName: string,
+  avatarUrl: option(string),
+  onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"avatarUrl":[[0,""]],"onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  ];
+  let fragmentConverterMap = {
+    "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
+  };
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__Test2_User_user": t} as 'a;
+  {.. "__$fragment_ref__TestSubscription_user": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-type fragment = {
-  .
-  "avatarUrl": Js.Nullable.t(string),
-  "lastName": string,
-  "firstName": string,
-  "id": string,
-};
 type operationType = ReasonRelay.fragmentNode;
-
-module Unions = {};
 
 let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
-  "name": "Test2_User_user",
+  "name": "TestSubscription_user",
   "type": "User",
   "metadata": null,
   "argumentDefinitions": [],
@@ -40,14 +61,14 @@ let node: operationType = [%bs.raw
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "lastName",
+      "name": "avatarUrl",
       "args": null,
       "storageKey": null
     },
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "avatarUrl",
+      "name": "onlineStatus",
       "args": null,
       "storageKey": null
     }

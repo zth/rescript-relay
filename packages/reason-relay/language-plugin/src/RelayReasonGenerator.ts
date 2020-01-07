@@ -9,6 +9,7 @@ import { ScalarTypeMapping } from "relay-compiler/lib/language/javascript/RelayF
 import { maskDots } from "./generator/Utils.gen";
 import * as DisallowReservedReasonWordsTransform from "./transforms/DisallowReservedReasonWordsTransform";
 import * as EnforceManualTypeNameSelectionOnUnions from "./transforms/EnforceManualTypeNameSelectionOnUnions";
+import * as ReasonRelayTransform from "./transforms/ReasonRelayTransform";
 
 function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
   const newCustomScalars: ScalarTypeMapping = {
@@ -42,5 +43,6 @@ export function generate(
 export const transforms = [
   EnforceManualTypeNameSelectionOnUnions.transform,
   DisallowReservedReasonWordsTransform.transform,
+  ReasonRelayTransform.transform,
   ...RelayFlowGenerator.transforms
 ];

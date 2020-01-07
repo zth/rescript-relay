@@ -1,22 +1,62 @@
-type response = {
-  .
-  "loggedInUser": {
-    .
-    "__$fragment_ref__Test1_User_userSimple": Test1_User_userSimple_graphql.t,
-    "__$fragment_ref__Test1_User_user": Test1_User_user_graphql.t,
-  },
-};
-type variables = unit;
-type operationType = ReasonRelay.queryNode;
+/* @generated */
 
-module Unions = {};
+module Types = {
+  type loggedInUser;
+};
+
+open Types;
+
+type response = {loggedInUser};
+type variables = unit;
+
+module FragmentConverters: {
+  let loggedInUser_getFragments:
+    loggedInUser =>
+    {
+      .
+      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+    };
+} = {
+  external loggedInUser_getFragments:
+    loggedInUser =>
+    {
+      .
+      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+    } =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
   {| {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "Test1_Query",
+    "name": "TestSubscriptionQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": [],
@@ -32,12 +72,7 @@ let node: operationType = [%bs.raw
         "selections": [
           {
             "kind": "FragmentSpread",
-            "name": "Test1_User_user",
-            "args": null
-          },
-          {
-            "kind": "FragmentSpread",
-            "name": "Test1_User_userSimple",
+            "name": "TestSubscription_user",
             "args": null
           }
         ]
@@ -46,7 +81,7 @@ let node: operationType = [%bs.raw
   },
   "operation": {
     "kind": "Operation",
-    "name": "Test1_Query",
+    "name": "TestSubscriptionQuery",
     "argumentDefinitions": [],
     "selections": [
       {
@@ -68,13 +103,6 @@ let node: operationType = [%bs.raw
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "avatarUrl",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
             "name": "firstName",
             "args": null,
             "storageKey": null
@@ -82,7 +110,14 @@ let node: operationType = [%bs.raw
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "lastName",
+            "name": "avatarUrl",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "onlineStatus",
             "args": null,
             "storageKey": null
           }
@@ -92,9 +127,9 @@ let node: operationType = [%bs.raw
   },
   "params": {
     "operationKind": "query",
-    "name": "Test1_Query",
+    "name": "TestSubscriptionQuery",
     "id": null,
-    "text": "query Test1_Query {\n  loggedInUser {\n    ...Test1_User_user\n    ...Test1_User_userSimple\n    id\n  }\n}\n\nfragment Test1_User_user on User {\n  id\n  avatarUrl\n}\n\nfragment Test1_User_userSimple on User {\n  id\n  firstName\n  lastName\n}\n",
+    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n",
     "metadata": {}
   }
 } |}

@@ -1,8 +1,3 @@
-type testReturn = {
-  render: unit => React.element,
-  environment: ReasonRelay.Environment.t,
-};
-
 module Wrapper = {
   [@react.component]
   let make = (~environment, ~children) =>

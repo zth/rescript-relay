@@ -8,3 +8,6 @@ export type operationType =
   | { tag: "Mutation"; value: string }
   | { tag: "Subscription"; value: string }
   | { tag: "Query"; value: string };
+
+// tslint:disable-next-line:interface-over-type-literal
+export type connectionInfo = { readonly name: string; readonly key: string };

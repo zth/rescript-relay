@@ -2,7 +2,14 @@ import { Source, parse } from "graphql";
 import * as fs from "fs";
 import * as path from "path";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
+const getLanguagePlugin = require("../index");
 import { printCode } from "../generator/Printer.gen";
+import { getDefinitionDecoder } from "../TestUtils.gen";
+// @ts-ignore
+import { traverser } from "../../../src/utils";
+
+// @ts-ignore
+import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/RelayFlowGenerator";
 
 const CompilerContext = require("relay-compiler/lib/core/CompilerContext");
 
@@ -55,6 +62,7 @@ function collapseString(str: string) {
 function generate(text: string, options?: any, extraDefs: string = "") {
   const relaySchema = testSchema.extend([
     ...RelayIRTransforms.schemaExtensions,
+    ...getLanguagePlugin().schemaExtensions,
     extraDefs
   ]);
   const { definitions, schema: extendedSchema } = parseGraphQLText(
@@ -75,6 +83,41 @@ function generate(text: string, options?: any, extraDefs: string = "") {
             existingFragmentNames: new Set([]),
             ...options
           })
+        )}`
+    )
+    .join("\n\n");
+}
+
+function generateFlowTypes(
+  text: string,
+  options?: any,
+  extraDefs: string = ""
+) {
+  const relaySchema = testSchema.extend([
+    ...RelayIRTransforms.schemaExtensions,
+    ...getLanguagePlugin().schemaExtensions,
+    extraDefs
+  ]);
+  const { definitions, schema: extendedSchema } = parseGraphQLText(
+    relaySchema,
+    text
+  );
+
+  return new CompilerContext(extendedSchema)
+    .addAll(definitions)
+    .applyTransforms(RelayReasonGenerator.transforms)
+    .documents()
+    .map(
+      (doc: any) =>
+        `// ${doc.name}.graphql\n${RelayFlowGenerator.generate(
+          extendedSchema,
+          doc,
+          {
+            customScalars: {},
+            optionalInputFields: [],
+            existingFragmentNames: new Set([]),
+            ...options
+          }
         )}`
     )
     .join("\n\n");
@@ -119,19 +162,6 @@ describe("Language plugin tests", () => {
       );
 
       expect(generated.includes("type variables = unit;")).toBe(true);
-    });
-
-    it("prints nested objects inlined in types", () => {
-      let generated = generate(
-        `query appQuery($location: LocationBounds!) {
-            userByLocation(location: $location) {
-              id
-              firstName
-            }
-          }`
-      );
-
-      expect(generated).toMatchSnapshot();
     });
 
     it("prints single fragment references", () => {
@@ -297,9 +327,8 @@ describe("Language plugin tests", () => {
     });
 
     it("prints the correct basic structure for subscriptions", () => {
-      expect(
-        generate(
-          `subscription SomeSubscription($input: UserChangedInput!) {
+      const generated = generate(
+        `subscription SomeSubscription($input: UserChangedInput!) {
             userChanged(input: $input) {
               user {
                 id
@@ -307,8 +336,9 @@ describe("Language plugin tests", () => {
               }
             }
           }`
-        )
-      ).toMatchSnapshot();
+      );
+
+      expect(generated).toMatchSnapshot();
     });
   });
 
@@ -334,7 +364,7 @@ describe("Language plugin tests", () => {
 
       expect(
         collapseString(generated).includes(
-          `type fragment = array({ . "firstName": string, "id": string, });`
+          `type fragment_t = { id: string, firstName: string,};type fragment = array(fragment_t);`
         )
       ).toBe(true);
     });
@@ -360,9 +390,9 @@ describe("Language plugin tests", () => {
           }`
       );
 
-      expect(
-        generated.includes(`"role": SchemaAssets.Enum_UserRole.wrapped`)
-      ).toBe(true);
+      expect(generated.includes(`role: SchemaAssets.Enum_UserRole.t`)).toBe(
+        true
+      );
     });
   });
 
@@ -376,7 +406,7 @@ describe("Language plugin tests", () => {
           }`
       );
 
-      expect(generated.includes(`"favoriteColor": ReasonRelay.any`)).toBe(true);
+      expect(generated.includes(`favoriteColor: ReasonRelay.any`)).toBe(true);
     });
 
     it("handles provided custom scalars", () => {
@@ -393,7 +423,7 @@ describe("Language plugin tests", () => {
         }
       );
 
-      expect(generated.includes(`"favoriteColor": Color.t`)).toBe(true);
+      expect(generated.includes(`favoriteColor: Color.t`)).toBe(true);
     });
   });
 
@@ -419,30 +449,6 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
-
-    it("generates opaque wrapped union types referenced by path in types", () => {
-      let generated = generate(
-        `query appQuery {
-            participantById(id: "123") {
-              __typename
-              ... on User {
-                id
-                firstName
-                lastName
-              }
-
-              ... on Observer {
-                id
-                name
-              }
-            }
-          }`
-      );
-
-      expect(
-        generated.includes("type union_response_participantById_wrapped;")
-      ).toBe(true);
-    });
   });
 
   describe("Misc", () => {
@@ -456,7 +462,11 @@ describe("Language plugin tests", () => {
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response = {. "users": array({. "firstName": string})};`
+        `type users = {firstName: string};`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response = {users: array(users)};`
       );
     });
   });

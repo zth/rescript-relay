@@ -9,6 +9,25 @@ type operationType =
   | Subscription(string)
   | Query(string);
 
+type objectMode =
+  | OnlyFragmentRefs
+  | Record
+  | JsT;
+
+type objectPrintMode =
+  | Full
+  | Signature;
+
+type objectOptionalType =
+  | JsNullable
+  | Option;
+
+[@gentype]
+type connectionInfo = {
+  name: string,
+  key: string,
+};
+
 type unionMember = {
   name: string,
   shape: object_,
@@ -32,7 +51,7 @@ and propType =
   | FragmentRefValue(string)
   | TypeReference(string)
   | ObjectReference(string)
-  | Union(string)
+  | Union(union)
 and propValue = {
   nullable: bool,
   propType,
@@ -40,16 +59,61 @@ and propValue = {
 and propValues =
   | FragmentRef(string)
   | Prop(string, propValue)
-and object_ = {values: array(propValues)}
+and object_ = {
+  values: array(propValues),
+  atPath: list(string),
+  mode: objectMode,
+  connection: option(connectionInfo),
+}
 and rootType =
   | Operation(object_)
   | Fragment(object_)
   | Variables(object_)
+  | ObjectTypeDeclaration({
+      definition: object_,
+      name: string,
+      atPath: list(string),
+      optType: objectOptionalType,
+    })
   | RefetchVariables(object_)
-  | InputObject(string, object_)
   | PluralFragment(object_);
 
 type fullEnum = {
   name: string,
   values: array(string),
+};
+
+type fragment = {
+  name: string,
+  plural: bool,
+  definition: object_,
+};
+
+type obj = {
+  name: option(string),
+  definition: object_,
+};
+
+type finalizedObj = {
+  name: option(string),
+  typeName: option(string),
+  atPath: list(string),
+  definition: object_,
+};
+
+type intermediateState = {
+  enums: list(string),
+  objects: list(obj),
+  variables: option(obj),
+  response: option(obj),
+  fragment: option(fragment),
+};
+
+type fullState = {
+  enums: list(string),
+  unions: list(union),
+  objects: list(finalizedObj),
+  variables: option(object_),
+  response: option(object_),
+  fragment: option(fragment),
 };

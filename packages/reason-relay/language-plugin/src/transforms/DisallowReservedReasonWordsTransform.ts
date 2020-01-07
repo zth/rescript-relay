@@ -82,6 +82,20 @@ let reservedKeywords = [
   "switch"
 ];
 
+let reservedKeywordsInReasonRelay = [
+  "fragment",
+  "t_fragment",
+  "subscription",
+  "mutation",
+  "response",
+  "variables",
+  "refetchVariables",
+  "t",
+  "fragmentRef",
+  "fragmentRefSelector",
+  "operationType"
+];
+
 function isDisallowedName(name: string): DisallowedResult {
   let firstChar = name[0];
 
@@ -96,6 +110,13 @@ function isDisallowedName(name: string): DisallowedResult {
     return {
       disallowed: true,
       message: `'${name}' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.`
+    };
+  }
+
+  if (reservedKeywordsInReasonRelay.includes(name)) {
+    return {
+      disallowed: true,
+      message: `'${name}' is a reserved keyword in ReasonRelay and therefore cannot be used as a field name. Please alias your field to something else.`
     };
   }
 

@@ -18,6 +18,18 @@ let dataIdToString = dataId => _dataIdToString(dataId);
 external _makeDataId: string => dataId = "%identity";
 let makeDataId = string => _makeDataId(string);
 
+[@bs.module "relay-runtime"]
+external _generateClientID: (dataId, string, option(int)) => dataId =
+  "generateClientID";
+
+let generateClientID = (~dataId, ~storageKey, ~index=?, ()) =>
+  _generateClientID(dataId, storageKey, index);
+
+[@bs.module "relay-runtime"]
+external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
+
+[@bs.module "relay-runtime"]
+external isClientID: dataId => bool = "isClientID";
 /**
  * Various helpers.
  */
@@ -51,6 +63,10 @@ let _cleanVariables = [%bs.raw
   }
 |}
 ];
+
+[@bs.module "./utils"]
+external _convertObj: ('a, Js.Dict.t(array((int, string))), 'b, 'c) => 'd =
+  "traverser";
 
 [@bs.module "relay-runtime"] external storeRootId: dataId = "ROOT_ID";
 [@bs.module "relay-runtime"] external storeRootType: string = "ROOT_TYPE";
@@ -435,6 +451,9 @@ module Context = {
   };
 };
 
+let useConvertedValue = (convert, v) =>
+  React.useMemo1(() => convert(v), [|v|]);
+
 exception EnvironmentNotFoundInContext;
 
 let useEnvironmentFromContext = () => {
@@ -486,29 +505,27 @@ external _usePreloadedQuery: (queryNode, 'token) => 'queryResponse =
   "usePreloadedQuery";
 
 module type MakeUseQueryConfig = {
+  type responseRaw;
   type response;
   type variables;
   let query: queryNode;
+  let convertResponse: responseRaw => response;
+  let convertVariables: variables => variables;
 };
 
 module MakeUseQuery = (C: MakeUseQueryConfig) => {
-  type response = C.response;
-  type variables = C.variables;
   type preloadToken;
 
-  let use:
-    (
-      ~variables: variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~fetchKey: string=?,
-      ~networkCacheConfig: cacheConfig=?,
-      unit
-    ) =>
-    response =
-    (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) =>
+  let use =
+      (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ())
+      : C.response => {
+    let data =
       _useQuery(
         C.query,
-        variables |> _cleanVariables,
+        variables
+        |> _cleanVariables
+        |> C.convertVariables
+        |> _cleanObjectFromUndefined,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -516,10 +533,13 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         },
       );
 
+    useConvertedValue(C.convertResponse, data);
+  };
+
   let preload:
     (
       ~environment: Environment.t,
-      ~variables: variables,
+      ~variables: C.variables,
       ~fetchPolicy: fetchPolicy=?,
       ~fetchKey: string=?,
       ~networkCacheConfig: cacheConfig=?,
@@ -537,7 +557,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       _preloadQuery(
         environment,
         C.query,
-        variables |> _cleanVariables,
+        variables |> C.convertVariables |> _cleanVariables,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -545,13 +565,16 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         },
       );
 
-  let usePreloaded = (token: preloadToken) =>
-    _usePreloadedQuery(C.query, token);
+  let usePreloaded = (token: preloadToken) => {
+    let data = _usePreloadedQuery(C.query, token);
+    data |> useConvertedValue(C.convertResponse);
+  };
 
   let fetch =
       (~environment: Environment.t, ~variables: C.variables)
       : Js.Promise.t(C.response) =>
-    fetchQuery(environment, C.query, variables);
+    fetchQuery(environment, C.query, variables |> C.convertVariables)
+    |> Js.Promise.then_(res => res |> C.convertResponse |> Js.Promise.resolve);
 };
 
 /**
@@ -562,14 +585,18 @@ external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
 module type MakeUseFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type fragmentRef;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
 };
 
 module MakeUseFragment = (C: MakeUseFragmentConfig) => {
-  let use = (fr: C.fragmentRef): C.fragment =>
-    _useFragment(C.fragmentSpec, fr);
+  let use = (fr: C.fragmentRef): C.fragment => {
+    let data = _useFragment(C.fragmentSpec, fr);
+    useConvertedValue(C.convertFragment, data);
+  };
 };
 
 /** Refetchable */
@@ -611,21 +638,29 @@ external _useRefetchableFragment:
   "useRefetchableFragment";
 
 module type MakeUseRefetchableFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type fragmentRef;
   type variables;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
+  let convertVariables: variables => variables;
 };
 
 module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
   let useRefetchable = (fr: C.fragmentRef) => {
     let (fragmentData, refetchFn) =
       _useRefetchableFragment(C.fragmentSpec, fr);
+
+    let data = useConvertedValue(C.convertFragment, fragmentData);
     (
-      fragmentData,
+      data,
       (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         refetchFn(
-          variables |> _cleanVariables |> _cleanObjectFromUndefined,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
         ),
     );
@@ -634,15 +669,21 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
 
 /** Pagination */
 module type MakeUsePaginationFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type variables;
   type fragmentRef;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
+  let convertVariables: variables => variables;
+};
+
+type paginationLoadMoreOptions = {
+  onComplete: option(option(Js.Exn.t) => unit),
 };
 
 type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>
-  Disposable.t;
+  (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;
 
 type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   data: 'fragmentData,
@@ -670,8 +711,10 @@ external _usePaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext": paginationLoadMoreFn,
-    "loadPrevious": paginationLoadMoreFn,
+    "loadNext":
+      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadPrevious":
+      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -697,8 +740,10 @@ external _useBlockingPaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext": paginationLoadMoreFn,
-    "loadPrevious": paginationLoadMoreFn,
+    "loadNext":
+      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadPrevious":
+      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -723,15 +768,19 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       (fr: C.fragmentRef)
       : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
     let p = _useBlockingPaginationFragment(C.fragmentSpec, fr);
+    let data = useConvertedValue(C.convertFragment, p##data);
+
     {
-      data: p##data,
-      loadNext: p##loadNext,
-      loadPrevious: p##loadPrevious,
+      data,
+      loadNext: (~count, ~onComplete=?, ()) =>
+        p##loadNext(count, Some({onComplete: onComplete})),
+      loadPrevious: (~count, ~onComplete=?, ()) =>
+        p##loadPrevious(count, Some({onComplete: onComplete})),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         p##refetch(
-          variables,
+          variables |> C.convertVariables,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
         ),
     };
@@ -740,17 +789,21 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
   let usePagination =
       (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
     let p = _usePaginationFragment(C.fragmentSpec, fr);
+    let data = useConvertedValue(C.convertFragment, p##data);
+
     {
-      data: p##data,
-      loadNext: p##loadNext,
-      loadPrevious: p##loadPrevious,
+      data,
+      loadNext: (~count, ~onComplete=?, ()) =>
+        p##loadNext(count, Some({onComplete: onComplete})),
+      loadPrevious: (~count, ~onComplete=?, ()) =>
+        p##loadPrevious(count, Some({onComplete: onComplete})),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
       isLoadingPrevious: p##isLoadingPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         p##refetch(
-          variables,
+          variables |> C.convertVariables,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
         ),
     };
@@ -762,42 +815,18 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
  */
 module type MutationConfig = {
   type variables;
+  type responseRaw;
   type response;
   let node: mutationNode;
+  let convertResponse: responseRaw => response;
+  let wrapResponse: response => responseRaw;
+  let convertVariables: variables => variables;
 };
 
 type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
 type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
-type mutationConfig('variables, 'response) = {
-  variables: 'variables,
-  optimisticResponse: option('response),
-  updater: option(updaterFn('response)),
-  optimisticUpdater: option(optimisticUpdaterFn),
-};
-
 type mutationError = {message: string};
-
-type mutationStateRaw('response) = {
-  loading: bool,
-  data: Js.Nullable.t('response),
-  error: Js.Nullable.t(mutationError),
-};
-
-type mutateFn('variables, 'response) =
-  mutationConfig('variables, 'response) => Js.Promise.t('response);
-
-[@bs.module "relay-hooks"]
-external _useMutation:
-  mutationNode =>
-  (mutateFn('variables, 'response), mutationStateRaw('response)) =
-  "useMutation";
-
-type mutationState('response) =
-  | Idle
-  | Loading
-  | Error(array(mutationError))
-  | Success(option('response));
 
 type mutationResult('response) =
   | Success('response)
@@ -810,7 +839,7 @@ type _commitMutationConfig('variables, 'response) = {
   variables: 'variables,
   onCompleted:
     option(
-      (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
+      (Js.Nullable.t(Js.Json.t), Js.Nullable.t(array(mutationError))) =>
       unit,
     ),
   onError: option(Js.Nullable.t(mutationError) => unit),
@@ -826,67 +855,7 @@ external _commitMutation:
   (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
   "commitMutation";
 
-module MakeUseMutation = (C: MutationConfig) => {
-  let use = () => {
-    let environment = useEnvironmentFromContext();
-    let (mutationState: mutationState(C.response), setMutationState) =
-      React.useState(() => Idle);
-
-    let resetMutationState = () => setMutationState(_ => Idle);
-
-    let makeMutation =
-        (
-          ~variables: C.variables,
-          ~optimisticResponse=?,
-          ~optimisticUpdater=?,
-          ~updater=?,
-          (),
-        )
-        : Js.Promise.t(mutationResult(C.response)) =>
-      Js.Promise.make((~resolve, ~reject) => {
-        setMutationState(_ => Loading);
-
-        _commitMutation(
-          environment,
-          {
-            variables: variables |> _cleanVariables,
-            mutation: C.node,
-            onCompleted:
-              Some(
-                (res, errors) =>
-                  switch (res |> toOpt, errors |> toOpt) {
-                  | (_, Some(errors)) =>
-                    setMutationState(_ => Error(errors));
-                    reject(. Mutation_failed(errors));
-                  | (Some(res), None) =>
-                    setMutationState(_ => Success(Some(res)));
-                    resolve(. Success(res));
-                  | (None, None) =>
-                    setMutationState(_ => Error([||]));
-                    reject(. Mutation_failed([||]));
-                  },
-              ),
-            onError:
-              Some(
-                error =>
-                  switch (error |> toOpt) {
-                  | Some(error) =>
-                    setMutationState(_ => Error([|error|]));
-                    reject(. Mutation_failed([|error|]));
-                  | None =>
-                    setMutationState(_ => Error([||]));
-                    reject(. Mutation_failed([||]));
-                  },
-              ),
-            optimisticResponse,
-            optimisticUpdater,
-            updater,
-          },
-        );
-      });
-    (makeMutation, mutationState, resetMutationState);
-  };
-};
+module MakeUseMutation = (C: MutationConfig) => {};
 
 module MakeCommitMutation = (C: MutationConfig) => {
   let commitMutation =
@@ -898,12 +867,12 @@ module MakeCommitMutation = (C: MutationConfig) => {
         ~updater=?,
         (),
       )
-      : Js.Promise.t(C.response) =>
+      : Js.Promise.t(Js.Json.t) =>
     Js.Promise.make((~resolve, ~reject) =>
       _commitMutation(
         environment,
         {
-          variables: variables |> _cleanVariables,
+          variables: variables |> C.convertVariables |> _cleanVariables,
           mutation: C.node,
           onCompleted:
             Some(
@@ -922,9 +891,18 @@ module MakeCommitMutation = (C: MutationConfig) => {
                 | None => reject(. Mutation_failed([||]))
                 },
             ),
-          optimisticResponse,
+          optimisticResponse:
+            switch (optimisticResponse) {
+            | None => None
+            | Some(r) => Some(r |> C.wrapResponse)
+            },
           optimisticUpdater,
-          updater,
+          updater:
+            switch (updater) {
+            | None => None
+            | Some(updater) =>
+              Some((store, r) => updater(store, r |> C.convertResponse))
+            },
         },
       )
     );
@@ -940,8 +918,11 @@ let commitLocalUpdate = (~environment, ~updater) =>
 
 module type SubscriptionConfig = {
   type variables;
+  type responseRaw;
   type response;
   let node: subscriptionNode;
+  let convertResponse: responseRaw => response;
+  let convertVariables: variables => variables;
 };
 
 type _subscriptionConfig('response, 'variables) = {
@@ -974,11 +955,20 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       environment,
       {
         "subscription": C.node,
-        "variables": variables |> _cleanVariables,
+        "variables": variables |> C.convertVariables |> _cleanVariables,
         "onCompleted": onCompleted,
         "onError": onError,
-        "onNext": onNext,
-        "updater": updater,
+        "onNext":
+          switch (onNext) {
+          | None => None
+          | Some(onNext) => Some(r => onNext(r |> C.convertResponse))
+          },
+        "updater":
+          switch (updater) {
+          | None => None
+          | Some(updater) =>
+            Some((store, r) => updater(store, C.convertResponse(r)))
+          },
       },
     );
 };

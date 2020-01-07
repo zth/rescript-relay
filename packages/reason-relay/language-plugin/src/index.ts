@@ -2,6 +2,8 @@ const RelayReasonGenerator = require("./RelayReasonGenerator");
 
 const formatGeneratedModule = require("./formatGeneratedModule");
 
+import * as ReasonRelayTransform from "./transforms/ReasonRelayTransform";
+
 const { find } = require("./FindGraphQLTags");
 const path = require("path");
 const fs = require("fs");
@@ -26,6 +28,7 @@ function getFileFilter(baseDir: string) {
 module.exports = () => ({
   inputExtensions: ["re"],
   outputExtension: "re",
+  schemaExtensions: [ReasonRelayTransform.SCHEMA_EXTENSION],
   typeGenerator: RelayReasonGenerator,
   formatModule: formatGeneratedModule,
   findGraphQLTags: find,

@@ -21,11 +21,17 @@ type subscriptionNode;
 type dataId;
 
 /**
- * Converting back and forth between dataId's and strings (they are actually string).
- * We're hiding the string behind the abstract dataId type.
+ * Helpers and types for various IDs.
  */
 let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
+
+let generateClientID:
+  (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId;
+
+let generateUniqueClientID: unit => dataId;
+
+let isClientID: dataId => bool;
 
 /**
  * An abstract type representing all records in the store serialized to JSON in a way
@@ -48,6 +54,7 @@ let storeRootType: string;
 
 let _cleanObjectFromUndefined: jsObj('a) => jsObj('a);
 let _cleanVariables: 'a => 'a;
+let _convertObj: ('a, Js.Dict.t(array((int, string))), 'b, 'c) => 'd;
 
 /**
  * Read the following section on working with the Relay store:
@@ -345,7 +352,16 @@ module Environment: {
     (
       ~network: Network.t,
       ~store: Store.t,
-      ~getDataID: (~nodeObj: 'a, ~typeName: string) => string=?,
+      ~getDataID: (
+                    ~nodeObj: {
+                                ..
+                                "__typename": string,
+                                "id": string,
+                              } as 'a,
+                    ~typeName: string
+                  ) =>
+                  string
+                    =?,
       unit
     ) =>
     t;
@@ -377,27 +393,28 @@ type fetchPolicy =
  * You won't need to know about these.
  */
 module type MakeUseQueryConfig = {
+  type responseRaw;
   type response;
   type variables;
   let query: queryNode;
+  let convertResponse: responseRaw => response;
+  let convertVariables: variables => variables;
 };
 
 module MakeUseQuery:
   (C: MakeUseQueryConfig) =>
    {
-    type response = C.response;
-    type variables = C.variables;
     type preloadToken;
 
     let use:
       (
-        ~variables: variables,
+        ~variables: C.variables,
         ~fetchPolicy: fetchPolicy=?,
         ~fetchKey: string=?,
         ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
-      response;
+      C.response;
 
     let fetch:
       (~environment: Environment.t, ~variables: C.variables) =>
@@ -406,7 +423,7 @@ module MakeUseQuery:
     let preload:
       (
         ~environment: Environment.t,
-        ~variables: variables,
+        ~variables: C.variables,
         ~fetchPolicy: fetchPolicy=?,
         ~fetchKey: string=?,
         ~networkCacheConfig: cacheConfig=?,
@@ -422,9 +439,11 @@ module MakeUseQuery:
  */
 
 module type MakeUseFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type fragmentRef;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
 };
 
 module MakeUseFragment:
@@ -441,10 +460,13 @@ type refetchFn('variables) =
   unit;
 
 module type MakeUseRefetchableFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type variables;
   type fragmentRef;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
+  let convertVariables: variables => variables;
 };
 
 module MakeUseRefetchableFragment:
@@ -456,10 +478,13 @@ module MakeUseRefetchableFragment:
 
 /** Pagination */
 module type MakeUsePaginationFragmentConfig = {
+  type fragmentRaw;
   type fragment;
   type variables;
   type fragmentRef;
   let fragmentSpec: fragmentNode;
+  let convertFragment: fragmentRaw => fragment;
+  let convertVariables: variables => variables;
 };
 
 type paginationLoadMoreFn =
@@ -502,8 +527,12 @@ module MakeUsePaginationFragment:
 
 module type MutationConfig = {
   type variables;
+  type responseRaw;
   type response;
   let node: mutationNode;
+  let convertResponse: responseRaw => response;
+  let wrapResponse: response => responseRaw;
+  let convertVariables: variables => variables;
 };
 
 type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
@@ -511,36 +540,13 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type mutationState('response) =
-  | Idle
-  | Loading
-  | Error(array(mutationError))
-  | Success(option('response));
-
 type mutationResult('response) =
   | Success('response)
   | Error(Js.Promise.error);
 
 type useMutationConfigType('variables) = {variables: 'variables};
 
-module MakeUseMutation:
-  (C: MutationConfig) =>
-   {
-    let use:
-      unit =>
-      (
-        (
-          ~variables: C.variables,
-          ~optimisticResponse: C.response=?,
-          ~optimisticUpdater: optimisticUpdaterFn=?,
-          ~updater: updaterFn(C.response)=?,
-          unit
-        ) =>
-        Js.Promise.t(mutationResult(C.response)),
-        mutationState(C.response),
-        unit => unit,
-      );
-  };
+module MakeUseMutation: (C: MutationConfig) => {};
 
 /**
  * Context provider for the Relay environment.
@@ -591,10 +597,10 @@ module MakeCommitMutation:
         ~variables: C.variables,
         ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
-        ~updater: updaterFn(C.response)=?,
+        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
         unit
       ) =>
-      Js.Promise.t(C.response);
+      Js.Promise.t(Js.Json.t);
   };
 
 /**
@@ -618,8 +624,11 @@ let fetchQuery:
  */
 module type SubscriptionConfig = {
   type variables;
+  type responseRaw;
   type response;
   let node: subscriptionNode;
+  let convertResponse: responseRaw => response;
+  let convertVariables: variables => variables;
 };
 
 module MakeUseSubscription:

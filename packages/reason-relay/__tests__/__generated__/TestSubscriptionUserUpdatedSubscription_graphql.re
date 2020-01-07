@@ -1,20 +1,63 @@
-type response = {
-  .
-  "userUpdated":
-    Js.Nullable.t({
-      .
-      "user":
-        Js.Nullable.t({
-          .
-          "__$fragment_ref__Test2_User_user": Test2_User_user_graphql.t,
-          "id": string,
-        }),
-    }),
-};
-type variables = {. "userId": string};
-type operationType = ReasonRelay.subscriptionNode;
+/* @generated */
 
-module Unions = {};
+module Types = {
+  type user = {
+    id: string,
+    onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+  };
+  type userUpdated = {user: option(user)};
+};
+
+open Types;
+
+type response = {userUpdated: option(userUpdated)};
+type variables = {userId: string};
+
+module FragmentConverters: {
+  let user_getFragments:
+    user =>
+    {
+      .
+      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+    };
+} = {
+  external user_getFragments:
+    user =>
+    {
+      .
+      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+    } =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"userUpdated":[[0,""]],"userUpdated_user":[[0,""]],"userUpdated_user_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  ];
+  let responseConverterMap = {
+    "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
+  };
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.subscriptionNode;
 
 let node: operationType = [%bs.raw
   {| (function(){
@@ -39,12 +82,19 @@ v2 = {
   "name": "id",
   "args": null,
   "storageKey": null
+},
+v3 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "onlineStatus",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "Test2_UserUpdatedSubscription",
+    "name": "TestSubscriptionUserUpdatedSubscription",
     "type": "Subscription",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
@@ -68,9 +118,10 @@ return {
             "plural": false,
             "selections": [
               (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "kind": "FragmentSpread",
-                "name": "Test2_User_user",
+                "name": "TestSubscription_user",
                 "args": null
               }
             ]
@@ -81,7 +132,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "Test2_UserUpdatedSubscription",
+    "name": "TestSubscriptionUserUpdatedSubscription",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
@@ -103,17 +154,11 @@ return {
             "plural": false,
             "selections": [
               (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "kind": "ScalarField",
                 "alias": null,
                 "name": "firstName",
-                "args": null,
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "lastName",
                 "args": null,
                 "storageKey": null
               },
@@ -132,9 +177,9 @@ return {
   },
   "params": {
     "operationKind": "subscription",
-    "name": "Test2_UserUpdatedSubscription",
+    "name": "TestSubscriptionUserUpdatedSubscription",
     "id": null,
-    "text": "subscription Test2_UserUpdatedSubscription(\n  $userId: ID!\n) {\n  userUpdated(id: $userId) {\n    user {\n      id\n      ...Test2_User_user\n    }\n  }\n}\n\nfragment Test2_User_user on User {\n  id\n  firstName\n  lastName\n  avatarUrl\n}\n",
+    "text": "subscription TestSubscriptionUserUpdatedSubscription(\n  $userId: ID!\n) {\n  userUpdated(id: $userId) {\n    user {\n      id\n      onlineStatus\n      ...TestSubscription_user\n    }\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n",
     "metadata": {}
   }
 };
