@@ -1,19 +1,61 @@
-type response = {
-  .
-  "deleteTodoItem":
-    Js.Nullable.t({. "deletedTodoItemId": Js.Nullable.t(string)}),
-};
-type variables = {
-  .
-  "input": {
-    .
-    "clientMutationId": option(string),
-    "id": string,
-  },
-};
-type operationType = ReasonRelay.mutationNode;
+/* @generated */
 
 module Unions = {};
+
+module Types = {
+  type deleteTodoItem = {deletedTodoItemId: option(string)};
+  type deleteTodoItemInput = {
+    id: string,
+    clientMutationId: option(string),
+  };
+};
+
+open Types;
+
+type response = {deleteTodoItem: option(deleteTodoItem)};
+type variables = {input: deleteTodoItemInput};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"deleteTodoItem":[[0,""]],"deleteTodoItem_deletedTodoItemId":[[0,""]]} |}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"deleteTodoItem":[[0,""]],"deleteTodoItem_deletedTodoItemId":[[0,""]]} |}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.mutationNode;
 
 let node: operationType = [%bs.raw
   {| (function(){

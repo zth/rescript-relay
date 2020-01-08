@@ -1,24 +1,60 @@
-type response = {
-  .
-  "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-};
-type refetchVariables = {
-  .
-  "after": option(string),
-  "first": option(int),
-};
-let makeRefetchVariables = (~after=?, ~first=?, ()): refetchVariables => {
-  "after": after,
-  "first": first,
-};
-type variables = {
-  .
-  "after": string,
-  "first": int,
-};
-type operationType = ReasonRelay.queryNode;
+/* @generated */
 
 module Unions = {};
+
+module Types = {};
+
+type response = {
+  __wrappedFragment__RecentTickets_query: ReasonRelay.wrappedFragmentRef,
+};
+type refetchVariables = {
+  first: option(int),
+  after: option(string),
+};
+let makeRefetchVariables = (~first=?, ~after=?, ()): refetchVariables => {
+  first,
+  after,
+};
+type variables = {
+  first: int,
+  after: string,
+};
+
+module FragmentConverters: {
+  let unwrapFragment_response:
+    response =>
+    {. "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t};
+} = {
+  external unwrapFragment_response:
+    response =>
+    {. "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t} =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
   {| (function(){
@@ -217,6 +253,18 @@ return {
                 "kind": "ScalarField",
                 "alias": null,
                 "name": "cursor",
+                "args": null,
+                "storageKey": null
+              }
+            ]
+          },
+          {
+            "kind": "ClientExtension",
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "__$generated__connection__key__$$__RecentTickets_ticketsConnection$$$name__$$__ticketsConnection",
                 "args": null,
                 "storageKey": null
               }

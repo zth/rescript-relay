@@ -1,18 +1,37 @@
+/* @generated */
+
+module Unions = {};
+
+module Types = {};
+
+type fragment = {
+  weeklySales: float,
+  weeklyOrders: int,
+  currentVisitorsOnline: int,
+};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TopCardsDisplayer_siteStatistics": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-type fragment = {
-  .
-  "currentVisitorsOnline": int,
-  "weeklyOrders": int,
-  "weeklySales": float,
-};
 type operationType = ReasonRelay.fragmentNode;
-
-module Unions = {};
 
 let node: operationType = [%bs.raw
   {| {

@@ -38,7 +38,7 @@ let make = (~checked, ~todoItem as todoItemRef) => {
 
   <li
     className={
-      switch (todoItem##completed |> Js.Nullable.toOption) {
+      switch (todoItem.completed) {
       | Some(true) => "completed"
       | Some(false)
       | None => ""
@@ -52,41 +52,34 @@ let make = (~checked, ~todoItem as todoItemRef) => {
           checked
           onChange={_ => {
             let completed =
-              !
-                Belt.Option.getWithDefault(
-                  todoItem##completed |> Js.Nullable.toOption,
-                  false,
-                );
+              !Belt.Option.getWithDefault(todoItem.completed, false);
             UpdateMutation.commitMutation(
               ~environment=RelayEnv.environment,
               ~variables={
-                "input": {
-                  "clientMutationId": None,
-                  "id": todoItem##id,
-                  "completed": completed,
-                  "text": todoItem##text,
+                input: {
+                  clientMutationId: None,
+                  id: todoItem.id,
+                  completed,
+                  text: todoItem.text,
                 },
               },
               ~optimisticResponse={
-                "updateTodoItem":
+                updateTodoItem:
                   Some({
-                    "updatedTodoItem":
+                    updatedTodoItem:
                       Some({
-                        "id": todoItem##id,
-                        "completed":
-                          Some(completed) |> Js.Nullable.fromOption,
-                        "text": todoItem##text,
-                      })
-                      |> Js.Nullable.fromOption,
-                  })
-                  |> Js.Nullable.fromOption,
+                        id: todoItem.id,
+                        completed: Some(completed),
+                        text: todoItem.text,
+                      }),
+                  }),
               },
               (),
             )
             |> ignore;
           }}
         />
-        {React.string(todoItem##text)}
+        {React.string(todoItem.text)}
       </label>
     </div>
     <i
@@ -94,16 +87,16 @@ let make = (~checked, ~todoItem as todoItemRef) => {
         DeleteMutation.commitMutation(
           ~environment=RelayEnv.environment,
           ~variables={
-            "input": {
-              "clientMutationId": None,
-              "id": todoItem##id,
+            input: {
+              clientMutationId: None,
+              id: todoItem.id,
             },
           },
           ~updater=
-            store =>
+            (store, _response) =>
               switch (
                 store->ReasonRelay.RecordSourceSelectorProxy.get(
-                  ~dataId=todoItem##id->ReasonRelay.makeDataId,
+                  ~dataId=todoItem.id->ReasonRelay.makeDataId,
                 )
               ) {
               | Some(node) =>

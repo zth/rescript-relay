@@ -50,10 +50,18 @@ let make = () => {
   <div className="main-panel">
     <div className="content-wrapper">
       <Header />
-      <TopCardsDisplayer siteStatistics=query##siteStatistics /> // Note that we pass siteStatistics here, since that's where the fragment was spread
+      <TopCardsDisplayer
+        siteStatistics={
+          query.siteStatistics->Query.unwrapFragment_siteStatistics
+        }
+      />
       <div className="row">
-        <div className="col-8 grid-margin"> <RecentTickets query /> </div> // Fragment was spread on the query obj, that's why we pass that
-        <div className="col-4 grid-margin"> <TodoList query /> </div>
+        <div className="col-8 grid-margin">
+          <RecentTickets query={query->Query.unwrapFragment_response} />
+        </div>
+        <div className="col-4 grid-margin">
+          <TodoList query={query->Query.unwrapFragment_response} />
+        </div>
       </div>
     </div>
   </div>;

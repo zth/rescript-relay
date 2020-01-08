@@ -44,17 +44,33 @@ let make = (~query as queryRef) => {
             </tr>
           </thead>
           <tbody>
-            {data##ticketsConnection
-             |> ReasonRelayUtils.collectConnectionNodes
-             |> Array.map(ticket => <SingleTicket key=ticket##id ticket />)
-             |> React.array}
+            {(
+               switch (data.ticketsConnection) {
+               | {edges: Some(edges)} =>
+                 edges->Belt.Array.keepMap(edge =>
+                   switch (edge) {
+                   | Some({node: Some(node)}) => Some(node)
+                   | _ => None
+                   }
+                 )
+
+               | _ => [||]
+               }
+             )
+             ->Belt.Array.map(ticket =>
+                 <SingleTicket
+                   key={ticket.id}
+                   ticket={ticket->Fragment.unwrapFragment_node}
+                 />
+               )
+             ->React.array}
           </tbody>
         </table>
         {hasNext
            ? <button
                className="btn btn-gradient-primary font-weight-bold"
                id="add-task"
-               onClick={_ => loadNext(~count=2, ~onComplete=None) |> ignore}
+               onClick={_ => loadNext(~count=2, ()) |> ignore}
                disabled=isLoadingNext>
                {React.string("More")}
              </button>

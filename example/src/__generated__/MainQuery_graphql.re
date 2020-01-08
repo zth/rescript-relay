@@ -1,16 +1,76 @@
-type response = {
-  .
-  "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
-  "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-  "siteStatistics": {
-    .
-    "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
-  },
-};
-type variables = unit;
-type operationType = ReasonRelay.queryNode;
+/* @generated */
 
 module Unions = {};
+
+module Types = {
+  type siteStatistics;
+};
+
+open Types;
+
+type response = {
+  siteStatistics,
+  __wrappedFragment__RecentTickets_query: ReasonRelay.wrappedFragmentRef,
+  __wrappedFragment__TodoList_query: ReasonRelay.wrappedFragmentRef,
+};
+type variables = unit;
+
+module FragmentConverters: {
+  let unwrapFragment_siteStatistics:
+    siteStatistics =>
+    {
+      .
+      "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
+    };
+  let unwrapFragment_response:
+    response =>
+    {
+      .
+      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
+      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
+    };
+} = {
+  external unwrapFragment_siteStatistics:
+    siteStatistics =>
+    {
+      .
+      "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
+    } =
+    "%identity";
+  external unwrapFragment_response:
+    response =>
+    {
+      .
+      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
+      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
+    } =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
   {| (function(){
@@ -264,6 +324,18 @@ return {
               },
               (v5/*: any*/)
             ]
+          },
+          {
+            "kind": "ClientExtension",
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "__$generated__connection__key__$$__RecentTickets_ticketsConnection$$$name__$$__ticketsConnection",
+                "args": null,
+                "storageKey": null
+              }
+            ]
           }
         ]
       },
@@ -324,7 +396,19 @@ return {
               (v5/*: any*/)
             ]
           },
-          (v3/*: any*/)
+          (v3/*: any*/),
+          {
+            "kind": "ClientExtension",
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "__$generated__connection__key__$$__TodoList_query_todosConnection$$$name__$$__todosConnection",
+                "args": null,
+                "storageKey": null
+              }
+            ]
+          }
         ]
       },
       {

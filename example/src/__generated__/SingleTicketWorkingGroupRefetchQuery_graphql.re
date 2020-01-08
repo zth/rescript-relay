@@ -1,28 +1,70 @@
-type response = {
-  .
-  "node":
-    Js.Nullable.t({
-      .
-      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-    }),
-};
-type refetchVariables = {
-  .
-  "id": option(string),
-  "includeMembers": option(bool),
-};
-let makeRefetchVariables = (~id=?, ~includeMembers=?, ()): refetchVariables => {
-  "id": id,
-  "includeMembers": includeMembers,
-};
-type variables = {
-  .
-  "id": string,
-  "includeMembers": bool,
-};
-type operationType = ReasonRelay.queryNode;
+/* @generated */
 
 module Unions = {};
+
+module Types = {
+  type node;
+};
+
+open Types;
+
+type response = {node: option(node)};
+type refetchVariables = {
+  includeMembers: option(bool),
+  id: option(string),
+};
+let makeRefetchVariables = (~includeMembers=?, ~id=?, ()): refetchVariables => {
+  includeMembers,
+  id,
+};
+type variables = {
+  includeMembers: bool,
+  id: string,
+};
+
+module FragmentConverters: {
+  let unwrapFragment_node:
+    node =>
+    {
+      .
+      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+    };
+} = {
+  external unwrapFragment_node:
+    node =>
+    {
+      .
+      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+    } =
+    "%identity";
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"node":[[0,""]]} |}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
   {| (function(){

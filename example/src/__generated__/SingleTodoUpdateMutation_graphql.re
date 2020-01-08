@@ -1,30 +1,68 @@
-type response = {
-  .
-  "updateTodoItem":
-    Js.Nullable.t({
-      .
-      "updatedTodoItem":
-        Js.Nullable.t({
-          .
-          "completed": Js.Nullable.t(bool),
-          "text": string,
-          "id": string,
-        }),
-    }),
-};
-type variables = {
-  .
-  "input": {
-    .
-    "clientMutationId": option(string),
-    "completed": bool,
-    "text": string,
-    "id": string,
-  },
-};
-type operationType = ReasonRelay.mutationNode;
+/* @generated */
 
 module Unions = {};
+
+module Types = {
+  type updatedTodoItem = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  };
+  type updateTodoItem = {updatedTodoItem: option(updatedTodoItem)};
+  type updateTodoItemInput = {
+    id: string,
+    text: string,
+    completed: bool,
+    clientMutationId: option(string),
+  };
+};
+
+open Types;
+
+type response = {updateTodoItem: option(updateTodoItem)};
+type variables = {input: updateTodoItemInput};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"updateTodoItem":[[0,""]],"updateTodoItem_updatedTodoItem":[[0,""]],"updateTodoItem_updatedTodoItem_completed":[[0,""]]} |}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"updateTodoItem":[[0,""]],"updateTodoItem_updatedTodoItem":[[0,""]],"updateTodoItem_updatedTodoItem_completed":[[0,""]]} |}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.mutationNode;
 
 let node: operationType = [%bs.raw
   {| (function(){

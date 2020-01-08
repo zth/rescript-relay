@@ -36,10 +36,10 @@ module AddTodoMutation = [%relay.mutation
 
 [@react.component]
 let make = (~query as queryRef) => {
+  let environment = ReasonRelay.useEnvironmentFromContext();
   let todoListData = TodoListFragment.use(queryRef);
 
   let (newTodoText, setNewTodoText) = React.useState(() => "");
-  let (mutate, mutationStatus, resetMutationState) = AddTodoMutation.use();
 
   <div className="card">
     <div className="card-body">
@@ -48,15 +48,16 @@ let make = (~query as queryRef) => {
         onSubmit={ev => {
           ReactEvent.Form.preventDefault(ev);
 
-          mutate(
+          AddTodoMutation.commitMutation(
+            ~environment,
             ~variables={
-              "input": {
-                "clientMutationId": None,
-                "text": newTodoText,
+              input: {
+                clientMutationId: None,
+                text: newTodoText,
               },
             },
             ~updater=
-              store =>
+              (store, _response) =>
                 ReasonRelayUtils.(
                   switch (
                     resolveNestedRecord(
@@ -87,7 +88,6 @@ let make = (~query as queryRef) => {
           )
           |> Js.Promise.then_(_ => {
                setNewTodoText(_ => "");
-               resetMutationState();
                Js.Promise.resolve();
              })
           |> ignore;
@@ -108,9 +108,8 @@ let make = (~query as queryRef) => {
             className="add btn btn-gradient-primary font-weight-bold todo-list-add-btn"
             id="add-task"
             disabled={
-              switch (newTodoText, mutationStatus) {
-              | ("", _)
-              | (_, Loading) => true
+              switch (newTodoText) {
+              | "" => true
               | _ => false
               }
             }>
@@ -120,11 +119,25 @@ let make = (~query as queryRef) => {
       </form>
       <div className="list-wrapper">
         <ul className="d-flex flex-column-reverse todo-list todo-list-custom">
-          {todoListData##todosConnection
-           |> ReasonRelayUtils.collectConnectionNodes
-           |> Array.map(todoItem =>
-                <SingleTodo key=todoItem##id todoItem checked=true />
-              )
+          {(
+             switch (todoListData.todosConnection) {
+             | {edges: Some(edges)} =>
+               edges->Belt.Array.keepMap(edge =>
+                 switch (edge) {
+                 | Some({node: Some(node)}) => Some(node)
+                 | _ => None
+                 }
+               )
+             | _ => [||]
+             }
+           )
+           ->Belt.Array.map(todoItem =>
+               <SingleTodo
+                 key={todoItem.id}
+                 todoItem={todoItem->TodoListFragment.unwrapFragment_node}
+                 checked=true
+               />
+             )
            |> React.array}
         </ul>
       </div>

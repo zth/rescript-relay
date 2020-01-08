@@ -25,18 +25,27 @@ let make = (~workingGroup as wgRef) => {
     ReactExperimental.useTransition(~timeoutMs=5000, ());
 
   <div>
-    <strong> {React.string(workingGroup##name)} </strong>
+    <strong> {React.string(workingGroup.name)} </strong>
     <div>
-      {switch (workingGroup##membersConnection |> Js.Nullable.toOption) {
+      {switch (workingGroup.membersConnection) {
        | Some(membersConnection) =>
-         membersConnection
-         |> ReasonRelayUtils.collectConnectionNodes
-         |> Array.map(member =>
-              <div key=member##id>
-                <em> {React.string(member##fullName)} </em>
-              </div>
-            )
-         |> React.array
+         switch (membersConnection) {
+         | {edges: Some(edges)} =>
+           edges
+           ->Belt.Array.keepMap(edge =>
+               switch (edge) {
+               | Some({node: Some(node)}) => Some(node)
+               | _ => None
+               }
+             )
+           ->Belt.Array.map(member =>
+               <div key={member.id}>
+                 <em> {React.string(member.fullName)} </em>
+               </div>
+             )
+           ->React.array
+         | _ => React.null
+         }
        | None =>
          <button
            type_="button"

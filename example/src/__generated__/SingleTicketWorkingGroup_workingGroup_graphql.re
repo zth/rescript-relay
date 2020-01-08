@@ -1,36 +1,56 @@
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type node = {
+    id: string,
+    fullName: string,
+    __wrappedFragment__Avatar_user: ReasonRelay.wrappedFragmentRef,
+  };
+  type edges = {node: option(node)};
+  type membersConnection = {edges: option(array(option(edges)))};
+};
+
+open Types;
+
+type fragment = {
+  name: string,
+  membersConnection: option(membersConnection),
+  id: option(string),
+};
+
+module FragmentConverters: {
+  let unwrapFragment_node:
+    node => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t};
+} = {
+  external unwrapFragment_node:
+    node => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t} =
+    "%identity";
+};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"membersConnection":[[0,""]],"membersConnection_edges":[[0,""],[1,""]],"membersConnection_edges_node":[[0,""]],"id":[[0,""]]} |}
+  ];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-type fragment = {
-  .
-  "id": Js.Nullable.t(string),
-  "membersConnection":
-    Js.Nullable.t({
-      .
-      "edges":
-        Js.Nullable.t(
-          array(
-            Js.Nullable.t({
-              .
-              "node":
-                Js.Nullable.t({
-                  .
-                  "__$fragment_ref__Avatar_user": Avatar_user_graphql.t,
-                  "fullName": string,
-                  "id": string,
-                }),
-            }),
-          ),
-        ),
-    }),
-  "name": string,
-};
 type operationType = ReasonRelay.fragmentNode;
-
-module Unions = {};
 
 let node: operationType = [%bs.raw
   {| (function(){

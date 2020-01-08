@@ -1,32 +1,53 @@
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type node = {
+    id: string,
+    __wrappedFragment__SingleTodo_todoItem: ReasonRelay.wrappedFragmentRef,
+  };
+  type edges = {node: option(node)};
+  type todosConnection = {edges: option(array(option(edges)))};
+};
+
+open Types;
+
+type fragment = {todosConnection};
+
+module FragmentConverters: {
+  let unwrapFragment_node:
+    node =>
+    {. "__$fragment_ref__SingleTodo_todoItem": SingleTodo_todoItem_graphql.t};
+} = {
+  external unwrapFragment_node:
+    node =>
+    {. "__$fragment_ref__SingleTodo_todoItem": SingleTodo_todoItem_graphql.t} =
+    "%identity";
+};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"todosConnection_edges":[[0,""],[1,""]],"todosConnection_edges_node":[[0,""]]} |}
+  ];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TodoList_query": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-type fragment = {
-  .
-  "todosConnection": {
-    .
-    "edges":
-      Js.Nullable.t(
-        array(
-          Js.Nullable.t({
-            .
-            "node":
-              Js.Nullable.t({
-                .
-                "__$fragment_ref__SingleTodo_todoItem": SingleTodo_todoItem_graphql.t,
-                "id": string,
-              }),
-          }),
-        ),
-      ),
-  },
-};
 type operationType = ReasonRelay.fragmentNode;
-
-module Unions = {};
 
 let node: operationType = [%bs.raw
   {| {
@@ -137,6 +158,18 @@ let node: operationType = [%bs.raw
               "kind": "ScalarField",
               "alias": null,
               "name": "hasNextPage",
+              "args": null,
+              "storageKey": null
+            }
+          ]
+        },
+        {
+          "kind": "ClientExtension",
+          "selections": [
+            {
+              "kind": "ScalarField",
+              "alias": null,
+              "name": "__$generated__connection__key__$$__TodoList_query_todosConnection$$$name__$$__todosConnection",
               "args": null,
               "storageKey": null
             }

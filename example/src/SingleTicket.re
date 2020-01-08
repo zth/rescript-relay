@@ -27,29 +27,37 @@ let make = (~ticket as ticketRef) => {
 
   <tr>
     <td>
-      {switch (ticket##assignee |> Js.Nullable.toOption) {
+      {switch (ticket.assignee) {
        | Some(assignee) =>
-         switch (assignee |> TicketFragment.Union_response_assignee.unwrap) {
-         | `User(user) => <Avatar user />
+         switch (assignee) {
+         | `User(user) =>
+           <Avatar
+             user={
+               user->TicketFragment.Union_fragment_assignee.unwrapFragment_user
+             }
+           />
          | `WorkingGroup(workingGroup) =>
            <React.Suspense fallback={<Loading />}>
-             <SingleTicketWorkingGroup workingGroup />
+             <SingleTicketWorkingGroup
+               workingGroup={
+                 workingGroup->TicketFragment.Union_fragment_assignee.unwrapFragment_workingGroup
+               }
+             />
            </React.Suspense>
          | `UnmappedUnionMember => <span> {React.string("-")} </span>
          }
        | None => <em> {React.string("Unassigned")} </em>
        }}
     </td>
-    <td> {React.string(ticket##subject)} </td>
-    <td> <TicketStatusBadge ticket /> </td>
+    <td> {React.string(ticket.subject)} </td>
     <td>
-      {React.string(
-         Belt.Option.getWithDefault(
-           ticket##lastUpdated |> Js.Nullable.toOption,
-           "-",
-         ),
-       )}
+      <TicketStatusBadge
+        ticket={ticket->TicketFragment.unwrapFragment_fragment}
+      />
     </td>
-    <td> {React.string(ticket##trackingId)} </td>
+    <td>
+      {React.string(Belt.Option.getWithDefault(ticket.lastUpdated, "-"))}
+    </td>
+    <td> {React.string(ticket.trackingId)} </td>
   </tr>;
 };

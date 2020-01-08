@@ -1,37 +1,60 @@
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type node = {
+    id: string,
+    __wrappedFragment__SingleTicket_ticket: ReasonRelay.wrappedFragmentRef,
+  };
+  type edges = {node: option(node)};
+  type pageInfo = {
+    endCursor: option(string),
+    hasNextPage: bool,
+  };
+  type ticketsConnection = {
+    pageInfo,
+    edges: option(array(option(edges))),
+  };
+};
+
+open Types;
+
+type fragment = {ticketsConnection};
+
+module FragmentConverters: {
+  let unwrapFragment_node:
+    node =>
+    {. "__$fragment_ref__SingleTicket_ticket": SingleTicket_ticket_graphql.t};
+} = {
+  external unwrapFragment_node:
+    node =>
+    {. "__$fragment_ref__SingleTicket_ticket": SingleTicket_ticket_graphql.t} =
+    "%identity";
+};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {"ticketsConnection_pageInfo_endCursor":[[0,""]],"ticketsConnection_edges":[[0,""],[1,""]],"ticketsConnection_edges_node":[[0,""]]} |}
+  ];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__RecentTickets_query": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
-type fragment = {
-  .
-  "ticketsConnection": {
-    .
-    "edges":
-      Js.Nullable.t(
-        array(
-          Js.Nullable.t({
-            .
-            "node":
-              Js.Nullable.t({
-                .
-                "__$fragment_ref__SingleTicket_ticket": SingleTicket_ticket_graphql.t,
-                "id": string,
-              }),
-          }),
-        ),
-      ),
-    "pageInfo": {
-      .
-      "hasNextPage": bool,
-      "endCursor": Js.Nullable.t(string),
-    },
-  },
-};
 type operationType = ReasonRelay.fragmentNode;
-
-module Unions = {};
 
 let node: operationType = [%bs.raw
   {| (function(){
@@ -156,6 +179,18 @@ return {
               "kind": "ScalarField",
               "alias": null,
               "name": "cursor",
+              "args": null,
+              "storageKey": null
+            }
+          ]
+        },
+        {
+          "kind": "ClientExtension",
+          "selections": [
+            {
+              "kind": "ScalarField",
+              "alias": null,
+              "name": "__$generated__connection__key__$$__RecentTickets_ticketsConnection$$$name__$$__ticketsConnection",
               "args": null,
               "storageKey": null
             }

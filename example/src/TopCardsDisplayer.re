@@ -34,7 +34,7 @@ let make = (~siteStatistics as siteStatisticsRef) => {
     <div className="col-md-4 stretch-card grid-margin">
       <EmphasizedCard
         title="Weekly Sales"
-        subText={"$ " ++ Js.Float.toString(siteStatistics##weeklySales)}
+        subText={"$ " ++ Js.Float.toString(siteStatistics.weeklySales)}
         icon=EmphasizedCard.ChartLine
         variant=EmphasizedCard.Red
       />
@@ -42,7 +42,7 @@ let make = (~siteStatistics as siteStatisticsRef) => {
     <div className="col-md-4 stretch-card grid-margin">
       <EmphasizedCard
         title="Weekly Orders"
-        subText={string_of_int(siteStatistics##weeklyOrders)}
+        subText={string_of_int(siteStatistics.weeklyOrders)}
         icon=EmphasizedCard.Bookmark
         variant=EmphasizedCard.Blue
       />
@@ -50,7 +50,7 @@ let make = (~siteStatistics as siteStatisticsRef) => {
     <div className="col-md-4 stretch-card grid-margin">
       <EmphasizedCard
         title="Current Visitors Online"
-        subText={string_of_int(siteStatistics##currentVisitorsOnline)}
+        subText={string_of_int(siteStatistics.currentVisitorsOnline)}
         icon=EmphasizedCard.Diamond
         variant=EmphasizedCard.Green
       />

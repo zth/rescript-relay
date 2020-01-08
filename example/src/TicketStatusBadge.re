@@ -8,9 +8,7 @@ module Fragment = [%relay.fragment
 
 [@react.component]
 let make = (~ticket as ticketRef) =>
-  switch (
-    Fragment.use(ticketRef)##status |> SchemaAssets.Enum_TicketStatus.unwrap
-  ) {
+  switch (Fragment.use(ticketRef).status) {
   | `Done =>
     <label className="badge badge-gradient-success">
       {React.string("DONE")}
