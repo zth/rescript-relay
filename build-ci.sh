@@ -4,18 +4,18 @@
 rm -rf _release;
 mkdir -p _release/src;
 
-# build bindings
-echo "Build bindings...";
-cd packages/reason-relay;
-yarn; yarn build;
-
 # build language plugin
 echo "Build language plugin...";
-cd ./language-plugin/; yarn; yarn test; yarn build; cd ..;
+cd packages/reason-relay/language-plugin/; yarn; yarn test; yarn build; cd ..;
+
+# build bindings
+echo "Build bindings...";
+yarn; yarn build; yarn test;
 
 # copy bindings and readme
 echo "Copying bindings and assets..."
-cp src/*.re* ../../_release/src/;
+cp src/* ../../_release/src/;
+cp .npmignore ../../_release/;
 cp ../../README.md ../../_release/;
 cp -rf src/vendor ../../_release/src/vendor;
 
