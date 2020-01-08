@@ -9,6 +9,7 @@
 - _BREAKING CHANGE_ Bump Relay versions to `8.0.0` and `react-relay` to `0.0.0-experimental-5f1cb628`.
 - Fix bug with unused generated files not being deleted by the Relay compiler.
 - Bind `generateClientID`, `generateUniqueClientID` and `isClientID` helpers.
+- _SUPER BREAKING CHANGE_ - All emitted types are now _records_ instead of _Js.t_, and `Js.Nullable.t`/enums/unions are now autoconverted with _no manual intervention needed_. This should _greatly_ simplify working with ReasonRelay.
 
 # 0.4.4
 
