@@ -1,62 +1,68 @@
 /* @generated */
 
-module Union_fragment_members_edges_node: {
-  type wrapped;
-  type user_friendsConnection = {totalCount: int};
-  type user = {
-    friendsConnection: user_friendsConnection,
-    firstName: string,
-    id: string,
-  };
-  type group_node = {
-    id: string,
-    firstName: string,
-  };
-  type group_edges = {node: option(group_node)};
-  type group_adminsConnection = {
-    edges: option(array(option(group_edges))),
-  };
-  type group = {
-    adminsConnection: group_adminsConnection,
-    name: string,
-    id: string,
-  };
-  type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
-  let unwrap: wrapped => t;
-} = {
-  type wrapped;
-  type user_friendsConnection = {totalCount: int};
-  type user = {
-    friendsConnection: user_friendsConnection,
-    firstName: string,
-    id: string,
-  };
-  type group_node = {
-    id: string,
-    firstName: string,
-  };
-  type group_edges = {node: option(group_node)};
-  type group_adminsConnection = {
-    edges: option(array(option(group_edges))),
-  };
-  type group = {
-    adminsConnection: group_adminsConnection,
-    name: string,
-    id: string,
-  };
-  external __unwrap_union: wrapped => {. "__typename": string} = "%identity";
-  type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
-  external __unwrap_user: wrapped => user = "%identity";
-  external __unwrap_group: wrapped => group = "%identity";
-  let unwrap = wrapped => {
-    let unwrappedUnion = wrapped |> __unwrap_union;
-    switch (unwrappedUnion##__typename) {
-    | "User" => `User(wrapped |> __unwrap_user)
-    | "Group" => `Group(wrapped |> __unwrap_group)
-    | _ => `UnmappedUnionMember
+module Unions = {
+  module Union_fragment_members_edges_node: {
+    type wrapped;
+    type user = {id: string};
+    type node = {
+      id: string,
+      firstName: string,
     };
+    type edges = {node: option(node)};
+    type adminsConnection = {edges: option(array(option(edges)))};
+    type group = {
+      adminsConnection,
+      name: string,
+      id: string,
+    };
+    type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
+    let user_getFragments:
+      user =>
+      {
+        .
+        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
+      };
+    let unwrap: wrapped => t;
+  } = {
+    type wrapped;
+    type user = {id: string};
+    type node = {
+      id: string,
+      firstName: string,
+    };
+    type edges = {node: option(node)};
+    type adminsConnection = {edges: option(array(option(edges)))};
+    type group = {
+      adminsConnection,
+      name: string,
+      id: string,
+    };
+    external __unwrap_union: wrapped => {. "__typename": string} =
+      "%identity";
+    type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
+    external __unwrap_user: wrapped => user = "%identity";
+    external __unwrap_group: wrapped => group = "%identity";
+    let unwrap = wrapped => {
+      let unwrappedUnion = wrapped |> __unwrap_union;
+      switch (unwrappedUnion##__typename) {
+      | "User" => `User(wrapped |> __unwrap_user)
+      | "Group" => `Group(wrapped |> __unwrap_group)
+      | _ => `UnmappedUnionMember
+      };
+    };
+
+    external user_getFragments:
+      user =>
+      {
+        .
+        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
+      } =
+      "%identity";
   };
 };
+
+open Unions;
+
 module Types = {
   type edges = {node: option(Union_fragment_members_edges_node.t)};
   type members = {edges: option(array(option(edges)))};
@@ -104,21 +110,7 @@ v1 = {
   "name": "id",
   "args": null,
   "storageKey": null
-},
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "firstName",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 1
-  }
-];
+};
 return {
   "kind": "Fragment",
   "name": "TestPagination_query",
@@ -222,24 +214,10 @@ return {
                   "type": "User",
                   "selections": [
                     (v1/*: any*/),
-                    (v2/*: any*/),
                     {
-                      "kind": "LinkedField",
-                      "alias": null,
-                      "name": "friendsConnection",
-                      "storageKey": "friendsConnection(first:1)",
-                      "args": (v3/*: any*/),
-                      "concreteType": "UserConnection",
-                      "plural": false,
-                      "selections": [
-                        {
-                          "kind": "ScalarField",
-                          "alias": null,
-                          "name": "totalCount",
-                          "args": null,
-                          "storageKey": null
-                        }
-                      ]
+                      "kind": "FragmentSpread",
+                      "name": "TestPagination_user",
+                      "args": null
                     }
                   ]
                 },
@@ -260,7 +238,13 @@ return {
                       "alias": null,
                       "name": "adminsConnection",
                       "storageKey": "adminsConnection(first:1)",
-                      "args": (v3/*: any*/),
+                      "args": [
+                        {
+                          "kind": "Literal",
+                          "name": "first",
+                          "value": 1
+                        }
+                      ],
                       "concreteType": "UserConnection",
                       "plural": false,
                       "selections": [
@@ -283,7 +267,13 @@ return {
                               "plural": false,
                               "selections": [
                                 (v1/*: any*/),
-                                (v2/*: any*/)
+                                {
+                                  "kind": "ScalarField",
+                                  "alias": null,
+                                  "name": "firstName",
+                                  "args": null,
+                                  "storageKey": null
+                                }
                               ]
                             }
                           ]

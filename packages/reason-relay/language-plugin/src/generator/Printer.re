@@ -15,7 +15,8 @@ let printUnionTypeName = name => "Union_" ++ name ++ ".t";
 let printUnionUnwrapFnReference = name => "Union_" ++ name ++ ".unwrap";
 let printUnionWrapFnReference = name => "Union_" ++ name ++ ".wrap";
 let printWrappedUnionName = name => "union_" ++ name ++ "_wrapped";
-let printFragmentRef = name => name ++ "_graphql.t";
+let printFragmentRef = name =>
+  Tablecloth.String.capitalize(name) ++ "_graphql.t";
 let getFragmentRefName = name => "__$fragment_ref__" ++ name;
 let printAnyType = () => "ReasonRelay.any";
 
@@ -373,11 +374,17 @@ let printUnion = (~state, union: union) => {
   let typeDefs = ref("type wrapped;\n");
   let addToTypeDefs = Utils.makeAddToStr(typeDefs);
 
-  let unwrappers = ref("");
-  let addToUnwrappers = Utils.makeAddToStr(unwrappers);
-
   let typeT = ref("type t = [");
   let addToTypeT = Utils.makeAddToStr(typeT);
+
+  let signature = ref("");
+  let addToSignature = Utils.makeAddToStr(signature);
+
+  let impl = ref("");
+  let addToImpl = Utils.makeAddToStr(impl);
+
+  let unwrappers = ref("");
+  let addToUnwrappers = Utils.makeAddToStr(unwrappers);
 
   union.members
   |> List.iter(({name, shape}: Types.unionMember) => {
@@ -386,15 +393,14 @@ let printUnion = (~state, union: union) => {
        let unionTypeName = Tablecloth.String.uncapitalize(name);
 
        let allObjects: list(Types.finalizedObj) =
-         shape
-         |> Utils.extractNestedObjects
+         Tablecloth.List.append(shape |> Utils.extractNestedObjects, [shape])
          |> List.map((definition: Types.object_) =>
               {
                 name: None,
                 typeName: {
                   let name =
                     Utils.findAppropriateObjName(
-                      ~prefix=Some(unionTypeName),
+                      ~prefix=None,
                       ~usedRecordNames=usedRecordNames^,
                       ~path=definition.atPath,
                     );
@@ -426,22 +432,24 @@ let printUnion = (~state, union: union) => {
 
        definitions
        |> Tablecloth.List.iter(~f=definition => {
-            addToTypeDefs(
-              definition |> printRootType(~state=stateWithUnionDefinitions),
-            )
-          });
+            definition
+            |> printRootType(~state=stateWithUnionDefinitions)
+            |> addToTypeDefs;
 
-       addToTypeDefs(
-         "type "
-         ++ unionTypeName
-         ++ " = "
-         ++ printObject(
-              ~obj=Utils.adjustObjectPath(~path=[unionTypeName], shape),
-              ~optType=Option,
-              ~state=stateWithUnionDefinitions,
-            )
-         ++ ";",
-       );
+            definition
+            |> printRootObjectTypeConverters(
+                 ~state=stateWithUnionDefinitions,
+                 ~printMode=Signature,
+               )
+            |> addToSignature;
+
+            definition
+            |> printRootObjectTypeConverters(
+                 ~state=stateWithUnionDefinitions,
+                 ~printMode=Full,
+               )
+            |> addToImpl;
+          });
 
        addToUnwrappers(
          "external __unwrap_"
@@ -496,6 +504,7 @@ let printUnion = (~state, union: union) => {
   ++ ": {"
   ++ typeDefs^
   ++ typeT^
+  ++ signature^
   ++ "let unwrap: wrapped => t;"
   ++ "} = { "
   ++ typeDefs^
@@ -503,6 +512,7 @@ let printUnion = (~state, union: union) => {
   ++ typeT^
   ++ unwrappers^
   ++ unwrapFnImpl^
+  ++ impl^
   ++ "}";
 };
 
@@ -548,15 +558,6 @@ let operationType = (operationType: Types.operationType) => {
 };
 
 let printType = typeText => {j|type $typeText;|j};
-
-let opaqueUnionType = unions =>
-  Tablecloth.(
-    unions
-    |> List.map(~f=(union: Types.union) =>
-         union.atPath |> makeUnionName |> printWrappedUnionName |> printType
-       )
-    |> String.join(~sep="\n")
-  );
 
 [@genType]
 let printCode = str => str |> Reason.parseRE |> Reason.printRE;

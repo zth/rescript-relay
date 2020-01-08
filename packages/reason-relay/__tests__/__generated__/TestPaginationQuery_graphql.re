@@ -1,5 +1,7 @@
 /* @generated */
 
+module Unions = {};
+
 module Types = {};
 
 type response = unit;
@@ -299,7 +301,7 @@ return {
     "operationKind": "query",
     "name": "TestPaginationQuery",
     "id": null,
-    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          friendsConnection(first: 1) {\n            totalCount\n          }\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n",
     "metadata": {}
   }
 };

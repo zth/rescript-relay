@@ -449,6 +449,38 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
+
+    it.only("generates code to unwrap fragments on unions", () => {
+      let generated = generate(
+        `
+        fragment app_user on User {
+          id
+          firstName
+        }
+
+        fragment app_observer on Observer {
+          id
+          name
+        }
+
+        query appQuery {
+            participantById(id: "123") {
+              __typename
+              ... on User {
+                id
+                ...app_user
+              }
+
+              ... on Observer {
+                id
+                ...app_observer
+              }
+            }
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 
   describe("Misc", () => {

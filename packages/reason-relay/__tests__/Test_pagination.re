@@ -6,6 +6,18 @@ module Query = [%relay.query
 |}
 ];
 
+// This is just to ensure that fragments on unions work
+module UserFragment = [%relay.fragment
+  {|
+  fragment TestPagination_user on User {
+    firstName
+    friendsConnection(first: 1) {
+      totalCount
+    }
+  }
+|}
+];
+
 module Fragment = [%relay.fragment
   {|
     fragment TestPagination_query on Query
@@ -27,10 +39,7 @@ module Fragment = [%relay.fragment
             __typename
             ... on User {
               id
-              firstName
-              friendsConnection(first: 1) {
-                totalCount
-              }
+              ...TestPagination_user
             }
 
             ... on Group {
@@ -51,6 +60,21 @@ module Fragment = [%relay.fragment
     }
 |}
 ];
+
+module UserDisplayer = {
+  [@react.component]
+  let make = (~user) => {
+    let data = UserFragment.use(user);
+
+    React.string(
+      "User "
+      ++ data.firstName
+      ++ " has "
+      ++ data.friendsConnection.totalCount->string_of_int
+      ++ " friends",
+    );
+  };
+};
 
 module Test = {
   [@react.component]
@@ -82,13 +106,11 @@ module Test = {
            switch (member) {
            | `User(user) =>
              <div id={user.id}>
-               {React.string(
-                  "User "
-                  ++ user.firstName
-                  ++ " has "
-                  ++ user.friendsConnection.totalCount->string_of_int
-                  ++ " friends",
-                )}
+               <UserDisplayer
+                 user={
+                   user->Fragment.Union_fragment_members_edges_node.user_getFragments
+                 }
+               />
              </div>
            | `Group(group) =>
              <div id={group.id}>

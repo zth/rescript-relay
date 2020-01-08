@@ -217,11 +217,23 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   };
 
   // Print unions
+  addToStr("module Unions = {\n");
   addToStr(
     state.unions
     |> Tablecloth.List.map(~f=Printer.printUnion(~state))
     |> Tablecloth.String.join(~sep="\n\n"),
   );
+
+  addToStr("};");
+  addSpacing();
+
+  // We'll open the Union module locally in our generated file if there's contents
+  switch (state.unions |> Tablecloth.List.length) {
+  | 0 => ()
+  | _ =>
+    addToStr("open Unions;");
+    addSpacing();
+  };
 
   // Print definitions and declarations
   addToStr("module Types = {\n");

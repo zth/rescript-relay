@@ -1,5 +1,7 @@
 /* @generated */
 
+module Unions = {};
+
 module Types = {
   type node;
 };

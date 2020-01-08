@@ -239,6 +239,148 @@ type operationType = ReasonRelay.subscriptionNode;
 "
 `;
 
+exports[`Language plugin tests Unions generates code to unwrap fragments on unions 1`] = `
+"// app_user.graphql
+/* @generated */
+
+module Types = {};
+
+type fragment = {
+  id: string,
+  firstName: string,
+};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+type operationType = ReasonRelay.fragmentNode;
+
+
+// app_observer.graphql
+/* @generated */
+
+module Types = {};
+
+type fragment = {
+  id: string,
+  name: string,
+};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_observer\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+type operationType = ReasonRelay.fragmentNode;
+
+
+// appQuery.graphql
+/* @generated */
+
+module Union_response_participantById: {
+  type wrapped;
+  type user = {id: string};
+  type observer = {id: string};
+  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+  let user_getFragments:
+    user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t};
+  let observer_getFragments:
+    observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t};
+  let unwrap: wrapped => t;
+} = {
+  type wrapped;
+  type user = {id: string};
+  type observer = {id: string};
+  external __unwrap_union: wrapped => {. \\"__typename\\": string} = \\"%identity\\";
+  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+  external __unwrap_user: wrapped => user = \\"%identity\\";
+  external __unwrap_observer: wrapped => observer = \\"%identity\\";
+  let unwrap = wrapped => {
+    let unwrappedUnion = wrapped |> __unwrap_union;
+    switch (unwrappedUnion##__typename) {
+    | \\"User\\" => \`User(wrapped |> __unwrap_user)
+    | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
+    | _ => \`UnmappedUnionMember
+    };
+  };
+
+  external user_getFragments:
+    user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t} =
+    \\"%identity\\";
+  external observer_getFragments:
+    observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
+    \\"%identity\\";
+};
+module Types = {};
+
+type response = {participantById: option(Union_response_participantById.t)};
+type variables = unit;
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {\\"participantById\\":[[0,\\"\\"],[3,\\"response_participantById\\"]]} |}
+  ];
+  let responseConverterMap = {
+    \\"response_participantById\\": Union_response_participantById.unwrap,
+  };
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type operationType = ReasonRelay.queryNode;
+"
+`;
+
 exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 "// appQuery.graphql
 /* @generated */

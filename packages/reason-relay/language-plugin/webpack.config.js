@@ -23,7 +23,13 @@ module.exports = {
   },
   externals: [
     nodeExternals({
-      whitelist: [/bs-flow-parser/, /tablecloth-bucklescript/]
+      whitelist: [
+        /bs-flow-parser/,
+        /tablecloth-bucklescript/,
+        /bs-sedlex/,
+        /bs-gen/,
+        /invariant/
+      ]
     })
   ],
   resolve: {

@@ -1,5 +1,7 @@
 /* @generated */
 
+module Unions = {};
+
 module Types = {};
 
 type response = unit;
@@ -352,7 +354,7 @@ return {
     "operationKind": "query",
     "name": "TestPaginationRefetchQuery",
     "id": null,
-    "text": "query TestPaginationRefetchQuery(\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n  $count: Int = 2\n  $cursor: String = \"\"\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          friendsConnection(first: 1) {\n            totalCount\n          }\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+    "text": "query TestPaginationRefetchQuery(\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n  $count: Int = 2\n  $cursor: String = \"\"\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n",
     "metadata": {
       "derivedFrom": "TestPagination_query",
       "isRefetchableQuery": true
