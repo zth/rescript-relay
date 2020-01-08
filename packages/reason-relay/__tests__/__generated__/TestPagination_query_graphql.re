@@ -3,7 +3,10 @@
 module Unions = {
   module Union_fragment_members_edges_node: {
     type wrapped;
-    type user = {id: string};
+    type user = {
+      __wrappedFragment__TestPagination_user: ReasonRelay.wrappedFragmentRef,
+      id: string,
+    };
     type node = {
       id: string,
       firstName: string,
@@ -16,7 +19,7 @@ module Unions = {
       id: string,
     };
     type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
-    let user_getFragments:
+    let unwrapFragments_user:
       user =>
       {
         .
@@ -25,7 +28,10 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {id: string};
+    type user = {
+      __wrappedFragment__TestPagination_user: ReasonRelay.wrappedFragmentRef,
+      id: string,
+    };
     type node = {
       id: string,
       firstName: string,
@@ -51,7 +57,7 @@ module Unions = {
       };
     };
 
-    external user_getFragments:
+    external unwrapFragments_user:
       user =>
       {
         .

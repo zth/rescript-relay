@@ -6,6 +6,7 @@ module Types = {
   type user = {
     id: string,
     onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    __wrappedFragment__TestSubscription_user: ReasonRelay.wrappedFragmentRef,
   };
   type userUpdated = {user: option(user)};
 };
@@ -16,14 +17,14 @@ type response = {userUpdated: option(userUpdated)};
 type variables = {userId: string};
 
 module FragmentConverters: {
-  let user_getFragments:
+  let unwrapFragments_user:
     user =>
     {
       .
       "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
     };
 } = {
-  external user_getFragments:
+  external unwrapFragments_user:
     user =>
     {
       .

@@ -28,11 +28,11 @@ type variables = {
 };
 
 module FragmentConverters: {
-  let node_getFragments:
+  let unwrapFragments_node:
     node =>
     {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t};
 } = {
-  external node_getFragments:
+  external unwrapFragments_node:
     node =>
     {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t} =
     "%identity";

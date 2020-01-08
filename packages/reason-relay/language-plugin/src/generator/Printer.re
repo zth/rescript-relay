@@ -81,17 +81,7 @@ and printPropValue = (~propValue, ~optType, ~state) => {
   str^;
 }
 and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
-  switch (
-    obj.values
-    |> Tablecloth.Array.filter(~f=v =>
-         switch (v) {
-         | FragmentRef(_) => false
-         | Prop(_) => true
-         }
-       )
-    |> Array.length,
-    obj.mode,
-  ) {
+  switch (obj.values |> Array.length, obj.mode) {
   | (_, OnlyFragmentRefs) =>
     let str = ref("{.");
     let addToStr = s => str := str^ ++ s;
@@ -153,12 +143,6 @@ and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
     let addToStr = s => str := str^ ++ s;
 
     obj.values
-    |> Tablecloth.Array.filter(~f=v =>
-         switch (v) {
-         | FragmentRef(_) => false
-         | Prop(_) => true
-         }
-       )
     |> Array.iteri((index, p) => {
          if (index > 0) {
            addToStr(",");
@@ -171,7 +155,10 @@ and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
              ++ ": "
              ++ printPropValue(~propValue, ~optType, ~state)
            // Fragment refs aren't supported in records, they'll need to be converted to JsT before fragments refs can be used
-           | FragmentRef(_) => ""
+           | FragmentRef(name) =>
+             "__wrappedFragment__"
+             ++ name
+             ++ ": ReasonRelay.wrappedFragmentRef"
            },
          );
        });
@@ -300,7 +287,7 @@ let printRootType = (~state: fullState, rootType) =>
   };
 
 let printFragmentExtractor = (~obj: object_, ~state, ~printMode, name) => {
-  let fnName = name ++ "_getFragments";
+  let fnName = "unwrapFragments_" ++ name;
   let signature =
     name
     ++ " => "

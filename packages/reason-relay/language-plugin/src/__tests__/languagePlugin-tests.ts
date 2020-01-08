@@ -378,6 +378,20 @@ describe("Language plugin tests", () => {
         )
       ).toMatchSnapshot();
     });
+
+    it("prints indications of existing fragment refs in generated types", () => {
+      let generated = generate(
+        `fragment SomeComponent_user on User {
+            id
+          }
+          
+          fragment SomeOtherComponent_user on User {
+            ...SomeComponent_user
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 
   describe("Enums", () => {
@@ -450,7 +464,7 @@ describe("Language plugin tests", () => {
       expect(generated).toMatchSnapshot();
     });
 
-    it.only("generates code to unwrap fragments on unions", () => {
+    it("generates code to unwrap fragments on unions", () => {
       let generated = generate(
         `
         fragment app_user on User {

@@ -16,6 +16,11 @@ type mutationNode;
 type subscriptionNode;
 
 /**
+ * Helper to signify a wrapped fragment ref.
+ */
+type wrappedFragmentRef;
+
+/**
  * The type of the id's Relay uses to identify records.
  */
 type dataId;

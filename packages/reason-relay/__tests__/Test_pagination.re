@@ -86,7 +86,7 @@ module Test = {
       ReactExperimental.useTransition(~timeoutMs=5000, ());
 
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
-      Fragment.usePagination(query |> Query.response_getFragments);
+      Fragment.usePagination(query->Query.unwrapFragments_response);
 
     let members =
       switch (data.members) {
@@ -108,7 +108,7 @@ module Test = {
              <div id={user.id}>
                <UserDisplayer
                  user={
-                   user->Fragment.Union_fragment_members_edges_node.user_getFragments
+                   user->Fragment.Union_fragment_members_edges_node.unwrapFragments_user
                  }
                />
              </div>

@@ -8,6 +8,8 @@ type fragmentNode;
 type mutationNode;
 type subscriptionNode;
 
+type wrappedFragmentRef;
+
 type dataId;
 
 type recordSourceRecords;

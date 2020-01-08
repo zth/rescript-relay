@@ -33,9 +33,90 @@ Source: GraphQL request (3:17)
 ]
 `;
 
+exports[`Language plugin tests Fragment prints indications of existing fragment refs in generated types 1`] = `
+"// SomeComponent_user.graphql
+/* @generated */
+
+module Unions = {};
+
+module Types = {};
+
+type fragment = {id: string};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+type operationType = ReasonRelay.fragmentNode;
+
+
+// SomeOtherComponent_user.graphql
+/* @generated */
+
+module Unions = {};
+
+module Types = {};
+
+type fragment = {
+  __wrappedFragment__SomeComponent_user: ReasonRelay.wrappedFragmentRef,
+};
+
+module FragmentConverters: {
+  let unwrapFragments_fragment:
+    fragment =>
+    {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t};
+} = {
+  external unwrapFragments_fragment:
+    fragment =>
+    {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t} =
+    \\"%identity\\";
+};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeOtherComponent_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+type operationType = ReasonRelay.fragmentNode;
+"
+`;
+
 exports[`Language plugin tests Fragment prints the correct fragment ref extractor helpers and base types 1`] = `
 "// SomeComponent_user.graphql
 /* @generated */
+
+module Unions = {};
 
 module Types = {};
 
@@ -69,6 +150,8 @@ type operationType = ReasonRelay.fragmentNode;
 exports[`Language plugin tests Mutation prints the correct basic structure for mutations 1`] = `
 "// SetUserLocationMutation.graphql
 /* @generated */
+
+module Unions = {};
 
 module Types = {
   type changedUser = {
@@ -140,6 +223,8 @@ exports[`Language plugin tests Query prints simple responses and variables 1`] =
 "// appQuery.graphql
 /* @generated */
 
+module Unions = {};
+
 module Types = {
   type user = {
     id: string,
@@ -190,6 +275,8 @@ type operationType = ReasonRelay.queryNode;
 exports[`Language plugin tests Subscription prints the correct basic structure for subscriptions 1`] = `
 "// SomeSubscription.graphql
 /* @generated */
+
+module Unions = {};
 
 module Types = {
   type user = {
@@ -243,6 +330,8 @@ exports[`Language plugin tests Unions generates code to unwrap fragments on unio
 "// app_user.graphql
 /* @generated */
 
+module Unions = {};
+
 module Types = {};
 
 type fragment = {
@@ -275,6 +364,8 @@ type operationType = ReasonRelay.fragmentNode;
 
 // app_observer.graphql
 /* @generated */
+
+module Unions = {};
 
 module Types = {};
 
@@ -309,40 +400,58 @@ type operationType = ReasonRelay.fragmentNode;
 // appQuery.graphql
 /* @generated */
 
-module Union_response_participantById: {
-  type wrapped;
-  type user = {id: string};
-  type observer = {id: string};
-  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-  let user_getFragments:
-    user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t};
-  let observer_getFragments:
-    observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t};
-  let unwrap: wrapped => t;
-} = {
-  type wrapped;
-  type user = {id: string};
-  type observer = {id: string};
-  external __unwrap_union: wrapped => {. \\"__typename\\": string} = \\"%identity\\";
-  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-  external __unwrap_user: wrapped => user = \\"%identity\\";
-  external __unwrap_observer: wrapped => observer = \\"%identity\\";
-  let unwrap = wrapped => {
-    let unwrappedUnion = wrapped |> __unwrap_union;
-    switch (unwrappedUnion##__typename) {
-    | \\"User\\" => \`User(wrapped |> __unwrap_user)
-    | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-    | _ => \`UnmappedUnionMember
+module Unions = {
+  module Union_response_participantById: {
+    type wrapped;
+    type user = {
+      __wrappedFragment__app_user: ReasonRelay.wrappedFragmentRef,
+      id: string,
     };
-  };
+    type observer = {
+      __wrappedFragment__app_observer: ReasonRelay.wrappedFragmentRef,
+      id: string,
+    };
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    let unwrapFragments_user:
+      user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t};
+    let unwrapFragments_observer:
+      observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t};
+    let unwrap: wrapped => t;
+  } = {
+    type wrapped;
+    type user = {
+      __wrappedFragment__app_user: ReasonRelay.wrappedFragmentRef,
+      id: string,
+    };
+    type observer = {
+      __wrappedFragment__app_observer: ReasonRelay.wrappedFragmentRef,
+      id: string,
+    };
+    external __unwrap_union: wrapped => {. \\"__typename\\": string} =
+      \\"%identity\\";
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    external __unwrap_user: wrapped => user = \\"%identity\\";
+    external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    let unwrap = wrapped => {
+      let unwrappedUnion = wrapped |> __unwrap_union;
+      switch (unwrappedUnion##__typename) {
+      | \\"User\\" => \`User(wrapped |> __unwrap_user)
+      | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
+      | _ => \`UnmappedUnionMember
+      };
+    };
 
-  external user_getFragments:
-    user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t} =
-    \\"%identity\\";
-  external observer_getFragments:
-    observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
-    \\"%identity\\";
+    external unwrapFragments_user:
+      user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t} =
+      \\"%identity\\";
+    external unwrapFragments_observer:
+      observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
+      \\"%identity\\";
+  };
 };
+
+open Unions;
+
 module Types = {};
 
 type response = {participantById: option(Union_response_participantById.t)};
@@ -385,43 +494,49 @@ exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-module Union_response_participantById: {
-  type wrapped;
-  type user = {
-    lastName: string,
-    firstName: string,
-    id: string,
-  };
-  type observer = {
-    name: string,
-    id: string,
-  };
-  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-  let unwrap: wrapped => t;
-} = {
-  type wrapped;
-  type user = {
-    lastName: string,
-    firstName: string,
-    id: string,
-  };
-  type observer = {
-    name: string,
-    id: string,
-  };
-  external __unwrap_union: wrapped => {. \\"__typename\\": string} = \\"%identity\\";
-  type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-  external __unwrap_user: wrapped => user = \\"%identity\\";
-  external __unwrap_observer: wrapped => observer = \\"%identity\\";
-  let unwrap = wrapped => {
-    let unwrappedUnion = wrapped |> __unwrap_union;
-    switch (unwrappedUnion##__typename) {
-    | \\"User\\" => \`User(wrapped |> __unwrap_user)
-    | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-    | _ => \`UnmappedUnionMember
+module Unions = {
+  module Union_response_participantById: {
+    type wrapped;
+    type user = {
+      lastName: string,
+      firstName: string,
+      id: string,
+    };
+    type observer = {
+      name: string,
+      id: string,
+    };
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    let unwrap: wrapped => t;
+  } = {
+    type wrapped;
+    type user = {
+      lastName: string,
+      firstName: string,
+      id: string,
+    };
+    type observer = {
+      name: string,
+      id: string,
+    };
+    external __unwrap_union: wrapped => {. \\"__typename\\": string} =
+      \\"%identity\\";
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    external __unwrap_user: wrapped => user = \\"%identity\\";
+    external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    let unwrap = wrapped => {
+      let unwrappedUnion = wrapped |> __unwrap_union;
+      switch (unwrappedUnion##__typename) {
+      | \\"User\\" => \`User(wrapped |> __unwrap_user)
+      | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
+      | _ => \`UnmappedUnionMember
+      };
     };
   };
 };
+
+open Unions;
+
 module Types = {};
 
 type response = {participantById: option(Union_response_participantById.t)};

@@ -4,7 +4,9 @@ module Unions = {};
 
 module Types = {};
 
-type response = unit;
+type response = {
+  __wrappedFragment__TestPagination_query: ReasonRelay.wrappedFragmentRef,
+};
 type refetchVariables = {
   groupId: option(string),
   onlineStatuses: option(array(SchemaAssets.Enum_OnlineStatus.t)),
@@ -26,14 +28,14 @@ type variables = {
 };
 
 module FragmentConverters: {
-  let response_getFragments:
+  let unwrapFragments_response:
     response =>
     {
       .
       "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
     };
 } = {
-  external response_getFragments:
+  external unwrapFragments_response:
     response =>
     {
       .

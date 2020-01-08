@@ -6,6 +6,7 @@ module Types = {
   type node = {
     id: string,
     onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    __wrappedFragment__TestFragment_plural_user: ReasonRelay.wrappedFragmentRef,
   };
   type edges = {node: option(node)};
   type users = {edges: option(array(option(edges)))};
@@ -21,21 +22,21 @@ type response = {
 type variables = unit;
 
 module FragmentConverters: {
-  let node_getFragments:
+  let unwrapFragments_node:
     node =>
     {
       .
       "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
     };
-  let loggedInUser_getFragments:
+  let unwrapFragments_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t};
 } = {
-  external loggedInUser_getFragments:
+  external unwrapFragments_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t} =
     "%identity";
-  external node_getFragments:
+  external unwrapFragments_node:
     node =>
     {
       .

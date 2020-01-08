@@ -12,11 +12,11 @@ type response = {loggedInUser};
 type variables = unit;
 
 module FragmentConverters: {
-  let loggedInUser_getFragments:
+  let unwrapFragments_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t};
 } = {
-  external loggedInUser_getFragments:
+  external unwrapFragments_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t} =
     "%identity";

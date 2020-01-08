@@ -37,7 +37,7 @@ module Test = {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
     let data =
-      Fragment.use(query.loggedInUser |> Query.loggedInUser_getFragments);
+      Fragment.use(query.loggedInUser->Query.unwrapFragments_loggedInUser);
 
     <div>
       {React.string(

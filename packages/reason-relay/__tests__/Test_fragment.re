@@ -68,14 +68,15 @@ module Test = {
   let make = () => {
     let query = Query.use(~variables=(), ());
     let data =
-      Fragment.use(query.loggedInUser |> Query.loggedInUser_getFragments);
+      Fragment.use(query.loggedInUser->Query.unwrapFragments_loggedInUser);
 
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
         edges->Belt.Array.keepMap(edge =>
           switch (edge) {
-          | Some({node: Some(node)}) => Some(node->Query.node_getFragments)
+          | Some({node: Some(node)}) =>
+            Some(node->Query.unwrapFragments_node)
           | _ => None
           }
         )
