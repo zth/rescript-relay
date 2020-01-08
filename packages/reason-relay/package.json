@@ -1,6 +1,6 @@
 {
   "name": "reason-relay",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "main": "src/ReasonRelay.re",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -24,7 +24,8 @@
   "scripts": {
     "build": "bsb -clean-world -make-world",
     "build:test": "compiler/compiler-cli.js && ./src/vendor/relay-compiler/bin/relay-compiler",
-    "postinstall": "node postinstall.js"
+    "postinstall": "node postinstall.js",
+    "test": "jest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
