@@ -287,7 +287,7 @@ let printRootType = (~state: fullState, rootType) =>
   };
 
 let printFragmentExtractor = (~obj: object_, ~state, ~printMode, name) => {
-  let fnName = "unwrapFragments_" ++ name;
+  let fnName = "unwrapFragment_" ++ name;
   let signature =
     name
     ++ " => "

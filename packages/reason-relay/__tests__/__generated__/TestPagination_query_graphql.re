@@ -19,7 +19,7 @@ module Unions = {
       id: string,
     };
     type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
-    let unwrapFragments_user:
+    let unwrapFragment_user:
       user =>
       {
         .
@@ -57,7 +57,7 @@ module Unions = {
       };
     };
 
-    external unwrapFragments_user:
+    external unwrapFragment_user:
       user =>
       {
         .

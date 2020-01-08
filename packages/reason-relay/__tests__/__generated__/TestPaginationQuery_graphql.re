@@ -14,14 +14,14 @@ let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
 type variables = {groupId: string};
 
 module FragmentConverters: {
-  let unwrapFragments_response:
+  let unwrapFragment_response:
     response =>
     {
       .
       "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
     };
 } = {
-  external unwrapFragments_response:
+  external unwrapFragment_response:
     response =>
     {
       .

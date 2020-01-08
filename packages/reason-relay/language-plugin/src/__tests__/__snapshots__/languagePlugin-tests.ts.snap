@@ -79,11 +79,11 @@ type fragment = {
 };
 
 module FragmentConverters: {
-  let unwrapFragments_fragment:
+  let unwrapFragment_fragment:
     fragment =>
     {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t};
 } = {
-  external unwrapFragments_fragment:
+  external unwrapFragment_fragment:
     fragment =>
     {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t} =
     \\"%identity\\";
@@ -412,9 +412,9 @@ module Unions = {
       id: string,
     };
     type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-    let unwrapFragments_user:
+    let unwrapFragment_user:
       user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t};
-    let unwrapFragments_observer:
+    let unwrapFragment_observer:
       observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t};
     let unwrap: wrapped => t;
   } = {
@@ -441,10 +441,10 @@ module Unions = {
       };
     };
 
-    external unwrapFragments_user:
+    external unwrapFragment_user:
       user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t} =
       \\"%identity\\";
-    external unwrapFragments_observer:
+    external unwrapFragment_observer:
       observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
       \\"%identity\\";
   };

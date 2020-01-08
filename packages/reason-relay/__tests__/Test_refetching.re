@@ -31,7 +31,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
     let (data, refetch) =
       Fragment.useRefetchable(
-        query.loggedInUser->Query.unwrapFragments_loggedInUser,
+        query.loggedInUser->Query.unwrapFragment_loggedInUser,
       );
 
     let (startTransition, _) =

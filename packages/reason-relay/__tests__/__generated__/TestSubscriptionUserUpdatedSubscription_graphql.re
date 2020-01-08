@@ -17,14 +17,14 @@ type response = {userUpdated: option(userUpdated)};
 type variables = {userId: string};
 
 module FragmentConverters: {
-  let unwrapFragments_user:
+  let unwrapFragment_user:
     user =>
     {
       .
       "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
     };
 } = {
-  external unwrapFragments_user:
+  external unwrapFragment_user:
     user =>
     {
       .

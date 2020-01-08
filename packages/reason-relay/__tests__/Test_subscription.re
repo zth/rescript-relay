@@ -39,7 +39,7 @@ module Test = {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
     let data =
-      Fragment.use(query.loggedInUser->Query.unwrapFragments_loggedInUser);
+      Fragment.use(query.loggedInUser->Query.unwrapFragment_loggedInUser);
 
     React.useEffect0(() => {
       let disposable =

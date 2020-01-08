@@ -22,21 +22,21 @@ type response = {
 type variables = unit;
 
 module FragmentConverters: {
-  let unwrapFragments_node:
+  let unwrapFragment_node:
     node =>
     {
       .
       "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
     };
-  let unwrapFragments_loggedInUser:
+  let unwrapFragment_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t};
 } = {
-  external unwrapFragments_loggedInUser:
+  external unwrapFragment_loggedInUser:
     loggedInUser =>
     {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t} =
     "%identity";
-  external unwrapFragments_node:
+  external unwrapFragment_node:
     node =>
     {
       .
