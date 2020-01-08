@@ -1,12 +1,3 @@
-/** Collects all non-null nodes from a connection. */
-let collectConnectionNodes:
-  {
-    ..
-    "edges":
-      Js.Nullable.t(array(Js.Nullable.t({.. "node": Js.Nullable.t('a)}))),
-  } =>
-  array('a);
-
 /** Tries to return a record from a nested path of linked records. */;
 let resolveNestedRecord:
   (~rootRecord: option(ReasonRelay.RecordProxy.t), ~path: list(string)) =>
