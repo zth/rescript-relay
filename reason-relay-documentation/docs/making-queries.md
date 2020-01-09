@@ -34,11 +34,11 @@ This is what a query definition looks like in ReasonRelay. This will be transfor
 [@react.component]
 let make = (~userId) => {
   let queryData = Query.use(~variables={
-    "userId": userId
+    userId: userId
   }, ());
 
-  switch(queryData##userById |> Js.Nullable.toOption) {
-    | Some(user) => <div>{React.string(user##firstName ++ " " ++ user##lastName)}</div>
+  switch(queryData.userById) {
+    | Some(user) => <div>{React.string(user.firstName ++ " " ++ user.lastName)}</div>
     | None => React.null
   };
 };

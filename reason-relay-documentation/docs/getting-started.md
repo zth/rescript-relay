@@ -6,7 +6,7 @@ sidebar_label: Getting Started
 
 #### Recommended background reading
 
-- [Getting started with ReasonReact](https://reasonml.github.io/reason-react/docs/en/installation) - _Note that ReasonRelay requires `bs-platform@6`_
+- [Getting started with ReasonReact](https://reasonml.github.io/reason-react/docs/en/installation) - _Note that ReasonRelay requires `bs-platform@7`_
 - [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
 
 #### Want to follow along with code?
@@ -47,11 +47,11 @@ First thing's first - ReasonRelay _requires BuckleScript 6_. It will _not_ work 
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@experimental react-dom@experimental
+yarn add react@0.0.0-experimental-f6b8d31a7 react-dom@0.0.0-experimental-f6b8d31a7
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 7, so install that exact version
-yarn add reason-relay graphql relay-runtime@7.0.0 relay-compiler@7.0.0 react-relay@experimental relay-config@7.0.0
+# We currently depend on Relay version 8, so install that exact version
+yarn add reason-relay graphql relay-runtime@8.0.0 relay-compiler@8.0.0 react-relay@0.0.0-experimental-5f1cb628 relay-config@8.0.0
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -69,14 +69,14 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `^0.0.0-experimental-f6b8d31a7` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-f6b8d31a7` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "^0.0.0-experimental-f6b8d31a7",
-    "react-dom": "^0.0.0-experimental-f6b8d31a7"
+    "react": "0.0.0-experimental-f6b8d31a7",
+    "react-dom": "0.0.0-experimental-f6b8d31a7"
   }
 }
 ```
@@ -144,10 +144,10 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
       fetchWithInit(
         "http://localhost:4000/graphql",
         RequestInit.make(
-          ~method_=Post,
+          ~method=Post,
           ~body=
             Js.Dict.fromList([
-              ("query", Js.Json.string(operation##text)),
+              ("query", Js.Json.string(operation.text)),
               ("variables", variables),
             ])
             |> Js.Json.object_

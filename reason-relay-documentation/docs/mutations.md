@@ -30,17 +30,16 @@ module UpdateMutation = [%relay.mutation {|
 ];
 
 [@react.component]
-let make = (...) => {
-  ...
+let make = () => {
   <button
     onClick={_ =>
         UpdateMutation.commitMutation(
             ~environment=RelayEnv.environment,
             ~variables={
-                "input": {
-                    "clientMutationId": None,
-                    "id": todoItem##id,
-                    "text": newText,
+                input: {
+                    clientMutationId: None,
+                    id: todoItem.id,
+                    text: newText,
                 },
             },
             (),
@@ -57,7 +56,7 @@ let make = (...) => {
 
 ```
 
-There's lots of code stripped in this example, but hopefully you get the gist of it. Let's break it down:
+Let's break it down:
 
 1. `[%relay.mutation]` autogenerates a `commitMutation` function that takes `environment` and `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference).
 2. We call `commitMutation` and give it our `environment` + the input for the mutation through `variables`.
@@ -73,7 +72,7 @@ But, there's plenty more to mutations than this. Let's move along and look at so
 
 When you do a simple update of a field on an object, Relay will automatically sync your UI and update all places where that field on that object is used, as long as you ask for the updated field in your mutation response. However, there are lots of cases where you'll want to do more intricate updates of the Relay store after a mutation, like when deleting an item from a list, adding an item to a list, and so on.
 
-`commitMutation` takes an optional prop called `updater`. `updater` is a function that receives the Relay store (`RecordSourceSelectorProxy.t`) and lets you apply any updates to the store in response to a mutation.
+`commitMutation` takes an optional prop called `updater`. `updater` is a function that receives the Relay store (`RecordSourceSelectorProxy.t`) and the `'response` from the mutation. It lets you apply any updates to the store in response to a mutation.
 
 _This section is a work in progress_.
 
@@ -85,23 +84,21 @@ Optimistically updating your UI can do wonders for UX, and Relay provides all th
 UpdateMutation.commitMutation(
     ~environment=RelayEnv.environment,
     ~variables={
-        "input": {
-            "clientMutationId": None,
-            "id": todoItem##id,
-            "text": todoItem##text,
+        input: {
+            clientMutationId: None,
+            id: todoItem.id,
+            text: todoItem.text,
         },
     },
     ~optimisticResponse={
-        "updateTodoItem":
+        updateTodoItem:
             Some({
-            "updatedTodoItem":
+            updatedTodoItem:
                 Some({
-                "id": todoItem##id,
-                "text": todoItem##text,
-                })
-                |> Js.Nullable.fromOption,
-            })
-            |> Js.Nullable.fromOption,
+                "id": todoItem.id,
+                "text": todoItem.text,
+                }),
+            }),
         },
     (),
 )
@@ -110,7 +107,7 @@ UpdateMutation.commitMutation(
 So, what's going on here?
 
 1. In addition to `environment` and `variables`, we also supply `optimisticResponse` to `commitMutation`.
-2. `optimisticResponse` is expected to _match the shape of the server response exactly_. That's why we for example must model all nullable items as `Some(...) |> Js.Nullable.fromOption` (interested in why things are modelled as `Js.Nullable.t` and not `option` directly? Check out [quirks of ReasonRelay](quirks-of-reason-relay)) The ReasonML compiler will guide you through providing a response of the correct shape.
+2. `optimisticResponse` is expected to _match the shape of the server response exactly_. The ReasonML compiler will guide you through providing a response of the correct shape.
 3. Relay will take the `optimisticResponse` and apply it as it's sending the mutation request, which in turn will make the UI update right away.
 
 There, now we have a basic optimistic update set up! Instead of waiting for the mutation to complete, Relay will update all parts of the UI using that particular todo item's `text` field right away, and it'll roll back to the old value appropriately if the mutation fails.
@@ -135,12 +132,12 @@ Commits the specified mutation to Relay and returns a `Js.Promise.t('response)` 
 
 _Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
 
-| Name                 | Type                                  | Required | Notes                                                                                                                                                                                                                      |
-| -------------------- | ------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `environment`        | `Environment.t`                       | _Yes_    |                                                                                                                                                                                                                            |
-| `variables`          | `'variables`                          | _Yes_    | Variables derived from the GraphQL operation                                                                                                                                                                               |
-| `optimisticResponse` | `'response`                           | No       | The shape of the response, derived from the GraphQL operation.                                                                                                                                                             |
-| `optimisticUpdater`  | `RecordSourceSelectorProxy.t => unit` | No       | An updater that can update the store optimistically. [Read more about optimistic updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater)                                 |
-| `updater`            | `RecordSourceSelectorProxy.t => unit` | No       | An updater that will be applied to the store when the mutation results are merged to the store. [Read more about updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater) |
+| Name                 | Type                                               | Required | Notes                                                                                                                                                                                                                      |
+| -------------------- | -------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `environment`        | `Environment.t`                                    | _Yes_    |                                                                                                                                                                                                                            |
+| `variables`          | `'variables`                                       | _Yes_    | Variables derived from the GraphQL operation                                                                                                                                                                               |
+| `optimisticResponse` | `'response`                                        | No       | The shape of the response, derived from the GraphQL operation.                                                                                                                                                             |
+| `optimisticUpdater`  | `RecordSourceSelectorProxy.t => unit`              | No       | An updater that can update the store optimistically. [Read more about optimistic updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater)                                 |
+| `updater`            | `(RecordSourceSelectorProxy.t, 'response) => unit` | No       | An updater that will be applied to the store when the mutation results are merged to the store. [Read more about updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater) |
 
 > `commitMutation` uses Relay's `commitMutation` under the hood, which you can [read more about here](https://relay.dev/docs/en/mutations#commitmutation).
