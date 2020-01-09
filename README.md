@@ -19,18 +19,22 @@ module UserFragment = [%relay.fragment
 ];
 
 [@react.component]
-let make = (~user as userRef) => {
-  let user = UserFragment.use(userRef);
+let make = (~user) => {
+  let userData = UserFragment.use(user);
 
   <img
     className="avatar"
-    src={user##avatarUrl}
-    alt={user##firstName ++ " " user##lastName}
+    src={userData.avatarUrl}
+    alt={userData.firstName ++ " " userData.lastName}
   />;
 };
 ```
 
 Fragments can include other fragments. This allows you to break your UI into encapsulated components defining their own data demands.
+
+You pass data for fragments around by unwrapping it from the object where it was spread. `Avatar_user` is spread right on the fragment, so we use `UserFragment.unwrapFragments_fragment()` to extract the fragment
+data and pass it to the `<Avatar />` component. The `<Avatar />` component then takes that and uses it
+to get its data.
 
 ```reason
 /* UserProfile.re */
@@ -46,18 +50,18 @@ module UserFragment = [%relay.fragment
 ];
 
 [@react.component]
-let make = (~user as userRef) => {
-  let user = UserFragment.use(userRef);
+let make = (~user) => {
+  let userData = UserFragment.use(user);
 
   <div>
-    <Avatar user />
-    <h1> {React.string(user##firstName ++ " " ++ user##lastName)} </h1>
+    <Avatar user={userData->UserFragment.unwrapFragment_fragment} />
+    <h1> {React.string(userData.firstName ++ " " ++ userData.lastName)} </h1>
     <div>
       <p>
         {React.string(
-           user##firstName
+           userData.firstName
            ++ " has "
-           ++ string_of_int(user##friendCount)
+           ++ userData.friendCount->string_of_int
            ++ " friends.",
          )}
       </p>
@@ -84,7 +88,7 @@ module Query = [%relay.query
 let make = () => {
   let queryData = Query.use(~variables=(), ());
 
-  <div> <UserProfile user={queryData##me} /> </div>;
+  <div> <UserProfile user={queryData.me->Query.unwrapFragment_me} /> </div>;
 };
 ```
 

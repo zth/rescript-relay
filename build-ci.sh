@@ -18,6 +18,7 @@ cp src/* ../../_release/src/;
 cp .npmignore ../../_release/;
 cp ../../README.md ../../_release/;
 cp -rf src/vendor ../../_release/src/vendor;
+rm ../../_release/src/*.bs.js;
 
 # copy config files
 echo "Copying config files..."
