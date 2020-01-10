@@ -40,8 +40,8 @@ let intermediateToFull =
       |> List.map((obj: Types.obj) =>
            (
              {
-               name: obj.name,
-               typeName: obj.name,
+               originalFlowTypeName: obj.originalFlowTypeName,
+               recordName: obj.originalFlowTypeName,
                atPath: ["root"],
                definition: obj.definition,
              }: Types.finalizedObj
@@ -89,8 +89,8 @@ let intermediateToFull =
       | Object(definition) =>
         addObject({
           atPath: newAtPath,
-          typeName: None,
-          name: None,
+          recordName: None,
+          originalFlowTypeName: None,
           definition,
         });
         definition |> traverseDefinition(~atPath=newAtPath);
@@ -123,8 +123,8 @@ let intermediateToFull =
       objects:
         s.objects
         |> List.map((obj: Types.finalizedObj) => {
-             let typeName =
-               switch (obj.typeName) {
+             let recordName =
+               switch (obj.recordName) {
                | None =>
                  let name =
                    Utils.findAppropriateObjName(
@@ -137,7 +137,7 @@ let intermediateToFull =
                | s => s
                };
 
-             {...obj, typeName};
+             {...obj, recordName};
            }),
     }
   );
@@ -163,7 +163,7 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   // Gather all type declarations and definitions.
   state.objects
   |> List.iter((obj: Types.finalizedObj) => {
-       switch (obj.typeName, obj.name) {
+       switch (obj.recordName, obj.originalFlowTypeName) {
        | (Some(name), Some(_)) =>
          addTypeDeclaration(
            Types.(
@@ -761,7 +761,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  ...state,
                  variables:
                    Some({
-                     name: None,
+                     originalFlowTypeName: None,
                      definition:
                        properties
                        |> makeObjShape(~state, ~path=["variables"]),
@@ -774,7 +774,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  ...state,
                  response:
                    Some({
-                     name: None,
+                     originalFlowTypeName: None,
                      definition:
                        properties |> makeObjShape(~state, ~path=["response"]),
                    }),
@@ -786,7 +786,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  ...state,
                  objects: [
                    {
-                     name: Some(typeName),
+                     originalFlowTypeName: Some(typeName),
                      definition:
                        properties |> makeObjShape(~state, ~path=["objects"]),
                    },
@@ -857,7 +857,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  ...state,
                  objects: [
                    {
-                     name: Some(typeName),
+                     originalFlowTypeName: Some(typeName),
                      definition:
                        properties |> makeObjShape(~state, ~path=["objects"]),
                    },

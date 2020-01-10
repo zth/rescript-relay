@@ -1,12 +1,11 @@
 open Types;
 
 let printQuoted = propName => "\"" ++ propName ++ "\"";
-let printJsTPropName = propName => propName |> printQuoted;
+
 let printRecordPropName = propName => propName;
 let printEnumName = name => "enum_" ++ name;
 let getObjName = name => "obj_" ++ name;
 let printEnumTypeName = name => "SchemaAssets.Enum_" ++ name ++ ".t";
-let printWrappedEnumName = name => "SchemaAssets.Enum_" ++ name ++ ".wrapped";
 let printEnumUnwrapFnReference = name =>
   "SchemaAssets.Enum_" ++ name ++ ".unwrap";
 let printEnumWrapFnReference = name => "SchemaAssets.Enum_" ++ name ++ ".wrap";
@@ -14,7 +13,6 @@ let printUnionName = name => "Union_" ++ name;
 let printUnionTypeName = name => "Union_" ++ name ++ ".t";
 let printUnionUnwrapFnReference = name => "Union_" ++ name ++ ".unwrap";
 let printUnionWrapFnReference = name => "Union_" ++ name ++ ".wrap";
-let printWrappedUnionName = name => "union_" ++ name ++ "_wrapped";
 let printFragmentRef = name =>
   Tablecloth.String.capitalize(name) ++ "_graphql.t";
 let getFragmentRefName = name => "__$fragment_ref__" ++ name;
@@ -40,7 +38,7 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
       state.enums |> Tablecloth.List.find(~f=name => name == typeName),
       state.objects
       |> Tablecloth.List.find(~f=(obj: finalizedObj) =>
-           obj.name == Some(typeName)
+           obj.originalFlowTypeName == Some(typeName)
          ),
     ) {
     | (Some(enumName), _) => printEnumTypeName(enumName)
@@ -143,8 +141,8 @@ and printObjectOrReference = (~state: fullState, ~obj: object_) => {
   switch (
     state.objects |> Tablecloth.List.find(~f=o => {o.atPath == obj.atPath})
   ) {
-  | Some({typeName: Some(typeName)}) =>
-    Tablecloth.String.uncapitalize(typeName)
+  | Some({recordName: Some(recordName)}) =>
+    Tablecloth.String.uncapitalize(recordName)
   | Some(_)
   | None => printObject(~obj, ~state, ())
   };
@@ -341,8 +339,8 @@ let printUnion = (~state, union: union) => {
          Tablecloth.List.append(shape |> Utils.extractNestedObjects, [shape])
          |> List.map((definition: Types.object_) =>
               {
-                name: None,
-                typeName: {
+                originalFlowTypeName: None,
+                recordName: {
                   let name =
                     Utils.findAppropriateObjName(
                       ~prefix=None,
@@ -365,7 +363,7 @@ let printUnion = (~state, union: union) => {
                 name:
                   Tablecloth.Option.withDefault(
                     ~default="",
-                    definition.typeName,
+                    definition.recordName,
                   ),
                 atPath: definition.atPath,
                 definition: definition.definition,

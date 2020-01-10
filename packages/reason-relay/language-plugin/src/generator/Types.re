@@ -83,13 +83,13 @@ type fragment = {
 };
 
 type obj = {
-  name: option(string),
+  originalFlowTypeName: option(string),
   definition: object_,
 };
 
 type finalizedObj = {
-  name: option(string),
-  typeName: option(string),
+  originalFlowTypeName: option(string),
+  recordName: option(string),
   atPath: list(string),
   definition: object_,
 };

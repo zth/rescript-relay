@@ -102,8 +102,8 @@ let printGetConnectionNodesFunction =
                             ),
                        ) {
                        | (
-                           Some({typeName: Some(nodeTypeName)}),
-                           Some({typeName: Some(connectionTypeName)}),
+                           Some({recordName: Some(nodeTypeName)}),
+                           Some({recordName: Some(connectionTypeName)}),
                          ) =>
                          addToStr(
                            "let "
