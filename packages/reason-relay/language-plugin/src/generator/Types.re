@@ -9,18 +9,13 @@ type operationType =
   | Subscription(string)
   | Query(string);
 
-type objectMode =
+type objectPrintAs =
   | OnlyFragmentRefs
-  | Record
-  | JsT;
+  | Record;
 
 type objectPrintMode =
   | Full
   | Signature;
-
-type objectOptionalType =
-  | JsNullable
-  | Option;
 
 [@gentype]
 type connectionInfo = {
@@ -62,7 +57,6 @@ and propValues =
 and object_ = {
   values: array(propValues),
   atPath: list(string),
-  mode: objectMode,
   connection: option(connectionInfo),
 }
 and rootType =
@@ -73,7 +67,6 @@ and rootType =
       definition: object_,
       name: string,
       atPath: list(string),
-      optType: objectOptionalType,
     })
   | RefetchVariables(object_)
   | PluralFragment(object_);

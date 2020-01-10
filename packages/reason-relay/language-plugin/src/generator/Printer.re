@@ -49,30 +49,27 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
     }
   | None => typeName
   }
-and printPropType = (~propType, ~optType, ~state: Types.fullState) =>
+and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | Scalar(scalar) => printScalar(scalar)
-  | Object(obj) => printObjectOrReference(~obj, ~optType, ~state)
+  | Object(obj) => printObjectOrReference(~obj, ~state)
   | ObjectReference(objName) =>
     objName |> getObjName |> printTypeReference(~state=None)
-  | Array(propValue) => printArray(~propValue, ~optType, ~state)
+  | Array(propValue) => printArray(~propValue, ~state)
   | Enum(name) => printEnumTypeName(name)
   | Union(union) => printUnionTypeName(makeUnionName(union.atPath))
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
   }
-and printPropValue = (~propValue, ~optType, ~state) => {
+and printPropValue = (~propValue, ~state) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
   if (propValue.nullable) {
-    switch (optType) {
-    | Types.JsNullable => addToStr("Js.Nullable.t(")
-    | Option => addToStr("option(")
-    };
+    addToStr("option(");
   };
 
-  printPropType(~propType=propValue.propType, ~optType, ~state) |> addToStr;
+  printPropType(~propType=propValue.propType, ~state) |> addToStr;
 
   if (propValue.nullable) {
     addToStr(")");
@@ -80,8 +77,8 @@ and printPropValue = (~propValue, ~optType, ~state) => {
 
   str^;
 }
-and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
-  switch (obj.values |> Array.length, obj.mode) {
+and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) => {
+  switch (obj.values |> Array.length, printAs) {
   | (_, OnlyFragmentRefs) =>
     let str = ref("{.");
     let addToStr = s => str := str^ ++ s;
@@ -112,32 +109,6 @@ and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
     addToStr("}");
     str^;
   | (0, _) => "unit"
-  | (_, JsT) =>
-    let str = ref("{.");
-    let addToStr = s => str := str^ ++ s;
-
-    obj.values
-    |> Array.iteri((index, p) => {
-         if (index > 0) {
-           addToStr(",");
-         };
-
-         addToStr(
-           switch (p) {
-           | Prop(name, propValue) =>
-             printJsTPropName(name)
-             ++ ": "
-             ++ printPropValue(~propValue, ~optType, ~state)
-           | FragmentRef(name) =>
-             (name |> getFragmentRefName |> printQuoted)
-             ++ ": "
-             ++ printFragmentRef(name)
-           },
-         );
-       });
-
-    addToStr("}");
-    str^;
   | (_, Record) =>
     let str = ref("{");
     let addToStr = s => str := str^ ++ s;
@@ -153,8 +124,7 @@ and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
            | Prop(name, propValue) =>
              printRecordPropName(name)
              ++ ": "
-             ++ printPropValue(~propValue, ~optType, ~state)
-           // Fragment refs aren't supported in records, they'll need to be converted to JsT before fragments refs can be used
+             ++ printPropValue(~propValue, ~state)
            | FragmentRef(name) =>
              "__wrappedFragment__"
              ++ name
@@ -167,16 +137,16 @@ and printObject = (~obj: object_, ~optType: objectOptionalType, ~state) => {
     str^;
   };
 }
-and printArray = (~propValue, ~optType, ~state) =>
-  "array(" ++ printPropValue(~propValue, ~optType, ~state) ++ ")"
-and printObjectOrReference = (~state: fullState, ~obj: object_, ~optType) => {
+and printArray = (~propValue, ~state) =>
+  "array(" ++ printPropValue(~propValue, ~state) ++ ")"
+and printObjectOrReference = (~state: fullState, ~obj: object_) => {
   switch (
     state.objects |> Tablecloth.List.find(~f=o => {o.atPath == obj.atPath})
   ) {
   | Some({typeName: Some(typeName)}) =>
     Tablecloth.String.uncapitalize(typeName)
   | Some(_)
-  | None => printObject(~optType, ~obj, ~state)
+  | None => printObject(~obj, ~state, ())
   };
 };
 
@@ -191,7 +161,6 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
       ~obj={
         atPath: [],
         connection: None,
-        mode: Record,
         values:
           obj.values
           |> Array.map(value =>
@@ -202,7 +171,7 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
                }
              ),
       },
-      ~optType=Option,
+      (),
     ),
   );
   addToStr(";");
@@ -246,9 +215,9 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
 let printRootType = (~state: fullState, rootType) =>
   switch (rootType) {
   | Operation(obj) =>
-    "type response = " ++ printObject(~obj, ~optType=Option, ~state) ++ ";"
+    "type response = " ++ printObject(~obj, ~state, ()) ++ ";"
   | Variables(obj) =>
-    "type variables = " ++ printObject(~obj, ~optType=Option, ~state) ++ ";"
+    "type variables = " ++ printObject(~obj, ~state, ()) ++ ";"
   | RefetchVariables(obj) =>
     switch (obj.values |> Array.length) {
     | 0 => ""
@@ -256,8 +225,8 @@ let printRootType = (~state: fullState, rootType) =>
     }
 
   | Fragment(obj) =>
-    "type fragment = " ++ printObject(~obj, ~optType=Option, ~state) ++ ";"
-  | ObjectTypeDeclaration({name, definition, optType}) =>
+    "type fragment = " ++ printObject(~obj, ~state, ()) ++ ";"
+  | ObjectTypeDeclaration({name, definition}) =>
     "type "
     ++ Tablecloth.String.uncapitalize(name)
     ++ (
@@ -275,13 +244,13 @@ let printRootType = (~state: fullState, rootType) =>
         |> Tablecloth.Array.length
       ) {
       | 0 => ""
-      | _ => " = " ++ printObject(~obj=definition, ~optType, ~state)
+      | _ => " = " ++ printObject(~obj=definition, ~state, ())
       }
     )
     ++ ";"
   | PluralFragment(obj) =>
     "type fragment_t = "
-    ++ printObject(~obj, ~optType=Option, ~state)
+    ++ printObject(~obj, ~state, ())
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   };
@@ -289,13 +258,7 @@ let printRootType = (~state: fullState, rootType) =>
 let printFragmentExtractor = (~obj: object_, ~state, ~printMode, name) => {
   let fnName = "unwrapFragment_" ++ name;
   let signature =
-    name
-    ++ " => "
-    ++ printObject(
-         ~obj={...obj, mode: OnlyFragmentRefs},
-         ~optType=JsNullable,
-         ~state,
-       );
+    name ++ " => " ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ());
 
   switch (printMode) {
   | Full => "external " ++ fnName ++ ": " ++ signature ++ " = \"%identity\";"
@@ -303,31 +266,26 @@ let printFragmentExtractor = (~obj: object_, ~state, ~printMode, name) => {
   };
 };
 
-let printObjectDefinition = (~name, ~state, ~printMode, definition) => {
+let printObjectDefinition = (~name, ~state, ~printMode, definition: object_) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
-  switch (definition.mode) {
-  | Record =>
-    switch (
-      definition.values
-      |> Tablecloth.Array.filter(~f=v =>
-           switch (v) {
-           | FragmentRef(_) => true
-           | Prop(_) => false
-           }
-         )
-      |> Tablecloth.Array.length
-    ) {
-    | 0 => ()
-    | _ =>
-      addToStr("\n");
-      addToStr(
-        name |> printFragmentExtractor(~state, ~printMode, ~obj=definition),
-      );
-    }
-  | JsT
-  | OnlyFragmentRefs => ()
+  switch (
+    definition.values
+    |> Tablecloth.Array.filter(~f=v =>
+         switch (v) {
+         | FragmentRef(_) => true
+         | Prop(_) => false
+         }
+       )
+    |> Tablecloth.Array.length
+  ) {
+  | 0 => ()
+  | _ =>
+    addToStr("\n");
+    addToStr(
+      name |> printFragmentExtractor(~state, ~printMode, ~obj=definition),
+    );
   };
 
   str^;
@@ -411,7 +369,6 @@ let printUnion = (~state, union: union) => {
                   ),
                 atPath: definition.atPath,
                 definition: definition.definition,
-                optType: Option,
               })
             );
 

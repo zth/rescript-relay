@@ -171,7 +171,6 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
                name,
                definition: obj.definition,
                atPath: obj.atPath,
-               optType: Option,
              })
            ),
          )
@@ -182,7 +181,6 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
                name,
                definition: obj.definition,
                atPath: obj.atPath,
-               optType: Option,
              })
            ),
          )
@@ -641,7 +639,6 @@ and makeObjShape =
     atPath: path,
     connection: connectionInfo^,
     values: values^ |> Tablecloth.List.reverse |> Tablecloth.Array.fromList,
-    mode: Record,
   };
 }
 and makeUnionMember =
