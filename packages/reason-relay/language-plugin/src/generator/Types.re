@@ -85,6 +85,7 @@ type fragment = {
 type obj = {
   originalFlowTypeName: option(string),
   definition: object_,
+  foundInUnion: bool,
 };
 
 type finalizedObj = {
@@ -92,6 +93,7 @@ type finalizedObj = {
   recordName: option(string),
   atPath: list(string),
   definition: object_,
+  foundInUnion: bool,
 };
 
 type intermediateState = {

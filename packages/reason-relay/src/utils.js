@@ -10,6 +10,7 @@ function traverse(
   var hasChanges = false;
 
   for (var key in currentObj) {
+    var isUnion = false;
     var originalValue = currentObj[key];
 
     // Instructions are stored by the path in the object where they apply
@@ -17,6 +18,7 @@ function traverse(
     var path = thisPath.join("_");
 
     var instructions = instructionMap[path];
+
     var hasDeeperInstructions =
       instructionPaths.filter(function(p) {
         return p.indexOf(path) === 0 && p.length > path.length;
@@ -70,7 +72,44 @@ function traverse(
         case 3: {
           if (currentObj[key] != null && converters[value]) {
             hasChanges = true;
-            newObj[key] = converters[value](currentObj[key]);
+            isUnion = true;
+
+            if (Array.isArray(currentObj[key])) {
+              newObj[key] = currentObj[key].map(function(v) {
+                /**
+                 * Unions are special. Since their
+                 */
+
+                if (v == null) {
+                  return nullableValue;
+                }
+
+                var traversedValue = traverse(
+                  [].concat(currentPath, [key, v.__typename.toLowerCase()]),
+                  v,
+                  instructionMap,
+                  converters,
+                  nullableValue,
+                  instructionPaths
+                );
+
+                return converters[value](traversedValue);
+              });
+            } else {
+              var traversedValue = traverse(
+                [].concat(currentPath, [
+                  key,
+                  currentObj[key].__typename.toLowerCase()
+                ]),
+                currentObj[key],
+                instructionMap,
+                converters,
+                nullableValue,
+                instructionPaths
+              );
+
+              newObj[key] = converters[value](traversedValue);
+            }
           }
 
           break;
@@ -78,7 +117,7 @@ function traverse(
       }
     });
 
-    if (hasDeeperInstructions && originalValue != null) {
+    if (hasDeeperInstructions && originalValue != null && !isUnion) {
       if (
         typeof currentObj[key] === "object" &&
         !Array.isArray(originalValue)
@@ -156,7 +195,7 @@ function traverser(root, _instructionMap, converters, nullableValue) {
 
   var newObj = Object.assign({}, root);
 
-  return traverse(
+  var v = traverse(
     [],
     newObj,
     instructionMap,
@@ -164,6 +203,8 @@ function traverser(root, _instructionMap, converters, nullableValue) {
     nullableValue,
     instructionPaths
   );
+
+  return v;
 }
 
 module.exports = { traverser };

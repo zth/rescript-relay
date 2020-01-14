@@ -1,5 +1,7 @@
 open Types;
 
+exception Could_not_find_matching_record_definition(string);
+
 let printQuoted = propName => "\"" ++ propName ++ "\"";
 
 let printRecordPropName = propName => propName;
@@ -50,7 +52,7 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
 and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | Scalar(scalar) => printScalar(scalar)
-  | Object(obj) => printObjectOrReference(~obj, ~state)
+  | Object(obj) => printRecordReference(~obj, ~state)
   | ObjectReference(objName) =>
     objName |> getObjName |> printTypeReference(~state=None)
   | Array(propValue) => printArray(~propValue, ~state)
@@ -137,14 +139,21 @@ and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) =>
 }
 and printArray = (~propValue, ~state) =>
   "array(" ++ printPropValue(~propValue, ~state) ++ ")"
-and printObjectOrReference = (~state: fullState, ~obj: object_) => {
+and printRecordReference = (~state: fullState, ~obj: object_) => {
   switch (
     state.objects |> Tablecloth.List.find(~f=o => {o.atPath == obj.atPath})
   ) {
   | Some({recordName: Some(recordName)}) =>
     Tablecloth.String.uncapitalize(recordName)
   | Some(_)
-  | None => printObject(~obj, ~state, ())
+  | None =>
+    raise(
+      Could_not_find_matching_record_definition(
+        obj.atPath
+        |> Tablecloth.List.reverse
+        |> Tablecloth.String.join(~sep="_"),
+      ),
+    )
   };
 };
 
@@ -352,6 +361,7 @@ let printUnion = (~state, union: union) => {
                   Some(name);
                 },
                 atPath: definition.atPath,
+                foundInUnion: true,
                 definition,
               }
             );

@@ -44,6 +44,7 @@ let intermediateToFull =
                recordName: obj.originalFlowTypeName,
                atPath: ["root"],
                definition: obj.definition,
+               foundInUnion: obj.foundInUnion,
              }: Types.finalizedObj
            )
          ),
@@ -72,19 +73,30 @@ let intermediateToFull =
   let addObject = obj => setState(s => {...s, objects: [obj, ...s.objects]});
 
   let rec traverseDefinition =
-          (~atPath: list(string), definition: Types.object_) =>
-    definition.values |> Array.iter(traversePropValue(~atPath))
+          (~inUnion, ~atPath: list(string), definition: Types.object_) =>
+    definition.values |> Array.iter(traversePropValue(~inUnion, ~atPath))
   and traversePropValue =
-      (~atPath: list(string), propValue: Types.propValues) =>
+      (~inUnion, ~atPath: list(string), propValue: Types.propValues) =>
     switch (propValue) {
     | FragmentRef(_) => ()
     | Prop(name, {propType}) =>
       let newAtPath = [name, ...atPath];
+
       switch (propType) {
       | Array({propType: Enum(enum)})
       | Enum(enum) => addEnum(enum)
       | Array({propType: Union(union)})
-      | Union(union) => addUnion(union)
+      | Union(union) =>
+        addUnion(union);
+
+        union.members
+        ->Belt.List.forEach(member => {
+            member.shape
+            |> traverseDefinition(
+                 ~inUnion=true,
+                 ~atPath=[member.name, ...newAtPath],
+               )
+          });
       | Array({propType: Object(definition)})
       | Object(definition) =>
         addObject({
@@ -92,8 +104,9 @@ let intermediateToFull =
           recordName: None,
           originalFlowTypeName: None,
           definition,
+          foundInUnion: inUnion,
         });
-        definition |> traverseDefinition(~atPath=newAtPath);
+        definition |> traverseDefinition(~inUnion, ~atPath=newAtPath);
       | Array(_)
       | Scalar(_)
       | FragmentRefValue(_)
@@ -103,17 +116,18 @@ let intermediateToFull =
     };
 
   switch (state^.variables) {
-  | Some(d) => d |> traverseDefinition(~atPath=["variables"])
+  | Some(d) => d |> traverseDefinition(~inUnion=false, ~atPath=["variables"])
   | None => ()
   };
 
   switch (state^.response) {
-  | Some(d) => d |> traverseDefinition(~atPath=["response"])
+  | Some(d) => d |> traverseDefinition(~inUnion=false, ~atPath=["response"])
   | None => ()
   };
 
   switch (state^.fragment) {
-  | Some(d) => d.definition |> traverseDefinition(~atPath=["fragment"])
+  | Some(d) =>
+    d.definition |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
   | None => ()
   };
 
@@ -163,8 +177,12 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   // Gather all type declarations and definitions.
   state.objects
   |> List.iter((obj: Types.finalizedObj) => {
-       switch (obj.recordName, obj.originalFlowTypeName) {
-       | (Some(name), Some(_)) =>
+       switch (obj) {
+       | {
+           foundInUnion: false,
+           recordName: Some(name),
+           originalFlowTypeName: Some(_),
+         } =>
          addTypeDeclaration(
            Types.(
              ObjectTypeDeclaration({
@@ -174,7 +192,11 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
              })
            ),
          )
-       | (Some(name), None) =>
+       | {
+           foundInUnion: false,
+           recordName: Some(name),
+           originalFlowTypeName: None,
+         } =>
          addTypeDeclaration(
            Types.(
              ObjectTypeDeclaration({
@@ -367,43 +389,26 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   | None => ()
   };
 
-  /**
-   * We'll emit a helper function for dealing with connection nodes if there's
-   * a connection present.
-   *
-  switch (state.response, state.fragment) {
-  | (Some({connection: Some(_)} as obj), _) => Js.log2(obj, "response")
-  | (_, Some({definition: {connection: Some(_)}} as obj)) => Js.log(obj)
-  | _ => ()
-  };
+  // We print a helper for extracting connection nodes whenever there's a connection present.
+  state.objects
+  |> Tablecloth.List.iter(~f=(o: Types.finalizedObj) =>
+       switch (
+         o.recordName,
+         o.definition |> TypesTransformerUtils.findObjWithConnection,
+       ) {
+       | (Some(recordName), Some(connectionObj)) =>
+         connectionObj
+         |> UtilsPrinter.printGetConnectionNodesFunction(
+              ~state,
+              ~connectionLocation=recordName,
+            )
+         |> addToStr
+       | _ => ()
+       }
+     );
 
-
-  switch (
-    state.objects
-    |> Tablecloth.List.filterMap(~f=(o: Types.finalizedObj) =>
-         switch (o) {
-         | {definition: {connection: Some(_)} as obj} => Some(obj)
-         | _ => None
-         }
-       )
-  ) {
-  | [obj] =>
-    addToStr(
-      obj
-      |> UtilsPrinter.printGetConnectionNodesFunction(
-           ~state,
-           ~connectionLocation="friendsConnection",
-         ),
-    )
-  | o =>
-    Js.log(o);
-    ();
-  };
-  */
-  /**
-     * This adds operationType, which is referenced in the raw output of the Relay
-     * runtime representation.
-     */
+  // This adds operationType, which is referenced in the raw output of the Relay
+  // runtime representation.
   addToStr(Printer.operationType(operationType));
   addSpacing();
 
@@ -642,7 +647,7 @@ and makeObjShape =
   };
 }
 and makeUnionMember =
-    (~state, props: list(Flow_ast.Type.Object.property('a, 'b)))
+    (~state, ~path, props: list(Flow_ast.Type.Object.property('a, 'b)))
     : Types.unionMember => {
   let name = ref(None);
   let filteredProps = ref([]);
@@ -669,7 +674,7 @@ and makeUnionMember =
         filteredProps^
         |> makeObjShape(
              ~state,
-             ~path=[name |> Tablecloth.String.uncapitalize],
+             ~path=[name |> Tablecloth.String.uncapitalize, ...path],
            ),
     }
   | None => raise(Missing_typename_field_on_union)
@@ -679,8 +684,8 @@ and makeUnion =
     (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
   let unionMembers =
     ref([
-      firstProps |> makeUnionMember(~state),
-      secondProps |> makeUnionMember(~state),
+      firstProps |> makeUnionMember(~state, ~path),
+      secondProps |> makeUnionMember(~state, ~path),
     ]);
 
   maybeMoreMembers
@@ -688,7 +693,7 @@ and makeUnion =
        switch (prop) {
        | (_, Object({properties})) =>
          unionMembers :=
-           [properties |> makeUnionMember(~state), ...unionMembers^]
+           [properties |> makeUnionMember(~state, ~path), ...unionMembers^]
        | _ => ()
        }
      );
@@ -762,6 +767,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  variables:
                    Some({
                      originalFlowTypeName: None,
+                     foundInUnion: false,
                      definition:
                        properties
                        |> makeObjShape(~state, ~path=["variables"]),
@@ -775,6 +781,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  response:
                    Some({
                      originalFlowTypeName: None,
+                     foundInUnion: false,
                      definition:
                        properties |> makeObjShape(~state, ~path=["response"]),
                    }),
@@ -787,6 +794,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  objects: [
                    {
                      originalFlowTypeName: Some(typeName),
+                     foundInUnion: false,
                      definition:
                        properties |> makeObjShape(~state, ~path=["objects"]),
                    },
@@ -857,6 +865,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  ...state,
                  objects: [
                    {
+                     foundInUnion: false,
                      originalFlowTypeName: Some(typeName),
                      definition:
                        properties |> makeObjShape(~state, ~path=["objects"]),

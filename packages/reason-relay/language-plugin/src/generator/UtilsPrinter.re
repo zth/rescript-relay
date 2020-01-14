@@ -198,7 +198,7 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
         atPath: currentPath,
         instruction: ConvertEnum(enumName),
       });
-    | Union({atPath}) =>
+    | Union({atPath, members}) =>
       converters->Js.Dict.set(
         Printer.makeUnionName(atPath),
         switch (direction) {
@@ -212,6 +212,16 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
       addInstruction({
         atPath: currentPath,
         instruction: ConvertUnion(Printer.makeUnionName(atPath)),
+      });
+
+      members->Belt.List.forEach(member => {
+        member.shape.values
+        |> traverseProps(
+             ~currentPath=[
+               member.name |> Tablecloth.String.toLower,
+               ...currentPath,
+             ],
+           )
       });
     | Array({nullable, propType}) =>
       if (nullable) {

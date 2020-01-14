@@ -36,6 +36,7 @@ type Group implements Node {
   id: ID!
   name: String!
   avatarUrl: String
+  members: [Member]
   adminsConnection(
     after: String
     first: Int

@@ -276,6 +276,60 @@ describe("Language plugin tests", () => {
         )
       ).toBe(true);
     });
+
+    it("handles connections", () => {
+      const generated = generate(`fragment TestPagination_query on Query
+      @argumentDefinitions(
+        count: { type: "Int", defaultValue: 2 }
+        cursor: { type: "String", defaultValue: "" }
+      ) {
+      participantsConnection(
+        first: $count
+        after: $cursor
+      ) @connection(key: "TestPagination_query_usersConnection") {
+        edges {
+          node {
+            __typename
+            ... on User {
+              id
+              participants {
+                edges {
+                  node {
+                    __typename
+                    ... on User {
+                      id
+                      firstName
+                      participants {
+                        edges {
+                          node {
+                            __typename
+                            ... on User {
+                              id
+                              firstName
+                            }
+                            ... on Observer {
+                              id
+                            }
+                          }
+                        }
+                      }
+                    }
+                    ... on Observer {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+            ... on Observer {
+              id
+            }
+          }
+        }
+      }
+    }`);
+      console.log(generated);
+    });
   });
 
   describe("Mutation", () => {
@@ -495,6 +549,41 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
+
+    it("handles nested unions", () => {
+      let generated = generate(
+        `query appQuery {
+            participantById(id: "123") {
+              __typename
+              ... on User {
+                id
+                firstName
+                lastName
+              }
+
+              ... on Observer {
+                id
+                name
+                manager {
+                  __typename
+                  ... on User {
+                    id
+                    firstName
+                    lastName
+                  }
+                  ... on Observer {
+                    id
+                    isOnline
+                    status
+                  }
+                }
+              }
+            }
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 
   describe("Misc", () => {
@@ -513,6 +602,22 @@ describe("Language plugin tests", () => {
 
       expect(collapseString(generated)).toMatch(
         `type response = {users: array(users)};`
+      );
+    });
+
+    it.skip("generates connection helpers when connection is present", () => {
+      let generated = generate(
+        `query SomeQuery {
+          me {
+            friendsConnection(first: 2) @connection(key: "SomeQuery_me_friendsConnection") {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
+          }
+        }`
       );
     });
   });

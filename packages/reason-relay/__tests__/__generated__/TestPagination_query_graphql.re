@@ -70,8 +70,8 @@ module Unions = {
 open Unions;
 
 module Types = {
-  type edges = {node: option(Union_fragment_members_edges_node.t)};
-  type members = {edges: option(array(option(edges)))};
+  type members_edges = {node: option(Union_fragment_members_edges_node.t)};
+  type members = {edges: option(array(option(members_edges)))};
 };
 
 open Types;
@@ -83,7 +83,7 @@ module FragmentConverters: {} = {};
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"members":[[0,""]],"members_edges":[[0,""],[1,""]],"members_edges_node":[[0,""],[3,"fragment_members_edges_node"]]} |}
+    {| {"members":[[0,""]],"members_edges":[[0,""],[1,""]],"members_edges_node":[[0,""],[3,"fragment_members_edges_node"]],"members_edges_node_group_adminsConnection_edges":[[0,""],[1,""]],"members_edges_node_group_adminsConnection_edges_node":[[0,""]]} |}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": Union_fragment_members_edges_node.unwrap,

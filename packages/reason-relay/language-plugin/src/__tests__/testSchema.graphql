@@ -15,12 +15,29 @@ enum UserRole {
   User
 }
 
+enum ObserverStatus {
+  Active
+  Inactive
+}
+
 type Query {
   me: User!
   user(id: ID!): User
   userByLocation(location: LocationBounds!): User
   participantById(id: ID!): Participant
   users: [User!]!
+  usersConnection(
+    first: Int
+    after: String
+    last: Int
+    before: String
+  ): UserConnection
+  participantsConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): ParticipantConnection
   Observer(id: ID!): Observer
   node(id: ID!): Node
 }
@@ -67,20 +84,39 @@ type User implements Node {
     before: String
     last: Int
   ): UserConnection
+  participants(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): ParticipantConnection
 }
 
 type Observer implements Node {
   id: ID!
   name: String!
+  isOnline: Boolean
+  status: ObserverStatus!
   observingUsersConnection(
     after: String
     first: Int
     before: String
     last: Int
   ): UserConnection
+  manager: Participant
 }
 
 union Participant = User | Observer
+
+type ParticipantConnection {
+  pageInfo: PageInfo!
+  edges: [ParticipantEdge]
+}
+
+type ParticipantEdge {
+  node: Participant
+  cursor: String!
+}
 
 type Location {
   id: ID!
