@@ -1,6 +1,6 @@
 # master
 
--
+- Fix nasty bug with new record types generation and autodecoding where things nested inside of unions would not be autodecoded.
 
 # 0.5.0
 
