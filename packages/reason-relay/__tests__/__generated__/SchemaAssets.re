@@ -8,6 +8,8 @@ module Enum_OnlineStatus: {
   type wrapped;
   let unwrap: wrapped => t;
   let wrap: t => wrapped;
+  let toString: t => string;
+  let fromString: string => t;
 } = {
   type t = [ | `Online | `Idle | `Offline | `FUTURE_ADDED_VALUE__];
   type wrapped;
@@ -33,4 +35,7 @@ module Enum_OnlineStatus: {
       }
     )
     |> __wrap;
+
+  let toString = t => t |> wrap |> __unwrap;
+  let fromString = str => str |> __wrap |> unwrap;
 };

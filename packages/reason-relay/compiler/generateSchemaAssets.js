@@ -19,6 +19,8 @@ function generateSchemaAssets(schema, targetPath) {
         type wrapped;
         let unwrap: wrapped => t;
         let wrap: t => wrapped;
+        let toString: t => string;
+        let fromString: string => t;
       } = {
         ${enumT};
         type wrapped;
@@ -35,6 +37,9 @@ function generateSchemaAssets(schema, targetPath) {
           ${values.map(val => `| \`${val} => "${val}"`).join("")}
           | \`FUTURE_ADDED_VALUE__ => ""
         } |> __wrap;
+
+        let toString = t => t |> wrap |> __unwrap;
+        let fromString = str => str |> __wrap |> unwrap;
       };
       `;
     })
