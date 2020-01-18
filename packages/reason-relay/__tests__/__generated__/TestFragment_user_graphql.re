@@ -1,12 +1,19 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {};
 
 type fragment = {
   firstName: string,
-  onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+  onlineStatus: option(enum_OnlineStatus),
 };
 
 module FragmentConverters: {} = {};

@@ -328,7 +328,6 @@ describe("Language plugin tests", () => {
         }
       }
     }`);
-      console.log(generated);
     });
   });
 
@@ -449,7 +448,7 @@ describe("Language plugin tests", () => {
   });
 
   describe("Enums", () => {
-    it("references any enums by global, generated schema assets file", () => {
+    it("generates local type for enum and references that", () => {
       let generated = generate(
         `query appQuery {
             me {
@@ -458,9 +457,13 @@ describe("Language plugin tests", () => {
           }`
       );
 
-      expect(generated.includes(`role: SchemaAssets.Enum_UserRole.t`)).toBe(
-        true
-      );
+      expect(
+        generated.includes(
+          "type enum_UserRole = [ | `Admin | `User | `FUTURE_ADDED_VALUE__];"
+        )
+      ).toBe(true);
+
+      expect(generated.includes(`role: enum_UserRole`)).toBe(true);
     });
   });
 

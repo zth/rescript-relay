@@ -40,7 +40,7 @@ and scalarValues =
   | Any
 and propType =
   | Scalar(scalarValues)
-  | Enum(string)
+  | Enum(fullEnum)
   | Object(object_)
   | Array(propValue)
   | FragmentRefValue(string)
@@ -69,9 +69,8 @@ and rootType =
       atPath: list(string),
     })
   | RefetchVariables(object_)
-  | PluralFragment(object_);
-
-type fullEnum = {
+  | PluralFragment(object_)
+and fullEnum = {
   name: string,
   values: array(string),
 };
@@ -97,7 +96,7 @@ type finalizedObj = {
 };
 
 type intermediateState = {
-  enums: list(string),
+  enums: list(fullEnum),
   objects: list(obj),
   variables: option(obj),
   response: option(obj),
@@ -105,7 +104,7 @@ type intermediateState = {
 };
 
 type fullState = {
-  enums: list(string),
+  enums: list(fullEnum),
   unions: list(union),
   objects: list(finalizedObj),
   variables: option(object_),

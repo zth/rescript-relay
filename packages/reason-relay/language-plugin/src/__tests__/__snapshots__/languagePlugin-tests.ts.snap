@@ -579,6 +579,8 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
+type enum_ObserverStatus = [ | \`Active | \`Inactive | \`FUTURE_ADDED_VALUE__];
+
 module Unions = {
   module Union_response_participantById_observer_manager: {
     type wrapped;
@@ -588,7 +590,7 @@ module Unions = {
       id: string,
     };
     type observer = {
-      status: SchemaAssets.Enum_ObserverStatus.t,
+      status: enum_ObserverStatus,
       isOnline: option(bool),
       id: string,
     };
@@ -602,7 +604,7 @@ module Unions = {
       id: string,
     };
     type observer = {
-      status: SchemaAssets.Enum_ObserverStatus.t,
+      status: enum_ObserverStatus,
       isOnline: option(bool),
       id: string,
     };

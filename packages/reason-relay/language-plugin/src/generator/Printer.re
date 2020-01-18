@@ -37,13 +37,14 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
   switch (state) {
   | Some(state) =>
     switch (
-      state.enums |> Tablecloth.List.find(~f=name => name == typeName),
+      state.enums
+      |> Tablecloth.List.find(~f=(enum: fullEnum) => enum.name == typeName),
       state.objects
       |> Tablecloth.List.find(~f=(obj: finalizedObj) =>
            obj.originalFlowTypeName == Some(typeName)
          ),
     ) {
-    | (Some(enumName), _) => printEnumTypeName(enumName)
+    | (Some(enum), _) => printEnumName(enum.name)
     | (_, Some(_)) => Tablecloth.String.uncapitalize(typeName)
     | _ => typeName
     }
@@ -56,7 +57,7 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | ObjectReference(objName) =>
     objName |> getObjName |> printTypeReference(~state=None)
   | Array(propValue) => printArray(~propValue, ~state)
-  | Enum(name) => printEnumTypeName(name)
+  | Enum({name}) => printEnumName(name)
   | Union(union) => printUnionTypeName(makeUnionName(union.atPath))
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
@@ -466,6 +467,19 @@ let printUnion = (~state, union: union) => {
   ++ unwrapFnImpl^
   ++ impl^
   ++ "}";
+};
+
+let printEnum = (enum: fullEnum): string => {
+  let str = ref("type enum_" ++ enum.name ++ " = [");
+  let addToStr = s => str := str^ ++ s;
+
+  enum.values
+  ->Belt.Array.concat([|"FUTURE_ADDED_VALUE__"|])
+  ->Belt.Array.forEach(v => addToStr(" | `" ++ v ++ " "));
+
+  addToStr("];");
+
+  str^;
 };
 
 let fragmentRefAssets = (~plural=false, fragmentName) => {

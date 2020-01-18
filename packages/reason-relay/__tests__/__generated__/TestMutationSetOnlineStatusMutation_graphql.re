@@ -1,11 +1,18 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
   type user = {
     id: string,
-    onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    onlineStatus: option(enum_OnlineStatus),
   };
   type setOnlineStatus = {user: option(user)};
 };
@@ -13,7 +20,7 @@ module Types = {
 open Types;
 
 type response = {setOnlineStatus: option(setOnlineStatus)};
-type variables = {onlineStatus: SchemaAssets.Enum_OnlineStatus.t};
+type variables = {onlineStatus: enum_OnlineStatus};
 
 module FragmentConverters: {} = {};
 

@@ -1,5 +1,12 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
@@ -10,7 +17,7 @@ open Types;
 
 type fragment = {
   firstName: string,
-  onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+  onlineStatus: option(enum_OnlineStatus),
   friendsConnection,
   id: option(string),
 };

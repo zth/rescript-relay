@@ -185,19 +185,16 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
     | FragmentRefValue(_)
     | TypeReference(_)
     | ObjectReference(_) => ()
-    | Enum(enumName) =>
+    | Enum({name}) =>
       converters->Js.Dict.set(
-        Printer.printEnumName(enumName),
+        Printer.printEnumName(name),
         switch (direction) {
-        | Wrap => Printer.printEnumWrapFnReference(enumName)
-        | Unwrap => Printer.printEnumUnwrapFnReference(enumName)
+        | Wrap => Printer.printEnumWrapFnReference(name)
+        | Unwrap => Printer.printEnumUnwrapFnReference(name)
         },
       );
 
-      addInstruction({
-        atPath: currentPath,
-        instruction: ConvertEnum(enumName),
-      });
+      addInstruction({atPath: currentPath, instruction: ConvertEnum(name)});
     | Union({atPath, members}) =>
       converters->Js.Dict.set(
         Printer.makeUnionName(atPath),

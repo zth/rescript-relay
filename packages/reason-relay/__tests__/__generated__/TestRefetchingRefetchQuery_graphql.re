@@ -1,5 +1,12 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
@@ -10,7 +17,7 @@ open Types;
 
 type response = {node: option(node)};
 type refetchVariables = {
-  friendsOnlineStatuses: option(array(SchemaAssets.Enum_OnlineStatus.t)),
+  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
   showOnlineStatus: option(bool),
   id: option(string),
 };
@@ -22,7 +29,7 @@ let makeRefetchVariables =
   id,
 };
 type variables = {
-  friendsOnlineStatuses: option(array(SchemaAssets.Enum_OnlineStatus.t)),
+  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
   showOnlineStatus: bool,
   id: string,
 };

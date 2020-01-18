@@ -1,11 +1,18 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
   type node = {
     id: string,
-    onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    onlineStatus: option(enum_OnlineStatus),
     __wrappedFragment__TestFragment_plural_user: ReasonRelay.wrappedFragmentRef,
   };
   type edges = {node: option(node)};

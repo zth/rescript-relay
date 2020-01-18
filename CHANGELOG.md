@@ -1,6 +1,6 @@
 # master
 
--
+- Inlines enum definition in generated files to improve code lens/view definition in editors. Previously, all that would show up when hovering an enum would be `SchemaAssets.Enum_enumName.t`, but now the full enum definition will show. This will work fine with `SchemaAssets` since polymorphic variants match structurally, so the definitions will be equivalent.
 
 # 0.5.1
 

@@ -156,7 +156,12 @@ let intermediateToFull =
     }
   );
 
-  state^;
+  {
+    ...state^,
+    enums:
+      state^.enums
+      |> Tablecloth.List.uniqueBy(~f=(e: Types.fullEnum) => e.name),
+  };
 };
 
 /**
@@ -235,6 +240,13 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
     )
   | None => ()
   };
+
+  // Print enums
+  state.enums
+  ->Belt.List.forEach(enum => {
+      addToStr(enum->Printer.printEnum);
+      addSpacing();
+    });
 
   // Print unions
   addToStr("module Unions = {\n");
@@ -534,7 +546,10 @@ let rec mapObjProp =
       nullable: optional,
       propType:
         switch (
-          state.enums |> Tablecloth.List.find(~f=name => name == typeName)
+          state.enums
+          |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
+               enum.name == typeName
+             )
         ) {
         | Some(name) => Enum(name)
         | None => TypeReference(typeName |> Utils.unmaskDots)
@@ -544,7 +559,10 @@ let rec mapObjProp =
       nullable: true,
       propType:
         switch (
-          state.enums |> Tablecloth.List.find(~f=name => name == typeName)
+          state.enums
+          |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
+               enum.name == typeName
+             )
         ) {
         | Some(name) => Enum(name)
         | None => TypeReference(typeName |> Utils.unmaskDots)
@@ -811,12 +829,35 @@ let flowTypesToFullState = (~content, ~operationType) => {
                Some((
                  _,
                  TypeAlias({
-                   right: (_, Union((_, StringLiteral(_)), _, _)),
+                   right: (
+                     _,
+                     Union(
+                       (_, StringLiteral({value: firstMember})),
+                       maybeSecondMember,
+                       maybeMore,
+                     ),
+                   ),
                    id: (_, typeName),
                  }),
                )),
            }) =>
-           setState(state => {...state, enums: [typeName, ...state.enums]})
+           let enum: Types.fullEnum = {
+             name: typeName,
+             values: [|firstMember|],
+           };
+
+           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+
+           [maybeSecondMember, ...maybeMore]
+           ->Belt.List.forEach(
+               fun
+               | (_, StringLiteral({value: v}))
+                   when v != "%future added value" =>
+                 addValue(v)
+               | _ => (),
+             );
+
+           setState(state => {...state, enums: [enum, ...state.enums]});
          | _ => ()
          }
        )
@@ -884,12 +925,35 @@ let flowTypesToFullState = (~content, ~operationType) => {
                Some((
                  _,
                  TypeAlias({
-                   right: (_, Union((_, StringLiteral(_)), _, _)),
+                   right: (
+                     _,
+                     Union(
+                       (_, StringLiteral({value: firstMember})),
+                       maybeSecondMember,
+                       maybeMore,
+                     ),
+                   ),
                    id: (_, typeName),
                  }),
                )),
            }) =>
-           setState(state => {...state, enums: [typeName, ...state.enums]})
+           let enum: Types.fullEnum = {
+             name: typeName,
+             values: [|firstMember|],
+           };
+
+           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+
+           [maybeSecondMember, ...maybeMore]
+           ->Belt.List.forEach(
+               fun
+               | (_, StringLiteral({value: v}))
+                   when v != "%future added value" =>
+                 addValue(v)
+               | _ => (),
+             );
+
+           setState(state => {...state, enums: [enum, ...state.enums]});
          | _ => ()
          }
        )

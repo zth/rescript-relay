@@ -1,11 +1,18 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
   type user = {
     id: string,
-    onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    onlineStatus: option(enum_OnlineStatus),
     __wrappedFragment__TestSubscription_user: ReasonRelay.wrappedFragmentRef,
   };
   type userUpdated = {user: option(user)};

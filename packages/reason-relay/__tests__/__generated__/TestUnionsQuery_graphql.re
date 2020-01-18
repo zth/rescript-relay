@@ -1,10 +1,17 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {
   module Union_response_members_edges_node_group_members: {
     type wrapped;
     type user = {
-      onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+      onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
@@ -18,7 +25,7 @@ module Unions = {
   } = {
     type wrapped;
     type user = {
-      onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+      onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
@@ -45,7 +52,7 @@ module Unions = {
   module Union_response_members_edges_node: {
     type wrapped;
     type user = {
-      onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+      onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
@@ -63,7 +70,7 @@ module Unions = {
   } = {
     type wrapped;
     type user = {
-      onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+      onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };

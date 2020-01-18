@@ -1,12 +1,19 @@
 /* @generated */
 
+type enum_OnlineStatus = [
+  | `Idle
+  | `Offline
+  | `Online
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {
   type node = {
     id: string,
     firstName: string,
-    onlineStatus: option(SchemaAssets.Enum_OnlineStatus.t),
+    onlineStatus: option(enum_OnlineStatus),
   };
   type edges = {node: option(node)};
   type users = {edges: option(array(option(edges)))};
@@ -15,11 +22,11 @@ module Types = {
 open Types;
 
 type response = {users: option(users)};
-type refetchVariables = {status: option(SchemaAssets.Enum_OnlineStatus.t)};
+type refetchVariables = {status: option(enum_OnlineStatus)};
 let makeRefetchVariables = (~status=?, ()): refetchVariables => {
   status: status,
 };
-type variables = {status: option(SchemaAssets.Enum_OnlineStatus.t)};
+type variables = {status: option(enum_OnlineStatus)};
 
 module FragmentConverters: {} = {};
 
