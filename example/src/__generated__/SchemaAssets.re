@@ -14,6 +14,8 @@ module Enum_TicketStatus: {
   type wrapped;
   let unwrap: wrapped => t;
   let wrap: t => wrapped;
+  let toString: t => string;
+  let fromString: string => t;
 } = {
   type t = [
     | `Done
@@ -47,4 +49,7 @@ module Enum_TicketStatus: {
       }
     )
     |> __wrap;
+
+  let toString = t => t |> wrap |> __unwrap;
+  let fromString = str => str |> __wrap |> unwrap;
 };
