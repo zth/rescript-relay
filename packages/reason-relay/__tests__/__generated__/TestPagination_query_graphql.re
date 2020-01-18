@@ -65,12 +65,18 @@ module Unions = {
       } =
       "%identity";
   };
+
+  type union_fragment_members_edges_node = [
+    | `User(Union_fragment_members_edges_node.user)
+    | `Group(Union_fragment_members_edges_node.group)
+    | `UnmappedUnionMember
+  ];
 };
 
 open Unions;
 
 module Types = {
-  type members_edges = {node: option(Union_fragment_members_edges_node.t)};
+  type members_edges = {node: option(union_fragment_members_edges_node)};
   type members = {edges: option(array(option(members_edges)))};
 };
 

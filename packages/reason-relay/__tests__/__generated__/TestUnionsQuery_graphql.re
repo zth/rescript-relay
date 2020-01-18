@@ -49,6 +49,12 @@ module Unions = {
     };
   };
 
+  type union_response_members_edges_node_group_members = [
+    | `User(Union_response_members_edges_node_group_members.user)
+    | `Group(Union_response_members_edges_node_group_members.group)
+    | `UnmappedUnionMember
+  ];
+
   module Union_response_members_edges_node: {
     type wrapped;
     type user = {
@@ -59,7 +65,7 @@ module Unions = {
     type group = {
       members:
         option(
-          array(option(Union_response_members_edges_node_group_members.t)),
+          array(option(union_response_members_edges_node_group_members)),
         ),
       avatarUrl: option(string),
       name: string,
@@ -77,7 +83,7 @@ module Unions = {
     type group = {
       members:
         option(
-          array(option(Union_response_members_edges_node_group_members.t)),
+          array(option(union_response_members_edges_node_group_members)),
         ),
       avatarUrl: option(string),
       name: string,
@@ -97,12 +103,18 @@ module Unions = {
       };
     };
   };
+
+  type union_response_members_edges_node = [
+    | `User(Union_response_members_edges_node.user)
+    | `Group(Union_response_members_edges_node.group)
+    | `UnmappedUnionMember
+  ];
 };
 
 open Unions;
 
 module Types = {
-  type edges = {node: option(Union_response_members_edges_node.t)};
+  type edges = {node: option(union_response_members_edges_node)};
   type members = {edges: option(array(option(edges)))};
 };
 

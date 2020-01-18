@@ -448,13 +448,19 @@ module Unions = {
       observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
       \\"%identity\\";
   };
+
+  type union_response_participantById = [
+    | \`User(Union_response_participantById.user)
+    | \`Observer(Union_response_participantById.observer)
+    | \`UnmappedUnionMember
+  ];
 };
 
 open Unions;
 
 module Types = {};
 
-type response = {participantById: option(Union_response_participantById.t)};
+type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
 module FragmentConverters: {} = {};
@@ -533,13 +539,19 @@ module Unions = {
       };
     };
   };
+
+  type union_response_participantById = [
+    | \`User(Union_response_participantById.user)
+    | \`Observer(Union_response_participantById.observer)
+    | \`UnmappedUnionMember
+  ];
 };
 
 open Unions;
 
 module Types = {};
 
-type response = {participantById: option(Union_response_participantById.t)};
+type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
 module FragmentConverters: {} = {};
@@ -623,6 +635,12 @@ module Unions = {
     };
   };
 
+  type union_response_participantById_observer_manager = [
+    | \`User(Union_response_participantById_observer_manager.user)
+    | \`Observer(Union_response_participantById_observer_manager.observer)
+    | \`UnmappedUnionMember
+  ];
+
   module Union_response_participantById: {
     type wrapped;
     type user = {
@@ -631,7 +649,7 @@ module Unions = {
       id: string,
     };
     type observer = {
-      manager: option(Union_response_participantById_observer_manager.t),
+      manager: option(union_response_participantById_observer_manager),
       name: string,
       id: string,
     };
@@ -645,7 +663,7 @@ module Unions = {
       id: string,
     };
     type observer = {
-      manager: option(Union_response_participantById_observer_manager.t),
+      manager: option(union_response_participantById_observer_manager),
       name: string,
       id: string,
     };
@@ -663,13 +681,19 @@ module Unions = {
       };
     };
   };
+
+  type union_response_participantById = [
+    | \`User(Union_response_participantById.user)
+    | \`Observer(Union_response_participantById.observer)
+    | \`UnmappedUnionMember
+  ];
 };
 
 open Unions;
 
 module Types = {};
 
-type response = {participantById: option(Union_response_participantById.t)};
+type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
 module FragmentConverters: {} = {};

@@ -252,7 +252,25 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   addToStr("module Unions = {\n");
   addToStr(
     state.unions
-    |> Tablecloth.List.map(~f=Printer.printUnion(~state))
+    |> Tablecloth.List.map(~f=(union: Types.union) =>
+         (union |> Printer.printUnion(~state))
+         ++ "\n\n"
+         ++ "type "
+         ++ Printer.printLocalUnionName(union)
+         ++ " = "
+         ++ (
+           union
+           |> Printer.printUnionTypeDefinition(~printMemberTypeName=name =>
+                (
+                  union.atPath
+                  |> Printer.makeUnionName
+                  |> Printer.printUnionName
+                )
+                ++ "."
+                ++ Tablecloth.String.uncapitalize(name)
+              )
+         )
+       )
     |> Tablecloth.String.join(~sep="\n\n"),
   );
 
@@ -269,6 +287,7 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
 
   // Print definitions and declarations
   addToStr("module Types = {\n");
+
   Printer.(
     typeDeclarations^
     |> List.rev
