@@ -4,12 +4,14 @@ import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/Rela
 import { Fragment, Node } from "relay-compiler";
 import { TypeGeneratorOptions } from "relay-compiler/lib/language/RelayLanguagePluginInterface";
 import { printFromFlowTypes } from "./transformer/TypesTransformer.gen";
-import { makeOperationDescriptor } from "./transformer/transformerUtils";
+import {
+  makeOperationDescriptor,
+  extractOperationInfo
+} from "./transformer/transformerUtils";
 import { ScalarTypeMapping } from "relay-compiler/lib/language/javascript/RelayFlowTypeTransformers";
 import { maskDots } from "./generator/Utils.gen";
 import * as DisallowReservedReasonWordsTransform from "./transforms/DisallowReservedReasonWordsTransform";
 import * as EnforceManualTypeNameSelectionOnUnions from "./transforms/EnforceManualTypeNameSelectionOnUnions";
-import * as ReasonRelayTransform from "./transforms/ReasonRelayTransform";
 
 function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
   const newCustomScalars: ScalarTypeMapping = {
@@ -36,13 +38,13 @@ export function generate(
 
   return printFromFlowTypes({
     content: flowTypes,
-    operationType: makeOperationDescriptor(node)
+    operationType: makeOperationDescriptor(node),
+    config: extractOperationInfo(node)
   });
 }
 
 export const transforms = [
   EnforceManualTypeNameSelectionOnUnions.transform,
   DisallowReservedReasonWordsTransform.transform,
-  ReasonRelayTransform.transform,
   ...RelayFlowGenerator.transforms
 ];

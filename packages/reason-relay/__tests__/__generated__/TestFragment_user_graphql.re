@@ -41,6 +41,8 @@ type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TestFragment_user": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
+module Utils = {};
+
 type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%bs.raw

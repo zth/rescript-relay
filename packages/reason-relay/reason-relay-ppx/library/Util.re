@@ -231,6 +231,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       },
       [%stri include Operation.FragmentConverters],
       [%stri include Operation.Unions],
+      [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       switch (refetchableQueryName) {
       | Some(queryName) => [%stri
@@ -324,6 +325,7 @@ let makeQuery = (~loc, ~moduleName) =>
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
       [%stri include Operation.FragmentConverters],
       [%stri include Operation.Unions],
+      [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
         module UseQuery =
@@ -352,6 +354,7 @@ let makeMutation = (~loc, ~moduleName) =>
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
       [%stri include Operation.FragmentConverters],
       [%stri include Operation.Unions],
+      [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
         module Mutation =
@@ -390,6 +393,7 @@ let makeSubscription = (~loc, ~moduleName) =>
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
       [%stri include Operation.FragmentConverters],
       [%stri include Operation.Unions],
+      [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
         module Subscription =

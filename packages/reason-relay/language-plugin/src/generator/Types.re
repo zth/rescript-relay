@@ -19,8 +19,9 @@ type objectPrintMode =
 
 [@gentype]
 type connectionInfo = {
-  name: string,
   key: string,
+  atObjectPath: array(string),
+  fieldName: string,
 };
 
 type unionMember = {
@@ -57,7 +58,6 @@ and propValues =
 and object_ = {
   values: array(propValues),
   atPath: list(string),
-  connection: option(connectionInfo),
 }
 and rootType =
   | Operation(object_)
@@ -111,3 +111,6 @@ type fullState = {
   response: option(object_),
   fragment: option(fragment),
 };
+
+[@gentype]
+type printConfig = {connection: option(connectionInfo)};

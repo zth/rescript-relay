@@ -41,7 +41,7 @@ let printConnectionTraverser =
   if (nodeNullable) {
     addToStr("switch(edge.node) { ");
     addToStr("| None => None ");
-    addToStr("| Some(node) => node");
+    addToStr("| Some(node) => Some(node)");
     addToStrEnd("}");
   } else {
     addToStr("Some(edge.node)");
@@ -49,6 +49,33 @@ let printConnectionTraverser =
 
   str^ ++ strEnd^;
 };
+
+let printFullGetConnectionNodesFnDefinition =
+    (
+      ~connectionLocation,
+      ~connectionPropNullable,
+      ~connectionTypeName,
+      ~nodeTypeName,
+      ~edgesPropNullable,
+      ~edgesNullable,
+      ~nodeNullable,
+    ) =>
+  "let getConnectionNodes_"
+  ++ connectionLocation
+  ++ ": "
+  ++ (connectionPropNullable ? "option(" : "")
+  ++ connectionTypeName
+  ++ (connectionPropNullable ? ")" : "")
+  ++ " => array("
+  ++ nodeTypeName
+  ++ ") = connection => "
+  ++ printConnectionTraverser(
+       ~connectionPropNullable,
+       ~edgesPropNullable,
+       ~edgesNullable,
+       ~nodeNullable,
+     )
+  ++ ";";
 
 let printGetConnectionNodesFunction =
     (~state: fullState, ~connectionLocation: string, obj: object_): string => {
@@ -87,7 +114,12 @@ let printGetConnectionNodesFunction =
                      switch (v) {
                      | Prop(
                          "node",
-                         {nullable, propType: Object({atPath: nodeAtPath})},
+                         {
+                           nullable,
+                           propType:
+                             Object({atPath: nodeAtPath}) |
+                             Union({atPath: nodeAtPath}),
+                         },
                        ) =>
                        let nodeNullable = nullable;
 
@@ -96,6 +128,10 @@ let printGetConnectionNodesFunction =
                          |> Tablecloth.List.find(~f=o =>
                               o.atPath == nodeAtPath
                             ),
+                         state.unions
+                         |> Tablecloth.List.find(~f=(u: Types.union) =>
+                              u.atPath == nodeAtPath
+                            ),
                          state.objects
                          |> Tablecloth.List.find(~f=o =>
                               o.atPath == connectionAtPath
@@ -103,23 +139,35 @@ let printGetConnectionNodesFunction =
                        ) {
                        | (
                            Some({recordName: Some(nodeTypeName)}),
+                           None,
                            Some({recordName: Some(connectionTypeName)}),
                          ) =>
                          addToStr(
-                           "let "
-                           ++ connectionLocation
-                           ++ "_getConnectionNodes: "
-                           ++ connectionTypeName
-                           ++ " => array("
-                           ++ nodeTypeName
-                           ++ ") = connection => "
-                           ++ printConnectionTraverser(
-                                ~connectionPropNullable,
-                                ~edgesPropNullable,
-                                ~edgesNullable,
-                                ~nodeNullable,
-                              )
-                           ++ ";",
+                           printFullGetConnectionNodesFnDefinition(
+                             ~connectionLocation,
+                             ~connectionPropNullable,
+                             ~connectionTypeName,
+                             ~nodeTypeName,
+                             ~edgesPropNullable,
+                             ~edgesNullable,
+                             ~nodeNullable,
+                           ),
+                         )
+                       | (
+                           None,
+                           Some(union),
+                           Some({recordName: Some(connectionTypeName)}),
+                         ) =>
+                         addToStr(
+                           printFullGetConnectionNodesFnDefinition(
+                             ~connectionLocation,
+                             ~connectionPropNullable,
+                             ~connectionTypeName,
+                             ~nodeTypeName=Printer.printLocalUnionName(union),
+                             ~edgesPropNullable,
+                             ~edgesNullable,
+                             ~nodeNullable,
+                           ),
                          )
                        | _ => ()
                        };

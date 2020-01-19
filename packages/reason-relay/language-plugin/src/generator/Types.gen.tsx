@@ -10,4 +10,11 @@ export type operationType =
   | { tag: "Query"; value: string };
 
 // tslint:disable-next-line:interface-over-type-literal
-export type connectionInfo = { readonly name: string; readonly key: string };
+export type connectionInfo = {
+  readonly key: string; 
+  readonly atObjectPath: string[]; 
+  readonly fieldName: string
+};
+
+// tslint:disable-next-line:interface-over-type-literal
+export type printConfig = { readonly connection?: connectionInfo };

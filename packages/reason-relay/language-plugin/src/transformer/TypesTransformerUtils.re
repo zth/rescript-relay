@@ -43,25 +43,3 @@ let printConverterAssets =
   )
   ++ ");";
 };
-
-let findObjWithConnection = (obj: object_): option(object_) => {
-  let theObj = ref(None);
-
-  let rec traverse = values =>
-    values
-    |> Tablecloth.Array.forEach(~f=v =>
-         switch (v) {
-         | FragmentRef(_) => ()
-         | Prop(_, {propType: Object(def)}) =>
-           switch (def) {
-           | {connection: Some(_)} => theObj := Some(def)
-           | _ => traverse(def.values)
-           }
-         | _ => ()
-         }
-       );
-
-  traverse(obj.values);
-
-  theObj^;
-};

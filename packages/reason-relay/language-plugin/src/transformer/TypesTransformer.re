@@ -167,7 +167,9 @@ let intermediateToFull =
 /**
  * Print the full state, and whatever utils/types etc are needed.
  */
-let getPrintedFullState = (~operationType, state: Types.fullState): string => {
+let getPrintedFullState =
+    (~operationType, ~config: Types.printConfig, state: Types.fullState)
+    : string => {
   let finalStr = ref("/* @generated */\n\n");
   let addToStr = Utils.makeAddToStr(finalStr);
 
@@ -420,23 +422,50 @@ let getPrintedFullState = (~operationType, state: Types.fullState): string => {
   | None => ()
   };
 
+  // Utils that'll be included and accessible at the top level of the generated module
+  addToStr("module Utils = {");
+
   // We print a helper for extracting connection nodes whenever there's a connection present.
-  state.objects
-  |> Tablecloth.List.iter(~f=(o: Types.finalizedObj) =>
-       switch (
-         o.recordName,
-         o.definition |> TypesTransformerUtils.findObjWithConnection,
-       ) {
-       | (Some(recordName), Some(connectionObj)) =>
-         connectionObj
-         |> UtilsPrinter.printGetConnectionNodesFunction(
-              ~state,
-              ~connectionLocation=recordName,
-            )
-         |> addToStr
-       | _ => ()
-       }
-     );
+  switch (config.connection) {
+  | Some(connection) =>
+    let connPath =
+      connection.atObjectPath
+      |> Tablecloth.Array.toList
+      |> Tablecloth.List.reverse;
+
+    switch (
+      state.objects
+      |> Tablecloth.List.find(~f=(o: Types.finalizedObj) => {
+           o.atPath == connPath
+         }),
+      state.fragment,
+    ) {
+    | (Some(obj), _) =>
+      obj.definition
+      |> UtilsPrinter.printGetConnectionNodesFunction(
+           ~state,
+           ~connectionLocation=connection.fieldName,
+         )
+      |> addToStr;
+
+      addSpacing();
+    | (None, Some({definition})) when connPath == ["fragment"] =>
+      definition
+      |> UtilsPrinter.printGetConnectionNodesFunction(
+           ~state,
+           ~connectionLocation=connection.fieldName,
+         )
+      |> addToStr;
+
+      addSpacing();
+    | (None, Some(_))
+    | (None, None) => ()
+    };
+  | None => ()
+  };
+
+  addToStr("};");
+  addSpacing();
 
   // This adds operationType, which is referenced in the raw output of the Relay
   // runtime representation.
@@ -603,7 +632,6 @@ and makeObjShape =
     )
     : Types.object_ => {
   let values: ref(list(Types.propValues)) = ref([]);
-  let connectionInfo: ref(option(Types.connectionInfo)) = ref(None);
   let addValue = value => values := [value, ...values^];
   let addFragmentRef = rawFragmentRef =>
     addValue(
@@ -649,18 +677,6 @@ and makeObjShape =
        | Property((_, {key: Identifier((_, id))}))
            when Tablecloth.String.startsWith(~prefix="$", id) =>
          ()
-       // Handle our own internal types
-       | Property((_, {key: Identifier((_, id))}))
-           when
-             Tablecloth.String.startsWith(
-               ~prefix=Constants.generatedPrefix,
-               id,
-             ) =>
-         id
-         |> Tablecloth.String.startsWith(
-              ~prefix=Constants.connectionIndicatorKey,
-            )
-           ? connectionInfo := Utils.extractConnectionInfo(id) : ()
        | Property((
            _,
            {optional, value: Init(typ), key: Identifier((_, id))},
@@ -679,7 +695,6 @@ and makeObjShape =
 
   {
     atPath: path,
-    connection: connectionInfo^,
     values: values^ |> Tablecloth.List.reverse |> Tablecloth.Array.fromList,
   };
 }
@@ -985,7 +1000,8 @@ let flowTypesToFullState = (~content, ~operationType) => {
 // This is the actual entry point for the language plugin.
 // The language plugin get both the content (Flow types) and operation type from Relay.
 [@gentype]
-let printFromFlowTypes = (~content, ~operationType) => {
+let printFromFlowTypes =
+    (~content, ~operationType, ~config: Types.printConfig) => {
   flowTypesToFullState(~content, ~operationType)
-  |> getPrintedFullState(~operationType);
+  |> getPrintedFullState(~operationType, ~config);
 };

@@ -64,6 +64,8 @@ type fragmentRefSelector('a) =
   {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
+module Utils = {};
+
 type operationType = ReasonRelay.fragmentNode;
 
 
@@ -108,6 +110,8 @@ type fragmentRefSelector('a) =
   {.. \\"__$fragment_ref__SomeOtherComponent_user\\": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
+module Utils = {};
+
 type operationType = ReasonRelay.fragmentNode;
 "
 `;
@@ -142,6 +146,8 @@ type fragmentRef;
 type fragmentRefSelector('a) =
   {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 "
@@ -215,7 +221,269 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.mutationNode;
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for connections with unions 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+
+module Unions = {
+  module Union_fragment_participantsConnection_edges_node: {
+    type wrapped;
+    type user = {
+      firstName: string,
+      id: string,
+    };
+    type observer = {
+      name: string,
+      id: string,
+    };
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    let unwrap: wrapped => t;
+  } = {
+    type wrapped;
+    type user = {
+      firstName: string,
+      id: string,
+    };
+    type observer = {
+      name: string,
+      id: string,
+    };
+    external __unwrap_union: wrapped => {. \\"__typename\\": string} =
+      \\"%identity\\";
+    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    external __unwrap_user: wrapped => user = \\"%identity\\";
+    external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    let unwrap = wrapped => {
+      let unwrappedUnion = wrapped |> __unwrap_union;
+      switch (unwrappedUnion##__typename) {
+      | \\"User\\" => \`User(wrapped |> __unwrap_user)
+      | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
+      | _ => \`UnmappedUnionMember
+      };
+    };
+  };
+
+  type union_fragment_participantsConnection_edges_node = [
+    | \`User(Union_fragment_participantsConnection_edges_node.user)
+    | \`Observer(Union_fragment_participantsConnection_edges_node.observer)
+    | \`UnmappedUnionMember
+  ];
+};
+
+open Unions;
+
+module Types = {
+  type edges = {
+    node: option(union_fragment_participantsConnection_edges_node),
+  };
+  type participantsConnection = {edges: option(array(option(edges)))};
+};
+
+open Types;
+
+type fragment = {participantsConnection: option(participantsConnection)};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {\\"participantsConnection\\":[[0,\\"\\"]],\\"participantsConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"participantsConnection_edges_node\\":[[0,\\"\\"],[3,\\"fragment_participantsConnection_edges_node\\"]]} |}
+  ];
+  let fragmentConverterMap = {
+    \\"fragment_participantsConnection_edges_node\\": Union_fragment_participantsConnection_edges_node.unwrap,
+  };
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {
+  let getConnectionNodes_participantsConnection:
+    option(participantsConnection) =>
+    array(union_fragment_participantsConnection_edges_node) =
+    connection =>
+      switch (connection) {
+      | None => [||]
+      | Some(connection) =>
+        switch (connection.edges) {
+        | None => [||]
+        | Some(edges) =>
+          edges
+          ->Belt.Array.keepMap(edge =>
+              switch (edge) {
+              | None => None
+              | Some(edge) =>
+                switch (edge.node) {
+                | None => None
+                | Some(node) => node
+                }
+              }
+            )
+        }
+      };
+};
+
+type operationType = ReasonRelay.fragmentNode;
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for nested connection 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type node = {
+    id: string,
+    firstName: string,
+  };
+  type edges = {node: option(node)};
+  type friendsConnection = {edges: option(array(option(edges)))};
+  type me = {friendsConnection: option(friendsConnection)};
+};
+
+open Types;
+
+type fragment = {me};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {\\"me_friendsConnection\\":[[0,\\"\\"]],\\"me_friendsConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"me_friendsConnection_edges_node\\":[[0,\\"\\"]]} |}
+  ];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {
+  let getConnectionNodes_friendsConnection:
+    option(friendsConnection) => array(node) =
+    connection =>
+      switch (connection) {
+      | None => [||]
+      | Some(connection) =>
+        switch (connection.edges) {
+        | None => [||]
+        | Some(edges) =>
+          edges
+          ->Belt.Array.keepMap(edge =>
+              switch (edge) {
+              | None => None
+              | Some(edge) =>
+                switch (edge.node) {
+                | None => None
+                | Some(node) => node
+                }
+              }
+            )
+        }
+      };
+};
+
+type operationType = ReasonRelay.fragmentNode;
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for root level connection 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type node = {
+    id: string,
+    firstName: string,
+  };
+  type edges = {node: option(node)};
+  type usersConnection = {edges: option(array(option(edges)))};
+};
+
+open Types;
+
+type fragment = {usersConnection: option(usersConnection)};
+
+module FragmentConverters: {} = {};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
+    {| {\\"usersConnection\\":[[0,\\"\\"]],\\"usersConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"usersConnection_edges_node\\":[[0,\\"\\"]]} |}
+  ];
+  let fragmentConverterMap = ();
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {
+  let getConnectionNodes_usersConnection:
+    option(usersConnection) => array(node) =
+    connection =>
+      switch (connection) {
+      | None => [||]
+      | Some(connection) =>
+        switch (connection.edges) {
+        | None => [||]
+        | Some(edges) =>
+          edges
+          ->Belt.Array.keepMap(edge =>
+              switch (edge) {
+              | None => None
+              | Some(edge) =>
+                switch (edge.node) {
+                | None => None
+                | Some(node) => node
+                }
+              }
+            )
+        }
+      };
+};
+
+type operationType = ReasonRelay.fragmentNode;
 "
 `;
 
@@ -267,6 +535,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 "
@@ -322,6 +592,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.subscriptionNode;
 "
 `;
@@ -359,6 +631,8 @@ type fragmentRef;
 type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_user\\": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
+module Utils = {};
+
 type operationType = ReasonRelay.fragmentNode;
 
 
@@ -393,6 +667,8 @@ type t;
 type fragmentRef;
 type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_observer\\": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 
@@ -492,6 +768,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.queryNode;
 "
 `;
@@ -582,6 +860,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 "
@@ -726,6 +1006,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 "

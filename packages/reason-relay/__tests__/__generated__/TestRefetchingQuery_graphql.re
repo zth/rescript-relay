@@ -45,6 +45,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw

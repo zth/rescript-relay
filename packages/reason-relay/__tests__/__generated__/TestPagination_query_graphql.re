@@ -109,6 +109,31 @@ type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TestPagination_query": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
+module Utils = {
+  let getConnectionNodes_members:
+    option(members) => array(union_fragment_members_edges_node) =
+    connection =>
+      switch (connection) {
+      | None => [||]
+      | Some(connection) =>
+        switch (connection.edges) {
+        | None => [||]
+        | Some(edges) =>
+          edges
+          ->Belt.Array.keepMap(edge =>
+              switch (edge) {
+              | None => None
+              | Some(edge) =>
+                switch (edge.node) {
+                | None => None
+                | Some(node) => Some(node)
+                }
+              }
+            )
+        }
+      };
+};
+
 type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%bs.raw
@@ -325,18 +350,6 @@ return {
               "kind": "ScalarField",
               "alias": null,
               "name": "hasNextPage",
-              "args": null,
-              "storageKey": null
-            }
-          ]
-        },
-        {
-          "kind": "ClientExtension",
-          "selections": [
-            {
-              "kind": "ScalarField",
-              "alias": null,
-              "name": "__$generated__connection__key__$$__TestPagination_query_members$$$name__$$__members",
               "args": null,
               "storageKey": null
             }

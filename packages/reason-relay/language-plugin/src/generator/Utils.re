@@ -73,40 +73,6 @@ let findObjName = (~usedRecordNames: array(string), ~path: array(string)) =>
     ~path=Tablecloth.Array.toList(path),
   );
 
-/**
- * This extracts information about a connection by parsing our internal (weird)
- * format for transporting information through the generated Flow types... Yes
- * it's weird...
- */
-[@gentype]
-let extractConnectionInfo = (str): option(Types.connectionInfo) =>
-  Tablecloth.(
-    switch (
-      str |> String.startsWith(~prefix=Constants.connectionIndicatorKey)
-    ) {
-    | false => None
-    | true =>
-      let config =
-        str
-        |> String.dropLeft(
-             ~count=String.length(Constants.connectionIndicatorKey),
-           )
-        |> String.split(~on="$$$")
-        |> List.filterMap(~f=s =>
-             switch (s |> String.split(~on="__$$__")) {
-             | [key, value] => Some((key, value))
-             | _ => None
-             }
-           )
-        |> Js.Dict.fromList;
-
-      switch (config->Js.Dict.get("name"), config->Js.Dict.get("key")) {
-      | (Some(name), Some(key)) => Some({name, key})
-      | _ => None
-      };
-    }
-  );
-
 let extractNestedObjects = (obj: object_): list(object_) => {
   let objects = ref([]);
   let addObject = o => objects := [o, ...objects^];
@@ -145,7 +111,6 @@ let rec mapPropType = (~path, propType) =>
   }
 and adjustObjectPath = (~path: list(string), obj: object_): object_ => {
   {
-    ...obj,
     atPath: path,
     values:
       obj.values

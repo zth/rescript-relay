@@ -169,7 +169,6 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
       ~state,
       ~obj={
         atPath: [],
-        connection: None,
         values:
           obj.values
           |> Array.map(value =>

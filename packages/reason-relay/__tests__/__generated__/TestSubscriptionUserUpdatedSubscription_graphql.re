@@ -67,6 +67,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.subscriptionNode;
 
 let node: operationType = [%bs.raw

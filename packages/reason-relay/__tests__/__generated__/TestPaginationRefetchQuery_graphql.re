@@ -78,6 +78,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%bs.raw
@@ -326,18 +328,6 @@ return {
                 "kind": "ScalarField",
                 "alias": null,
                 "name": "hasNextPage",
-                "args": null,
-                "storageKey": null
-              }
-            ]
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "__$generated__connection__key__$$__TestPagination_query_members$$$name__$$__members",
                 "args": null,
                 "storageKey": null
               }

@@ -4,7 +4,7 @@ import * as path from "path";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
 const getLanguagePlugin = require("../index");
 import { printCode } from "../generator/Printer.gen";
-import { getDefinitionDecoder } from "../TestUtils.gen";
+
 // @ts-ignore
 import { traverser } from "../../../src/utils";
 
@@ -277,57 +277,87 @@ describe("Language plugin tests", () => {
       ).toBe(true);
     });
 
-    it("handles connections", () => {
-      const generated = generate(`fragment TestPagination_query on Query
-      @argumentDefinitions(
-        count: { type: "Int", defaultValue: 2 }
-        cursor: { type: "String", defaultValue: "" }
-      ) {
-      participantsConnection(
-        first: $count
-        after: $cursor
-      ) @connection(key: "TestPagination_query_usersConnection") {
-        edges {
-          node {
-            __typename
-            ... on User {
-              id
-              participants {
-                edges {
-                  node {
-                    __typename
-                    ... on User {
-                      id
-                      firstName
-                      participants {
-                        edges {
-                          node {
-                            __typename
-                            ... on User {
-                              id
-                              firstName
-                            }
-                            ... on Observer {
-                              id
-                            }
-                          }
-                        }
-                      }
-                    }
-                    ... on Observer {
-                      id
-                    }
-                  }
+    describe("connections", () => {
+      it("generates helpers for connections with unions", () => {
+        const generated = generate(`
+        fragment TestPagination_query on Query
+          @argumentDefinitions(
+            count: { type: "Int", defaultValue: 2 }
+            cursor: { type: "String", defaultValue: "" }
+          ) {
+          participantsConnection(
+            first: $count
+            after: $cursor
+          ) @connection(key: "TestPagination_query_usersConnection") {
+            edges {
+              node {
+                __typename
+                ... on User {
+                  id
+                  firstName
+                }
+                ... on Observer {
+                  id
+                  name
                 }
               }
             }
-            ... on Observer {
-              id
+          }
+        }
+    `);
+
+        expect(generated).toMatchSnapshot();
+      });
+
+      it("generates helpers for root level connection", () => {
+        const generated = generate(`
+        fragment TestPagination_query on Query
+          @argumentDefinitions(
+            count: { type: "Int", defaultValue: 2 }
+            cursor: { type: "String", defaultValue: "" }
+          ) {
+          usersConnection(
+            first: $count
+            after: $cursor
+          ) @connection(key: "TestPagination_query_usersConnection") {
+            edges {
+              node {
+                id
+                firstName
+              }
             }
           }
         }
-      }
-    }`);
+    `);
+
+        expect(generated).toMatchSnapshot();
+      });
+
+      it("generates helpers for nested connection", () => {
+        const generated = generate(`
+        fragment TestPagination_query on Query
+          @argumentDefinitions(
+            count: { type: "Int", defaultValue: 2 }
+            cursor: { type: "String", defaultValue: "" }
+          ) {
+          me {
+            friendsConnection(
+              first: $count
+              after: $cursor
+            ) @connection(key: "TestPagination_query_usersConnection") {
+              edges {
+                node {
+                  id
+                  firstName
+                }
+              }
+            }
+          }
+        }
+    `);
+
+        expect(generated).toMatchSnapshot();
+      });
     });
   });
 

@@ -70,6 +70,8 @@ module Internal = {
       );
 };
 
+module Utils = {};
+
 type operationType = ReasonRelay.mutationNode;
 
 let node: operationType = [%bs.raw

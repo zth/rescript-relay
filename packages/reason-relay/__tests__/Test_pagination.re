@@ -88,20 +88,9 @@ module Test = {
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(query->Query.unwrapFragment_response);
 
-    let members =
-      switch (data.members) {
-      | Some({edges: Some(edges)}) =>
-        edges->Belt.Array.keepMap(edge =>
-          switch (edge) {
-          | Some({node: Some(node)}) => Some(node)
-          | _ => None
-          }
-        )
-      | _ => [||]
-      };
-
     <div>
-      {members
+      {data.members
+       ->Fragment.getConnectionNodes_members
        ->Belt.Array.mapWithIndex((i, member) =>
            switch (member) {
            | `User(user) =>
