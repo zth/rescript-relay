@@ -14,10 +14,9 @@ yarn; yarn build; yarn test;
 
 # copy bindings and readme
 echo "Copying bindings and assets..."
-cp src/* ../../_release/src/;
+cp -rf src ../../_release;
 cp .npmignore ../../_release/;
 cp ../../README.md ../../_release/;
-cp -rf src/vendor ../../_release/src/vendor;
 rm ../../_release/src/*.bs.js;
 
 # copy config files
