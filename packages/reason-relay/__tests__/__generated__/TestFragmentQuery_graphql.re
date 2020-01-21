@@ -46,20 +46,22 @@ module Internal = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
   };
   let convertResponse = v =>
-    v->ReasonRelay._convertObj(
-      responseConverter,
-      responseConverterMap,
-      Js.undefined,
-    );
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v->ReasonRelay._convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined,
-    );
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
 };
 
 module Utils = {};

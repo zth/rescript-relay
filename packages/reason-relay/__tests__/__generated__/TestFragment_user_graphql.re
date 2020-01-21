@@ -31,11 +31,12 @@ module Internal = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
   };
   let convertFragment = v =>
-    v->ReasonRelay._convertObj(
-      fragmentConverter,
-      fragmentConverterMap,
-      Js.undefined,
-    );
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
 };
 
 type t;
