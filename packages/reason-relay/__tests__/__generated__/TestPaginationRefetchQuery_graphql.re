@@ -12,7 +12,12 @@ module Unions = {};
 module Types = {};
 
 type response = {
-  __wrappedFragment__TestPagination_query: ReasonRelay.wrappedFragmentRef,
+  getFragmentRefs:
+    unit =>
+    {
+      .
+      "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
+    },
 };
 type refetchVariables = {
   groupId: option(string),
@@ -34,48 +39,31 @@ type variables = {
   cursor: option(string),
 };
 
-module FragmentConverters: {
-  let unwrapFragment_response:
-    response =>
-    {
-      .
-      "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
-    };
-} = {
-  external unwrapFragment_response:
-    response =>
-    {
-      .
-      "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"":{"f":""}} |}
+  ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay._convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"onlineStatuses":[[0,""],[2,"enum_OnlineStatus"]],"count":[[0,""]],"cursor":[[0,""]]} |}
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"onlineStatuses":{"n":"","e":"enum_OnlineStatus"},"count":{"n":""},"cursor":{"n":""}} |}
   ];
   let variablesConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,
   };
   let convertVariables = v =>
-    v
-    ->ReasonRelay._convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {};

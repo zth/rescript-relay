@@ -314,54 +314,6 @@ let getPrintedFullState =
 
   addSpacing();
 
-  /**
- * Since our type checking for fragments/fragment references rely on Js.t due
- * to needing structural typing, we emit converters that take a record (that's
- * backed by an object containing fragment references) and converting it to a
- * Js.t object _only_ containing the fragment reference(s). This can then be
- * passed to the fragment use hook to get the actual fragment data.
- *
- * Not the cleanest solution, can hopefully revisit this in the future.
- */
-  addToStr("module FragmentConverters: {");
-  Printer.(
-    typeDeclarations^
-    |> List.rev
-    |> List.iter(def => {
-         def
-         |> printRootObjectTypeConverters(~state, ~printMode=Signature)
-         |> addToStr
-       })
-  );
-  Printer.(
-    definitions^
-    |> List.rev
-    |> List.iter(def => {
-         def
-         |> printRootObjectTypeConverters(~state, ~printMode=Signature)
-         |> addToStr
-       })
-  );
-
-  addToStr("\n} = {");
-  Printer.(
-    typeDeclarations^
-    |> List.iter(def => {
-         def
-         |> printRootObjectTypeConverters(~state, ~printMode=Full)
-         |> addToStr
-       })
-  );
-  Printer.(
-    definitions^
-    |> List.iter(def => {
-         def
-         |> printRootObjectTypeConverters(~state, ~printMode=Full)
-         |> addToStr
-       })
-  );
-  addToStr("};");
-
   // This emits extra assets for the generated modules,
   // like code for converting nullable fields, enums and unions,
   // and code for extracting fragment refs.

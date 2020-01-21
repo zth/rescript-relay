@@ -59,7 +59,7 @@ let storeRootType: string;
 
 let _cleanObjectFromUndefined: jsObj('a) => jsObj('a);
 let _cleanVariables: 'a => 'a;
-let _convertObj: ('a, Js.Dict.t(array((int, string))), 'b, 'c) => 'd;
+let _convertObj: ('a, Js.Dict.t(Js.Dict.t(string)), 'b, 'c) => 'd;
 
 /**
  * Read the following section on working with the Relay store:

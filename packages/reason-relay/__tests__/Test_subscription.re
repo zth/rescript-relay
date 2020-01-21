@@ -38,8 +38,7 @@ module Test = {
   let make = () => {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
-    let data =
-      Fragment.use(query.loggedInUser->Query.unwrapFragment_loggedInUser);
+    let data = Fragment.use(query.loggedInUser.getFragmentRefs());
 
     React.useEffect0(() => {
       let disposable =

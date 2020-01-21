@@ -17,7 +17,7 @@ let printConverterAssets =
   (includeRaw ? "type " ++ name ++ "Raw;" : "")
   ++ "let "
   ++ name
-  ++ "Converter: Js.Dict.t(array((int, string))) = [%raw {| "
+  ++ "Converter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| "
   ++ (
     assets.converterInstructions
     |> Js.Json.stringifyAny

@@ -2,16 +2,9 @@
 
 module Unions = {};
 
-module Types = {
-  type friendsConnection = {totalCount: int};
-};
+module Types = {};
 
-open Types;
-
-type fragment = {
-  firstName: string,
-  friendsConnection,
-};
+type fragment = {lastName: string};
 
 module Internal = {
   type fragmentRaw;
@@ -29,7 +22,7 @@ module Internal = {
 type t;
 type fragmentRef;
 type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TestPagination_user": t} as 'a;
+  {.. "__$fragment_ref__TestFragment_sub_user": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {};
@@ -39,7 +32,7 @@ type operationType = ReasonRelay.fragmentNode;
 let node: operationType = [%bs.raw
   {| {
   "kind": "Fragment",
-  "name": "TestPagination_user",
+  "name": "TestFragment_sub_user",
   "type": "User",
   "metadata": null,
   "argumentDefinitions": [],
@@ -47,33 +40,9 @@ let node: operationType = [%bs.raw
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "firstName",
+      "name": "lastName",
       "args": null,
       "storageKey": null
-    },
-    {
-      "kind": "LinkedField",
-      "alias": null,
-      "name": "friendsConnection",
-      "storageKey": "friendsConnection(first:1)",
-      "args": [
-        {
-          "kind": "Literal",
-          "name": "first",
-          "value": 1
-        }
-      ],
-      "concreteType": "UserConnection",
-      "plural": false,
-      "selections": [
-        {
-          "kind": "ScalarField",
-          "alias": null,
-          "name": "totalCount",
-          "args": null,
-          "storageKey": null
-        }
-      ]
     }
   ]
 } |}

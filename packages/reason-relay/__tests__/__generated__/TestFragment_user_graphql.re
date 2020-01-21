@@ -14,25 +14,28 @@ module Types = {};
 type fragment = {
   firstName: string,
   onlineStatus: option(enum_OnlineStatus),
+  getFragmentRefs:
+    unit =>
+    {
+      .
+      "__$fragment_ref__TestFragment_sub_user": TestFragment_sub_user_graphql.t,
+    },
 };
-
-module FragmentConverters: {} = {};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"":{"f":""}} |}
   ];
   let fragmentConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
   };
   let convertFragment = v =>
-    v
-    ->ReasonRelay._convertObj(
-        fragmentConverter,
-        fragmentConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      fragmentConverter,
+      fragmentConverterMap,
+      Js.undefined,
+    );
 };
 
 type t;
@@ -66,6 +69,11 @@ let node: operationType = [%bs.raw
       "name": "onlineStatus",
       "args": null,
       "storageKey": null
+    },
+    {
+      "kind": "FragmentSpread",
+      "name": "TestFragment_sub_user",
+      "args": null
     }
   ]
 } |}

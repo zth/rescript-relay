@@ -29,10 +29,9 @@ module Test = {
   [@react.component]
   let make = () => {
     let query = Query.use(~variables=(), ());
+
     let (data, refetch) =
-      Fragment.useRefetchable(
-        query.loggedInUser->Query.unwrapFragment_loggedInUser,
-      );
+      Fragment.useRefetchable(query.loggedInUser.getFragmentRefs());
 
     let (startTransition, _) =
       ReactExperimental.useTransition(~timeoutMs=5000, ());

@@ -123,12 +123,10 @@ open Types;
 type response = {members: option(members)};
 type variables = unit;
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"members":[[0,""]],"members_edges":[[0,""],[1,""]],"members_edges_node":[[0,""],[3,"response_members_edges_node"]],"members_edges_node_user_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]],"members_edges_node_group_members":[[0,""],[1,""],[3,"response_members_edges_node_group_members"]],"members_edges_node_group_members_user_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]],"members_edges_node_group_members_group_avatarUrl":[[0,""]],"members_edges_node_group_avatarUrl":[[0,""]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges_node_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_group_members"},"members_edges_node_group_members_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members_group_avatarUrl":{"n":""},"members_edges_node_group_avatarUrl":{"n":""}} |}
   ];
   let responseConverterMap = {
     "response_members_edges_node": Union_response_members_edges_node.unwrap,
@@ -143,7 +141,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v

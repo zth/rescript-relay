@@ -28,12 +28,10 @@ let makeRefetchVariables = (~status=?, ()): refetchVariables => {
 };
 type variables = {status: option(enum_OnlineStatus)};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"users":[[0,""]],"users_edges":[[0,""],[1,""]],"users_edges_node":[[0,""]],"users_edges_node_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
@@ -46,8 +44,8 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"status":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"status":{"n":"","e":"enum_OnlineStatus"}} |}
   ];
   let variablesConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,

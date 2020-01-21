@@ -22,12 +22,10 @@ type fragment = {
   id: option(string),
 };
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"onlineStatus":[[0,""],[2,"enum_OnlineStatus"]],"id":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"id":{"n":""}} |}
   ];
   let fragmentConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,

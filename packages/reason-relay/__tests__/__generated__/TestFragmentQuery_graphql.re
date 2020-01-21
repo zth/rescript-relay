@@ -13,11 +13,20 @@ module Types = {
   type node = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
-    __wrappedFragment__TestFragment_plural_user: ReasonRelay.wrappedFragmentRef,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
+      },
   };
   type edges = {node: option(node)};
   type users = {edges: option(array(option(edges)))};
-  type loggedInUser;
+  type loggedInUser = {
+    getFragmentRefs:
+      unit =>
+      {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t},
+  };
 };
 
 open Types;
@@ -28,55 +37,29 @@ type response = {
 };
 type variables = unit;
 
-module FragmentConverters: {
-  let unwrapFragment_node:
-    node =>
-    {
-      .
-      "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
-    };
-  let unwrapFragment_loggedInUser:
-    loggedInUser =>
-    {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t};
-} = {
-  external unwrapFragment_loggedInUser:
-    loggedInUser =>
-    {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t} =
-    "%identity";
-  external unwrapFragment_node:
-    node =>
-    {
-      .
-      "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"users":[[0,""]],"users_edges":[[0,""],[1,""]],"users_edges_node":[[0,""]],"users_edges_node_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
   };
   let convertResponse = v =>
-    v
-    ->ReasonRelay._convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay._convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {};
@@ -189,6 +172,13 @@ return {
         "selections": [
           (v2/*: any*/),
           (v1/*: any*/),
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "lastName",
+            "args": null,
+            "storageKey": null
+          },
           (v0/*: any*/)
         ]
       },
@@ -234,7 +224,7 @@ return {
     "operationKind": "query",
     "name": "TestFragmentQuery",
     "id": null,
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n}\n",
+    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n",
     "metadata": {}
   }
 };

@@ -189,15 +189,18 @@ type instruction =
   | ConvertNullableProp
   | ConvertNullableArrayContents
   | ConvertEnum(string)
-  | ConvertUnion(string);
+  | ConvertUnion(string)
+  | HasFragments;
 
 type instructionContainer = {
   atPath: list(string),
   instruction,
 };
 
+type converterInstructions = Js.Dict.t(Js.Dict.t(string));
+
 type objectAssets = {
-  converterInstructions: Js.Dict.t(array((int, string))),
+  converterInstructions,
   convertersDefinition: string,
 };
 
@@ -280,10 +283,12 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
     | Object({values}) => values |> traverseProps(~currentPath)
     }
   and traverseProps = (~currentPath, propValues) => {
+    let hasFragments = ref(false);
+
     propValues
     |> Tablecloth.Array.forEach(~f=p =>
          switch (p) {
-         | FragmentRef(_) => ()
+         | FragmentRef(_) => hasFragments := true
          | Prop(name, {nullable, propType}) =>
            let newPath = [name, ...currentPath];
 
@@ -297,10 +302,14 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
            propType |> traversePropType(~currentPath=newPath, ~propName=name);
          }
        );
+
+    if (hasFragments^) {
+      addInstruction({atPath: currentPath, instruction: HasFragments});
+    };
   };
 
   obj.values |> traverseProps(~currentPath=[]);
-  let dict = Js.Dict.empty();
+  let dict: converterInstructions = Js.Dict.empty();
 
   instructions
   |> Tablecloth.Array.forEach(~f=instruction => {
@@ -311,15 +320,18 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
 
        let action =
          switch (instruction.instruction) {
-         | ConvertNullableProp => (0, "")
-         | ConvertNullableArrayContents => (1, "")
-         | ConvertEnum(name) => (2, Printer.printEnumName(name))
-         | ConvertUnion(name) => (3, name)
+         | ConvertNullableProp => ("n", "")
+         | ConvertNullableArrayContents => ("na", "")
+         | ConvertEnum(name) => ("e", Printer.printEnumName(name))
+         | ConvertUnion(name) => ("u", name)
+         | HasFragments => ("f", "")
          };
 
        switch (dict->Js.Dict.get(key)) {
-       | Some(arr) => arr |> Js.Array.push(action) |> ignore
-       | None => dict->Js.Dict.set(key, [|action|])
+       | Some(d) =>
+         let (actionName, value) = action;
+         d->Js.Dict.set(actionName, value);
+       | None => dict->Js.Dict.set(key, Js.Dict.fromList([action]))
        };
      });
 

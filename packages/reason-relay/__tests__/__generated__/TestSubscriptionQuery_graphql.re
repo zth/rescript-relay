@@ -3,7 +3,14 @@
 module Unions = {};
 
 module Types = {
-  type loggedInUser;
+  type loggedInUser = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+      },
+  };
 };
 
 open Types;
@@ -11,44 +18,27 @@ open Types;
 type response = {loggedInUser};
 type variables = unit;
 
-module FragmentConverters: {
-  let unwrapFragment_loggedInUser:
-    loggedInUser =>
-    {
-      .
-      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-    };
-} = {
-  external unwrapFragment_loggedInUser:
-    loggedInUser =>
-    {
-      .
-      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"loggedInUser":{"f":""}} |}
+  ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay._convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay._convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay._convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {};

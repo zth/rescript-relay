@@ -43,11 +43,9 @@ module Types = {};
 
 type fragment = {id: string};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -77,23 +75,16 @@ module Unions = {};
 module Types = {};
 
 type fragment = {
-  __wrappedFragment__SomeComponent_user: ReasonRelay.wrappedFragmentRef,
-};
-
-module FragmentConverters: {
-  let unwrapFragment_fragment:
-    fragment =>
-    {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t};
-} = {
-  external unwrapFragment_fragment:
-    fragment =>
-    {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t} =
-    \\"%identity\\";
+  getFragmentRefs:
+    unit =>
+    {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t},
 };
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"\\":{\\"f\\":\\"\\"}} |}
+  ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -126,11 +117,9 @@ module Types = {};
 
 type fragment = {id: string};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -181,12 +170,10 @@ open Types;
 type response = {setUserLocation};
 type variables = {input: setUserLocationInput};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"setUserLocation_changedUser\\":[[0,\\"\\"]]} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}} |}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -198,8 +185,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"setUserLocation_changedUser\\":[[0,\\"\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -210,7 +197,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -289,12 +276,10 @@ open Types;
 
 type fragment = {participantsConnection: option(participantsConnection)};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"participantsConnection\\":[[0,\\"\\"]],\\"participantsConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"participantsConnection_edges_node\\":[[0,\\"\\"],[3,\\"fragment_participantsConnection_edges_node\\"]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"participantsConnection\\":{\\"n\\":\\"\\"},\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"}} |}
   ];
   let fragmentConverterMap = {
     \\"fragment_participantsConnection_edges_node\\": Union_fragment_participantsConnection_edges_node.unwrap,
@@ -364,12 +349,10 @@ open Types;
 
 type fragment = {me};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"me_friendsConnection\\":[[0,\\"\\"]],\\"me_friendsConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"me_friendsConnection_edges_node\\":[[0,\\"\\"]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -435,12 +418,10 @@ open Types;
 
 type fragment = {usersConnection: option(usersConnection)};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"usersConnection\\":[[0,\\"\\"]],\\"usersConnection_edges\\":[[0,\\"\\"],[1,\\"\\"]],\\"usersConnection_edges_node\\":[[0,\\"\\"]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -509,12 +490,10 @@ let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
 };
 type variables = {userId: string};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"user\\":[[0,\\"\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"user\\":{\\"n\\":\\"\\"}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -525,7 +504,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -565,12 +544,10 @@ open Types;
 type response = {userChanged};
 type variables = {input: userChangedInput};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"userChanged_user\\":[[0,\\"\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"userChanged_user\\":{\\"n\\":\\"\\"}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -581,7 +558,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -611,11 +588,9 @@ type fragment = {
   firstName: string,
 };
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -648,11 +623,9 @@ type fragment = {
   name: string,
 };
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -680,28 +653,28 @@ module Unions = {
   module Union_response_participantById: {
     type wrapped;
     type user = {
-      __wrappedFragment__app_user: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
     };
     type observer = {
-      __wrappedFragment__app_observer: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
     };
     type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
-    let unwrapFragment_user:
-      user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t};
-    let unwrapFragment_observer:
-      observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t};
     let unwrap: wrapped => t;
   } = {
     type wrapped;
     type user = {
-      __wrappedFragment__app_user: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
     };
     type observer = {
-      __wrappedFragment__app_observer: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
@@ -716,13 +689,6 @@ module Unions = {
       | _ => \`UnmappedUnionMember
       };
     };
-
-    external unwrapFragment_user:
-      user => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t} =
-      \\"%identity\\";
-    external unwrapFragment_observer:
-      observer => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t} =
-      \\"%identity\\";
   };
 
   type union_response_participantById = [
@@ -739,12 +705,10 @@ module Types = {};
 type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"participantById\\":[[0,\\"\\"],[3,\\"response_participantById\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -757,7 +721,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -832,12 +796,10 @@ module Types = {};
 type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"participantById\\":[[0,\\"\\"],[3,\\"response_participantById\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -850,7 +812,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -976,12 +938,10 @@ module Types = {};
 type response = {participantById: option(union_response_participantById)};
 type variables = unit;
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {\\"participantById\\":[[0,\\"\\"],[3,\\"response_participantById\\"]],\\"participantById_observer_manager\\":[[0,\\"\\"],[3,\\"response_participantById_observer_manager\\"]],\\"participantById_observer_manager_observer_status\\":[[2,\\"enum_ObserverStatus\\"]],\\"participantById_observer_manager_observer_isOnline\\":[[0,\\"\\"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -996,7 +956,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v

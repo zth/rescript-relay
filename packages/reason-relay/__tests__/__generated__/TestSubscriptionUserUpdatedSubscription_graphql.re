@@ -13,7 +13,12 @@ module Types = {
   type user = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
-    __wrappedFragment__TestSubscription_user: ReasonRelay.wrappedFragmentRef,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
+      },
   };
   type userUpdated = {user: option(user)};
 };
@@ -23,27 +28,10 @@ open Types;
 type response = {userUpdated: option(userUpdated)};
 type variables = {userId: string};
 
-module FragmentConverters: {
-  let unwrapFragment_user:
-    user =>
-    {
-      .
-      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-    };
-} = {
-  external unwrapFragment_user:
-    user =>
-    {
-      .
-      "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"userUpdated":[[0,""]],"userUpdated_user":[[0,""]],"userUpdated_user_onlineStatus":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
@@ -56,7 +44,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v

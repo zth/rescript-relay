@@ -10,7 +10,14 @@ type enum_OnlineStatus = [
 module Unions = {};
 
 module Types = {
-  type node;
+  type node = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t,
+      },
+  };
 };
 
 open Types;
@@ -34,21 +41,10 @@ type variables = {
   id: string,
 };
 
-module FragmentConverters: {
-  let unwrapFragment_node:
-    node =>
-    {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t};
-} = {
-  external unwrapFragment_node:
-    node =>
-    {. "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t} =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"node":[[0,""]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"node":{"n":"","f":""}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -59,8 +55,8 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"friendsOnlineStatuses":[[0,""],[2,"enum_OnlineStatus"]]} |}
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"friendsOnlineStatuses":{"n":"","e":"enum_OnlineStatus"}} |}
   ];
   let variablesConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,

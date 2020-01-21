@@ -4,8 +4,13 @@ module Unions = {
   module Union_fragment_members_edges_node: {
     type wrapped;
     type user = {
-      __wrappedFragment__TestPagination_user: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit =>
+        {
+          .
+          "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
+        },
     };
     type node = {
       id: string,
@@ -19,18 +24,17 @@ module Unions = {
       id: string,
     };
     type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
-    let unwrapFragment_user:
-      user =>
-      {
-        .
-        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
-      };
     let unwrap: wrapped => t;
   } = {
     type wrapped;
     type user = {
-      __wrappedFragment__TestPagination_user: ReasonRelay.wrappedFragmentRef,
       id: string,
+      getFragmentRefs:
+        unit =>
+        {
+          .
+          "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
+        },
     };
     type node = {
       id: string,
@@ -56,14 +60,6 @@ module Unions = {
       | _ => `UnmappedUnionMember
       };
     };
-
-    external unwrapFragment_user:
-      user =>
-      {
-        .
-        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
-      } =
-      "%identity";
   };
 
   type union_fragment_members_edges_node = [
@@ -84,12 +80,10 @@ open Types;
 
 type fragment = {members: option(members)};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"members":[[0,""]],"members_edges":[[0,""],[1,""]],"members_edges_node":[[0,""],[3,"fragment_members_edges_node"]],"members_edges_node_group_adminsConnection_edges":[[0,""],[1,""]],"members_edges_node_group_adminsConnection_edges_node":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}} |}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": Union_fragment_members_edges_node.unwrap,

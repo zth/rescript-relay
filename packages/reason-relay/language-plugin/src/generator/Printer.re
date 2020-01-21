@@ -81,6 +81,7 @@ and printPropValue = (~propValue, ~state) => {
 }
 and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) => {
   switch (obj.values |> Array.length, printAs) {
+  | (0, _) => "unit"
   | (_, OnlyFragmentRefs) =>
     let str = ref("{.");
     let addToStr = s => str := str^ ++ s;
@@ -110,30 +111,51 @@ and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) =>
 
     addToStr("}");
     str^;
-  | (0, _) => "unit"
   | (_, Record) =>
     let str = ref("{");
     let addToStr = s => str := str^ ++ s;
 
-    obj.values
-    |> Array.iteri((index, p) => {
-         if (index > 0) {
-           addToStr(",");
-         };
+    let hasFragments =
+      switch (
+        obj.values
+        |> Tablecloth.Array.find(
+             ~f=
+               fun
+               | FragmentRef(_) => true
+               | Prop(_) => false,
+           )
+      ) {
+      | Some(_) => true
+      | None => false
+      };
 
+    obj.values
+    |> Tablecloth.Array.filter(
+         ~f=
+           fun
+           | FragmentRef(_) => false
+           | Prop(_) => true,
+       )
+    |> Array.iter(p => {
          addToStr(
            switch (p) {
            | Prop(name, propValue) =>
              printRecordPropName(name)
              ++ ": "
              ++ printPropValue(~propValue, ~state)
-           | FragmentRef(name) =>
-             "__wrappedFragment__"
-             ++ name
-             ++ ": ReasonRelay.wrappedFragmentRef"
+             ++ ","
+           | FragmentRef(_) => ""
            },
-         );
+         )
        });
+
+    if (hasFragments) {
+      addToStr(
+        printRecordPropName("getFragmentRefs")
+        ++ ": unit => "
+        ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ()),
+      );
+    };
 
     addToStr("}");
     str^;
@@ -238,19 +260,7 @@ let printRootType = (~state: fullState, rootType) =>
     "type "
     ++ Tablecloth.String.uncapitalize(name)
     ++ (
-      // Because generated records can be empty if the object only contain fragment
-      // references, we'll need to print empty records as abstract types here,
-      // in the name of type safety!
-      switch (
-        definition.values
-        |> Tablecloth.Array.filter(~f=v =>
-             switch (v) {
-             | Prop(_) => true
-             | FragmentRef(_) => false
-             }
-           )
-        |> Tablecloth.Array.length
-      ) {
+      switch (definition.values |> Tablecloth.Array.length) {
       | 0 => ""
       | _ => " = " ++ printObject(~obj=definition, ~state, ())
       }
@@ -262,61 +272,6 @@ let printRootType = (~state: fullState, rootType) =>
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   };
-
-let printFragmentExtractor = (~obj: object_, ~state, ~printMode, name) => {
-  let fnName = "unwrapFragment_" ++ name;
-  let signature =
-    name ++ " => " ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ());
-
-  switch (printMode) {
-  | Full => "external " ++ fnName ++ ": " ++ signature ++ " = \"%identity\";"
-  | Signature => "let " ++ fnName ++ ": " ++ signature ++ ";"
-  };
-};
-
-let printObjectDefinition = (~name, ~state, ~printMode, definition: object_) => {
-  let str = ref("");
-  let addToStr = s => str := str^ ++ s;
-
-  switch (
-    definition.values
-    |> Tablecloth.Array.filter(~f=v =>
-         switch (v) {
-         | FragmentRef(_) => true
-         | Prop(_) => false
-         }
-       )
-    |> Tablecloth.Array.length
-  ) {
-  | 0 => ()
-  | _ =>
-    addToStr("\n");
-    addToStr(
-      name |> printFragmentExtractor(~state, ~printMode, ~obj=definition),
-    );
-  };
-
-  str^;
-};
-
-let printRootObjectTypeConverters =
-    (~state: fullState, ~printMode: objectPrintMode=Full, rootType) => {
-  let assets =
-    switch (rootType) {
-    | Operation(definition) => Some(("response", definition))
-    | PluralFragment(definition)
-    | Fragment(definition) => Some(("fragment", definition))
-    | Variables(definition) => Some(("variables", definition))
-    | ObjectTypeDeclaration({name, definition}) => Some((name, definition))
-    | RefetchVariables(_) => None
-    };
-
-  switch (assets) {
-  | Some((name, definition)) =>
-    definition |> printObjectDefinition(~name, ~state, ~printMode)
-  | None => ""
-  };
-};
 
 let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
   "["
@@ -345,12 +300,6 @@ let printUnion = (~state, union: union) => {
     ++ union->printUnionTypeDefinition(
          ~printMemberTypeName=Tablecloth.String.uncapitalize,
        );
-
-  let signature = ref("");
-  let addToSignature = Utils.makeAddToStr(signature);
-
-  let impl = ref("");
-  let addToImpl = Utils.makeAddToStr(impl);
 
   let unwrappers = ref("");
   let addToUnwrappers = Utils.makeAddToStr(unwrappers);
@@ -403,21 +352,7 @@ let printUnion = (~state, union: union) => {
        |> Tablecloth.List.iter(~f=definition => {
             definition
             |> printRootType(~state=stateWithUnionDefinitions)
-            |> addToTypeDefs;
-
-            definition
-            |> printRootObjectTypeConverters(
-                 ~state=stateWithUnionDefinitions,
-                 ~printMode=Signature,
-               )
-            |> addToSignature;
-
-            definition
-            |> printRootObjectTypeConverters(
-                 ~state=stateWithUnionDefinitions,
-                 ~printMode=Full,
-               )
-            |> addToImpl;
+            |> addToTypeDefs
           });
 
        addToUnwrappers(
@@ -464,7 +399,6 @@ let printUnion = (~state, union: union) => {
   ++ ": {"
   ++ typeDefs^
   ++ typeT
-  ++ signature^
   ++ "let unwrap: wrapped => t;"
   ++ "} = { "
   ++ typeDefs^
@@ -472,7 +406,6 @@ let printUnion = (~state, union: union) => {
   ++ typeT
   ++ unwrappers^
   ++ unwrapFnImpl^
-  ++ impl^
   ++ "};";
 };
 

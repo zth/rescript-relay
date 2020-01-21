@@ -17,11 +17,20 @@ module Query = [%relay.query
 |}
 ];
 
+module SubFragment = [%relay.fragment
+  {|
+    fragment TestFragment_sub_user on User {
+      lastName
+    }
+|}
+];
+
 module Fragment = [%relay.fragment
   {|
     fragment TestFragment_user on User {
       firstName
       onlineStatus
+      ...TestFragment_sub_user
     }
 |}
 ];
@@ -67,16 +76,14 @@ module Test = {
   [@react.component]
   let make = () => {
     let query = Query.use(~variables=(), ());
-    let data =
-      Fragment.use(query.loggedInUser->Query.unwrapFragment_loggedInUser);
+    let data = Fragment.use(query.loggedInUser.getFragmentRefs());
 
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
         edges->Belt.Array.keepMap(edge =>
           switch (edge) {
-          | Some({node: Some(node)}) =>
-            Some(node->Query.unwrapFragment_node)
+          | Some({node: Some(node)}) => Some(node.getFragmentRefs())
           | _ => None
           }
         )

@@ -1,21 +1,51 @@
+/**
+ * This is bound to each nested object with fragments,
+ * and used as a dummy function for casting a record
+ * to a Js.t object with the fragment references.
+ */
+function getFragmentRefs() {
+  return this;
+}
+
+function getNewObj(maybeNewObj, currentObj) {
+  return maybeNewObj || Object.assign({}, currentObj);
+}
+
+function getPathName(path) {
+  return path.join("_");
+}
+
+function makeNewPath(currentPath, newKeys) {
+  return [].concat(currentPath, newKeys);
+}
+
+/**
+ * Runs on each object in the tree and follows the provided instructions
+ * to apply transforms etc.
+ */
 function traverse(
   currentPath,
   currentObj,
   instructionMap,
   converters,
   nullableValue,
-  instructionPaths
+  instructionPaths,
+  addFragmentOnRoot
 ) {
-  var newObj = Object.assign({}, currentObj);
-  var hasChanges = false;
+  var newObj;
+
+  if (addFragmentOnRoot) {
+    newObj = getNewObj(newObj, currentObj);
+    newObj.getFragmentRefs = getFragmentRefs.bind(newObj);
+  }
 
   for (var key in currentObj) {
     var isUnion = false;
     var originalValue = currentObj[key];
 
     // Instructions are stored by the path in the object where they apply
-    var thisPath = [].concat(currentPath, [key]);
-    var path = thisPath.join("_");
+    var thisPath = makeNewPath(currentPath, [key]);
+    var path = getPathName(thisPath);
 
     var instructions = instructionMap[path];
 
@@ -24,120 +54,150 @@ function traverse(
         return p.indexOf(path) === 0 && p.length > path.length;
       }).length > 0;
 
-    (instructions || []).forEach(function(instruction) {
-      var action = instruction[0];
-      var value = instruction[1];
-
-      switch (action) {
-        // Convert nullable
-        case 0: {
-          if (currentObj[key] == null) {
-            hasChanges = true;
-            newObj[key] = nullableValue;
-          }
-
-          break;
+    if (instructions) {
+      if (currentObj[key] == null) {
+        if (instructions["n"] === "") {
+          newObj = getNewObj(newObj, currentObj);
+          newObj[key] = nullableValue;
         }
+      } else {
+        var shouldAddFragmentFn = instructions["f"] === "";
 
-        // Convert nullable items in array
-        case 1: {
-          if (Array.isArray(currentObj[key])) {
-            hasChanges = true;
-            newObj[key] = currentObj[key].map(function(v) {
-              return v == null ? nullableValue : v;
-            });
-          }
+        var shouldConvertEnum =
+          typeof instructions["e"] === "string" &&
+          !!converters[instructions["e"]];
 
-          break;
-        }
+        var shouldConvertUnion =
+          typeof instructions["u"] === "string" &&
+          !!converters[instructions["u"]];
 
-        // Enum conversion
-        case 2: {
-          if (currentObj[key] != null && converters[value]) {
-            hasChanges = true;
-
-            if (Array.isArray(currentObj[key])) {
-              newObj[key] = currentObj[key].map(function(v) {
-                return v == null ? nullableValue : converters[value](v);
-              });
-            } else {
-              newObj[key] = converters[value](currentObj[key]);
+        /**
+         * Handle arrays
+         */
+        if (Array.isArray(currentObj[key])) {
+          newObj = getNewObj(newObj, currentObj);
+          newObj[key] = currentObj[key].map(function(v) {
+            if (v == null) {
+              return nullableValue;
             }
-          }
 
-          break;
-        }
+            if (shouldConvertEnum) {
+              return converters[instructions["e"]](v);
+            }
 
-        // Union conversion
-        case 3: {
-          if (currentObj[key] != null && converters[value]) {
-            hasChanges = true;
-            isUnion = true;
+            if (
+              shouldConvertUnion &&
+              typeof v === "object" &&
+              typeof v.__typename === "string"
+            ) {
+              isUnion = true;
 
-            if (Array.isArray(currentObj[key])) {
-              newObj[key] = currentObj[key].map(function(v) {
-                /**
-                 * Unions are special. Since their
-                 */
+              var newPath = makeNewPath(currentPath, [
+                key,
+                v.__typename.toLowerCase()
+              ]);
 
-                if (v == null) {
-                  return nullableValue;
-                }
+              var unionRootHasFragment =
+                (instructionMap[getPathName(newPath)] || {}).f === "";
 
-                var traversedValue = traverse(
-                  [].concat(currentPath, [key, v.__typename.toLowerCase()]),
-                  v,
-                  instructionMap,
-                  converters,
-                  nullableValue,
-                  instructionPaths
-                );
-
-                return converters[value](traversedValue);
-              });
-            } else {
               var traversedValue = traverse(
-                [].concat(currentPath, [
-                  key,
-                  currentObj[key].__typename.toLowerCase()
-                ]),
-                currentObj[key],
+                newPath,
+                v,
                 instructionMap,
                 converters,
                 nullableValue,
-                instructionPaths
+                instructionPaths,
+                unionRootHasFragment
               );
 
-              newObj[key] = converters[value](traversedValue);
+              return converters[instructions["u"]](traversedValue);
             }
+
+            if (shouldAddFragmentFn && typeof v === "object") {
+              var objWithFragmentFn = Object.assign({}, v);
+              objWithFragmentFn.getFragmentRefs = getFragmentRefs.bind(
+                objWithFragmentFn
+              );
+              return objWithFragmentFn;
+            }
+
+            return v;
+          });
+        } else {
+          /**
+           * Handle normal values.
+           */
+          var v = currentObj[key];
+
+          if (shouldConvertEnum) {
+            newObj = getNewObj(newObj, currentObj);
+            newObj[key] = converters[instructions["e"]](v);
           }
 
-          break;
+          if (
+            shouldConvertUnion &&
+            typeof v === "object" &&
+            typeof v.__typename === "string"
+          ) {
+            isUnion = true;
+
+            var newPath = makeNewPath(currentPath, [
+              key,
+              v.__typename.toLowerCase()
+            ]);
+
+            var unionRootHasFragment =
+              (instructionMap[getPathName(newPath)] || {}).f === "";
+
+            var traversedValue = traverse(
+              newPath,
+              v,
+              instructionMap,
+              converters,
+              nullableValue,
+              instructionPaths,
+              unionRootHasFragment
+            );
+
+            newObj = getNewObj(newObj, currentObj);
+            newObj[key] = converters[instructions["u"]](traversedValue);
+          }
+
+          if (shouldAddFragmentFn && typeof v === "object") {
+            newObj = getNewObj(newObj, currentObj);
+
+            var objWithFragmentFn = Object.assign({}, v);
+
+            objWithFragmentFn.getFragmentRefs = getFragmentRefs.bind(
+              objWithFragmentFn
+            );
+
+            newObj[key] = objWithFragmentFn;
+          }
         }
       }
-    });
+    }
 
     if (hasDeeperInstructions && originalValue != null && !isUnion) {
-      if (
-        typeof currentObj[key] === "object" &&
-        !Array.isArray(originalValue)
-      ) {
+      var nextObj = (newObj && newObj[key]) || currentObj[key];
+
+      if (typeof nextObj === "object" && !Array.isArray(originalValue)) {
         var traversedObj = traverse(
           thisPath,
-          currentObj[key],
+          nextObj,
           instructionMap,
           converters,
           nullableValue,
           instructionPaths
         );
 
-        if (traversedObj !== currentObj[key]) {
-          hasChanges = true;
+        if (traversedObj !== nextObj) {
+          newObj = getNewObj(newObj, currentObj);
           newObj[key] = traversedObj;
         }
       } else if (Array.isArray(originalValue)) {
-        hasChanges = true;
-        newObj[key] = currentObj[key].map(function(o) {
+        newObj = getNewObj(newObj, currentObj);
+        newObj[key] = nextObj.map(function(o) {
           return typeof o === "object" && o != null
             ? traverse(
                 thisPath,
@@ -147,13 +207,13 @@ function traverse(
                 nullableValue,
                 instructionPaths
               )
-            : v;
+            : o;
         });
       }
     }
   }
 
-  return hasChanges ? newObj : currentObj;
+  return newObj || currentObj;
 }
 
 /**
@@ -178,8 +238,17 @@ function traverser(root, _instructionMap, converters, nullableValue) {
     return root;
   }
 
+  // We'll add a getFragmentRefs function to the root if needed here.
+  // getFragmentRefs is currently the only thing that's possible to add
+  // to the root.
+  var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
+
   if (Array.isArray(root)) {
     return root.map(function(v) {
+      if (v == null) {
+        return nullableValue;
+      }
+
       return v == null
         ? nullableValue
         : traverse(
@@ -188,7 +257,8 @@ function traverser(root, _instructionMap, converters, nullableValue) {
             instructionMap,
             converters,
             nullableValue,
-            instructionPaths
+            instructionPaths,
+            fragmentsOnRoot
           );
     });
   }
@@ -201,7 +271,8 @@ function traverser(root, _instructionMap, converters, nullableValue) {
     instructionMap,
     converters,
     nullableValue,
-    instructionPaths
+    instructionPaths,
+    fragmentsOnRoot
   );
 
   return v;
