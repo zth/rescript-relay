@@ -1,5 +1,7 @@
 # master
 
+# 0.5.2
+
 - Inlines enum definition in generated files to improve code lens/view definition in editors. Previously, all that would show up when hovering an enum would be `SchemaAssets.Enum_enumName.t`, but now the full enum definition will show. This will work fine with `SchemaAssets` since polymorphic variants match structurally, so the definitions will be equivalent.
 - Inlines union definition and references that in the local types, for the same reason as enums - improving code lens/view definition.
 - Autogenerate helper function for turning a @connection into an array of nodes. This replaces the functionality of the previous `ReasonRelayUtils.collectConnectionNodes` that's no longer usable after moving from `Js.t` to records.
