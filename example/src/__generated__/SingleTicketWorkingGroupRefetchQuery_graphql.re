@@ -3,7 +3,14 @@
 module Unions = {};
 
 module Types = {
-  type node;
+  type node = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+      },
+  };
 };
 
 open Types;
@@ -22,27 +29,10 @@ type variables = {
   id: string,
 };
 
-module FragmentConverters: {
-  let unwrapFragment_node:
-    node =>
-    {
-      .
-      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-    };
-} = {
-  external unwrapFragment_node:
-    node =>
-    {
-      .
-      "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"node":[[0,""]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"node":{"n":"","f":""}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -53,7 +43,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -63,6 +53,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 

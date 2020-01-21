@@ -20,12 +20,10 @@ open Types;
 type response = {addTodoItem: option(addTodoItem)};
 type variables = {input: addTodoItemInput};
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"addTodoItem":[[0,""]],"addTodoItem_addedTodoItem":[[0,""]],"addTodoItem_addedTodoItem_completed":[[0,""]]} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"addTodoItem":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem_addedTodoItem_completed":{"n":""}} |}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -37,8 +35,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"addTodoItem":[[0,""]],"addTodoItem_addedTodoItem":[[0,""]],"addTodoItem_addedTodoItem_completed":[[0,""]]} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"addTodoItem":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem_addedTodoItem_completed":{"n":""}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -49,7 +47,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -59,6 +57,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.mutationNode;
 

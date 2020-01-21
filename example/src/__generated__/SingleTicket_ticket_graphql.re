@@ -3,26 +3,38 @@
 module Unions = {
   module Union_fragment_assignee: {
     type wrapped;
-    type user;
-    type workingGroup;
+    type user = {
+      getFragmentRefs:
+        unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
+    };
+    type workingGroup = {
+      getFragmentRefs:
+        unit =>
+        {
+          .
+          "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+        },
+    };
     type t = [
       | `User(user)
       | `WorkingGroup(workingGroup)
       | `UnmappedUnionMember
     ];
-    let unwrapFragment_user:
-      user => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t};
-    let unwrapFragment_workingGroup:
-      workingGroup =>
-      {
-        .
-        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-      };
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user;
-    type workingGroup;
+    type user = {
+      getFragmentRefs:
+        unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
+    };
+    type workingGroup = {
+      getFragmentRefs:
+        unit =>
+        {
+          .
+          "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+        },
+    };
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
     type t = [
@@ -40,18 +52,13 @@ module Unions = {
       | _ => `UnmappedUnionMember
       };
     };
-
-    external unwrapFragment_user:
-      user => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t} =
-      "%identity";
-    external unwrapFragment_workingGroup:
-      workingGroup =>
-      {
-        .
-        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-      } =
-      "%identity";
   };
+
+  type union_fragment_assignee = [
+    | `User(Union_fragment_assignee.user)
+    | `WorkingGroup(Union_fragment_assignee.workingGroup)
+    | `UnmappedUnionMember
+  ];
 };
 
 open Unions;
@@ -59,35 +66,23 @@ open Unions;
 module Types = {};
 
 type fragment = {
-  assignee: option(Union_fragment_assignee.t),
+  assignee: option(union_fragment_assignee),
   id: string,
   subject: string,
   lastUpdated: option(string),
   trackingId: string,
-  __wrappedFragment__TicketStatusBadge_ticket: ReasonRelay.wrappedFragmentRef,
-};
-
-module FragmentConverters: {
-  let unwrapFragment_fragment:
-    fragment =>
+  getFragmentRefs:
+    unit =>
     {
       .
       "__$fragment_ref__TicketStatusBadge_ticket": TicketStatusBadge_ticket_graphql.t,
-    };
-} = {
-  external unwrapFragment_fragment:
-    fragment =>
-    {
-      .
-      "__$fragment_ref__TicketStatusBadge_ticket": TicketStatusBadge_ticket_graphql.t,
-    } =
-    "%identity";
+    },
 };
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"assignee":[[0,""],[3,"fragment_assignee"]],"lastUpdated":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"assignee":{"n":"","u":"fragment_assignee"},"assignee_user":{"f":""},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""},"":{"f":""}} |}
   ];
   let fragmentConverterMap = {
     "fragment_assignee": Union_fragment_assignee.unwrap,
@@ -106,6 +101,8 @@ type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__SingleTicket_ticket": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 

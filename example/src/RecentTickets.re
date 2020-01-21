@@ -44,23 +44,12 @@ let make = (~query as queryRef) => {
             </tr>
           </thead>
           <tbody>
-            {(
-               switch (data.ticketsConnection) {
-               | {edges: Some(edges)} =>
-                 edges->Belt.Array.keepMap(edge =>
-                   switch (edge) {
-                   | Some({node: Some(node)}) => Some(node)
-                   | _ => None
-                   }
-                 )
-
-               | _ => [||]
-               }
-             )
+            {data.ticketsConnection
+             ->Fragment.getConnectionNodes_ticketsConnection
              ->Belt.Array.map(ticket =>
                  <SingleTicket
                    key={ticket.id}
-                   ticket={ticket->Fragment.unwrapFragment_node}
+                   ticket={ticket.getFragmentRefs()}
                  />
                )
              ->React.array}

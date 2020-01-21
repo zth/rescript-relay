@@ -51,16 +51,14 @@ let make = () => {
     <div className="content-wrapper">
       <Header />
       <TopCardsDisplayer
-        siteStatistics={
-          query.siteStatistics->Query.unwrapFragment_siteStatistics
-        }
+        siteStatistics={query.siteStatistics.getFragmentRefs()}
       />
       <div className="row">
         <div className="col-8 grid-margin">
-          <RecentTickets query={query->Query.unwrapFragment_response} />
+          <RecentTickets query={query.getFragmentRefs()} />
         </div>
         <div className="col-4 grid-margin">
-          <TodoList query={query->Query.unwrapFragment_response} />
+          <TodoList query={query.getFragmentRefs()} />
         </div>
       </div>
     </div>

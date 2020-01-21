@@ -6,7 +6,8 @@ module Types = {
   type node = {
     id: string,
     fullName: string,
-    __wrappedFragment__Avatar_user: ReasonRelay.wrappedFragmentRef,
+    getFragmentRefs:
+      unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
   };
   type edges = {node: option(node)};
   type membersConnection = {edges: option(array(option(edges)))};
@@ -20,19 +21,10 @@ type fragment = {
   id: option(string),
 };
 
-module FragmentConverters: {
-  let unwrapFragment_node:
-    node => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t};
-} = {
-  external unwrapFragment_node:
-    node => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t} =
-    "%identity";
-};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"membersConnection":[[0,""]],"membersConnection_edges":[[0,""],[1,""]],"membersConnection_edges_node":[[0,""]],"id":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"membersConnection":{"n":""},"membersConnection_edges":{"n":"","na":""},"membersConnection_edges_node":{"n":"","f":""},"id":{"n":""}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -49,6 +41,8 @@ type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 

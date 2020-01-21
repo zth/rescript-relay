@@ -1,17 +1,23 @@
 /* @generated */
 
+type enum_TicketStatus = [
+  | `Done
+  | `OnHold
+  | `Progress
+  | `Rejected
+  | `FUTURE_ADDED_VALUE__
+];
+
 module Unions = {};
 
 module Types = {};
 
-type fragment = {status: SchemaAssets.Enum_TicketStatus.t};
-
-module FragmentConverters: {} = {};
+type fragment = {status: enum_TicketStatus};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"status":[[2,"enum_TicketStatus"]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"status":{"e":"enum_TicketStatus"}} |}
   ];
   let fragmentConverterMap = {
     "enum_TicketStatus": SchemaAssets.Enum_TicketStatus.unwrap,
@@ -30,6 +36,8 @@ type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__TicketStatusBadge_ticket": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 

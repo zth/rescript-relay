@@ -119,22 +119,12 @@ let make = (~query as queryRef) => {
       </form>
       <div className="list-wrapper">
         <ul className="d-flex flex-column-reverse todo-list todo-list-custom">
-          {(
-             switch (todoListData.todosConnection) {
-             | {edges: Some(edges)} =>
-               edges->Belt.Array.keepMap(edge =>
-                 switch (edge) {
-                 | Some({node: Some(node)}) => Some(node)
-                 | _ => None
-                 }
-               )
-             | _ => [||]
-             }
-           )
+          {todoListData.todosConnection
+           ->TodoListFragment.getConnectionNodes_todosConnection
            ->Belt.Array.map(todoItem =>
                <SingleTodo
                  key={todoItem.id}
-                 todoItem={todoItem->TodoListFragment.unwrapFragment_node}
+                 todoItem={todoItem.getFragmentRefs()}
                  checked=true
                />
              )

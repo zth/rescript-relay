@@ -9,12 +9,10 @@ type fragment = {
   fullName: string,
 };
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"avatarUrl":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"avatarUrl":{"n":""}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -30,6 +28,8 @@ type t;
 type fragmentRef;
 type fragmentRefSelector('a) = {.. "__$fragment_ref__Avatar_user": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 

@@ -10,12 +10,10 @@ type fragment = {
   completed: option(bool),
 };
 
-module FragmentConverters: {} = {};
-
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(array((int, string))) = [%raw
-    {| {"completed":[[0,""]]} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"completed":{"n":""}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -32,6 +30,8 @@ type fragmentRef;
 type fragmentRefSelector('a) =
   {.. "__$fragment_ref__SingleTodo_todoItem": t} as 'a;
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+
+module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 

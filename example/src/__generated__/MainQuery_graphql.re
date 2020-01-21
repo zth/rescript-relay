@@ -3,53 +3,35 @@
 module Unions = {};
 
 module Types = {
-  type siteStatistics;
+  type siteStatistics = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
+      },
+  };
 };
 
 open Types;
 
 type response = {
   siteStatistics,
-  __wrappedFragment__RecentTickets_query: ReasonRelay.wrappedFragmentRef,
-  __wrappedFragment__TodoList_query: ReasonRelay.wrappedFragmentRef,
+  getFragmentRefs:
+    unit =>
+    {
+      .
+      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
+      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
+    },
 };
 type variables = unit;
 
-module FragmentConverters: {
-  let unwrapFragment_siteStatistics:
-    siteStatistics =>
-    {
-      .
-      "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
-    };
-  let unwrapFragment_response:
-    response =>
-    {
-      .
-      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
-    };
-} = {
-  external unwrapFragment_siteStatistics:
-    siteStatistics =>
-    {
-      .
-      "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
-    } =
-    "%identity";
-  external unwrapFragment_response:
-    response =>
-    {
-      .
-      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
-    } =
-    "%identity";
-};
-
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {"siteStatistics":{"f":""},"":{"f":""}} |}
+  ];
   let responseConverterMap = ();
   let convertResponse = v =>
     v
@@ -59,7 +41,7 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(array((int, string))) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -69,6 +51,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 
@@ -324,18 +308,6 @@ return {
               },
               (v5/*: any*/)
             ]
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "__$generated__connection__key__$$__RecentTickets_ticketsConnection$$$name__$$__ticketsConnection",
-                "args": null,
-                "storageKey": null
-              }
-            ]
           }
         ]
       },
@@ -396,19 +368,7 @@ return {
               (v5/*: any*/)
             ]
           },
-          (v3/*: any*/),
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "__$generated__connection__key__$$__TodoList_query_todosConnection$$$name__$$__todosConnection",
-                "args": null,
-                "storageKey": null
-              }
-            ]
-          }
+          (v3/*: any*/)
         ]
       },
       {
