@@ -44,6 +44,7 @@ type Query {
 
 type Mutation {
   setUserLocation(input: SetUserLocationInput!): SetUserLocationPayload!
+  setUserRole(input: SetUserRoleInput!): SetUserRolePayload!
 }
 
 type Subscription {
@@ -63,6 +64,15 @@ input SetUserLocationInput {
   clientMutationId: String
   userId: ID!
   location: LocationBounds
+}
+
+input SetUserRoleInput {
+  userId: ID!
+  role: UserRole!
+}
+
+type SetUserRolePayload {
+  user: User
 }
 
 type SetUserLocationPayload {

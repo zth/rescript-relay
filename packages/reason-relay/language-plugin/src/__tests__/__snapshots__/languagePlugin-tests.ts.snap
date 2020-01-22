@@ -142,6 +142,80 @@ type operationType = ReasonRelay.fragmentNode;
 "
 `;
 
+exports[`Language plugin tests Mutation generates the correct converter for complex variables 1`] = `
+"// SetUserRoleMutation.graphql
+/* @generated */
+
+type enum_UserRole = [ | \`Admin | \`User | \`FUTURE_ADDED_VALUE__];
+
+module Unions = {};
+
+module Types = {
+  type user = {
+    id: string,
+    firstName: string,
+    role: enum_UserRole,
+  };
+  type setUserRole = {user: option(user)};
+  type setUserRoleInput = {
+    userId: string,
+    role: enum_UserRole,
+  };
+};
+
+open Types;
+
+type response = {setUserRole};
+type variables = {input: setUserRoleInput};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"setUserRole_user\\":{\\"n\\":\\"\\"},\\"setUserRole_user_role\\":{\\"e\\":\\"enum_UserRole\\"}} |}
+  ];
+  let wrapResponseConverterMap = {
+    \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.wrap,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
+    {| {\\"setUserRole_user\\":{\\"n\\":\\"\\"},\\"setUserRole_user_role\\":{\\"e\\":\\"enum_UserRole\\"}} |}
+  ];
+  let responseConverterMap = {
+    \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.unwrap,
+  };
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+module Utils = {};
+
+type operationType = ReasonRelay.mutationNode;
+"
+`;
+
 exports[`Language plugin tests Mutation prints the correct basic structure for mutations 1`] = `
 "// SetUserLocationMutation.graphql
 /* @generated */

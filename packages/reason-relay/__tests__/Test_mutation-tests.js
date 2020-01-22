@@ -41,6 +41,43 @@ describe("Mutation", () => {
     await t.screen.findByText("First is idle");
   });
 
+  test("mutation with complex input is converted", async () => {
+    queryMock.mockQuery({
+      name: "TestMutationQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          onlineStatus: "Online"
+        }
+      }
+    });
+
+    t.render(test_mutation());
+    await t.screen.findByText("First is online");
+
+    queryMock.mockQuery({
+      name: "TestMutationSetOnlineStatusComplexMutation",
+      variables: {
+        input: {
+          onlineStatus: "Idle"
+        }
+      },
+      data: {
+        setOnlineStatusComplex: {
+          user: {
+            id: "user-1",
+            onlineStatus: "Idle"
+          }
+        }
+      }
+    });
+
+    t.fireEvent.click(t.screen.getByText("Change online status, complex"));
+
+    await t.screen.findByText("First is idle");
+  });
+
   test("optimistic response works", async () => {
     queryMock.mockQuery({
       name: "TestMutationQuery",

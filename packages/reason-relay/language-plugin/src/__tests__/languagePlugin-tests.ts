@@ -391,6 +391,22 @@ describe("Language plugin tests", () => {
         )
       ).toMatchSnapshot();
     });
+
+    it("generates the correct converter for complex variables", () => {
+      let generated = generate(
+        `mutation SetUserRoleMutation($input: SetUserRoleInput!) {
+            setUserRole(input: $input) {
+              user {
+                id
+                firstName
+                role
+              }
+            }
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 
   describe("Subscription", () => {

@@ -89,6 +89,10 @@ type SetOnlineStatusPayload {
   user: User
 }
 
+input SetOnlineStatusInput {
+  onlineStatus: OnlineStatus!
+}
+
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
@@ -114,6 +118,7 @@ type Mutation {
   addFriend(friendId: ID!): AddFriendPayload
   removeFriend(friendId: ID!): RemoveFriendPayload
   setOnlineStatus(onlineStatus: OnlineStatus!): SetOnlineStatusPayload
+  setOnlineStatusComplex(input: SetOnlineStatusInput!): SetOnlineStatusPayload
 }
 
 type Subscription {

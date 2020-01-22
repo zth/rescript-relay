@@ -21,6 +21,19 @@ module Mutation = [%relay.mutation
 |}
 ];
 
+module ComplexMutation = [%relay.mutation
+  {|
+    mutation TestMutationSetOnlineStatusComplexMutation($input: SetOnlineStatusInput!) {
+      setOnlineStatusComplex(input: $input) {
+        user {
+          id
+          onlineStatus
+        }
+      }
+    }
+|}
+];
+
 module Fragment = [%relay.fragment
   {|
     fragment TestMutation_user on User {
@@ -61,6 +74,21 @@ module Test = {
           |> ignore
         }>
         {React.string("Change online status")}
+      </button>
+      <button
+        onClick={_ =>
+          ComplexMutation.commitMutation(
+            ~environment,
+            ~variables={
+              input: {
+                onlineStatus: `Idle,
+              },
+            },
+            (),
+          )
+          |> ignore
+        }>
+        {React.string("Change online status, complex")}
       </button>
       <button
         onClick={_ =>

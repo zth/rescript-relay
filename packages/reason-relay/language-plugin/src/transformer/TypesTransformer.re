@@ -182,23 +182,10 @@ let getPrintedFullState =
   let addTypeDeclaration = Utils.makeAddToList(typeDeclarations);
 
   // Gather all type declarations and definitions.
+  // Since we ensure all objects are inlined, we only need to print the objects that weren't originally standalone Flow types.
   state.objects
   |> List.iter((obj: Types.finalizedObj) => {
        switch (obj) {
-       | {
-           foundInUnion: false,
-           recordName: Some(name),
-           originalFlowTypeName: Some(_),
-         } =>
-         addTypeDeclaration(
-           Types.(
-             ObjectTypeDeclaration({
-               name,
-               definition: obj.definition,
-               atPath: obj.atPath,
-             })
-           ),
-         )
        | {
            foundInUnion: false,
            recordName: Some(name),
@@ -549,10 +536,15 @@ let rec mapObjProp =
           state.enums
           |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
                enum.name == typeName
-             )
+             ),
+          state.objects
+          |> Tablecloth.List.find(~f=(obj: Types.obj) =>
+               obj.originalFlowTypeName == Some(typeName)
+             ),
         ) {
-        | Some(name) => Enum(name)
-        | None => TypeReference(typeName |> Utils.unmaskDots)
+        | (Some(name), None | Some(_)) => Enum(name)
+        | (None, Some(obj)) => Object({...obj.definition, atPath: path})
+        | (None, None) => TypeReference(typeName |> Utils.unmaskDots)
         },
     }
   | Nullable((_, Generic({id: Unqualified((_, typeName))}))) => {
@@ -562,10 +554,15 @@ let rec mapObjProp =
           state.enums
           |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
                enum.name == typeName
-             )
+             ),
+          state.objects
+          |> Tablecloth.List.find(~f=(obj: Types.obj) =>
+               obj.originalFlowTypeName == Some(typeName)
+             ),
         ) {
-        | Some(name) => Enum(name)
-        | None => TypeReference(typeName |> Utils.unmaskDots)
+        | (Some(name), None | Some(_)) => Enum(name)
+        | (None, Some(obj)) => Object({...obj.definition, atPath: path})
+        | (None, None) => TypeReference(typeName |> Utils.unmaskDots)
         },
     }
 
