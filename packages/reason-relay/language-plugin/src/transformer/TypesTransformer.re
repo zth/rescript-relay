@@ -110,8 +110,7 @@ let intermediateToFull =
       | Array(_)
       | Scalar(_)
       | FragmentRefValue(_)
-      | TypeReference(_)
-      | ObjectReference(_) => ()
+      | TypeReference(_) => ()
       };
     };
 

@@ -234,8 +234,7 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
     switch (propType) {
     | Scalar(_)
     | FragmentRefValue(_)
-    | TypeReference(_)
-    | ObjectReference(_) => ()
+    | TypeReference(_) => ()
     | Enum({name}) =>
       converters->Js.Dict.set(
         Printer.printEnumName(name),

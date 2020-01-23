@@ -55,8 +55,6 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | Scalar(scalar) => printScalar(scalar)
   | Object(obj) => printRecordReference(~obj, ~state)
-  | ObjectReference(objName) =>
-    objName |> getObjName |> printTypeReference(~state=None)
   | Array(propValue) => printArray(~propValue, ~state)
   | Enum({name}) => printEnumName(name)
   | Union(union) => union |> printLocalUnionName
