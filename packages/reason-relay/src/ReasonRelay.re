@@ -77,6 +77,10 @@ module RecordProxy = {
   type t;
   type arguments('a) = jsObj('a);
 
+  type unsetValueType =
+    | Null
+    | Undefined;
+
   [@bs.send] external _copyFieldsFrom: (t, t) => unit = "copyFieldsFrom";
   let copyFieldsFrom = (t, ~sourceRecord: t) =>
     _copyFieldsFrom(t, sourceRecord);
@@ -161,6 +165,16 @@ module RecordProxy = {
     _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
+  external _unsetLinkedRecord:
+    (t, 'nullable, string, option(arguments('a))) => t =
+    "setLinkedRecord";
+  let unsetLinkedRecord = (t, ~name, ~arguments, ~unsetValue) =>
+    switch (unsetValue) {
+    | Null => _unsetLinkedRecord(t, Js.null, name, arguments)
+    | Undefined => _unsetLinkedRecord(t, Js.undefined, name, arguments)
+    };
+
+  [@bs.send]
   external _setLinkedRecords:
     (t, array(option(t)), string, option(arguments('a))) => t =
     "setLinkedRecords";
@@ -168,8 +182,27 @@ module RecordProxy = {
     _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
+  external _unsetLinkedRecords:
+    (t, 'nullable, string, option(arguments('a))) => t =
+    "setLinkedRecords";
+  let unsetLinkedRecords = (t, ~name, ~arguments, ~unsetValue) =>
+    switch (unsetValue) {
+    | Null => _unsetLinkedRecords(t, Js.null, name, arguments)
+    | Undefined => _unsetLinkedRecords(t, Js.undefined, name, arguments)
+    };
+
+  [@bs.send]
   external _setValue: (t, 'value, string, option(arguments('a))) => t =
     "setValue";
+
+  [@bs.send]
+  external _unsetValue: (t, 'nullable, string, option(arguments('a))) => t =
+    "setValue";
+  let unsetValue = (t, ~name, ~arguments, ~unsetValue) =>
+    switch (unsetValue) {
+    | Null => _unsetValue(t, Js.null, name, arguments)
+    | Undefined => _unsetValue(t, Js.undefined, name, arguments)
+    };
 
   let setValueString = (t, ~value: string, ~name, ~arguments) =>
     _setValue(t, value, name, arguments);

@@ -70,6 +70,10 @@ module RecordProxy: {
   type t;
   type arguments('a) = jsObj('a) constraint 'a = {..};
 
+  type unsetValueType =
+    | Null
+    | Undefined;
+
   let copyFieldsFrom: (t, ~sourceRecord: t) => unit;
 
   let getDataId: t => dataId;
@@ -179,6 +183,33 @@ module RecordProxy: {
       ~value: array(bool),
       ~name: string,
       ~arguments: option(arguments({..}))
+    ) =>
+    t;
+
+  let unsetValue:
+    (
+      t,
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      ~unsetValue: unsetValueType
+    ) =>
+    t;
+
+  let unsetLinkedRecord:
+    (
+      t,
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      ~unsetValue: unsetValueType
+    ) =>
+    t;
+
+  let unsetLinkedRecords:
+    (
+      t,
+      ~name: string,
+      ~arguments: option(arguments({..})),
+      ~unsetValue: unsetValueType
     ) =>
     t;
 };
