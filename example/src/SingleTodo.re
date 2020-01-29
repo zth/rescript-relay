@@ -13,6 +13,7 @@ module DeleteMutation = [%relay.mutation
   mutation SingleTodoDeleteMutation($input: DeleteTodoItemInput!) {
     deleteTodoItem(input: $input) {
       deletedTodoItemId
+      clientMutationId
     }
   }
 |}

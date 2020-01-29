@@ -29,8 +29,8 @@ type fragment = {ticketsConnection};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_edges_node":{"n":"","f":""}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_edges_node":{"n":"","f":""}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>

@@ -3954,10 +3954,10 @@ reason-react@^0.7.0:
     react ">=16.8.1"
     react-dom ">=16.8.1"
 
-reason-relay@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.5.2.tgz#9459c99cbeafccd7a02752a8c1677e13887e0450"
-  integrity sha512-6gI/JgstwldF7TMIi4DUvZZBNEn/Fvexhcaqsf6TFYbMK2h692c3SMk5yQOnGgf0dskq4XuHNpyETUsdzAwGuA==
+reason-relay@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.5.3.tgz#1676aa76b9cc2434a740d44b2b0807e09116332d"
+  integrity sha512-3jXLsnUeiMBmVLfvACwPoBo2IriRznm38Tyw++3U1O/hyuytPDhAzacLdJbT/kKC9qxK1w92NEW3QvT81f/QbQ==
   dependencies:
     mkdirp-sync "^0.0.3"
     reason "^3.3.4"

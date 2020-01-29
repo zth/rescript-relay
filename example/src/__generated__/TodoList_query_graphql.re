@@ -22,8 +22,8 @@ type fragment = {todosConnection};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"todosConnection_edges":{"n":"","na":""},"todosConnection_edges_node":{"n":"","f":""}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"todosConnection_edges":{"n":"","na":""},"todosConnection_edges_node":{"n":"","f":""}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>

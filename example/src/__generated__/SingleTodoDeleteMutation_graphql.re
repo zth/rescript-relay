@@ -3,9 +3,12 @@
 module Unions = {};
 
 module Types = {
-  type deleteTodoItem = {deletedTodoItemId: option(string)};
   type deleteTodoItemInput = {
     id: string,
+    clientMutationId: option(string),
+  };
+  type deleteTodoItem = {
+    deletedTodoItemId: option(string),
     clientMutationId: option(string),
   };
 };
@@ -17,8 +20,8 @@ type variables = {input: deleteTodoItemInput};
 
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -30,8 +33,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -42,7 +45,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"input":{"r":"DeleteTodoItemInput"}},"DeleteTodoItemInput":{"clientMutationId":{"n":""}}} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -89,6 +94,13 @@ v1 = [
         "name": "deletedTodoItemId",
         "args": null,
         "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "clientMutationId",
+        "args": null,
+        "storageKey": null
       }
     ]
   }
@@ -113,7 +125,7 @@ return {
     "operationKind": "mutation",
     "name": "SingleTodoDeleteMutation",
     "id": null,
-    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n  }\n}\n",
+    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n    clientMutationId\n  }\n}\n",
     "metadata": {}
   }
 };

@@ -1,7 +1,8 @@
 module Fragment = [%relay.fragment
   {|
-  fragment TicketStatusBadge_ticket on Ticket {
+  fragment TicketStatusBadge_ticket on Ticket  {
     status
+    dbId
   }
 |}
 ];

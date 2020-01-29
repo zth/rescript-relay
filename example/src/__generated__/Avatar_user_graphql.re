@@ -11,8 +11,8 @@ type fragment = {
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"avatarUrl":{"n":""}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"avatarUrl":{"n":""}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
