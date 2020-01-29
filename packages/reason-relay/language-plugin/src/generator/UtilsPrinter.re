@@ -190,6 +190,7 @@ type instruction =
   | ConvertNullableArrayContents
   | ConvertEnum(string)
   | ConvertUnion(string)
+  | RootObject(string)
   | HasFragments;
 
 type instructionContainer = {
@@ -199,8 +200,10 @@ type instructionContainer = {
 
 type converterInstructions = Js.Dict.t(Js.Dict.t(string));
 
+type allConverterInstructions = Js.Dict.t(converterInstructions);
+
 type objectAssets = {
-  converterInstructions,
+  converterInstructions: allConverterInstructions,
   convertersDefinition: string,
 };
 
@@ -224,17 +227,54 @@ type conversionDirection =
   | Wrap
   | Unwrap;
 
-let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
+let objectToAssets =
+    (~rootObjects: list(finalizedObj), ~direction=Unwrap, obj: object_)
+    : objectAssets => {
   let instructions: array(instructionContainer) = [||];
   let addInstruction = i => instructions |> Js.Array.push(i) |> ignore;
 
+  let subObjectInstructions: Js.Dict.t(converterInstructions) =
+    Js.Dict.empty();
+
+  let addSubObjInstruction = (name, instructions) =>
+    subObjectInstructions->Js.Dict.set(name, instructions);
+
   let converters = Js.Dict.empty();
 
-  let rec traversePropType = (~propName, ~currentPath, propType: propType) =>
+  let rec traversePropType =
+          (
+            ~converters,
+            ~inRootObject,
+            ~addInstruction,
+            ~propName,
+            ~currentPath,
+            propType: propType,
+          ) =>
     switch (propType) {
     | Scalar(_)
-    | FragmentRefValue(_)
-    | TypeReference(_) => ()
+    | FragmentRefValue(_) => ()
+    | TypeReference(name) =>
+      switch (
+        rootObjects->Tablecloth.List.find(
+          ~f=
+            fun
+            | {recordName} when recordName == Some(name) => true
+            | _ => false,
+        ),
+        subObjectInstructions->Js.Dict.get(name),
+      ) {
+      | (Some(obj), None) =>
+        addInstruction({atPath: currentPath, instruction: RootObject(name)});
+
+        if (inRootObject != Some(name)) {
+          obj.definition
+          |> makeRootObjectInstruction(~name, ~converters)
+          |> addSubObjInstruction(name);
+        };
+      | (Some(_), Some(_)) =>
+        addInstruction({atPath: currentPath, instruction: RootObject(name)})
+      | (None, Some(_) | None) => ()
+      }
     | Enum({name}) =>
       converters->Js.Dict.set(
         Printer.printEnumName(name),
@@ -264,6 +304,9 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
       members->Belt.List.forEach(member => {
         member.shape.values
         |> traverseProps(
+             ~converters,
+             ~inRootObject,
+             ~addInstruction,
              ~currentPath=[
                member.name |> Tablecloth.String.toLower,
                ...currentPath,
@@ -278,10 +321,31 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
         });
       };
 
-      propType |> traversePropType(~propName, ~currentPath);
-    | Object({values}) => values |> traverseProps(~currentPath)
+      propType
+      |> traversePropType(
+           ~inRootObject,
+           ~addInstruction,
+           ~propName,
+           ~currentPath,
+           ~converters,
+         );
+    | Object({values}) =>
+      values
+      |> traverseProps(
+           ~converters,
+           ~inRootObject,
+           ~addInstruction,
+           ~currentPath,
+         )
     }
-  and traverseProps = (~currentPath, propValues) => {
+  and traverseProps =
+      (
+        ~currentPath,
+        ~addInstruction,
+        ~converters,
+        ~inRootObject: option(string),
+        propValues,
+      ) => {
     let hasFragments = ref(false);
 
     propValues
@@ -298,44 +362,87 @@ let objectToAssets = (~direction=Unwrap, obj: object_): objectAssets => {
              });
            };
 
-           propType |> traversePropType(~currentPath=newPath, ~propName=name);
+           propType
+           |> traversePropType(
+                ~converters,
+                ~inRootObject,
+                ~addInstruction,
+                ~currentPath=newPath,
+                ~propName=name,
+              );
          }
        );
 
     if (hasFragments^) {
       addInstruction({atPath: currentPath, instruction: HasFragments});
     };
+  }
+  and makeRootObjectInstruction = (~name, ~converters, obj: object_) => {
+    let instructions: array(instructionContainer) = [||];
+    let addInstruction = i => instructions |> Js.Array.push(i) |> ignore;
+
+    let () =
+      obj.values
+      ->traverseProps(
+          ~converters,
+          ~inRootObject=Some(name),
+          ~addInstruction,
+          ~currentPath=[],
+        );
+
+    instructions->makeConverterInstructions;
+  }
+  and makeConverterInstructions = instructions => {
+    let dict: converterInstructions = Js.Dict.empty();
+
+    instructions
+    |> Tablecloth.Array.forEach(~f=instruction => {
+         let key =
+           instruction.atPath
+           |> Tablecloth.List.reverse
+           |> Tablecloth.String.join(~sep="_");
+
+         let action =
+           switch (instruction.instruction) {
+           | ConvertNullableProp => ("n", "")
+           | ConvertNullableArrayContents => ("na", "")
+           | ConvertEnum(name) => ("e", Printer.printEnumName(name))
+           | ConvertUnion(name) => ("u", name)
+           | RootObject(name) => ("r", name)
+           | HasFragments => ("f", "")
+           };
+
+         switch (dict->Js.Dict.get(key)) {
+         | Some(d) =>
+           let (actionName, value) = action;
+           d->Js.Dict.set(actionName, value);
+         | None => dict->Js.Dict.set(key, Js.Dict.fromList([action]))
+         };
+       });
+
+    dict;
   };
 
-  obj.values |> traverseProps(~currentPath=[]);
-  let dict: converterInstructions = Js.Dict.empty();
+  obj.values
+  |> traverseProps(
+       ~converters,
+       ~inRootObject=None,
+       ~addInstruction,
+       ~currentPath=[],
+     );
 
-  instructions
-  |> Tablecloth.Array.forEach(~f=instruction => {
-       let key =
-         instruction.atPath
-         |> Tablecloth.List.reverse
-         |> Tablecloth.String.join(~sep="_");
-
-       let action =
-         switch (instruction.instruction) {
-         | ConvertNullableProp => ("n", "")
-         | ConvertNullableArrayContents => ("na", "")
-         | ConvertEnum(name) => ("e", Printer.printEnumName(name))
-         | ConvertUnion(name) => ("u", name)
-         | HasFragments => ("f", "")
-         };
-
-       switch (dict->Js.Dict.get(key)) {
-       | Some(d) =>
-         let (actionName, value) = action;
-         d->Js.Dict.set(actionName, value);
-       | None => dict->Js.Dict.set(key, Js.Dict.fromList([action]))
-       };
-     });
+  let rootInstructions = makeConverterInstructions(instructions);
 
   {
-    converterInstructions: dict,
+    converterInstructions:
+      switch (rootInstructions->Js.Dict.keys->Belt.Array.length) {
+      | 0 => Js.Dict.empty()
+      | _ =>
+        Js.Dict.fromList([
+          ("__root", rootInstructions),
+          ...subObjectInstructions->Js.Dict.entries->Belt.List.fromArray,
+        ])
+      },
     convertersDefinition: printConvertersMap(converters),
   };
 };

@@ -6,18 +6,20 @@ type nullableType =
 
 let printConverterAssets =
     (
+      ~rootObjects: list(finalizedObj),
       ~direction: UtilsPrinter.conversionDirection=Unwrap,
       ~nullableType=Undefined,
       ~includeRaw=true,
       ~definition: object_,
       name,
     ) => {
-  let assets = definition |> UtilsPrinter.objectToAssets(~direction);
+  let assets =
+    definition |> UtilsPrinter.objectToAssets(~rootObjects, ~direction);
 
   (includeRaw ? "type " ++ name ++ "Raw;" : "")
   ++ "let "
   ++ name
-  ++ "Converter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| "
+  ++ "Converter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw {| "
   ++ (
     assets.converterInstructions
     |> Js.Json.stringifyAny

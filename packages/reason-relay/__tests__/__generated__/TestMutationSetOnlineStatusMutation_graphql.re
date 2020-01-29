@@ -24,8 +24,8 @@ type variables = {onlineStatus: enum_OnlineStatus};
 
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let wrapResponseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,
@@ -39,8 +39,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
@@ -53,8 +53,8 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"onlineStatus":{"e":"enum_OnlineStatus"}} |}
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |}
   ];
   let variablesConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,

@@ -82,8 +82,8 @@ type fragment = {members: option(members)};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": Union_fragment_members_edges_node.unwrap,

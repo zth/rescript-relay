@@ -19,8 +19,8 @@ type fragment = {
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let fragmentConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,

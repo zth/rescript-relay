@@ -39,8 +39,8 @@ type variables = unit;
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
@@ -53,7 +53,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v

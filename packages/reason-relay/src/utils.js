@@ -24,6 +24,7 @@ function makeNewPath(currentPath, newKeys) {
  * to apply transforms etc.
  */
 function traverse(
+  fullInstructionMap,
   currentPath,
   currentObj,
   instructionMap,
@@ -61,6 +62,10 @@ function traverse(
           newObj[key] = nullableValue;
         }
       } else {
+        var shouldConvertRootObj =
+          typeof instructions["r"] === "string" &&
+          fullInstructionMap[instructions["r"]];
+
         var shouldAddFragmentFn = instructions["f"] === "";
 
         var shouldConvertEnum =
@@ -79,6 +84,16 @@ function traverse(
           newObj[key] = currentObj[key].map(function(v) {
             if (v == null) {
               return nullableValue;
+            }
+
+            if (shouldConvertRootObj) {
+              return traverser(
+                v,
+                fullInstructionMap,
+                converters,
+                nullableValue,
+                instructions["r"]
+              );
             }
 
             if (shouldConvertEnum) {
@@ -101,6 +116,7 @@ function traverse(
                 (instructionMap[getPathName(newPath)] || {}).f === "";
 
               var traversedValue = traverse(
+                fullInstructionMap,
                 newPath,
                 v,
                 instructionMap,
@@ -129,6 +145,17 @@ function traverse(
            */
           var v = currentObj[key];
 
+          if (shouldConvertRootObj) {
+            newObj = getNewObj(newObj, currentObj);
+            newObj[key] = traverser(
+              v,
+              fullInstructionMap,
+              converters,
+              nullableValue,
+              instructions["r"]
+            );
+          }
+
           if (shouldConvertEnum) {
             newObj = getNewObj(newObj, currentObj);
             newObj[key] = converters[instructions["e"]](v);
@@ -150,6 +177,7 @@ function traverse(
               (instructionMap[getPathName(newPath)] || {}).f === "";
 
             var traversedValue = traverse(
+              fullInstructionMap,
               newPath,
               v,
               instructionMap,
@@ -183,6 +211,7 @@ function traverse(
 
       if (typeof nextObj === "object" && !Array.isArray(originalValue)) {
         var traversedObj = traverse(
+          fullInstructionMap,
           thisPath,
           nextObj,
           instructionMap,
@@ -200,6 +229,7 @@ function traverse(
         newObj[key] = nextObj.map(function(o) {
           return typeof o === "object" && o != null
             ? traverse(
+                fullInstructionMap,
                 thisPath,
                 o,
                 instructionMap,
@@ -225,12 +255,25 @@ function traverse(
  * It preserves structural integrity where possible, and return new objects where properties
  * have been modified.
  */
-function traverser(root, _instructionMap, converters, nullableValue) {
+function traverser(
+  root,
+  _instructionMaps,
+  converters,
+  nullableValue,
+  rootObjectKey
+) {
   if (!root) {
     return nullableValue;
   }
 
-  var instructionMap = _instructionMap || {};
+  var instructionMaps = _instructionMaps || {};
+  var instructionMap = instructionMaps[rootObjectKey || "__root"];
+
+  // No instructions
+  if (!instructionMap) {
+    return root;
+  }
+
   var instructionPaths = Object.keys(instructionMap);
 
   // Nothing to convert, bail early
@@ -252,6 +295,7 @@ function traverser(root, _instructionMap, converters, nullableValue) {
       return v == null
         ? nullableValue
         : traverse(
+            instructionMaps,
             [],
             v,
             instructionMap,
@@ -266,6 +310,7 @@ function traverser(root, _instructionMap, converters, nullableValue) {
   var newObj = Object.assign({}, root);
 
   var v = traverse(
+    instructionMaps,
     [],
     newObj,
     instructionMap,

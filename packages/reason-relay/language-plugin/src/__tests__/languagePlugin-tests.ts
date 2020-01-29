@@ -394,9 +394,9 @@ describe("Language plugin tests", () => {
 
     it("generates the correct converter for complex variables", () => {
       let generated = generate(
-        `mutation SetUserRoleMutation($input: SetUserRoleInput!) {
-            setUserRole(input: $input) {
-              user {
+        `mutation SetUserLocationMutation($input: SetUserLocationInput!) {
+            setUserLocation(input: $input) {
+              changedUser {
                 id
                 firstName
                 role

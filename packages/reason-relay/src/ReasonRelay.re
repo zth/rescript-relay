@@ -67,7 +67,8 @@ let _cleanVariables = [%bs.raw
 ];
 
 [@bs.module "./utils"]
-external _convertObj: ('a, Js.Dict.t(Js.Dict.t(string)), 'b, 'c) => 'd =
+external _convertObj:
+  ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
   "traverser";
 
 [@bs.module "relay-runtime"] external storeRootId: dataId = "ROOT_ID";

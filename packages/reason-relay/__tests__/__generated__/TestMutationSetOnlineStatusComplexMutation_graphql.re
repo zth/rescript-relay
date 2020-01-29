@@ -10,23 +10,23 @@ type enum_OnlineStatus = [
 module Unions = {};
 
 module Types = {
+  type setOnlineStatusInput = {onlineStatus: enum_OnlineStatus};
   type user = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
   };
   type setOnlineStatusComplex = {user: option(user)};
-  type input = {onlineStatus: enum_OnlineStatus};
 };
 
 open Types;
 
 type response = {setOnlineStatusComplex: option(setOnlineStatusComplex)};
-type variables = {input};
+type variables = {input: setOnlineStatusInput};
 
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let wrapResponseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,
@@ -40,8 +40,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
   let responseConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
@@ -54,8 +54,8 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {"input_onlineStatus":{"e":"enum_OnlineStatus"}} |}
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {"__root":{"input":{"r":"SetOnlineStatusInput"}},"SetOnlineStatusInput":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |}
   ];
   let variablesConverterMap = {
     "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.wrap,

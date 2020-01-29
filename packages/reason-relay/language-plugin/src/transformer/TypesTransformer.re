@@ -183,25 +183,27 @@ let getPrintedFullState =
   // Gather all type declarations and definitions.
   // Since we ensure all objects are inlined, we only need to print the objects that weren't originally standalone Flow types.
   state.objects
-  |> List.iter((obj: Types.finalizedObj) => {
-       switch (obj) {
-       | {
-           foundInUnion: false,
-           recordName: Some(name),
-           originalFlowTypeName: None,
-         } =>
-         addTypeDeclaration(
-           Types.(
-             ObjectTypeDeclaration({
-               name,
-               definition: obj.definition,
-               atPath: obj.atPath,
-             })
-           ),
-         )
-       | _ => ()
-       }
-     });
+  ->Tablecloth.List.sortBy(
+      ~f=
+        fun
+        | {originalFlowTypeName: Some(_)} => (-1)
+        | {originalFlowTypeName: None} => 1,
+    )
+  ->Tablecloth.List.iter(
+      ~f=
+        fun
+        | {foundInUnion: false, recordName: Some(name)} as obj =>
+          addTypeDeclaration(
+            Types.(
+              ObjectTypeDeclaration({
+                name,
+                definition: obj.definition,
+                atPath: obj.atPath,
+              })
+            ),
+          )
+        | _ => (),
+    );
 
   // We check and add all definitions we've found to a list that'll later be printed as types.
   switch (state.variables) {
@@ -305,10 +307,24 @@ let getPrintedFullState =
   // and code for extracting fragment refs.
   addSpacing();
   addToStr("module Internal = {");
+
+  let rootObjects =
+    state.objects
+    ->Tablecloth.List.filter(
+        ~f=
+          fun
+          | {originalFlowTypeName: Some(_), recordName: Some(_)} => true
+          | _ => false,
+      );
+
   switch (state.fragment) {
   | Some({definition}) =>
     addToStr(
-      TypesTransformerUtils.printConverterAssets(~definition, "fragment"),
+      TypesTransformerUtils.printConverterAssets(
+        ~rootObjects,
+        ~definition,
+        "fragment",
+      ),
     );
     addSpacing();
   | None => ()
@@ -320,6 +336,7 @@ let getPrintedFullState =
     | Mutation(_) =>
       addToStr(
         TypesTransformerUtils.printConverterAssets(
+          ~rootObjects,
           ~direction=Wrap,
           ~nullableType=Null,
           ~definition,
@@ -331,7 +348,11 @@ let getPrintedFullState =
     };
 
     addToStr(
-      TypesTransformerUtils.printConverterAssets(~definition, "response"),
+      TypesTransformerUtils.printConverterAssets(
+        ~rootObjects,
+        ~definition,
+        "response",
+      ),
     );
     addSpacing();
   | None => ()
@@ -341,6 +362,7 @@ let getPrintedFullState =
   | Some(definition) =>
     addToStr(
       TypesTransformerUtils.printConverterAssets(
+        ~rootObjects,
         ~includeRaw=false,
         ~direction=Wrap,
         ~definition,
@@ -535,15 +557,10 @@ let rec mapObjProp =
           state.enums
           |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
                enum.name == typeName
-             ),
-          state.objects
-          |> Tablecloth.List.find(~f=(obj: Types.obj) =>
-               obj.originalFlowTypeName == Some(typeName)
-             ),
+             )
         ) {
-        | (Some(name), None | Some(_)) => Enum(name)
-        | (None, Some(obj)) => Object({...obj.definition, atPath: path})
-        | (None, None) => TypeReference(typeName |> Utils.unmaskDots)
+        | Some(name) => Enum(name)
+        | None => TypeReference(typeName |> Utils.unmaskDots)
         },
     }
   | Nullable((_, Generic({id: Unqualified((_, typeName))}))) => {
@@ -553,15 +570,10 @@ let rec mapObjProp =
           state.enums
           |> Tablecloth.List.find(~f=(enum: Types.fullEnum) =>
                enum.name == typeName
-             ),
-          state.objects
-          |> Tablecloth.List.find(~f=(obj: Types.obj) =>
-               obj.originalFlowTypeName == Some(typeName)
-             ),
+             )
         ) {
-        | (Some(name), None | Some(_)) => Enum(name)
-        | (None, Some(obj)) => Object({...obj.definition, atPath: path})
-        | (None, None) => TypeReference(typeName |> Utils.unmaskDots)
+        | Some(name) => Enum(name)
+        | None => TypeReference(typeName |> Utils.unmaskDots)
         },
     }
 

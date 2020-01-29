@@ -45,7 +45,9 @@ type fragment = {id: string};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -82,8 +84,8 @@ type fragment = {
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"\\":{\\"f\\":\\"\\"}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -119,7 +121,9 @@ type fragment = {id: string};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -143,7 +147,7 @@ type operationType = ReasonRelay.fragmentNode;
 `;
 
 exports[`Language plugin tests Mutation generates the correct converter for complex variables 1`] = `
-"// SetUserRoleMutation.graphql
+"// SetUserLocationMutation.graphql
 /* @generated */
 
 type enum_UserRole = [ | \`Admin | \`User | \`FUTURE_ADDED_VALUE__];
@@ -151,27 +155,33 @@ type enum_UserRole = [ | \`Admin | \`User | \`FUTURE_ADDED_VALUE__];
 module Unions = {};
 
 module Types = {
-  type user = {
+  type locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
+  };
+  type setUserLocationInput = {
+    clientMutationId: option(string),
+    userId: string,
+    location: option(locationBounds),
+  };
+  type changedUser = {
     id: string,
     firstName: string,
     role: enum_UserRole,
   };
-  type setUserRole = {user: option(user)};
-  type setUserRoleInput = {
-    userId: string,
-    role: enum_UserRole,
-  };
+  type setUserLocation = {changedUser: option(changedUser)};
 };
 
 open Types;
 
-type response = {setUserRole};
-type variables = {input: setUserRoleInput};
+type response = {setUserLocation};
+type variables = {input: setUserLocationInput};
 
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"setUserRole_user\\":{\\"n\\":\\"\\"},\\"setUserRole_user_role\\":{\\"e\\":\\"enum_UserRole\\"}} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
   ];
   let wrapResponseConverterMap = {
     \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.wrap,
@@ -185,8 +195,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"setUserRole_user\\":{\\"n\\":\\"\\"},\\"setUserRole_user_role\\":{\\"e\\":\\"enum_UserRole\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
   ];
   let responseConverterMap = {
     \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.unwrap,
@@ -199,7 +209,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -223,20 +235,21 @@ exports[`Language plugin tests Mutation prints the correct basic structure for m
 module Unions = {};
 
 module Types = {
-  type changedUser = {
-    id: string,
-    firstName: string,
-  };
-  type setUserLocation = {changedUser: option(changedUser)};
   type locationBounds = {
     lat: float,
     lng: float,
+    child: option(locationBounds),
   };
   type setUserLocationInput = {
     clientMutationId: option(string),
     userId: string,
     location: option(locationBounds),
   };
+  type changedUser = {
+    id: string,
+    firstName: string,
+  };
+  type setUserLocation = {changedUser: option(changedUser)};
 };
 
 open Types;
@@ -246,8 +259,8 @@ type variables = {input: setUserLocationInput};
 
 module Internal = {
   type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}} |}
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -259,8 +272,8 @@ module Internal = {
       );
 
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -271,7 +284,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -352,8 +367,8 @@ type fragment = {participantsConnection: option(participantsConnection)};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"participantsConnection\\":{\\"n\\":\\"\\"},\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"participantsConnection\\":{\\"n\\":\\"\\"},\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"}}} |}
   ];
   let fragmentConverterMap = {
     \\"fragment_participantsConnection_edges_node\\": Union_fragment_participantsConnection_edges_node.unwrap,
@@ -425,8 +440,8 @@ type fragment = {me};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -494,8 +509,8 @@ type fragment = {usersConnection: option(usersConnection)};
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"}} |}
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"}}} |}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -566,8 +581,8 @@ type variables = {userId: string};
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"user\\":{\\"n\\":\\"\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -578,7 +593,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -602,15 +619,15 @@ exports[`Language plugin tests Subscription prints the correct basic structure f
 module Unions = {};
 
 module Types = {
+  type userChangedInput = {
+    clientMutationId: option(string),
+    userId: string,
+  };
   type user = {
     id: string,
     firstName: string,
   };
   type userChanged = {user: option(user)};
-  type userChangedInput = {
-    clientMutationId: option(string),
-    userId: string,
-  };
 };
 
 open Types;
@@ -620,8 +637,8 @@ type variables = {input: userChangedInput};
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"userChanged_user\\":{\\"n\\":\\"\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"userChanged_user\\":{\\"n\\":\\"\\"}}} |}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -632,7 +649,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"UserChangedInput\\"}},\\"UserChangedInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"}}} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -664,7 +683,9 @@ type fragment = {
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -699,7 +720,9 @@ type fragment = {
 
 module Internal = {
   type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
@@ -781,8 +804,8 @@ type variables = unit;
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -795,7 +818,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -872,8 +897,8 @@ type variables = unit;
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -886,7 +911,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
@@ -1014,8 +1041,8 @@ type variables = unit;
 
 module Internal = {
   type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw
-    {| {\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}} |}
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
@@ -1030,7 +1057,9 @@ module Internal = {
         Js.undefined,
       );
 
-  let variablesConverter: Js.Dict.t(Js.Dict.t(string)) = [%raw {| {} |}];
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v

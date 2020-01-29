@@ -14,28 +14,30 @@ describe("conversion", () => {
           otherProp: null
         },
         {
-          "": {
-            f: ""
-          },
-          otherProp: {
-            n: ""
-          },
-          me: {
-            n: "",
-            f: ""
-          },
-          me_age: {
-            n: ""
-          },
-          me_nicknames: {
-            n: ""
-          },
-          me_nestedObjects: {
-            n: "",
-            f: ""
-          },
-          me_nestedObjects_someProp: {
-            n: ""
+          __root: {
+            "": {
+              f: ""
+            },
+            otherProp: {
+              n: ""
+            },
+            me: {
+              n: "",
+              f: ""
+            },
+            me_age: {
+              n: ""
+            },
+            me_nicknames: {
+              n: ""
+            },
+            me_nestedObjects: {
+              n: "",
+              f: ""
+            },
+            me_nestedObjects_someProp: {
+              n: ""
+            }
           }
         },
         {},
@@ -74,26 +76,28 @@ describe("conversion", () => {
           }
         },
         {
-          ageRange: {
-            e: "enum_Enum"
-          },
-          me_ageRange: {
-            n: "",
-            e: "enum_Enum"
-          },
-          me_ageRanges: {
-            n: "",
-            e: "enum_Enum"
-          },
-          me_nestedObjects: {
-            n: ""
-          },
-          me_nestedObjects_someProp: {
-            n: ""
-          },
-          me_nestedObjects_otherProp: {
-            n: "",
-            e: "enum_Enum"
+          __root: {
+            ageRange: {
+              e: "enum_Enum"
+            },
+            me_ageRange: {
+              n: "",
+              e: "enum_Enum"
+            },
+            me_ageRanges: {
+              n: "",
+              e: "enum_Enum"
+            },
+            me_nestedObjects: {
+              n: ""
+            },
+            me_nestedObjects_someProp: {
+              n: ""
+            },
+            me_nestedObjects_otherProp: {
+              n: "",
+              e: "enum_Enum"
+            }
           }
         },
         {
@@ -167,83 +171,85 @@ describe("conversion", () => {
           ]
         },
         {
-          "": {
-            f: ""
-          },
-          someUnion: {
-            n: "",
-            u: "union_Union"
-          },
-          someUnion_user: {
-            f: ""
-          },
-          someUnion_user_ageRange: {
-            e: "enum_Enum"
-          },
-          someUnion_user_meta: {
-            f: ""
-          },
-          someUnion_user_meta_ageRange: {
-            e: "enum_Enum"
-          },
-          someUnion_user_meta_nullable: {
-            n: ""
-          },
-          friends: {
-            n: "",
-            u: "union_Union"
-          },
-          friends_user: {
-            f: ""
-          },
-          friends_user_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_user_meta: {
-            f: ""
-          },
-          friends_user_meta_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_user_meta_nullable: {
-            n: ""
-          },
-          friends_observer: {
-            f: ""
-          },
-          friends_observer_name: {
-            n: ""
-          },
-          friends_observer_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_observer_meta: {
-            f: ""
-          },
-          friends_observer_meta_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_observer_meta_nullable: {
-            n: ""
-          },
-          friends_observer_friends: {
-            n: "",
-            u: "union_Union"
-          },
-          friends_observer_friends_user_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_observer_friends_user: {
-            f: ""
-          },
-          friends_observer_friends_user_meta: {
-            f: ""
-          },
-          friends_observer_friends_user_meta_ageRange: {
-            e: "enum_Enum"
-          },
-          friends_observer_friends_user_meta_nullable: {
-            n: ""
+          __root: {
+            "": {
+              f: ""
+            },
+            someUnion: {
+              n: "",
+              u: "union_Union"
+            },
+            someUnion_user: {
+              f: ""
+            },
+            someUnion_user_ageRange: {
+              e: "enum_Enum"
+            },
+            someUnion_user_meta: {
+              f: ""
+            },
+            someUnion_user_meta_ageRange: {
+              e: "enum_Enum"
+            },
+            someUnion_user_meta_nullable: {
+              n: ""
+            },
+            friends: {
+              n: "",
+              u: "union_Union"
+            },
+            friends_user: {
+              f: ""
+            },
+            friends_user_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_user_meta: {
+              f: ""
+            },
+            friends_user_meta_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_user_meta_nullable: {
+              n: ""
+            },
+            friends_observer: {
+              f: ""
+            },
+            friends_observer_name: {
+              n: ""
+            },
+            friends_observer_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_observer_meta: {
+              f: ""
+            },
+            friends_observer_meta_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_observer_meta_nullable: {
+              n: ""
+            },
+            friends_observer_friends: {
+              n: "",
+              u: "union_Union"
+            },
+            friends_observer_friends_user_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_observer_friends_user: {
+              f: ""
+            },
+            friends_observer_friends_user_meta: {
+              f: ""
+            },
+            friends_observer_friends_user_meta_ageRange: {
+              e: "enum_Enum"
+            },
+            friends_observer_friends_user_meta_nullable: {
+              n: ""
+            }
           }
         },
         {
@@ -316,6 +322,105 @@ describe("conversion", () => {
           }
         ]
       ]
+    });
+  });
+
+  it("handles recursive objects (input objects)", () => {
+    expect(
+      traverser(
+        {
+          someInput: {
+            someEnum: "999",
+            lat: null,
+            meta: {
+              someEnum: "888",
+              nullable: null
+            },
+            anotherInput: {
+              meta: null,
+              someEnum: "123",
+              anotherInput: {
+                someEnum: "234",
+                anotherInput: null,
+                meta: {
+                  someEnum: "888",
+                  nullable: null
+                }
+              }
+            }
+          }
+        },
+        {
+          AnotherInput: {
+            someEnum: {
+              e: "enum_Enum"
+            },
+            anotherInput: {
+              n: "",
+              r: "AnotherInput"
+            },
+            meta: {
+              n: ""
+            },
+            meta_someEnum: {
+              e: "enum_Enum"
+            },
+            meta_nullable: {
+              n: ""
+            }
+          },
+          SomeInput: {
+            lat: {
+              n: ""
+            },
+            someEnum: {
+              e: "enum_Enum"
+            },
+            anotherInput: {
+              r: "AnotherInput"
+            },
+            meta: {
+              n: ""
+            },
+            meta_someEnum: {
+              e: "enum_Enum"
+            },
+            meta_nullable: {
+              n: ""
+            }
+          },
+          __root: {
+            someInput: {
+              r: "SomeInput"
+            }
+          }
+        },
+        {
+          enum_Enum: v => parseInt(v, 10)
+        },
+        undefined
+      )
+    ).toEqual({
+      someInput: {
+        someEnum: 999,
+        lat: undefined,
+        meta: {
+          someEnum: 888,
+          nullable: undefined
+        },
+        anotherInput: {
+          meta: undefined,
+          someEnum: 123,
+          anotherInput: {
+            someEnum: 234,
+            anotherInput: undefined,
+            meta: {
+              someEnum: 888,
+              nullable: undefined
+            }
+          }
+        }
+      }
     });
   });
 });
