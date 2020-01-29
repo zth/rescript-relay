@@ -1,5 +1,7 @@
 # master
 
+# 0.5.3
+
 - Fix bug where complex inputs (nested objects) were not automatically converted.
 - `RecordProxy` now has functions for unsetting values `unsetValue/unsetLinkedRecord/unsetLinkedRecords`, for more fine-grained control of the cache.
 
