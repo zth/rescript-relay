@@ -1,5 +1,7 @@
 # master
 
+- Rename object properties if reserved words are encountered. E.g. `input SomeGraphQLInput { and: String! }` will now produce this type: `type someGraphQLInput = { [@bs.as "and"] and_: string }`.
+
 # 0.5.3
 
 - Fix bug where complex inputs (nested objects) were not automatically converted.

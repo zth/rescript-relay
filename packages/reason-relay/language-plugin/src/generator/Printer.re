@@ -6,7 +6,15 @@ let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
   path |> Tablecloth.List.reverse |> Tablecloth.String.join(~sep="_");
 
-let printRecordPropName = propName => propName;
+let printRecordPropName = propName =>
+  switch (
+    ReservedKeywords.reservedKeywords->Tablecloth.Array.find(~f=w =>
+      w == propName
+    )
+  ) {
+  | Some(_) => "[@bs.as \"" ++ propName ++ "\"] " ++ propName ++ "_"
+  | None => propName
+  };
 let printEnumName = name => "enum_" ++ name;
 let getObjName = name => "obj_" ++ name;
 let printEnumTypeName = name => "SchemaAssets.Enum_" ++ name ++ ".t";

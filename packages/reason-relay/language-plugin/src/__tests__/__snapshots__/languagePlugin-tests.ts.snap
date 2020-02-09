@@ -22,6 +22,73 @@ Source: GraphQL request (2:13)
 ]
 `;
 
+exports[`Language plugin tests Field names Reserved keywords renames reserved keywords as field names in types when encountered 1`] = `
+"// SomeMutation.graphql
+/* @generated */
+
+module Unions = {};
+
+module Types = {
+  type mutationWithReservedNameInput = {
+    [@bs.as \\"or\\"]
+    or_: bool,
+    [@bs.as \\"and\\"]
+    and_: string,
+    nested: option(mutationWithReservedNameInput),
+  };
+};
+
+open Types;
+
+type response = {mutationWithReservedName: bool};
+type variables = {input: mutationWithReservedNameInput};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {} |}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"MutationWithReservedNameInput\\"}},\\"MutationWithReservedNameInput\\":{\\"nested\\":{\\"n\\":\\"\\",\\"r\\":\\"MutationWithReservedNameInput\\"}}} |}
+  ];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+module Utils = {};
+
+type operationType = ReasonRelay.mutationNode;
+"
+`;
+
 exports[`Language plugin tests Field names Reserved keywords throws when trying to use a field name that's a reserved keyword 1`] = `
 [GraphQLError: Found an invalid field name: 'new' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.
 

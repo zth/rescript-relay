@@ -2,85 +2,12 @@ const IRTransformer = require("relay-compiler/lib/core/GraphQLIRTransformer");
 const {
   createUserError
 } = require("relay-compiler/lib/core/RelayCompilerError");
+const { reservedKeywords } = require("../generator/ReservedKeywords.gen");
 
 type DisallowedResult = {
   disallowed: boolean;
   message: string;
 };
-
-// Taken from http://caml.inria.fr/pub/docs/manual-ocaml/manual072.html
-let reservedKeywords = [
-  "and",
-  "as",
-  "asr",
-  "assert",
-  "begin",
-  "class",
-  "constraint",
-  "do",
-  "while",
-  "for",
-  "done",
-  "while",
-  "for",
-  "downto",
-  "else",
-  "end",
-  "exception",
-  "external",
-  "false",
-  "for",
-  "fun",
-  "function",
-  "functor",
-  "if",
-  "in",
-  "include",
-  "inherit",
-  "initializer",
-  "land",
-  "lazy",
-  "let",
-  "lor",
-  "lsl",
-  "lsr",
-  "lxor",
-  "match",
-  "method",
-  "mod",
-  "module",
-  "open",
-  "mutable",
-  "new",
-  "nonrec",
-  "object",
-  "of",
-  "open",
-  "open!",
-  "or",
-  "private",
-  "rec",
-  "let",
-  "module",
-  "sig",
-  "struct",
-  "then",
-  "to",
-  "true",
-  "try",
-  "type",
-  "val",
-  "virtual",
-  "val",
-  "method",
-  "class",
-  "when",
-  "while",
-  "with",
-
-  // Reason specific words
-  "switch"
-];
 
 let reservedKeywordsInReasonRelay = [
   "fragment",

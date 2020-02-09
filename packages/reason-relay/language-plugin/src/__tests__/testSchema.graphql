@@ -42,9 +42,16 @@ type Query {
   node(id: ID!): Node
 }
 
+input MutationWithReservedNameInput {
+  or: Boolean!
+  and: String!
+  nested: MutationWithReservedNameInput
+}
+
 type Mutation {
   setUserLocation(input: SetUserLocationInput!): SetUserLocationPayload!
   setUserRole(input: SetUserRoleInput!): SetUserRolePayload!
+  mutationWithReservedName(input: MutationWithReservedNameInput!): Boolean!
 }
 
 type Subscription {

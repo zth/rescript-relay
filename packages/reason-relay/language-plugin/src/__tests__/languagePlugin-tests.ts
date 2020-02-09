@@ -731,6 +731,16 @@ describe("Language plugin tests", () => {
           }`
         );
       });
+
+      it("renames reserved keywords as field names in types when encountered", () => {
+        let generated = generate(
+          `mutation SomeMutation($input: MutationWithReservedNameInput!) {
+            mutationWithReservedName(input: $input)
+          }`
+        );
+
+        expect(generated).toMatchSnapshot();
+      });
     });
   });
 
