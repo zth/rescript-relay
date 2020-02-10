@@ -816,7 +816,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       hasPrevious: p##hasPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         p##refetch(
-          variables |> C.convertVariables,
+          variables |> C.convertVariables |> _cleanVariables,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
         ),
     };
@@ -839,7 +839,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       isLoadingPrevious: p##isLoadingPrevious,
       refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
         p##refetch(
-          variables |> C.convertVariables,
+          variables |> C.convertVariables |> _cleanVariables,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
         ),
     };

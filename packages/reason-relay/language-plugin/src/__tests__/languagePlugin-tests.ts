@@ -88,53 +88,20 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     .join("\n\n");
 }
 
-function generateFlowTypes(
-  text: string,
-  options?: any,
-  extraDefs: string = ""
-) {
-  const relaySchema = testSchema.extend([
-    ...RelayIRTransforms.schemaExtensions,
-    ...getLanguagePlugin().schemaExtensions,
-    extraDefs
-  ]);
-  const { definitions, schema: extendedSchema } = parseGraphQLText(
-    relaySchema,
-    text
-  );
-
-  return new CompilerContext(extendedSchema)
-    .addAll(definitions)
-    .applyTransforms(RelayReasonGenerator.transforms)
-    .documents()
-    .map(
-      (doc: any) =>
-        `// ${doc.name}.graphql\n${RelayFlowGenerator.generate(
-          extendedSchema,
-          doc,
-          {
-            customScalars: {},
-            optionalInputFields: [],
-            existingFragmentNames: new Set([]),
-            ...options
-          }
-        )}`
-    )
-    .join("\n\n");
-}
-
 describe("Language plugin tests", () => {
   describe("Query", () => {
     it("prints the correct operationType type", () => {
+      let generated = generate(
+        `query appQuery($userId: ID!) {
+          user(id: $userId) {
+            id
+            firstName
+          }
+        }`
+      );
+
       expect(
-        generate(
-          `query appQuery($userId: ID!) {
-            user(id: $userId) {
-              id
-              firstName
-            }
-          }`
-        ).includes("type operationType = ReasonRelay.queryNode;")
+        generated.includes("type operationType = ReasonRelay.queryNode;")
       ).toBe(true);
     });
 

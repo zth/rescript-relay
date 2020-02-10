@@ -424,6 +424,35 @@ let getPrintedFullState =
   | None => ()
   };
 
+  // We print maker functions for all input objects with at least one optional prop
+  state.objects
+  ->Tablecloth.List.iter(
+      ~f=
+        fun
+        | {originalFlowTypeName: Some(typeName), definition} => {
+            switch (
+              definition.values
+              ->Tablecloth.Array.find(
+                  ~f=
+                    fun
+                    | Prop(_, {nullable: true}) => true
+                    | _ => false,
+                )
+            ) {
+            | Some(_) =>
+              definition
+              ->Printer.printObjectMaker(
+                  ~targetType=typeName->Tablecloth.String.uncapitalize,
+                  ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
+                )
+              ->addToStr;
+              addSpacing();
+            | None => ()
+            };
+          }
+        | _ => (),
+    );
+
   addToStr("};");
   addSpacing();
 

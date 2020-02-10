@@ -83,7 +83,14 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_mutationWithReservedNameInput =
+      (~or_, ~and_, ~nested=?, ()): mutationWithReservedNameInput => {
+    or_,
+    and_,
+    nested,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 "
@@ -289,7 +296,20 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
+    lat,
+    lng,
+    child,
+  };
+
+  let make_setUserLocationInput =
+      (~clientMutationId=?, ~userId, ~location=?, ()): setUserLocationInput => {
+    clientMutationId,
+    userId,
+    location,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 "
@@ -364,7 +384,20 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
+    lat,
+    lng,
+    child,
+  };
+
+  let make_setUserLocationInput =
+      (~clientMutationId=?, ~userId, ~location=?, ()): setUserLocationInput => {
+    clientMutationId,
+    userId,
+    location,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 "
@@ -729,7 +762,13 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_userChangedInput =
+      (~clientMutationId=?, ~userId, ()): userChangedInput => {
+    clientMutationId,
+    userId,
+  };
+};
 
 type operationType = ReasonRelay.subscriptionNode;
 "

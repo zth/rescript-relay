@@ -1,6 +1,8 @@
 # master
 
 - Rename object properties if reserved words are encountered. E.g. `input SomeGraphQLInput { and: String! }` will now produce this type: `type someGraphQLInput = { [@bs.as "and"] and_: string }`.
+- Emit maker functions for any input object with at least one optional prop. This is to greatly simplify working with complex input objects with lots of properties.
+- Fix bug with `null` inputs wouldn't be properly filtered when refetching connections.
 
 # 0.5.3
 

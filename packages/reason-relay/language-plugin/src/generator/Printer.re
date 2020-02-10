@@ -15,6 +15,16 @@ let printRecordPropName = propName =>
   | Some(_) => "[@bs.as \"" ++ propName ++ "\"] " ++ propName ++ "_"
   | None => propName
   };
+
+let printMakerArgName = propName =>
+  switch (
+    ReservedKeywords.reservedKeywords->Tablecloth.Array.find(~f=w =>
+      w == propName
+    )
+  ) {
+  | Some(_) => propName ++ "_"
+  | None => propName
+  };
 let printEnumName = name => "enum_" ++ name;
 let getObjName = name => "obj_" ++ name;
 let printEnumTypeName = name => "SchemaAssets.Enum_" ++ name ++ ".t";
@@ -187,32 +197,11 @@ and printRecordReference = (~state: fullState, ~obj: object_) => {
   };
 };
 
-let printRefetchVariablesMaker = (obj: object_, ~state) => {
+let printObjectMaker = (obj: object_, ~targetType, ~name) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
-  addToStr("type refetchVariables = ");
-  addToStr(
-    printObject(
-      ~state,
-      ~obj={
-        atPath: [],
-        values:
-          obj.values
-          |> Array.map(value =>
-               switch (value) {
-               | Prop(name, {nullable: false} as propValue) =>
-                 Prop(name, {...propValue, nullable: true})
-               | a => a
-               }
-             ),
-      },
-      (),
-    ),
-  );
-  addToStr(";");
-
-  addToStr("let makeRefetchVariables = (");
+  addToStr("let " ++ name ++ " = (");
 
   obj.values
   |> Array.iteri((index, p) => {
@@ -222,13 +211,14 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
 
        addToStr(
          switch (p) {
-         | Prop(name, _) => "~" ++ name ++ "=?"
+         | Prop(name, {nullable}) =>
+           "~" ++ printMakerArgName(name) ++ (nullable ? "=?" : "")
          | FragmentRef(_) => ""
          },
        );
      });
 
-  addToStr(", ()): refetchVariables => {");
+  addToStr(", ()): " ++ targetType ++ " => {");
 
   obj.values
   |> Array.iteri((index, p) => {
@@ -238,13 +228,45 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
 
        addToStr(
          switch (p) {
-         | Prop(name, _) => name ++ ": " ++ name
+         | Prop(name, _) =>
+           printMakerArgName(name) ++ ": " ++ printMakerArgName(name)
          | FragmentRef(_) => ""
          },
        );
      });
 
   addToStr("}");
+  str^;
+};
+
+let printRefetchVariablesMaker = (obj: object_, ~state) => {
+  let str = ref("");
+  let addToStr = s => str := str^ ++ s;
+
+  let optionalObj = {
+    atPath: [],
+    values:
+      obj.values
+      |> Array.map(value =>
+           switch (value) {
+           | Prop(name, {nullable: false} as propValue) =>
+             Prop(name, {...propValue, nullable: true})
+           | a => a
+           }
+         ),
+  };
+
+  addToStr("type refetchVariables = ");
+  addToStr(printObject(~state, ~obj=optionalObj, ()));
+  addToStr(";");
+
+  addToStr(
+    optionalObj->printObjectMaker(
+      ~targetType="refetchVariables",
+      ~name="makeRefetchVariables",
+    ),
+  );
+
   str^;
 };
 
