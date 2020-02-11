@@ -7,7 +7,7 @@
 
 module.exports = {
   docs: {
-    Introduction: ["start-here", "getting-started"],
+    Introduction: ["start-here", "getting-started", "custom-scalars"],
     "Using Reason Relay": [
       "making-queries",
       "using-fragments",
