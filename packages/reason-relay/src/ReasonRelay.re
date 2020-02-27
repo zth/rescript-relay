@@ -228,6 +228,8 @@ module RecordProxy = {
 
   let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
+
+  [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
 };
 
 module RecordSourceSelectorProxy = {
@@ -263,6 +265,8 @@ module RecordSourceSelectorProxy = {
     | Some(arr) => Some(arr |> Array.map(v => v |> toOpt))
     | None => None
     };
+
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 module RecordSourceProxy = {
@@ -280,6 +284,8 @@ module RecordSourceProxy = {
   let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
+
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 module ConnectionHandler = {

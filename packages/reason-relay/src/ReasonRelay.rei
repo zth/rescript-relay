@@ -213,6 +213,8 @@ module RecordProxy: {
       ~unsetValue: unsetValueType
     ) =>
     t;
+
+  let invalidateRecord: t => unit;
 };
 
 /**
@@ -234,6 +236,8 @@ module RecordSourceSelectorProxy: {
 
   let getPluralRootField:
     (t, ~fieldName: string) => option(array(option(RecordProxy.t)));
+
+  let invalidateStore: t => unit;
 };
 
 module RecordSourceProxy: {
@@ -246,6 +250,8 @@ module RecordSourceProxy: {
   let get: (t, ~dataId: dataId) => option(RecordProxy.t);
 
   let getRoot: t => RecordProxy.t;
+
+  let invalidateStore: t => unit;
 };
 
 /**
