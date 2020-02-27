@@ -26,7 +26,7 @@ if (!relayConfig.artifactDirectory) {
 function runRelayCompiler(args) {
   spawn(
     path.resolve(
-      __dirname + "/../src/vendor/relay-compiler/bin/relay-compiler"
+      __dirname + "/../node_modules/relay-compiler/bin/relay-compiler"
     ),
     args,
     {
