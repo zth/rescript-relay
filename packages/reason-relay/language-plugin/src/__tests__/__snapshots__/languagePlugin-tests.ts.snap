@@ -224,7 +224,7 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 "// SetUserLocationMutation.graphql
 /* @generated */
 
-type enum_UserRole = [ | \`Admin | \`User | \`FUTURE_ADDED_VALUE__];
+type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue_(string)];
 
 module Unions = {};
 
@@ -418,7 +418,11 @@ module Unions = {
       name: string,
       id: string,
     };
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -432,15 +436,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    external __toJson: wrapped => Js.Json.t = \\"%identity\\";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`UnmappedUnionMember
+      | _ => \`FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -448,7 +457,7 @@ module Unions = {
   type union_fragment_participantsConnection_edges_node = [
     | \`User(Union_fragment_participantsConnection_edges_node.user)
     | \`Observer(Union_fragment_participantsConnection_edges_node.observer)
-    | \`UnmappedUnionMember
+    | \`FutureAddedValue_(Js.Json.t)
   ];
 };
 
@@ -865,7 +874,11 @@ module Unions = {
       getFragmentRefs:
         unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
     };
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -881,15 +894,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    external __toJson: wrapped => Js.Json.t = \\"%identity\\";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`UnmappedUnionMember
+      | _ => \`FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -897,7 +915,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`UnmappedUnionMember
+    | \`FutureAddedValue_(Js.Json.t)
   ];
 };
 
@@ -959,7 +977,11 @@ module Unions = {
       name: string,
       id: string,
     };
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -974,15 +996,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    external __toJson: wrapped => Js.Json.t = \\"%identity\\";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`UnmappedUnionMember
+      | _ => \`FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -990,7 +1017,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`UnmappedUnionMember
+    | \`FutureAddedValue_(Js.Json.t)
   ];
 };
 
@@ -1040,7 +1067,11 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-type enum_ObserverStatus = [ | \`Active | \`Inactive | \`FUTURE_ADDED_VALUE__];
+type enum_ObserverStatus = [
+  | \`Active
+  | \`Inactive
+  | \`FutureAddedValue_(string)
+];
 
 module Unions = {
   module Union_response_participantById_observer_manager: {
@@ -1055,7 +1086,11 @@ module Unions = {
       isOnline: option(bool),
       id: string,
     };
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -1071,15 +1106,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    external __toJson: wrapped => Js.Json.t = \\"%identity\\";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`UnmappedUnionMember
+      | _ => \`FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -1087,7 +1127,7 @@ module Unions = {
   type union_response_participantById_observer_manager = [
     | \`User(Union_response_participantById_observer_manager.user)
     | \`Observer(Union_response_participantById_observer_manager.observer)
-    | \`UnmappedUnionMember
+    | \`FutureAddedValue_(Js.Json.t)
   ];
 
   module Union_response_participantById: {
@@ -1102,7 +1142,11 @@ module Unions = {
       name: string,
       id: string,
     };
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -1118,15 +1162,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
-    type t = [ | \`User(user) | \`Observer(observer) | \`UnmappedUnionMember];
+    type t = [
+      | \`User(user)
+      | \`Observer(observer)
+      | \`FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
+    external __toJson: wrapped => Js.Json.t = \\"%identity\\";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`UnmappedUnionMember
+      | _ => \`FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -1134,7 +1183,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`UnmappedUnionMember
+    | \`FutureAddedValue_(Js.Json.t)
   ];
 };
 
