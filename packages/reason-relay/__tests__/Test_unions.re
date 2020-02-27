@@ -36,13 +36,14 @@ module Query = [%relay.query
 |}
 ];
 
-let mapOnlineStatus =
-  fun
+let mapOnlineStatus = (s: option(SchemaAssets.Enum_OnlineStatus.t)) =>
+  switch (s) {
   | Some(`Online) => "online"
   | Some(`Offline) => "offline"
   | Some(`Idle) => "idle"
-  | Some(`FUTURE_ADDED_VALUE__) => "-"
-  | None => "[no status]";
+  | Some(`FutureAddedValue_(_)) => "-"
+  | None => "[no status]"
+  };
 
 let printUser = (firstName, onlineStatus) =>
   firstName ++ " is " ++ onlineStatus->mapOnlineStatus;
@@ -105,12 +106,12 @@ module Test = {
                               ->Belt.Option.getWithDefault("[no avatar]"),
                          )}
                       </div>
-                    | Some(`UnmappedUnionMember)
+                    | Some(`FutureAddedValue_(_))
                     | None => React.null,
                   )
                 ->React.array}
              </div>
-           | `UnmappedUnionMember => React.null,
+           | `FutureAddedValue_(_) => React.null,
          )
        ->React.array}
     </div>;

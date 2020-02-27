@@ -51,13 +51,13 @@ let make = (~ticket as ticketRef) => {
      | `Done
      | `Progress
      | `OnHold => React.string("Ticket is not rejected")
-     | `FUTURE_ADDED_VALUE__ => React.null
+     | `FutureAddedValue_(_) => React.null
      }}
   </div>;
 };
 ```
 
-Notice `FUTURE_ADDED_VALUE__` - this helps you protect your app against runtime errors if there's a new value added to the enum before you have a chance to update your app. The enum will be unwrapped as `FUTURE_ADDED_VALUE__` whenever it encounters a value that it doesn't know about from your current `schema.graphql`.
+Notice `FutureAddedValue_` - this will help you protect your app against runtime errors if there's a new value added to the enum before you have a chance to update your app. The enum will be unwrapped as `FutureAddedValue_(string)`, where the `string` is the unknown enum value as a regular string, whenever it encounters a value that it doesn't know about from your current `schema.graphql`.
 
 ## Under the hood
 

@@ -310,7 +310,7 @@ let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
       )
     |> Tablecloth.String.join(~sep="\n")
   )
-  ++ " | `UnmappedUnionMember "
+  ++ " | `FutureAddedValue_(Js.Json.t) "
   ++ "];";
 };
 
@@ -392,6 +392,8 @@ let printUnion = (~state, union: union) => {
        );
      });
 
+  addToUnwrappers("external __toJson: wrapped => Js.Json.t = \"%identity\";");
+
   let unwrapFnImpl =
     ref(
       {|
@@ -416,11 +418,9 @@ let printUnion = (~state, union: union) => {
        )
      );
 
-  addToUnwrapFnImpl({|
-      | _ => `UnmappedUnionMember
-    };
-  };
-  |});
+  addToUnwrapFnImpl(
+    " | _ => `FutureAddedValue_(wrapped |> __toJson)" ++ "};" ++ "};",
+  );
 
   prefix
   ++ unionName
@@ -442,7 +442,7 @@ let printEnum = (enum: fullEnum): string => {
   let addToStr = s => str := str^ ++ s;
 
   enum.values
-  ->Belt.Array.concat([|"FUTURE_ADDED_VALUE__"|])
+  ->Belt.Array.concat([|"FutureAddedValue_(string)"|])
   ->Belt.Array.forEach(v => addToStr(" | `" ++ v ++ " "));
 
   addToStr("];");

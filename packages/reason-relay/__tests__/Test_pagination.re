@@ -110,7 +110,7 @@ module Test = {
                   ++ " admins",
                 )}
              </div>
-           | `UnmappedUnionMember =>
+           | `FutureAddedValue_(_) =>
              <div id={i |> string_of_int}>
                {React.string("Unknown type")}
              </div>

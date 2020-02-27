@@ -23,7 +23,11 @@ module Unions = {
       name: string,
       id: string,
     };
-    type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
+    type t = [
+      | `User(user)
+      | `Group(group)
+      | `FutureAddedValue_(Js.Json.t)
+    ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
@@ -49,15 +53,20 @@ module Unions = {
     };
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
-    type t = [ | `User(user) | `Group(group) | `UnmappedUnionMember];
+    type t = [
+      | `User(user)
+      | `Group(group)
+      | `FutureAddedValue_(Js.Json.t)
+    ];
     external __unwrap_user: wrapped => user = "%identity";
     external __unwrap_group: wrapped => group = "%identity";
+    external __toJson: wrapped => Js.Json.t = "%identity";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | "User" => `User(wrapped |> __unwrap_user)
       | "Group" => `Group(wrapped |> __unwrap_group)
-      | _ => `UnmappedUnionMember
+      | _ => `FutureAddedValue_(wrapped |> __toJson)
       };
     };
   };
@@ -65,7 +74,7 @@ module Unions = {
   type union_fragment_members_edges_node = [
     | `User(Union_fragment_members_edges_node.user)
     | `Group(Union_fragment_members_edges_node.group)
-    | `UnmappedUnionMember
+    | `FutureAddedValue_(Js.Json.t)
   ];
 };
 

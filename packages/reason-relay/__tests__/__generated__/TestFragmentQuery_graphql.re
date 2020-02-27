@@ -4,7 +4,7 @@ type enum_OnlineStatus = [
   | `Idle
   | `Offline
   | `Online
-  | `FUTURE_ADDED_VALUE__
+  | `FutureAddedValue_(string)
 ];
 
 module Unions = {};
