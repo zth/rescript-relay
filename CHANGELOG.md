@@ -4,6 +4,7 @@
 - Emit maker functions for any input object with at least one optional prop. This is to greatly simplify working with complex input objects with lots of properties.
 - Fix bug with `null` inputs wouldn't be properly filtered when refetching connections.
 - _BREAKING CHANGE_ Rename unknown enum and union values to `FutureAddedValue_(payload)` to align with convention discussed with the folks behind `graphql_ppx`.
+- _BREAKING CHANGE_ Bind `RenderPolicy` for control over whether Relay is allowed to partially render the UI with the data it already has while fetching. This is a breaking change because it changes the signature for `Query.usePreloaded` from `usePreloaded(token)` to `usePreloaded(~token: token, ~renderPolicy: renderPolicy=?, ())`.
 
 # 0.5.3
 

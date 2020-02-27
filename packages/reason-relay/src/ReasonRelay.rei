@@ -378,6 +378,13 @@ module Store: {
 };
 
 /**
+ * renderPolicy controls if Relay is allowed to render partially available data or not.
+ */
+type renderPolicy =
+  | Full // Always render the full result
+  | Partial; // Allow rendering any fragments that already have the data needed
+
+/**
  * Module representing the environment, which you'll need to use and
  * pass to various functions. Takes a few configuration options like store
  * and network layer.
@@ -399,6 +406,7 @@ module Environment: {
                   ) =>
                   string
                     =?,
+      ~defaultRenderPolicy: renderPolicy=?,
       unit
     ) =>
     t;
@@ -447,6 +455,7 @@ module MakeUseQuery:
       (
         ~variables: C.variables,
         ~fetchPolicy: fetchPolicy=?,
+        ~renderPolicy: renderPolicy=?,
         ~fetchKey: string=?,
         ~networkCacheConfig: cacheConfig=?,
         unit
@@ -468,7 +477,8 @@ module MakeUseQuery:
       ) =>
       preloadToken;
 
-    let usePreloaded: preloadToken => C.response;
+    let usePreloaded:
+      (~token: preloadToken, ~renderPolicy: renderPolicy=?, unit) => C.response;
   };
 
 /**
@@ -491,6 +501,7 @@ type refetchFn('variables) =
   (
     ~variables: 'variables,
     ~fetchPolicy: fetchPolicy=?,
+    ~renderPolicy: renderPolicy=?,
     ~onComplete: option(Js.Exn.t) => unit=?,
     unit
   ) =>

@@ -17,7 +17,7 @@ module Query = [%relay.query
 module TestPreloaded = {
   [@react.component]
   let make = (~preloadToken) => {
-    let query = Query.usePreloaded(preloadToken);
+    let query = Query.usePreloaded(~token=preloadToken, ());
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
