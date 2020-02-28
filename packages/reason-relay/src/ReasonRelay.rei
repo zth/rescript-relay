@@ -594,13 +594,36 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
+type useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted: option(('response, option(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option((RecordSourceSelectorProxy.t, 'response) => unit),
+  variables: 'variables,
+};
 
-type useMutationConfigType('variables) = {variables: 'variables};
-
-module MakeUseMutation: (C: MutationConfig) => {};
+module MakeUseMutation:
+  (C: MutationConfig) =>
+   {
+    let use:
+      unit =>
+      (
+        (
+          ~onError: mutationError => unit=?,
+          ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
+          ~onUnsubscribe: unit => unit=?,
+          ~optimisticResponse: C.response=?,
+          ~optimisticUpdater: optimisticUpdaterFn=?,
+          ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
+          ~variables: C.variables,
+          unit
+        ) =>
+        Disposable.t,
+        bool,
+      );
+  };
 
 /**
  * Context provider for the Relay environment.

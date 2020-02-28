@@ -934,11 +934,26 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
+type useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted: option(('response, option(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+  variables: 'variables,
+};
 
-type useMutationConfigType('variables) = {variables: 'variables};
+type _useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted:
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+  variables: 'variables,
+};
 
 type _commitMutationConfig('variables, 'response) = {
   mutation: mutationNode,
@@ -961,7 +976,57 @@ external _commitMutation:
   (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
   "commitMutation";
 
-module MakeUseMutation = (C: MutationConfig) => {};
+[@bs.module "react-relay/hooks"]
+external _useMutation:
+  mutationNode =>
+  (_useMutationConfig('response, 'variables) => Disposable.t, bool) =
+  "useMutation";
+
+module MakeUseMutation = (C: MutationConfig) => {
+  let use = () => {
+    let (mutate, mutating) = _useMutation(C.node);
+    (
+      (
+        ~onError=?,
+        ~onCompleted=?,
+        ~onUnsubscribe=?,
+        ~optimisticResponse=?,
+        ~optimisticUpdater=?,
+        ~updater=?,
+        ~variables,
+        (),
+      ) =>
+        mutate({
+          onError,
+          onCompleted:
+            switch (onCompleted) {
+            | Some(fn) =>
+              Some(
+                (r, errors) =>
+                  fn(r |> C.convertResponse, Js.Nullable.toOption(errors)),
+              )
+
+            | None => None
+            },
+          optimisticResponse:
+            switch (optimisticResponse) {
+            | None => None
+            | Some(r) => Some(r |> C.wrapResponse)
+            },
+          onUnsubscribe,
+          variables,
+          optimisticUpdater,
+          updater:
+            switch (updater) {
+            | None => None
+            | Some(updater) =>
+              Some((store, r) => updater(store, r |> C.convertResponse))
+            },
+        }),
+      mutating,
+    );
+  };
+};
 
 module MakeCommitMutation = (C: MutationConfig) => {
   let commitMutation =

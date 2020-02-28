@@ -50,6 +50,7 @@ module Test = {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
     let data = Fragment.use(query.loggedInUser.getFragmentRefs());
+    let (mutate, isMutating) = Mutation.use();
 
     <div>
       {React.string(
@@ -74,6 +75,13 @@ module Test = {
           |> ignore
         }>
         {React.string("Change online status")}
+      </button>
+      <button
+        onClick={_ => mutate(~variables={onlineStatus: `Idle}, ()) |> ignore}>
+        {React.string(
+           isMutating
+             ? "Mutating..." : "Change online status via useMutation hook",
+         )}
       </button>
       <button
         onClick={_ =>
