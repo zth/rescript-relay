@@ -302,6 +302,15 @@ let printRootType = (~state: fullState, rootType) =>
   };
 
 let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
+  let futureAddedValueName =
+    switch (
+      union.members
+      ->Tablecloth.List.find(~f=m => m.name === "FutureAddedValue")
+    ) {
+    | Some(_) => "FutureAddedValue_"
+    | None => "FutureAddedValue"
+    };
+
   "["
   ++ (
     union.members
@@ -310,7 +319,9 @@ let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
       )
     |> Tablecloth.String.join(~sep="\n")
   )
-  ++ " | `FutureAddedValue_(Js.Json.t) "
+  ++ " | `"
+  ++ futureAddedValueName
+  ++ "(Js.Json.t) "
   ++ "];";
 };
 
@@ -331,6 +342,15 @@ let printUnion = (~state, union: union) => {
 
   let unwrappers = ref("");
   let addToUnwrappers = Utils.makeAddToStr(unwrappers);
+
+  let futureAddedValueName =
+    switch (
+      union.members
+      ->Tablecloth.List.find(~f=m => m.name === "FutureAddedValue")
+    ) {
+    | Some(_) => "FutureAddedValue_"
+    | None => "FutureAddedValue"
+    };
 
   union.members
   |> List.iter(({name, shape}: Types.unionMember) => {
@@ -419,7 +439,11 @@ let printUnion = (~state, union: union) => {
      );
 
   addToUnwrapFnImpl(
-    " | _ => `FutureAddedValue_(wrapped |> __toJson)" ++ "};" ++ "};",
+    " | _ => `"
+    ++ futureAddedValueName
+    ++ "(wrapped |> __toJson)"
+    ++ "};"
+    ++ "};",
   );
 
   prefix
@@ -441,8 +465,16 @@ let printEnum = (enum: fullEnum): string => {
   let str = ref("type enum_" ++ enum.name ++ " = [");
   let addToStr = s => str := str^ ++ s;
 
+  let futureAddedValueName =
+    switch (
+      enum.values->Tablecloth.Array.find(~f=e => e === "FutureAddedValue")
+    ) {
+    | Some(_) => "FutureAddedValue_"
+    | None => "FutureAddedValue"
+    };
+
   enum.values
-  ->Belt.Array.concat([|"FutureAddedValue_(string)"|])
+  ->Belt.Array.concat([|futureAddedValueName ++ "(string)"|])
   ->Belt.Array.forEach(v => addToStr(" | `" ++ v ++ " "));
 
   addToStr("];");
