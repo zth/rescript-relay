@@ -9,9 +9,17 @@ function generateSchemaAssets(schema, targetPath) {
       const { name, enumValues } = e;
       const values = enumValues.map(v => v.name);
 
+      const hasFutureAddedValueStr = !!values.find(
+        v => v === "FutureAddedValue"
+      );
+
+      const futureAddedValueName = `FutureAddedValue${
+        hasFutureAddedValueStr ? "_" : ""
+      }`;
+
       let enumT = `type t = [ ${values
         .map(v => ` | \`${v}`)
-        .join("")} | \`FutureAddedValue_(string) ]`;
+        .join("")} | \`${futureAddedValueName}(string) ]`;
 
       return `
       module Enum_${name}: {
@@ -30,12 +38,12 @@ function generateSchemaAssets(schema, targetPath) {
         
         let unwrap = wrapped => switch(wrapped |> __unwrap) {
           ${values.map(val => `| "${val}" => \`${val}`).join("")}
-          | v => \`FutureAddedValue_(v)
+          | v => \`${futureAddedValueName}(v)
         };
         
         let wrap = t => switch(t) {
           ${values.map(val => `| \`${val} => "${val}"`).join("")}
-          | \`FutureAddedValue_(_) => ""
+          | \`${futureAddedValueName}(_) => ""
         } |> __wrap;
 
         let toString = t => t |> wrap |> __unwrap;

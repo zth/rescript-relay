@@ -472,7 +472,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "type enum_UserRole = [ | `Admin | `User | `FutureAddedValue_(string)];"
+          "type enum_UserRole = [ | `Admin | `User | `FutureAddedValue(string)];"
         )
       ).toBe(true);
 

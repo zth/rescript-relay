@@ -66,7 +66,7 @@ let make = (~roomId) => {
        | `User(user) =>
          React.string("user " ++ user.firstName ++ " " ++ user.lastName)
        | `Group(group) => React.string("group " ++ group.name)
-       | `FutureAddedValue_(_) => React.string("-")
+       | `FutureAddedValue(_) => React.string("-")
        }}
     </div>
   };
@@ -77,11 +77,11 @@ Let's break down what's going on here:
 
 1. We make our union selection in the GraphQL query. Note that we select `__typename` even though we don't use it anywhere - ReasonRelay enforces this, you must select `__typename` for all unions. Don't worry, the compiler will scream at you if you forget it.
 2. We fetch our query data, and we switch on `roomOwner` to make sure it's actually there in the data.
-3. We then switch again, but this time on the polymorphic variant representing the union. This polymorphic variant will have each possible type of the union, and the fields selected on that type. It also adds `FutureAddedValue_(payload)` to every union, which will force you to handle _what happens if there's another member added to the union before you have time to update your app_. `payload` is typed as `Js.Json.t`, and is the raw union object that could not be mapped. This is pretty neat way to ensure you gracefully handle your schema evolving.
+3. We then switch again, but this time on the polymorphic variant representing the union. This polymorphic variant will have each possible type of the union, and the fields selected on that type. It also adds `FutureAddedValue(payload)` to every union, which will force you to handle _what happens if there's another member added to the union before you have time to update your app_. `payload` is typed as `Js.Json.t`, and is the raw union object that could not be mapped. This is pretty neat way to ensure you gracefully handle your schema evolving.
 
 ## Wrapping up
 
 And that's that! Keep the following in mind about unions and everything will be fine:
 
 - Remember to select `__typename`
-- Remember to handle `FutureAddedValue_`
+- Remember to handle `FutureAddedValue`
