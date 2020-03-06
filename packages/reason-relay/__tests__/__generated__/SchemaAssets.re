@@ -4,14 +4,14 @@
  * Helpers for wrapping/unwrapping enums.
  */
 module Enum_OnlineStatus: {
-  type t = [ | `Online | `Idle | `Offline | `FutureAddedValue_(string)];
+  type t = [ | `Online | `Idle | `Offline | `FutureAddedValue(string)];
   type wrapped;
   let unwrap: wrapped => t;
   let wrap: t => wrapped;
   let toString: t => string;
   let fromString: string => t;
 } = {
-  type t = [ | `Online | `Idle | `Offline | `FutureAddedValue_(string)];
+  type t = [ | `Online | `Idle | `Offline | `FutureAddedValue(string)];
   type wrapped;
 
   external __unwrap: wrapped => string = "%identity";
@@ -22,7 +22,7 @@ module Enum_OnlineStatus: {
     | "Online" => `Online
     | "Idle" => `Idle
     | "Offline" => `Offline
-    | v => `FutureAddedValue_(v)
+    | v => `FutureAddedValue(v)
     };
 
   let wrap = t =>
@@ -31,7 +31,7 @@ module Enum_OnlineStatus: {
       | `Online => "Online"
       | `Idle => "Idle"
       | `Offline => "Offline"
-      | `FutureAddedValue_(_) => ""
+      | `FutureAddedValue(_) => ""
       }
     )
     |> __wrap;

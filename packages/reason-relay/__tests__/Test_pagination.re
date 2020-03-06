@@ -110,7 +110,7 @@ module Test = {
                   ++ " admins",
                 )}
              </div>
-           | `FutureAddedValue_(_) =>
+           | `FutureAddedValue(_) =>
              <div id={i |> string_of_int}>
                {React.string("Unknown type")}
              </div>

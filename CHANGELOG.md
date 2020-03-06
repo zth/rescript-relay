@@ -4,6 +4,7 @@
 - Emit maker functions for any input object with at least one optional prop. This is to greatly simplify working with complex input objects with lots of properties.
 - Fix bug with `null` inputs wouldn't be properly filtered when refetching connections.
 - _BREAKING CHANGE_ Rename unknown enum and union values to `FutureAddedValue(payload)` to align with convention discussed with the folks behind `graphql_ppx`.
+- All record types for all GraphQL operations are now emitted with their name as the path they're found at joined together. Previously, I was being smart and setting the name to the simplest possible, but this will enable some smart tooling down the line.
 
 # 0.5.3
 

@@ -41,7 +41,7 @@ let mapOnlineStatus = (s: option(SchemaAssets.Enum_OnlineStatus.t)) =>
   | Some(`Online) => "online"
   | Some(`Offline) => "offline"
   | Some(`Idle) => "idle"
-  | Some(`FutureAddedValue_(_)) => "-"
+  | Some(`FutureAddedValue(_)) => "-"
   | None => "[no status]"
   };
 
@@ -106,12 +106,12 @@ module Test = {
                               ->Belt.Option.getWithDefault("[no avatar]"),
                          )}
                       </div>
-                    | Some(`FutureAddedValue_(_))
+                    | Some(`FutureAddedValue(_))
                     | None => React.null,
                   )
                 ->React.array}
              </div>
-           | `FutureAddedValue_(_) => React.null,
+           | `FutureAddedValue(_) => React.null,
          )
        ->React.array}
     </div>;

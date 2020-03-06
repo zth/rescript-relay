@@ -4,46 +4,50 @@ type enum_OnlineStatus = [
   | `Idle
   | `Offline
   | `Online
-  | `FutureAddedValue_(string)
+  | `FutureAddedValue(string)
 ];
 
 module Unions = {
   module Union_response_members_edges_node_group_members: {
     type wrapped;
-    type user = {
+    type response_members_edges_node_group_members_user = {
       onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
-    type group = {
+    type user = response_members_edges_node_group_members_user;
+    type response_members_edges_node_group_members_group = {
       avatarUrl: option(string),
       name: string,
       id: string,
     };
+    type group = response_members_edges_node_group_members_group;
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_members_edges_node_group_members_user = {
       onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
-    type group = {
+    type user = response_members_edges_node_group_members_user;
+    type response_members_edges_node_group_members_group = {
       avatarUrl: option(string),
       name: string,
       id: string,
     };
+    type group = response_members_edges_node_group_members_group;
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     external __unwrap_user: wrapped => user = "%identity";
     external __unwrap_group: wrapped => group = "%identity";
@@ -53,7 +57,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | "User" => `User(wrapped |> __unwrap_user)
       | "Group" => `Group(wrapped |> __unwrap_group)
-      | _ => `FutureAddedValue_(wrapped |> __toJson)
+      | _ => `FutureAddedValue(wrapped |> __toJson)
       };
     };
   };
@@ -61,17 +65,18 @@ module Unions = {
   type union_response_members_edges_node_group_members = [
     | `User(Union_response_members_edges_node_group_members.user)
     | `Group(Union_response_members_edges_node_group_members.group)
-    | `FutureAddedValue_(Js.Json.t)
+    | `FutureAddedValue(Js.Json.t)
   ];
 
   module Union_response_members_edges_node: {
     type wrapped;
-    type user = {
+    type response_members_edges_node_user = {
       onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
-    type group = {
+    type user = response_members_edges_node_user;
+    type response_members_edges_node_group = {
       members:
         option(
           array(option(union_response_members_edges_node_group_members)),
@@ -80,20 +85,22 @@ module Unions = {
       name: string,
       id: string,
     };
+    type group = response_members_edges_node_group;
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_members_edges_node_user = {
       onlineStatus: option(enum_OnlineStatus),
       firstName: string,
       id: string,
     };
-    type group = {
+    type user = response_members_edges_node_user;
+    type response_members_edges_node_group = {
       members:
         option(
           array(option(union_response_members_edges_node_group_members)),
@@ -102,12 +109,13 @@ module Unions = {
       name: string,
       id: string,
     };
+    type group = response_members_edges_node_group;
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     external __unwrap_user: wrapped => user = "%identity";
     external __unwrap_group: wrapped => group = "%identity";
@@ -117,7 +125,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | "User" => `User(wrapped |> __unwrap_user)
       | "Group" => `Group(wrapped |> __unwrap_group)
-      | _ => `FutureAddedValue_(wrapped |> __toJson)
+      | _ => `FutureAddedValue(wrapped |> __toJson)
       };
     };
   };
@@ -125,7 +133,7 @@ module Unions = {
   type union_response_members_edges_node = [
     | `User(Union_response_members_edges_node.user)
     | `Group(Union_response_members_edges_node.group)
-    | `FutureAddedValue_(Js.Json.t)
+    | `FutureAddedValue(Js.Json.t)
   ];
 };
 
