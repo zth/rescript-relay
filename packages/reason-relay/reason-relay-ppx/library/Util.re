@@ -378,6 +378,7 @@ let makeMutation = (~loc, ~moduleName) =>
           })
       ],
       [%stri let commitMutation = Mutation.commitMutation],
+      [%stri let use = UseMutation.use],
     ]),
   );
 

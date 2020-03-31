@@ -13,6 +13,7 @@ describe("Fragment", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Last",
           onlineStatus: "Online"
         },
         users: null
@@ -30,6 +31,7 @@ describe("Fragment", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Last",
           onlineStatus: "Online"
         },
         users: {

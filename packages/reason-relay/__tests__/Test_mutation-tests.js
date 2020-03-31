@@ -6,7 +6,7 @@ const queryMock = require("./queryMock");
 const { test_mutation } = require("./Test_mutation.bs");
 
 describe("Mutation", () => {
-  test("basic mutations work", async () => {
+  test("basic mutations work via commitMutation", async () => {
     queryMock.mockQuery({
       name: "TestMutationQuery",
       data: {
@@ -37,6 +37,47 @@ describe("Mutation", () => {
     });
 
     t.fireEvent.click(t.screen.getByText("Change online status"));
+
+    await t.screen.findByText("First is idle");
+  });
+
+  test("basic mutations work via useMutation hook", async () => {
+    queryMock.mockQuery({
+      name: "TestMutationQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          onlineStatus: "Online"
+        }
+      }
+    });
+
+    t.render(test_mutation());
+    await t.screen.findByText("First is online");
+
+    const resolveQuery = queryMock.mockQueryWithControlledResolution({
+      name: "TestMutationSetOnlineStatusMutation",
+      variables: {
+        onlineStatus: "Idle"
+      },
+      data: {
+        setOnlineStatus: {
+          user: {
+            id: "user-1",
+            onlineStatus: "Idle"
+          }
+        }
+      }
+    });
+
+    t.fireEvent.click(
+      t.screen.getByText("Change online status via useMutation hook")
+    );
+
+    await t.screen.findByText("Mutating...");
+
+    resolveQuery();
 
     await t.screen.findByText("First is idle");
   });

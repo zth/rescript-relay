@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "bsb -clean-world -make-world",
-    "build:test": "compiler/compiler-cli.js && ./src/vendor/relay-compiler/bin/relay-compiler",
+    "build:test": "compiler/compiler-cli.js && relay-compiler",
     "postinstall": "node postinstall.js",
     "test": "jest"
   },
@@ -31,30 +31,30 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "bs-fetch": "^0.5.0",
-    "bs-platform": "^7.0.2-dev.1",
+    "bs-platform": "^7.1.1",
     "graphql": "14.5.0",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^24.9.0",
     "nock": "^11.7.0",
     "node-fetch": "^2.6.0",
-    "react": "0.0.0-experimental-f6b8d31a7",
-    "react-dom": "0.0.0-experimental-f6b8d31a7",
-    "react-relay": "0.0.0-experimental-5f1cb628",
+    "react": "0.0.0-experimental-d28bd2994",
+    "react-dom": "0.0.0-experimental-d28bd2994",
+    "react-relay": "0.0.0-experimental-8cc94ddc",
     "reason-react": "^0.7.0",
-    "relay-compiler": "8.0.0",
-    "relay-config": "8.0.0",
-    "relay-runtime": "8.0.0"
+    "relay-compiler": "9.0.0",
+    "relay-config": "9.0.0",
+    "relay-runtime": "9.0.0"
   },
   "peerDependencies": {
-    "bs-platform": "^7.0.1",
+    "bs-platform": "^7.1.1",
     "graphql": "^14.4.2",
-    "react": "0.0.0-experimental-f6b8d31a7",
-    "react-dom": "0.0.0-experimental-f6b8d31a7",
-    "react-relay": "0.0.0-experimental-5f1cb628",
+    "react": "0.0.0-experimental-d28bd2994",
+    "react-dom": "0.0.0-experimental-d28bd2994",
+    "react-relay": "0.0.0-experimental-8cc94ddc",
     "reason-react": "^0.7.0",
-    "relay-compiler": "8.0.0",
-    "relay-config": "8.0.0",
-    "relay-runtime": "8.0.0"
+    "relay-compiler": "9.0.0",
+    "relay-config": "9.0.0",
+    "relay-runtime": "9.0.0"
   },
   "dependencies": {
     "mkdirp-sync": "^0.0.3",

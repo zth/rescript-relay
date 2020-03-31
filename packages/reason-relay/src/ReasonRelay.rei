@@ -213,6 +213,8 @@ module RecordProxy: {
       ~unsetValue: unsetValueType
     ) =>
     t;
+
+  let invalidateRecord: t => unit;
 };
 
 /**
@@ -234,6 +236,8 @@ module RecordSourceSelectorProxy: {
 
   let getPluralRootField:
     (t, ~fieldName: string) => option(array(option(RecordProxy.t)));
+
+  let invalidateStore: t => unit;
 };
 
 module RecordSourceProxy: {
@@ -246,6 +250,8 @@ module RecordSourceProxy: {
   let get: (t, ~dataId: dataId) => option(RecordProxy.t);
 
   let getRoot: t => RecordProxy.t;
+
+  let invalidateStore: t => unit;
 };
 
 /**
@@ -378,6 +384,13 @@ module Store: {
 };
 
 /**
+ * renderPolicy controls if Relay is allowed to render partially available data or not.
+ */
+type renderPolicy =
+  | Full // Always render the full result
+  | Partial; // Allow rendering any fragments that already have the data needed
+
+/**
  * Module representing the environment, which you'll need to use and
  * pass to various functions. Takes a few configuration options like store
  * and network layer.
@@ -399,6 +412,7 @@ module Environment: {
                   ) =>
                   string
                     =?,
+      ~defaultRenderPolicy: renderPolicy=?,
       unit
     ) =>
     t;
@@ -447,6 +461,7 @@ module MakeUseQuery:
       (
         ~variables: C.variables,
         ~fetchPolicy: fetchPolicy=?,
+        ~renderPolicy: renderPolicy=?,
         ~fetchKey: string=?,
         ~networkCacheConfig: cacheConfig=?,
         unit
@@ -468,7 +483,8 @@ module MakeUseQuery:
       ) =>
       preloadToken;
 
-    let usePreloaded: preloadToken => C.response;
+    let usePreloaded:
+      (~token: preloadToken, ~renderPolicy: renderPolicy=?, unit) => C.response;
   };
 
 /**
@@ -491,6 +507,7 @@ type refetchFn('variables) =
   (
     ~variables: 'variables,
     ~fetchPolicy: fetchPolicy=?,
+    ~renderPolicy: renderPolicy=?,
     ~onComplete: option(Js.Exn.t) => unit=?,
     unit
   ) =>
@@ -577,13 +594,36 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
+type useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted: option(('response, option(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option((RecordSourceSelectorProxy.t, 'response) => unit),
+  variables: 'variables,
+};
 
-type useMutationConfigType('variables) = {variables: 'variables};
-
-module MakeUseMutation: (C: MutationConfig) => {};
+module MakeUseMutation:
+  (C: MutationConfig) =>
+   {
+    let use:
+      unit =>
+      (
+        (
+          ~onError: mutationError => unit=?,
+          ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
+          ~onUnsubscribe: unit => unit=?,
+          ~optimisticResponse: C.response=?,
+          ~optimisticUpdater: optimisticUpdaterFn=?,
+          ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
+          ~variables: C.variables,
+          unit
+        ) =>
+        Disposable.t,
+        bool,
+      );
+  };
 
 /**
  * Context provider for the Relay environment.

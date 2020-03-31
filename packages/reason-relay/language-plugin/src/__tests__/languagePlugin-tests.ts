@@ -5,12 +5,6 @@ import * as RelayReasonGenerator from "../RelayReasonGenerator";
 const getLanguagePlugin = require("../index");
 import { printCode } from "../generator/Printer.gen";
 
-// @ts-ignore
-import { traverser } from "../../../src/utils";
-
-// @ts-ignore
-import * as RelayFlowGenerator from "relay-compiler/lib/language/javascript/RelayFlowGenerator";
-
 const CompilerContext = require("relay-compiler/lib/core/CompilerContext");
 
 import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";

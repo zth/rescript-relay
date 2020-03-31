@@ -1,7 +1,5 @@
-const IRTransformer = require("relay-compiler/lib/core/GraphQLIRTransformer");
-const {
-  createUserError
-} = require("relay-compiler/lib/core/RelayCompilerError");
+const IRTransformer = require("relay-compiler/lib/core/IRTransformer");
+const { createUserError } = require("relay-compiler/lib/core/CompilerError");
 
 const {
   hasUnaliasedSelection

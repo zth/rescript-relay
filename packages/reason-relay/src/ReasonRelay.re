@@ -228,6 +228,8 @@ module RecordProxy = {
 
   let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments) =>
     _setValue(t, value, name, arguments);
+
+  [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
 };
 
 module RecordSourceSelectorProxy = {
@@ -263,6 +265,8 @@ module RecordSourceSelectorProxy = {
     | Some(arr) => Some(arr |> Array.map(v => v |> toOpt))
     | None => None
     };
+
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 module RecordSourceProxy = {
@@ -280,6 +284,8 @@ module RecordSourceProxy = {
   let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
+
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 module ConnectionHandler = {
@@ -439,6 +445,16 @@ module Store = {
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
 
+type renderPolicy =
+  | Full
+  | Partial;
+
+let mapRenderPolicy =
+  fun
+  | Some(Full) => Some("full")
+  | Some(Partial) => Some("partial")
+  | None => None;
+
 module Environment = {
   type t;
 
@@ -447,12 +463,14 @@ module Environment = {
     store: Store.t,
     [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
     getDataID: option(('a, string) => string),
+    [@bs.as "UNSTABLE_defaultRenderPolicy"]
+    defaultRenderPolicy: option(string),
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
   external _make: environmentConfig('a) => t = "Environment";
 
-  let make = (~network, ~store, ~getDataID=?, ()) =>
+  let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ()) =>
     _make({
       network,
       store,
@@ -462,6 +480,7 @@ module Environment = {
           Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
         | None => None
         },
+      defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
     });
 
   [@bs.send] external getStore: t => Store.t = "getStore";
@@ -507,14 +526,13 @@ type fetchPolicy =
   | StoreAndNetwork
   | NetworkOnly;
 
-let mapFetchPolicy = fetchPolicy =>
-  switch (fetchPolicy) {
+let mapFetchPolicy =
+  fun
   | Some(StoreOnly) => Some("store-only")
   | Some(StoreOrNetwork) => Some("store-or-network")
   | Some(StoreAndNetwork) => Some("store-and-network")
   | Some(NetworkOnly) => Some("network-only")
-  | None => None
-  };
+  | None => None;
 
 [@bs.module "relay-runtime"]
 external fetchQuery:
@@ -522,6 +540,14 @@ external fetchQuery:
   "fetchQuery";
 
 type useQueryConfig = {
+  fetchKey: option(string),
+  fetchPolicy: option(string),
+  [@bs.as "UNSTABLE_renderPolicy"]
+  renderPolicy: option(string),
+  networkCacheConfig: option(cacheConfig),
+};
+
+type preloadQueryConfig = {
   fetchKey: option(string),
   fetchPolicy: option(string),
   networkCacheConfig: option(cacheConfig),
@@ -533,11 +559,13 @@ external _useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
 
 [@bs.module "react-relay/hooks"]
 external _preloadQuery:
-  (Environment.t, queryNode, 'variables, useQueryConfig) => 'queryResponse =
+  (Environment.t, queryNode, 'variables, preloadQueryConfig) => 'queryResponse =
   "preloadQuery";
 
 [@bs.module "react-relay/hooks"]
-external _usePreloadedQuery: (queryNode, 'token) => 'queryResponse =
+external _usePreloadedQuery:
+  (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
+  'queryResponse =
   "usePreloadedQuery";
 
 module type MakeUseQueryConfig = {
@@ -553,7 +581,14 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   type preloadToken;
 
   let use =
-      (~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ())
+      (
+        ~variables,
+        ~fetchPolicy=?,
+        ~renderPolicy=?,
+        ~fetchKey=?,
+        ~networkCacheConfig=?,
+        (),
+      )
       : C.response => {
     let data =
       _useQuery(
@@ -565,6 +600,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
+          renderPolicy: renderPolicy |> mapRenderPolicy,
           networkCacheConfig,
         },
       );
@@ -601,8 +637,17 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         },
       );
 
-  let usePreloaded = (token: preloadToken) => {
-    let data = _usePreloadedQuery(C.query, token);
+  let usePreloaded = (~token: preloadToken, ~renderPolicy=?, ()) => {
+    let data =
+      _usePreloadedQuery(
+        C.query,
+        token,
+        switch (renderPolicy) {
+        | Some(_) =>
+          Some({"UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy})
+        | None => None
+        },
+      );
     data |> useConvertedValue(C.convertResponse);
   };
 
@@ -640,6 +685,7 @@ type refetchFn('variables) =
   (
     ~variables: 'variables,
     ~fetchPolicy: fetchPolicy=?,
+    ~renderPolicy: renderPolicy=?,
     ~onComplete: option(Js.Exn.t) => unit=?,
     unit
   ) =>
@@ -651,13 +697,15 @@ type refetchFnRaw('variables) =
     {
       .
       "fetchPolicy": option(string),
+      "UNSTABLE_renderPolicy": option(string),
       "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
     }
   ) =>
   unit;
 
-let makeRefetchableFnOpts = (~fetchPolicy, ~onComplete) => {
+let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
   "fetchPolicy": fetchPolicy |> mapFetchPolicy,
+  "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
   "onComplete":
     Some(
       maybeExn =>
@@ -691,13 +739,19 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
     let data = useConvertedValue(C.convertFragment, fragmentData);
     (
       data,
-      (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+      (
+        ~variables: C.variables,
+        ~fetchPolicy=?,
+        ~renderPolicy=?,
+        ~onComplete=?,
+        (),
+      ) =>
         refetchFn(
           variables
           |> C.convertVariables
           |> _cleanVariables
           |> _cleanObjectFromUndefined,
-          makeRefetchableFnOpts(~fetchPolicy, ~onComplete),
+          makeRefetchableFnOpts(~fetchPolicy, ~renderPolicy, ~onComplete),
         ),
     );
   };
@@ -762,6 +816,7 @@ external _usePaginationFragment:
           {
             .
             "fetchPolicy": option(string),
+            "UNSTABLE_renderPolicy": option(string),
             "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
           }
         ) =>
@@ -791,6 +846,7 @@ external _useBlockingPaginationFragment:
           {
             .
             "fetchPolicy": option(string),
+            "UNSTABLE_renderPolicy": option(string),
             "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
           }
         ) =>
@@ -814,10 +870,17 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
         p##loadPrevious(count, Some({onComplete: onComplete})),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
-      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+      refetch:
+        (
+          ~variables: C.variables,
+          ~fetchPolicy=?,
+          ~renderPolicy=?,
+          ~onComplete=?,
+          (),
+        ) =>
         p##refetch(
           variables |> C.convertVariables |> _cleanVariables,
-          makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
   };
@@ -837,10 +900,17 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
       isLoadingPrevious: p##isLoadingPrevious,
-      refetch: (~variables: C.variables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+      refetch:
+        (
+          ~variables: C.variables,
+          ~fetchPolicy=?,
+          ~renderPolicy=?,
+          ~onComplete=?,
+          (),
+        ) =>
         p##refetch(
           variables |> C.convertVariables |> _cleanVariables,
-          makeRefetchableFnOpts(~onComplete, ~fetchPolicy),
+          makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
   };
@@ -864,11 +934,26 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type mutationResult('response) =
-  | Success('response)
-  | Error(Js.Promise.error);
+type useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted: option(('response, option(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+  variables: 'variables,
+};
 
-type useMutationConfigType('variables) = {variables: 'variables};
+type _useMutationConfig('response, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted:
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('response),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+  variables: 'variables,
+};
 
 type _commitMutationConfig('variables, 'response) = {
   mutation: mutationNode,
@@ -891,7 +976,57 @@ external _commitMutation:
   (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
   "commitMutation";
 
-module MakeUseMutation = (C: MutationConfig) => {};
+[@bs.module "react-relay/lib/relay-experimental"]
+external _useMutation:
+  mutationNode =>
+  (_useMutationConfig('response, 'variables) => Disposable.t, bool) =
+  "useMutation";
+
+module MakeUseMutation = (C: MutationConfig) => {
+  let use = () => {
+    let (mutate, mutating) = _useMutation(C.node);
+    (
+      (
+        ~onError=?,
+        ~onCompleted=?,
+        ~onUnsubscribe=?,
+        ~optimisticResponse=?,
+        ~optimisticUpdater=?,
+        ~updater=?,
+        ~variables,
+        (),
+      ) =>
+        mutate({
+          onError,
+          onCompleted:
+            switch (onCompleted) {
+            | Some(fn) =>
+              Some(
+                (r, errors) =>
+                  fn(r |> C.convertResponse, Js.Nullable.toOption(errors)),
+              )
+
+            | None => None
+            },
+          optimisticResponse:
+            switch (optimisticResponse) {
+            | None => None
+            | Some(r) => Some(r |> C.wrapResponse)
+            },
+          onUnsubscribe,
+          variables: variables |> C.convertVariables |> _cleanVariables,
+          optimisticUpdater,
+          updater:
+            switch (updater) {
+            | None => None
+            | Some(updater) =>
+              Some((store, r) => updater(store, r |> C.convertResponse))
+            },
+        }),
+      mutating,
+    );
+  };
+};
 
 module MakeCommitMutation = (C: MutationConfig) => {
   let commitMutation =

@@ -56,7 +56,7 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `[%relay.query]` node automatically generates a `preload` function that you can call with the same parameters as the `use` hook (plus passing your `environment`, as `preload` runs outside of React's context). `preload` gives you back a reference, which you can then pass to `Query.usePreloaded(reference)`. This will either suspend the component (if the data's not ready) or render it right away if the data's already there.
+In ReasonRelay, every `[%relay.query]` node automatically generates a `preload` function that you can call with the same parameters as the `use` hook (plus passing your `environment`, as `preload` runs outside of React's context). `preload` gives you back a token, which you can then pass to `Query.usePreloaded(~token=token, ())`. This will either suspend the component (if the data's not ready) or render it right away if the data's already there.
 
 A very useful pattern that's encouraged over using the lazy approach. In short, use `preload` as much as you can where it makes sense.
 
@@ -74,12 +74,13 @@ As shown in the snippet above, `Query.use` is a React hook that dispatches your 
 
 _Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
 
-| Name                 | Type                                         | Required | Notes                                                                                     |
-| -------------------- | -------------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
-| `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined.         |
-| `fetchPolicy`        | [`fetchPolicy`](api-reference#fetchpolicy)   | No       | Control how you want Relay to resolve your data.                                          |
-| `fetchKey`           | `string`                                     | No       | Can be used to force a refetch, much like React's `key` can be used to force a re-render. |
-| `networkCacheConfig` | [`CacheConfig.t`](api-reference#cacheconfig) | No       |                                                                                           |
+| Name                 | Type                                         | Required | Notes                                                                                                                                        |
+| -------------------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined.                                                            |
+| `fetchPolicy`        | [`fetchPolicy`](api-reference#fetchpolicy)   | No       | Control how you want Relay to resolve your data.                                                                                             |
+| `renderPolicy`       | [`renderPolicy`](api-reference#renderpolicy) | No       | Control if Relay should partially render views with data it already has in the store, or all data at once when it's fetched from the server. |
+| `fetchKey`           | `string`                                     | No       | Can be used to force a refetch, much like React's `key` can be used to force a re-render.                                                    |
+| `networkCacheConfig` | [`CacheConfig.t`](api-reference#cacheconfig) | No       |                                                                                                                                              |
 
 ### `fetch`
 
@@ -115,5 +116,10 @@ Returns `preloadToken`, which is what you need to pass to that same query's [`us
 Uses a preloaded query. Pass the result of `preload` to this hook and `usePreloaded` will either deliver the query data if it's ready, or suspend the component until the data's there. Please read more in the section on [preloading queries](#preloaded-queries).
 
 Returns the query's `response`.
+
+| Name           | Type                                         | Required | Notes                                                                                                                                        |
+| -------------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `token`        | `preloadToken`                               | _Yes_    | The token returned by `Query.preload`.                                                                                                       |
+| `renderPolicy` | [`renderPolicy`](api-reference#renderpolicy) | No       | Control if Relay should partially render views with data it already has in the store, or all data at once when it's fetched from the server. |
 
 > `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery).

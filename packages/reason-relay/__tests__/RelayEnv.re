@@ -6,7 +6,7 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
       fetchWithInit(
         "http://graphql/",
         RequestInit.make(
-          ~method=Post,
+          ~method_=Post,
           ~body=
             Js.Dict.fromList([
               ("query", Js.Json.string(operation.text)),

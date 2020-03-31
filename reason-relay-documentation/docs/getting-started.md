@@ -43,15 +43,15 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 6_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 6 or above_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-f6b8d31a7 react-dom@0.0.0-experimental-f6b8d31a7
+yarn add react@0.0.0-experimental-d28bd2994 react-dom@0.0.0-experimental-d28bd2994
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 8, so install that exact version
-yarn add reason-relay graphql relay-runtime@8.0.0 relay-compiler@8.0.0 react-relay@0.0.0-experimental-5f1cb628 relay-config@8.0.0
+# We currently depend on Relay version 9, so install that exact version
+yarn add reason-relay graphql relay-runtime@9.0.0 relay-compiler@9.0.0 react-relay@0.0.0-experimental-8cc94ddc relay-config@9.0.0
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -75,8 +75,8 @@ Ensure that only the experimental versions are used by doing the following:
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-f6b8d31a7",
-    "react-dom": "0.0.0-experimental-f6b8d31a7"
+    "react": "0.0.0-experimental-d28bd2994",
+    "react-dom": "0.0.0-experimental-d28bd2994"
   }
 }
 ```
