@@ -17,7 +17,8 @@ Mutations in ReasonRelay are defined using the `[%relay.mutation]` extension nod
 
 ```reason
 /* SingleTodo.re */
-module UpdateMutation = [%relay.mutation {|
+module UpdateMutation = [%relay.mutation
+  {|
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {
       updatedTodoItem {
@@ -31,40 +32,33 @@ module UpdateMutation = [%relay.mutation {|
 
 [@react.component]
 let make = () => {
+  let (mutate, isMutating) = UpdateMutation.use();
+
   <button
     onClick={_ =>
-        UpdateMutation.commitMutation(
-            ~environment=RelayEnv.environment,
-            ~variables={
-                input: {
-                    clientMutationId: None,
-                    id: todoItem.id,
-                    text: newText,
-                },
-            },
-            (),
-        )
-        |> Js.Promise.then_(res => {
-                Js.log(res);
-                Js.Promise.resolve();
-            })
-        |> ignore
+      mutate(
+        ~variables={
+          input: {
+            clientMutationId: None,
+            id: todoItem.id,
+            text: newText,
+          },
+        },
+        (),
+      )
     }>
-    {React.string("Update")}
-    </button>
+    {React.string(isMutating ? "Updating..." : "Update")}
+  </button>;
 };
 
 ```
 
 Let's break it down:
 
-1. `[%relay.mutation]` autogenerates a `commitMutation` function that takes `environment` and `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference).
-2. We call `commitMutation` and give it our `environment` + the input for the mutation through `variables`.
-3. We get back a `Js.Promise.t(response)` - a promise carrying the mutation result.
-4. We end with an `ignore`, because we don't care about the return value right now, and `onClick` expects `unit` to be returned.
-
-Since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component using that.
-Neat!
+1. `[%relay.mutation]` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.
+2. We call `mutate` with input for the mutation through `variables`. This will run the mutation, which is now indicated by the second parameter of the tuple, `isMutating`.
+3. Since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component using that.
+   Neat!
 
 But, there's plenty more to mutations than this. Let's move along and look at some more advanced uses of mutations.
 
@@ -81,32 +75,28 @@ _This section is a work in progress_.
 Optimistically updating your UI can do wonders for UX, and Relay provides all the primitives you need to do both simple and more advanced optimistic updates. Let's add a simple optimistic update to this mutation by giving Relay the response that we expect the server to return right away:
 
 ```reason
-UpdateMutation.commitMutation(
-    ~environment=RelayEnv.environment,
+mutate(
     ~variables={
         input: {
             clientMutationId: None,
             id: todoItem.id,
-            text: todoItem.text,
+            text: newText,
         },
     },
     ~optimisticResponse={
         updateTodoItem:
-            Some({
+        Some({
             updatedTodoItem:
-                Some({
-                "id": todoItem.id,
-                "text": todoItem.text,
-                }),
-            }),
-        },
+            Some({"id": todoItem.id, "text": todoItem.text}),
+        }),
+    },
     (),
 )
 ```
 
 So, what's going on here?
 
-1. In addition to `environment` and `variables`, we also supply `optimisticResponse` to `commitMutation`.
+1. In addition to `variables`, we also supply `optimisticResponse` to `mutate`.
 2. `optimisticResponse` is expected to _match the shape of the server response exactly_. The ReasonML compiler will guide you through providing a response of the correct shape.
 3. Relay will take the `optimisticResponse` and apply it as it's sending the mutation request, which in turn will make the UI update right away.
 
@@ -118,11 +108,28 @@ There's plenty of more advanced things you can do with optimistic updates in Rel
 
 ## The next step
 
-Now would be a good time to have a look at how ReasonRelay handles [enums](enums) and [unions](unions). After that, you should continue by reading up on how to [refetch and load more data](refetching-and-loading-more-data).
+Now would be a good time to have a look at how to [refetch and load more data](refetching-and-loading-more-data).
 
 ## API Reference
 
 `[%relay.mutation]` is expanded to a module containing the following functions:
+
+### `use`
+
+A React hook for running and keeping track of the mutation. Returns a tuple of `(mutationFn, bool)`, where `mutationFn` is a function you run to apply the mutation, and the second `bool` parameter indicates whether the mutation is currently in flight or not.
+
+##### Parameters
+
+_Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
+
+| Name                 | Type                                               | Required | Notes                                                                                                                                                                                                                      |
+| -------------------- | -------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variables`          | `'variables`                                       | _Yes_    | Variables derived from the GraphQL operation                                                                                                                                                                               |
+| `optimisticResponse` | `'response`                                        | No       | The shape of the response, derived from the GraphQL operation.                                                                                                                                                             |
+| `optimisticUpdater`  | `RecordSourceSelectorProxy.t => unit`              | No       | An updater that can update the store optimistically. [Read more about optimistic updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater)                                 |
+| `updater`            | `(RecordSourceSelectorProxy.t, 'response) => unit` | No       | An updater that will be applied to the store when the mutation results are merged to the store. [Read more about updaters here in the Relay docs](https://relay.dev/docs/en/mutations#using-updater-and-optimisticupdater) |
+
+> `use` uses Relay's `useMutation` under the hood, which is currently not documented in the official Relay docs.
 
 ### `commitMutation`
 

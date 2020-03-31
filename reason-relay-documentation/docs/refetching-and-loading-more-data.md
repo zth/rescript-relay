@@ -40,12 +40,12 @@ let make = (~user as userRef) => {
   let (user, refetch) = UserFragment.useRefetchable(userRef);
 
   <>
-    <div> {React.string(user##firstName ++ " " ++ user##lastName)} </div>
-    {switch (user##bio |> Js.Nullable.toOption) {
+    <div> {React.string(user.firstName ++ " " ++ user.lastName)} </div>
+    {switch (user.bio) {
      | Some(bio) =>
        <>
-         <div> {React.string(bio##presentationText)} </div>
-         <div> {React.string("Age: " ++ bio##age)} </div>
+         <div> {React.string(bio.presentationText)} </div>
+         <div> {React.string("Age: " ++ string_of_int(bio.age))} </div>
        </>
      | None =>
        <button
