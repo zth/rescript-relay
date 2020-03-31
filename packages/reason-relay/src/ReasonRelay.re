@@ -976,7 +976,7 @@ external _commitMutation:
   (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
   "commitMutation";
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "react-relay/lib/relay-experimental"]
 external _useMutation:
   mutationNode =>
   (_useMutationConfig('response, 'variables) => Disposable.t, bool) =
@@ -1014,7 +1014,7 @@ module MakeUseMutation = (C: MutationConfig) => {
             | Some(r) => Some(r |> C.wrapResponse)
             },
           onUnsubscribe,
-          variables,
+          variables: variables |> C.convertVariables |> _cleanVariables,
           optimisticUpdater,
           updater:
             switch (updater) {
