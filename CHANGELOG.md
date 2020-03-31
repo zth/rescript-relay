@@ -6,6 +6,7 @@
 - _BREAKING CHANGE_ Rename unknown enum and union values to `FutureAddedValue(payload)` to align with convention discussed with the folks behind `graphql_ppx`.
 - _BREAKING CHANGE_ Bind `RenderPolicy` for control over whether Relay is allowed to partially render the UI with the data it already has while fetching. This is a breaking change because it changes the signature for `Query.usePreloaded` from `usePreloaded(token)` to `usePreloaded(~token: token, ~renderPolicy: renderPolicy=?, ())`.
 - Bind APIs for invalidating store records and the full store for forcing refetches etc. `RecordProxy.invalidateRecord` and `RecordSourceProxy.invalidateStore`.
+- Bind `useMutation` from Relay experimental, giving us a cleaner and nicer hooks based API for doing mutations, rather than just `commitMutation`.
 
 # 0.5.3
 
