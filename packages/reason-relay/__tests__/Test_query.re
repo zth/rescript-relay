@@ -88,7 +88,7 @@ module Test = {
                   | Some(`Online) => "online"
                   | Some(`Offline) => "offline"
                   | Some(`Idle) => "idle"
-                  | Some(`FutureAddedValue_(_))
+                  | Some(`FutureAddedValue(_))
                   | None => "-"
                   }
                 ),

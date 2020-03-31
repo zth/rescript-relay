@@ -23,6 +23,9 @@ let makeObjName = (next, current) => current ++ "_" ++ next;
 
 exception Unique_name_creation_failed(int);
 
+let makeRecordName = (path: list(string)) =>
+  path->Tablecloth.List.reverse->Tablecloth.String.join(~sep="_");
+
 /**
  * This tries to find the simplest unique name given a list of existing names
  * and a path. It's used to create the names of the records produced by the type

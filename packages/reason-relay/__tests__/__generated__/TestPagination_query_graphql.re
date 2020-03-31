@@ -3,7 +3,7 @@
 module Unions = {
   module Union_fragment_members_edges_node: {
     type wrapped;
-    type user = {
+    type fragment_members_edges_node_user = {
       id: string,
       getFragmentRefs:
         unit =>
@@ -12,26 +12,38 @@ module Unions = {
           "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
         },
     };
-    type node = {
+    type user = fragment_members_edges_node_user;
+    type fragment_members_edges_node_group_adminsConnection_edges_node = {
       id: string,
       firstName: string,
     };
-    type edges = {node: option(node)};
-    type adminsConnection = {edges: option(array(option(edges)))};
-    type group = {
-      adminsConnection,
+    type fragment_members_edges_node_group_adminsConnection_edges = {
+      node:
+        option(fragment_members_edges_node_group_adminsConnection_edges_node),
+    };
+    type fragment_members_edges_node_group_adminsConnection = {
+      edges:
+        option(
+          array(
+            option(fragment_members_edges_node_group_adminsConnection_edges),
+          ),
+        ),
+    };
+    type fragment_members_edges_node_group = {
+      adminsConnection: fragment_members_edges_node_group_adminsConnection,
       name: string,
       id: string,
     };
+    type group = fragment_members_edges_node_group;
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type fragment_members_edges_node_user = {
       id: string,
       getFragmentRefs:
         unit =>
@@ -40,23 +52,35 @@ module Unions = {
           "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
         },
     };
-    type node = {
+    type user = fragment_members_edges_node_user;
+    type fragment_members_edges_node_group_adminsConnection_edges_node = {
       id: string,
       firstName: string,
     };
-    type edges = {node: option(node)};
-    type adminsConnection = {edges: option(array(option(edges)))};
-    type group = {
-      adminsConnection,
+    type fragment_members_edges_node_group_adminsConnection_edges = {
+      node:
+        option(fragment_members_edges_node_group_adminsConnection_edges_node),
+    };
+    type fragment_members_edges_node_group_adminsConnection = {
+      edges:
+        option(
+          array(
+            option(fragment_members_edges_node_group_adminsConnection_edges),
+          ),
+        ),
+    };
+    type fragment_members_edges_node_group = {
+      adminsConnection: fragment_members_edges_node_group_adminsConnection,
       name: string,
       id: string,
     };
+    type group = fragment_members_edges_node_group;
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
     type t = [
       | `User(user)
       | `Group(group)
-      | `FutureAddedValue_(Js.Json.t)
+      | `FutureAddedValue(Js.Json.t)
     ];
     external __unwrap_user: wrapped => user = "%identity";
     external __unwrap_group: wrapped => group = "%identity";
@@ -66,7 +90,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | "User" => `User(wrapped |> __unwrap_user)
       | "Group" => `Group(wrapped |> __unwrap_group)
-      | _ => `FutureAddedValue_(wrapped |> __toJson)
+      | _ => `FutureAddedValue(wrapped |> __toJson)
       };
     };
   };
@@ -74,7 +98,7 @@ module Unions = {
   type union_fragment_members_edges_node = [
     | `User(Union_fragment_members_edges_node.user)
     | `Group(Union_fragment_members_edges_node.group)
-    | `FutureAddedValue_(Js.Json.t)
+    | `FutureAddedValue(Js.Json.t)
   ];
 };
 

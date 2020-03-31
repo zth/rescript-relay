@@ -354,8 +354,6 @@ let printUnion = (~state, union: union) => {
 
   union.members
   |> List.iter(({name, shape}: Types.unionMember) => {
-       let usedRecordNames: ref(list(string)) = ref([]);
-       let addUsedRecordName = Utils.makeAddToList(usedRecordNames);
        let unionTypeName = Tablecloth.String.uncapitalize(name);
 
        let allObjects: list(Types.finalizedObj) =
@@ -364,15 +362,7 @@ let printUnion = (~state, union: union) => {
               {
                 originalFlowTypeName: None,
                 recordName: {
-                  let name =
-                    Utils.findAppropriateObjName(
-                      ~prefix=None,
-                      ~usedRecordNames=usedRecordNames^,
-                      ~path=definition.atPath,
-                    );
-
-                  addUsedRecordName(name);
-                  Some(name);
+                  Some(definition.atPath->Utils.makeRecordName);
                 },
                 atPath: definition.atPath,
                 foundInUnion: true,
@@ -402,6 +392,16 @@ let printUnion = (~state, union: union) => {
             |> printRootType(~state=stateWithUnionDefinitions)
             |> addToTypeDefs
           });
+
+       addToTypeDefs(
+         "type "
+         ++ Tablecloth.String.uncapitalize(name)
+         ++ " = "
+         ++ union.atPath->Utils.makeRecordName
+         ++ "_"
+         ++ Tablecloth.String.uncapitalize(name)
+         ++ ";",
+       );
 
        addToUnwrappers(
          "external __unwrap_"
