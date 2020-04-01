@@ -506,7 +506,7 @@ describe("Language plugin tests", () => {
   });
 
   describe("Unions", () => {
-    it.only("generates code to unwrap unions", () => {
+    it("generates code to unwrap unions", () => {
       let generated = generate(
         `query appQuery {
             participantById(id: "123") {
@@ -524,7 +524,6 @@ describe("Language plugin tests", () => {
             }
           }`
       );
-      console.log(generated);
 
       expect(generated).toMatchSnapshot();
     });

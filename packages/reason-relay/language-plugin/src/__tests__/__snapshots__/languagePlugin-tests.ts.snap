@@ -410,14 +410,16 @@ exports[`Language plugin tests Query connections generates helpers for connectio
 module Unions = {
   module Union_fragment_participantsConnection_edges_node: {
     type wrapped;
-    type user = {
+    type fragment_participantsConnection_edges_node_user = {
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = fragment_participantsConnection_edges_node_user;
+    type fragment_participantsConnection_edges_node_observer = {
       name: string,
       id: string,
     };
+    type observer = fragment_participantsConnection_edges_node_observer;
     type t = [
       | \`User(user)
       | \`Observer(observer)
@@ -426,14 +428,16 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type fragment_participantsConnection_edges_node_user = {
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = fragment_participantsConnection_edges_node_user;
+    type fragment_participantsConnection_edges_node_observer = {
       name: string,
       id: string,
     };
+    type observer = fragment_participantsConnection_edges_node_observer;
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
     type t = [
@@ -864,16 +868,18 @@ type operationType = ReasonRelay.fragmentNode;
 module Unions = {
   module Union_response_participantById: {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       id: string,
       getFragmentRefs:
         unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       id: string,
       getFragmentRefs:
         unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
     };
+    type observer = response_participantById_observer;
     type t = [
       | \`User(user)
       | \`Observer(observer)
@@ -882,16 +888,18 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       id: string,
       getFragmentRefs:
         unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       id: string,
       getFragmentRefs:
         unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
     };
+    type observer = response_participantById_observer;
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
     type t = [
@@ -1080,16 +1088,18 @@ type enum_ObserverStatus = [
 module Unions = {
   module Union_response_participantById_observer_manager: {
     type wrapped;
-    type user = {
+    type response_participantById_observer_manager_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_observer_manager_user;
+    type response_participantById_observer_manager_observer = {
       status: enum_ObserverStatus,
       isOnline: option(bool),
       id: string,
     };
+    type observer = response_participantById_observer_manager_observer;
     type t = [
       | \`User(user)
       | \`Observer(observer)
@@ -1098,16 +1108,18 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_participantById_observer_manager_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_observer_manager_user;
+    type response_participantById_observer_manager_observer = {
       status: enum_ObserverStatus,
       isOnline: option(bool),
       id: string,
     };
+    type observer = response_participantById_observer_manager_observer;
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
     type t = [
@@ -1136,16 +1148,18 @@ module Unions = {
 
   module Union_response_participantById: {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       manager: option(union_response_participantById_observer_manager),
       name: string,
       id: string,
     };
+    type observer = response_participantById_observer;
     type t = [
       | \`User(user)
       | \`Observer(observer)
@@ -1154,16 +1168,18 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       manager: option(union_response_participantById_observer_manager),
       name: string,
       id: string,
     };
+    type observer = response_participantById_observer;
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
     type t = [
