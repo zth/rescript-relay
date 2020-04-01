@@ -24,15 +24,9 @@ if (!relayConfig.artifactDirectory) {
 }
 
 function runRelayCompiler(args) {
-  spawn(
-    path.resolve(
-      __dirname + "/../node_modules/relay-compiler/bin/relay-compiler"
-    ),
-    args,
-    {
-      stdio: "inherit"
-    }
-  );
+  spawn("relay-compiler", args, {
+    stdio: "inherit"
+  });
 }
 
 async function parseSchema(rawSchemaContent, pathToSchema) {
