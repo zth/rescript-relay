@@ -968,15 +968,17 @@ exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 module Unions = {
   module Union_response_participantById: {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       name: string,
       id: string,
     };
+    type observer = response_participantById_observer;
     type t = [
       | \`User(user)
       | \`Observer(observer)
@@ -985,15 +987,17 @@ module Unions = {
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type response_participantById_user = {
       lastName: string,
       firstName: string,
       id: string,
     };
-    type observer = {
+    type user = response_participantById_user;
+    type response_participantById_observer = {
       name: string,
       id: string,
     };
+    type observer = response_participantById_observer;
     external __unwrap_union: wrapped => {. \\"__typename\\": string} =
       \\"%identity\\";
     type t = [
