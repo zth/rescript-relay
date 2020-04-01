@@ -17,6 +17,7 @@ echo "Copying bindings and assets..."
 cp -rf src ../../_release;
 cp .npmignore ../../_release/;
 cp ../../README.md ../../_release/;
+cp ../../CHANGELOG.md ../../_release/;
 rm ../../_release/src/*.bs.js;
 
 # copy config files
