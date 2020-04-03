@@ -431,7 +431,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
@@ -451,7 +451,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
@@ -461,7 +461,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`FutureAddedValue(wrapped |> __toJson)
+      | typename => \`UnselectedUnionMember(typename)
       };
     };
   };
@@ -469,7 +469,7 @@ module Unions = {
   type union_fragment_participantsConnection_edges_node = [
     | \`User(Union_fragment_participantsConnection_edges_node.user)
     | \`Observer(Union_fragment_participantsConnection_edges_node.observer)
-    | \`FutureAddedValue(Js.Json.t)
+    | \`UnselectedUnionMember(string)
   ];
 };
 
@@ -891,7 +891,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
@@ -913,7 +913,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
@@ -923,7 +923,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`FutureAddedValue(wrapped |> __toJson)
+      | typename => \`UnselectedUnionMember(typename)
       };
     };
   };
@@ -931,7 +931,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`FutureAddedValue(Js.Json.t)
+    | \`UnselectedUnionMember(string)
   ];
 };
 
@@ -998,7 +998,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
@@ -1019,7 +1019,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
@@ -1029,7 +1029,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`FutureAddedValue(wrapped |> __toJson)
+      | typename => \`UnselectedUnionMember(typename)
       };
     };
   };
@@ -1037,7 +1037,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`FutureAddedValue(Js.Json.t)
+    | \`UnselectedUnionMember(string)
   ];
 };
 
@@ -1123,7 +1123,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
@@ -1145,7 +1145,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
@@ -1155,7 +1155,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`FutureAddedValue(wrapped |> __toJson)
+      | typename => \`UnselectedUnionMember(typename)
       };
     };
   };
@@ -1163,7 +1163,7 @@ module Unions = {
   type union_response_participantById_observer_manager = [
     | \`User(Union_response_participantById_observer_manager.user)
     | \`Observer(Union_response_participantById_observer_manager.observer)
-    | \`FutureAddedValue(Js.Json.t)
+    | \`UnselectedUnionMember(string)
   ];
 
   module Union_response_participantById: {
@@ -1183,7 +1183,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
@@ -1205,7 +1205,7 @@ module Unions = {
     type t = [
       | \`User(user)
       | \`Observer(observer)
-      | \`FutureAddedValue(Js.Json.t)
+      | \`UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = \\"%identity\\";
     external __unwrap_observer: wrapped => observer = \\"%identity\\";
@@ -1215,7 +1215,7 @@ module Unions = {
       switch (unwrappedUnion##__typename) {
       | \\"User\\" => \`User(wrapped |> __unwrap_user)
       | \\"Observer\\" => \`Observer(wrapped |> __unwrap_observer)
-      | _ => \`FutureAddedValue(wrapped |> __toJson)
+      | typename => \`UnselectedUnionMember(typename)
       };
     };
   };
@@ -1223,7 +1223,7 @@ module Unions = {
   type union_response_participantById = [
     | \`User(Union_response_participantById.user)
     | \`Observer(Union_response_participantById.observer)
-    | \`FutureAddedValue(Js.Json.t)
+    | \`UnselectedUnionMember(string)
   ];
 };
 

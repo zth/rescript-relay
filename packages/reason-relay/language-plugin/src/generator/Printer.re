@@ -308,10 +308,10 @@ let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
   let futureAddedValueName =
     switch (
       union.members
-      ->Tablecloth.List.find(~f=m => m.name === "FutureAddedValue")
+      ->Tablecloth.List.find(~f=m => m.name === "UnselectedUnionMember")
     ) {
-    | Some(_) => "FutureAddedValue_"
-    | None => "FutureAddedValue"
+    | Some(_) => "UnselectedUnionMember_"
+    | None => "UnselectedUnionMember"
     };
 
   "["
@@ -324,7 +324,7 @@ let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
   )
   ++ " | `"
   ++ futureAddedValueName
-  ++ "(Js.Json.t) "
+  ++ "(string) "
   ++ "];";
 };
 
@@ -349,10 +349,10 @@ let printUnion = (~state, union: union) => {
   let futureAddedValueName =
     switch (
       union.members
-      ->Tablecloth.List.find(~f=m => m.name === "FutureAddedValue")
+      ->Tablecloth.List.find(~f=m => m.name === "UnselectedUnionMember")
     ) {
-    | Some(_) => "FutureAddedValue_"
-    | None => "FutureAddedValue"
+    | Some(_) => "UnselectedUnionMember_"
+    | None => "UnselectedUnionMember"
     };
 
   union.members
@@ -442,11 +442,7 @@ let printUnion = (~state, union: union) => {
      );
 
   addToUnwrapFnImpl(
-    " | _ => `"
-    ++ futureAddedValueName
-    ++ "(wrapped |> __toJson)"
-    ++ "};"
-    ++ "};",
+    " | typename => `" ++ futureAddedValueName ++ "(typename)" ++ "};" ++ "};",
   );
 
   prefix

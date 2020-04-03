@@ -106,12 +106,12 @@ module Test = {
                               ->Belt.Option.getWithDefault("[no avatar]"),
                          )}
                       </div>
-                    | Some(`FutureAddedValue(_))
+                    | Some(`UnselectedUnionMember(_))
                     | None => React.null,
                   )
                 ->React.array}
              </div>
-           | `FutureAddedValue(_) => React.null,
+           | `UnselectedUnionMember(_) => React.null,
          )
        ->React.array}
     </div>;
