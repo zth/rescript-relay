@@ -18,7 +18,6 @@ function visitLinkedField(field: any) {
   const schema = this.getContext().getSchema();
   // @ts-ignore
   let transformedNode = this.traverse(field);
-
   if (
     schema.isAbstractType(schema.getRawType(transformedNode.type)) &&
     !hasUnaliasedSelection(transformedNode, TYPENAME_KEY)

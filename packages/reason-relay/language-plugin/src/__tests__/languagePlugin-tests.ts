@@ -594,24 +594,6 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
-
-    it("does not generate a union when there's only one selection", () => {
-      let generated = generate(
-        `query appQuery {
-            participantById(id: "123") {
-              __typename
-              ... on User {
-                id
-                firstName
-                lastName
-                role
-              }
-            }
-          }`
-      );
-
-      expect(generated).toMatchSnapshot();
-    });
   });
 
   describe("Misc", () => {

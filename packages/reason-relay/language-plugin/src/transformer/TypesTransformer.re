@@ -546,42 +546,6 @@ let rec mapObjProp =
       propType: Object(makeObjShape(~path, ~state, properties)),
     }
 
-  // Unions with only one member
-  | Nullable((
-      _,
-      Union(
-        (_, Object({properties})),
-        (
-          _,
-          Object({
-            properties: [
-              Property((_, {key: Identifier((_, "__typename"))})),
-            ],
-          }),
-        ),
-        [],
-      ),
-    )) => {
-      nullable: true,
-      propType: Object(makeObjShape(~path, ~state, properties)),
-    }
-
-  | Union(
-      (_, Object({properties})),
-      (
-        _,
-        Object({
-          properties: [
-            Property((_, {key: Identifier((_, "__typename"))})),
-          ],
-        }),
-      ),
-      [],
-    ) => {
-      nullable: optional,
-      propType: Object(makeObjShape(~path, ~state, properties)),
-    }
-
   // Unions
   | Nullable((
       _,

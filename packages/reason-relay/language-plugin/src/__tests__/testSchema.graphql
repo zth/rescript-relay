@@ -139,7 +139,6 @@ type Location {
   id: ID!
   lat: Float!
   lng: Float!
-  parentLoc: Location
 }
 
 input LocationBounds {
