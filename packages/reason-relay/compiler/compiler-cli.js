@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 const path = require("path");
-const fs = require("fs");
-const mkdir = require("mkdirp-sync");
 const { spawn } = require("child_process");
-const { buildSchema, introspectionQuery, graphql } = require("graphql");
-const { generateSchemaAssets } = require("./generateSchemaAssets");
 
 let relayConfig = require("relay-config").loadConfig();
 
@@ -29,29 +25,6 @@ function runRelayCompiler(args) {
   });
 }
 
-async function parseSchema(rawSchemaContent, pathToSchema) {
-  const schemaType = pathToSchema.split(".").pop();
-  let schema;
-
-  switch (schemaType.toLowerCase()) {
-    default:
-    case "json":
-      schema = JSON.parse(rawSchemaContent);
-      break;
-    case "graphql":
-      const graphqlSchema = buildSchema(rawSchemaContent);
-      const jsonIntrospectionSchema = await graphql(
-        graphqlSchema,
-        introspectionQuery,
-        {}
-      );
-      schema = jsonIntrospectionSchema;
-      break;
-  }
-
-  return schema;
-}
-
 function findArg(name) {
   return relayConfig[name];
 }
@@ -60,16 +33,6 @@ async function runCompiler() {
   const schemaPath = findArg("schema");
 
   if (schemaPath) {
-    console.log("Generating ReasonRelay assets...");
-
-    parseSchema(fs.readFileSync(schemaPath, "utf8"), schemaPath).then(
-      schemaJson => {
-        let targetPath = relayConfig.artifactDirectory;
-        mkdir(targetPath);
-        generateSchemaAssets(schemaJson, targetPath);
-      }
-    );
-
     runRelayCompiler(
       [
         "--language",

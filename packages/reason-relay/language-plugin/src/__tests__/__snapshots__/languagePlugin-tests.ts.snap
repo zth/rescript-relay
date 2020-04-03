@@ -226,6 +226,18 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 
 type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
 
+let unwrap_enum_UserRole: string => enum_UserRole =
+  fun
+  | \\"Admin\\" => \`Admin
+  | \\"User\\" => \`User
+  | v => \`FutureAddedValue(v);
+
+let wrap_enum_UserRole: enum_UserRole => string =
+  fun
+  | \`Admin => \\"Admin\\"
+  | \`User => \\"User\\"
+  | \`FutureAddedValue(v) => v;
+
 module Unions = {};
 
 module Types = {
@@ -257,9 +269,7 @@ module Internal = {
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
   ];
-  let wrapResponseConverterMap = {
-    \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.wrap,
-  };
+  let wrapResponseConverterMap = {\\"enum_UserRole\\": wrap_enum_UserRole};
   let convertWrapResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -272,9 +282,7 @@ module Internal = {
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
   ];
-  let responseConverterMap = {
-    \\"enum_UserRole\\": SchemaAssets.Enum_UserRole.unwrap,
-  };
+  let responseConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -1085,6 +1093,18 @@ type enum_ObserverStatus = [
   | \`FutureAddedValue(string)
 ];
 
+let unwrap_enum_ObserverStatus: string => enum_ObserverStatus =
+  fun
+  | \\"Active\\" => \`Active
+  | \\"Inactive\\" => \`Inactive
+  | v => \`FutureAddedValue(v);
+
+let wrap_enum_ObserverStatus: enum_ObserverStatus => string =
+  fun
+  | \`Active => \\"Active\\"
+  | \`Inactive => \\"Inactive\\"
+  | \`FutureAddedValue(v) => v;
+
 module Unions = {
   module Union_response_participantById_observer_manager: {
     type wrapped;
@@ -1222,7 +1242,7 @@ module Internal = {
   let responseConverterMap = {
     \\"response_participantById\\": Union_response_participantById.unwrap,
     \\"response_participantById_observer_manager\\": Union_response_participantById_observer_manager.unwrap,
-    \\"enum_ObserverStatus\\": SchemaAssets.Enum_ObserverStatus.unwrap,
+    \\"enum_ObserverStatus\\": unwrap_enum_ObserverStatus,
   };
   let convertResponse = v =>
     v

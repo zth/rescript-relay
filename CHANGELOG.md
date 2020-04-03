@@ -1,5 +1,7 @@
 # master
 
+- _BREAKING CHANGE_ `SchemaAssets.re` has been retired. If you were relying on code from there for converting enums to/from strings, you can now find equivalent functions attached on your `ModuleName.Operation.unwrap_enum_EnumName` (for string -> polymorphic variant) and `ModuleName.Operation.wrap_enum_EnumName` (polymorphic variant -> string).
+
 # 0.6.0
 
 - Rename object properties if reserved words are encountered. E.g. `input SomeGraphQLInput { and: String! }` will now produce this type: `type someGraphQLInput = { [@bs.as "and"] and_: string }`.

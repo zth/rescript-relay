@@ -6,6 +6,10 @@ let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
   path |> Tablecloth.List.reverse |> Tablecloth.String.join(~sep="_");
 
+let makeEnumName = enumName => "enum_" ++ enumName;
+let makeUnwrapEnumFnName = enumName => "unwrap_" ++ makeEnumName(enumName);
+let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
+
 let printRecordPropName = propName =>
   switch (
     ReservedKeywords.reservedKeywords->Tablecloth.Array.find(~f=w =>
@@ -16,7 +20,7 @@ let printRecordPropName = propName =>
   | None => propName
   };
 
-let printMakerArgName = propName =>
+let printSafeName = propName =>
   switch (
     ReservedKeywords.reservedKeywords->Tablecloth.Array.find(~f=w =>
       w == propName
@@ -27,10 +31,9 @@ let printMakerArgName = propName =>
   };
 let printEnumName = name => "enum_" ++ name;
 let getObjName = name => "obj_" ++ name;
-let printEnumTypeName = name => "SchemaAssets.Enum_" ++ name ++ ".t";
-let printEnumUnwrapFnReference = name =>
-  "SchemaAssets.Enum_" ++ name ++ ".unwrap";
-let printEnumWrapFnReference = name => "SchemaAssets.Enum_" ++ name ++ ".wrap";
+let printEnumTypeName = name => makeEnumName(name);
+let printEnumUnwrapFnReference = name => makeUnwrapEnumFnName(name);
+let printEnumWrapFnReference = name => makeWrapEnumFnName(name);
 let printUnionName = name => "Union_" ++ name;
 let printUnionTypeName = name => "Union_" ++ name ++ ".t";
 let printLocalUnionName = (union: union) =>
@@ -212,7 +215,7 @@ let printObjectMaker = (obj: object_, ~targetType, ~name) => {
        addToStr(
          switch (p) {
          | Prop(name, {nullable}) =>
-           "~" ++ printMakerArgName(name) ++ (nullable ? "=?" : "")
+           "~" ++ printSafeName(name) ++ (nullable ? "=?" : "")
          | FragmentRef(_) => ""
          },
        );
@@ -229,7 +232,7 @@ let printObjectMaker = (obj: object_, ~targetType, ~name) => {
        addToStr(
          switch (p) {
          | Prop(name, _) =>
-           printMakerArgName(name) ++ ": " ++ printMakerArgName(name)
+           printSafeName(name) ++ ": " ++ printSafeName(name)
          | FragmentRef(_) => ""
          },
        );
@@ -462,7 +465,9 @@ let printUnion = (~state, union: union) => {
 };
 
 let printEnum = (enum: fullEnum): string => {
-  let str = ref("type enum_" ++ enum.name ++ " = [");
+  let enumName = makeEnumName(enum.name);
+
+  let str = ref("type " ++ enumName ++ " = [");
   let addToStr = s => str := str^ ++ s;
 
   let futureAddedValueName =
@@ -475,9 +480,33 @@ let printEnum = (enum: fullEnum): string => {
 
   enum.values
   ->Belt.Array.concat([|futureAddedValueName ++ "(string)"|])
-  ->Belt.Array.forEach(v => addToStr(" | `" ++ v ++ " "));
+  ->Belt.Array.forEach(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
 
-  addToStr("];");
+  addToStr("];\n\n");
+
+  // Unwrap enum
+  addToStr(
+    "let unwrap_" ++ enumName ++ ": string => " ++ enumName ++ " = fun \n",
+  );
+
+  enum.values
+  ->Belt.Array.forEach(v => {
+      addToStr("| \"" ++ v ++ "\" => `" ++ printSafeName(v) ++ "\n")
+    });
+
+  addToStr("| v => `" ++ futureAddedValueName ++ "(v) \n\n");
+
+  // Wrap enum
+  addToStr(
+    "let wrap_" ++ enumName ++ ": " ++ enumName ++ " => string = fun \n",
+  );
+
+  enum.values
+  ->Belt.Array.forEach(v => {
+      addToStr("| `" ++ printSafeName(v) ++ " => \"" ++ v ++ "\" \n")
+    });
+
+  addToStr("| `" ++ futureAddedValueName ++ "(v) => v \n\n");
 
   str^;
 };

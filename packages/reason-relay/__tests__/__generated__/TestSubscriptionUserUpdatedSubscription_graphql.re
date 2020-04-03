@@ -7,6 +7,20 @@ type enum_OnlineStatus = [
   | `FutureAddedValue(string)
 ];
 
+let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
+  fun
+  | "Idle" => `Idle
+  | "Offline" => `Offline
+  | "Online" => `Online
+  | v => `FutureAddedValue(v);
+
+let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
+  fun
+  | `Idle => "Idle"
+  | `Offline => "Offline"
+  | `Online => "Online"
+  | `FutureAddedValue(v) => v;
+
 module Unions = {};
 
 module Types = {
@@ -33,9 +47,7 @@ module Internal = {
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
   ];
-  let responseConverterMap = {
-    "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
-  };
+  let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(

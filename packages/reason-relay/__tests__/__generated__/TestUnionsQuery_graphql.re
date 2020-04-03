@@ -7,6 +7,20 @@ type enum_OnlineStatus = [
   | `FutureAddedValue(string)
 ];
 
+let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
+  fun
+  | "Idle" => `Idle
+  | "Offline" => `Offline
+  | "Online" => `Online
+  | v => `FutureAddedValue(v);
+
+let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
+  fun
+  | `Idle => "Idle"
+  | `Offline => "Offline"
+  | `Online => "Online"
+  | `FutureAddedValue(v) => v;
+
 module Unions = {
   module Union_response_members_edges_node_group_members: {
     type wrapped;
@@ -156,7 +170,7 @@ module Internal = {
   ];
   let responseConverterMap = {
     "response_members_edges_node": Union_response_members_edges_node.unwrap,
-    "enum_OnlineStatus": SchemaAssets.Enum_OnlineStatus.unwrap,
+    "enum_OnlineStatus": unwrap_enum_OnlineStatus,
     "response_members_edges_node_group_members": Union_response_members_edges_node_group_members.unwrap,
   };
   let convertResponse = v =>
