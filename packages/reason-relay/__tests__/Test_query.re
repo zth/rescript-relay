@@ -118,12 +118,14 @@ module Test = {
       </button>
       <button
         onClick={_ =>
-          Query.fetch(~environment, ~variables={status: Some(`Online)})
-          |> Js.Promise.then_(res => {
-               setFetchedResult(_ => Some(collectUsers(res)));
-               Js.Promise.resolve(res);
-             })
-          |> ignore
+          Query.fetch(
+            ~environment,
+            ~variables={status: Some(`Online)},
+            ~onResult=
+              fun
+              | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
+              | Error(_) => (),
+          )
         }>
         {React.string("Test fetch")}
       </button>

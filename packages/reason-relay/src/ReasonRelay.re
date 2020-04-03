@@ -652,10 +652,24 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   };
 
   let fetch =
-      (~environment: Environment.t, ~variables: C.variables)
-      : Js.Promise.t(C.response) =>
-    fetchQuery(environment, C.query, variables |> C.convertVariables)
-    |> Js.Promise.then_(res => res |> C.convertResponse |> Js.Promise.resolve);
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~onResult: Belt.Result.t(C.response, Js.Promise.error) => unit,
+      )
+      : unit => {
+    let _ =
+      fetchQuery(environment, C.query, variables |> C.convertVariables)
+      |> Js.Promise.then_(res => {
+           onResult(Ok(res |> C.convertResponse));
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => {
+           onResult(Error(err));
+           Js.Promise.resolve();
+         });
+    ();
+  };
 };
 
 /**

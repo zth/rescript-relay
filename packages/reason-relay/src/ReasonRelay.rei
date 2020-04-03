@@ -469,8 +469,12 @@ module MakeUseQuery:
       C.response;
 
     let fetch:
-      (~environment: Environment.t, ~variables: C.variables) =>
-      Js.Promise.t(C.response);
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~onResult: Belt.Result.t(C.response, Js.Promise.error) => unit
+      ) =>
+      unit;
 
     let preload:
       (
