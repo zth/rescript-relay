@@ -973,7 +973,8 @@ exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
 external _commitMutation:
-  (Environment.t, _commitMutationConfig('variables, 'response)) => unit =
+  (Environment.t, _commitMutationConfig('variables, 'response)) =>
+  Disposable.t =
   "commitMutation";
 
 [@bs.module "react-relay/lib/relay-experimental"]
@@ -1036,46 +1037,46 @@ module MakeCommitMutation = (C: MutationConfig) => {
         ~optimisticUpdater=?,
         ~optimisticResponse=?,
         ~updater=?,
+        ~onCompleted=?,
+        ~onError=?,
         (),
       )
-      : Js.Promise.t(Js.Json.t) =>
-    Js.Promise.make((~resolve, ~reject) =>
-      _commitMutation(
-        environment,
-        {
-          variables: variables |> C.convertVariables |> _cleanVariables,
-          mutation: C.node,
-          onCompleted:
-            Some(
-              (res, errors) =>
-                switch (res |> toOpt, errors |> toOpt) {
-                | (_, Some(errors)) => reject(. Mutation_failed(errors))
-                | (Some(res), None) => resolve(. res)
-                | (None, None) => reject(. Mutation_failed([||]))
-                },
-            ),
-          onError:
-            Some(
-              error =>
-                switch (error |> toOpt) {
-                | Some(error) => reject(. Mutation_failed([|error|]))
-                | None => reject(. Mutation_failed([||]))
-                },
-            ),
-          optimisticResponse:
-            switch (optimisticResponse) {
-            | None => None
-            | Some(r) => Some(r |> C.wrapResponse)
-            },
-          optimisticUpdater,
-          updater:
-            switch (updater) {
-            | None => None
-            | Some(updater) =>
-              Some((store, r) => updater(store, r |> C.convertResponse))
-            },
-        },
-      )
+      : Disposable.t =>
+    _commitMutation(
+      environment,
+      {
+        variables: variables |> C.convertVariables |> _cleanVariables,
+        mutation: C.node,
+        onCompleted:
+          Some(
+            (res, err) =>
+              switch (onCompleted) {
+              | Some(cb) =>
+                cb(Js.Nullable.toOption(res), Js.Nullable.toOption(err))
+              | None => ()
+              },
+          ),
+        onError:
+          Some(
+            err =>
+              switch (onError) {
+              | Some(cb) => cb(Js.Nullable.toOption(err))
+              | None => ()
+              },
+          ),
+        optimisticResponse:
+          switch (optimisticResponse) {
+          | None => None
+          | Some(r) => Some(r |> C.wrapResponse)
+          },
+        optimisticUpdater,
+        updater:
+          switch (updater) {
+          | None => None
+          | Some(updater) =>
+            Some((store, r) => updater(store, r |> C.convertResponse))
+          },
+      },
     );
 };
 

@@ -36,7 +36,7 @@ module Query = [%relay.query
 |}
 ];
 
-let mapOnlineStatus = (s: option(SchemaAssets.Enum_OnlineStatus.t)) =>
+let mapOnlineStatus = (s: option(Query.Operation.enum_OnlineStatus)) =>
   switch (s) {
   | Some(`Online) => "online"
   | Some(`Offline) => "offline"

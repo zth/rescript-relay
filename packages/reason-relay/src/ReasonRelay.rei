@@ -675,9 +675,13 @@ module MakeCommitMutation:
         ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
+        ~onCompleted: (option(Js.Json.t), option(array(mutationError))) =>
+                      unit
+                        =?,
+        ~onError: option(mutationError) => unit=?,
         unit
       ) =>
-      Js.Promise.t(Js.Json.t);
+      Disposable.t;
   };
 
 /**

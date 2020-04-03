@@ -2,6 +2,7 @@
 
 - _BREAKING CHANGE_ `SchemaAssets.re` has been retired. If you were relying on code from there for converting enums to/from strings, you can now find equivalent functions attached on your `ModuleName.Operation.unwrap_enum_EnumName` (for string -> polymorphic variant) and `ModuleName.Operation.wrap_enum_EnumName` (polymorphic variant -> string). You may need to remove the old `SchemaAssets.re` manually.
 - _BREAKING CHANGE_ Unions and interfaces with only one type selection is now treated as a regular object rather than a union with just 1 member that needs to be decoded.
+- _BREAKING CHANGE_ `commitMutation` no longer returns a promise, but a `Disposable.t` instead. It now uses callbacks (which is how Relay handles this natively anyway) `onCompleted` and `onError` to indicate done/error states.
 
 # 0.6.0
 

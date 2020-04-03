@@ -66,14 +66,15 @@ module Test = {
          ),
        )}
       <button
-        onClick={_ =>
-          Mutation.commitMutation(
-            ~environment,
-            ~variables={onlineStatus: `Idle},
-            (),
-          )
-          |> ignore
-        }>
+        onClick={_ => {
+          let _ =
+            Mutation.commitMutation(
+              ~environment,
+              ~variables={onlineStatus: `Idle},
+              (),
+            );
+          ();
+        }}>
         {React.string("Change online status")}
       </button>
       <button
@@ -84,76 +85,79 @@ module Test = {
          )}
       </button>
       <button
-        onClick={_ =>
-          ComplexMutation.commitMutation(
-            ~environment,
-            ~variables={
-              input: {
-                onlineStatus: `Idle,
+        onClick={_ => {
+          let _ =
+            ComplexMutation.commitMutation(
+              ~environment,
+              ~variables={
+                input: {
+                  onlineStatus: `Idle,
+                },
               },
-            },
-            (),
-          )
-          |> ignore
-        }>
+              (),
+            );
+          ();
+        }}>
         {React.string("Change online status, complex")}
       </button>
       <button
-        onClick={_ =>
-          Mutation.commitMutation(
-            ~environment,
-            ~variables={onlineStatus: `Idle},
-            ~optimisticResponse={
-              setOnlineStatus:
-                Some({
-                  user: Some({id: data.id, onlineStatus: Some(`Idle)}),
-                }),
-            },
-            (),
-          )
-          |> ignore
-        }>
+        onClick={_ => {
+          let _ =
+            Mutation.commitMutation(
+              ~environment,
+              ~variables={onlineStatus: `Idle},
+              ~optimisticResponse={
+                setOnlineStatus:
+                  Some({
+                    user: Some({id: data.id, onlineStatus: Some(`Idle)}),
+                  }),
+              },
+              (),
+            );
+          ();
+        }}>
         {React.string("Change online status with optimistic update")}
       </button>
       <button
-        onClick={_ =>
-          Mutation.commitMutation(
-            ~environment,
-            ~variables={onlineStatus: `Idle},
-            ~updater=
-              (store, response) =>
-                switch (
-                  store->ReasonRelay.RecordSourceSelectorProxy.get(
-                    ~dataId=ReasonRelay.makeDataId(data.id),
-                  ),
-                  response,
-                ) {
-                | (
-                    Some(userProxy),
-                    {
-                      setOnlineStatus:
-                        Some({
-                          user: Some({onlineStatus: Some(onlineStatus)}),
-                        }),
-                    },
-                  ) =>
-                  userProxy
-                  ->ReasonRelay.RecordProxy.setValueString(
-                      ~name="onlineStatus",
-                      ~arguments=None,
-                      ~value=
-                        switch (onlineStatus) {
-                        | `Idle => "Offline"
-                        | _ => "Online"
-                        },
-                    )
-                  ->ignore
-                | _ => Js.log("Error!")
-                },
-            (),
-          )
-          |> ignore
-        }>
+        onClick={_ => {
+          let _ =
+            Mutation.commitMutation(
+              ~environment,
+              ~variables={onlineStatus: `Idle},
+              ~updater=
+                (store, response) =>
+                  switch (
+                    store->ReasonRelay.RecordSourceSelectorProxy.get(
+                      ~dataId=ReasonRelay.makeDataId(data.id),
+                    ),
+                    response,
+                  ) {
+                  | (
+                      Some(userProxy),
+                      {
+                        setOnlineStatus:
+                          Some({
+                            user: Some({onlineStatus: Some(onlineStatus)}),
+                          }),
+                      },
+                    ) =>
+                    userProxy
+                    ->ReasonRelay.RecordProxy.setValueString(
+                        ~name="onlineStatus",
+                        ~arguments=None,
+                        ~value=
+                          switch (onlineStatus) {
+                          | `Idle => "Offline"
+                          | _ => "Online"
+                          },
+                      )
+                    ->ignore
+                  | _ => Js.log("Error!")
+                  },
+              (),
+            );
+          ();
+        }}>
         {React.string("Change online status with updater")}
       </button>
     </div>;
