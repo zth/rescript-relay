@@ -10,3 +10,4 @@ _release
 *.install
 *.bs.js
 reason-relay-compiler
+.now
