@@ -6,6 +6,8 @@ Use Relay with ReasonML.
 
 Check out the [documentation (work in progress) here](https://reason-relay-documentation.zth.now.sh/docs/start-here).
 
+Also, check out the [changelog](CHANGELOG.md) - things will continue change some between versions (including breaking changes, although we'll try and keep them to a minimum) as we iterate and reach a stable version.
+
 ## What it looks like
 
 Your components define what data they need through `[%relay.fragment]`.
