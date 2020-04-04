@@ -43,7 +43,7 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 6 or above_. It will _not_ work with `bs-platform < 6.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
