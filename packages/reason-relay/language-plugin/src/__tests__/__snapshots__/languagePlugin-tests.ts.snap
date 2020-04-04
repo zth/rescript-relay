@@ -254,7 +254,7 @@ module Types = {
   type changedUser = {
     id: string,
     firstName: string,
-    role: enum_UserRole,
+    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
   };
   type setUserLocation = {changedUser: option(changedUser)};
 };
@@ -1115,7 +1115,7 @@ module Unions = {
     };
     type user = response_participantById_observer_manager_user;
     type response_participantById_observer_manager_observer = {
-      status: enum_ObserverStatus,
+      status: [ | \`Active | \`Inactive | \`FutureAddedValue(string)],
       isOnline: option(bool),
       id: string,
     };
@@ -1135,7 +1135,7 @@ module Unions = {
     };
     type user = response_participantById_observer_manager_user;
     type response_participantById_observer_manager_observer = {
-      status: enum_ObserverStatus,
+      status: [ | \`Active | \`Inactive | \`FutureAddedValue(string)],
       isOnline: option(bool),
       id: string,
     };

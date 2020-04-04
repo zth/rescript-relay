@@ -55,6 +55,36 @@ let printScalar = scalarValue =>
   | Any => printAnyType()
   };
 
+let getEnumFutureAddedValueName = (enum: fullEnum) =>
+  switch (enum.values->Tablecloth.Array.find(~f=e => e === "FutureAddedValue")) {
+  | Some(_) => "FutureAddedValue_"
+  | None => "FutureAddedValue"
+  };
+
+let printEnumDefinition = (enum: fullEnum, ~includeSemi: bool, ~mode): string => {
+  let enumName = makeEnumName(enum.name);
+
+  let str =
+    ref(
+      switch (mode) {
+      | `AsType => "type " ++ enumName ++ " = ["
+      | `OnlyDefinition => "["
+      },
+    );
+
+  let addToStr = s => str := str^ ++ s;
+
+  let futureAddedValueName = getEnumFutureAddedValueName(enum);
+
+  enum.values
+  ->Belt.Array.concat([|futureAddedValueName ++ "(string)"|])
+  ->Belt.Array.forEach(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
+
+  addToStr("]" ++ (includeSemi ? ";" : "") ++ "\n\n");
+
+  str^;
+};
+
 let rec printTypeReference = (~state: option(fullState), typeName: string) =>
   switch (state) {
   | Some(state) =>
@@ -77,7 +107,8 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | Scalar(scalar) => printScalar(scalar)
   | Object(obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~propValue, ~state)
-  | Enum({name}) => printEnumName(name)
+  | Enum(enum) =>
+    printEnumDefinition(enum, ~includeSemi=false, ~mode=`OnlyDefinition)
   | Union(union) => union |> printLocalUnionName
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
@@ -463,22 +494,10 @@ let printUnion = (~state, union: union) => {
 let printEnum = (enum: fullEnum): string => {
   let enumName = makeEnumName(enum.name);
 
-  let str = ref("type " ++ enumName ++ " = [");
+  let str = ref(printEnumDefinition(enum, ~includeSemi=true, ~mode=`AsType));
   let addToStr = s => str := str^ ++ s;
 
-  let futureAddedValueName =
-    switch (
-      enum.values->Tablecloth.Array.find(~f=e => e === "FutureAddedValue")
-    ) {
-    | Some(_) => "FutureAddedValue_"
-    | None => "FutureAddedValue"
-    };
-
-  enum.values
-  ->Belt.Array.concat([|futureAddedValueName ++ "(string)"|])
-  ->Belt.Array.forEach(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
-
-  addToStr("];\n\n");
+  let futureAddedValueName = getEnumFutureAddedValueName(enum);
 
   // Unwrap enum
   addToStr(
