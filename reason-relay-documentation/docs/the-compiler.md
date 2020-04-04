@@ -16,7 +16,4 @@ You can [read more about the Relay compiler here](https://relay.dev/docs/en/grap
 
 ## How ReasonRelay uses the Relay compiler
 
-When you run the compiler, you run `reason-relay-compiler` and not `relay-compiler` - why is that? Well, it's because ReasonRelay ships a thin layer on top of `relay-compiler`, and here's why:
-
-1. The Relay compiler does not actually support everything we need to integrate Reason in it's current form. It's not much that needs changing, and there are open PRs that will make integration native ([PR#1](https://github.com/facebook/relay/pull/2866), [PR#2](https://github.com/facebook/relay/pull/2811), [PR#3](https://github.com/facebook/relay/pull/2810)). But for now we need to ship a forked compiler with the changes we need applied.
-2. [Enums](enums) and [unions](unions) are handled in a special way in ReasonRelay, and the thin layer we add to the Relay compiler ensures that we always emit a file called `SchemaAssets.re` that contain tools for working with enums. You can read more about how enums are handled [here](enums).
+When you run the compiler, you run `reason-relay-compiler` and not `relay-compiler` - why is that? Well, it's because ReasonRelay ships a thin layer on top of `relay-compiler`, that sets up the configuration the Relay compiler needs to produce Reason automatically. It also enforces a more strict configuration of Relay that ReasonRelay needs to do its thing.

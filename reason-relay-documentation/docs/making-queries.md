@@ -86,18 +86,31 @@ _Please note that this function must be called with an ending unit `()` if not a
 
 Sometimes you just need the query data outside of React. `fetch` lets you make the query and get the data back in a promise.
 
+Using it looks something like this:
+
+```reason
+Query.fetch(
+  ~environment,
+  ~variables={...},
+  ~onResult=res => switch (res) {
+  | Ok(res) => Js.log(res)
+  | Error(_) => Js.log("Error")
+});
+```
+
 Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching and loading more data](refetching-and-loading-more-data).
 
-Returns `Js.Promise.t(response)`.
+The results are delivered through a `Belt.Result.t` in the `onResult` callback.
 
 > `fetch` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#fetchquery).
 
 ##### Parameters
 
-| Name          | Type            | Required | Notes                                                                             |
-| ------------- | --------------- | -------- | --------------------------------------------------------------------------------- |
-| `environment` | `Environment.t` | _Yes_    | Your Relay environment.                                                           |
-| `variables`   | `'variables`    | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+| Name          | Type                                         | Required | Notes                                                                             |
+| ------------- | -------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `environment` | `Environment.t`                              | _Yes_    | Your Relay environment.                                                           |
+| `variables`   | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+| `onResult`    | `Belt.Result.t('response, Js.Promise.error)` | _Yes_    | Callback for getting the data (or error) when it's retrieved.                     |
 
 ### `preload`
 

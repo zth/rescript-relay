@@ -61,7 +61,12 @@ Notice `FutureAddedValue` - this will help you protect your app against runtime 
 
 ## Under the hood
 
-The ReasonRelay compiler will generate a file called `SchemaAssets.re` in your `artifactDirectory` everytime it starts. `SchemaAssets.re` will contain a module for each _enum_ in your schema, and that module will contain type information and code for _wrapping and unwrapping enums_ to polymorphic variants, so you can use them in ReasonML.
+ReasonRelay will take care of converting between strings (as received from the server) and Reason's polymorphic variants for you. If you ever find you need to convert from/to a string by hand, the module where you have an enum selected will automatically expose code for doing that type of conversion.
+
+Adding to the code sample above, the `Fragment` module would expose that like this:
+
+- `Fragment.Operation.wrap_enum_TicketStatus` for going _from enum to string_.
+- `Fragment.Operation.unwrap_enum_TicketStatus` for going _from string to enum_.
 
 ## Wrapping up
 
