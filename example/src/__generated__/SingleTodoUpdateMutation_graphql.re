@@ -62,7 +62,15 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_updateTodoItemInput =
+      (~id, ~text, ~completed, ~clientMutationId=?, ()): updateTodoItemInput => {
+    id,
+    text,
+    completed,
+    clientMutationId,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 

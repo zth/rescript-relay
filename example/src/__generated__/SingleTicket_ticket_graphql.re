@@ -3,11 +3,12 @@
 module Unions = {
   module Union_fragment_assignee: {
     type wrapped;
-    type user = {
+    type fragment_assignee_user = {
       getFragmentRefs:
         unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
     };
-    type workingGroup = {
+    type user = fragment_assignee_user;
+    type fragment_assignee_workingGroup = {
       getFragmentRefs:
         unit =>
         {
@@ -15,19 +16,21 @@ module Unions = {
           "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
         },
     };
+    type workingGroup = fragment_assignee_workingGroup;
     type t = [
       | `User(user)
       | `WorkingGroup(workingGroup)
-      | `UnmappedUnionMember
+      | `UnselectedUnionMember(string)
     ];
     let unwrap: wrapped => t;
   } = {
     type wrapped;
-    type user = {
+    type fragment_assignee_user = {
       getFragmentRefs:
         unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
     };
-    type workingGroup = {
+    type user = fragment_assignee_user;
+    type fragment_assignee_workingGroup = {
       getFragmentRefs:
         unit =>
         {
@@ -35,21 +38,23 @@ module Unions = {
           "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
         },
     };
+    type workingGroup = fragment_assignee_workingGroup;
     external __unwrap_union: wrapped => {. "__typename": string} =
       "%identity";
     type t = [
       | `User(user)
       | `WorkingGroup(workingGroup)
-      | `UnmappedUnionMember
+      | `UnselectedUnionMember(string)
     ];
     external __unwrap_user: wrapped => user = "%identity";
     external __unwrap_workingGroup: wrapped => workingGroup = "%identity";
+    external __toJson: wrapped => Js.Json.t = "%identity";
     let unwrap = wrapped => {
       let unwrappedUnion = wrapped |> __unwrap_union;
       switch (unwrappedUnion##__typename) {
       | "User" => `User(wrapped |> __unwrap_user)
       | "WorkingGroup" => `WorkingGroup(wrapped |> __unwrap_workingGroup)
-      | _ => `UnmappedUnionMember
+      | typename => `UnselectedUnionMember(typename)
       };
     };
   };
@@ -57,7 +62,7 @@ module Unions = {
   type union_fragment_assignee = [
     | `User(Union_fragment_assignee.user)
     | `WorkingGroup(Union_fragment_assignee.workingGroup)
-    | `UnmappedUnionMember
+    | `UnselectedUnionMember(string)
   ];
 };
 

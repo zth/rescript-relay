@@ -36,8 +36,8 @@ module AddTodoMutation = [%relay.mutation
 
 [@react.component]
 let make = (~query as queryRef) => {
-  let environment = ReasonRelay.useEnvironmentFromContext();
   let todoListData = TodoListFragment.use(queryRef);
+  let (addTodo, _) = AddTodoMutation.use();
 
   let (newTodoText, setNewTodoText) = React.useState(() => "");
 
@@ -48,49 +48,46 @@ let make = (~query as queryRef) => {
         onSubmit={ev => {
           ReactEvent.Form.preventDefault(ev);
 
-          AddTodoMutation.commitMutation(
-            ~environment,
-            ~variables={
-              input: {
-                clientMutationId: None,
-                text: newTodoText,
+          let _ =
+            addTodo(
+              ~variables={
+                input: {
+                  clientMutationId: None,
+                  text: newTodoText,
+                },
               },
-            },
-            ~updater=
-              (store, _response) =>
-                ReasonRelayUtils.(
-                  switch (
-                    resolveNestedRecord(
-                      ~rootRecord=
-                        store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
-                          ~fieldName="addTodoItem",
-                        ),
-                      ~path=["addedTodoItem"],
-                    )
-                  ) {
-                  | Some(node) =>
-                    createAndAddEdgeToConnections(
-                      ~store,
-                      ~node,
-                      ~connections=[
-                        {
-                          parentID: ReasonRelay.storeRootId,
-                          key: "TodoList_query_todosConnection",
-                        },
-                      ],
-                      ~edgeName="TodoItemEdge",
-                      ~insertAt=Start,
-                    )
-                  | None => ()
-                  }
-                ),
-            (),
-          )
-          |> Js.Promise.then_(_ => {
-               setNewTodoText(_ => "");
-               Js.Promise.resolve();
-             })
-          |> ignore;
+              ~onCompleted=(_, _) => {setNewTodoText(_ => "")},
+              ~updater=
+                (store, _response) =>
+                  ReasonRelayUtils.(
+                    switch (
+                      resolveNestedRecord(
+                        ~rootRecord=
+                          store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
+                            ~fieldName="addTodoItem",
+                          ),
+                        ~path=["addedTodoItem"],
+                      )
+                    ) {
+                    | Some(node) =>
+                      createAndAddEdgeToConnections(
+                        ~store,
+                        ~node,
+                        ~connections=[
+                          {
+                            parentID: ReasonRelay.storeRootId,
+                            key: "TodoList_query_todosConnection",
+                          },
+                        ],
+                        ~edgeName="TodoItemEdge",
+                        ~insertAt=Start,
+                      )
+                    | None => ()
+                    }
+                  ),
+              (),
+            );
+          ();
         }}>
         <div className="add-items d-flex">
           <input

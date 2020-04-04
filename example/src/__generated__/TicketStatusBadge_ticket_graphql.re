@@ -5,8 +5,24 @@ type enum_TicketStatus = [
   | `OnHold
   | `Progress
   | `Rejected
-  | `FUTURE_ADDED_VALUE__
+  | `FutureAddedValue(string)
 ];
+
+let unwrap_enum_TicketStatus: string => enum_TicketStatus =
+  fun
+  | "Done" => `Done
+  | "OnHold" => `OnHold
+  | "Progress" => `Progress
+  | "Rejected" => `Rejected
+  | v => `FutureAddedValue(v);
+
+let wrap_enum_TicketStatus: enum_TicketStatus => string =
+  fun
+  | `Done => "Done"
+  | `OnHold => "OnHold"
+  | `Progress => "Progress"
+  | `Rejected => "Rejected"
+  | `FutureAddedValue(v) => v;
 
 module Unions = {};
 
@@ -22,9 +38,7 @@ module Internal = {
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {| {"__root":{"status":{"e":"enum_TicketStatus"}}} |}
   ];
-  let fragmentConverterMap = {
-    "enum_TicketStatus": SchemaAssets.Enum_TicketStatus.unwrap,
-  };
+  let fragmentConverterMap = {"enum_TicketStatus": unwrap_enum_TicketStatus};
   let convertFragment = v =>
     v
     ->ReasonRelay._convertObj(

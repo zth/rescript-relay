@@ -60,7 +60,13 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_addTodoItemInput =
+      (~text, ~clientMutationId=?, ()): addTodoItemInput => {
+    text,
+    clientMutationId,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 

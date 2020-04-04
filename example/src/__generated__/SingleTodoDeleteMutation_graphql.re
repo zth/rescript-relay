@@ -58,7 +58,13 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_deleteTodoItemInput =
+      (~id, ~clientMutationId=?, ()): deleteTodoItemInput => {
+    id,
+    clientMutationId,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 

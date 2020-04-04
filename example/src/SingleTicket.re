@@ -37,7 +37,7 @@ let make = (~ticket as ticketRef) => {
                workingGroup={workingGroup.getFragmentRefs()}
              />
            </React.Suspense>
-         | `UnmappedUnionMember => <span> {React.string("-")} </span>
+         | `UnselectedUnionMember(_) => <span> {React.string("-")} </span>
          }
        | None => <em> {React.string("Unassigned")} </em>
        }}
