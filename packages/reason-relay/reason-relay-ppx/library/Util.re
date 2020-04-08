@@ -160,7 +160,8 @@ let fragmentHasConnectionNotation = (~loc, str) =>
   | _ => false
   };
 
-let getGraphQLModuleName = opName => opName ++ "_graphql";
+let getGraphQLModuleName = opName =>
+  String.capitalize_ascii(opName) ++ "_graphql";
 
 /**
  * This is some AST voodoo to extract the provided string from [%relay.<operation> {| ...string here... |}].
@@ -311,7 +312,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       | _ =>
         %stri
         ()
-      }
+      },
     ]),
   );
 

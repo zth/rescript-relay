@@ -16,6 +16,20 @@ let makeMockLocObj = (): Ppxlib.Location.t => {
   loc_ghost: false,
 };
 
+describe("getGraphQLModuleName", ({test, _}) => {
+  test(
+    "it should capitalize module names and add the correct suffix",
+    ({expect}) => {
+    expect.string(Util.getGraphQLModuleName("testModuleQuery")).toEqual(
+      "TestModuleQuery_graphql",
+    );
+
+    expect.string(Util.getGraphQLModuleName("testmoduleQuery")).toEqual(
+      "TestmoduleQuery_graphql",
+    );
+  })
+});
+
 describe("extractTheQueryName", ({test, _}) =>
   test("it should extract the query name", ({expect}) =>
     expect.string(
@@ -76,34 +90,32 @@ describe("extractFragmentRefetchableQueryName", ({test, _}) => {
   test(
     "it should extract the refetchable operation query name from a fragment with @refetchable",
     ({expect}) => {
-    expect.option(
-      Util.extractFragmentRefetchableQueryName(
-        ~loc=makeMockLocObj(),
-        "fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
-      ),
-    ).
-      toBe(
-      Some("SomeFragmentRefetchQuery"),
-    )
-  
+      expect.option(
+        Util.extractFragmentRefetchableQueryName(
+          ~loc=makeMockLocObj(),
+          "fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
+        ),
+      ).
+        toBe(
+        Some("SomeFragmentRefetchQuery"),
+      );
 
-  expect.option(
-      Util.extractFragmentRefetchableQueryName(
-        ~loc=makeMockLocObj(),
-        {|
+      expect.option(
+        Util.extractFragmentRefetchableQueryName(
+          ~loc=makeMockLocObj(),
+          {|
         fragment GroupEntrySingleDimensionEntry_dimension on Dimension
           @argumentDefinitions(isRefetch: {type:"Boolean!"})
           @refetchable(queryName: "GroupEntrySingleDimensionEntryRefetchQuery") {
           identifier
         }
         |},
-      ),
-    ).
-      toBe(
-      Some("GroupEntrySingleDimensionEntryRefetchQuery"),
-    )
-
-    }
+        ),
+      ).
+        toBe(
+        Some("GroupEntrySingleDimensionEntryRefetchQuery"),
+      );
+    },
   );
 
   test(
