@@ -230,7 +230,6 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         %stri
         ()
       },
-      [%stri include Operation.Unions],
       [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       switch (refetchableQueryName) {
@@ -323,7 +322,6 @@ let makeQuery = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
       [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
@@ -351,7 +349,6 @@ let makeMutation = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
       [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
@@ -390,7 +387,6 @@ let makeSubscription = (~loc, ~moduleName) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Unions],
       [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri

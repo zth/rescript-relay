@@ -21,145 +21,60 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {
-  module Union_response_members_edges_node_group_members: {
-    type wrapped;
-    type response_members_edges_node_group_members_user = {
-      onlineStatus:
-        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      firstName: string,
-      id: string,
-    };
-    type user = response_members_edges_node_group_members_user;
-    type response_members_edges_node_group_members_group = {
-      avatarUrl: option(string),
-      name: string,
-      id: string,
-    };
-    type group = response_members_edges_node_group_members_group;
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    let unwrap: wrapped => t;
-  } = {
-    type wrapped;
-    type response_members_edges_node_group_members_user = {
-      onlineStatus:
-        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      firstName: string,
-      id: string,
-    };
-    type user = response_members_edges_node_group_members_user;
-    type response_members_edges_node_group_members_group = {
-      avatarUrl: option(string),
-      name: string,
-      id: string,
-    };
-    type group = response_members_edges_node_group_members_group;
-    external __unwrap_union: wrapped => {. "__typename": string} =
-      "%identity";
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    external __unwrap_user: wrapped => user = "%identity";
-    external __unwrap_group: wrapped => group = "%identity";
-    external __toJson: wrapped => Js.Json.t = "%identity";
-    let unwrap = wrapped => {
-      let unwrappedUnion = wrapped |> __unwrap_union;
-      switch (unwrappedUnion##__typename) {
-      | "User" => `User(wrapped |> __unwrap_user)
-      | "Group" => `Group(wrapped |> __unwrap_group)
-      | typename => `UnselectedUnionMember(typename)
-      };
-    };
-  };
-
-  type union_response_members_edges_node_group_members = [
-    | `User(Union_response_members_edges_node_group_members.user)
-    | `Group(Union_response_members_edges_node_group_members.group)
-    | `UnselectedUnionMember(string)
-  ];
-
-  module Union_response_members_edges_node: {
-    type wrapped;
-    type response_members_edges_node_user = {
-      onlineStatus:
-        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      firstName: string,
-      id: string,
-    };
-    type user = response_members_edges_node_user;
-    type response_members_edges_node_group = {
-      members:
-        option(
-          array(option(union_response_members_edges_node_group_members)),
-        ),
-      avatarUrl: option(string),
-      name: string,
-      id: string,
-    };
-    type group = response_members_edges_node_group;
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    let unwrap: wrapped => t;
-  } = {
-    type wrapped;
-    type response_members_edges_node_user = {
-      onlineStatus:
-        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      firstName: string,
-      id: string,
-    };
-    type user = response_members_edges_node_user;
-    type response_members_edges_node_group = {
-      members:
-        option(
-          array(option(union_response_members_edges_node_group_members)),
-        ),
-      avatarUrl: option(string),
-      name: string,
-      id: string,
-    };
-    type group = response_members_edges_node_group;
-    external __unwrap_union: wrapped => {. "__typename": string} =
-      "%identity";
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    external __unwrap_user: wrapped => user = "%identity";
-    external __unwrap_group: wrapped => group = "%identity";
-    external __toJson: wrapped => Js.Json.t = "%identity";
-    let unwrap = wrapped => {
-      let unwrappedUnion = wrapped |> __unwrap_union;
-      switch (unwrappedUnion##__typename) {
-      | "User" => `User(wrapped |> __unwrap_user)
-      | "Group" => `Group(wrapped |> __unwrap_group)
-      | typename => `UnselectedUnionMember(typename)
-      };
-    };
-  };
-
-  type union_response_members_edges_node = [
-    | `User(Union_response_members_edges_node.user)
-    | `Group(Union_response_members_edges_node.group)
-    | `UnselectedUnionMember(string)
-  ];
-};
-
-open Unions;
-
 module Types = {
+  type response_members_edges_node_Group_members_User = {
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    firstName: string,
+    id: string,
+  };
+  type response_members_edges_node_Group_members_Group = {
+    avatarUrl: option(string),
+    name: string,
+    id: string,
+  };
+  type response_members_edges_node_Group_members = [
+    | `User(response_members_edges_node_Group_members_User)
+    | `Group(response_members_edges_node_Group_members_Group)
+    | `UnselectedUnionMember(string)
+  ];
+  type response_members_edges_node_User = {
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    firstName: string,
+    id: string,
+  };
+  type response_members_edges_node_Group = {
+    members:
+      option(
+        array(
+          option(
+            [
+              | `User(response_members_edges_node_Group_members_User)
+              | `Group(response_members_edges_node_Group_members_Group)
+              | `UnselectedUnionMember(string)
+            ],
+          ),
+        ),
+      ),
+    avatarUrl: option(string),
+    name: string,
+    id: string,
+  };
+  type response_members_edges_node = [
+    | `User(response_members_edges_node_User)
+    | `Group(response_members_edges_node_Group)
+    | `UnselectedUnionMember(string)
+  ];
   type response_members_edges = {
-    node: option(union_response_members_edges_node),
+    node:
+      option(
+        [
+          | `User(response_members_edges_node_User)
+          | `Group(response_members_edges_node_Group)
+          | `UnselectedUnionMember(string)
+        ],
+      ),
   };
   type response_members = {
     edges: option(array(option(response_members_edges))),
@@ -169,15 +84,67 @@ module Types = {
   type variables = unit;
 };
 
+let unwrap_response_members_edges_node_Group_members:
+  {. "__typename": string} =>
+  [
+    | `User(Types.response_members_edges_node_Group_members_User)
+    | `Group(Types.response_members_edges_node_Group_members_Group)
+    | `UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | "User" => `User(u->Obj.magic)
+    | "Group" => `Group(u->Obj.magic)
+    | v => `UnselectedUnionMember(v)
+    };
+
+let wrap_response_members_edges_node_Group_members:
+  [
+    | `User(Types.response_members_edges_node_Group_members_User)
+    | `Group(Types.response_members_edges_node_Group_members_Group)
+    | `UnselectedUnionMember(string)
+  ] =>
+  {. "__typename": string} =
+  fun
+  | `User(v) => v->Obj.magic
+  | `Group(v) => v->Obj.magic
+  | `UnselectedUnionMember(v) => {"__typename": v};
+
+let unwrap_response_members_edges_node:
+  {. "__typename": string} =>
+  [
+    | `User(Types.response_members_edges_node_User)
+    | `Group(Types.response_members_edges_node_Group)
+    | `UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | "User" => `User(u->Obj.magic)
+    | "Group" => `Group(u->Obj.magic)
+    | v => `UnselectedUnionMember(v)
+    };
+
+let wrap_response_members_edges_node:
+  [
+    | `User(Types.response_members_edges_node_User)
+    | `Group(Types.response_members_edges_node_Group)
+    | `UnselectedUnionMember(string)
+  ] =>
+  {. "__typename": string} =
+  fun
+  | `User(v) => v->Obj.magic
+  | `Group(v) => v->Obj.magic
+  | `UnselectedUnionMember(v) => {"__typename": v};
+
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges_node_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_group_members"},"members_edges_node_group_members_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members_group_avatarUrl":{"n":""},"members_edges_node_group_avatarUrl":{"n":""}}} |}
+    {| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges_node_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members_edges_node_group_members_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members_group_avatarUrl":{"n":""},"members_edges_node_group_avatarUrl":{"n":""}}} |}
   ];
   let responseConverterMap = {
-    "response_members_edges_node": Union_response_members_edges_node.unwrap,
+    "response_members_edges_node": unwrap_response_members_edges_node,
     "enum_OnlineStatus": unwrap_enum_OnlineStatus,
-    "response_members_edges_node_group_members": Union_response_members_edges_node_group_members.unwrap,
+    "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
   };
   let convertResponse = v =>
     v

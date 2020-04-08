@@ -1,7 +1,5 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
   type fragment_friendsConnection = {totalCount: int};
 

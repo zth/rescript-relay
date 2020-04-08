@@ -1,7 +1,5 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
   type response_loggedInUser = {
     getFragmentRefs:

@@ -170,7 +170,6 @@ let getPrintedFullState =
   let addTypeDeclaration = Utils.makeAddToList(typeDeclarations);
 
   // Gather all type declarations and definitions.
-  // Since we ensure all objects are inlined, we only need to print the objects that weren't originally standalone Flow types.
   state.objects
   ->Tablecloth.List.sortBy(
       ~f=
@@ -227,45 +226,15 @@ let getPrintedFullState =
       addSpacing();
     });
 
-  // Print unions
-  addToStr("module Unions = {\n");
-  addToStr(
-    state.unions
-    |> Tablecloth.List.map(~f=(union: Types.union) =>
-         (union |> Printer.printUnion(~state))
-         ++ "\n\n"
-         ++ "type "
-         ++ Printer.printLocalUnionName(union)
-         ++ " = "
-         ++ (
-           union
-           |> Printer.printUnionTypeDefinition(~printMemberTypeName=name =>
-                (
-                  union.atPath
-                  |> Printer.makeUnionName
-                  |> Printer.printUnionName
-                )
-                ++ "."
-                ++ Tablecloth.String.uncapitalize(name)
-              )
-         )
-       )
-    |> Tablecloth.String.join(~sep="\n\n"),
-  );
-
-  addToStr("};");
   addSpacing();
-
-  // We'll open the Union module locally in our generated file if there's contents
-  switch (state.unions |> Tablecloth.List.length) {
-  | 0 => ()
-  | _ =>
-    addToStr("open Unions;");
-    addSpacing();
-  };
 
   // Print definitions and declarations
   addToStr("module Types = {\n");
+
+  state.unions
+  ->Belt.List.forEach(union => {
+      union |> Printer.printUnionTypes(~state) |> addToStr
+    });
 
   Printer.(
     typeDeclarations^
@@ -284,6 +253,13 @@ let getPrintedFullState =
 
   addToStr("};");
   addSpacing();
+
+  if (state.unions->Belt.List.length > 0) {
+    state.unions
+    ->Belt.List.forEach(union =>
+        union->Printer.printUnionConverters->addToStr
+      );
+  };
 
   // This emits extra assets for the generated modules,
   // like code for converting nullable fields, enums and unions,
@@ -734,12 +710,7 @@ and makeUnionMember =
   switch (name^) {
   | Some(name) => {
       name,
-      shape:
-        filteredProps^
-        |> makeObjShape(
-             ~state,
-             ~path=[name |> Tablecloth.String.uncapitalize, ...path],
-           ),
+      shape: filteredProps^ |> makeObjShape(~state, ~path=[name, ...path]),
     }
   | None => raise(Missing_typename_field_on_union)
   };

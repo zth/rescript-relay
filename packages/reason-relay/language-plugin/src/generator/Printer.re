@@ -34,12 +34,13 @@ let getObjName = name => "obj_" ++ name;
 let printEnumTypeName = name => makeEnumName(name);
 let printEnumUnwrapFnReference = name => makeUnwrapEnumFnName(name);
 let printEnumWrapFnReference = name => makeWrapEnumFnName(name);
-let printUnionName = name => "Union_" ++ name;
-let printUnionTypeName = name => "Union_" ++ name ++ ".t";
+
 let printLocalUnionName = (union: union) =>
-  "union_" ++ (union.atPath |> makeUnionName);
-let printUnionUnwrapFnReference = name => "Union_" ++ name ++ ".unwrap";
-let printUnionWrapFnReference = name => "Union_" ++ name ++ ".wrap";
+  union.atPath->Utils.makeRecordName;
+let printUnionUnwrapFnReference = (union: union) =>
+  "unwrap_" ++ union.atPath->Utils.makeRecordName;
+let printUnionWrapFnReference = (union: union) =>
+  "wrap_" ++ union.atPath->Utils.makeRecordName;
 let printFragmentRef = name =>
   Tablecloth.String.capitalize(name) ++ "_graphql.t";
 let getFragmentRefName = name => "__$fragment_ref__" ++ name;
@@ -117,7 +118,11 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | Array(propValue) => printArray(~propValue, ~state)
   | Enum(enum) =>
     printEnumDefinition(enum, ~includeSemi=false, ~mode=`OnlyDefinition)
-  | Union(union) => union |> printLocalUnionName
+  | Union(union) =>
+    union->printUnionTypeDefinition(
+      ~includeSemi=false,
+      ~prefixWithTypesModule=false,
+    )
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
   }
@@ -237,9 +242,8 @@ and printRecordReference = (~state: fullState, ~obj: object_) => {
       ),
     )
   };
-};
-
-let printObjectMaker = (obj: object_, ~targetType, ~name) => {
+}
+and printObjectMaker = (obj: object_, ~targetType, ~name) => {
   let hasContents = obj->objHasPrintableContents;
 
   let str = ref("");
@@ -293,9 +297,8 @@ let printObjectMaker = (obj: object_, ~targetType, ~name) => {
     addToStr(") => ()");
   };
   str^;
-};
-
-let printRefetchVariablesMaker = (obj: object_, ~state) => {
+}
+and printRefetchVariablesMaker = (obj: object_, ~state) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
@@ -324,9 +327,8 @@ let printRefetchVariablesMaker = (obj: object_, ~state) => {
   );
 
   str^;
-};
-
-let printRootType = (~state: fullState, rootType) =>
+}
+and printRootType = (~state: fullState, rootType) =>
   switch (rootType) {
   | Operation(obj) =>
     "type response = " ++ printObject(~obj, ~state, ()) ++ ";"
@@ -355,9 +357,10 @@ let printRootType = (~state: fullState, rootType) =>
     ++ printObject(~obj, ~state, ())
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
-  };
+  }
 
-let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
+and printUnionTypeDefinition =
+    (union, ~includeSemi, ~prefixWithTypesModule): string => {
   let futureAddedValueName =
     switch (
       union.members
@@ -370,34 +373,26 @@ let printUnionTypeDefinition = (~printMemberTypeName, union): string => {
   "["
   ++ (
     union.members
-    ->Belt.List.map(({name}) =>
-        " | `" ++ name ++ "(" ++ printMemberTypeName(name) ++ ")"
+    ->Belt.List.map(({name, shape: {atPath}}) =>
+        " | `"
+        ++ name
+        ++ "("
+        ++ (prefixWithTypesModule ? "Types." : "")
+        ++ Utils.makeRecordName(atPath)
+        ++ ")"
       )
     |> Tablecloth.String.join(~sep="\n")
   )
   ++ " | `"
   ++ futureAddedValueName
   ++ "(string) "
-  ++ "];";
+  ++ "]"
+  ++ (includeSemi ? ";" : "");
 };
 
-let printUnion = (~state, union: union) => {
-  let prefix = "module ";
-  let unionName = union.atPath |> makeUnionName |> printUnionName;
-
-  let unwrapUnion = "external __unwrap_union: wrapped => {. \"__typename\": string } = \"%identity\";";
-
-  let typeDefs = ref("type wrapped;\n");
-  let addToTypeDefs = Utils.makeAddToStr(typeDefs);
-
-  let typeT =
-    "type t = "
-    ++ union->printUnionTypeDefinition(
-         ~printMemberTypeName=Tablecloth.String.uncapitalize,
-       );
-
-  let unwrappers = ref("");
-  let addToUnwrappers = Utils.makeAddToStr(unwrappers);
+let printUnionConverters = (union: union) => {
+  let str = ref("");
+  let addToStr = Utils.makeAddToStr(str);
 
   let futureAddedValueName =
     switch (
@@ -408,10 +403,58 @@ let printUnion = (~state, union: union) => {
     | None => "UnselectedUnionMember"
     };
 
-  union.members
-  |> List.iter(({name, shape}: Types.unionMember) => {
-       let unionTypeName = Tablecloth.String.uncapitalize(name);
+  let unionName = union.atPath->Utils.makeRecordName;
 
+  // Unwrap
+  addToStr(
+    "let unwrap_"
+    ++ unionName
+    ++ ": {. \"__typename\": string } => "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=true,
+       )
+    ++ " = u => switch(u##__typename) {",
+  );
+  union.members
+  ->Belt.List.forEach(member => {
+      addToStr(
+        "\n | \""
+        ++ member.name
+        ++ "\" => `"
+        ++ member.name
+        ++ "(u->Obj.magic) ",
+      )
+    });
+  addToStr("\n | v => `" ++ futureAddedValueName ++ "(v)");
+  addToStr("};\n\n");
+
+  // Wrap
+  addToStr(
+    "let wrap_"
+    ++ unionName
+    ++ ": "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=true,
+       )
+    ++ " => {. \"__typename\": string } = fun",
+  );
+  union.members
+  ->Belt.List.forEach(member => {
+      addToStr("\n | `" ++ member.name ++ "(v) => v->Obj.magic ")
+    });
+  addToStr("\n | `" ++ futureAddedValueName ++ "(v) => {\"__typename\": v} ");
+  addToStr(";\n\n");
+  str^;
+};
+
+let printUnionTypes = (~state, union: union) => {
+  let typeDefs = ref("");
+  let addToTypeDefs = Utils.makeAddToStr(typeDefs);
+
+  union.members
+  |> List.iter(({shape}: Types.unionMember) => {
        let allObjects: list(Types.finalizedObj) =
          Tablecloth.List.append(shape |> Utils.extractNestedObjects, [shape])
          |> List.map((definition: Types.object_) =>
@@ -428,6 +471,7 @@ let printUnion = (~state, union: union) => {
 
        let definitions =
          allObjects
+         |> List.rev
          |> Tablecloth.List.map(~f=(definition: Types.finalizedObj) =>
               ObjectTypeDeclaration({
                 name:
@@ -443,74 +487,24 @@ let printUnion = (~state, union: union) => {
        let stateWithUnionDefinitions = {...state, objects: allObjects};
 
        definitions
+       |> List.rev
        |> Tablecloth.List.iter(~f=definition => {
             definition
             |> printRootType(~state=stateWithUnionDefinitions)
             |> addToTypeDefs
           });
-
-       addToTypeDefs(
-         "type "
-         ++ Tablecloth.String.uncapitalize(name)
-         ++ " = "
-         ++ union.atPath->Utils.makeRecordName
-         ++ "_"
-         ++ Tablecloth.String.uncapitalize(name)
-         ++ ";",
-       );
-
-       addToUnwrappers(
-         "external __unwrap_"
-         ++ unionTypeName
-         ++ ": wrapped => "
-         ++ unionTypeName
-         ++ " = \"%identity\";",
-       );
      });
 
-  addToUnwrappers("external __toJson: wrapped => Js.Json.t = \"%identity\";");
+  let typeT =
+    "type "
+    ++ union.atPath->Utils.makeRecordName
+    ++ " = "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=true,
+         ~prefixWithTypesModule=false,
+       );
 
-  let unwrapFnImpl =
-    ref(
-      {|
-  let unwrap = wrapped => {
-    let unwrappedUnion = wrapped |> __unwrap_union;
-    switch (unwrappedUnion##__typename) {
-  |},
-    );
-
-  let addToUnwrapFnImpl = Utils.makeAddToStr(unwrapFnImpl);
-
-  union.members
-  |> List.iter(({name}: Types.unionMember) =>
-       addToUnwrapFnImpl(
-         "| \""
-         ++ name
-         ++ "\" => `"
-         ++ name
-         ++ "(wrapped |> __unwrap_"
-         ++ Tablecloth.String.uncapitalize(name)
-         ++ ")",
-       )
-     );
-
-  addToUnwrapFnImpl(
-    " | typename => `" ++ futureAddedValueName ++ "(typename)" ++ "};" ++ "};",
-  );
-
-  prefix
-  ++ unionName
-  ++ ": {"
-  ++ typeDefs^
-  ++ typeT
-  ++ "let unwrap: wrapped => t;"
-  ++ "} = { "
-  ++ typeDefs^
-  ++ unwrapUnion
-  ++ typeT
-  ++ unwrappers^
-  ++ unwrapFnImpl^
-  ++ "};";
+  typeDefs^ ++ "\n" ++ typeT;
 };
 
 let printEnum = (enum: fullEnum): string => {

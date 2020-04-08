@@ -519,6 +519,10 @@ describe("Language plugin tests", () => {
                 id
                 firstName
                 lastName
+                location {
+                  lat
+                  lng
+                }
               }
 
               ... on Observer {

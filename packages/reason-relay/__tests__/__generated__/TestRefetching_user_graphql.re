@@ -21,8 +21,6 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
 module Types = {
   type fragment_friendsConnection = {totalCount: int};
 
