@@ -1,4 +1,4 @@
-type jsObj = Js.t({.});
+type arguments;
 
 /**
  * Abstract helper type to signify something that could not be
@@ -30,6 +30,7 @@ type dataId;
  */
 let dataIdToString: dataId => string;
 let makeDataId: string => dataId;
+let makeArguments: Js.t({..}) => arguments;
 
 let generateClientID:
   (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId;
@@ -57,7 +58,7 @@ let storeRootId: dataId;
 /** The `type` for the Relay store's root `RecordProxy`. */
 let storeRootType: string;
 
-let _cleanObjectFromUndefined: jsObj => jsObj;
+let _cleanObjectFromUndefined: Js.t({..}) => Js.t({..});
 let _cleanVariables: 'a => 'a;
 let _convertObj:
   ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd;
@@ -69,7 +70,6 @@ let _convertObj:
 
 module RecordProxy: {
   type t;
-  type arguments = jsObj;
 
   type unsetValueType =
     | Null
@@ -245,7 +245,7 @@ module StoreProxyReadOnly: (module type of RecordSourceProxy);
  */
 module ConnectionHandler: {
   let getConnection:
-    (~record: RecordProxy.t, ~key: string, ~filters: option(Js.t({.}))) =>
+    (~record: RecordProxy.t, ~key: string, ~filters: option(arguments)) =>
     option(RecordProxy.t);
 
   let createEdge:

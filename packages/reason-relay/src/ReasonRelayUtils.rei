@@ -16,7 +16,7 @@ type insertAt =
 type connectionConfig = {
   parentID: ReasonRelay.dataId,
   key: string,
-  filters: option(Js.t({.})),
+  filters: option(ReasonRelay.arguments),
 };
 
 let removeNodeFromConnections:

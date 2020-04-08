@@ -1,5 +1,5 @@
 let toOpt = Js.Nullable.toOption;
-type jsObj = Js.t({.});
+type arguments;
 
 type any;
 
@@ -14,11 +14,10 @@ type dataId;
 
 type recordSourceRecords;
 
-external _dataIdToString: dataId => string = "%identity";
-let dataIdToString = dataId => _dataIdToString(dataId);
+external dataIdToString: dataId => string = "%identity";
+external makeDataId: string => dataId = "%identity";
 
-external _makeDataId: string => dataId = "%identity";
-let makeDataId = string => _makeDataId(string);
+external makeArguments: Js.t({..}) => arguments = "%identity";
 
 [@bs.module "relay-runtime"]
 external _generateClientID: (dataId, string, option(int)) => dataId =
@@ -76,7 +75,6 @@ external _convertObj:
 
 module RecordProxy = {
   type t;
-  type arguments = jsObj;
 
   type unsetValueType =
     | Null
@@ -297,7 +295,7 @@ module ConnectionHandler = {
 
   [@bs.send]
   external _getConnection:
-    (t, RecordProxy.t, string, option(Js.t('any))) =>
+    (t, RecordProxy.t, string, option(arguments)) =>
     Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
