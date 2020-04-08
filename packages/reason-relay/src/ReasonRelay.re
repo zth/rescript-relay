@@ -1,5 +1,5 @@
 let toOpt = Js.Nullable.toOption;
-type jsObj('a) = Js.t({..} as 'a);
+type jsObj = Js.t({.});
 
 type any;
 
@@ -76,7 +76,7 @@ external _convertObj:
 
 module RecordProxy = {
   type t;
-  type arguments('a) = jsObj('a);
+  type arguments = jsObj;
 
   type unsetValueType =
     | Null
@@ -91,7 +91,7 @@ module RecordProxy = {
 
   [@bs.send]
   external _getLinkedRecord:
-    (t, string, option(arguments('a))) => Js.Nullable.t(t) =
+    (t, string, option(arguments)) => Js.Nullable.t(t) =
     "getLinkedRecord";
 
   let getLinkedRecord = (t, ~name, ~arguments): option(t) =>
@@ -99,7 +99,7 @@ module RecordProxy = {
 
   [@bs.send]
   external _getLinkedRecords:
-    (t, string, option(arguments('a))) =>
+    (t, string, option(arguments)) =>
     Js.Nullable.t(array(Js.Nullable.t(t))) =
     "getLinkedRecords";
 
@@ -111,7 +111,7 @@ module RecordProxy = {
 
   [@bs.send]
   external _getOrCreateLinkedRecord:
-    (t, string, string, option(arguments('a))) => t =
+    (t, string, string, option(arguments)) => t =
     "getOrCreateLinkedRecord";
 
   let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments) =>
@@ -121,8 +121,7 @@ module RecordProxy = {
   let getType = t => _getType(t);
 
   [@bs.send]
-  external _getValue:
-    (t, string, option(arguments('a))) => Js.Nullable.t('value) =
+  external _getValue: (t, string, option(arguments)) => Js.Nullable.t('value) =
     "getValue";
 
   let _getValueArr = (t, ~name, ~arguments) =>
@@ -160,14 +159,13 @@ module RecordProxy = {
     _getValueArr(~name, ~arguments, t);
 
   [@bs.send]
-  external _setLinkedRecord: (t, t, string, option(arguments('a))) => t =
+  external _setLinkedRecord: (t, t, string, option(arguments)) => t =
     "setLinkedRecord";
   let setLinkedRecord = (t, ~record, ~name, ~arguments) =>
     _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecord:
-    (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecord";
   let unsetLinkedRecord = (t, ~name, ~arguments, ~unsetValue) =>
     switch (unsetValue) {
@@ -177,14 +175,13 @@ module RecordProxy = {
 
   [@bs.send]
   external _setLinkedRecords:
-    (t, array(option(t)), string, option(arguments('a))) => t =
+    (t, array(option(t)), string, option(arguments)) => t =
     "setLinkedRecords";
   let setLinkedRecords = (t, ~records, ~name, ~arguments) =>
     _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecords:
-    (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecords";
   let unsetLinkedRecords = (t, ~name, ~arguments, ~unsetValue) =>
     switch (unsetValue) {
@@ -193,11 +190,11 @@ module RecordProxy = {
     };
 
   [@bs.send]
-  external _setValue: (t, 'value, string, option(arguments('a))) => t =
+  external _setValue: (t, 'value, string, option(arguments)) => t =
     "setValue";
 
   [@bs.send]
-  external _unsetValue: (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetValue: (t, 'nullable, string, option(arguments)) => t =
     "setValue";
   let unsetValue = (t, ~name, ~arguments, ~unsetValue) =>
     switch (unsetValue) {
@@ -269,6 +266,8 @@ module RecordSourceSelectorProxy = {
   [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
+module StoreProxy = RecordSourceSelectorProxy;
+
 module RecordSourceProxy = {
   type t;
 
@@ -288,17 +287,18 @@ module RecordSourceProxy = {
   [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
+module StoreProxyReadOnly = RecordSourceProxy;
+
 module ConnectionHandler = {
   type t;
-
-  type filters('a) = jsObj('a);
 
   [@bs.module "relay-runtime"]
   external connectionHandler: t = "ConnectionHandler";
 
   [@bs.send]
   external _getConnection:
-    (t, RecordProxy.t, string, option({..})) => Js.Nullable.t(RecordProxy.t) =
+    (t, RecordProxy.t, string, option(Js.t('any))) =>
+    Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
   let getConnection = (~record, ~key, ~filters) =>

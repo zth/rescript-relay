@@ -1,4 +1,4 @@
-type jsObj('a) = Js.t({..} as 'a);
+type jsObj = Js.t({.});
 
 /**
  * Abstract helper type to signify something that could not be
@@ -57,7 +57,7 @@ let storeRootId: dataId;
 /** The `type` for the Relay store's root `RecordProxy`. */
 let storeRootType: string;
 
-let _cleanObjectFromUndefined: jsObj('a) => jsObj('a);
+let _cleanObjectFromUndefined: jsObj => jsObj;
 let _cleanVariables: 'a => 'a;
 let _convertObj:
   ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd;
@@ -69,7 +69,7 @@ let _convertObj:
 
 module RecordProxy: {
   type t;
-  type arguments('a) = jsObj('a) constraint 'a = {..};
+  type arguments = jsObj;
 
   type unsetValueType =
     | Null
@@ -80,118 +80,100 @@ module RecordProxy: {
   let getDataId: t => dataId;
 
   let getLinkedRecord:
-    (t, ~name: string, ~arguments: option(arguments({..}))) => option(t);
+    (t, ~name: string, ~arguments: option(arguments)) => option(t);
 
   let getLinkedRecords:
-    (t, ~name: string, ~arguments: option(arguments({..}))) =>
+    (t, ~name: string, ~arguments: option(arguments)) =>
     option(array(option(t)));
 
   let getOrCreateLinkedRecord:
-    (
-      t,
-      ~name: string,
-      ~typeName: string,
-      ~arguments: option(arguments({..}))
-    ) =>
-    t;
+    (t, ~name: string, ~typeName: string, ~arguments: option(arguments)) => t;
 
   let getType: t => string;
 
   let getValueString:
-    (t, ~name: string, ~arguments: option(arguments({..}))) => option(string);
+    (t, ~name: string, ~arguments: option(arguments)) => option(string);
 
   let getValueStringArray:
-    (t, ~name: string, ~arguments: option(arguments({..}))) =>
+    (t, ~name: string, ~arguments: option(arguments)) =>
     option(array(option(string)));
 
   let getValueInt:
-    (t, ~name: string, ~arguments: option(arguments({..}))) => option(int);
+    (t, ~name: string, ~arguments: option(arguments)) => option(int);
 
   let getValueIntArray:
-    (t, ~name: string, ~arguments: option(arguments({..}))) =>
+    (t, ~name: string, ~arguments: option(arguments)) =>
     option(array(option(int)));
 
   let getValueFloat:
-    (t, ~name: string, ~arguments: option(arguments({..}))) => option(float);
+    (t, ~name: string, ~arguments: option(arguments)) => option(float);
 
   let getValueFloatArray:
-    (t, ~name: string, ~arguments: option(arguments({..}))) =>
+    (t, ~name: string, ~arguments: option(arguments)) =>
     option(array(option(float)));
 
   let getValueBool:
-    (t, ~name: string, ~arguments: option(arguments({..}))) => option(bool);
+    (t, ~name: string, ~arguments: option(arguments)) => option(bool);
 
   let getValueBoolArray:
-    (t, ~name: string, ~arguments: option(arguments({..}))) =>
+    (t, ~name: string, ~arguments: option(arguments)) =>
     option(array(option(bool)));
 
   let setLinkedRecord:
-    (t, ~record: t, ~name: string, ~arguments: option(arguments({..}))) => t;
+    (t, ~record: t, ~name: string, ~arguments: option(arguments)) => t;
 
   let setLinkedRecords:
     (
       t,
       ~records: array(option(t)),
       ~name: string,
-      ~arguments: option(arguments({..}))
+      ~arguments: option(arguments)
     ) =>
     t;
 
   let setValueString:
-    (t, ~value: string, ~name: string, ~arguments: option(arguments({..}))) =>
-    t;
+    (t, ~value: string, ~name: string, ~arguments: option(arguments)) => t;
 
   let setValueStringArray:
     (
       t,
       ~value: array(string),
       ~name: string,
-      ~arguments: option(arguments({..}))
+      ~arguments: option(arguments)
     ) =>
     t;
 
   let setValueInt:
-    (t, ~value: int, ~name: string, ~arguments: option(arguments({..}))) => t;
+    (t, ~value: int, ~name: string, ~arguments: option(arguments)) => t;
 
   let setValueIntArray:
-    (
-      t,
-      ~value: array(int),
-      ~name: string,
-      ~arguments: option(arguments({..}))
-    ) =>
+    (t, ~value: array(int), ~name: string, ~arguments: option(arguments)) =>
     t;
 
   let setValueFloat:
-    (t, ~value: float, ~name: string, ~arguments: option(arguments({..}))) =>
-    t;
+    (t, ~value: float, ~name: string, ~arguments: option(arguments)) => t;
 
   let setValueFloatArray:
     (
       t,
       ~value: array(float),
       ~name: string,
-      ~arguments: option(arguments({..}))
+      ~arguments: option(arguments)
     ) =>
     t;
 
   let setValueBool:
-    (t, ~value: bool, ~name: string, ~arguments: option(arguments({..}))) => t;
+    (t, ~value: bool, ~name: string, ~arguments: option(arguments)) => t;
 
   let setValueBoolArray:
-    (
-      t,
-      ~value: array(bool),
-      ~name: string,
-      ~arguments: option(arguments({..}))
-    ) =>
+    (t, ~value: array(bool), ~name: string, ~arguments: option(arguments)) =>
     t;
 
   let unsetValue:
     (
       t,
       ~name: string,
-      ~arguments: option(arguments({..})),
+      ~arguments: option(arguments),
       ~unsetValue: unsetValueType
     ) =>
     t;
@@ -200,7 +182,7 @@ module RecordProxy: {
     (
       t,
       ~name: string,
-      ~arguments: option(arguments({..})),
+      ~arguments: option(arguments),
       ~unsetValue: unsetValueType
     ) =>
     t;
@@ -209,7 +191,7 @@ module RecordProxy: {
     (
       t,
       ~name: string,
-      ~arguments: option(arguments({..})),
+      ~arguments: option(arguments),
       ~unsetValue: unsetValueType
     ) =>
     t;
@@ -240,6 +222,8 @@ module RecordSourceSelectorProxy: {
   let invalidateStore: t => unit;
 };
 
+module StoreProxy: (module type of RecordSourceSelectorProxy);
+
 module RecordSourceProxy: {
   type t;
 
@@ -254,14 +238,14 @@ module RecordSourceProxy: {
   let invalidateStore: t => unit;
 };
 
+module StoreProxyReadOnly: (module type of RecordSourceProxy);
+
 /**
  * https://relay.dev/docs/en/relay-store#connectionhandler
  */
 module ConnectionHandler: {
-  type filters('a) = jsObj('a) constraint 'a = {..};
-
   let getConnection:
-    (~record: RecordProxy.t, ~key: string, ~filters: option({..})) =>
+    (~record: RecordProxy.t, ~key: string, ~filters: option(Js.t({.}))) =>
     option(RecordProxy.t);
 
   let createEdge:

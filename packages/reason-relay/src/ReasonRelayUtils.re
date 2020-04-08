@@ -66,6 +66,7 @@ type insertAt =
 type connectionConfig = {
   parentID: dataId,
   key: string,
+  filters: option(Js.t({.})),
 };
 
 let removeNodeFromConnections = (~store, ~node, ~connections) =>
@@ -81,7 +82,7 @@ let removeNodeFromConnections = (~store, ~node, ~connections) =>
            ConnectionHandler.getConnection(
              ~record=owner,
              ~key=connectionConfig.key,
-             ~filters=None,
+             ~filters=connectionConfig.filters,
            )
          ) {
          | Some(connection) =>
