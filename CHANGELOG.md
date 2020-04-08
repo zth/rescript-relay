@@ -1,7 +1,7 @@
 # master
 
 - Enum definitions are now also inlined in the record they appear, to improve editor integrations/hints in the editor.
-- `connectionConfig` in `ReasonRelayUtils.re` now also take a `filters: Js.t({.})`. This lets you supply filters to match the connection configuration, which was previously missing.
+- _BREAKING CHANGE_ Tons of changes to APIs for interacting with the store. Too many to list, but they're mostly about changing APIs taking `options` to allow omitting the optional prop if you apply the function with `()`.
 
 # 0.7.0
 

@@ -163,12 +163,12 @@ module Test = {
                     userProxy
                     ->ReasonRelay.RecordProxy.setValueString(
                         ~name="onlineStatus",
-                        ~arguments=None,
                         ~value=
                           switch (onlineStatus) {
                           | `Idle => "Offline"
                           | _ => "Online"
                           },
+                        (),
                       )
                     ->ignore
                   | _ => Js.log("Error!")

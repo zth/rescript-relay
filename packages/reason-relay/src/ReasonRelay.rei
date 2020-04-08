@@ -80,101 +80,98 @@ module RecordProxy: {
   let getDataId: t => dataId;
 
   let getLinkedRecord:
-    (t, ~name: string, ~arguments: option(arguments)) => option(t);
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(t);
 
   let getLinkedRecords:
-    (t, ~name: string, ~arguments: option(arguments)) =>
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(t)));
 
   let getOrCreateLinkedRecord:
-    (t, ~name: string, ~typeName: string, ~arguments: option(arguments)) => t;
+    (t, ~name: string, ~typeName: string, ~arguments: arguments=?, unit) => t;
 
   let getType: t => string;
 
   let getValueString:
-    (t, ~name: string, ~arguments: option(arguments)) => option(string);
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(string);
 
   let getValueStringArray:
-    (t, ~name: string, ~arguments: option(arguments)) =>
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(string)));
 
   let getValueInt:
-    (t, ~name: string, ~arguments: option(arguments)) => option(int);
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(int);
 
   let getValueIntArray:
-    (t, ~name: string, ~arguments: option(arguments)) =>
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(int)));
 
   let getValueFloat:
-    (t, ~name: string, ~arguments: option(arguments)) => option(float);
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(float);
 
   let getValueFloatArray:
-    (t, ~name: string, ~arguments: option(arguments)) =>
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(float)));
 
   let getValueBool:
-    (t, ~name: string, ~arguments: option(arguments)) => option(bool);
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(bool);
 
   let getValueBoolArray:
-    (t, ~name: string, ~arguments: option(arguments)) =>
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(bool)));
 
   let setLinkedRecord:
-    (t, ~record: t, ~name: string, ~arguments: option(arguments)) => t;
+    (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setLinkedRecords:
     (
       t,
       ~records: array(option(t)),
       ~name: string,
-      ~arguments: option(arguments)
+      ~arguments: arguments=?,
+      unit
     ) =>
     t;
 
   let setValueString:
-    (t, ~value: string, ~name: string, ~arguments: option(arguments)) => t;
+    (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setValueStringArray:
     (
       t,
       ~value: array(string),
       ~name: string,
-      ~arguments: option(arguments)
+      ~arguments: arguments=?,
+      unit
     ) =>
     t;
 
   let setValueInt:
-    (t, ~value: int, ~name: string, ~arguments: option(arguments)) => t;
+    (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setValueIntArray:
-    (t, ~value: array(int), ~name: string, ~arguments: option(arguments)) =>
-    t;
+    (t, ~value: array(int), ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setValueFloat:
-    (t, ~value: float, ~name: string, ~arguments: option(arguments)) => t;
+    (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setValueFloatArray:
-    (
-      t,
-      ~value: array(float),
-      ~name: string,
-      ~arguments: option(arguments)
-    ) =>
+    (t, ~value: array(float), ~name: string, ~arguments: arguments=?, unit) =>
     t;
 
   let setValueBool:
-    (t, ~value: bool, ~name: string, ~arguments: option(arguments)) => t;
+    (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t;
 
   let setValueBoolArray:
-    (t, ~value: array(bool), ~name: string, ~arguments: option(arguments)) =>
+    (t, ~value: array(bool), ~name: string, ~arguments: arguments=?, unit) =>
     t;
 
   let unsetValue:
     (
       t,
       ~name: string,
-      ~arguments: option(arguments),
-      ~unsetValue: unsetValueType
+      ~unsetValue: unsetValueType,
+      ~arguments: arguments=?,
+      unit
     ) =>
     t;
 
@@ -182,8 +179,9 @@ module RecordProxy: {
     (
       t,
       ~name: string,
-      ~arguments: option(arguments),
-      ~unsetValue: unsetValueType
+      ~unsetValue: unsetValueType,
+      ~arguments: arguments=?,
+      unit
     ) =>
     t;
 
@@ -191,8 +189,9 @@ module RecordProxy: {
     (
       t,
       ~name: string,
-      ~arguments: option(arguments),
-      ~unsetValue: unsetValueType
+      ~unsetValue: unsetValueType,
+      ~arguments: arguments=?,
+      unit
     ) =>
     t;
 
@@ -222,8 +221,6 @@ module RecordSourceSelectorProxy: {
   let invalidateStore: t => unit;
 };
 
-module StoreProxy: (module type of RecordSourceSelectorProxy);
-
 module RecordSourceProxy: {
   type t;
 
@@ -238,14 +235,12 @@ module RecordSourceProxy: {
   let invalidateStore: t => unit;
 };
 
-module StoreProxyReadOnly: (module type of RecordSourceProxy);
-
 /**
  * https://relay.dev/docs/en/relay-store#connectionhandler
  */
 module ConnectionHandler: {
   let getConnection:
-    (~record: RecordProxy.t, ~key: string, ~filters: option(arguments)) =>
+    (~record: RecordProxy.t, ~key: string, ~filters: arguments=?, unit) =>
     option(RecordProxy.t);
 
   let createEdge:
@@ -261,16 +256,13 @@ module ConnectionHandler: {
     (
       ~connection: RecordProxy.t,
       ~newEdge: RecordProxy.t,
-      ~cursor: option(string)
+      ~cursor: string=?,
+      unit
     ) =>
     unit;
 
   let insertEdgeAfter:
-    (
-      ~connection: RecordProxy.t,
-      ~newEdge: RecordProxy.t,
-      ~cursor: option(string)
-    ) =>
+    (~connection: RecordProxy.t, ~newEdge: RecordProxy.t, ~cursor: string=?) =>
     unit;
 
   let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit;

@@ -19,7 +19,7 @@ let resolveNestedRecord =
         currentRecord :=
           record->ReasonRelay.RecordProxy.getLinkedRecord(
             ~name=currentPath,
-            ~arguments=None,
+            (),
           )
       | _ => currentRecord := None
       };
@@ -82,7 +82,8 @@ let removeNodeFromConnections = (~store, ~node, ~connections) =>
            ConnectionHandler.getConnection(
              ~record=owner,
              ~key=connectionConfig.key,
-             ~filters=connectionConfig.filters,
+             ~filters=?connectionConfig.filters,
+             (),
            )
          ) {
          | Some(connection) =>
@@ -110,7 +111,8 @@ let createAndAddEdgeToConnections =
            ConnectionHandler.getConnection(
              ~record=connectionOwner,
              ~key=connectionConfig.key,
-             ~filters=None,
+             ~filters=?connectionConfig.filters,
+             (),
            )
          ) {
          | Some(connection) =>
@@ -123,16 +125,12 @@ let createAndAddEdgeToConnections =
              );
            switch (insertAt) {
            | Start =>
-             ConnectionHandler.insertEdgeAfter(
-               ~connection,
-               ~newEdge=edge,
-               ~cursor=None,
-             )
+             ConnectionHandler.insertEdgeAfter(~connection, ~newEdge=edge, ())
            | End =>
              ConnectionHandler.insertEdgeBefore(
                ~connection,
                ~newEdge=edge,
-               ~cursor=None,
+               (),
              )
            };
          | None => ()

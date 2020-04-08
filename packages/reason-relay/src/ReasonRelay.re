@@ -92,7 +92,7 @@ module RecordProxy = {
     (t, string, option(arguments)) => Js.Nullable.t(t) =
     "getLinkedRecord";
 
-  let getLinkedRecord = (t, ~name, ~arguments): option(t) =>
+  let getLinkedRecord = (t, ~name, ~arguments=?, ()): option(t) =>
     _getLinkedRecord(t, name, arguments) |> toOpt;
 
   [@bs.send]
@@ -101,7 +101,8 @@ module RecordProxy = {
     Js.Nullable.t(array(Js.Nullable.t(t))) =
     "getLinkedRecords";
 
-  let getLinkedRecords = (t, ~name, ~arguments): option(array(option(t))) =>
+  let getLinkedRecords =
+      (t, ~name, ~arguments=?, ()): option(array(option(t))) =>
     switch (_getLinkedRecords(t, name, arguments) |> toOpt) {
     | Some(records) => Some(records |> Array.map(v => v |> toOpt))
     | None => None
@@ -112,7 +113,7 @@ module RecordProxy = {
     (t, string, string, option(arguments)) => t =
     "getOrCreateLinkedRecord";
 
-  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments) =>
+  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments=?, ()) =>
     _getOrCreateLinkedRecord(t, name, typeName, arguments);
 
   [@bs.send] external _getType: t => string = "getType";
@@ -129,43 +130,44 @@ module RecordProxy = {
     | None => None
     };
 
-  let getValueString = (t, ~name, ~arguments): option(string) =>
+  let getValueString = (t, ~name, ~arguments=?, ()): option(string) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueStringArray =
-      (t, ~name, ~arguments): option(array(option(string))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(string))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueInt = (t, ~name, ~arguments): option(int) =>
+  let getValueInt = (t, ~name, ~arguments=?, ()): option(int) =>
     _getValue(t, name, arguments) |> toOpt;
 
-  let getValueIntArray = (t, ~name, ~arguments): option(array(option(int))) =>
+  let getValueIntArray =
+      (t, ~name, ~arguments=?, ()): option(array(option(int))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueFloat = (t, ~name, ~arguments): option(float) =>
+  let getValueFloat = (t, ~name, ~arguments=?, ()): option(float) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueFloatArray =
-      (t, ~name, ~arguments): option(array(option(float))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(float))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueBool = (t, ~name, ~arguments): option(bool) =>
+  let getValueBool = (t, ~name, ~arguments=?, ()): option(bool) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueBoolArray =
-      (t, ~name, ~arguments): option(array(option(bool))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(bool))) =>
     _getValueArr(~name, ~arguments, t);
 
   [@bs.send]
   external _setLinkedRecord: (t, t, string, option(arguments)) => t =
     "setLinkedRecord";
-  let setLinkedRecord = (t, ~record, ~name, ~arguments) =>
+  let setLinkedRecord = (t, ~record, ~name, ~arguments=?, ()) =>
     _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
   external _unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecord";
-  let unsetLinkedRecord = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetLinkedRecord = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetLinkedRecord(t, Js.null, name, arguments)
     | Undefined => _unsetLinkedRecord(t, Js.undefined, name, arguments)
@@ -175,13 +177,13 @@ module RecordProxy = {
   external _setLinkedRecords:
     (t, array(option(t)), string, option(arguments)) => t =
     "setLinkedRecords";
-  let setLinkedRecords = (t, ~records, ~name, ~arguments) =>
+  let setLinkedRecords = (t, ~records, ~name, ~arguments=?, ()) =>
     _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
   external _unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecords";
-  let unsetLinkedRecords = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetLinkedRecords = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetLinkedRecords(t, Js.null, name, arguments)
     | Undefined => _unsetLinkedRecords(t, Js.undefined, name, arguments)
@@ -194,34 +196,35 @@ module RecordProxy = {
   [@bs.send]
   external _unsetValue: (t, 'nullable, string, option(arguments)) => t =
     "setValue";
-  let unsetValue = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetValue = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetValue(t, Js.null, name, arguments)
     | Undefined => _unsetValue(t, Js.undefined, name, arguments)
     };
 
-  let setValueString = (t, ~value: string, ~name, ~arguments) =>
+  let setValueString = (t, ~value: string, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueStringArray = (t, ~value: array(string), ~name, ~arguments) =>
+  let setValueStringArray =
+      (t, ~value: array(string), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueInt = (t, ~value: int, ~name, ~arguments) =>
+  let setValueInt = (t, ~value: int, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments) =>
+  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloat = (t, ~value: float, ~name, ~arguments) =>
+  let setValueFloat = (t, ~value: float, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments) =>
+  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBool = (t, ~value: bool, ~name, ~arguments) =>
+  let setValueBool = (t, ~value: bool, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments) =>
+  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
   [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
@@ -264,8 +267,6 @@ module RecordSourceSelectorProxy = {
   [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
-module StoreProxy = RecordSourceSelectorProxy;
-
 module RecordSourceProxy = {
   type t;
 
@@ -285,8 +286,6 @@ module RecordSourceProxy = {
   [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
-module StoreProxyReadOnly = RecordSourceProxy;
-
 module ConnectionHandler = {
   type t;
 
@@ -299,7 +298,7 @@ module ConnectionHandler = {
     Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
-  let getConnection = (~record, ~key, ~filters) =>
+  let getConnection = (~record, ~key, ~filters=?, ()) =>
     _getConnection(connectionHandler, record, key, filters)
     |> Js.Nullable.toOption;
 
@@ -317,7 +316,7 @@ module ConnectionHandler = {
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeBefore";
 
-  let insertEdgeBefore = (~connection, ~newEdge, ~cursor) =>
+  let insertEdgeBefore = (~connection, ~newEdge, ~cursor=?, ()) =>
     _insertEdgeBefore(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
@@ -325,7 +324,7 @@ module ConnectionHandler = {
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeAfter";
 
-  let insertEdgeAfter = (~connection, ~newEdge, ~cursor) =>
+  let insertEdgeAfter = (~connection, ~newEdge, ~cursor=?, ()) =>
     _insertEdgeAfter(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
