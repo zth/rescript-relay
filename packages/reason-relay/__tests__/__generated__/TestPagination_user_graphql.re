@@ -3,14 +3,14 @@
 module Unions = {};
 
 module Types = {
-  type friendsConnection = {totalCount: int};
+  type fragment_friendsConnection = {totalCount: int};
 };
 
 open Types;
 
 type fragment = {
   firstName: string,
-  friendsConnection,
+  friendsConnection: fragment_friendsConnection,
 };
 
 module Internal = {

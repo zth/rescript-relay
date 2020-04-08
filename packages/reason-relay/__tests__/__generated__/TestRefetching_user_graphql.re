@@ -24,15 +24,16 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 module Unions = {};
 
 module Types = {
-  type friendsConnection = {totalCount: int};
+  type fragment_friendsConnection = {totalCount: int};
 };
 
 open Types;
 
 type fragment = {
   firstName: string,
-  onlineStatus: option(enum_OnlineStatus),
-  friendsConnection,
+  onlineStatus:
+    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  friendsConnection: fragment_friendsConnection,
   id: option(string),
 };
 

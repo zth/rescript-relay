@@ -45,7 +45,9 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let makeVariables = (~groupId): variables => {groupId: groupId};
+};
 
 type operationType = ReasonRelay.queryNode;
 

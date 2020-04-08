@@ -28,7 +28,8 @@ module Types = {};
 type fragment_t = {
   id: string,
   firstName: string,
-  onlineStatus: option(enum_OnlineStatus),
+  onlineStatus:
+    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
 };
 type fragment = array(fragment_t);
 

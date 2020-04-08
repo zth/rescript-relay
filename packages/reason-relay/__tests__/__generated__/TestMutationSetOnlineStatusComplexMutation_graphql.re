@@ -24,17 +24,24 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 module Unions = {};
 
 module Types = {
-  type setOnlineStatusInput = {onlineStatus: enum_OnlineStatus};
-  type user = {
-    id: string,
-    onlineStatus: option(enum_OnlineStatus),
+  type setOnlineStatusInput = {
+    onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
   };
-  type setOnlineStatusComplex = {user: option(user)};
+  type response_setOnlineStatusComplex_user = {
+    id: string,
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
+  type response_setOnlineStatusComplex = {
+    user: option(response_setOnlineStatusComplex_user),
+  };
 };
 
 open Types;
 
-type response = {setOnlineStatusComplex: option(setOnlineStatusComplex)};
+type response = {
+  setOnlineStatusComplex: option(response_setOnlineStatusComplex),
+};
 type variables = {input: setOnlineStatusInput};
 
 module Internal = {
@@ -79,7 +86,28 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let make_setOnlineStatusInput = (~onlineStatus): setOnlineStatusInput => {
+    onlineStatus: onlineStatus,
+  };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_setOnlineStatusComplex_user =
+      (~id, ~onlineStatus=?, ()): response_setOnlineStatusComplex_user => {
+    id,
+    onlineStatus,
+  };
+
+  let make_response_setOnlineStatusComplex =
+      (~user=?, ()): response_setOnlineStatusComplex => {
+    user: user,
+  };
+
+  let makeOptimisticResponse = (~setOnlineStatusComplex=?, ()): response => {
+    setOnlineStatusComplex: setOnlineStatusComplex,
+  };
+};
 
 type operationType = ReasonRelay.mutationNode;
 

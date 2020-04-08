@@ -24,9 +24,10 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 module Unions = {};
 
 module Types = {
-  type user = {
+  type response_userUpdated_user = {
     id: string,
-    onlineStatus: option(enum_OnlineStatus),
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
     getFragmentRefs:
       unit =>
       {
@@ -34,12 +35,12 @@ module Types = {
         "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
       },
   };
-  type userUpdated = {user: option(user)};
+  type response_userUpdated = {user: option(response_userUpdated_user)};
 };
 
 open Types;
 
-type response = {userUpdated: option(userUpdated)};
+type response = {userUpdated: option(response_userUpdated)};
 type variables = {userId: string};
 
 module Internal = {
@@ -69,7 +70,9 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let makeVariables = (~userId): variables => {userId: userId};
+};
 
 type operationType = ReasonRelay.subscriptionNode;
 

@@ -105,13 +105,17 @@ module Unions = {
 open Unions;
 
 module Types = {
-  type members_edges = {node: option(union_fragment_members_edges_node)};
-  type members = {edges: option(array(option(members_edges)))};
+  type fragment_members_edges = {
+    node: option(union_fragment_members_edges_node),
+  };
+  type fragment_members = {
+    edges: option(array(option(fragment_members_edges))),
+  };
 };
 
 open Types;
 
-type fragment = {members: option(members)};
+type fragment = {members: option(fragment_members)};
 
 module Internal = {
   type fragmentRaw;
@@ -138,7 +142,7 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
   let getConnectionNodes_members:
-    option(members) => array(union_fragment_members_edges_node) =
+    option(fragment_members) => array(union_fragment_members_edges_node) =
     connection =>
       switch (connection) {
       | None => [||]

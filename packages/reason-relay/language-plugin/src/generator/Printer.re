@@ -85,6 +85,14 @@ let printEnumDefinition = (enum: fullEnum, ~includeSemi: bool, ~mode): string =>
   str^;
 };
 
+let objHasPrintableContents = (obj: object_) =>
+  obj.values
+  ->Belt.Array.some(
+      fun
+      | Prop(_) => true
+      | _ => false,
+    );
+
 let rec printTypeReference = (~state: option(fullState), typeName: string) =>
   switch (state) {
   | Some(state) =>
@@ -232,44 +240,58 @@ and printRecordReference = (~state: fullState, ~obj: object_) => {
 };
 
 let printObjectMaker = (obj: object_, ~targetType, ~name) => {
+  let hasContents = obj->objHasPrintableContents;
+
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
   addToStr("let " ++ name ++ " = (");
 
-  obj.values
-  |> Array.iteri((index, p) => {
-       if (index > 0) {
-         addToStr(",");
-       };
+  if (hasContents) {
+    obj.values
+    |> Array.iteri((index, p) => {
+         if (index > 0) {
+           addToStr(",");
+         };
 
-       addToStr(
-         switch (p) {
-         | Prop(name, {nullable}) =>
-           "~" ++ printSafeName(name) ++ (nullable ? "=?" : "")
-         | FragmentRef(_) => ""
-         },
-       );
-     });
+         addToStr(
+           switch (p) {
+           | Prop(name, {nullable}) =>
+             "~" ++ printSafeName(name) ++ (nullable ? "=?" : "")
+           | FragmentRef(_) => ""
+           },
+         );
+       });
 
-  addToStr(", ()): " ++ targetType ++ " => {");
+    let shouldAddUnit =
+      obj.values
+      ->Belt.Array.some(
+          fun
+          | Prop(_, {nullable}) => nullable
+          | _ => false,
+        );
 
-  obj.values
-  |> Array.iteri((index, p) => {
-       if (index > 0) {
-         addToStr(",");
-       };
+    addToStr((shouldAddUnit ? ", ()" : "") ++ "): " ++ targetType ++ " => {");
 
-       addToStr(
-         switch (p) {
-         | Prop(name, _) =>
-           printSafeName(name) ++ ": " ++ printSafeName(name)
-         | FragmentRef(_) => ""
-         },
-       );
-     });
+    obj.values
+    |> Array.iteri((index, p) => {
+         if (index > 0) {
+           addToStr(",");
+         };
 
-  addToStr("}");
+         addToStr(
+           switch (p) {
+           | Prop(name, _) =>
+             printSafeName(name) ++ ": " ++ printSafeName(name)
+           | FragmentRef(_) => ""
+           },
+         );
+       });
+
+    addToStr("}");
+  } else {
+    addToStr(") => ()");
+  };
   str^;
 };
 

@@ -90,6 +90,12 @@ module Utils = {
     and_,
     nested,
   };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let makeOptimisticResponse = (~mutationWithReservedName): response => {
+    mutationWithReservedName: mutationWithReservedName,
+  };
 };
 
 type operationType = ReasonRelay.mutationNode;
@@ -251,17 +257,19 @@ module Types = {
     userId: string,
     location: option(locationBounds),
   };
-  type changedUser = {
+  type response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
     role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
   };
-  type setUserLocation = {changedUser: option(changedUser)};
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  };
 };
 
 open Types;
 
-type response = {setUserLocation};
+type response = {setUserLocation: response_setUserLocation};
 type variables = {input: setUserLocationInput};
 
 module Internal = {
@@ -317,6 +325,24 @@ module Utils = {
     userId,
     location,
   };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_setUserLocation_changedUser =
+      (~id, ~firstName, ~role): response_setUserLocation_changedUser => {
+    id,
+    firstName,
+    role,
+  };
+
+  let make_response_setUserLocation =
+      (~changedUser=?, ()): response_setUserLocation => {
+    changedUser: changedUser,
+  };
+
+  let makeOptimisticResponse = (~setUserLocation): response => {
+    setUserLocation: setUserLocation,
+  };
 };
 
 type operationType = ReasonRelay.mutationNode;
@@ -340,16 +366,18 @@ module Types = {
     userId: string,
     location: option(locationBounds),
   };
-  type changedUser = {
+  type response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
   };
-  type setUserLocation = {changedUser: option(changedUser)};
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  };
 };
 
 open Types;
 
-type response = {setUserLocation};
+type response = {setUserLocation: response_setUserLocation};
 type variables = {input: setUserLocationInput};
 
 module Internal = {
@@ -404,6 +432,23 @@ module Utils = {
     clientMutationId,
     userId,
     location,
+  };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_setUserLocation_changedUser =
+      (~id, ~firstName): response_setUserLocation_changedUser => {
+    id,
+    firstName,
+  };
+
+  let make_response_setUserLocation =
+      (~changedUser=?, ()): response_setUserLocation => {
+    changedUser: changedUser,
+  };
+
+  let makeOptimisticResponse = (~setUserLocation): response => {
+    setUserLocation: setUserLocation,
   };
 };
 
@@ -476,15 +521,19 @@ module Unions = {
 open Unions;
 
 module Types = {
-  type edges = {
+  type fragment_participantsConnection_edges = {
     node: option(union_fragment_participantsConnection_edges_node),
   };
-  type participantsConnection = {edges: option(array(option(edges)))};
+  type fragment_participantsConnection = {
+    edges: option(array(option(fragment_participantsConnection_edges))),
+  };
 };
 
 open Types;
 
-type fragment = {participantsConnection: option(participantsConnection)};
+type fragment = {
+  participantsConnection: option(fragment_participantsConnection),
+};
 
 module Internal = {
   type fragmentRaw;
@@ -511,7 +560,7 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\
 
 module Utils = {
   let getConnectionNodes_participantsConnection:
-    option(participantsConnection) =>
+    option(fragment_participantsConnection) =>
     array(union_fragment_participantsConnection_edges_node) =
     connection =>
       switch (connection) {
@@ -546,18 +595,24 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 module Unions = {};
 
 module Types = {
-  type node = {
+  type fragment_me_friendsConnection_edges_node = {
     id: string,
     firstName: string,
   };
-  type edges = {node: option(node)};
-  type friendsConnection = {edges: option(array(option(edges)))};
-  type me = {friendsConnection: option(friendsConnection)};
+  type fragment_me_friendsConnection_edges = {
+    node: option(fragment_me_friendsConnection_edges_node),
+  };
+  type fragment_me_friendsConnection = {
+    edges: option(array(option(fragment_me_friendsConnection_edges))),
+  };
+  type fragment_me = {
+    friendsConnection: option(fragment_me_friendsConnection),
+  };
 };
 
 open Types;
 
-type fragment = {me};
+type fragment = {me: fragment_me};
 
 module Internal = {
   type fragmentRaw;
@@ -582,7 +637,8 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\
 
 module Utils = {
   let getConnectionNodes_friendsConnection:
-    option(friendsConnection) => array(node) =
+    option(fragment_me_friendsConnection) =>
+    array(fragment_me_friendsConnection_edges_node) =
     connection =>
       switch (connection) {
       | None => [||]
@@ -616,17 +672,21 @@ exports[`Language plugin tests Query connections generates helpers for root leve
 module Unions = {};
 
 module Types = {
-  type node = {
+  type fragment_usersConnection_edges_node = {
     id: string,
     firstName: string,
   };
-  type edges = {node: option(node)};
-  type usersConnection = {edges: option(array(option(edges)))};
+  type fragment_usersConnection_edges = {
+    node: option(fragment_usersConnection_edges_node),
+  };
+  type fragment_usersConnection = {
+    edges: option(array(option(fragment_usersConnection_edges))),
+  };
 };
 
 open Types;
 
-type fragment = {usersConnection: option(usersConnection)};
+type fragment = {usersConnection: option(fragment_usersConnection)};
 
 module Internal = {
   type fragmentRaw;
@@ -651,7 +711,8 @@ external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\
 
 module Utils = {
   let getConnectionNodes_usersConnection:
-    option(usersConnection) => array(node) =
+    option(fragment_usersConnection) =>
+    array(fragment_usersConnection_edges_node) =
     connection =>
       switch (connection) {
       | None => [||]
@@ -685,7 +746,7 @@ exports[`Language plugin tests Query prints simple responses and variables 1`] =
 module Unions = {};
 
 module Types = {
-  type user = {
+  type response_user = {
     id: string,
     firstName: string,
   };
@@ -693,7 +754,7 @@ module Types = {
 
 open Types;
 
-type response = {user: option(user)};
+type response = {user: option(response_user)};
 type refetchVariables = {userId: option(string)};
 let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
   userId: userId,
@@ -727,7 +788,9 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let makeVariables = (~userId): variables => {userId: userId};
+};
 
 type operationType = ReasonRelay.queryNode;
 "
@@ -744,16 +807,16 @@ module Types = {
     clientMutationId: option(string),
     userId: string,
   };
-  type user = {
+  type response_userChanged_user = {
     id: string,
     firstName: string,
   };
-  type userChanged = {user: option(user)};
+  type response_userChanged = {user: option(response_userChanged_user)};
 };
 
 open Types;
 
-type response = {userChanged};
+type response = {userChanged: response_userChanged};
 type variables = {input: userChangedInput};
 
 module Internal = {
@@ -789,6 +852,8 @@ module Utils = {
     clientMutationId,
     userId,
   };
+
+  let makeVariables = (~input): variables => {input: input};
 };
 
 type operationType = ReasonRelay.subscriptionNode;

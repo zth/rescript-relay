@@ -25,7 +25,8 @@ module Unions = {
   module Union_response_members_edges_node_group_members: {
     type wrapped;
     type response_members_edges_node_group_members_user = {
-      onlineStatus: option(enum_OnlineStatus),
+      onlineStatus:
+        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       firstName: string,
       id: string,
     };
@@ -45,7 +46,8 @@ module Unions = {
   } = {
     type wrapped;
     type response_members_edges_node_group_members_user = {
-      onlineStatus: option(enum_OnlineStatus),
+      onlineStatus:
+        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       firstName: string,
       id: string,
     };
@@ -85,7 +87,8 @@ module Unions = {
   module Union_response_members_edges_node: {
     type wrapped;
     type response_members_edges_node_user = {
-      onlineStatus: option(enum_OnlineStatus),
+      onlineStatus:
+        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       firstName: string,
       id: string,
     };
@@ -109,7 +112,8 @@ module Unions = {
   } = {
     type wrapped;
     type response_members_edges_node_user = {
-      onlineStatus: option(enum_OnlineStatus),
+      onlineStatus:
+        option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       firstName: string,
       id: string,
     };
@@ -154,13 +158,17 @@ module Unions = {
 open Unions;
 
 module Types = {
-  type edges = {node: option(union_response_members_edges_node)};
-  type members = {edges: option(array(option(edges)))};
+  type response_members_edges = {
+    node: option(union_response_members_edges_node),
+  };
+  type response_members = {
+    edges: option(array(option(response_members_edges))),
+  };
 };
 
 open Types;
 
-type response = {members: option(members)};
+type response = {members: option(response_members)};
 type variables = unit;
 
 module Internal = {

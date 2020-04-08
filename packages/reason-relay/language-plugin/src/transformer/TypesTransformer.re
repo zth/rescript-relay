@@ -63,9 +63,6 @@ let intermediateToFull =
 
   let state = ref(initialState);
 
-  let usedRecordNames: ref(list(string)) = ref([]);
-  let addUsedRecordName = Utils.makeAddToList(usedRecordNames);
-
   let setState = updater => state := updater(state^);
   let addEnum = enum => setState(s => {...s, enums: [enum, ...s.enums]});
   let addUnion = union =>
@@ -138,15 +135,7 @@ let intermediateToFull =
         |> List.map((obj: Types.finalizedObj) => {
              let recordName =
                switch (obj.recordName) {
-               | None =>
-                 let name =
-                   Utils.findAppropriateObjName(
-                     ~prefix=None,
-                     ~usedRecordNames=usedRecordNames^,
-                     ~path=obj.atPath,
-                   );
-                 addUsedRecordName(name);
-                 Some(name);
+               | None => Some(Utils.makeRecordName(obj.atPath))
                | s => s
                };
 
@@ -424,34 +413,66 @@ let getPrintedFullState =
   | None => ()
   };
 
-  // We print maker functions for all input objects with at least one optional prop
+  // We print maker functions for all input objects
   state.objects
   ->Tablecloth.List.iter(
       ~f=
         fun
         | {originalFlowTypeName: Some(typeName), definition} => {
-            switch (
-              definition.values
-              ->Tablecloth.Array.find(
-                  ~f=
-                    fun
-                    | Prop(_, {nullable: true}) => true
-                    | _ => false,
-                )
-            ) {
-            | Some(_) =>
-              definition
-              ->Printer.printObjectMaker(
-                  ~targetType=typeName->Tablecloth.String.uncapitalize,
-                  ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
-                )
-              ->addToStr;
-              addSpacing();
-            | None => ()
-            };
+            definition
+            ->Printer.printObjectMaker(
+                ~targetType=typeName->Tablecloth.String.uncapitalize,
+                ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
+              )
+            ->addToStr;
+            addSpacing();
           }
         | _ => (),
     );
+
+  // Add a maker function for the variables if variables exist
+  switch (state.variables) {
+  | None => ()
+  | Some(variables) =>
+    variables->Printer.objHasPrintableContents
+      ? {
+        variables
+        ->Printer.printObjectMaker(
+            ~targetType="variables",
+            ~name="makeVariables",
+          )
+        ->addToStr;
+        addSpacing();
+      }
+      : ()
+  };
+
+  // Emit make function for optimistic responses
+  switch (operationType, state.response) {
+  | (Mutation(_), Some(response)) =>
+    state.objects
+    ->Belt.List.keepMap(
+        fun
+        | {definition, originalFlowTypeName: None, recordName: Some(name)} =>
+          Some((name, definition))
+        | _ => None,
+      )
+    ->Belt.List.forEach(((name, obj)) => {
+        obj
+        ->Printer.printObjectMaker(~targetType=name, ~name="make_" ++ name)
+        ->addToStr;
+        addSpacing();
+      });
+
+    response
+    ->Printer.printObjectMaker(
+        ~targetType="response",
+        ~name="makeOptimisticResponse",
+      )
+    ->addToStr;
+    addSpacing();
+  | _ => ()
+  };
 
   addToStr("};");
   addSpacing();

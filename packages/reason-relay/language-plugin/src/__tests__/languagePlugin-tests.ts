@@ -15,7 +15,7 @@ import {
   convertASTDocuments,
   Root,
   Schema,
-  Fragment
+  Fragment,
 } from "relay-compiler";
 
 const create = require("relay-compiler").Schema.create;
@@ -36,7 +36,7 @@ function parseGraphQLText(
   );
   return {
     definitions,
-    schema: extendedSchema
+    schema: extendedSchema,
   };
 }
 
@@ -57,7 +57,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
   const relaySchema = testSchema.extend([
     ...RelayIRTransforms.schemaExtensions,
     ...getLanguagePlugin().schemaExtensions,
-    extraDefs
+    extraDefs,
   ]);
   const { definitions, schema: extendedSchema } = parseGraphQLText(
     relaySchema,
@@ -75,7 +75,7 @@ function generate(text: string, options?: any, extraDefs: string = "") {
             customScalars: {},
             optionalInputFields: [],
             existingFragmentNames: new Set([]),
-            ...options
+            ...options,
           })
         )}`
     )
@@ -470,7 +470,11 @@ describe("Language plugin tests", () => {
         )
       ).toBe(true);
 
-      expect(generated.includes(`role: enum_UserRole`)).toBe(true);
+      expect(
+        generated.includes(
+          "role: [ | `Admin | `User | `FutureAddedValue(string)]"
+        )
+      ).toBe(true);
     });
   });
 
@@ -496,8 +500,8 @@ describe("Language plugin tests", () => {
           }`,
         {
           customScalars: {
-            Color: "Color.t"
-          }
+            Color: "Color.t",
+          },
         }
       );
 
@@ -607,11 +611,11 @@ describe("Language plugin tests", () => {
       );
 
       expect(collapseString(generated)).toMatch(
-        `type users = {firstName: string};`
+        `type response_users = {firstName: string};`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response = {users: array(users)};`
+        `type response = {users: array(response_users)};`
       );
     });
 

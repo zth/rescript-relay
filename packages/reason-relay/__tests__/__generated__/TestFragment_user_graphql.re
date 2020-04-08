@@ -27,7 +27,8 @@ module Types = {};
 
 type fragment = {
   firstName: string,
-  onlineStatus: option(enum_OnlineStatus),
+  onlineStatus:
+    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
   getFragmentRefs:
     unit =>
     {

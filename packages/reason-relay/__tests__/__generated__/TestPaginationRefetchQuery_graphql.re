@@ -35,7 +35,10 @@ type response = {
 };
 type refetchVariables = {
   groupId: option(string),
-  onlineStatuses: option(array(enum_OnlineStatus)),
+  onlineStatuses:
+    option(
+      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    ),
   count: option(int),
   cursor: option(string),
 };
@@ -48,7 +51,10 @@ let makeRefetchVariables =
 };
 type variables = {
   groupId: string,
-  onlineStatuses: option(array(enum_OnlineStatus)),
+  onlineStatuses:
+    option(
+      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    ),
   count: option(int),
   cursor: option(string),
 };
@@ -80,7 +86,15 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let makeVariables =
+      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
+    groupId,
+    onlineStatuses,
+    count,
+    cursor,
+  };
+};
 
 type operationType = ReasonRelay.queryNode;
 

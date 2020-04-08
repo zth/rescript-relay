@@ -21,60 +21,8 @@ let unmaskDots = str =>
 
 let makeObjName = (next, current) => current ++ "_" ++ next;
 
-exception Unique_name_creation_failed(int);
-
 let makeRecordName = (path: list(string)) =>
   path->Tablecloth.List.reverse->Tablecloth.String.join(~sep="_");
-
-/**
- * This tries to find the simplest unique name given a list of existing names
- * and a path. It's used to create the names of the records produced by the type
- * generator, since they need to be unique (but still make sense to the developer
- * as you occasionally may need to reference them).
- */
-let findAppropriateObjName =
-    (~usedRecordNames: list(string), ~path: list(string), ~prefix) => {
-  let getName = n =>
-    switch (prefix) {
-    | Some(prefix) => prefix ++ "_" ++ n
-    | None => n
-    };
-
-  let isUnique = name => !List.exists(n => n == name, usedRecordNames);
-
-  switch (path) {
-  | [] => raise(Unique_name_creation_failed(1))
-  | [name, ..._] when isUnique(getName(name)) => getName(name)
-  | [initialName, ...rest] =>
-    let currentName = ref(initialName);
-    let uniqueName = ref(None);
-
-    rest
-    |> List.iter(name => {
-         switch (uniqueName^) {
-         | Some(_) => ()
-         | None =>
-           currentName := makeObjName(currentName^, name);
-
-           if (isUnique(currentName^ |> getName)) {
-             uniqueName := Some(currentName^ |> getName);
-           };
-         }
-       });
-
-    switch (uniqueName^) {
-    | Some(name) => name
-    | None => raise(Unique_name_creation_failed(3))
-    };
-  };
-};
-
-[@gentype]
-let findObjName = (~usedRecordNames: array(string), ~path: array(string)) =>
-  findAppropriateObjName(
-    ~usedRecordNames=Tablecloth.Array.toList(usedRecordNames),
-    ~path=Tablecloth.Array.toList(path),
-  );
 
 let extractNestedObjects = (obj: object_): list(object_) => {
   let objects = ref([]);

@@ -3,7 +3,7 @@
 module Unions = {};
 
 module Types = {
-  type loggedInUser = {
+  type response_loggedInUser = {
     getFragmentRefs:
       unit =>
       {. "__$fragment_ref__TestMutation_user": TestMutation_user_graphql.t},
@@ -12,7 +12,7 @@ module Types = {
 
 open Types;
 
-type response = {loggedInUser};
+type response = {loggedInUser: response_loggedInUser};
 type variables = unit;
 
 module Internal = {

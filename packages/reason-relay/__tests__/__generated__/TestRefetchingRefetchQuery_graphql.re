@@ -24,7 +24,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 module Unions = {};
 
 module Types = {
-  type node = {
+  type response_node = {
     getFragmentRefs:
       unit =>
       {
@@ -36,9 +36,12 @@ module Types = {
 
 open Types;
 
-type response = {node: option(node)};
+type response = {node: option(response_node)};
 type refetchVariables = {
-  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
+  friendsOnlineStatuses:
+    option(
+      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    ),
   showOnlineStatus: option(bool),
   id: option(string),
 };
@@ -50,7 +53,10 @@ let makeRefetchVariables =
   id,
 };
 type variables = {
-  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
+  friendsOnlineStatuses:
+    option(
+      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    ),
   showOnlineStatus: bool,
   id: string,
 };
@@ -82,7 +88,14 @@ module Internal = {
       );
 };
 
-module Utils = {};
+module Utils = {
+  let makeVariables =
+      (~friendsOnlineStatuses=?, ~showOnlineStatus, ~id, ()): variables => {
+    friendsOnlineStatuses,
+    showOnlineStatus,
+    id,
+  };
+};
 
 type operationType = ReasonRelay.queryNode;
 
