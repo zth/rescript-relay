@@ -61,7 +61,7 @@ module Test = {
     let (preloadToken, setPreloadToken) = React.useState(() => None);
     let (fetchedResult, setFetchedResult) = React.useState(() => None);
 
-    let collectUsers = (res: Query.Operation.response) =>
+    let collectUsers = (res: Query.Types.response) =>
       switch (res) {
       | {users: Some({edges: Some(edges)})} =>
         edges->Belt.Array.keepMap(edge =>

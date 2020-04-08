@@ -273,22 +273,16 @@ let getPrintedFullState =
     |> List.iter(def => {def |> printRootType(~state) |> addToStr})
   );
 
-  addToStr("};");
   addSpacing();
-
-  // We'll open the Types module locally in our generated file if there's contents
-  switch (typeDeclarations^ |> Tablecloth.List.length) {
-  | 0 => ()
-  | _ =>
-    addToStr("open Types;");
-    addSpacing();
-  };
 
   Printer.(
     definitions^
     |> List.iter(def => {def |> printRootType(~state) |> addToStr})
   );
 
+  addSpacing();
+
+  addToStr("};");
   addSpacing();
 
   // This emits extra assets for the generated modules,
@@ -373,6 +367,9 @@ let getPrintedFullState =
 
   // Utils that'll be included and accessible at the top level of the generated module
   addToStr("module Utils = {");
+  let utilsContent = ref("");
+  let addToUtils = str => utilsContent := utilsContent^ ++ str;
+  let addSpacingToUtils = () => addToUtils("\n\n\n");
 
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
@@ -395,18 +392,18 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToStr;
+      |> addToUtils;
 
-      addSpacing();
+      addSpacingToUtils();
     | (None, Some({definition})) when connPath == ["fragment"] =>
       definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToStr;
+      |> addToUtils;
 
-      addSpacing();
+      addSpacingToUtils();
     | (None, Some(_))
     | (None, None) => ()
     };
@@ -424,8 +421,8 @@ let getPrintedFullState =
                 ~targetType=typeName->Tablecloth.String.uncapitalize,
                 ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
               )
-            ->addToStr;
-            addSpacing();
+            ->addToUtils;
+            addSpacingToUtils();
           }
         | _ => (),
     );
@@ -441,8 +438,8 @@ let getPrintedFullState =
             ~targetType="variables",
             ~name="makeVariables",
           )
-        ->addToStr;
-        addSpacing();
+        ->addToUtils;
+        addSpacingToUtils();
       }
       : ()
   };
@@ -460,8 +457,8 @@ let getPrintedFullState =
     ->Belt.List.forEach(((name, obj)) => {
         obj
         ->Printer.printObjectMaker(~targetType=name, ~name="make_" ++ name)
-        ->addToStr;
-        addSpacing();
+        ->addToUtils;
+        addSpacingToUtils();
       });
 
     response
@@ -469,12 +466,17 @@ let getPrintedFullState =
         ~targetType="response",
         ~name="makeOptimisticResponse",
       )
-    ->addToStr;
-    addSpacing();
+    ->addToUtils;
+    addSpacingToUtils();
   | _ => ()
   };
 
-  addToStr("};");
+  // Open Types locally here if we have any content to print
+  if (utilsContent^ != "") {
+    addToStr("open Types;");
+  };
+
+  addToStr(utilsContent^ ++ "};");
   addSpacing();
 
   // This adds operationType, which is referenced in the raw output of the Relay

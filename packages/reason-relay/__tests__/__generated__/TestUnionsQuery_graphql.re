@@ -164,12 +164,10 @@ module Types = {
   type response_members = {
     edges: option(array(option(response_members_edges))),
   };
+
+  type response = {members: option(response_members)};
+  type variables = unit;
 };
-
-open Types;
-
-type response = {members: option(response_members)};
-type variables = unit;
 
 module Internal = {
   type responseRaw;

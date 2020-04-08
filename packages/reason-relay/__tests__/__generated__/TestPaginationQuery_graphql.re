@@ -2,21 +2,21 @@
 
 module Unions = {};
 
-module Types = {};
-
-type response = {
-  getFragmentRefs:
-    unit =>
-    {
-      .
-      "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
-    },
+module Types = {
+  type response = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
+      },
+  };
+  type refetchVariables = {groupId: option(string)};
+  let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
+    groupId: groupId,
+  };
+  type variables = {groupId: string};
 };
-type refetchVariables = {groupId: option(string)};
-let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
-  groupId: groupId,
-};
-type variables = {groupId: string};
 
 module Internal = {
   type responseRaw;
@@ -46,6 +46,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let makeVariables = (~groupId): variables => {groupId: groupId};
 };
 

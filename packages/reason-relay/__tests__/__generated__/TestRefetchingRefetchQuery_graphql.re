@@ -32,33 +32,31 @@ module Types = {
         "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t,
       },
   };
-};
 
-open Types;
-
-type response = {node: option(response_node)};
-type refetchVariables = {
-  friendsOnlineStatuses:
-    option(
-      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    ),
-  showOnlineStatus: option(bool),
-  id: option(string),
-};
-let makeRefetchVariables =
-    (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
-    : refetchVariables => {
-  friendsOnlineStatuses,
-  showOnlineStatus,
-  id,
-};
-type variables = {
-  friendsOnlineStatuses:
-    option(
-      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    ),
-  showOnlineStatus: bool,
-  id: string,
+  type response = {node: option(response_node)};
+  type refetchVariables = {
+    friendsOnlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    showOnlineStatus: option(bool),
+    id: option(string),
+  };
+  let makeRefetchVariables =
+      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
+      : refetchVariables => {
+    friendsOnlineStatuses,
+    showOnlineStatus,
+    id,
+  };
+  type variables = {
+    friendsOnlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    showOnlineStatus: bool,
+    id: string,
+  };
 };
 
 module Internal = {
@@ -89,6 +87,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let makeVariables =
       (~friendsOnlineStatuses=?, ~showOnlineStatus, ~id, ()): variables => {
     friendsOnlineStatuses,

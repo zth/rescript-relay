@@ -35,14 +35,12 @@ module Types = {
   type response_setOnlineStatusComplex = {
     user: option(response_setOnlineStatusComplex_user),
   };
-};
 
-open Types;
-
-type response = {
-  setOnlineStatusComplex: option(response_setOnlineStatusComplex),
+  type response = {
+    setOnlineStatusComplex: option(response_setOnlineStatusComplex),
+  };
+  type variables = {input: setOnlineStatusInput};
 };
-type variables = {input: setOnlineStatusInput};
 
 module Internal = {
   type wrapResponseRaw;
@@ -87,6 +85,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let make_setOnlineStatusInput = (~onlineStatus): setOnlineStatusInput => {
     onlineStatus: onlineStatus,
   };

@@ -34,21 +34,19 @@ module Types = {
   type response_users = {
     edges: option(array(option(response_users_edges))),
   };
-};
 
-open Types;
-
-type response = {users: option(response_users)};
-type refetchVariables = {
-  status:
-    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-};
-let makeRefetchVariables = (~status=?, ()): refetchVariables => {
-  status: status,
-};
-type variables = {
-  status:
-    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  type response = {users: option(response_users)};
+  type refetchVariables = {
+    status:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
+  let makeRefetchVariables = (~status=?, ()): refetchVariables => {
+    status: status,
+  };
+  type variables = {
+    status:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
 };
 
 module Internal = {
@@ -79,6 +77,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let makeVariables = (~status=?, ()): variables => {status: status};
 };
 

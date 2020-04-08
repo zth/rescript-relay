@@ -36,12 +36,10 @@ module Types = {
       },
   };
   type response_userUpdated = {user: option(response_userUpdated_user)};
+
+  type response = {userUpdated: option(response_userUpdated)};
+  type variables = {userId: string};
 };
-
-open Types;
-
-type response = {userUpdated: option(response_userUpdated)};
-type variables = {userId: string};
 
 module Internal = {
   type responseRaw;
@@ -71,6 +69,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let makeVariables = (~userId): variables => {userId: userId};
 };
 

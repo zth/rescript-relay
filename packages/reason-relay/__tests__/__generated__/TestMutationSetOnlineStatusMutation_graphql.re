@@ -32,13 +32,11 @@ module Types = {
   type response_setOnlineStatus = {
     user: option(response_setOnlineStatus_user),
   };
-};
 
-open Types;
-
-type response = {setOnlineStatus: option(response_setOnlineStatus)};
-type variables = {
-  onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
+  type response = {setOnlineStatus: option(response_setOnlineStatus)};
+  type variables = {
+    onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
+  };
 };
 
 module Internal = {
@@ -84,6 +82,7 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let makeVariables = (~onlineStatus): variables => {
     onlineStatus: onlineStatus,
   };

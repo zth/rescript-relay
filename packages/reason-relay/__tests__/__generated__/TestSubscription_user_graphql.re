@@ -23,14 +23,14 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Unions = {};
 
-module Types = {};
-
-type fragment = {
-  id: string,
-  firstName: string,
-  avatarUrl: option(string),
-  onlineStatus:
-    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+module Types = {
+  type fragment = {
+    id: string,
+    firstName: string,
+    avatarUrl: option(string),
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
 };
 
 module Internal = {

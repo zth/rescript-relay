@@ -111,11 +111,9 @@ module Types = {
   type fragment_members = {
     edges: option(array(option(fragment_members_edges))),
   };
+
+  type fragment = {members: option(fragment_members)};
 };
-
-open Types;
-
-type fragment = {members: option(fragment_members)};
 
 module Internal = {
   type fragmentRaw;
@@ -141,6 +139,7 @@ type fragmentRefSelector('a) =
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
+  open Types;
   let getConnectionNodes_members:
     option(fragment_members) => array(union_fragment_members_edges_node) =
     connection =>

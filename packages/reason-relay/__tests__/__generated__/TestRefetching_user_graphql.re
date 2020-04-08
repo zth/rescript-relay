@@ -25,16 +25,14 @@ module Unions = {};
 
 module Types = {
   type fragment_friendsConnection = {totalCount: int};
-};
 
-open Types;
-
-type fragment = {
-  firstName: string,
-  onlineStatus:
-    option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-  friendsConnection: fragment_friendsConnection,
-  id: option(string),
+  type fragment = {
+    firstName: string,
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    friendsConnection: fragment_friendsConnection,
+    id: option(string),
+  };
 };
 
 module Internal = {

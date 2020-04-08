@@ -238,9 +238,9 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
           module UseRefetchableFragment =
             ReasonRelay.MakeUseRefetchableFragment({
               type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Operation.fragment;
+              type fragment = Types.fragment;
               type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.refetchVariables;
+              type variables = RefetchableOperation.Types.refetchVariables;
               let fragmentSpec = Operation.node;
               let convertFragment = Operation.Internal.convertFragment;
               let convertVariables = RefetchableOperation.Internal.convertVariables;
@@ -255,9 +255,9 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
           module UsePaginationFragment =
             ReasonRelay.MakeUsePaginationFragment({
               type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Operation.fragment;
+              type fragment = Types.fragment;
               type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.refetchVariables;
+              type variables = RefetchableOperation.Types.refetchVariables;
               let fragmentSpec = Operation.node;
               let convertFragment = Operation.Internal.convertFragment;
               let convertVariables = RefetchableOperation.Internal.convertVariables;
@@ -268,7 +268,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         module UseFragment =
           ReasonRelay.MakeUseFragment({
             type fragmentRaw = Operation.Internal.fragmentRaw;
-            type fragment = Operation.fragment;
+            type fragment = Types.fragment;
             type fragmentRef = Operation.fragmentRef;
             let fragmentSpec = Operation.node;
             let convertFragment = Operation.Internal.convertFragment;
@@ -307,7 +307,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       switch (refetchableQueryName, hasConnection) {
       | (_, true)
       | (Some(_), _) => [%stri
-          let makeRefetchVariables = RefetchableOperation.makeRefetchVariables
+          let makeRefetchVariables = RefetchableOperation.Types.makeRefetchVariables
         ]
       | _ =>
         %stri
@@ -330,8 +330,8 @@ let makeQuery = (~loc, ~moduleName) =>
         module UseQuery =
           ReasonRelay.MakeUseQuery({
             type responseRaw = Operation.Internal.responseRaw;
-            type response = Operation.response;
-            type variables = Operation.variables;
+            type response = Types.response;
+            type variables = Types.variables;
             let query = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let convertVariables = Operation.Internal.convertVariables;
@@ -357,9 +357,9 @@ let makeMutation = (~loc, ~moduleName) =>
       [%stri
         module Mutation =
           ReasonRelay.MakeCommitMutation({
-            type variables = Operation.variables;
+            type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
-            type response = Operation.response;
+            type response = Types.response;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
@@ -369,9 +369,9 @@ let makeMutation = (~loc, ~moduleName) =>
       [%stri
         module UseMutation =
           ReasonRelay.MakeUseMutation({
-            type variables = Operation.variables;
+            type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
-            type response = Operation.response;
+            type response = Types.response;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
@@ -396,9 +396,9 @@ let makeSubscription = (~loc, ~moduleName) =>
       [%stri
         module Subscription =
           ReasonRelay.MakeUseSubscription({
-            type variables = Operation.variables;
+            type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
-            type response = Operation.response;
+            type response = Types.response;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let convertVariables = Operation.Internal.convertResponse;

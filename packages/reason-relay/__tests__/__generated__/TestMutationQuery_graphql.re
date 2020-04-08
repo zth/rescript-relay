@@ -8,12 +8,10 @@ module Types = {
       unit =>
       {. "__$fragment_ref__TestMutation_user": TestMutation_user_graphql.t},
   };
+
+  type response = {loggedInUser: response_loggedInUser};
+  type variables = unit;
 };
-
-open Types;
-
-type response = {loggedInUser: response_loggedInUser};
-type variables = unit;
 
 module Internal = {
   type responseRaw;
