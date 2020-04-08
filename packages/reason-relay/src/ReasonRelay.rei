@@ -262,7 +262,12 @@ module ConnectionHandler: {
     unit;
 
   let insertEdgeAfter:
-    (~connection: RecordProxy.t, ~newEdge: RecordProxy.t, ~cursor: string=?) =>
+    (
+      ~connection: RecordProxy.t,
+      ~newEdge: RecordProxy.t,
+      ~cursor: string=?,
+      unit
+    ) =>
     unit;
 
   let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit;
