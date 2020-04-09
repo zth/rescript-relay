@@ -666,6 +666,25 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
          });
     ();
   };
+
+  let fetchPromised =
+      (~environment: Environment.t, ~variables: C.variables)
+      : Promise.t(Belt.Result.t(C.response, Js.Promise.error)) => {
+    let (promise, resolve) = Promise.pending();
+
+    let _ =
+      fetchQuery(environment, C.query, variables |> C.convertVariables)
+      |> Js.Promise.then_(res => {
+           resolve(Ok(res |> C.convertResponse));
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => {
+           resolve(Error(err));
+           Js.Promise.resolve();
+         });
+
+    promise;
+  };
 };
 
 /**
@@ -970,7 +989,7 @@ type _commitMutationConfig('variables, 'response) = {
   variables: 'variables,
   onCompleted:
     option(
-      (Js.Nullable.t(Js.Json.t), Js.Nullable.t(array(mutationError))) =>
+      (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
       unit,
     ),
   onError: option(Js.Nullable.t(mutationError) => unit),
@@ -1062,7 +1081,13 @@ module MakeCommitMutation = (C: MutationConfig) => {
             (res, err) =>
               switch (onCompleted) {
               | Some(cb) =>
-                cb(Js.Nullable.toOption(res), Js.Nullable.toOption(err))
+                cb(
+                  switch (Js.Nullable.toOption(res)) {
+                  | Some(res) => Some(res->C.convertResponse)
+                  | None => None
+                  },
+                  Js.Nullable.toOption(err),
+                )
               | None => ()
               },
           ),
@@ -1088,6 +1113,61 @@ module MakeCommitMutation = (C: MutationConfig) => {
           },
       },
     );
+
+  let commitMutationPromised =
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~optimisticUpdater=?,
+        ~optimisticResponse=?,
+        ~updater=?,
+        (),
+      )
+      : Promise.t(
+          Belt.Result.t(
+            (option(C.response), option(array(mutationError))),
+            option(mutationError),
+          ),
+        ) => {
+    let (promise, resolve) = Promise.pending();
+
+    let _: Disposable.t =
+      _commitMutation(
+        environment,
+        {
+          variables: variables |> C.convertVariables |> _cleanVariables,
+          mutation: C.node,
+          onCompleted:
+            Some(
+              (res, err) =>
+                resolve(
+                  Ok((
+                    switch (Js.Nullable.toOption(res)) {
+                    | Some(res) => Some(res->C.convertResponse)
+                    | None => None
+                    },
+                    Js.Nullable.toOption(err),
+                  )),
+                ),
+            ),
+          onError: Some(err => resolve(Error(Js.Nullable.toOption(err)))),
+          optimisticResponse:
+            switch (optimisticResponse) {
+            | None => None
+            | Some(r) => Some(r |> C.wrapResponse)
+            },
+          optimisticUpdater,
+          updater:
+            switch (updater) {
+            | None => None
+            | Some(updater) =>
+              Some((store, r) => updater(store, r |> C.convertResponse))
+            },
+        },
+      );
+
+    promise;
+  };
 };
 
 [@bs.module "relay-runtime"]

@@ -456,6 +456,10 @@ module MakeUseQuery:
       ) =>
       unit;
 
+    let fetchPromised:
+      (~environment: Environment.t, ~variables: C.variables) =>
+      Promise.t(Belt.Result.t(C.response, Js.Promise.error));
+
     let preload:
       (
         ~environment: Environment.t,
@@ -660,13 +664,29 @@ module MakeCommitMutation:
         ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        ~onCompleted: (option(Js.Json.t), option(array(mutationError))) =>
+        ~onCompleted: (option(C.response), option(array(mutationError))) =>
                       unit
                         =?,
         ~onError: option(mutationError) => unit=?,
         unit
       ) =>
       Disposable.t;
+
+    let commitMutationPromised:
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~optimisticUpdater: optimisticUpdaterFn=?,
+        ~optimisticResponse: C.response=?,
+        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
+        unit
+      ) =>
+      Promise.t(
+        Belt.Result.t(
+          (option(C.response), option(array(mutationError))),
+          option(mutationError),
+        ),
+      );
   };
 
 /**

@@ -19,8 +19,10 @@
     "module": "commonjs",
     "in-source": true
   },
-  "ppx-flags": ["./reason-relay-ppx/_esy/default/build/default/bin/ReasonRelayPpxApp.exe"],
-  "bs-dependencies": ["reason-react"],
+  "ppx-flags": [
+    "./reason-relay-ppx/_esy/default/build/default/bin/ReasonRelayPpxApp.exe"
+  ],
+  "bs-dependencies": ["reason-react", "reason-promise"],
   "bs-dev-dependencies": ["bs-fetch"],
   "suffix": ".bs.js",
   "warnings": {

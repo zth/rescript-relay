@@ -51,6 +51,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
     let data = Fragment.use(query.loggedInUser.getFragmentRefs());
     let (mutate, isMutating) = Mutation.use();
+    let (mutationResult, setMutationResult) = React.useState(() => None);
 
     <div>
       {React.string(
@@ -79,6 +80,27 @@ module Test = {
         }}>
         {React.string("Change online status")}
       </button>
+      <button
+        onClick={_ =>
+          Mutation.(
+            commitMutationPromised(
+              ~environment,
+              ~variables=makeVariables(~onlineStatus=`Idle),
+              (),
+            )
+          )
+          ->Promise.get(
+              fun
+              | Ok((Some(res), _)) => setMutationResult(_ => Some(res))
+              | _ => Js.log("oops!"),
+            )
+        }>
+        {React.string("Change online status promised")}
+      </button>
+      {switch (mutationResult) {
+       | Some(_) => <div> {React.string("Has result")} </div>
+       | None => <div> {React.string("No result yet")} </div>
+       }}
       <button
         onClick={_ => {
           let _ =

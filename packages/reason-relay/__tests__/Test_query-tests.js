@@ -11,18 +11,18 @@ describe("Query", () => {
     variables,
     data: {
       users: {
-        edges: users.map(u => ({
-          node: u
-        }))
-      }
-    }
+        edges: users.map((u) => ({
+          node: u,
+        })),
+      },
+    },
   });
 
   test("basic conversion of variables + response work, and None values in variables are sent as null", async () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Online"
+          status: "Online",
         },
         [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
       )
@@ -34,7 +34,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Offline"
+          status: "Offline",
         },
         [{ id: "user-2", firstName: "Second", onlineStatus: "Offline" }]
       )
@@ -46,7 +46,7 @@ describe("Query", () => {
       makeMockedQuery({ status: null }, [
         { id: "user-1", firstName: "First", onlineStatus: "Idle" },
         { id: "user-2", firstName: "Second", onlineStatus: "SomeOtherValue" },
-        { id: "user-3", firstName: "Third", onlineStatus: null }
+        { id: "user-3", firstName: "Third", onlineStatus: null },
       ])
     );
 
@@ -61,7 +61,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Online"
+          status: "Online",
         },
         [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
       )
@@ -73,7 +73,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Idle"
+          status: "Idle",
         },
         [{ id: "user-2", firstName: "Second", onlineStatus: "Idle" }]
       )
@@ -88,7 +88,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Online"
+          status: "Online",
         },
         [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
       )
@@ -100,7 +100,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Idle"
+          status: "Idle",
         },
         [{ id: "user-2", firstName: "Second", onlineStatus: "Idle" }]
       )
@@ -115,7 +115,7 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Online"
+          status: "Online",
         },
         [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
       )
@@ -125,6 +125,24 @@ describe("Query", () => {
     await t.screen.findByText("First is online");
 
     t.fireEvent.click(t.screen.getByText("Test fetch"));
+
+    await t.screen.findByText("Fetched!");
+  });
+
+  test("using fetch promised version works", async () => {
+    queryMock.mockQuery(
+      makeMockedQuery(
+        {
+          status: "Online",
+        },
+        [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
+      )
+    );
+
+    t.render(test_query());
+    await t.screen.findByText("First is online");
+
+    t.fireEvent.click(t.screen.getByText("Test fetch promised"));
 
     await t.screen.findByText("Fetched!");
   });
