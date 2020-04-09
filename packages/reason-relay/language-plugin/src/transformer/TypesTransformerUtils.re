@@ -19,13 +19,13 @@ let printConverterAssets =
   (includeRaw ? "type " ++ name ++ "Raw;" : "")
   ++ "let "
   ++ name
-  ++ "Converter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw {| "
+  ++ "Converter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw {json| "
   ++ (
     assets.converterInstructions
     |> Js.Json.stringifyAny
     |> Tablecloth.Option.withDefault(~default="")
   )
-  ++ " |}];"
+  ++ " |json}];"
   ++ "let "
   ++ name
   ++ "ConverterMap = "

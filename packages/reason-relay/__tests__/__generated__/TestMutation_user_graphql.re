@@ -33,7 +33,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
+    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let fragmentConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertFragment = v =>
@@ -55,8 +55,8 @@ module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 
-let node: operationType = [%bs.raw
-  {| {
+let node: operationType = [%raw
+  {json| {
   "kind": "Fragment",
   "name": "TestMutation_user",
   "type": "User",
@@ -85,5 +85,5 @@ let node: operationType = [%bs.raw
       "storageKey": null
     }
   ]
-} |}
+} |json}
 ];

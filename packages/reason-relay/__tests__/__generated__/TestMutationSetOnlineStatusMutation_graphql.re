@@ -40,7 +40,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let wrapResponseConverterMap = {
     "enum_OnlineStatus": wrap_enum_OnlineStatus,
@@ -55,7 +55,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertResponse = v =>
@@ -67,7 +67,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |}
+    {json| {"__root":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |json}
   ];
   let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
   let convertVariables = v =>
@@ -102,8 +102,8 @@ module Utils = {
 
 type operationType = ReasonRelay.mutationNode;
 
-let node: operationType = [%bs.raw
-  {| (function(){
+let node: operationType = [%raw
+  {json| (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
@@ -180,5 +180,5 @@ return {
     "metadata": {}
   }
 };
-})() |}
+})() |json}
 ];

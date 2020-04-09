@@ -10,12 +10,14 @@ const formatGeneratedModule: FormatModule = ({
   typeText,
   kind,
   hash,
-  sourceHash
+  sourceHash,
 }) => {
   return printCode(`
 ${typeText || ""}
 
-let node: operationType = [%bs.raw {| ${processConcreteText(concreteText)} |}];
+let node: operationType = [%raw {json| ${processConcreteText(
+    concreteText
+  )} |json}];
 `);
 };
 

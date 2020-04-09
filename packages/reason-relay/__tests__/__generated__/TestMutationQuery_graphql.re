@@ -14,7 +14,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"loggedInUser":{"f":""}}} |}
+    {json| {"__root":{"loggedInUser":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -26,7 +26,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -44,8 +44,8 @@ module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 
-let node: operationType = [%bs.raw
-  {| {
+let node: operationType = [%raw
+  {json| {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
@@ -118,5 +118,5 @@ let node: operationType = [%bs.raw
     "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n",
     "metadata": {}
   }
-} |}
+} |json}
 ];

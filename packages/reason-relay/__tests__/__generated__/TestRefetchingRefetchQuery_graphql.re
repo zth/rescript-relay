@@ -60,7 +60,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"node":{"n":"","f":""}}} |}
+    {json| {"__root":{"node":{"n":"","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -72,7 +72,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"friendsOnlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |}
+    {json| {"__root":{"friendsOnlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
   let convertVariables = v =>
@@ -98,8 +98,8 @@ module Utils = {
 
 type operationType = ReasonRelay.queryNode;
 
-let node: operationType = [%bs.raw
-  {| (function(){
+let node: operationType = [%raw
+  {json| (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
@@ -259,5 +259,5 @@ return {
     }
   }
 };
-})() |}
+})() |json}
 ];
