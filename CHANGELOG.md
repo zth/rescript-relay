@@ -2,7 +2,7 @@
 
 - Enum + union definitions are now also inlined in the record they appear, to improve editor integrations/hints in the editor.
 - _BREAKING CHANGE_ Tons of changes to APIs for interacting with the store. Too many to list, but they're mostly about changing APIs taking `options` to allow omitting the optional prop if you apply the function with `()`.
-- All generated types now reside in `YourModule.Types` and are named according to at what path they were found. This includes unions as well. So, if you were previously relying on using the generated types manually for annotation, you can now find them all inside of `YourModule.Types`, named after the path in the fragment/operation where they are located.
+- _BREAKING CHANGE_ All generated types now reside in `YourModule.Types` and are named according to at what path they were found. This includes unions as well. So, if you were previously relying on using the generated types manually for annotation, you can now find them all inside of `YourModule.Types`, named after the path in the fragment/operation where they are located.
 
 # 0.7.0
 
