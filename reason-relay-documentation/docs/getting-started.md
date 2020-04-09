@@ -51,7 +51,8 @@ yarn add react@0.0.0-experimental-d28bd2994 react-dom@0.0.0-experimental-d28bd29
 
 # Add reason-relay and dependencies to the project
 # We currently depend on Relay version 9, so install that exact version
-yarn add reason-relay graphql relay-runtime@9.0.0 relay-compiler@9.0.0 react-relay@0.0.0-experimental-8cc94ddc relay-config@9.0.0
+# We also depend on reason-promise for promises
+yarn add reason-relay graphql relay-runtime@9.0.0 relay-compiler@9.0.0 react-relay@0.0.0-experimental-8cc94ddc relay-config@9.0.0 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -59,7 +60,7 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 ```json
 ...
 "ppx-flags": ["reason-relay/ppx"],
-"bs-dependencies": ["reason-react", "reason-relay"],
+"bs-dependencies": ["reason-react", "reason-relay", "reason-promise"],
 ...
 ```
 
@@ -98,8 +99,8 @@ module.exports = {
   // Whenever a custom scalar is encountered, the type emitted will correspond to the definition defined here. You can then deal with the type as needed when accessing the data.
   customScalars: {
     Datetime: "string",
-    Color: "Color.t"
-  }
+    Color: "Color.t",
+  },
 };
 ```
 
