@@ -142,7 +142,14 @@ and printPropValue = (~propValue, ~state) => {
 
   str^;
 }
-and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) => {
+and printObject =
+    (
+      ~obj: object_,
+      ~printAs: objectPrintAs=Record,
+      ~state,
+      ~ignoreFragmentRefs=false,
+      (),
+    ) => {
   switch (obj.values |> Array.length, printAs) {
   | (0, _) => "unit"
   | (_, OnlyFragmentRefs) =>
@@ -175,52 +182,62 @@ and printObject = (~obj: object_, ~printAs: objectPrintAs=Record, ~state, ()) =>
     addToStr("}");
     str^;
   | (_, Record) =>
-    let str = ref("{");
+    let str = ref("");
     let addToStr = s => str := str^ ++ s;
 
     let hasFragments =
-      switch (
-        obj.values
-        |> Tablecloth.Array.find(
-             ~f=
-               fun
-               | FragmentRef(_) => true
-               | Prop(_) => false,
+      obj.values
+      ->Belt.Array.some(
+          fun
+          | FragmentRef(_) => true
+          | Prop(_) => false,
+        );
+
+    let hasProps =
+      obj.values
+      ->Belt.Array.some(
+          fun
+          | FragmentRef(_) => false
+          | Prop(_) => true,
+        );
+
+    // Return an empty JS object if we are ignoring fragment refs and have no props
+    switch (ignoreFragmentRefs, hasProps) {
+    | (true, false) => addToStr("{.}")
+    | _ =>
+      addToStr("{");
+
+      obj.values
+      |> Tablecloth.Array.filter(
+           ~f=
+             fun
+             | FragmentRef(_) => false
+             | Prop(_) => true,
+         )
+      |> Array.iter(p => {
+           addToStr(
+             switch (p) {
+             | Prop(name, propValue) =>
+               printRecordPropName(name)
+               ++ ": "
+               ++ printPropValue(~propValue, ~state)
+               ++ ","
+             | FragmentRef(_) => ""
+             },
            )
-      ) {
-      | Some(_) => true
-      | None => false
+         });
+
+      if (hasFragments && !ignoreFragmentRefs) {
+        addToStr(
+          printRecordPropName("getFragmentRefs")
+          ++ ": unit => "
+          ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ()),
+        );
       };
 
-    obj.values
-    |> Tablecloth.Array.filter(
-         ~f=
-           fun
-           | FragmentRef(_) => false
-           | Prop(_) => true,
-       )
-    |> Array.iter(p => {
-         addToStr(
-           switch (p) {
-           | Prop(name, propValue) =>
-             printRecordPropName(name)
-             ++ ": "
-             ++ printPropValue(~propValue, ~state)
-             ++ ","
-           | FragmentRef(_) => ""
-           },
-         )
-       });
-
-    if (hasFragments) {
-      addToStr(
-        printRecordPropName("getFragmentRefs")
-        ++ ": unit => "
-        ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ()),
-      );
+      addToStr("}");
     };
 
-    addToStr("}");
     str^;
   };
 }
@@ -294,7 +311,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
     addToStr("}");
   } else {
-    addToStr(") => ()");
+    addToStr(") => {}");
   };
   str^;
 }
@@ -328,12 +345,16 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
 
   str^;
 }
-and printRootType = (~state: fullState, rootType) =>
+and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
   switch (rootType) {
   | Operation(obj) =>
-    "type response = " ++ printObject(~obj, ~state, ()) ++ ";"
+    "type response = "
+    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
   | Variables(obj) =>
-    "type variables = " ++ printObject(~obj, ~state, ()) ++ ";"
+    "type variables = "
+    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
   | RefetchVariables(obj) =>
     switch (obj.values |> Array.length) {
     | 0 => ""
@@ -341,20 +362,23 @@ and printRootType = (~state: fullState, rootType) =>
     }
 
   | Fragment(obj) =>
-    "type fragment = " ++ printObject(~obj, ~state, ()) ++ ";"
+    "type fragment = "
+    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
   | ObjectTypeDeclaration({name, definition}) =>
     "type "
     ++ Tablecloth.String.uncapitalize(name)
     ++ (
       switch (definition.values |> Tablecloth.Array.length) {
       | 0 => ""
-      | _ => " = " ++ printObject(~obj=definition, ~state, ())
+      | _ =>
+        " = " ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
       }
     )
     ++ ";"
   | PluralFragment(obj) =>
     "type fragment_t = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   }
@@ -490,7 +514,10 @@ let printUnionTypes = (~state, union: union) => {
        |> List.rev
        |> Tablecloth.List.iter(~f=definition => {
             definition
-            |> printRootType(~state=stateWithUnionDefinitions)
+            |> printRootType(
+                 ~state=stateWithUnionDefinitions,
+                 ~ignoreFragmentRefs=false,
+               )
             |> addToTypeDefs
           });
      });

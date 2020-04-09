@@ -337,6 +337,153 @@ type operationType = ReasonRelay.mutationNode;
 "
 `;
 
+exports[`Language plugin tests Mutation generates the correct type structure when fragments are included 1`] = `
+"// SetUserLocationMutation.graphql
+/* @generated */
+
+module Types = {
+  type locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
+  };
+  type setUserLocationInput = {
+    clientMutationId: option(string),
+    userId: string,
+    location: option(locationBounds),
+  };
+  type response_setUserLocation_changedUser = {.};
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  };
+
+  type response = {setUserLocation: response_setUserLocation};
+  type variables = {input: setUserLocationInput};
+};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+  ];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+module Utils = {
+  open Types;
+  let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
+    lat,
+    lng,
+    child,
+  };
+
+  let make_setUserLocationInput =
+      (~clientMutationId=?, ~userId, ~location=?, ()): setUserLocationInput => {
+    clientMutationId,
+    userId,
+    location,
+  };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_setUserLocation_changedUser = () => {};
+
+  let make_response_setUserLocation =
+      (~changedUser=?, ()): response_setUserLocation => {
+    changedUser: changedUser,
+  };
+
+  let makeOptimisticResponse = (~setUserLocation): response => {
+    setUserLocation: setUserLocation,
+  };
+};
+
+type operationType = ReasonRelay.mutationNode;
+
+
+// SomeFragment_user.graphql
+/* @generated */
+
+type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
+
+let unwrap_enum_UserRole: string => enum_UserRole =
+  fun
+  | \\"Admin\\" => \`Admin
+  | \\"User\\" => \`User
+  | v => \`FutureAddedValue(v);
+
+let wrap_enum_UserRole: enum_UserRole => string =
+  fun
+  | \`Admin => \\"Admin\\"
+  | \`User => \\"User\\"
+  | \`FutureAddedValue(v) => v;
+
+module Types = {
+  type fragment = {
+    firstName: string,
+    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
+  };
+};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {| {\\"__root\\":{\\"role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
+  ];
+  let fragmentConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeFragment_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {};
+
+type operationType = ReasonRelay.fragmentNode;
+"
+`;
+
 exports[`Language plugin tests Mutation prints the correct basic structure for mutations 1`] = `
 "// SetUserLocationMutation.graphql
 /* @generated */
