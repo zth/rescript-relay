@@ -21,26 +21,31 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type response_users_edges_node = {
     id: string,
     firstName: string,
-    onlineStatus: option(enum_OnlineStatus),
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
   };
-  type edges = {node: option(node)};
-  type users = {edges: option(array(option(edges)))};
-};
+  type response_users_edges = {node: option(response_users_edges_node)};
+  type response_users = {
+    edges: option(array(option(response_users_edges))),
+  };
 
-open Types;
-
-type response = {users: option(users)};
-type refetchVariables = {status: option(enum_OnlineStatus)};
-let makeRefetchVariables = (~status=?, ()): refetchVariables => {
-  status: status,
+  type response = {users: option(response_users)};
+  type refetchVariables = {
+    status:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
+  let makeRefetchVariables = (~status=?, ()): refetchVariables => {
+    status: status,
+  };
+  type variables = {
+    status:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
 };
-type variables = {status: option(enum_OnlineStatus)};
 
 module Internal = {
   type responseRaw;
@@ -69,7 +74,12 @@ module Internal = {
       );
 };
 
-module Utils = {};
+type preloadToken;
+
+module Utils = {
+  open Types;
+  let makeVariables = (~status=?, ()): variables => {status: status};
+};
 
 type operationType = ReasonRelay.queryNode;
 

@@ -51,6 +51,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
     let data = Fragment.use(query.loggedInUser.getFragmentRefs());
     let (mutate, isMutating) = Mutation.use();
+    let (mutationResult, setMutationResult) = React.useState(() => None);
 
     <div>
       {React.string(
@@ -68,17 +69,46 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            Mutation.commitMutation(
-              ~environment,
-              ~variables={onlineStatus: `Idle},
-              (),
+            Mutation.(
+              commitMutation(
+                ~environment,
+                ~variables=makeVariables(~onlineStatus=`Idle),
+                (),
+              )
             );
           ();
         }}>
         {React.string("Change online status")}
       </button>
       <button
-        onClick={_ => mutate(~variables={onlineStatus: `Idle}, ()) |> ignore}>
+        onClick={_ =>
+          Mutation.(
+            commitMutationPromised(
+              ~environment,
+              ~variables=makeVariables(~onlineStatus=`Idle),
+              (),
+            )
+          )
+          ->Promise.get(
+              fun
+              | Ok((Some(res), _)) => setMutationResult(_ => Some(res))
+              | _ => Js.log("oops!"),
+            )
+        }>
+        {React.string("Change online status promised")}
+      </button>
+      {switch (mutationResult) {
+       | Some(_) => <div> {React.string("Has result")} </div>
+       | None => <div> {React.string("No result yet")} </div>
+       }}
+      <button
+        onClick={_ => {
+          let _ =
+            Mutation.(
+              mutate(~variables=makeVariables(~onlineStatus=`Idle), ())
+            );
+          ();
+        }}>
         {React.string(
            isMutating
              ? "Mutating..." : "Change online status via useMutation hook",
@@ -87,14 +117,15 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            ComplexMutation.commitMutation(
-              ~environment,
-              ~variables={
-                input: {
-                  onlineStatus: `Idle,
-                },
-              },
-              (),
+            ComplexMutation.(
+              commitMutation(
+                ~environment,
+                ~variables=
+                  makeVariables(
+                    ~input=make_setOnlineStatusInput(~onlineStatus=`Idle),
+                  ),
+                (),
+              )
             );
           ();
         }}>
@@ -103,16 +134,26 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            Mutation.commitMutation(
-              ~environment,
-              ~variables={onlineStatus: `Idle},
-              ~optimisticResponse={
-                setOnlineStatus:
-                  Some({
-                    user: Some({id: data.id, onlineStatus: Some(`Idle)}),
-                  }),
-              },
-              (),
+            Mutation.(
+              commitMutation(
+                ~environment,
+                ~variables=makeVariables(~onlineStatus=`Idle),
+                ~optimisticResponse=
+                  makeOptimisticResponse(
+                    ~setOnlineStatus=
+                      make_response_setOnlineStatus(
+                        ~user=
+                          make_response_setOnlineStatus_user(
+                            ~id=data.id,
+                            ~onlineStatus=`Idle,
+                            (),
+                          ),
+                        (),
+                      ),
+                    (),
+                  ),
+                (),
+              )
             );
           ();
         }}>
@@ -144,12 +185,12 @@ module Test = {
                     userProxy
                     ->ReasonRelay.RecordProxy.setValueString(
                         ~name="onlineStatus",
-                        ~arguments=None,
                         ~value=
                           switch (onlineStatus) {
                           | `Idle => "Offline"
                           | _ => "Online"
                           },
+                        (),
                       )
                     ->ignore
                   | _ => Js.log("Error!")

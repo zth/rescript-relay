@@ -1,117 +1,83 @@
 /* @generated */
 
-module Unions = {
-  module Union_fragment_members_edges_node: {
-    type wrapped;
-    type fragment_members_edges_node_user = {
-      id: string,
-      getFragmentRefs:
-        unit =>
-        {
-          .
-          "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
-        },
-    };
-    type user = fragment_members_edges_node_user;
-    type fragment_members_edges_node_group_adminsConnection_edges_node = {
-      id: string,
-      firstName: string,
-    };
-    type fragment_members_edges_node_group_adminsConnection_edges = {
-      node:
-        option(fragment_members_edges_node_group_adminsConnection_edges_node),
-    };
-    type fragment_members_edges_node_group_adminsConnection = {
-      edges:
-        option(
-          array(
-            option(fragment_members_edges_node_group_adminsConnection_edges),
-          ),
-        ),
-    };
-    type fragment_members_edges_node_group = {
-      adminsConnection: fragment_members_edges_node_group_adminsConnection,
-      name: string,
-      id: string,
-    };
-    type group = fragment_members_edges_node_group;
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    let unwrap: wrapped => t;
-  } = {
-    type wrapped;
-    type fragment_members_edges_node_user = {
-      id: string,
-      getFragmentRefs:
-        unit =>
-        {
-          .
-          "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
-        },
-    };
-    type user = fragment_members_edges_node_user;
-    type fragment_members_edges_node_group_adminsConnection_edges_node = {
-      id: string,
-      firstName: string,
-    };
-    type fragment_members_edges_node_group_adminsConnection_edges = {
-      node:
-        option(fragment_members_edges_node_group_adminsConnection_edges_node),
-    };
-    type fragment_members_edges_node_group_adminsConnection = {
-      edges:
-        option(
-          array(
-            option(fragment_members_edges_node_group_adminsConnection_edges),
-          ),
-        ),
-    };
-    type fragment_members_edges_node_group = {
-      adminsConnection: fragment_members_edges_node_group_adminsConnection,
-      name: string,
-      id: string,
-    };
-    type group = fragment_members_edges_node_group;
-    external __unwrap_union: wrapped => {. "__typename": string} =
-      "%identity";
-    type t = [
-      | `User(user)
-      | `Group(group)
-      | `UnselectedUnionMember(string)
-    ];
-    external __unwrap_user: wrapped => user = "%identity";
-    external __unwrap_group: wrapped => group = "%identity";
-    external __toJson: wrapped => Js.Json.t = "%identity";
-    let unwrap = wrapped => {
-      let unwrappedUnion = wrapped |> __unwrap_union;
-      switch (unwrappedUnion##__typename) {
-      | "User" => `User(wrapped |> __unwrap_user)
-      | "Group" => `Group(wrapped |> __unwrap_group)
-      | typename => `UnselectedUnionMember(typename)
-      };
-    };
+module Types = {
+  type fragment_members_edges_node_User = {
+    id: string,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
+      },
   };
-
-  type union_fragment_members_edges_node = [
-    | `User(Union_fragment_members_edges_node.user)
-    | `Group(Union_fragment_members_edges_node.group)
+  type fragment_members_edges_node_Group_adminsConnection_edges_node = {
+    id: string,
+    firstName: string,
+  };
+  type fragment_members_edges_node_Group_adminsConnection_edges = {
+    node:
+      option(fragment_members_edges_node_Group_adminsConnection_edges_node),
+  };
+  type fragment_members_edges_node_Group_adminsConnection = {
+    edges:
+      option(
+        array(
+          option(fragment_members_edges_node_Group_adminsConnection_edges),
+        ),
+      ),
+  };
+  type fragment_members_edges_node_Group = {
+    adminsConnection: fragment_members_edges_node_Group_adminsConnection,
+    name: string,
+    id: string,
+  };
+  type fragment_members_edges_node = [
+    | `User(fragment_members_edges_node_User)
+    | `Group(fragment_members_edges_node_Group)
     | `UnselectedUnionMember(string)
   ];
+  type fragment_members_edges = {
+    node:
+      option(
+        [
+          | `User(fragment_members_edges_node_User)
+          | `Group(fragment_members_edges_node_Group)
+          | `UnselectedUnionMember(string)
+        ],
+      ),
+  };
+  type fragment_members = {
+    edges: option(array(option(fragment_members_edges))),
+  };
+
+  type fragment = {members: option(fragment_members)};
 };
 
-open Unions;
+let unwrap_fragment_members_edges_node:
+  {. "__typename": string} =>
+  [
+    | `User(Types.fragment_members_edges_node_User)
+    | `Group(Types.fragment_members_edges_node_Group)
+    | `UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | "User" => `User(u->Obj.magic)
+    | "Group" => `Group(u->Obj.magic)
+    | v => `UnselectedUnionMember(v)
+    };
 
-module Types = {
-  type members_edges = {node: option(union_fragment_members_edges_node)};
-  type members = {edges: option(array(option(members_edges)))};
-};
-
-open Types;
-
-type fragment = {members: option(members)};
+let wrap_fragment_members_edges_node:
+  [
+    | `User(Types.fragment_members_edges_node_User)
+    | `Group(Types.fragment_members_edges_node_Group)
+    | `UnselectedUnionMember(string)
+  ] =>
+  {. "__typename": string} =
+  fun
+  | `User(v) => v->Obj.magic
+  | `Group(v) => v->Obj.magic
+  | `UnselectedUnionMember(v) => {"__typename": v};
 
 module Internal = {
   type fragmentRaw;
@@ -119,7 +85,7 @@ module Internal = {
     {| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |}
   ];
   let fragmentConverterMap = {
-    "fragment_members_edges_node": Union_fragment_members_edges_node.unwrap,
+    "fragment_members_edges_node": unwrap_fragment_members_edges_node,
   };
   let convertFragment = v =>
     v
@@ -137,8 +103,9 @@ type fragmentRefSelector('a) =
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
+  open Types;
   let getConnectionNodes_members:
-    option(members) => array(union_fragment_members_edges_node) =
+    option(fragment_members) => array(fragment_members_edges_node) =
     connection =>
       switch (connection) {
       | None => [||]

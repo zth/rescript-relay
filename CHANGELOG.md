@@ -1,6 +1,11 @@
 # master
 
-- Enum definitions are now also inlined in the record they appear, to improve editor integrations/hints in the editor.
+- Enum + union definitions are now also inlined in the record they appear, to improve editor integrations/hints in the editor.
+- _BREAKING CHANGE_ Tons of changes to APIs for interacting with the store. Too many to list, but they're mostly about changing APIs taking `options` to allow omitting the optional prop if you apply the function with `()`.
+- _BREAKING CHANGE_ All generated types now reside in `YourModule.Types` and are named according to at what path they were found. This includes unions as well. So, if you were previously relying on using the generated types manually for annotation, you can now find them all inside of `YourModule.Types`, named after the path in the fragment/operation where they are located.
+- A promise based version of `Query.fetch` called `fetchPromised` added. Also a promise based version of `Mutation.commitMutation` called `commitMutationPromised` added.
+- `commitMutation` result type changed to the actual `'response` rather than `Js.Json.t`. However, this is actually unsafe, because `'response` _may_ have been altered by the `updater` of the mutation. However, this case is so uncommon that it's better to support the broad use case of accessing the actual `'response` in the complete handler.
+- `reason-promise` is now a peer dependency.
 
 # 0.7.0
 

@@ -21,12 +21,11 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type response_users_edges_node = {
     id: string,
-    onlineStatus: option(enum_OnlineStatus),
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
     getFragmentRefs:
       unit =>
       {
@@ -34,22 +33,22 @@ module Types = {
         "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
       },
   };
-  type edges = {node: option(node)};
-  type users = {edges: option(array(option(edges)))};
-  type loggedInUser = {
+  type response_users_edges = {node: option(response_users_edges_node)};
+  type response_users = {
+    edges: option(array(option(response_users_edges))),
+  };
+  type response_loggedInUser = {
     getFragmentRefs:
       unit =>
       {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t},
   };
-};
 
-open Types;
-
-type response = {
-  loggedInUser,
-  users: option(users),
+  type response = {
+    loggedInUser: response_loggedInUser,
+    users: option(response_users),
+  };
+  type variables = unit;
 };
-type variables = unit;
 
 module Internal = {
   type responseRaw;
@@ -77,6 +76,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+type preloadToken;
 
 module Utils = {};
 

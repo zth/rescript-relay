@@ -21,36 +21,41 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
-module Types = {};
-
-type response = {
-  getFragmentRefs:
-    unit =>
-    {
-      .
-      "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
-    },
-};
-type refetchVariables = {
-  groupId: option(string),
-  onlineStatuses: option(array(enum_OnlineStatus)),
-  count: option(int),
-  cursor: option(string),
-};
-let makeRefetchVariables =
-    (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): refetchVariables => {
-  groupId,
-  onlineStatuses,
-  count,
-  cursor,
-};
-type variables = {
-  groupId: string,
-  onlineStatuses: option(array(enum_OnlineStatus)),
-  count: option(int),
-  cursor: option(string),
+module Types = {
+  type response = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
+      },
+  };
+  type refetchVariables = {
+    groupId: option(string),
+    onlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    count: option(int),
+    cursor: option(string),
+  };
+  let makeRefetchVariables =
+      (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ())
+      : refetchVariables => {
+    groupId,
+    onlineStatuses,
+    count,
+    cursor,
+  };
+  type variables = {
+    groupId: string,
+    onlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    count: option(int),
+    cursor: option(string),
+  };
 };
 
 module Internal = {
@@ -80,7 +85,18 @@ module Internal = {
       );
 };
 
-module Utils = {};
+type preloadToken;
+
+module Utils = {
+  open Types;
+  let makeVariables =
+      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
+    groupId,
+    onlineStatuses,
+    count,
+    cursor,
+  };
+};
 
 type operationType = ReasonRelay.queryNode;
 

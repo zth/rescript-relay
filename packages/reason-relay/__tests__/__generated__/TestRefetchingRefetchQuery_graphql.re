@@ -21,10 +21,8 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type response_node = {
     getFragmentRefs:
       unit =>
       {
@@ -32,27 +30,31 @@ module Types = {
         "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t,
       },
   };
-};
 
-open Types;
-
-type response = {node: option(node)};
-type refetchVariables = {
-  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
-  showOnlineStatus: option(bool),
-  id: option(string),
-};
-let makeRefetchVariables =
-    (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
-    : refetchVariables => {
-  friendsOnlineStatuses,
-  showOnlineStatus,
-  id,
-};
-type variables = {
-  friendsOnlineStatuses: option(array(enum_OnlineStatus)),
-  showOnlineStatus: bool,
-  id: string,
+  type response = {node: option(response_node)};
+  type refetchVariables = {
+    friendsOnlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    showOnlineStatus: option(bool),
+    id: option(string),
+  };
+  let makeRefetchVariables =
+      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
+      : refetchVariables => {
+    friendsOnlineStatuses,
+    showOnlineStatus,
+    id,
+  };
+  type variables = {
+    friendsOnlineStatuses:
+      option(
+        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+      ),
+    showOnlineStatus: bool,
+    id: string,
+  };
 };
 
 module Internal = {
@@ -82,7 +84,17 @@ module Internal = {
       );
 };
 
-module Utils = {};
+type preloadToken;
+
+module Utils = {
+  open Types;
+  let makeVariables =
+      (~friendsOnlineStatuses=?, ~showOnlineStatus, ~id, ()): variables => {
+    friendsOnlineStatuses,
+    showOnlineStatus,
+    id,
+  };
+};
 
 type operationType = ReasonRelay.queryNode;
 

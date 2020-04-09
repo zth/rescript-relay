@@ -1,10 +1,8 @@
 /* @generated */
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {lastName: string};
+module Types = {
+  type fragment = {lastName: string};
+};
 
 module Internal = {
   type fragmentRaw;

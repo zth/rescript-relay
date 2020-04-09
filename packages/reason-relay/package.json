@@ -43,7 +43,8 @@
     "reason-react": "^0.7.0",
     "relay-compiler": "9.0.0",
     "relay-config": "9.0.0",
-    "relay-runtime": "9.0.0"
+    "relay-runtime": "9.0.0",
+    "reason-promise": "^1.0.2"
   },
   "peerDependencies": {
     "bs-platform": "^7.1.1",
@@ -54,7 +55,8 @@
     "reason-react": "^0.7.0",
     "relay-compiler": "9.0.0",
     "relay-config": "9.0.0",
-    "relay-runtime": "9.0.0"
+    "relay-runtime": "9.0.0",
+    "reason-promise": "^1.0.2"
   },
   "dependencies": {
     "mkdirp-sync": "^0.0.3",

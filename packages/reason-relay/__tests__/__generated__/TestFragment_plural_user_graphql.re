@@ -21,16 +21,15 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
-module Types = {};
-
-type fragment_t = {
-  id: string,
-  firstName: string,
-  onlineStatus: option(enum_OnlineStatus),
+module Types = {
+  type fragment_t = {
+    id: string,
+    firstName: string,
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+  };
+  type fragment = array(fragment_t);
 };
-type fragment = array(fragment_t);
 
 module Internal = {
   type fragmentRaw;

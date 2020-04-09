@@ -285,14 +285,12 @@ let objectToAssets =
       );
 
       addInstruction({atPath: currentPath, instruction: ConvertEnum(name)});
-    | Union({atPath, members}) =>
+    | Union({atPath, members} as union) =>
       converters->Js.Dict.set(
         Printer.makeUnionName(atPath),
         switch (direction) {
-        | Wrap =>
-          Printer.printUnionWrapFnReference(Printer.makeUnionName(atPath))
-        | Unwrap =>
-          Printer.printUnionUnwrapFnReference(Printer.makeUnionName(atPath))
+        | Wrap => union->Printer.printUnionWrapFnReference
+        | Unwrap => union->Printer.printUnionUnwrapFnReference
         },
       );
 

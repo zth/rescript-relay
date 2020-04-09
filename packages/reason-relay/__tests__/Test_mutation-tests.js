@@ -13,9 +13,9 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     t.render(test_mutation());
@@ -24,21 +24,57 @@ describe("Mutation", () => {
     queryMock.mockQuery({
       name: "TestMutationSetOnlineStatusMutation",
       variables: {
-        onlineStatus: "Idle"
+        onlineStatus: "Idle",
       },
       data: {
         setOnlineStatus: {
           user: {
             id: "user-1",
-            onlineStatus: "Idle"
-          }
-        }
-      }
+            onlineStatus: "Idle",
+          },
+        },
+      },
     });
 
     t.fireEvent.click(t.screen.getByText("Change online status"));
 
     await t.screen.findByText("First is idle");
+  });
+
+  test("basic mutations work via commitMutationPromised", async () => {
+    queryMock.mockQuery({
+      name: "TestMutationQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          onlineStatus: "Online",
+        },
+      },
+    });
+
+    t.render(test_mutation());
+    await t.screen.findByText("First is online");
+
+    queryMock.mockQuery({
+      name: "TestMutationSetOnlineStatusMutation",
+      variables: {
+        onlineStatus: "Idle",
+      },
+      data: {
+        setOnlineStatus: {
+          user: {
+            id: "user-1",
+            onlineStatus: "Idle",
+          },
+        },
+      },
+    });
+
+    t.fireEvent.click(t.screen.getByText("Change online status promised"));
+
+    await t.screen.findByText("First is idle");
+    await t.screen.findByText("Has result");
   });
 
   test("basic mutations work via useMutation hook", async () => {
@@ -48,9 +84,9 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     t.render(test_mutation());
@@ -59,16 +95,16 @@ describe("Mutation", () => {
     const resolveQuery = queryMock.mockQueryWithControlledResolution({
       name: "TestMutationSetOnlineStatusMutation",
       variables: {
-        onlineStatus: "Idle"
+        onlineStatus: "Idle",
       },
       data: {
         setOnlineStatus: {
           user: {
             id: "user-1",
-            onlineStatus: "Idle"
-          }
-        }
-      }
+            onlineStatus: "Idle",
+          },
+        },
+      },
     });
 
     t.fireEvent.click(
@@ -89,9 +125,9 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     t.render(test_mutation());
@@ -101,17 +137,17 @@ describe("Mutation", () => {
       name: "TestMutationSetOnlineStatusComplexMutation",
       variables: {
         input: {
-          onlineStatus: "Idle"
-        }
+          onlineStatus: "Idle",
+        },
       },
       data: {
         setOnlineStatusComplex: {
           user: {
             id: "user-1",
-            onlineStatus: "Idle"
-          }
-        }
-      }
+            onlineStatus: "Idle",
+          },
+        },
+      },
     });
 
     t.fireEvent.click(t.screen.getByText("Change online status, complex"));
@@ -126,9 +162,9 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     t.render(test_mutation());
@@ -137,16 +173,16 @@ describe("Mutation", () => {
     const resolve = queryMock.mockQueryWithControlledResolution({
       name: "TestMutationSetOnlineStatusMutation",
       variables: {
-        onlineStatus: "Idle"
+        onlineStatus: "Idle",
       },
       data: {
         setOnlineStatus: {
           user: {
             id: "user-1",
-            onlineStatus: "Idle"
-          }
-        }
-      }
+            onlineStatus: "Idle",
+          },
+        },
+      },
     });
 
     t.fireEvent.click(
@@ -165,9 +201,9 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     t.render(test_mutation());
@@ -176,16 +212,16 @@ describe("Mutation", () => {
     queryMock.mockQuery({
       name: "TestMutationSetOnlineStatusMutation",
       variables: {
-        onlineStatus: "Idle"
+        onlineStatus: "Idle",
       },
       data: {
         setOnlineStatus: {
           user: {
             id: "user-1",
-            onlineStatus: "Idle"
-          }
-        }
-      }
+            onlineStatus: "Idle",
+          },
+        },
+      },
     });
 
     t.fireEvent.click(t.screen.getByText("Change online status with updater"));

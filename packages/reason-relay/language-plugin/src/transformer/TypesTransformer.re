@@ -63,9 +63,6 @@ let intermediateToFull =
 
   let state = ref(initialState);
 
-  let usedRecordNames: ref(list(string)) = ref([]);
-  let addUsedRecordName = Utils.makeAddToList(usedRecordNames);
-
   let setState = updater => state := updater(state^);
   let addEnum = enum => setState(s => {...s, enums: [enum, ...s.enums]});
   let addUnion = union =>
@@ -138,15 +135,7 @@ let intermediateToFull =
         |> List.map((obj: Types.finalizedObj) => {
              let recordName =
                switch (obj.recordName) {
-               | None =>
-                 let name =
-                   Utils.findAppropriateObjName(
-                     ~prefix=None,
-                     ~usedRecordNames=usedRecordNames^,
-                     ~path=obj.atPath,
-                   );
-                 addUsedRecordName(name);
-                 Some(name);
+               | None => Some(Utils.makeRecordName(obj.atPath))
                | s => s
                };
 
@@ -181,7 +170,6 @@ let getPrintedFullState =
   let addTypeDeclaration = Utils.makeAddToList(typeDeclarations);
 
   // Gather all type declarations and definitions.
-  // Since we ensure all objects are inlined, we only need to print the objects that weren't originally standalone Flow types.
   state.objects
   ->Tablecloth.List.sortBy(
       ~f=
@@ -238,45 +226,15 @@ let getPrintedFullState =
       addSpacing();
     });
 
-  // Print unions
-  addToStr("module Unions = {\n");
-  addToStr(
-    state.unions
-    |> Tablecloth.List.map(~f=(union: Types.union) =>
-         (union |> Printer.printUnion(~state))
-         ++ "\n\n"
-         ++ "type "
-         ++ Printer.printLocalUnionName(union)
-         ++ " = "
-         ++ (
-           union
-           |> Printer.printUnionTypeDefinition(~printMemberTypeName=name =>
-                (
-                  union.atPath
-                  |> Printer.makeUnionName
-                  |> Printer.printUnionName
-                )
-                ++ "."
-                ++ Tablecloth.String.uncapitalize(name)
-              )
-         )
-       )
-    |> Tablecloth.String.join(~sep="\n\n"),
-  );
-
-  addToStr("};");
   addSpacing();
-
-  // We'll open the Union module locally in our generated file if there's contents
-  switch (state.unions |> Tablecloth.List.length) {
-  | 0 => ()
-  | _ =>
-    addToStr("open Unions;");
-    addSpacing();
-  };
 
   // Print definitions and declarations
   addToStr("module Types = {\n");
+
+  state.unions
+  ->Belt.List.forEach(union => {
+      union |> Printer.printUnionTypes(~state) |> addToStr
+    });
 
   Printer.(
     typeDeclarations^
@@ -284,16 +242,7 @@ let getPrintedFullState =
     |> List.iter(def => {def |> printRootType(~state) |> addToStr})
   );
 
-  addToStr("};");
   addSpacing();
-
-  // We'll open the Types module locally in our generated file if there's contents
-  switch (typeDeclarations^ |> Tablecloth.List.length) {
-  | 0 => ()
-  | _ =>
-    addToStr("open Types;");
-    addSpacing();
-  };
 
   Printer.(
     definitions^
@@ -301,6 +250,16 @@ let getPrintedFullState =
   );
 
   addSpacing();
+
+  addToStr("};");
+  addSpacing();
+
+  if (state.unions->Belt.List.length > 0) {
+    state.unions
+    ->Belt.List.forEach(union =>
+        union->Printer.printUnionConverters->addToStr
+      );
+  };
 
   // This emits extra assets for the generated modules,
   // like code for converting nullable fields, enums and unions,
@@ -375,6 +334,7 @@ let getPrintedFullState =
   addToStr("};");
   addSpacing();
 
+  // Print fragment assets
   switch (state.fragment) {
   | Some({name, plural}) =>
     addToStr(Printer.fragmentRefAssets(~plural, name));
@@ -382,8 +342,19 @@ let getPrintedFullState =
   | None => ()
   };
 
+  // Print query assets
+  switch (operationType) {
+  | Query(_) =>
+    addToStr("type preloadToken;");
+    addSpacing();
+  | _ => ()
+  };
+
   // Utils that'll be included and accessible at the top level of the generated module
   addToStr("module Utils = {");
+  let utilsContent = ref("");
+  let addToUtils = str => utilsContent := utilsContent^ ++ str;
+  let addSpacingToUtils = () => addToUtils("\n\n\n");
 
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
@@ -406,54 +377,91 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToStr;
+      |> addToUtils;
 
-      addSpacing();
+      addSpacingToUtils();
     | (None, Some({definition})) when connPath == ["fragment"] =>
       definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToStr;
+      |> addToUtils;
 
-      addSpacing();
+      addSpacingToUtils();
     | (None, Some(_))
     | (None, None) => ()
     };
   | None => ()
   };
 
-  // We print maker functions for all input objects with at least one optional prop
+  // We print maker functions for all input objects
   state.objects
   ->Tablecloth.List.iter(
       ~f=
         fun
         | {originalFlowTypeName: Some(typeName), definition} => {
-            switch (
-              definition.values
-              ->Tablecloth.Array.find(
-                  ~f=
-                    fun
-                    | Prop(_, {nullable: true}) => true
-                    | _ => false,
-                )
-            ) {
-            | Some(_) =>
-              definition
-              ->Printer.printObjectMaker(
-                  ~targetType=typeName->Tablecloth.String.uncapitalize,
-                  ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
-                )
-              ->addToStr;
-              addSpacing();
-            | None => ()
-            };
+            definition
+            ->Printer.printObjectMaker(
+                ~targetType=typeName->Tablecloth.String.uncapitalize,
+                ~name="make_" ++ typeName->Tablecloth.String.uncapitalize,
+              )
+            ->addToUtils;
+            addSpacingToUtils();
           }
         | _ => (),
     );
 
-  addToStr("};");
+  // Add a maker function for the variables if variables exist
+  switch (state.variables) {
+  | None => ()
+  | Some(variables) =>
+    variables->Printer.objHasPrintableContents
+      ? {
+        variables
+        ->Printer.printObjectMaker(
+            ~targetType="variables",
+            ~name="makeVariables",
+          )
+        ->addToUtils;
+        addSpacingToUtils();
+      }
+      : ()
+  };
+
+  // Emit make function for optimistic responses
+  switch (operationType, state.response) {
+  | (Mutation(_), Some(response)) =>
+    state.objects
+    ->Belt.List.keepMap(
+        fun
+        | {definition, originalFlowTypeName: None, recordName: Some(name)} =>
+          Some((name, definition))
+        | _ => None,
+      )
+    ->Belt.List.forEach(((name, obj)) => {
+        obj
+        ->Printer.printObjectMaker(~targetType=name, ~name="make_" ++ name)
+        ->addToUtils;
+        addSpacingToUtils();
+      });
+
+    response
+    ->Printer.printObjectMaker(
+        ~targetType="response",
+        ~name="makeOptimisticResponse",
+      )
+    ->addToUtils;
+    addSpacingToUtils();
+  | _ => ()
+  };
+
+  // Open Types locally here if we have any content to print
+  if (utilsContent^ != "") {
+    addToStr("open Types;");
+  };
+
+  addToStr(utilsContent^ ++ "};");
   addSpacing();
 
   // This adds operationType, which is referenced in the raw output of the Relay
@@ -711,12 +719,7 @@ and makeUnionMember =
   switch (name^) {
   | Some(name) => {
       name,
-      shape:
-        filteredProps^
-        |> makeObjShape(
-             ~state,
-             ~path=[name |> Tablecloth.String.uncapitalize, ...path],
-           ),
+      shape: filteredProps^ |> makeObjShape(~state, ~path=[name, ...path]),
     }
   | None => raise(Missing_typename_field_on_union)
   };

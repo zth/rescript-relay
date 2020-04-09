@@ -21,19 +21,18 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `Online => "Online"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {
-  firstName: string,
-  onlineStatus: option(enum_OnlineStatus),
-  getFragmentRefs:
-    unit =>
-    {
-      .
-      "__$fragment_ref__TestFragment_sub_user": TestFragment_sub_user_graphql.t,
-    },
+module Types = {
+  type fragment = {
+    firstName: string,
+    onlineStatus:
+      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestFragment_sub_user": TestFragment_sub_user_graphql.t,
+      },
+  };
 };
 
 module Internal = {

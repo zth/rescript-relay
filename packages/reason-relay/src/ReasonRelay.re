@@ -1,5 +1,5 @@
 let toOpt = Js.Nullable.toOption;
-type jsObj('a) = Js.t({..} as 'a);
+type arguments;
 
 type any;
 
@@ -14,11 +14,10 @@ type dataId;
 
 type recordSourceRecords;
 
-external _dataIdToString: dataId => string = "%identity";
-let dataIdToString = dataId => _dataIdToString(dataId);
+external dataIdToString: dataId => string = "%identity";
+external makeDataId: string => dataId = "%identity";
 
-external _makeDataId: string => dataId = "%identity";
-let makeDataId = string => _makeDataId(string);
+external makeArguments: Js.t({..}) => arguments = "%identity";
 
 [@bs.module "relay-runtime"]
 external _generateClientID: (dataId, string, option(int)) => dataId =
@@ -76,7 +75,6 @@ external _convertObj:
 
 module RecordProxy = {
   type t;
-  type arguments('a) = jsObj('a);
 
   type unsetValueType =
     | Null
@@ -91,19 +89,20 @@ module RecordProxy = {
 
   [@bs.send]
   external _getLinkedRecord:
-    (t, string, option(arguments('a))) => Js.Nullable.t(t) =
+    (t, string, option(arguments)) => Js.Nullable.t(t) =
     "getLinkedRecord";
 
-  let getLinkedRecord = (t, ~name, ~arguments): option(t) =>
+  let getLinkedRecord = (t, ~name, ~arguments=?, ()): option(t) =>
     _getLinkedRecord(t, name, arguments) |> toOpt;
 
   [@bs.send]
   external _getLinkedRecords:
-    (t, string, option(arguments('a))) =>
+    (t, string, option(arguments)) =>
     Js.Nullable.t(array(Js.Nullable.t(t))) =
     "getLinkedRecords";
 
-  let getLinkedRecords = (t, ~name, ~arguments): option(array(option(t))) =>
+  let getLinkedRecords =
+      (t, ~name, ~arguments=?, ()): option(array(option(t))) =>
     switch (_getLinkedRecords(t, name, arguments) |> toOpt) {
     | Some(records) => Some(records |> Array.map(v => v |> toOpt))
     | None => None
@@ -111,18 +110,17 @@ module RecordProxy = {
 
   [@bs.send]
   external _getOrCreateLinkedRecord:
-    (t, string, string, option(arguments('a))) => t =
+    (t, string, string, option(arguments)) => t =
     "getOrCreateLinkedRecord";
 
-  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments) =>
+  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments=?, ()) =>
     _getOrCreateLinkedRecord(t, name, typeName, arguments);
 
   [@bs.send] external _getType: t => string = "getType";
   let getType = t => _getType(t);
 
   [@bs.send]
-  external _getValue:
-    (t, string, option(arguments('a))) => Js.Nullable.t('value) =
+  external _getValue: (t, string, option(arguments)) => Js.Nullable.t('value) =
     "getValue";
 
   let _getValueArr = (t, ~name, ~arguments) =>
@@ -132,44 +130,44 @@ module RecordProxy = {
     | None => None
     };
 
-  let getValueString = (t, ~name, ~arguments): option(string) =>
+  let getValueString = (t, ~name, ~arguments=?, ()): option(string) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueStringArray =
-      (t, ~name, ~arguments): option(array(option(string))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(string))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueInt = (t, ~name, ~arguments): option(int) =>
+  let getValueInt = (t, ~name, ~arguments=?, ()): option(int) =>
     _getValue(t, name, arguments) |> toOpt;
 
-  let getValueIntArray = (t, ~name, ~arguments): option(array(option(int))) =>
+  let getValueIntArray =
+      (t, ~name, ~arguments=?, ()): option(array(option(int))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueFloat = (t, ~name, ~arguments): option(float) =>
+  let getValueFloat = (t, ~name, ~arguments=?, ()): option(float) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueFloatArray =
-      (t, ~name, ~arguments): option(array(option(float))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(float))) =>
     _getValueArr(~name, ~arguments, t);
 
-  let getValueBool = (t, ~name, ~arguments): option(bool) =>
+  let getValueBool = (t, ~name, ~arguments=?, ()): option(bool) =>
     _getValue(t, name, arguments) |> toOpt;
 
   let getValueBoolArray =
-      (t, ~name, ~arguments): option(array(option(bool))) =>
+      (t, ~name, ~arguments=?, ()): option(array(option(bool))) =>
     _getValueArr(~name, ~arguments, t);
 
   [@bs.send]
-  external _setLinkedRecord: (t, t, string, option(arguments('a))) => t =
+  external _setLinkedRecord: (t, t, string, option(arguments)) => t =
     "setLinkedRecord";
-  let setLinkedRecord = (t, ~record, ~name, ~arguments) =>
+  let setLinkedRecord = (t, ~record, ~name, ~arguments=?, ()) =>
     _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecord:
-    (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecord";
-  let unsetLinkedRecord = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetLinkedRecord = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetLinkedRecord(t, Js.null, name, arguments)
     | Undefined => _unsetLinkedRecord(t, Js.undefined, name, arguments)
@@ -177,56 +175,56 @@ module RecordProxy = {
 
   [@bs.send]
   external _setLinkedRecords:
-    (t, array(option(t)), string, option(arguments('a))) => t =
+    (t, array(option(t)), string, option(arguments)) => t =
     "setLinkedRecords";
-  let setLinkedRecords = (t, ~records, ~name, ~arguments) =>
+  let setLinkedRecords = (t, ~records, ~name, ~arguments=?, ()) =>
     _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecords:
-    (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecords";
-  let unsetLinkedRecords = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetLinkedRecords = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetLinkedRecords(t, Js.null, name, arguments)
     | Undefined => _unsetLinkedRecords(t, Js.undefined, name, arguments)
     };
 
   [@bs.send]
-  external _setValue: (t, 'value, string, option(arguments('a))) => t =
+  external _setValue: (t, 'value, string, option(arguments)) => t =
     "setValue";
 
   [@bs.send]
-  external _unsetValue: (t, 'nullable, string, option(arguments('a))) => t =
+  external _unsetValue: (t, 'nullable, string, option(arguments)) => t =
     "setValue";
-  let unsetValue = (t, ~name, ~arguments, ~unsetValue) =>
+  let unsetValue = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
     | Null => _unsetValue(t, Js.null, name, arguments)
     | Undefined => _unsetValue(t, Js.undefined, name, arguments)
     };
 
-  let setValueString = (t, ~value: string, ~name, ~arguments) =>
+  let setValueString = (t, ~value: string, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueStringArray = (t, ~value: array(string), ~name, ~arguments) =>
+  let setValueStringArray =
+      (t, ~value: array(string), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueInt = (t, ~value: int, ~name, ~arguments) =>
+  let setValueInt = (t, ~value: int, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments) =>
+  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloat = (t, ~value: float, ~name, ~arguments) =>
+  let setValueFloat = (t, ~value: float, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments) =>
+  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBool = (t, ~value: bool, ~name, ~arguments) =>
+  let setValueBool = (t, ~value: bool, ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
-  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments) =>
+  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments=?, ()) =>
     _setValue(t, value, name, arguments);
 
   [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
@@ -291,17 +289,16 @@ module RecordSourceProxy = {
 module ConnectionHandler = {
   type t;
 
-  type filters('a) = jsObj('a);
-
   [@bs.module "relay-runtime"]
   external connectionHandler: t = "ConnectionHandler";
 
   [@bs.send]
   external _getConnection:
-    (t, RecordProxy.t, string, option({..})) => Js.Nullable.t(RecordProxy.t) =
+    (t, RecordProxy.t, string, option(arguments)) =>
+    Js.Nullable.t(RecordProxy.t) =
     "getConnection";
 
-  let getConnection = (~record, ~key, ~filters) =>
+  let getConnection = (~record, ~key, ~filters=?, ()) =>
     _getConnection(connectionHandler, record, key, filters)
     |> Js.Nullable.toOption;
 
@@ -319,7 +316,7 @@ module ConnectionHandler = {
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeBefore";
 
-  let insertEdgeBefore = (~connection, ~newEdge, ~cursor) =>
+  let insertEdgeBefore = (~connection, ~newEdge, ~cursor=?, ()) =>
     _insertEdgeBefore(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
@@ -327,7 +324,7 @@ module ConnectionHandler = {
     (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
     "insertEdgeAfter";
 
-  let insertEdgeAfter = (~connection, ~newEdge, ~cursor) =>
+  let insertEdgeAfter = (~connection, ~newEdge, ~cursor=?, ()) =>
     _insertEdgeAfter(connectionHandler, connection, newEdge, cursor);
 
   [@bs.send]
@@ -572,14 +569,13 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
+  type preloadToken;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
 };
 
 module MakeUseQuery = (C: MakeUseQueryConfig) => {
-  type preloadToken;
-
   let use =
       (
         ~variables,
@@ -617,7 +613,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
-    preloadToken =
+    C.preloadToken =
     (
       ~environment,
       ~variables,
@@ -637,7 +633,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         },
       );
 
-  let usePreloaded = (~token: preloadToken, ~renderPolicy=?, ()) => {
+  let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
     let data =
       _usePreloadedQuery(
         C.query,
@@ -669,6 +665,25 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
            Js.Promise.resolve();
          });
     ();
+  };
+
+  let fetchPromised =
+      (~environment: Environment.t, ~variables: C.variables)
+      : Promise.t(Belt.Result.t(C.response, Js.Promise.error)) => {
+    let (promise, resolve) = Promise.pending();
+
+    let _ =
+      fetchQuery(environment, C.query, variables |> C.convertVariables)
+      |> Js.Promise.then_(res => {
+           resolve(Ok(res |> C.convertResponse));
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => {
+           resolve(Error(err));
+           Js.Promise.resolve();
+         });
+
+    promise;
   };
 };
 
@@ -974,7 +989,7 @@ type _commitMutationConfig('variables, 'response) = {
   variables: 'variables,
   onCompleted:
     option(
-      (Js.Nullable.t(Js.Json.t), Js.Nullable.t(array(mutationError))) =>
+      (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
       unit,
     ),
   onError: option(Js.Nullable.t(mutationError) => unit),
@@ -1066,7 +1081,13 @@ module MakeCommitMutation = (C: MutationConfig) => {
             (res, err) =>
               switch (onCompleted) {
               | Some(cb) =>
-                cb(Js.Nullable.toOption(res), Js.Nullable.toOption(err))
+                cb(
+                  switch (Js.Nullable.toOption(res)) {
+                  | Some(res) => Some(res->C.convertResponse)
+                  | None => None
+                  },
+                  Js.Nullable.toOption(err),
+                )
               | None => ()
               },
           ),
@@ -1092,6 +1113,61 @@ module MakeCommitMutation = (C: MutationConfig) => {
           },
       },
     );
+
+  let commitMutationPromised =
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~optimisticUpdater=?,
+        ~optimisticResponse=?,
+        ~updater=?,
+        (),
+      )
+      : Promise.t(
+          Belt.Result.t(
+            (option(C.response), option(array(mutationError))),
+            option(mutationError),
+          ),
+        ) => {
+    let (promise, resolve) = Promise.pending();
+
+    let _: Disposable.t =
+      _commitMutation(
+        environment,
+        {
+          variables: variables |> C.convertVariables |> _cleanVariables,
+          mutation: C.node,
+          onCompleted:
+            Some(
+              (res, err) =>
+                resolve(
+                  Ok((
+                    switch (Js.Nullable.toOption(res)) {
+                    | Some(res) => Some(res->C.convertResponse)
+                    | None => None
+                    },
+                    Js.Nullable.toOption(err),
+                  )),
+                ),
+            ),
+          onError: Some(err => resolve(Error(Js.Nullable.toOption(err)))),
+          optimisticResponse:
+            switch (optimisticResponse) {
+            | None => None
+            | Some(r) => Some(r |> C.wrapResponse)
+            },
+          optimisticUpdater,
+          updater:
+            switch (updater) {
+            | None => None
+            | Some(updater) =>
+              Some((store, r) => updater(store, r |> C.convertResponse))
+            },
+        },
+      );
+
+    promise;
+  };
 };
 
 [@bs.module "relay-runtime"]

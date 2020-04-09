@@ -61,7 +61,7 @@ module Test = {
     let (preloadToken, setPreloadToken) = React.useState(() => None);
     let (fetchedResult, setFetchedResult) = React.useState(() => None);
 
-    let collectUsers = (res: Query.Operation.response) =>
+    let collectUsers = (res: Query.Types.response) =>
       switch (res) {
       | {users: Some({edges: Some(edges)})} =>
         edges->Belt.Array.keepMap(edge =>
@@ -128,6 +128,20 @@ module Test = {
           )
         }>
         {React.string("Test fetch")}
+      </button>
+      <button
+        onClick={_ =>
+          Query.fetchPromised(
+            ~environment,
+            ~variables={status: Some(`Online)},
+          )
+          ->Promise.get(
+              fun
+              | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
+              | Error(_) => (),
+            )
+        }>
+        {React.string("Test fetch promised")}
       </button>
       {switch (preloadToken) {
        | Some(preloadToken) => <TestPreloaded preloadToken />
