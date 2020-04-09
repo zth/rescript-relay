@@ -1,5 +1,6 @@
 let toOpt = Js.Nullable.toOption;
 type arguments;
+type allFieldsMasked = {.};
 
 type any;
 

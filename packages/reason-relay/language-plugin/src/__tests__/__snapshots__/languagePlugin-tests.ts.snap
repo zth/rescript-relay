@@ -352,7 +352,7 @@ module Types = {
     userId: string,
     location: option(locationBounds),
   };
-  type response_setUserLocation_changedUser = {.};
+  type response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked;
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
   };
@@ -418,7 +418,8 @@ module Utils = {
 
   let makeVariables = (~input): variables => {input: input};
 
-  let make_response_setUserLocation_changedUser = () => {};
+  let make_response_setUserLocation_changedUser = () =>
+    [@ocaml.warning \\"-27\\"] {};
 
   let make_response_setUserLocation =
       (~changedUser=?, ()): response_setUserLocation => {

@@ -1,4 +1,5 @@
 type arguments;
+type allFieldsMasked = {.};
 
 /**
  * Abstract helper type to signify something that could not be

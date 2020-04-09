@@ -203,7 +203,7 @@ and printObject =
 
     // Return an empty JS object if we are ignoring fragment refs and have no props
     switch (ignoreFragmentRefs, hasProps) {
-    | (true, false) => addToStr("{.}")
+    | (true, false) => addToStr("ReasonRelay.allFieldsMasked")
     | _ =>
       addToStr("{");
 
@@ -311,7 +311,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
     addToStr("}");
   } else {
-    addToStr(") => {}");
+    addToStr(") => [@ocaml.warning \"-27\"] {}");
   };
   str^;
 }

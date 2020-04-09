@@ -34,6 +34,18 @@ module ComplexMutation = [%relay.mutation
 |}
 ];
 
+module MutationWithOnlyFragment = [%relay.mutation
+  {|
+    mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) {
+      setOnlineStatus(onlineStatus: $onlineStatus) {
+        user {
+          ...TestMutation_user
+        }
+      }
+    }
+|}
+];
+
 module Fragment = [%relay.fragment
   {|
     fragment TestMutation_user on User {
@@ -79,6 +91,29 @@ module Test = {
           ();
         }}>
         {React.string("Change online status")}
+      </button>
+      <button
+        onClick={_ => {
+          let _: ReasonRelay.Disposable.t =
+            MutationWithOnlyFragment.(
+              commitMutation(
+                ~environment,
+                ~variables=makeVariables(~onlineStatus=`Idle),
+                ~optimisticResponse=
+                  makeOptimisticResponse(
+                    ~setOnlineStatus=
+                      make_response_setOnlineStatus(
+                        ~user=make_response_setOnlineStatus_user(),
+                        (),
+                      ),
+                    (),
+                  ),
+                (),
+              )
+            );
+          ();
+        }}>
+        {React.string("Change online status with only fragment")}
       </button>
       <button
         onClick={_ =>
