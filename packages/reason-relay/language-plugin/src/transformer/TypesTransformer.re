@@ -231,6 +231,12 @@ let getPrintedFullState =
   // Print definitions and declarations
   addToStr("module Types = {\n");
 
+  let shouldIgnoreFragmentRefs =
+    switch (operationType) {
+    | Mutation(_) => true
+    | _ => false
+    };
+
   state.unions
   ->Belt.List.forEach(union => {
       union |> Printer.printUnionTypes(~state) |> addToStr
@@ -239,14 +245,28 @@ let getPrintedFullState =
   Printer.(
     typeDeclarations^
     |> List.rev
-    |> List.iter(def => {def |> printRootType(~state) |> addToStr})
+    |> List.iter(def => {
+         def
+         |> printRootType(
+              ~state,
+              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
+            )
+         |> addToStr
+       })
   );
 
   addSpacing();
 
   Printer.(
     definitions^
-    |> List.iter(def => {def |> printRootType(~state) |> addToStr})
+    |> List.iter(def => {
+         def
+         |> printRootType(
+              ~state,
+              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
+            )
+         |> addToStr
+       })
   );
 
   addSpacing();

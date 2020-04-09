@@ -368,6 +368,25 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
+
+    it("generates the correct type structure when fragments are included", () => {
+      let generated = generate(
+        `mutation SetUserLocationMutation($input: SetUserLocationInput!) {
+            setUserLocation(input: $input) {
+              changedUser {
+                ...SomeFragment_user
+              }
+            }
+          }
+          
+          fragment SomeFragment_user on User {
+            firstName
+            role
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 
   describe("Subscription", () => {
