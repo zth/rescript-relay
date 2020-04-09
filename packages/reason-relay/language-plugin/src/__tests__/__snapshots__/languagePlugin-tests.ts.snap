@@ -42,7 +42,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -55,7 +55,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -67,7 +67,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"MutationWithReservedNameInput\\"}},\\"MutationWithReservedNameInput\\":{\\"nested\\":{\\"n\\":\\"\\",\\"r\\":\\"MutationWithReservedNameInput\\"}}} |}
+    {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"MutationWithReservedNameInput\\"}},\\"MutationWithReservedNameInput\\":{\\"nested\\":{\\"n\\":\\"\\",\\"r\\":\\"MutationWithReservedNameInput\\"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -121,7 +121,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -158,7 +158,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -193,7 +193,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -262,7 +262,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
   ];
   let wrapResponseConverterMap = {\\"enum_UserRole\\": wrap_enum_UserRole};
   let convertWrapResponse = v =>
@@ -275,7 +275,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
   ];
   let responseConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
   let convertResponse = v =>
@@ -287,7 +287,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+    {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -364,7 +364,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -377,7 +377,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -389,7 +389,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+    {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -460,7 +460,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"role\\":{\\"e\\":\\"enum_UserRole\\"}}} |}
+    {json| {\\"__root\\":{\\"role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
   ];
   let fragmentConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
   let convertFragment = v =>
@@ -514,7 +514,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -527,7 +527,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -539,7 +539,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |}
+    {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -654,7 +654,7 @@ let wrap_fragment_participantsConnection_edges_node:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"participantsConnection\\":{\\"n\\":\\"\\"},\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"}}} |}
+    {json| {\\"__root\\":{\\"participantsConnection\\":{\\"n\\":\\"\\"},\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"}}} |json}
   ];
   let fragmentConverterMap = {
     \\"fragment_participantsConnection_edges_node\\": unwrap_fragment_participantsConnection_edges_node,
@@ -730,7 +730,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -801,7 +801,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -871,7 +871,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -883,7 +883,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -928,7 +928,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"userChanged_user\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"userChanged_user\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -940,7 +940,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"input\\":{\\"r\\":\\"UserChangedInput\\"}},\\"UserChangedInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"UserChangedInput\\"}},\\"UserChangedInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -981,7 +981,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -1016,7 +1016,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -1100,7 +1100,7 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
@@ -1114,7 +1114,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -1201,7 +1201,7 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
@@ -1215,7 +1215,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -1364,7 +1364,7 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
@@ -1380,7 +1380,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
