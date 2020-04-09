@@ -334,11 +334,20 @@ let getPrintedFullState =
   addToStr("};");
   addSpacing();
 
+  // Print fragment assets
   switch (state.fragment) {
   | Some({name, plural}) =>
     addToStr(Printer.fragmentRefAssets(~plural, name));
     addSpacing();
   | None => ()
+  };
+
+  // Print query assets
+  switch (operationType) {
+  | Query(_) =>
+    addToStr("type preloadToken;");
+    addSpacing();
+  | _ => ()
   };
 
   // Utils that'll be included and accessible at the top level of the generated module

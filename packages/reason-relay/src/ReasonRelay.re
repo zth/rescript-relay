@@ -569,14 +569,13 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
+  type preloadToken;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
 };
 
 module MakeUseQuery = (C: MakeUseQueryConfig) => {
-  type preloadToken;
-
   let use =
       (
         ~variables,
@@ -614,7 +613,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
-    preloadToken =
+    C.preloadToken =
     (
       ~environment,
       ~variables,
@@ -634,7 +633,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
         },
       );
 
-  let usePreloaded = (~token: preloadToken, ~renderPolicy=?, ()) => {
+  let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
     let data =
       _usePreloadedQuery(
         C.query,

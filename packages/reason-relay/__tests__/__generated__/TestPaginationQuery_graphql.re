@@ -43,6 +43,8 @@ module Internal = {
       );
 };
 
+type preloadToken;
+
 module Utils = {
   open Types;
   let makeVariables = (~groupId): variables => {groupId: groupId};

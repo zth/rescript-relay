@@ -84,6 +84,8 @@ module Internal = {
       );
 };
 
+type preloadToken;
+
 module Utils = {
   open Types;
   let makeVariables =

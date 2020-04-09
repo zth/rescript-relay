@@ -77,6 +77,8 @@ module Internal = {
       );
 };
 
+type preloadToken;
+
 module Utils = {};
 
 type operationType = ReasonRelay.queryNode;

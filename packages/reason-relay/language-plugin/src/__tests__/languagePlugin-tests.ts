@@ -424,7 +424,7 @@ describe("Language plugin tests", () => {
 
       expect(
         collapseString(generated).includes(
-          `type fragment_t = { id: string, firstName: string,};type fragment = array(fragment_t);`
+          `type fragment_t = { id: string, firstName: string, }; type fragment = array(fragment_t);`
         )
       ).toBe(true);
     });
