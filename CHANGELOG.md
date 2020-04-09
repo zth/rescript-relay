@@ -1,5 +1,7 @@
 # master
 
+- Fix "unused varible this" warning introduced in `0.8.0`.
+
 # 0.8.0
 
 - Enum + union definitions are now also inlined in the record they appear, to improve editor integrations/hints in the editor.
