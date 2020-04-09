@@ -1,12 +1,10 @@
 /* @generated */
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {
-  avatarUrl: option(string),
-  fullName: string,
+module Types = {
+  type fragment = {
+    avatarUrl: option(string),
+    fullName: string,
+  };
 };
 
 module Internal = {

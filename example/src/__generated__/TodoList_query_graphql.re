@@ -1,9 +1,7 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type fragment_todosConnection_edges_node = {
     id: string,
     getFragmentRefs:
       unit =>
@@ -12,13 +10,15 @@ module Types = {
         "__$fragment_ref__SingleTodo_todoItem": SingleTodo_todoItem_graphql.t,
       },
   };
-  type edges = {node: option(node)};
-  type todosConnection = {edges: option(array(option(edges)))};
+  type fragment_todosConnection_edges = {
+    node: option(fragment_todosConnection_edges_node),
+  };
+  type fragment_todosConnection = {
+    edges: option(array(option(fragment_todosConnection_edges))),
+  };
+
+  type fragment = {todosConnection: fragment_todosConnection};
 };
-
-open Types;
-
-type fragment = {todosConnection};
 
 module Internal = {
   type fragmentRaw;
@@ -42,7 +42,9 @@ type fragmentRefSelector('a) =
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
-  let getConnectionNodes_todosConnection: todosConnection => array(node) =
+  open Types;
+  let getConnectionNodes_todosConnection:
+    fragment_todosConnection => array(fragment_todosConnection_edges_node) =
     connection =>
       switch (connection.edges) {
       | None => [||]

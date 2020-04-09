@@ -1,9 +1,7 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
-  type siteStatistics = {
+  type response_siteStatistics = {
     getFragmentRefs:
       unit =>
       {
@@ -11,21 +9,19 @@ module Types = {
         "__$fragment_ref__TopCardsDisplayer_siteStatistics": TopCardsDisplayer_siteStatistics_graphql.t,
       },
   };
-};
 
-open Types;
-
-type response = {
-  siteStatistics,
-  getFragmentRefs:
-    unit =>
-    {
-      .
-      "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-      "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
-    },
+  type response = {
+    siteStatistics: response_siteStatistics,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
+        "__$fragment_ref__TodoList_query": TodoList_query_graphql.t,
+      },
+  };
+  type variables = unit;
 };
-type variables = unit;
 
 module Internal = {
   type responseRaw;
@@ -53,6 +49,8 @@ module Internal = {
         Js.undefined,
       );
 };
+
+type preloadToken;
 
 module Utils = {};
 

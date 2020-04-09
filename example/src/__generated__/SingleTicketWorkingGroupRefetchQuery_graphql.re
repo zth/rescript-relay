@@ -1,9 +1,7 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type response_node = {
     getFragmentRefs:
       unit =>
       {
@@ -11,22 +9,20 @@ module Types = {
         "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
       },
   };
-};
 
-open Types;
-
-type response = {node: option(node)};
-type refetchVariables = {
-  includeMembers: option(bool),
-  id: option(string),
-};
-let makeRefetchVariables = (~includeMembers=?, ~id=?, ()): refetchVariables => {
-  includeMembers,
-  id,
-};
-type variables = {
-  includeMembers: bool,
-  id: string,
+  type response = {node: option(response_node)};
+  type refetchVariables = {
+    includeMembers: option(bool),
+    id: option(string),
+  };
+  let makeRefetchVariables = (~includeMembers=?, ~id=?, ()): refetchVariables => {
+    includeMembers,
+    id,
+  };
+  type variables = {
+    includeMembers: bool,
+    id: string,
+  };
 };
 
 module Internal = {
@@ -56,7 +52,15 @@ module Internal = {
       );
 };
 
-module Utils = {};
+type preloadToken;
+
+module Utils = {
+  open Types;
+  let makeVariables = (~includeMembers, ~id): variables => {
+    includeMembers,
+    id,
+  };
+};
 
 type operationType = ReasonRelay.queryNode;
 

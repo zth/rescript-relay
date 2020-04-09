@@ -1,22 +1,18 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
   type deleteTodoItemInput = {
     id: string,
     clientMutationId: option(string),
   };
-  type deleteTodoItem = {
+  type response_deleteTodoItem = {
     deletedTodoItemId: option(string),
     clientMutationId: option(string),
   };
+
+  type response = {deleteTodoItem: option(response_deleteTodoItem)};
+  type variables = {input: deleteTodoItemInput};
 };
-
-open Types;
-
-type response = {deleteTodoItem: option(deleteTodoItem)};
-type variables = {input: deleteTodoItemInput};
 
 module Internal = {
   type wrapResponseRaw;
@@ -59,10 +55,23 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let make_deleteTodoItemInput =
       (~id, ~clientMutationId=?, ()): deleteTodoItemInput => {
     id,
     clientMutationId,
+  };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_deleteTodoItem =
+      (~deletedTodoItemId=?, ~clientMutationId=?, ()): response_deleteTodoItem => {
+    deletedTodoItemId,
+    clientMutationId,
+  };
+
+  let makeOptimisticResponse = (~deleteTodoItem=?, ()): response => {
+    deleteTodoItem: deleteTodoItem,
   };
 };
 

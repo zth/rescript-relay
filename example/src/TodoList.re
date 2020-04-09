@@ -49,43 +49,44 @@ let make = (~query as queryRef) => {
           ReactEvent.Form.preventDefault(ev);
 
           let _ =
-            addTodo(
-              ~variables={
-                input: {
-                  clientMutationId: None,
-                  text: newTodoText,
-                },
-              },
-              ~onCompleted=(_, _) => {setNewTodoText(_ => "")},
-              ~updater=
-                (store, _response) =>
-                  ReasonRelayUtils.(
-                    switch (
-                      resolveNestedRecord(
-                        ~rootRecord=
-                          store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
-                            ~fieldName="addTodoItem",
-                          ),
-                        ~path=["addedTodoItem"],
-                      )
-                    ) {
-                    | Some(node) =>
-                      createAndAddEdgeToConnections(
-                        ~store,
-                        ~node,
-                        ~connections=[
-                          {
-                            parentID: ReasonRelay.storeRootId,
-                            key: "TodoList_query_todosConnection",
-                          },
-                        ],
-                        ~edgeName="TodoItemEdge",
-                        ~insertAt=Start,
-                      )
-                    | None => ()
-                    }
+            AddTodoMutation.(
+              addTodo(
+                ~variables=
+                  makeVariables(
+                    ~input=make_addTodoItemInput(~text=newTodoText, ()),
                   ),
-              (),
+                ~onCompleted=(_, _) => {setNewTodoText(_ => "")},
+                ~updater=
+                  (store, _response) =>
+                    ReasonRelayUtils.(
+                      switch (
+                        resolveNestedRecord(
+                          ~rootRecord=
+                            store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
+                              ~fieldName="addTodoItem",
+                            ),
+                          ~path=["addedTodoItem"],
+                        )
+                      ) {
+                      | Some(node) =>
+                        createAndAddEdgeToConnections(
+                          ~store,
+                          ~node,
+                          ~connections=[
+                            {
+                              parentID: ReasonRelay.storeRootId,
+                              key: "TodoList_query_todosConnection",
+                              filters: None,
+                            },
+                          ],
+                          ~edgeName="TodoItemEdge",
+                          ~insertAt=Start,
+                        )
+                      | None => ()
+                      }
+                    ),
+                (),
+              )
             );
           ();
         }}>
@@ -125,7 +126,7 @@ let make = (~query as queryRef) => {
                  checked=true
                />
              )
-           |> React.array}
+           ->React.array}
         </ul>
       </div>
     </div>

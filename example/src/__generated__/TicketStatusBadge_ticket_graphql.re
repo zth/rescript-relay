@@ -24,13 +24,17 @@ let wrap_enum_TicketStatus: enum_TicketStatus => string =
   | `Rejected => "Rejected"
   | `FutureAddedValue(v) => v;
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {
-  status: enum_TicketStatus,
-  dbId: string,
+module Types = {
+  type fragment = {
+    status: [
+      | `Done
+      | `OnHold
+      | `Progress
+      | `Rejected
+      | `FutureAddedValue(string)
+    ],
+    dbId: string,
+  };
 };
 
 module Internal = {

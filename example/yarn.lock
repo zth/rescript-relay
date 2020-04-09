@@ -3946,6 +3946,11 @@ readdirp@^2.2.1:
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
 
+reason-promise@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/reason-promise/-/reason-promise-1.0.2.tgz#22b9bb4097ce511190182b948aef11427d5b8b86"
+  integrity sha512-j8DWV+71wNEKQmyW6zBOowIZq1Qec5CDWyLI37BvgOmAZgRFGFQ1MaJnbhqDe3JsYmaGyqdNMmpCJLl9EDbDAg==
+
 reason-react@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.7.0.tgz#46a975c321e81cd51310d7b1a02418ca7667b0d6"
@@ -3954,10 +3959,10 @@ reason-react@^0.7.0:
     react ">=16.8.1"
     react-dom ">=16.8.1"
 
-reason-relay@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.7.0.tgz#2274bdb23472fe07c6220db969ac83239a5a71a7"
-  integrity sha512-W49hygI41G/mJxsnLoCpx0QPXSvJhsbLCbPli9C9c4mU9wcfAwJrL810izSGFPBSluOeY/x/ncE1c2s4CQnOcA==
+reason-relay@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.8.0.tgz#5beec45f45c0ff183aa01dd55617634ec1c90ac8"
+  integrity sha512-n2JBqPO4wPJ1clUfMAOynUZhqvwgBMyQbbKD6FPWOwJpM6oOUrNZnRzMnKYnpyNMCMLwdVixz74U3mBvnus2XA==
   dependencies:
     mkdirp-sync "^0.0.3"
     reason "^3.3.4"

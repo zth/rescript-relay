@@ -1,24 +1,24 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type fragment_membersConnection_edges_node = {
     id: string,
     fullName: string,
     getFragmentRefs:
       unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
   };
-  type edges = {node: option(node)};
-  type membersConnection = {edges: option(array(option(edges)))};
-};
+  type fragment_membersConnection_edges = {
+    node: option(fragment_membersConnection_edges_node),
+  };
+  type fragment_membersConnection = {
+    edges: option(array(option(fragment_membersConnection_edges))),
+  };
 
-open Types;
-
-type fragment = {
-  name: string,
-  membersConnection: option(membersConnection),
-  id: option(string),
+  type fragment = {
+    name: string,
+    membersConnection: option(fragment_membersConnection),
+    id: option(string),
+  };
 };
 
 module Internal = {

@@ -1,7 +1,5 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
   type updateTodoItemInput = {
     id: string,
@@ -9,18 +7,18 @@ module Types = {
     completed: bool,
     clientMutationId: option(string),
   };
-  type updatedTodoItem = {
+  type response_updateTodoItem_updatedTodoItem = {
     id: string,
     text: string,
     completed: option(bool),
   };
-  type updateTodoItem = {updatedTodoItem: option(updatedTodoItem)};
+  type response_updateTodoItem = {
+    updatedTodoItem: option(response_updateTodoItem_updatedTodoItem),
+  };
+
+  type response = {updateTodoItem: option(response_updateTodoItem)};
+  type variables = {input: updateTodoItemInput};
 };
-
-open Types;
-
-type response = {updateTodoItem: option(updateTodoItem)};
-type variables = {input: updateTodoItemInput};
 
 module Internal = {
   type wrapResponseRaw;
@@ -63,12 +61,31 @@ module Internal = {
 };
 
 module Utils = {
+  open Types;
   let make_updateTodoItemInput =
       (~id, ~text, ~completed, ~clientMutationId=?, ()): updateTodoItemInput => {
     id,
     text,
     completed,
     clientMutationId,
+  };
+
+  let makeVariables = (~input): variables => {input: input};
+
+  let make_response_updateTodoItem_updatedTodoItem =
+      (~id, ~text, ~completed=?, ()): response_updateTodoItem_updatedTodoItem => {
+    id,
+    text,
+    completed,
+  };
+
+  let make_response_updateTodoItem =
+      (~updatedTodoItem=?, ()): response_updateTodoItem => {
+    updatedTodoItem: updatedTodoItem,
+  };
+
+  let makeOptimisticResponse = (~updateTodoItem=?, ()): response => {
+    updateTodoItem: updateTodoItem,
   };
 };
 

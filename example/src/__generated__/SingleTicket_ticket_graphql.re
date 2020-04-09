@@ -1,97 +1,78 @@
 /* @generated */
 
-module Unions = {
-  module Union_fragment_assignee: {
-    type wrapped;
-    type fragment_assignee_user = {
-      getFragmentRefs:
-        unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
-    };
-    type user = fragment_assignee_user;
-    type fragment_assignee_workingGroup = {
-      getFragmentRefs:
-        unit =>
-        {
-          .
-          "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-        },
-    };
-    type workingGroup = fragment_assignee_workingGroup;
-    type t = [
-      | `User(user)
-      | `WorkingGroup(workingGroup)
-      | `UnselectedUnionMember(string)
-    ];
-    let unwrap: wrapped => t;
-  } = {
-    type wrapped;
-    type fragment_assignee_user = {
-      getFragmentRefs:
-        unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
-    };
-    type user = fragment_assignee_user;
-    type fragment_assignee_workingGroup = {
-      getFragmentRefs:
-        unit =>
-        {
-          .
-          "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-        },
-    };
-    type workingGroup = fragment_assignee_workingGroup;
-    external __unwrap_union: wrapped => {. "__typename": string} =
-      "%identity";
-    type t = [
-      | `User(user)
-      | `WorkingGroup(workingGroup)
-      | `UnselectedUnionMember(string)
-    ];
-    external __unwrap_user: wrapped => user = "%identity";
-    external __unwrap_workingGroup: wrapped => workingGroup = "%identity";
-    external __toJson: wrapped => Js.Json.t = "%identity";
-    let unwrap = wrapped => {
-      let unwrappedUnion = wrapped |> __unwrap_union;
-      switch (unwrappedUnion##__typename) {
-      | "User" => `User(wrapped |> __unwrap_user)
-      | "WorkingGroup" => `WorkingGroup(wrapped |> __unwrap_workingGroup)
-      | typename => `UnselectedUnionMember(typename)
-      };
-    };
+module Types = {
+  type fragment_assignee_User = {
+    getFragmentRefs:
+      unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
   };
-
-  type union_fragment_assignee = [
-    | `User(Union_fragment_assignee.user)
-    | `WorkingGroup(Union_fragment_assignee.workingGroup)
+  type fragment_assignee_WorkingGroup = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
+      },
+  };
+  type fragment_assignee = [
+    | `User(fragment_assignee_User)
+    | `WorkingGroup(fragment_assignee_WorkingGroup)
     | `UnselectedUnionMember(string)
   ];
+
+  type fragment = {
+    assignee:
+      option(
+        [
+          | `User(fragment_assignee_User)
+          | `WorkingGroup(fragment_assignee_WorkingGroup)
+          | `UnselectedUnionMember(string)
+        ],
+      ),
+    id: string,
+    subject: string,
+    lastUpdated: option(string),
+    trackingId: string,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TicketStatusBadge_ticket": TicketStatusBadge_ticket_graphql.t,
+      },
+  };
 };
 
-open Unions;
+let unwrap_fragment_assignee:
+  {. "__typename": string} =>
+  [
+    | `User(Types.fragment_assignee_User)
+    | `WorkingGroup(Types.fragment_assignee_WorkingGroup)
+    | `UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | "User" => `User(u->Obj.magic)
+    | "WorkingGroup" => `WorkingGroup(u->Obj.magic)
+    | v => `UnselectedUnionMember(v)
+    };
 
-module Types = {};
-
-type fragment = {
-  assignee: option(union_fragment_assignee),
-  id: string,
-  subject: string,
-  lastUpdated: option(string),
-  trackingId: string,
-  getFragmentRefs:
-    unit =>
-    {
-      .
-      "__$fragment_ref__TicketStatusBadge_ticket": TicketStatusBadge_ticket_graphql.t,
-    },
-};
+let wrap_fragment_assignee:
+  [
+    | `User(Types.fragment_assignee_User)
+    | `WorkingGroup(Types.fragment_assignee_WorkingGroup)
+    | `UnselectedUnionMember(string)
+  ] =>
+  {. "__typename": string} =
+  fun
+  | `User(v) => v->Obj.magic
+  | `WorkingGroup(v) => v->Obj.magic
+  | `UnselectedUnionMember(v) => {"__typename": v};
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {| {"__root":{"assignee":{"n":"","u":"fragment_assignee"},"assignee_user":{"f":""},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""},"":{"f":""}}} |}
   ];
-  let fragmentConverterMap = {
-    "fragment_assignee": Union_fragment_assignee.unwrap,
-  };
+  let fragmentConverterMap = {"fragment_assignee": unwrap_fragment_assignee};
   let convertFragment = v =>
     v
     ->ReasonRelay._convertObj(

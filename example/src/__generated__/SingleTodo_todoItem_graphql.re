@@ -1,13 +1,11 @@
 /* @generated */
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {
-  id: string,
-  text: string,
-  completed: option(bool),
+module Types = {
+  type fragment = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  };
 };
 
 module Internal = {

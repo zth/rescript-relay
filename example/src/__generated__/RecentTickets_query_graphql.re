@@ -1,9 +1,7 @@
 /* @generated */
 
-module Unions = {};
-
 module Types = {
-  type node = {
+  type fragment_ticketsConnection_edges_node = {
     id: string,
     getFragmentRefs:
       unit =>
@@ -12,20 +10,20 @@ module Types = {
         "__$fragment_ref__SingleTicket_ticket": SingleTicket_ticket_graphql.t,
       },
   };
-  type edges = {node: option(node)};
-  type pageInfo = {
+  type fragment_ticketsConnection_edges = {
+    node: option(fragment_ticketsConnection_edges_node),
+  };
+  type fragment_ticketsConnection_pageInfo = {
     endCursor: option(string),
     hasNextPage: bool,
   };
-  type ticketsConnection = {
-    pageInfo,
-    edges: option(array(option(edges))),
+  type fragment_ticketsConnection = {
+    pageInfo: fragment_ticketsConnection_pageInfo,
+    edges: option(array(option(fragment_ticketsConnection_edges))),
   };
+
+  type fragment = {ticketsConnection: fragment_ticketsConnection};
 };
-
-open Types;
-
-type fragment = {ticketsConnection};
 
 module Internal = {
   type fragmentRaw;
@@ -49,7 +47,9 @@ type fragmentRefSelector('a) =
 external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
-  let getConnectionNodes_ticketsConnection: ticketsConnection => array(node) =
+  open Types;
+  let getConnectionNodes_ticketsConnection:
+    fragment_ticketsConnection => array(fragment_ticketsConnection_edges_node) =
     connection =>
       switch (connection.edges) {
       | None => [||]

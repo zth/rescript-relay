@@ -1,13 +1,11 @@
 /* @generated */
 
-module Unions = {};
-
-module Types = {};
-
-type fragment = {
-  weeklySales: float,
-  weeklyOrders: int,
-  currentVisitorsOnline: int,
+module Types = {
+  type fragment = {
+    weeklySales: float,
+    weeklyOrders: int,
+    currentVisitorsOnline: int,
+  };
 };
 
 module Internal = {

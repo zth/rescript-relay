@@ -109,6 +109,7 @@ let make = (~checked, ~todoItem as todoItemRef) => {
                       {
                         parentID: ReasonRelay.storeRootId,
                         key: "TodoList_query_todosConnection",
+                        filters: None,
                       },
                     ],
                   )

@@ -1,25 +1,26 @@
 /* @generated */
 
-module Unions = {};
-
-module Types = {};
-
-type response = {
-  getFragmentRefs:
-    unit =>
-    {. "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t},
-};
-type refetchVariables = {
-  first: option(int),
-  after: option(string),
-};
-let makeRefetchVariables = (~first=?, ~after=?, ()): refetchVariables => {
-  first,
-  after,
-};
-type variables = {
-  first: int,
-  after: string,
+module Types = {
+  type response = {
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
+      },
+  };
+  type refetchVariables = {
+    first: option(int),
+    after: option(string),
+  };
+  let makeRefetchVariables = (~first=?, ~after=?, ()): refetchVariables => {
+    first,
+    after,
+  };
+  type variables = {
+    first: int,
+    after: string,
+  };
 };
 
 module Internal = {
@@ -49,7 +50,12 @@ module Internal = {
       );
 };
 
-module Utils = {};
+type preloadToken;
+
+module Utils = {
+  open Types;
+  let makeVariables = (~first, ~after): variables => {first, after};
+};
 
 type operationType = ReasonRelay.queryNode;
 

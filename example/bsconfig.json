@@ -17,6 +17,11 @@
   "suffix": ".bs.js",
   "ppx-flags": ["reason-relay/ppx"],
   "namespace": true,
-  "bs-dependencies": ["reason-react", "reason-relay", "bs-fetch"],
+  "bs-dependencies": [
+    "reason-react",
+    "reason-relay",
+    "bs-fetch",
+    "reason-promise"
+  ],
   "refmt": 3
 }
