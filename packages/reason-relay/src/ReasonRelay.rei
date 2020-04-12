@@ -313,13 +313,7 @@ module Network: {
     operationKind: string,
   };
 
-  type subscribeFnConfig = {
-    request: operation,
-    variables: Js.Json.t,
-    cacheConfig,
-  };
-
-  type subscribeFn = subscribeFnConfig => Observable.t;
+  type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   type fetchFunctionPromise =
     (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);

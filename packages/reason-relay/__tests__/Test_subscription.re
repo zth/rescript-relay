@@ -111,7 +111,7 @@ let test_subscription = () => {
   let observable =
     ReasonRelay.Observable.make(sink => {theSink := Some(sink)});
 
-  let subscriptionFunction = _ => observable;
+  let subscriptionFunction = (_, _, _) => observable;
 
   let network =
     ReasonRelay.Network.makePromiseBased(
