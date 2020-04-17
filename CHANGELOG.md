@@ -1,5 +1,7 @@
 # master
 
+# 0.8.2
+
 - Fix subscriptions function bindings, which was previously wrong (thanks @
   Arnarkari93 !)
 - Fix bug when input objects contain circular dependencies.
