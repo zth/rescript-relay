@@ -267,6 +267,11 @@ let objectToAssets =
         addInstruction({atPath: currentPath, instruction: RootObject(name)});
 
         if (inRootObject != Some(name)) {
+          // Claim this instruction spot for the current input object. It'll be overwritten below with the real instructions.
+          // If we don't do this, `makeRootObjectInstruction` below would put us in an endless loop if this input object has
+          // circular dependencies on other input objects.
+          addInputObjInstruction(name, Js.Dict.empty());
+
           obj.definition
           |> makeRootObjectInstruction(~name, ~converters)
           |> addInputObjInstruction(name);
@@ -438,7 +443,12 @@ let objectToAssets =
       | _ =>
         Js.Dict.fromList([
           ("__root", rootInstructions),
-          ...inputObjectInstructions->Js.Dict.entries->Belt.List.fromArray,
+          ...inputObjectInstructions
+             ->Js.Dict.entries
+             ->Belt.List.fromArray
+             ->Belt.List.sort(((key, _), (key2, _)) =>
+                 String.compare(key, key2)
+               ),
         ])
       },
     convertersDefinition: printConvertersMap(converters),

@@ -1,5 +1,9 @@
 # master
 
+- Fix subscriptions function bindings, which was previously wrong (thanks @
+  Arnarkari93 !)
+- Fix bug when input objects contain circular dependencies.
+
 # 0.8.1
 
 - Fix "unused varible this" warning introduced in `0.8.0`.
