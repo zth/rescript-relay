@@ -233,11 +233,11 @@ let objectToAssets =
   let instructions: array(instructionContainer) = [||];
   let addInstruction = i => instructions |> Js.Array.push(i) |> ignore;
 
-  let subObjectInstructions: Js.Dict.t(converterInstructions) =
+  let inputObjectInstructions: Js.Dict.t(converterInstructions) =
     Js.Dict.empty();
 
-  let addSubObjInstruction = (name, instructions) =>
-    subObjectInstructions->Js.Dict.set(name, instructions);
+  let addInputObjInstruction = (name, instructions) =>
+    inputObjectInstructions->Js.Dict.set(name, instructions);
 
   let converters = Js.Dict.empty();
 
@@ -261,7 +261,7 @@ let objectToAssets =
             | {recordName} when recordName == Some(name) => true
             | _ => false,
         ),
-        subObjectInstructions->Js.Dict.get(name),
+        inputObjectInstructions->Js.Dict.get(name),
       ) {
       | (Some(obj), None) =>
         addInstruction({atPath: currentPath, instruction: RootObject(name)});
@@ -269,7 +269,7 @@ let objectToAssets =
         if (inRootObject != Some(name)) {
           obj.definition
           |> makeRootObjectInstruction(~name, ~converters)
-          |> addSubObjInstruction(name);
+          |> addInputObjInstruction(name);
         };
       | (Some(_), Some(_)) =>
         addInstruction({atPath: currentPath, instruction: RootObject(name)})
@@ -438,7 +438,7 @@ let objectToAssets =
       | _ =>
         Js.Dict.fromList([
           ("__root", rootInstructions),
-          ...subObjectInstructions->Js.Dict.entries->Belt.List.fromArray,
+          ...inputObjectInstructions->Js.Dict.entries->Belt.List.fromArray,
         ])
       },
     convertersDefinition: printConvertersMap(converters),
