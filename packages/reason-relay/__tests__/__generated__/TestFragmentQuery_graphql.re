@@ -247,3 +247,13 @@ return {
 };
 })() |json}
 ];
+
+module Preload =
+  ReasonRelay.MakePreloadQuery({
+    type variables = Types.variables;
+    type queryPreloadToken = preloadToken;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });
+
+let preload = Preload.preload;

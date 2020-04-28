@@ -682,6 +682,44 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   };
 };
 
+module type MakePreloadQueryConfig = {
+  type variables;
+  type queryPreloadToken;
+  let query: queryNode;
+  let convertVariables: variables => variables;
+};
+
+module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
+  let preload:
+    (
+      ~environment: Environment.t,
+      ~variables: C.variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: cacheConfig=?,
+      unit
+    ) =>
+    C.queryPreloadToken =
+    (
+      ~environment,
+      ~variables,
+      ~fetchPolicy=?,
+      ~fetchKey=?,
+      ~networkCacheConfig=?,
+      (),
+    ) =>
+      _preloadQuery(
+        environment,
+        C.query,
+        variables |> C.convertVariables |> _cleanVariables,
+        {
+          fetchKey,
+          fetchPolicy: fetchPolicy |> mapFetchPolicy,
+          networkCacheConfig,
+        },
+      );
+};
+
 /**
  * FRAGMENT
  */

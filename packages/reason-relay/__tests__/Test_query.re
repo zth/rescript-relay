@@ -59,6 +59,8 @@ module Test = {
 
     let (status, setStatus) = React.useState(() => Some(`Online));
     let (preloadToken, setPreloadToken) = React.useState(() => None);
+    let (preloadTokenFromModule, setPreloadTokenFromModule) =
+      React.useState(() => None);
     let (fetchedResult, setFetchedResult) = React.useState(() => None);
 
     let collectUsers = (res: Query.Types.response) =>
@@ -117,6 +119,20 @@ module Test = {
         {React.string("Test preloaded")}
       </button>
       <button
+        onClick={_ => {
+          setPreloadTokenFromModule(_ =>
+            Some(
+              TestQuery_graphql.preload(
+                ~environment,
+                ~variables={status: Some(`Idle)},
+                (),
+              ),
+            )
+          )
+        }}>
+        {React.string("Test preloaded from raw module")}
+      </button>
+      <button
         onClick={_ =>
           Query.fetch(
             ~environment,
@@ -144,6 +160,10 @@ module Test = {
         {React.string("Test fetch promised")}
       </button>
       {switch (preloadToken) {
+       | Some(preloadToken) => <TestPreloaded preloadToken />
+       | None => React.null
+       }}
+      {switch (preloadTokenFromModule) {
        | Some(preloadToken) => <TestPreloaded preloadToken />
        | None => React.null
        }}

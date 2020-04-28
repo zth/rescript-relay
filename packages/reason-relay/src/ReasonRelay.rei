@@ -415,6 +415,8 @@ type fetchPolicy =
   | StoreAndNetwork // Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not
   | NetworkOnly; // Always make a request, discard what's in the store
 
+let mapFetchPolicy: option(fetchPolicy) => option(string);
+
 /**
  * Internally used functors and configs.
  * You won't need to know about these.
@@ -469,6 +471,28 @@ module MakeUseQuery:
     let usePreloaded:
       (~token: C.preloadToken, ~renderPolicy: renderPolicy=?, unit) =>
       C.response;
+  };
+
+module type MakePreloadQueryConfig = {
+  type variables;
+  type queryPreloadToken;
+  let query: queryNode;
+  let convertVariables: variables => variables;
+};
+
+module MakePreloadQuery:
+  (C: MakePreloadQueryConfig) =>
+   {
+    let preload:
+      (
+        ~environment: Environment.t,
+        ~variables: C.variables,
+        ~fetchPolicy: fetchPolicy=?,
+        ~fetchKey: string=?,
+        ~networkCacheConfig: cacheConfig=?,
+        unit
+      ) =>
+      C.queryPreloadToken;
   };
 
 /**

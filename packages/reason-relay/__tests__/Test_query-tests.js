@@ -84,7 +84,7 @@ describe("Query", () => {
     await t.screen.findByText("Preloaded Second is idle");
   });
 
-  test("using preloaded version works", async () => {
+  test("using preloaded directly from raw module works", async () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
@@ -106,7 +106,7 @@ describe("Query", () => {
       )
     );
 
-    t.fireEvent.click(t.screen.getByText("Test preloaded"));
+    t.fireEvent.click(t.screen.getByText("Test preloaded from raw module"));
 
     await t.screen.findByText("Preloaded Second is idle");
   });
