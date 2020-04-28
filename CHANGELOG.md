@@ -1,5 +1,7 @@
 # master
 
+# 0.8.3
+
 - `preload` for queries are now exposed right on the raw generated GraphQL module coming from the Relay compiler, in addition to on the module generated from the PPX. This primarily paves the way for effective code splitting.
 
 # 0.8.2
