@@ -8,6 +8,8 @@ First thing's first - there's a suite of integration tests inside of `/packages/
 
 Any feature added or fix done should consider whether that case is covered in the integration tests, and add tests for it if possible.
 
+**Please note** that testing your local changes with the integration tests requires some recompiling. There's information on how to do that for each individual part below.
+
 ## The ReasonML bindings and utils
 
 `/packages/reason-relay/src` contains all the _ReasonML_ code shipped in the package. You build it by running `yarn bsb -make-world` in `/packages/reason-relay`.
