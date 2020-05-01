@@ -58,9 +58,10 @@ module Test = {
     let environment = ReasonRelay.useEnvironmentFromContext();
 
     let (status, setStatus) = React.useState(() => Some(`Online));
-    let (preloadToken, setPreloadToken) = React.useState(() => None);
     let (preloadTokenFromModule, setPreloadTokenFromModule) =
       React.useState(() => None);
+    let (hasWaitedForPreload, setHasWaitedForPreload) =
+      React.useState(() => false);
     let (fetchedResult, setFetchedResult) = React.useState(() => None);
 
     let collectUsers = (res: Query.Types.response) =>
@@ -106,20 +107,6 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          setPreloadToken(_ =>
-            Some(
-              Query.preload(
-                ~environment,
-                ~variables={status: Some(`Idle)},
-                (),
-              ),
-            )
-          )
-        }}>
-        {React.string("Test preloaded")}
-      </button>
-      <button
-        onClick={_ => {
           setPreloadTokenFromModule(_ =>
             Some(
               TestQuery_graphql.preload(
@@ -131,6 +118,28 @@ module Test = {
           )
         }}>
         {React.string("Test preloaded from raw module")}
+      </button>
+      <button
+        onClick={_ => {
+          let preloadToken =
+            TestQuery_graphql.preload(
+              ~environment,
+              ~variables={status: Some(`Idle)},
+              (),
+            );
+
+          preloadToken
+          ->TestQuery_graphql.preloadTokenToPromise
+          ->Promise.get(res =>
+              switch (res) {
+              | Ok () => setHasWaitedForPreload(_ => true)
+              | Error () => ()
+              }
+            );
+
+          setPreloadTokenFromModule(_ => Some(preloadToken));
+        }}>
+        {React.string("Test wait for preload")}
       </button>
       <button
         onClick={_ =>
@@ -159,10 +168,8 @@ module Test = {
         }>
         {React.string("Test fetch promised")}
       </button>
-      {switch (preloadToken) {
-       | Some(preloadToken) => <TestPreloaded preloadToken />
-       | None => React.null
-       }}
+      {hasWaitedForPreload
+         ? <div> {React.string("Has waited for preload")} </div> : React.null}
       {switch (preloadTokenFromModule) {
        | Some(preloadToken) => <TestPreloaded preloadToken />
        | None => React.null

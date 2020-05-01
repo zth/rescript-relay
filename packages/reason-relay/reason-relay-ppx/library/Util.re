@@ -339,7 +339,6 @@ let makeQuery = (~loc, ~moduleName) =>
       [%stri let use = UseQuery.use],
       [%stri let fetch = UseQuery.fetch],
       [%stri let fetchPromised = UseQuery.fetchPromised],
-      [%stri let preload = UseQuery.preload],
       [%stri let usePreloaded = UseQuery.usePreloaded],
     ]),
   );

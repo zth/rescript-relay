@@ -57,33 +57,6 @@ describe("Query", () => {
     await t.screen.findByText("Third is -");
   });
 
-  test("using preloaded version works", async () => {
-    queryMock.mockQuery(
-      makeMockedQuery(
-        {
-          status: "Online",
-        },
-        [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
-      )
-    );
-
-    t.render(test_query());
-    await t.screen.findByText("First is online");
-
-    queryMock.mockQuery(
-      makeMockedQuery(
-        {
-          status: "Idle",
-        },
-        [{ id: "user-2", firstName: "Second", onlineStatus: "Idle" }]
-      )
-    );
-
-    t.fireEvent.click(t.screen.getByText("Test preloaded"));
-
-    await t.screen.findByText("Preloaded Second is idle");
-  });
-
   test("using preloaded directly from raw module works", async () => {
     queryMock.mockQuery(
       makeMockedQuery(
@@ -108,6 +81,34 @@ describe("Query", () => {
 
     t.fireEvent.click(t.screen.getByText("Test preloaded from raw module"));
 
+    await t.screen.findByText("Preloaded Second is idle");
+  });
+
+  test("converting preloaded token to promise and waiting for that works", async () => {
+    queryMock.mockQuery(
+      makeMockedQuery(
+        {
+          status: "Online",
+        },
+        [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
+      )
+    );
+
+    t.render(test_query());
+    await t.screen.findByText("First is online");
+
+    queryMock.mockQuery(
+      makeMockedQuery(
+        {
+          status: "Idle",
+        },
+        [{ id: "user-2", firstName: "Second", onlineStatus: "Idle" }]
+      )
+    );
+
+    t.fireEvent.click(t.screen.getByText("Test wait for preload"));
+
+    await t.screen.findByText("Has waited for preload");
     await t.screen.findByText("Preloaded Second is idle");
   });
 

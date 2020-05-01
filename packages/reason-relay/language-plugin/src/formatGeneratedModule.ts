@@ -16,15 +16,12 @@ const formatGeneratedModule: FormatModule = ({
     // @ts-ignore The type definitions are actually wrong from DefinitivelyTyped
     documentType === "ConcreteRequest" &&
     moduleName.toLowerCase().endsWith("query_graphql")
-      ? `module Preload =
-  ReasonRelay.MakePreloadQuery({
+      ? `include ReasonRelay.MakePreloadQuery({
     type variables = Types.variables;
     type queryPreloadToken = preloadToken;
     let query = node;
     let convertVariables = Internal.convertVariables;
-  });
-
-let preload = Preload.preload;`
+  });`
       : "";
 
   return printCode(`
