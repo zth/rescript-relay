@@ -357,6 +357,11 @@ type cacheConfig = {
 module Observable = {
   type t;
 
+  type subscription = {
+    unsubscribe: unit => unit,
+    closed: bool,
+  };
+
   type sink('t) = {
     next: 't => unit,
     error: Js.Exn.t => unit,
@@ -364,8 +369,28 @@ module Observable = {
     closed: bool,
   };
 
+  type observer('t) = {
+    start: option(subscription => unit),
+    next: option('t => unit),
+    error: option(Js.Exn.t => unit),
+    complete: option(unit => unit),
+    unsubscribe: option(subscription => unit),
+  };
+
+  let makeObserver =
+      (~start=?, ~next=?, ~error=?, ~complete=?, ~unsubscribe=?, ()) => {
+    start,
+    next,
+    error,
+    complete,
+    unsubscribe,
+  };
+
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external create: (sink('t) => option('a)) => t = "create";
+
+  [@bs.send]
+  external subscribe: (t, observer('t)) => subscription = "subscribe";
 
   let make = sinkFn =>
     create(s => {
@@ -599,35 +624,6 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     useConvertedValue(C.convertResponse, data);
   };
 
-  let preload:
-    (
-      ~environment: Environment.t,
-      ~variables: C.variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~fetchKey: string=?,
-      ~networkCacheConfig: cacheConfig=?,
-      unit
-    ) =>
-    C.preloadToken =
-    (
-      ~environment,
-      ~variables,
-      ~fetchPolicy=?,
-      ~fetchKey=?,
-      ~networkCacheConfig=?,
-      (),
-    ) =>
-      _preloadQuery(
-        environment,
-        C.query,
-        variables |> C.convertVariables |> _cleanVariables,
-        {
-          fetchKey,
-          fetchPolicy: fetchPolicy |> mapFetchPolicy,
-          networkCacheConfig,
-        },
-      );
-
   let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
     let data =
       _usePreloadedQuery(
@@ -677,6 +673,68 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
            resolve(Error(err));
            Js.Promise.resolve();
          });
+
+    promise;
+  };
+};
+
+module type MakePreloadQueryConfig = {
+  type variables;
+  type queryPreloadToken;
+  let query: queryNode;
+  let convertVariables: variables => variables;
+};
+
+module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
+  let preload:
+    (
+      ~environment: Environment.t,
+      ~variables: C.variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~fetchKey: string=?,
+      ~networkCacheConfig: cacheConfig=?,
+      unit
+    ) =>
+    C.queryPreloadToken =
+    (
+      ~environment,
+      ~variables,
+      ~fetchPolicy=?,
+      ~fetchKey=?,
+      ~networkCacheConfig=?,
+      (),
+    ) =>
+      _preloadQuery(
+        environment,
+        C.query,
+        variables |> C.convertVariables |> _cleanVariables,
+        {
+          fetchKey,
+          fetchPolicy: fetchPolicy |> mapFetchPolicy,
+          networkCacheConfig,
+        },
+      );
+
+  type rawPreloadToken = {source: Js.Nullable.t(Observable.t)};
+  external tokenToRaw: C.queryPreloadToken => rawPreloadToken = "%identity";
+
+  let preloadTokenToObservable = token => {
+    let raw = token->tokenToRaw;
+    raw.source->Js.Nullable.toOption;
+  };
+
+  let preloadTokenToPromise = token => {
+    let (promise, resolve) = Promise.pending();
+
+    switch (token->preloadTokenToObservable) {
+    | None => resolve(Error())
+    | Some(o) =>
+      let _: Observable.subscription =
+        o->Observable.(
+             subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+           );
+      ();
+    };
 
     promise;
   };

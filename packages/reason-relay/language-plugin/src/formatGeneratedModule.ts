@@ -12,12 +12,26 @@ const formatGeneratedModule: FormatModule = ({
   hash,
   sourceHash,
 }) => {
+  const preloadText =
+    // @ts-ignore The type definitions are actually wrong from DefinitivelyTyped
+    documentType === "ConcreteRequest" &&
+    moduleName.toLowerCase().endsWith("query_graphql")
+      ? `include ReasonRelay.MakePreloadQuery({
+    type variables = Types.variables;
+    type queryPreloadToken = preloadToken;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });`
+      : "";
+
   return printCode(`
 ${typeText || ""}
 
 let node: operationType = [%raw {json| ${processConcreteText(
     concreteText
   )} |json}];
+
+${preloadText}
 `);
 };
 

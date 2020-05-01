@@ -298,7 +298,32 @@ module Observable: {
     closed: bool,
   };
 
+  type subscription = {
+    unsubscribe: unit => unit,
+    closed: bool,
+  };
+
+  type observer('t) = {
+    start: option(subscription => unit),
+    next: option('t => unit),
+    error: option(Js.Exn.t => unit),
+    complete: option(unit => unit),
+    unsubscribe: option(subscription => unit),
+  };
+
+  let makeObserver:
+    (
+      ~start: subscription => unit=?,
+      ~next: 't => unit=?,
+      ~error: Js.Exn.t => unit=?,
+      ~complete: unit => unit=?,
+      ~unsubscribe: subscription => unit=?,
+      unit
+    ) =>
+    observer('t);
+
   let make: (sink('t) => unit) => t;
+  let subscribe: (t, observer('t)) => subscription;
 };
 
 /**
@@ -415,6 +440,8 @@ type fetchPolicy =
   | StoreAndNetwork // Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not
   | NetworkOnly; // Always make a request, discard what's in the store
 
+let mapFetchPolicy: option(fetchPolicy) => option(string);
+
 /**
  * Internally used functors and configs.
  * You won't need to know about these.
@@ -455,6 +482,21 @@ module MakeUseQuery:
       (~environment: Environment.t, ~variables: C.variables) =>
       Promise.t(Belt.Result.t(C.response, Js.Promise.error));
 
+    let usePreloaded:
+      (~token: C.preloadToken, ~renderPolicy: renderPolicy=?, unit) =>
+      C.response;
+  };
+
+module type MakePreloadQueryConfig = {
+  type variables;
+  type queryPreloadToken;
+  let query: queryNode;
+  let convertVariables: variables => variables;
+};
+
+module MakePreloadQuery:
+  (C: MakePreloadQueryConfig) =>
+   {
     let preload:
       (
         ~environment: Environment.t,
@@ -464,11 +506,11 @@ module MakeUseQuery:
         ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
-      C.preloadToken;
+      C.queryPreloadToken;
 
-    let usePreloaded:
-      (~token: C.preloadToken, ~renderPolicy: renderPolicy=?, unit) =>
-      C.response;
+    let preloadTokenToObservable: C.queryPreloadToken => option(Observable.t);
+    let preloadTokenToPromise:
+      C.queryPreloadToken => Promise.t(Belt.Result.t(unit, unit));
   };
 
 /**
