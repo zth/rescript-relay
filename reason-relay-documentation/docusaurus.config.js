@@ -10,7 +10,7 @@ module.exports = {
   tagline: "Use Relay with ReasonML",
   url: "https://your-docusaurus-test-site.com",
   baseUrl: "/",
-  favicon: "img/favicon.ico",
+  favicon: "img/favicon.png",
   organizationName: "zth", // Usually your GitHub org/user name.
   projectName: "reason-relay", // Usually your repo name.
   themeConfig: {
