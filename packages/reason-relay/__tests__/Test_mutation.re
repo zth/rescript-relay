@@ -126,7 +126,7 @@ module Test = {
           )
           ->Promise.get(
               fun
-              | Ok((Some(res), _)) => setMutationResult(_ => Some(res))
+              | Ok((res, _)) => setMutationResult(_ => Some(res))
               | _ => Js.log("oops!"),
             )
         }>
