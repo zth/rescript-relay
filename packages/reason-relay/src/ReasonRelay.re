@@ -1041,10 +1041,7 @@ type _commitMutationConfig('variables, 'response) = {
   mutation: mutationNode,
   variables: 'variables,
   onCompleted:
-    option(
-      (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
-      unit,
-    ),
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
   onError: option(Js.Nullable.t(mutationError) => unit),
   optimisticResponse: option('response),
   optimisticUpdater: option(optimisticUpdaterFn),
@@ -1134,13 +1131,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
             (res, err) =>
               switch (onCompleted) {
               | Some(cb) =>
-                cb(
-                  switch (Js.Nullable.toOption(res)) {
-                  | Some(res) => Some(res->C.convertResponse)
-                  | None => None
-                  },
-                  Js.Nullable.toOption(err),
-                )
+                cb(res->C.convertResponse, Js.Nullable.toOption(err))
               | None => ()
               },
           ),
@@ -1178,7 +1169,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
       )
       : Promise.t(
           Belt.Result.t(
-            (option(C.response), option(array(mutationError))),
+            (C.response, option(array(mutationError))),
             option(mutationError),
           ),
         ) => {
@@ -1194,13 +1185,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
             Some(
               (res, err) =>
                 resolve(
-                  Ok((
-                    switch (Js.Nullable.toOption(res)) {
-                    | Some(res) => Some(res->C.convertResponse)
-                    | None => None
-                    },
-                    Js.Nullable.toOption(err),
-                  )),
+                  Ok((res->C.convertResponse, Js.Nullable.toOption(err))),
                 ),
             ),
           onError: Some(err => resolve(Error(Js.Nullable.toOption(err)))),
