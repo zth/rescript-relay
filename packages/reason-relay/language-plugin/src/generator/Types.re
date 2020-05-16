@@ -74,10 +74,14 @@ and fullEnum = {
   values: array(string),
 };
 
+type fragmentType =
+  | Union(union)
+  | Object(object_);
+
 type fragment = {
   name: string,
   plural: bool,
-  definition: object_,
+  definition: fragmentType,
 };
 
 type obj = {

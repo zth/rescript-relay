@@ -50,7 +50,7 @@ let extractNestedObjects = (obj: object_): list(object_) => {
   objects^;
 };
 
-let rec mapPropType = (~path, propType) =>
+let rec mapPropType = (~path, propType: propType): propType =>
   switch (propType) {
   | Object(obj) =>
     let newObj = {...obj, atPath: path} |> adjustObjectPath(~path);

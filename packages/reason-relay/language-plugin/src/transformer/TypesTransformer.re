@@ -122,8 +122,10 @@ let intermediateToFull =
   };
 
   switch (state^.fragment) {
-  | Some(d) =>
-    d.definition |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
+  | Some({definition: Object(obj)}) =>
+    obj |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
+  | Some({definition: Union(union)}) =>
+    Js.log2("TODO: Implement union", union)
   | None => ()
   };
 
@@ -212,10 +214,11 @@ let getPrintedFullState =
   };
 
   switch (state.fragment) {
-  | Some({definition, plural}) =>
+  | Some({definition: Object(definition), plural}) =>
     addDefinition(
       plural ? Types.PluralFragment(definition) : Types.Fragment(definition),
     )
+  | Some({definition: Union(_union)}) => Js.log("TODO: implement union")
   | None => ()
   };
 
@@ -297,7 +300,7 @@ let getPrintedFullState =
       );
 
   switch (state.fragment) {
-  | Some({definition}) =>
+  | Some({definition: Object(definition)}) =>
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
@@ -306,6 +309,7 @@ let getPrintedFullState =
       ),
     );
     addSpacing();
+  | Some({definition: Union(_union)}) => Js.log("TODO: implement union")
   | None => ()
   };
 
@@ -400,7 +404,8 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
-    | (None, Some({definition})) when connPath == ["fragment"] =>
+    | (None, Some({definition: Object(definition)}))
+        when connPath == ["fragment"] =>
       definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
            ~state,
@@ -409,6 +414,8 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
+    | (None, Some({definition: Union(_definition)})) =>
+      Js.log("TODO: implement union")
     | (None, Some(_))
     | (None, None) => ()
     };
@@ -941,7 +948,10 @@ let flowTypesToFullState = (~content, ~operationType) => {
                    Some({
                      plural,
                      definition:
-                       properties |> makeObjShape(~state, ~path=["fragment"]),
+                       Object(
+                         properties
+                         |> makeObjShape(~state, ~path=["fragment"]),
+                       ),
                      name,
                    }),
                }

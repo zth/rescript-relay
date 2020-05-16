@@ -555,6 +555,32 @@ describe("Language plugin tests", () => {
       expect(generated).toMatchSnapshot();
     });
 
+    it.only("handles fragments on unions", () => {
+      let generated = generate(
+        `fragment Participant_participant on Participant {
+            __typename
+            ... on User {
+              id
+              firstName
+              lastName
+              location {
+                lat
+                lng
+              }
+            }
+
+            ... on Observer {
+              id
+              name
+            }
+          }`
+      );
+
+      console.log(generated);
+
+      expect(generated).toMatchSnapshot();
+    });
+
     it("generates code to unwrap fragments on unions", () => {
       let generated = generate(
         `

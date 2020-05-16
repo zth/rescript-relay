@@ -6,7 +6,7 @@ import { TypeGeneratorOptions } from "relay-compiler/lib/language/RelayLanguageP
 import { printFromFlowTypes } from "./transformer/TypesTransformer.gen";
 import {
   makeOperationDescriptor,
-  extractOperationInfo
+  extractOperationInfo,
 } from "./transformer/transformerUtils";
 import { ScalarTypeMapping } from "relay-compiler/lib/language/javascript/RelayFlowTypeTransformers";
 import { maskDots } from "./generator/Utils.gen";
@@ -17,9 +17,9 @@ function mapCustomScalars(customScalars: ScalarTypeMapping): ScalarTypeMapping {
   const newCustomScalars: ScalarTypeMapping = {
     Int: "int",
     Float: "float",
-    ...customScalars
+    ...customScalars,
   };
-  Object.keys(newCustomScalars).forEach(key => {
+  Object.keys(newCustomScalars).forEach((key) => {
     newCustomScalars[key] = maskDots(newCustomScalars[key]);
   });
 
@@ -33,18 +33,20 @@ export function generate(
 ): string {
   let flowTypes = RelayFlowGenerator.generate(schema, node, {
     ...options,
-    customScalars: mapCustomScalars(options.customScalars)
+    customScalars: mapCustomScalars(options.customScalars),
   });
+
+  console.log(flowTypes);
 
   return printFromFlowTypes({
     content: flowTypes,
     operationType: makeOperationDescriptor(node),
-    config: extractOperationInfo(node)
+    config: extractOperationInfo(node),
   });
 }
 
 export const transforms = [
   EnforceManualTypeNameSelectionOnUnions.transform,
   DisallowReservedReasonWordsTransform.transform,
-  ...RelayFlowGenerator.transforms
+  ...RelayFlowGenerator.transforms,
 ];
