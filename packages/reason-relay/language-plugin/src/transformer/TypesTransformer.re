@@ -751,8 +751,8 @@ and makeUnionMember =
   | None => raise(Missing_typename_field_on_union)
   };
 }
-and makeUnion =
-    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
+and makeUnionDefinition =
+    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~state): Types.union => {
   let unionMembers =
     ref([
       firstProps |> makeUnionMember(~state, ~path),
@@ -769,7 +769,7 @@ and makeUnion =
        }
      );
 
-  let union: Types.union = {
+  {
     members:
       unionMembers^
       |> Tablecloth.List.filter(~f=(member: Types.unionMember) =>
@@ -777,8 +777,22 @@ and makeUnion =
          ),
     atPath: path,
   };
-
-  {nullable: optional, propType: Union(union)};
+}
+and makeUnion =
+    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
+  {
+    nullable: optional,
+    propType:
+      Union(
+        makeUnionDefinition(
+          ~firstProps,
+          ~secondProps,
+          ~maybeMoreMembers,
+          ~path,
+          ~state,
+        ),
+      ),
+  };
 };
 
 let flowTypesToFullState = (~content, ~operationType) => {
@@ -921,6 +935,71 @@ let flowTypesToFullState = (~content, ~operationType) => {
          /***
           * Objects
           */
+
+         /***
+          * Match fragments
+          */
+         // Union
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     // Match unions
+                     Union(
+                       (_, Object({properties: firstProps})),
+                       (_, Object({properties: secondProps})),
+                       maybeMoreMembers,
+                     ) |
+                     Generic({
+                       id: Unqualified((_, "$ReadOnlyArray")),
+                       targs:
+                         Some((
+                           _,
+                           [
+                             (
+                               _,
+                               Union(
+                                 (_, Object({properties: firstProps})),
+                                 (_, Object({properties: secondProps})),
+                                 maybeMoreMembers,
+                               ),
+                             ),
+                           ],
+                         )),
+                     }),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           switch (typeName) {
+           | _ when typeName == name =>
+             setState(state =>
+               {
+                 ...state,
+                 fragment:
+                   Some({
+                     plural,
+                     definition:
+                       Union(
+                         makeUnionDefinition(
+                           ~firstProps,
+                           ~state,
+                           ~secondProps,
+                           ~maybeMoreMembers,
+                           ~path=["fragment"],
+                         ),
+                       ),
+                     name,
+                   }),
+               }
+             )
+           | _ => ()
+           }
+         // Regular objects
          | ExportNamedDeclaration({
              declaration:
                Some((
