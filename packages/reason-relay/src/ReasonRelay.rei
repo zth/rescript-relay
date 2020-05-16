@@ -701,9 +701,7 @@ module MakeCommitMutation:
         ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        ~onCompleted: (option(C.response), option(array(mutationError))) =>
-                      unit
-                        =?,
+        ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
         ~onError: option(mutationError) => unit=?,
         unit
       ) =>
@@ -720,7 +718,7 @@ module MakeCommitMutation:
       ) =>
       Promise.t(
         Belt.Result.t(
-          (option(C.response), option(array(mutationError))),
+          (C.response, option(array(mutationError))),
           option(mutationError),
         ),
       );
