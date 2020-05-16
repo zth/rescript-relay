@@ -36,8 +36,6 @@ export function generate(
     customScalars: mapCustomScalars(options.customScalars),
   });
 
-  console.log(flowTypes);
-
   return printFromFlowTypes({
     content: flowTypes,
     operationType: makeOperationDescriptor(node),

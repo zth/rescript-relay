@@ -129,9 +129,9 @@ let printGetConnectionNodesFunction =
                               o.atPath == nodeAtPath
                             ),
                          state.unions
-                         |> Tablecloth.List.find(~f=(u: Types.union) =>
-                              u.atPath == nodeAtPath
-                            ),
+                         ->Tablecloth.List.find(~f=u =>
+                             u.union.atPath == nodeAtPath
+                           ),
                          state.objects
                          |> Tablecloth.List.find(~f=o =>
                               o.atPath == connectionAtPath
@@ -163,7 +163,8 @@ let printGetConnectionNodesFunction =
                              ~connectionLocation,
                              ~connectionPropNullable,
                              ~connectionTypeName,
-                             ~nodeTypeName=Printer.printLocalUnionName(union),
+                             ~nodeTypeName=
+                               Printer.printLocalUnionName(union.union),
                              ~edgesPropNullable,
                              ~edgesNullable,
                              ~nodeNullable,

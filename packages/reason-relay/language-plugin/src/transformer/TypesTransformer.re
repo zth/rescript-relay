@@ -84,7 +84,7 @@ let intermediateToFull =
       | Enum(enum) => addEnum(enum)
       | Array({propType: Union(union)})
       | Union(union) =>
-        addUnion(union);
+        addUnion({union, printName: true});
 
         union.members
         ->Belt.List.forEach(member => {
@@ -125,7 +125,11 @@ let intermediateToFull =
   | Some({definition: Object(obj)}) =>
     obj |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
   | Some({definition: Union(union)}) =>
-    Js.log2("TODO: Implement union", union)
+    addUnion({union, printName: false});
+    union.members
+    ->Belt.List.forEach(member => {
+        member.shape |> traverseDefinition(~inUnion=true, ~atPath=[])
+      });
   | None => ()
   };
 
@@ -214,11 +218,10 @@ let getPrintedFullState =
   };
 
   switch (state.fragment) {
-  | Some({definition: Object(definition), plural}) =>
+  | Some({definition, plural}) =>
     addDefinition(
       plural ? Types.PluralFragment(definition) : Types.Fragment(definition),
     )
-  | Some({definition: Union(_union)}) => Js.log("TODO: implement union")
   | None => ()
   };
 
@@ -241,8 +244,8 @@ let getPrintedFullState =
     };
 
   state.unions
-  ->Belt.List.forEach(union => {
-      union |> Printer.printUnionTypes(~state) |> addToStr
+  ->Belt.List.forEach(({union, printName}) => {
+      union->Printer.printUnionTypes(~state, ~printName)->addToStr
     });
 
   Printer.(
@@ -279,7 +282,7 @@ let getPrintedFullState =
 
   if (state.unions->Belt.List.length > 0) {
     state.unions
-    ->Belt.List.forEach(union =>
+    ->Belt.List.forEach(({union}) =>
         union->Printer.printUnionConverters->addToStr
       );
   };

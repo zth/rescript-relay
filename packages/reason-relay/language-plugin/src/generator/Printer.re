@@ -361,9 +361,16 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
     | _ => printRefetchVariablesMaker(~state, obj) ++ ";"
     }
 
-  | Fragment(obj) =>
+  | Fragment(Object(obj)) =>
     "type fragment = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
+  | Fragment(Union(union)) =>
+    "type fragment = "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=false,
+       )
     ++ ";"
   | ObjectTypeDeclaration({name, definition}) =>
     "type "
@@ -376,9 +383,17 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
       }
     )
     ++ ";"
-  | PluralFragment(obj) =>
+  | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";\n"
+    ++ "type fragment = array(fragment_t);"
+  | PluralFragment(Union(union)) =>
+    "type fragment_t = "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=false,
+       )
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   }
@@ -473,7 +488,7 @@ let printUnionConverters = (union: union) => {
   str^;
 };
 
-let printUnionTypes = (~state, union: union) => {
+let printUnionTypes = (~state, ~printName, union: union) => {
   let typeDefs = ref("");
   let addToTypeDefs = Utils.makeAddToStr(typeDefs);
 
@@ -531,7 +546,7 @@ let printUnionTypes = (~state, union: union) => {
          ~prefixWithTypesModule=false,
        );
 
-  typeDefs^ ++ "\n" ++ typeT;
+  typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
 
 let printEnum = (enum: fullEnum): string => {
