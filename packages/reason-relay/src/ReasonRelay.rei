@@ -701,9 +701,7 @@ module MakeCommitMutation:
         ~optimisticUpdater: optimisticUpdaterFn=?,
         ~optimisticResponse: C.response=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        ~onCompleted: (option(C.response), option(array(mutationError))) =>
-                      unit
-                        =?,
+        ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
         ~onError: option(mutationError) => unit=?,
         unit
       ) =>

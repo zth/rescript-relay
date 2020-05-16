@@ -1041,10 +1041,7 @@ type _commitMutationConfig('variables, 'response) = {
   mutation: mutationNode,
   variables: 'variables,
   onCompleted:
-    option(
-      (Js.Nullable.t('response), Js.Nullable.t(array(mutationError))) =>
-      unit,
-    ),
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
   onError: option(Js.Nullable.t(mutationError) => unit),
   optimisticResponse: option('response),
   optimisticUpdater: option(optimisticUpdaterFn),
@@ -1130,20 +1127,14 @@ module MakeCommitMutation = (C: MutationConfig) => {
         variables: variables |> C.convertVariables |> _cleanVariables,
         mutation: C.node,
         onCompleted:
-          Some(
-            (res, err) =>
-              switch (onCompleted) {
-              | Some(cb) =>
-                cb(
-                  switch (Js.Nullable.toOption(res)) {
-                  | Some(res) => Some(res->C.convertResponse)
-                  | None => None
-                  },
-                  Js.Nullable.toOption(err),
-                )
-              | None => ()
-              },
-          ),
+          switch (onCompleted) {
+          | Some(fn) =>
+            Some(
+              (r, errors) =>
+                fn(r |> C.convertResponse, Js.Nullable.toOption(errors)),
+            )
+          | None => None
+          },
         onError:
           Some(
             err =>
@@ -1207,14 +1198,20 @@ module MakeCommitMutation = (C: MutationConfig) => {
           optimisticResponse:
             switch (optimisticResponse) {
             | None => None
-            | Some(r) => Some(r |> C.wrapResponse)
+            | Some(r) => Some(r |> C.wrapResponse |> Js.Nullable.return)
             },
           optimisticUpdater,
           updater:
             switch (updater) {
             | None => None
             | Some(updater) =>
-              Some((store, r) => updater(store, r |> C.convertResponse))
+              Some(
+                (store, r) =>
+                  switch (Js.Nullable.toOption(r)) {
+                  | Some(r) => updater(store, r |> C.convertResponse)
+                  | None => ()
+                  },
+              )
             },
         },
       );
