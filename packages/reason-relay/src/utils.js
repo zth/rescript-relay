@@ -285,7 +285,7 @@ function traverser(
   // getFragmentRefs is currently the only thing that's possible to add
   // to the root.
   var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
-  var unionOnRoot = typeof (instructionMap[""] || {}).u === "string";
+  var unionRootConverter = converters[(instructionMap[""] || {}).u];
 
   if (Array.isArray(root)) {
     return root.map(function (v) {
@@ -304,8 +304,8 @@ function traverser(
         fragmentsOnRoot
       );
 
-      return unionOnRoot
-        ? converters[instructionMap[""].u](traversedObj)
+      return unionRootConverter != null
+        ? unionRootConverter(traversedObj)
         : traversedObj;
     });
   }
@@ -323,7 +323,7 @@ function traverser(
     fragmentsOnRoot
   );
 
-  return unionOnRoot ? converters[instructionMap[""].u](v) : v;
+  return unionRootConverter != null ? unionRootConverter(v) : v;
 }
 
 module.exports = { traverser };
