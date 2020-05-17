@@ -13,25 +13,14 @@ module Query = [%relay.query
 module Fragment = [%relay.fragment
   {|
     fragment TestUnionFragment_member on Member {
-    __typename
+      __typename
       ... on User {
-          id
-          firstName
-          onlineStatus
-        }
-        ... on Group {
-          id
-          name
-          members {
-          __typename
-            ... on User {
-              id
-            }
-            ... on Group {
-              id
-            }
-          }
-        }
+        firstName
+        onlineStatus
+      }
+      ... on Group {
+        name
+      }
     }
 |}
 ];
@@ -41,11 +30,12 @@ module PluralFragment = [%relay.fragment
     fragment TestUnionFragment_plural_member on Member @relay(plural: true) {
       __typename
       ... on User {
-          onlineStatus
-        }
-        ... on Group {
-          name
-        }
+      firstName
+        onlineStatus
+      }
+      ... on Group {
+        name
+      }
     }
 |}
 ];
@@ -58,38 +48,14 @@ module FragmentRenderer = {
 
     <>
       {switch (regular) {
-       | `User(u) =>
-         <div>
-           <div> u.firstName->React.string </div>
-           <div>
-             {React.string(
-                switch (u.onlineStatus) {
-                | Some(`Online) => "Online"
-                | _ => "-"
-                },
-              )}
-           </div>
-         </div>
-       | `Group(g) =>
-         <div>
-           <div> g.name->React.string </div>
-           <div>
-             {switch (g.members) {
-              | None => React.null
-              | Some(members) =>
-                members
-                ->Belt.Array.keepMap(m =>
-                    switch (m) {
-                    | Some(`User(u)) => Some(u.id->React.string)
-                    | Some(`Group(g)) => Some(g.id->React.string)
-                    | _ => None
-                    }
-                  )
-                ->React.array
-              }}
-           </div>
-         </div>
-       | `UnselectedUnionMember(_) => React.null
+       | `User({onlineStatus: Some(`Online), firstName}) =>
+         <div> {React.string(firstName ++ " is online")} </div>
+       | _ => React.null
+       }}
+      {switch (plural) {
+       | [|`User({onlineStatus: Some(`Online), firstName})|] =>
+         <div> {React.string("plural: " ++ firstName ++ " is online")} </div>
+       | _ => React.null
        }}
     </>;
   };

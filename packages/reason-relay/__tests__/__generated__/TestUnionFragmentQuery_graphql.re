@@ -64,13 +64,6 @@ v1 = {
   "name": "__typename",
   "args": null,
   "storageKey": null
-},
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
@@ -120,7 +113,13 @@ return {
         "plural": false,
         "selections": [
           (v1/*: any*/),
-          (v2/*: any*/),
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "id",
+            "args": null,
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "type": "User",
@@ -151,19 +150,6 @@ return {
                 "name": "name",
                 "args": null,
                 "storageKey": null
-              },
-              {
-                "kind": "LinkedField",
-                "alias": null,
-                "name": "members",
-                "storageKey": null,
-                "args": null,
-                "concreteType": null,
-                "plural": true,
-                "selections": [
-                  (v1/*: any*/),
-                  (v2/*: any*/)
-                ]
               }
             ]
           }
@@ -175,7 +161,7 @@ return {
     "operationKind": "query",
     "name": "TestUnionFragmentQuery",
     "id": null,
-    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  ... on User {\n    id\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    id\n    name\n    members {\n      __typename\n      ... on User {\n        id\n      }\n      ... on Group {\n        id\n      }\n      ... on Node {\n        id\n      }\n    }\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  ... on User {\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n",
+    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n",
     "metadata": {}
   }
 };

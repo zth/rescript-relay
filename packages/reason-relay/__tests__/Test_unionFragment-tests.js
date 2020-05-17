@@ -6,7 +6,7 @@ const queryMock = require("./queryMock");
 const { test_unionFragment } = require("./Test_unionFragment.bs");
 
 describe("Unions on fragments", () => {
-  test("basic fragments work, case #1", async () => {
+  test("basic fragments work", async () => {
     queryMock.mockQuery({
       name: "TestUnionFragmentQuery",
       data: {
@@ -21,5 +21,22 @@ describe("Unions on fragments", () => {
 
     t.render(test_unionFragment());
     await t.screen.findByText("First is online");
+  });
+
+  test("basic fragments work, plural", async () => {
+    queryMock.mockQuery({
+      name: "TestUnionFragmentQuery",
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-123",
+          firstName: "First",
+          onlineStatus: "Online",
+        },
+      },
+    });
+
+    t.render(test_unionFragment());
+    await t.screen.findByText("plural: First is online");
   });
 });

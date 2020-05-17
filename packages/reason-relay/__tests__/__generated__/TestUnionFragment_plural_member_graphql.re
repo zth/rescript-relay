@@ -25,6 +25,7 @@ module Types = {
   type fragment_User = {
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    firstName: string,
   };
   type fragment_Group = {name: string};
 
@@ -111,6 +112,13 @@ let node: operationType = [%raw
       "kind": "InlineFragment",
       "type": "User",
       "selections": [
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "name": "firstName",
+          "args": null,
+          "storageKey": null
+        },
         {
           "kind": "ScalarField",
           "alias": null,
