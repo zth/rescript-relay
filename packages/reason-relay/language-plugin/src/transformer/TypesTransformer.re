@@ -303,16 +303,19 @@ let getPrintedFullState =
       );
 
   switch (state.fragment) {
-  | Some({definition: Object(definition)}) =>
+  | Some({definition}) =>
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
-        ~definition,
+        ~definition=
+          switch (definition) {
+          | Object(o) => `Object(o)
+          | Union(u) => `Union(u)
+          },
         "fragment",
       ),
     );
     addSpacing();
-  | Some({definition: Union(_union)}) => Js.log("TODO: implement union")
   | None => ()
   };
 
@@ -325,7 +328,7 @@ let getPrintedFullState =
           ~rootObjects,
           ~direction=Wrap,
           ~nullableType=Null,
-          ~definition,
+          ~definition=`Object(definition),
           "wrapResponse",
         ),
       );
@@ -336,7 +339,7 @@ let getPrintedFullState =
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
-        ~definition,
+        ~definition=`Object(definition),
         "response",
       ),
     );
@@ -351,7 +354,7 @@ let getPrintedFullState =
         ~rootObjects,
         ~includeRaw=false,
         ~direction=Wrap,
-        ~definition,
+        ~definition=`Object(definition),
         "variables",
       ),
     );
@@ -417,8 +420,7 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
-    | (None, Some({definition: Union(_definition)})) =>
-      Js.log("TODO: implement union")
+    | (None, Some({definition: Union(_definition)})) => ()
     | (None, Some(_))
     | (None, None) => ()
     };

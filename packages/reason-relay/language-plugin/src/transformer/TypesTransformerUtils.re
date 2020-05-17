@@ -10,11 +10,12 @@ let printConverterAssets =
       ~direction: UtilsPrinter.conversionDirection=Unwrap,
       ~nullableType=Undefined,
       ~includeRaw=true,
-      ~definition: object_,
+      ~definition: [ | `Object(object_) | `Union(union)],
       name,
-    ) => {
+    )
+    : string => {
   let assets =
-    definition |> UtilsPrinter.objectToAssets(~rootObjects, ~direction);
+    definition |> UtilsPrinter.definitionToAssets(~rootObjects, ~direction);
 
   (includeRaw ? "type " ++ name ++ "Raw;" : "")
   ++ "let "

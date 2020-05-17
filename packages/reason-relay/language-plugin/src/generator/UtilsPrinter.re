@@ -228,8 +228,12 @@ type conversionDirection =
   | Wrap
   | Unwrap;
 
-let objectToAssets =
-    (~rootObjects: list(finalizedObj), ~direction=Unwrap, obj: object_)
+let definitionToAssets =
+    (
+      ~rootObjects: list(finalizedObj),
+      ~direction=Unwrap,
+      definition: [ | `Object(object_) | `Union(union)],
+    )
     : objectAssets => {
   let instructions: array(instructionContainer) = [||];
   let addInstruction = i => instructions |> Js.Array.push(i) |> ignore;
@@ -427,13 +431,39 @@ let objectToAssets =
     dict;
   };
 
-  obj.values
-  |> traverseProps(
-       ~converters,
-       ~inRootObject=None,
-       ~addInstruction,
-       ~currentPath=[],
-     );
+  switch (definition) {
+  | `Object(obj) =>
+    obj.values
+    |> traverseProps(
+         ~converters,
+         ~inRootObject=None,
+         ~addInstruction,
+         ~currentPath=[],
+       )
+  | `Union(union) =>
+    converters->Js.Dict.set(
+      Printer.makeUnionName(union.atPath),
+      switch (direction) {
+      | Wrap => union->Printer.printUnionWrapFnReference
+      | Unwrap => union->Printer.printUnionUnwrapFnReference
+      },
+    );
+
+    addInstruction({
+      atPath: [],
+      instruction: ConvertUnion(Printer.makeUnionName(union.atPath)),
+    });
+    union.members
+    ->Belt.List.forEach(obj =>
+        obj.shape.values
+        |> traverseProps(
+             ~converters,
+             ~inRootObject=None,
+             ~addInstruction,
+             ~currentPath=[],
+           )
+      );
+  };
 
   let rootInstructions = makeConverterInstructions(instructions);
 
