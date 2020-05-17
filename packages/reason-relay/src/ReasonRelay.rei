@@ -526,7 +526,11 @@ module type MakeUseFragmentConfig = {
 };
 
 module MakeUseFragment:
-  (C: MakeUseFragmentConfig) => {let use: C.fragmentRef => C.fragment;};
+  (C: MakeUseFragmentConfig) =>
+   {
+    let use: C.fragmentRef => C.fragment;
+    let useOpt: option(C.fragmentRef) => option(C.fragment);
+  };
 
 /** Refetchable */
 type refetchFn('variables) =

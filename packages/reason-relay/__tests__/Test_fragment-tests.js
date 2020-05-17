@@ -14,10 +14,10 @@ describe("Fragment", () => {
           id: "user-1",
           firstName: "First",
           lastName: "Last",
-          onlineStatus: "Online"
+          onlineStatus: "Online",
         },
-        users: null
-      }
+        users: null,
+      },
     });
 
     t.render(test_fragment());
@@ -32,7 +32,7 @@ describe("Fragment", () => {
           id: "user-1",
           firstName: "First",
           lastName: "Last",
-          onlineStatus: "Online"
+          onlineStatus: "Online",
         },
         users: {
           edges: [
@@ -40,23 +40,48 @@ describe("Fragment", () => {
               node: {
                 id: "user-2",
                 firstName: "Second",
-                onlineStatus: "Online"
-              }
+                onlineStatus: "Online",
+              },
             },
             {
               node: {
                 id: "user-3",
                 firstName: "Third",
-                onlineStatus: "Offline"
-              }
-            }
-          ]
-        }
-      }
+                onlineStatus: "Offline",
+              },
+            },
+          ],
+        },
+      },
     });
 
     t.render(test_fragment());
     await t.screen.findByText("Second is online");
     await t.screen.findByText("Third is offline");
+  });
+
+  test("optional fragment use hook works", async () => {
+    queryMock.mockQuery({
+      name: "TestFragmentQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          lastName: "Last",
+          onlineStatus: "Online",
+        },
+        users: null,
+      },
+    });
+
+    t.render(test_fragment());
+
+    await t.screen.findByText("Opt not activated");
+
+    t.fireEvent.click(t.screen.getByText("Use opt"));
+    await t.screen.findByText("First is here!");
+
+    t.fireEvent.click(t.screen.getByText("Hide opt"));
+    await t.screen.findByText("Opt not activated");
   });
 });

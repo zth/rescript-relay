@@ -78,6 +78,13 @@ module Test = {
     let query = Query.use(~variables=(), ());
     let data = Fragment.use(query.loggedInUser.getFragmentRefs());
 
+    let (useOpt, setUseOpt) = React.useState(() => false);
+
+    let dataOpt =
+      Fragment.useOpt(
+        useOpt ? Some(query.loggedInUser.getFragmentRefs()) : None,
+      );
+
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
@@ -104,6 +111,14 @@ module Test = {
       {switch (users->Belt.Array.length) {
        | 0 => React.null
        | _ => <TestPlural users />
+       }}
+      <button onClick={_ => setUseOpt(last => !last)}>
+        {React.string(useOpt ? "Hide opt" : "Use opt")}
+      </button>
+      {switch (dataOpt) {
+       | Some(data) =>
+         <div> {React.string(data.firstName ++ " is here!")} </div>
+       | None => <div> {React.string("Opt not activated")} </div>
        }}
     </div>;
   };

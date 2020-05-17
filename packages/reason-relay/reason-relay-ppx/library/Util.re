@@ -276,6 +276,13 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
       [%stri
         let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
       ],
+      [%stri
+        let useOpt = opt_fRef => UseFragment.useOpt(
+          switch(opt_fRef) {
+          | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
+          | None => None
+        })
+      ],
       hasConnection
         ? [%stri
           let usePagination = fRef =>
