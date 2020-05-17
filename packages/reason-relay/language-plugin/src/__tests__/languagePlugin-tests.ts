@@ -555,7 +555,7 @@ describe("Language plugin tests", () => {
       expect(generated).toMatchSnapshot();
     });
 
-    it.only("handles fragments on unions", () => {
+    it("handles fragments on unions", () => {
       let generated = generate(
         `fragment Participant_participant on Participant {
             __typename
