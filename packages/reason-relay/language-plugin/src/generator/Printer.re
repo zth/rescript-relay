@@ -1,6 +1,7 @@
 open Types;
 
 exception Could_not_find_matching_record_definition(string);
+exception Invalid_top_level_shape;
 
 let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
@@ -347,14 +348,16 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
 }
 and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
   switch (rootType) {
-  | Operation(obj) =>
+  | Operation(Object(obj)) =>
     "type response = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
-  | Variables(obj) =>
+  | Operation(Union(_)) => raise(Invalid_top_level_shape)
+  | Variables(Object(obj)) =>
     "type variables = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
+  | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
     switch (obj.values |> Array.length) {
     | 0 => ""

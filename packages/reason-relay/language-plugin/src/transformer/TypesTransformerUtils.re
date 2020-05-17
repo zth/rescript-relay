@@ -10,7 +10,7 @@ let printConverterAssets =
       ~direction: UtilsPrinter.conversionDirection=Unwrap,
       ~nullableType=Undefined,
       ~includeRaw=true,
-      ~definition: [ | `Object(object_) | `Union(union)],
+      ~definition: rootStructure,
       name,
     )
     : string => {

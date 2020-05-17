@@ -232,7 +232,7 @@ let definitionToAssets =
     (
       ~rootObjects: list(finalizedObj),
       ~direction=Unwrap,
-      definition: [ | `Object(object_) | `Union(union)],
+      definition: rootStructure,
     )
     : objectAssets => {
   let instructions: array(instructionContainer) = [||];
@@ -432,7 +432,7 @@ let definitionToAssets =
   };
 
   switch (definition) {
-  | `Object(obj) =>
+  | Object(obj) =>
     obj.values
     |> traverseProps(
          ~converters,
@@ -440,7 +440,7 @@ let definitionToAssets =
          ~addInstruction,
          ~currentPath=[],
        )
-  | `Union(union) =>
+  | Union(union) =>
     converters->Js.Dict.set(
       Printer.makeUnionName(union.atPath),
       switch (direction) {

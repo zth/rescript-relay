@@ -59,27 +59,27 @@ and object_ = {
   atPath: list(string),
 }
 and rootType =
-  | Operation(object_)
-  | Fragment(fragmentType)
-  | Variables(object_)
+  | Operation(rootStructure)
+  | Fragment(rootStructure)
+  | Variables(rootStructure)
   | ObjectTypeDeclaration({
       definition: object_,
       name: string,
       atPath: list(string),
     })
   | RefetchVariables(object_)
-  | PluralFragment(fragmentType)
+  | PluralFragment(rootStructure)
 and fullEnum = {
   name: string,
   values: array(string),
 }
-and fragmentType =
+and rootStructure =
   | Union(union)
   | Object(object_)
 and fragment = {
   name: string,
   plural: bool,
-  definition: fragmentType,
+  definition: rootStructure,
 };
 
 type obj = {

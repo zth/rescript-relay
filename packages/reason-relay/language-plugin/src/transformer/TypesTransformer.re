@@ -201,7 +201,7 @@ let getPrintedFullState =
 
   // We check and add all definitions we've found to a list that'll later be printed as types.
   switch (state.variables) {
-  | Some(variables) => addDefinition(Types.(Variables(variables)))
+  | Some(variables) => addDefinition(Types.(Variables(Object(variables))))
   | None => ()
   };
 
@@ -213,7 +213,7 @@ let getPrintedFullState =
   };
 
   switch (state.response) {
-  | Some(response) => addDefinition(Types.(Operation(response)))
+  | Some(response) => addDefinition(Types.(Operation(Object(response))))
   | None => ()
   };
 
@@ -307,11 +307,7 @@ let getPrintedFullState =
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
-        ~definition=
-          switch (definition) {
-          | Object(o) => `Object(o)
-          | Union(u) => `Union(u)
-          },
+        ~definition,
         "fragment",
       ),
     );
@@ -328,7 +324,7 @@ let getPrintedFullState =
           ~rootObjects,
           ~direction=Wrap,
           ~nullableType=Null,
-          ~definition=`Object(definition),
+          ~definition=Object(definition),
           "wrapResponse",
         ),
       );
@@ -339,7 +335,7 @@ let getPrintedFullState =
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
-        ~definition=`Object(definition),
+        ~definition=Object(definition),
         "response",
       ),
     );
@@ -354,7 +350,7 @@ let getPrintedFullState =
         ~rootObjects,
         ~includeRaw=false,
         ~direction=Wrap,
-        ~definition=`Object(definition),
+        ~definition=Object(definition),
         "variables",
       ),
     );
