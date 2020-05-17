@@ -51,7 +51,7 @@ function traverse(
     var instructions = instructionMap[path];
 
     var hasDeeperInstructions =
-      instructionPaths.filter(function(p) {
+      instructionPaths.filter(function (p) {
         return p.indexOf(path) === 0 && p.length > path.length;
       }).length > 0;
 
@@ -81,7 +81,7 @@ function traverse(
          */
         if (Array.isArray(currentObj[key])) {
           newObj = getNewObj(newObj, currentObj);
-          newObj[key] = currentObj[key].map(function(v) {
+          newObj[key] = currentObj[key].map(function (v) {
             if (v == null) {
               return nullableValue;
             }
@@ -109,7 +109,7 @@ function traverse(
 
               var newPath = makeNewPath(currentPath, [
                 key,
-                v.__typename.toLowerCase()
+                v.__typename.toLowerCase(),
               ]);
 
               var unionRootHasFragment =
@@ -170,7 +170,7 @@ function traverse(
 
             var newPath = makeNewPath(currentPath, [
               key,
-              v.__typename.toLowerCase()
+              v.__typename.toLowerCase(),
             ]);
 
             var unionRootHasFragment =
@@ -226,7 +226,7 @@ function traverse(
         }
       } else if (Array.isArray(originalValue)) {
         newObj = getNewObj(newObj, currentObj);
-        newObj[key] = nextObj.map(function(o) {
+        newObj[key] = nextObj.map(function (o) {
           return typeof o === "object" && o != null
             ? traverse(
                 fullInstructionMap,
@@ -285,25 +285,28 @@ function traverser(
   // getFragmentRefs is currently the only thing that's possible to add
   // to the root.
   var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
+  var unionRootConverter = converters[(instructionMap[""] || {}).u];
 
   if (Array.isArray(root)) {
-    return root.map(function(v) {
+    return root.map(function (v) {
       if (v == null) {
         return nullableValue;
       }
 
-      return v == null
-        ? nullableValue
-        : traverse(
-            instructionMaps,
-            [],
-            v,
-            instructionMap,
-            converters,
-            nullableValue,
-            instructionPaths,
-            fragmentsOnRoot
-          );
+      var traversedObj = traverse(
+        instructionMaps,
+        [],
+        v,
+        instructionMap,
+        converters,
+        nullableValue,
+        instructionPaths,
+        fragmentsOnRoot
+      );
+
+      return unionRootConverter != null
+        ? unionRootConverter(traversedObj)
+        : traversedObj;
     });
   }
 
@@ -320,7 +323,7 @@ function traverser(
     fragmentsOnRoot
   );
 
-  return v;
+  return unionRootConverter != null ? unionRootConverter(v) : v;
 }
 
 module.exports = { traverser };

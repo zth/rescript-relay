@@ -1,6 +1,7 @@
 open Types;
 
 exception Could_not_find_matching_record_definition(string);
+exception Invalid_top_level_shape;
 
 let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
@@ -347,23 +348,32 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
 }
 and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
   switch (rootType) {
-  | Operation(obj) =>
+  | Operation(Object(obj)) =>
     "type response = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
-  | Variables(obj) =>
+  | Operation(Union(_)) => raise(Invalid_top_level_shape)
+  | Variables(Object(obj)) =>
     "type variables = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
+  | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
     switch (obj.values |> Array.length) {
     | 0 => ""
     | _ => printRefetchVariablesMaker(~state, obj) ++ ";"
     }
 
-  | Fragment(obj) =>
+  | Fragment(Object(obj)) =>
     "type fragment = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
+  | Fragment(Union(union)) =>
+    "type fragment = "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=false,
+       )
     ++ ";"
   | ObjectTypeDeclaration({name, definition}) =>
     "type "
@@ -376,9 +386,17 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
       }
     )
     ++ ";"
-  | PluralFragment(obj) =>
+  | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";\n"
+    ++ "type fragment = array(fragment_t);"
+  | PluralFragment(Union(union)) =>
+    "type fragment_t = "
+    ++ union->printUnionTypeDefinition(
+         ~includeSemi=false,
+         ~prefixWithTypesModule=false,
+       )
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   }
@@ -473,7 +491,7 @@ let printUnionConverters = (union: union) => {
   str^;
 };
 
-let printUnionTypes = (~state, union: union) => {
+let printUnionTypes = (~state, ~printName, union: union) => {
   let typeDefs = ref("");
   let addToTypeDefs = Utils.makeAddToStr(typeDefs);
 
@@ -531,7 +549,7 @@ let printUnionTypes = (~state, union: union) => {
          ~prefixWithTypesModule=false,
        );
 
-  typeDefs^ ++ "\n" ++ typeT;
+  typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
 
 let printEnum = (enum: fullEnum): string => {

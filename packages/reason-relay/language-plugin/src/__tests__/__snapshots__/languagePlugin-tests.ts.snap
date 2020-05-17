@@ -1236,6 +1236,87 @@ type operationType = ReasonRelay.queryNode;
 "
 `;
 
+exports[`Language plugin tests Unions handles fragments on unions 1`] = `
+"// Participant_participant.graphql
+/* @generated */
+
+module Types = {
+  type fragment_User_location = {
+    id: string,
+    lat: float,
+    lng: float,
+  };
+  type fragment_User = {
+    location: fragment_User_location,
+    lastName: string,
+    firstName: string,
+    id: string,
+  };
+  type fragment_Observer = {
+    name: string,
+    id: string,
+  };
+
+  type fragment = [
+    | \`User(fragment_User)
+    | \`Observer(fragment_Observer)
+    | \`UnselectedUnionMember(string)
+  ];
+};
+
+let unwrap_fragment:
+  {. \\"__typename\\": string} =>
+  [
+    | \`User(Types.fragment_User)
+    | \`Observer(Types.fragment_Observer)
+    | \`UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | \\"User\\" => \`User(u->Obj.magic)
+    | \\"Observer\\" => \`Observer(u->Obj.magic)
+    | v => \`UnselectedUnionMember(v)
+    };
+
+let wrap_fragment:
+  [
+    | \`User(Types.fragment_User)
+    | \`Observer(Types.fragment_Observer)
+    | \`UnselectedUnionMember(string)
+  ] =>
+  {. \\"__typename\\": string} =
+  fun
+  | \`User(v) => v->Obj.magic
+  | \`Observer(v) => v->Obj.magic
+  | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
+
+module Internal = {
+  type fragmentRaw;
+  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"\\":{\\"u\\":\\"fragment\\"}}} |json}
+  ];
+  let fragmentConverterMap = {\\"fragment\\": unwrap_fragment};
+  let convertFragment = v =>
+    v
+    ->ReasonRelay._convertObj(
+        fragmentConverter,
+        fragmentConverterMap,
+        Js.undefined,
+      );
+};
+
+type t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__Participant_participant\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+
+module Utils = {};
+
+type operationType = ReasonRelay.fragmentNode;
+"
+`;
+
 exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */

@@ -84,7 +84,7 @@ let intermediateToFull =
       | Enum(enum) => addEnum(enum)
       | Array({propType: Union(union)})
       | Union(union) =>
-        addUnion(union);
+        addUnion({union, printName: true});
 
         union.members
         ->Belt.List.forEach(member => {
@@ -122,8 +122,14 @@ let intermediateToFull =
   };
 
   switch (state^.fragment) {
-  | Some(d) =>
-    d.definition |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
+  | Some({definition: Object(obj)}) =>
+    obj |> traverseDefinition(~inUnion=false, ~atPath=["fragment"])
+  | Some({definition: Union(union)}) =>
+    addUnion({union, printName: false});
+    union.members
+    ->Belt.List.forEach(member => {
+        member.shape |> traverseDefinition(~inUnion=true, ~atPath=[])
+      });
   | None => ()
   };
 
@@ -195,7 +201,7 @@ let getPrintedFullState =
 
   // We check and add all definitions we've found to a list that'll later be printed as types.
   switch (state.variables) {
-  | Some(variables) => addDefinition(Types.(Variables(variables)))
+  | Some(variables) => addDefinition(Types.(Variables(Object(variables))))
   | None => ()
   };
 
@@ -207,7 +213,7 @@ let getPrintedFullState =
   };
 
   switch (state.response) {
-  | Some(response) => addDefinition(Types.(Operation(response)))
+  | Some(response) => addDefinition(Types.(Operation(Object(response))))
   | None => ()
   };
 
@@ -238,8 +244,8 @@ let getPrintedFullState =
     };
 
   state.unions
-  ->Belt.List.forEach(union => {
-      union |> Printer.printUnionTypes(~state) |> addToStr
+  ->Belt.List.forEach(({union, printName}) => {
+      union->Printer.printUnionTypes(~state, ~printName)->addToStr
     });
 
   Printer.(
@@ -276,7 +282,7 @@ let getPrintedFullState =
 
   if (state.unions->Belt.List.length > 0) {
     state.unions
-    ->Belt.List.forEach(union =>
+    ->Belt.List.forEach(({union}) =>
         union->Printer.printUnionConverters->addToStr
       );
   };
@@ -318,7 +324,7 @@ let getPrintedFullState =
           ~rootObjects,
           ~direction=Wrap,
           ~nullableType=Null,
-          ~definition,
+          ~definition=Object(definition),
           "wrapResponse",
         ),
       );
@@ -329,7 +335,7 @@ let getPrintedFullState =
     addToStr(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
-        ~definition,
+        ~definition=Object(definition),
         "response",
       ),
     );
@@ -344,7 +350,7 @@ let getPrintedFullState =
         ~rootObjects,
         ~includeRaw=false,
         ~direction=Wrap,
-        ~definition,
+        ~definition=Object(definition),
         "variables",
       ),
     );
@@ -400,7 +406,8 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
-    | (None, Some({definition})) when connPath == ["fragment"] =>
+    | (None, Some({definition: Object(definition)}))
+        when connPath == ["fragment"] =>
       definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
            ~state,
@@ -409,6 +416,7 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
+    | (None, Some({definition: Union(_)}))
     | (None, Some(_))
     | (None, None) => ()
     };
@@ -744,8 +752,8 @@ and makeUnionMember =
   | None => raise(Missing_typename_field_on_union)
   };
 }
-and makeUnion =
-    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
+and makeUnionDefinition =
+    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~state): Types.union => {
   let unionMembers =
     ref([
       firstProps |> makeUnionMember(~state, ~path),
@@ -762,7 +770,7 @@ and makeUnion =
        }
      );
 
-  let union: Types.union = {
+  {
     members:
       unionMembers^
       |> Tablecloth.List.filter(~f=(member: Types.unionMember) =>
@@ -770,8 +778,22 @@ and makeUnion =
          ),
     atPath: path,
   };
-
-  {nullable: optional, propType: Union(union)};
+}
+and makeUnion =
+    (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
+  {
+    nullable: optional,
+    propType:
+      Union(
+        makeUnionDefinition(
+          ~firstProps,
+          ~secondProps,
+          ~maybeMoreMembers,
+          ~path,
+          ~state,
+        ),
+      ),
+  };
 };
 
 let flowTypesToFullState = (~content, ~operationType) => {
@@ -914,6 +936,71 @@ let flowTypesToFullState = (~content, ~operationType) => {
          /***
           * Objects
           */
+
+         /***
+          * Match fragments
+          */
+         // Union
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     // Match unions
+                     Union(
+                       (_, Object({properties: firstProps})),
+                       (_, Object({properties: secondProps})),
+                       maybeMoreMembers,
+                     ) |
+                     Generic({
+                       id: Unqualified((_, "$ReadOnlyArray")),
+                       targs:
+                         Some((
+                           _,
+                           [
+                             (
+                               _,
+                               Union(
+                                 (_, Object({properties: firstProps})),
+                                 (_, Object({properties: secondProps})),
+                                 maybeMoreMembers,
+                               ),
+                             ),
+                           ],
+                         )),
+                     }),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           switch (typeName) {
+           | _ when typeName == name =>
+             setState(state =>
+               {
+                 ...state,
+                 fragment:
+                   Some({
+                     plural,
+                     definition:
+                       Union(
+                         makeUnionDefinition(
+                           ~firstProps,
+                           ~state,
+                           ~secondProps,
+                           ~maybeMoreMembers,
+                           ~path=["fragment"],
+                         ),
+                       ),
+                     name,
+                   }),
+               }
+             )
+           | _ => ()
+           }
+         // Regular objects
          | ExportNamedDeclaration({
              declaration:
                Some((
@@ -941,7 +1028,10 @@ let flowTypesToFullState = (~content, ~operationType) => {
                    Some({
                      plural,
                      definition:
-                       properties |> makeObjShape(~state, ~path=["fragment"]),
+                       Object(
+                         properties
+                         |> makeObjShape(~state, ~path=["fragment"]),
+                       ),
                      name,
                    }),
                }

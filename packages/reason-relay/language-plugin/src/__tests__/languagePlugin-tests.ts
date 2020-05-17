@@ -449,13 +449,13 @@ describe("Language plugin tests", () => {
     });
 
     it("prints the correct fragment ref extractor helpers and base types", () => {
-      expect(
-        generate(
-          `fragment SomeComponent_user on User {
-            id
-          }`
-        )
-      ).toMatchSnapshot();
+      let generated = generate(
+        `fragment SomeComponent_user on User {
+          id
+        }`
+      );
+
+      expect(generated).toMatchSnapshot();
     });
 
     it("prints indications of existing fragment refs in generated types", () => {
@@ -548,6 +548,31 @@ describe("Language plugin tests", () => {
                 id
                 name
               }
+            }
+          }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
+
+    it("handles fragments on unions", () => {
+      let generated = generate(
+        `fragment Participant_participant on Participant {
+            __typename
+            ... on User {
+              id
+              firstName
+              lastName
+              location {
+                id
+                lat
+                lng
+              }
+            }
+
+            ... on Observer {
+              id
+              name
             }
           }`
       );

@@ -59,31 +59,38 @@ and object_ = {
   atPath: list(string),
 }
 and rootType =
-  | Operation(object_)
-  | Fragment(object_)
-  | Variables(object_)
+  | Operation(rootStructure)
+  | Fragment(rootStructure)
+  | Variables(rootStructure)
   | ObjectTypeDeclaration({
       definition: object_,
       name: string,
       atPath: list(string),
     })
   | RefetchVariables(object_)
-  | PluralFragment(object_)
+  | PluralFragment(rootStructure)
 and fullEnum = {
   name: string,
   values: array(string),
-};
-
-type fragment = {
+}
+and rootStructure =
+  | Union(union)
+  | Object(object_)
+and fragment = {
   name: string,
   plural: bool,
-  definition: object_,
+  definition: rootStructure,
 };
 
 type obj = {
   originalFlowTypeName: option(string),
   definition: object_,
   foundInUnion: bool,
+};
+
+type unionInState = {
+  printName: bool,
+  union,
 };
 
 type finalizedObj = {
@@ -104,7 +111,7 @@ type intermediateState = {
 
 type fullState = {
   enums: list(fullEnum),
-  unions: list(union),
+  unions: list(unionInState),
   objects: list(finalizedObj),
   variables: option(object_),
   response: option(object_),

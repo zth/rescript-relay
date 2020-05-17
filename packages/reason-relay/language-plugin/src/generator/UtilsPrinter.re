@@ -129,9 +129,9 @@ let printGetConnectionNodesFunction =
                               o.atPath == nodeAtPath
                             ),
                          state.unions
-                         |> Tablecloth.List.find(~f=(u: Types.union) =>
-                              u.atPath == nodeAtPath
-                            ),
+                         ->Tablecloth.List.find(~f=u =>
+                             u.union.atPath == nodeAtPath
+                           ),
                          state.objects
                          |> Tablecloth.List.find(~f=o =>
                               o.atPath == connectionAtPath
@@ -163,7 +163,8 @@ let printGetConnectionNodesFunction =
                              ~connectionLocation,
                              ~connectionPropNullable,
                              ~connectionTypeName,
-                             ~nodeTypeName=Printer.printLocalUnionName(union),
+                             ~nodeTypeName=
+                               Printer.printLocalUnionName(union.union),
                              ~edgesPropNullable,
                              ~edgesNullable,
                              ~nodeNullable,
@@ -227,8 +228,12 @@ type conversionDirection =
   | Wrap
   | Unwrap;
 
-let objectToAssets =
-    (~rootObjects: list(finalizedObj), ~direction=Unwrap, obj: object_)
+let definitionToAssets =
+    (
+      ~rootObjects: list(finalizedObj),
+      ~direction=Unwrap,
+      definition: rootStructure,
+    )
     : objectAssets => {
   let instructions: array(instructionContainer) = [||];
   let addInstruction = i => instructions |> Js.Array.push(i) |> ignore;
@@ -426,13 +431,39 @@ let objectToAssets =
     dict;
   };
 
-  obj.values
-  |> traverseProps(
-       ~converters,
-       ~inRootObject=None,
-       ~addInstruction,
-       ~currentPath=[],
-     );
+  switch (definition) {
+  | Object(obj) =>
+    obj.values
+    |> traverseProps(
+         ~converters,
+         ~inRootObject=None,
+         ~addInstruction,
+         ~currentPath=[],
+       )
+  | Union(union) =>
+    converters->Js.Dict.set(
+      Printer.makeUnionName(union.atPath),
+      switch (direction) {
+      | Wrap => union->Printer.printUnionWrapFnReference
+      | Unwrap => union->Printer.printUnionUnwrapFnReference
+      },
+    );
+
+    addInstruction({
+      atPath: [],
+      instruction: ConvertUnion(Printer.makeUnionName(union.atPath)),
+    });
+    union.members
+    ->Belt.List.forEach(obj =>
+        obj.shape.values
+        |> traverseProps(
+             ~converters,
+             ~inRootObject=None,
+             ~addInstruction,
+             ~currentPath=[],
+           )
+      );
+  };
 
   let rootInstructions = makeConverterInstructions(instructions);
 
