@@ -577,8 +577,6 @@ describe("Language plugin tests", () => {
           }`
       );
 
-      console.log(generated);
-
       expect(generated).toMatchSnapshot();
     });
 
