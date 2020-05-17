@@ -416,7 +416,7 @@ let getPrintedFullState =
       |> addToUtils;
 
       addSpacingToUtils();
-    | (None, Some({definition: Union(_definition)})) => ()
+    | (None, Some({definition: Union(_)}))
     | (None, Some(_))
     | (None, None) => ()
     };
