@@ -70,7 +70,7 @@ let wrap_fragment_assignee:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"assignee":{"n":"","u":"fragment_assignee"},"assignee_user":{"f":""},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""},"":{"f":""}}} |}
+    {json| {"__root":{"assignee":{"n":"","u":"fragment_assignee"},"assignee_user":{"f":""},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""},"":{"f":""}}} |json}
   ];
   let fragmentConverterMap = {"fragment_assignee": unwrap_fragment_assignee};
   let convertFragment = v =>
@@ -92,8 +92,8 @@ module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 
-let node: operationType = [%bs.raw
-  {| {
+let node: operationType = [%raw
+  {json| {
   "kind": "Fragment",
   "name": "SingleTicket_ticket",
   "type": "Ticket",
@@ -174,5 +174,5 @@ let node: operationType = [%bs.raw
       "args": null
     }
   ]
-} |}
+} |json}
 ];

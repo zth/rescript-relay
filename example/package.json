@@ -23,7 +23,7 @@
     "react-relay": "0.0.0-experimental-8cc94ddc",
     "reason-promise": "^1.0.2",
     "reason-react": "^0.7.0",
-    "reason-relay": "0.8.0",
+    "reason-relay": "0.9.0",
     "relay-compiler": "9.0.0",
     "relay-config": "9.0.0",
     "relay-runtime": "9.0.0"

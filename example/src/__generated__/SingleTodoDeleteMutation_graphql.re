@@ -17,7 +17,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |}
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -30,7 +30,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |}
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -42,7 +42,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"input":{"r":"DeleteTodoItemInput"}},"DeleteTodoItemInput":{"clientMutationId":{"n":""}}} |}
+    {json| {"__root":{"input":{"r":"DeleteTodoItemInput"}},"DeleteTodoItemInput":{"clientMutationId":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -77,8 +77,8 @@ module Utils = {
 
 type operationType = ReasonRelay.mutationNode;
 
-let node: operationType = [%bs.raw
-  {| (function(){
+let node: operationType = [%raw
+  {json| (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
@@ -144,5 +144,5 @@ return {
     "metadata": {}
   }
 };
-})() |}
+})() |json}
 ];

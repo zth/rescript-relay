@@ -11,7 +11,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -33,8 +33,8 @@ module Utils = {};
 
 type operationType = ReasonRelay.fragmentNode;
 
-let node: operationType = [%bs.raw
-  {| {
+let node: operationType = [%raw
+  {json| {
   "kind": "Fragment",
   "name": "TopCardsDisplayer_siteStatistics",
   "type": "SiteStatistics",
@@ -63,5 +63,5 @@ let node: operationType = [%bs.raw
       "storageKey": null
     }
   ]
-} |}
+} |json}
 ];

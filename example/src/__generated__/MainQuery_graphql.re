@@ -26,7 +26,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"siteStatistics":{"f":""},"":{"f":""}}} |}
+    {json| {"__root":{"siteStatistics":{"f":""},"":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -38,7 +38,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {} |}
+    {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -56,8 +56,8 @@ module Utils = {};
 
 type operationType = ReasonRelay.queryNode;
 
-let node: operationType = [%bs.raw
-  {| (function(){
+let node: operationType = [%raw
+  {json| (function(){
 var v0 = {
   "kind": "ScalarField",
   "alias": null,
@@ -397,5 +397,12 @@ return {
     "metadata": {}
   }
 };
-})() |}
+})() |json}
 ];
+
+include ReasonRelay.MakePreloadQuery({
+  type variables = Types.variables;
+  type queryPreloadToken = preloadToken;
+  let query = node;
+  let convertVariables = Internal.convertVariables;
+});

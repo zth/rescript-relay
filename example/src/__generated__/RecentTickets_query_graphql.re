@@ -28,7 +28,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {| {"__root":{"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_edges_node":{"n":"","f":""}}} |}
+    {json| {"__root":{"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_edges_node":{"n":"","f":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -70,8 +70,8 @@ module Utils = {
 
 type operationType = ReasonRelay.fragmentNode;
 
-let node: operationType = [%bs.raw
-  {| (function(){
+let node: operationType = [%raw
+  {json| (function(){
 var v0 = [
   "ticketsConnection"
 ];
@@ -202,5 +202,5 @@ return {
     }
   ]
 };
-})() |}
+})() |json}
 ];
