@@ -100,5 +100,4 @@ let make = () => {
 
 ## Examples
 
-- TodoMVC implemented in ReasonRelay: https://github.com/zth/relay-examples/tree/master/todo-reason
 - A general example showcasing most available features: https://github.com/zth/reason-relay/tree/master/example
