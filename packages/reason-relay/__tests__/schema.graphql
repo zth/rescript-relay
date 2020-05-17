@@ -96,6 +96,7 @@ input SetOnlineStatusInput {
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
+  member(id: ID!): Member
   members(
     groupId: ID!
     onlineStatuses: [OnlineStatus]
