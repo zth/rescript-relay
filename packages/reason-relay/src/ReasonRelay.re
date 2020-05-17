@@ -747,6 +747,11 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
 external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
+[@bs.module "react-relay/hooks"]
+external _useFragmentOpt:
+  (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
+  "useFragment";
+
 module type MakeUseFragmentConfig = {
   type fragmentRaw;
   type fragment;
@@ -759,6 +764,29 @@ module MakeUseFragment = (C: MakeUseFragmentConfig) => {
   let use = (fr: C.fragmentRef): C.fragment => {
     let data = _useFragment(C.fragmentSpec, fr);
     useConvertedValue(C.convertFragment, data);
+  };
+
+  let useOpt = (fr: option(C.fragmentRef)): option(C.fragment) => {
+    let nullableFragmentData: Js.Nullable.t(C.fragmentRaw) =
+      _useFragmentOpt(
+        C.fragmentSpec,
+        switch (fr) {
+        | Some(fr) => Some(fr)->Js.Nullable.fromOption
+        | None => Js.Nullable.null
+        },
+      );
+
+    let data: option(C.fragmentRaw) =
+      nullableFragmentData->Js.Nullable.toOption;
+
+    useConvertedValue(
+      rawFragment =>
+        switch (rawFragment) {
+        | Some(rawFragment) => Some(rawFragment->C.convertFragment)
+        | None => None
+        },
+      data,
+    );
   };
 };
 
