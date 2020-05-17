@@ -11,3 +11,4 @@ _release
 *.bs.js
 reason-relay-compiler
 .now
+.DS_Store
