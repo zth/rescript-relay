@@ -1,5 +1,7 @@
 # master
 
+# 0.9.1
+
 - Fix bug with `bs-platform >7.3.0`.
 
 # 0.9.0
