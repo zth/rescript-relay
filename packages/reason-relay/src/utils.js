@@ -258,7 +258,7 @@ function traverse(
 function traverser(
   root,
   _instructionMaps,
-  converters,
+  theConverters,
   nullableValue,
   rootObjectKey
 ) {
@@ -274,6 +274,7 @@ function traverser(
     return root;
   }
 
+  var converters = theConverters == null ? {} : theConverters;
   var instructionPaths = Object.keys(instructionMap);
 
   // Nothing to convert, bail early
