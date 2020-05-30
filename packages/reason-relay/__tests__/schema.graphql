@@ -1,3 +1,5 @@
+scalar Datetime
+
 interface Node {
   id: ID!
 }
@@ -23,6 +25,8 @@ type User implements Node {
   isOnline: Boolean
   onlineStatus: OnlineStatus
   nicknames: [String!]!
+  createdAt: Datetime!
+  friends(beforeDate: Datetime): [User!]!
   friendsConnection(
     statuses: [OnlineStatus!]
     after: String

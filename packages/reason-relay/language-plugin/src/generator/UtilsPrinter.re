@@ -191,6 +191,7 @@ type instruction =
   | ConvertNullableArrayContents
   | ConvertEnum(string)
   | ConvertUnion(string)
+  | ConvertCustomField(string)
   | RootObject(string)
   | HasFragments;
 
@@ -283,7 +284,23 @@ let definitionToAssets =
         };
       | (Some(_), Some(_)) =>
         addInstruction({atPath: currentPath, instruction: RootObject(name)})
-      | (None, Some(_) | None) => ()
+      | (None, Some(_) | None) =>
+        // If none of the above matches, this might be a custom field/custom module supplied by the user. We use a heuristic
+        // (is this a module and not a regular type?) to determine.
+        if (name->Utils.isModuleName) {
+          addInstruction({
+            atPath: currentPath,
+            instruction: ConvertCustomField(name),
+          });
+
+          converters->Js.Dict.set(
+            name,
+            switch (direction) {
+            | Wrap => name ++ ".serialize"
+            | Unwrap => name ++ ".parse"
+            },
+          );
+        }
       }
     | Enum({name}) =>
       converters->Js.Dict.set(
@@ -416,6 +433,7 @@ let definitionToAssets =
            | ConvertNullableArrayContents => ("na", "")
            | ConvertEnum(name) => ("e", Printer.printEnumName(name))
            | ConvertUnion(name) => ("u", name)
+           | ConvertCustomField(name) => ("c", name)
            | RootObject(name) => ("r", name)
            | HasFragments => ("f", "")
            };

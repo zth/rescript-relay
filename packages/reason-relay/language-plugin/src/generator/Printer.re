@@ -108,9 +108,13 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
     ) {
     | (Some(enum), _) => printEnumName(enum.name)
     | (_, Some(_)) => Tablecloth.String.uncapitalize(typeName)
-    | _ => typeName
+    | _ =>
+      // If this doesn't match any existing types in the state, and if it's a module name
+      // (decided by being uppercased), we'll go ahead and assume this is a custom field.
+
+      typeName->Utils.isModuleName ? typeName ++ ".t" : typeName
     }
-  | None => typeName
+  | None => typeName->Utils.isModuleName ? typeName ++ ".t" : typeName
   }
 and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {

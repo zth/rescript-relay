@@ -72,6 +72,10 @@ function traverse(
           typeof instructions["e"] === "string" &&
           !!converters[instructions["e"]];
 
+        var shouldConvertCustomField =
+          typeof instructions["c"] === "string" &&
+          !!converters[instructions["c"]];
+
         var shouldConvertUnion =
           typeof instructions["u"] === "string" &&
           !!converters[instructions["u"]];
@@ -98,6 +102,10 @@ function traverse(
 
             if (shouldConvertEnum) {
               return converters[instructions["e"]](v);
+            }
+
+            if (shouldConvertCustomField) {
+              return converters[instructions["c"]](v);
             }
 
             if (
@@ -159,6 +167,11 @@ function traverse(
           if (shouldConvertEnum) {
             newObj = getNewObj(newObj, currentObj);
             newObj[key] = converters[instructions["e"]](v);
+          }
+
+          if (shouldConvertCustomField) {
+            newObj = getNewObj(newObj, currentObj);
+            newObj[key] = converters[instructions["c"]](v);
           }
 
           if (

@@ -24,6 +24,13 @@ let makeObjName = (next, current) => current ++ "_" ++ next;
 let makeRecordName = (path: list(string)) =>
   path->Tablecloth.List.reverse->Tablecloth.String.join(~sep="_");
 
+let isModuleName = name =>
+  name
+  ->Tablecloth.String.split(~on=".")
+  ->Tablecloth.List.last
+  ->Belt.Option.getWithDefault("")
+  ->Tablecloth.String.isCapitalized;
+
 let extractNestedObjects = (obj: object_): list(object_) => {
   let objects = ref([]);
   let addObject = o => objects := [o, ...objects^];

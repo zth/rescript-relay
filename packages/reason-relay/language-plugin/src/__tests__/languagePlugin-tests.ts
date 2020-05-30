@@ -526,6 +526,24 @@ describe("Language plugin tests", () => {
 
       expect(generated.includes(`favoriteColor: Color.t`)).toBe(true);
     });
+
+    it("handles automatic conversion when a custom scalar is a module", () => {
+      let generated = generate(
+        `query appQuery {
+            me {
+              favoriteColor
+            }
+          }`,
+        {
+          customScalars: {
+            Color: "Utils.Color",
+          },
+        }
+      );
+
+      expect(generated.includes(`favoriteColor: Utils.Color.t`)).toBe(true);
+      expect(generated.includes(`"Utils.Color": Utils.Color.parse`)).toBe(true);
+    });
   });
 
   describe("Unions", () => {
