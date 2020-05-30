@@ -1,5 +1,7 @@
 # master
 
+# 0.9.2
+
 - Automatic conversion of custom scalars! Heavily inspired by the upcoming `graphql_ppx` release which also has this, it's now possible to have ReasonRelay automatically convert your custom scalars at runtime. More info in the docs for custom scalars.
 
 # 0.9.1
