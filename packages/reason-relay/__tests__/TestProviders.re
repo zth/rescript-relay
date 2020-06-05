@@ -2,8 +2,8 @@ module Wrapper = {
   [@react.component]
   let make = (~environment, ~children) =>
     <React.Suspense fallback={<div> {React.string("Loading...")} </div>}>
-      <ReasonRelay.Context.Provider environment>
+      <ReasonRelay.EnvironmentProvider environment>
         children
-      </ReasonRelay.Context.Provider>
+      </ReasonRelay.EnvironmentProvider>
     </React.Suspense>;
 };

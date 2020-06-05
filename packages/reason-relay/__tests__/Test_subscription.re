@@ -36,7 +36,7 @@ module UserUpdatedSubscription = [%relay.subscription
 module Test = {
   [@react.component]
   let make = () => {
-    let environment = ReasonRelay.useEnvironmentFromContext();
+    let environment = ReasonRelay.useRelayEnvironment();
     let query = Query.use(~variables=(), ());
     let data = Fragment.use(query.loggedInUser.getFragmentRefs());
 

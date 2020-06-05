@@ -503,24 +503,13 @@ module Environment = {
   [@bs.send] external getStore: t => Store.t = "getStore";
 };
 
-module Context = {
-  type t;
+module EnvironmentProvider = {
+  [@bs.module "relay-experimental"] [@react.component]
+  external make:
+    (~environment: Environment.t, ~children: React.element) => React.element =
+    "RelayEnvironmentProvider";
 
-  type contextShape = {. "environment": Environment.t};
-
-  [@bs.module "react-relay"]
-  external context: React.Context.t(option(contextShape)) =
-    "ReactRelayContext";
-  let provider = React.Context.provider(context);
-
-  module Provider = {
-    [@react.component]
-    let make = (~environment: Environment.t, ~children) =>
-      React.createElement(
-        provider,
-        {"value": Some({"environment": environment}), "children": children},
-      );
-  };
+  let make = make;
 };
 
 let useConvertedValue = (convert, v) =>
@@ -528,14 +517,8 @@ let useConvertedValue = (convert, v) =>
 
 exception EnvironmentNotFoundInContext;
 
-let useEnvironmentFromContext = () => {
-  let context = React.useContext(Context.context);
-
-  switch (context) {
-  | Some(ctx) => ctx##environment
-  | None => raise(EnvironmentNotFoundInContext)
-  };
-};
+[@bs.module "relay-experimental"]
+external useRelayEnvironment: unit => Environment.t = "useRelayEnvironment";
 
 type fetchPolicy =
   | StoreOnly
@@ -570,16 +553,16 @@ type preloadQueryConfig = {
   networkCacheConfig: option(cacheConfig),
 };
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _preloadQuery:
   (Environment.t, queryNode, 'variables, preloadQueryConfig) => 'queryResponse =
   "preloadQuery";
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _usePreloadedQuery:
   (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
   'queryResponse =
@@ -743,11 +726,11 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
 /**
  * FRAGMENT
  */
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _useFragmentOpt:
   (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
   "useFragment";
@@ -826,7 +809,7 @@ let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
     ),
 };
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _useRefetchableFragment:
   (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
   "useRefetchableFragment";
@@ -905,7 +888,7 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
   refetch: refetchFn('variables),
 };
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
@@ -935,7 +918,7 @@ external _usePaginationFragment:
   } =
   "usePaginationFragment";
 
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-experimental"]
 external _useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
@@ -1084,7 +1067,7 @@ external _commitMutation:
   Disposable.t =
   "commitMutation";
 
-[@bs.module "react-relay/lib/relay-experimental"]
+[@bs.module "relay-experimental"]
 external _useMutation:
   mutationNode =>
   (_useMutationConfig('response, 'variables) => Disposable.t, bool) =

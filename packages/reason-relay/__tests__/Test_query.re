@@ -55,7 +55,7 @@ module TestPreloaded = {
 module Test = {
   [@react.component]
   let make = () => {
-    let environment = ReasonRelay.useEnvironmentFromContext();
+    let environment = ReasonRelay.useRelayEnvironment();
 
     let (status, setStatus) = React.useState(() => Some(`Online));
     let (preloadTokenFromModule, setPreloadTokenFromModule) =

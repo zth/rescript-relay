@@ -656,34 +656,28 @@ module MakeUseMutation:
   };
 
 /**
- * Context provider for the Relay environment.
+ * Environment provider for the Relay environment.
  */
-module Context: {
-  type t;
-  type contextShape = {. "environment": Environment.t};
-  let context: React.Context.t(option(contextShape));
-
-  module Provider: {
-    let makeProps:
-      (
-        ~environment: Environment.t,
-        ~children: 'children,
-        ~key: string=?,
-        unit
-      ) =>
-      {
-        .
-        "children": 'children,
-        "environment": Environment.t,
-      };
-    let make:
-      {
-        .
-        "children": React.element,
-        "environment": Environment.t,
-      } =>
-      React.element;
-  };
+module EnvironmentProvider: {
+  let makeProps:
+    (
+      ~environment: Environment.t,
+      ~children: React.element,
+      ~key: string=?,
+      unit
+    ) =>
+    {
+      .
+      "children": React.element,
+      "environment": Environment.t,
+    };
+  let make:
+    {
+      .
+      "environment": Environment.t,
+      "children": React.element,
+    } =>
+    React.element;
 };
 
 exception EnvironmentNotFoundInContext;
@@ -691,7 +685,7 @@ exception EnvironmentNotFoundInContext;
 /**
  * Hook for getting the current environment from context.
  */
-let useEnvironmentFromContext: unit => Environment.t;
+let useRelayEnvironment: unit => Environment.t;
 
 exception Mutation_failed(array(mutationError));
 
