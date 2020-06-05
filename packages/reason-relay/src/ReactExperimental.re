@@ -12,12 +12,6 @@ let useDeferredValue =
     (~value, ~timeoutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) =>
   _useDeferredValue(value, {timeoutMs, busyDelayMs, busyMinDurationMs});
 
-let renderConcurrentRootAtElementWithId = (reactElement, id) =>
-  switch (ReactDOMRe.Experimental.createRootWithId(id)) {
-  | Error(error) => raise(Invalid_argument(error))
-  | Ok(root) => ReactDOMRe.Experimental.render(root, reactElement)
-  };
-
 [@bs.module "react"]
 external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
   "unstable_withSuspenseConfig";

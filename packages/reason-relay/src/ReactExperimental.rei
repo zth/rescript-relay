@@ -14,7 +14,4 @@ let useDeferredValue:
   ) =>
   'value;
 
-let renderConcurrentRootAtElementWithId:
-  (ReasonReact.reactElement, string) => unit;
-
 let unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit;
