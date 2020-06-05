@@ -18,13 +18,6 @@ let useDeferredValue:
   ) =>
   'value;
 
-module ConcurrentModeRoot: {
-  type t;
-  let render: (t, ReasonReact.reactElement) => unit;
-};
-
-let createRoot: Dom.element => ConcurrentModeRoot.t;
-
 let renderConcurrentRootAtElementWithId:
   (ReasonReact.reactElement, string) => unit;
 
