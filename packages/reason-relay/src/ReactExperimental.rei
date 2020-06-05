@@ -4,10 +4,6 @@ type suspenseConfig = {
   busyMinDurationMs: option(int),
 };
 
-let useTransition:
-  (~timeoutMs: int, ~busyDelayMs: int=?, ~busyMinDurationMs: int=?, unit) =>
-  ((unit => unit) => unit, bool);
-
 let useDeferredValue:
   (
     ~value: 'value,
