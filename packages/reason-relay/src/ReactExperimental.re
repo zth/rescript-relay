@@ -45,38 +45,6 @@ let renderConcurrentRootAtElementWithId = (reactElement, id) =>
     createRoot(element)->ConcurrentModeRoot.render(reactElement)
   };
 
-module Suspense = {
-  [@react.component] [@bs.module "react"]
-  external make:
-    (~children: React.element, ~fallback: ReasonReact.reactElement=?) =>
-    React.element =
-    "Suspense";
-};
-
-module SuspenseList = {
-  type revealOrder = [ | `forwards | `backwards | `together];
-
-  module Component = {
-    [@react.component] [@bs.module "react"]
-    external make:
-      (~children: React.element, ~revealOrder: string) => React.element =
-      "SuspenseList";
-  };
-
-  let mapRevealOrder = revealOrder =>
-    switch (revealOrder) {
-    | `forwards => "forwards"
-    | `backwards => "backwards"
-    | `together => "together"
-    };
-
-  [@react.component]
-  let make = (~children, ~revealOrder: revealOrder) =>
-    <Component revealOrder={revealOrder |> mapRevealOrder}>
-      children
-    </Component>;
-};
-
 [@bs.module "react"]
 external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
   "unstable_withSuspenseConfig";
