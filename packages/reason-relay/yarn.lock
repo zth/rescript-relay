@@ -1077,10 +1077,10 @@ bs-fetch@^0.5.0:
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.5.0.tgz#6913b1d1ddfa0b0a4b832357854e9763d61d4b28"
   integrity sha512-cGjwRpyNcIaX+p2ssy/38zs7BM/miKNgmOR3NEhxKFete5mR05JcvjuV4raG89oGCG281SU1b56TTAKmf9VCug==
 
-bs-platform@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.1.1.tgz#ed4032de7ab15158c61d8994680a05393e3ddd74"
-  integrity sha512-ckZHR3J+yxyEKXOBHX8+hfzWG2XX5BxhQ4Iw9lulHFGYdAm9Ep9LgKkIah7G6RYADLmVfTxFE48igvY3kkkl+g==
+bs-platform@^7.3.2:
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.3.2.tgz#301f5c9b4e8cf5713cb60ca22e145e56e793affe"
+  integrity sha512-seJL5g4anK9la4erv+B2o2sMHQCxDF6OCRl9en3hbaUos/S3JsusQ0sPp4ORsbx5eXfHLYBwPljwKXlgpXtsgQ==
 
 bser@2.1.1:
   version "2.1.1"
