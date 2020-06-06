@@ -47,12 +47,12 @@
     "reason-promise": "^1.0.2"
   },
   "peerDependencies": {
-    "bs-platform": "^7.1.1",
+    "bs-platform": "^7.3.2",
     "graphql": "^14.4.2",
     "react": "0.0.0-experimental-d28bd2994",
     "react-dom": "0.0.0-experimental-d28bd2994",
     "react-relay": "0.0.0-experimental-8cc94ddc",
-    "reason-react": "^0.7.0",
+    "reason-react": "^0.8.0",
     "relay-compiler": "9.0.0",
     "relay-config": "9.0.0",
     "relay-runtime": "9.0.0",
