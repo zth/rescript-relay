@@ -83,7 +83,7 @@ module Test = {
     let query = Query.use(~variables={groupId: groupId}, ());
 
     let (startTransition, _) =
-      ReactExperimental.useTransition(~timeoutMs=5000, ());
+      React.useTransition(~config={timeoutMs: 5000}, ());
 
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(query.getFragmentRefs());
