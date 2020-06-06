@@ -1,5 +1,6 @@
 # master
 
+- _BREAKING CHANGE_ `Observable.make` returns the optional unsubscribe object or unsubscribe function.
 - _BREAKING CHANGE_ Bindings in `ReactExperimental` for `Suspense`, `SuspenseList`, `ConcurrentModeRoot.render`, `createRoot` and `useTransition` have been moved to the official community bindings in [Reason-React](https://github.com/reasonml/reason-react).
 - Peer dependencies updated `reason-react@^0.8.0` and `bs-platform@^7.3.2`
 
