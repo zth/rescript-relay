@@ -392,16 +392,7 @@ module Observable = {
   [@bs.send]
   external subscribe: (t, observer('t)) => subscription = "subscribe";
 
-  let make = sinkFn =>
-    create(s => {
-      sinkFn({
-        next: s.next,
-        error: s.error,
-        completed: s.completed,
-        closed: s.closed,
-      });
-      None;
-    });
+  let make = create;
 };
 
 module Network = {

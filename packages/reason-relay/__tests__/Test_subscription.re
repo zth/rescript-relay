@@ -109,7 +109,10 @@ let test_subscription = () => {
   let theSink: ref(option(ReasonRelay.Observable.sink('a))) = ref(None);
 
   let observable =
-    ReasonRelay.Observable.make(sink => {theSink := Some(sink)});
+    ReasonRelay.Observable.make(sink => {
+      theSink := Some(sink);
+      None;
+    });
 
   let subscriptionFunction = (_, _, _) => observable;
 

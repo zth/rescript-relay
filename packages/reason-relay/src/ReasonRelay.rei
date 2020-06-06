@@ -322,7 +322,7 @@ module Observable: {
     ) =>
     observer('t);
 
-  let make: (sink('t) => unit) => t;
+  let make: (sink('t) => option('a)) => t;
   let subscribe: (t, observer('t)) => subscription;
 };
 
