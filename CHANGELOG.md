@@ -1,5 +1,7 @@
 # master
 
+- _BREAKING CHANGE_ `Observable.make` returns the optional unsubscribe object or unsubscribe function.
+
 # 0.9.2
 
 - Automatic conversion of custom scalars! Heavily inspired by the upcoming `graphql_ppx` release which also has this, it's now possible to have ReasonRelay automatically convert your custom scalars at runtime. More info in the docs for custom scalars.
