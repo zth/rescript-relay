@@ -89,7 +89,7 @@ let make = (~ticketId) => {
   React.useEffect1(() => {
     let subscription =
       TicketStatusSubscription.subscribe(~environment, ~variables={id: ticketId}, ());
-    Some(ReasonRelay.Disposable.dispose(subscription));
+    Some(() => ReasonRelay.Disposable.dispose(subscription));
   }, [|ticketId|]);
 
   ...
