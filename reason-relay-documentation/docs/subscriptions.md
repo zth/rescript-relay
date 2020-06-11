@@ -28,7 +28,8 @@ let subscriptionFunction = (
         SubscriptionTransportWS.request(subscriptionClient, subscriptionQuery);
 
       let subscription = SubscriptionTransportWS.subscribe(observable, sink);
-      Some(SubscriptionTransportWS.unsubscribe(subscription));
+      let unsubscribeFn: unit => unit = SubscriptionTransportWS.unsubscribe(subscription);
+      Some(unsubscribeFn);
     });
   };
 
