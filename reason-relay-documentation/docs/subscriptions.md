@@ -16,17 +16,14 @@ Subscriptions use a different network configuration than _queries_ and _mutation
 /* RelayEnv.re */
 let subscriptionClient = SubscriptionTransportWS.make("wss://localhost:9090", ());
 
-let subscriptionFunction = (
-  config: ReasonRelay.operation,
-  variables: 'a,
-  _cacheConfig: ReasonRelay.cacheConfig)
-  : ReasonRelay.Observable.t => {
+let subscriptionFunction:
+  ReasonRelay.Network.subscribeFn => ReasonRelay.Observable.t =
+  (config, variables, _cacheConfig) => {
     let query = config.text;
     let subscriptionQuery = { query, variables };
     ReasonRelay.Observable.make(sink => {
       let observable =
         SubscriptionTransportWS.request(subscriptionClient, subscriptionQuery);
-
       let subscription = SubscriptionTransportWS.subscribe(observable, sink);
       let unsubscribeFn: unit => unit = SubscriptionTransportWS.unsubscribe(subscription);
       Some(unsubscribeFn);
