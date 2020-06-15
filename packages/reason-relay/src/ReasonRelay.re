@@ -34,9 +34,9 @@ external isClientID: dataId => bool = "isClientID";
  */
 
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let _cleanObjectFromUndefined = [%bs.raw
+let _cleanObjectFromUndefined = [%raw
   {|
-  function cleanObj(obj) {
+  function (obj) {
     var newObj = {};
 
     Object.keys(obj).forEach(function(key) {
@@ -51,9 +51,9 @@ let _cleanObjectFromUndefined = [%bs.raw
 ];
 
 // Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let _cleanVariables = [%bs.raw
+let _cleanVariables = [%raw
   {|
-  function cleanVariables(variables) {
+  function (variables) {
     if (typeof variables !== "object" || variables == null) {
       return {};
     }
