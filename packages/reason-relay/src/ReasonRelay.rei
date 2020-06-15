@@ -29,16 +29,20 @@ type dataId;
 /**
  * Helpers and types for various IDs.
  */
-let dataIdToString: dataId => string;
-let makeDataId: string => dataId;
-let makeArguments: Js.t({..}) => arguments;
+external dataIdToString: dataId => string = "%identity";
+external makeDataId: string => dataId = "%identity";
+external makeArguments: Js.t({..}) => arguments = "%identity";
 
-let generateClientID:
-  (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId;
+[@bs.module "relay-runtime"]
+external generateClientID:
+  (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
+  "generateClientID";
 
-let generateUniqueClientID: unit => dataId;
+[@bs.module "relay-runtime"]
+external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
 
-let isClientID: dataId => bool;
+[@bs.module "relay-runtime"]
+external isClientID: dataId => bool = "isClientID";
 
 /**
  * An abstract type representing all records in the store serialized to JSON in a way
@@ -48,16 +52,18 @@ type recordSourceRecords;
 
 /**
  * Constants
- */
+ */ 
 
 /**
  * The `dataId` for the Relay store's root.
  * Useful when for example referencing the `parentID` of a connection that's on the store root.
  * */
-let storeRootId: dataId;
+[@bs.module "relay-runtime"]
+external storeRootId: dataId = "ROOT_ID";
 
 /** The `type` for the Relay store's root `RecordProxy`. */
-let storeRootType: string;
+[@bs.module "relay-runtime"]
+external storeRootType: string = "ROOT_TYPE";
 
 let _cleanObjectFromUndefined: Js.t({..}) => Js.t({..});
 let _cleanVariables: 'a => 'a;
@@ -76,54 +82,70 @@ module RecordProxy: {
     | Null
     | Undefined;
 
-  let copyFieldsFrom: (t, ~sourceRecord: t) => unit;
+  [@bs.send]
+  external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
 
-  let getDataId: t => dataId;
+  [@bs.send] external getDataId: t => dataId = "getDataID";
 
-  let getLinkedRecord:
-    (t, ~name: string, ~arguments: arguments=?, unit) => option(t);
+  [@bs.send] [@bs.return nullable]
+  external getLinkedRecord:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(t) =
+    "getLinkedRecord";
 
   let getLinkedRecords:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(t)));
 
-  let getOrCreateLinkedRecord:
-    (t, ~name: string, ~typeName: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external getOrCreateLinkedRecord:
+    (t, ~name: string, ~typeName: string, ~arguments: arguments=?, unit) => t =
+    "getOrCreateLinkedRecord";
 
-  let getType: t => string;
+  [@bs.send] external getType: t => string = "getType";
 
-  let getValueString:
-    (t, ~name: string, ~arguments: arguments=?, unit) => option(string);
+  [@bs.send] [@bs.return nullable]
+  external getValueString:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
+    "getValue";
 
   let getValueStringArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(string)));
 
-  let getValueInt:
-    (t, ~name: string, ~arguments: arguments=?, unit) => option(int);
+  [@bs.send] [@bs.return nullable]
+  external getValueInt:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
+    "getValue";
 
   let getValueIntArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(int)));
 
-  let getValueFloat:
-    (t, ~name: string, ~arguments: arguments=?, unit) => option(float);
+  [@bs.send] [@bs.return nullable]
+  external getValueFloat:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
+    "getValue";
 
   let getValueFloatArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(float)));
 
-  let getValueBool:
-    (t, ~name: string, ~arguments: arguments=?, unit) => option(bool);
+  [@bs.send] [@bs.return nullable]
+  external getValueBool:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
+    "getValue";
 
   let getValueBoolArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
     option(array(option(bool)));
 
-  let setLinkedRecord:
-    (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setLinkedRecord:
+    (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setLinkedRecord";
 
-  let setLinkedRecords:
+  [@bs.send]
+  external setLinkedRecords:
     (
       t,
       ~records: array(option(t)),
@@ -131,12 +153,16 @@ module RecordProxy: {
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setLinkedRecords";
 
-  let setValueString:
-    (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setValueString:
+    (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueStringArray:
+  [@bs.send]
+  external setValueStringArray:
     (
       t,
       ~value: array(string),
@@ -144,27 +170,40 @@ module RecordProxy: {
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setValue";
 
-  let setValueInt:
-    (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setValueInt:
+    (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueIntArray:
-    (t, ~value: array(int), ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setValueIntArray:
+    (t, ~value: array(int), ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueFloat:
-    (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setValueFloat:
+    (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueFloatArray:
+  [@bs.send]
+  external setValueFloatArray:
     (t, ~value: array(float), ~name: string, ~arguments: arguments=?, unit) =>
-    t;
+    t =
+    "setValue";
 
-  let setValueBool:
-    (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t;
+  [@bs.send]
+  external setValueBool:
+    (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueBoolArray:
+  [@bs.send]
+  external setValueBoolArray:
     (t, ~value: array(bool), ~name: string, ~arguments: arguments=?, unit) =>
-    t;
+    t =
+    "setValue";
 
   let unsetValue:
     (
@@ -206,72 +245,92 @@ module RecordProxy: {
 module RecordSourceSelectorProxy: {
   type t;
 
-  let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t;
+  [@bs.send]
+  external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t =
+    "create";
 
-  let delete: (t, ~dataId: dataId) => unit;
+  [@bs.send] external delete: (t, ~dataId: dataId) => unit = "delete";
 
-  let get: (t, ~dataId: dataId) => option(RecordProxy.t);
+  [@bs.send] [@bs.return nullable]
+  external get: (t, ~dataId: dataId) => option(RecordProxy.t) = "get";
 
-  let getRoot: t => RecordProxy.t;
+  [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 
-  let getRootField: (t, ~fieldName: string) => option(RecordProxy.t);
+  [@bs.send] [@bs.return nullable]
+  external getRootField: (t, ~fieldName: string) => option(RecordProxy.t) =
+    "getRootField";
 
   let getPluralRootField:
     (t, ~fieldName: string) => option(array(option(RecordProxy.t)));
 
-  let invalidateStore: t => unit;
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 module RecordSourceProxy: {
   type t;
 
-  let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t;
+  [@bs.send]
+  external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t =
+    "create";
 
-  let delete: (t, ~dataId: dataId) => unit;
+  [@bs.send] external delete: (t, ~dataId: dataId) => unit = "delete";
 
-  let get: (t, ~dataId: dataId) => option(RecordProxy.t);
+  [@bs.send] [@bs.return nullable]
+  external get: (t, ~dataId: dataId) => option(RecordProxy.t) = "get";
 
-  let getRoot: t => RecordProxy.t;
+  [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 
-  let invalidateStore: t => unit;
+  [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
 
 /**
  * https://relay.dev/docs/en/relay-store#connectionhandler
  */
 module ConnectionHandler: {
-  let getConnection:
+  [@bs.module "relay-runtime"]
+  [@bs.scope "ConnectionHandler"]
+  [@bs.return nullable]
+  external getConnection:
     (~record: RecordProxy.t, ~key: string, ~filters: arguments=?, unit) =>
-    option(RecordProxy.t);
+    option(RecordProxy.t) =
+    "getConnection";
 
-  let createEdge:
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external createEdge:
     (
       ~store: RecordSourceSelectorProxy.t,
       ~connection: RecordProxy.t,
       ~node: RecordProxy.t,
       ~edgeType: string
     ) =>
-    RecordProxy.t;
+    RecordProxy.t =
+    "createEdge";
 
-  let insertEdgeBefore:
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external insertEdgeBefore:
     (
       ~connection: RecordProxy.t,
       ~newEdge: RecordProxy.t,
       ~cursor: string=?,
       unit
     ) =>
-    unit;
+    unit =
+    "insertEdgeBefore";
 
-  let insertEdgeAfter:
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external insertEdgeAfter:
     (
       ~connection: RecordProxy.t,
       ~newEdge: RecordProxy.t,
       ~cursor: string=?,
       unit
     ) =>
-    unit;
+    unit =
+    "insertEdgeAfter";
 
-  let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit;
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit =
+    "deleteNode";
 };
 
 /**
@@ -322,8 +381,11 @@ module Observable: {
     ) =>
     observer('t);
 
-  let make: (sink('t) => option('a)) => t;
-  let subscribe: (t, observer('t)) => subscription;
+  [@bs.module "relay-runtime"] [@bs.scope "Observable"]
+  external make: (sink('t) => option('a)) => t = "create";
+
+  [@bs.send]
+  external subscribe: (t, observer('t)) => subscription = "subscribe";
 };
 
 /**
@@ -346,21 +408,25 @@ module Network: {
   type fetchFunctionObservable =
     (operation, Js.Json.t, cacheConfig) => Observable.t;
 
-  let makePromiseBased:
+  [@bs.module "relay-runtime"] [@bs.scope "Network"]
+  external makePromiseBased:
     (
       ~fetchFunction: fetchFunctionPromise,
       ~subscriptionFunction: subscribeFn=?,
       unit
     ) =>
-    t;
+    t =
+    "create";
 
-  let makeObservableBased:
+  [@bs.module "relay-runtime"] [@bs.scope "Network"]
+  external makeObservableBased:
     (
       ~observableFunction: fetchFunctionObservable,
       ~subscriptionFunction: subscribeFn=?,
       unit
     ) =>
-    t;
+    t =
+    "create";
 };
 
 /**
@@ -371,8 +437,9 @@ module Network: {
 
 module RecordSource: {
   type t;
-  let make: (~records: recordSourceRecords=?, unit) => t;
-  let toJSON: t => recordSourceRecords;
+  [@bs.module "relay-runtime"] [@bs.new]
+  external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource";
+  [@bs.send] external toJSON: t => recordSourceRecords = "toJSON";
 };
 
 /**
@@ -381,7 +448,7 @@ module RecordSource: {
 module Store: {
   type t;
   let make: (~source: RecordSource.t, ~gcReleaseBufferSize: int=?, unit) => t;
-  let getSource: t => RecordSource.t;
+  [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
 
 /**
@@ -418,7 +485,7 @@ module Environment: {
     ) =>
     t;
 
-  let getStore: t => Store.t;
+  [@bs.send] external getStore: t => Store.t = "getStore";
 };
 
 /**
@@ -428,7 +495,7 @@ module Environment: {
  */
 module Disposable: {
   type t;
-  let dispose: t => unit;
+  [@bs.send] external dispose: t => unit = "dispose";
 };
 
 /**
@@ -661,28 +728,14 @@ module MakeUseMutation:
 module Context: {
   type t;
   type contextShape = {. "environment": Environment.t};
-  let context: React.Context.t(option(contextShape));
+  [@bs.module "react-relay"]
+  external context: React.Context.t(option(contextShape)) =
+    "ReactRelayContext";
 
   module Provider: {
-    let makeProps:
-      (
-        ~environment: Environment.t,
-        ~children: 'children,
-        ~key: string=?,
-        unit
-      ) =>
-      {
-        .
-        "children": 'children,
-        "environment": Environment.t,
-      };
+    [@react.component]
     let make:
-      {
-        .
-        "children": React.element,
-        "environment": Environment.t,
-      } =>
-      React.element;
+      (~environment: Environment.t, ~children: React.element) => React.element;
   };
 };
 
@@ -731,12 +784,14 @@ module MakeCommitMutation:
 /**
  * A way of committing a local update to the store.
  */
-let commitLocalUpdate:
+[@bs.module "relay-runtime"]
+external commitLocalUpdate:
   (
     ~environment: Environment.t,
     ~updater: RecordSourceSelectorProxy.t => unit
   ) =>
-  unit;
+  unit =
+  "commitLocalUpdate";
 
 /**
  * fetchQuery is used internally only.

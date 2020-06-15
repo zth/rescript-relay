@@ -1,4 +1,3 @@
-let toOpt = Js.Nullable.toOption;
 type arguments;
 type allFieldsMasked = {.};
 
@@ -21,11 +20,9 @@ external makeDataId: string => dataId = "%identity";
 external makeArguments: Js.t({..}) => arguments = "%identity";
 
 [@bs.module "relay-runtime"]
-external _generateClientID: (dataId, string, option(int)) => dataId =
+external generateClientID:
+  (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
   "generateClientID";
-
-let generateClientID = (~dataId, ~storageKey, ~index=?, ()) =>
-  _generateClientID(dataId, storageKey, index);
 
 [@bs.module "relay-runtime"]
 external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
@@ -71,6 +68,12 @@ external _convertObj:
   ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
   "traverser";
 
+let optArrayOfNullableToOptArrayOfOpt:
+  option(array(Js.Nullable.t('a))) => option(array(option('a))) =
+  fun
+  | None => None
+  | Some(arr) => Some(arr->Belt.Array.map(Js.Nullable.toOption));
+
 [@bs.module "relay-runtime"] external storeRootId: dataId = "ROOT_ID";
 [@bs.module "relay-runtime"] external storeRootType: string = "ROOT_TYPE";
 
@@ -81,152 +84,166 @@ module RecordProxy = {
     | Null
     | Undefined;
 
-  [@bs.send] external _copyFieldsFrom: (t, t) => unit = "copyFieldsFrom";
-  let copyFieldsFrom = (t, ~sourceRecord: t) =>
-    _copyFieldsFrom(t, sourceRecord);
-
-  [@bs.send] external _getDataID: t => dataId = "getDataID";
-  let getDataId = t => _getDataID(t);
-
   [@bs.send]
-  external _getLinkedRecord:
-    (t, string, option(arguments)) => Js.Nullable.t(t) =
+  external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
+
+  [@bs.send] external getDataId: t => dataId = "getDataID";
+
+  [@bs.send] [@bs.return nullable]
+  external getLinkedRecord:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(t) =
     "getLinkedRecord";
 
-  let getLinkedRecord = (t, ~name, ~arguments=?, ()): option(t) =>
-    _getLinkedRecord(t, name, arguments) |> toOpt;
-
-  [@bs.send]
-  external _getLinkedRecords:
-    (t, string, option(arguments)) =>
-    Js.Nullable.t(array(Js.Nullable.t(t))) =
+  [@bs.send] [@bs.return nullable]
+  external getLinkedRecords:
+    (t, string, option(arguments)) => option(array(Js.Nullable.t(t))) =
     "getLinkedRecords";
 
   let getLinkedRecords =
       (t, ~name, ~arguments=?, ()): option(array(option(t))) =>
-    switch (_getLinkedRecords(t, name, arguments) |> toOpt) {
-    | Some(records) => Some(records |> Array.map(v => v |> toOpt))
-    | None => None
-    };
+    getLinkedRecords(t, name, arguments) |> optArrayOfNullableToOptArrayOfOpt;
 
   [@bs.send]
-  external _getOrCreateLinkedRecord:
-    (t, string, string, option(arguments)) => t =
+  external getOrCreateLinkedRecord:
+    (t, ~name: string, ~typeName: string, ~arguments: arguments=?, unit) => t =
     "getOrCreateLinkedRecord";
 
-  let getOrCreateLinkedRecord = (t, ~name, ~typeName, ~arguments=?, ()) =>
-    _getOrCreateLinkedRecord(t, name, typeName, arguments);
+  [@bs.send] external getType: t => string = "getType";
 
-  [@bs.send] external _getType: t => string = "getType";
-  let getType = t => _getType(t);
-
-  [@bs.send]
-  external _getValue: (t, string, option(arguments)) => Js.Nullable.t('value) =
+  [@bs.send] [@bs.return nullable]
+  external getValueArr:
+    (t, ~name: string, ~arguments: option(arguments)) =>
+    option(array('value)) =
     "getValue";
 
-  let _getValueArr = (t, ~name, ~arguments) =>
-    switch (_getValue(t, name, arguments) |> toOpt) {
-    | Some(arr) =>
-      Some(arr |> Array.map(value => value |> Js.Nullable.toOption))
-    | None => None
-    };
-
-  let getValueString = (t, ~name, ~arguments=?, ()): option(string) =>
-    _getValue(t, name, arguments) |> toOpt;
+  [@bs.send] [@bs.return nullable]
+  external getValueString:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
+    "getValue";
 
   let getValueStringArray =
       (t, ~name, ~arguments=?, ()): option(array(option(string))) =>
-    _getValueArr(~name, ~arguments, t);
+    getValueArr(~name, ~arguments, t);
 
-  let getValueInt = (t, ~name, ~arguments=?, ()): option(int) =>
-    _getValue(t, name, arguments) |> toOpt;
+  [@bs.send] [@bs.return nullable]
+  external getValueInt:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
+    "getValue";
 
   let getValueIntArray =
       (t, ~name, ~arguments=?, ()): option(array(option(int))) =>
-    _getValueArr(~name, ~arguments, t);
+    getValueArr(~name, ~arguments, t);
 
-  let getValueFloat = (t, ~name, ~arguments=?, ()): option(float) =>
-    _getValue(t, name, arguments) |> toOpt;
+  [@bs.send] [@bs.return nullable]
+  external getValueFloat:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
+    "getValue";
 
   let getValueFloatArray =
       (t, ~name, ~arguments=?, ()): option(array(option(float))) =>
-    _getValueArr(~name, ~arguments, t);
+    getValueArr(~name, ~arguments, t);
 
-  let getValueBool = (t, ~name, ~arguments=?, ()): option(bool) =>
-    _getValue(t, name, arguments) |> toOpt;
+  [@bs.send] [@bs.return nullable]
+  external getValueBool:
+    (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
+    "getValue";
 
   let getValueBoolArray =
       (t, ~name, ~arguments=?, ()): option(array(option(bool))) =>
-    _getValueArr(~name, ~arguments, t);
+    getValueArr(~name, ~arguments, t);
 
   [@bs.send]
-  external _setLinkedRecord: (t, t, string, option(arguments)) => t =
+  external setLinkedRecord:
+    (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
     "setLinkedRecord";
-  let setLinkedRecord = (t, ~record, ~name, ~arguments=?, ()) =>
-    _setLinkedRecord(t, record, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
+  external unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecord";
   let unsetLinkedRecord = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
-    | Null => _unsetLinkedRecord(t, Js.null, name, arguments)
-    | Undefined => _unsetLinkedRecord(t, Js.undefined, name, arguments)
+    | Null => unsetLinkedRecord(t, Js.null, name, arguments)
+    | Undefined => unsetLinkedRecord(t, Js.undefined, name, arguments)
     };
 
   [@bs.send]
-  external _setLinkedRecords:
-    (t, array(option(t)), string, option(arguments)) => t =
+  external setLinkedRecords:
+    (
+      t,
+      ~records: array(option(t)),
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setLinkedRecords";
-  let setLinkedRecords = (t, ~records, ~name, ~arguments=?, ()) =>
-    _setLinkedRecords(t, records, name, arguments);
 
   [@bs.send]
-  external _unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
+  external unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
     "setLinkedRecords";
   let unsetLinkedRecords = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
-    | Null => _unsetLinkedRecords(t, Js.null, name, arguments)
-    | Undefined => _unsetLinkedRecords(t, Js.undefined, name, arguments)
+    | Null => unsetLinkedRecords(t, Js.null, name, arguments)
+    | Undefined => unsetLinkedRecords(t, Js.undefined, name, arguments)
     };
 
   [@bs.send]
-  external _setValue: (t, 'value, string, option(arguments)) => t =
-    "setValue";
-
-  [@bs.send]
-  external _unsetValue: (t, 'nullable, string, option(arguments)) => t =
+  external unsetValue_: (t, 'nullable, string, option(arguments)) => t =
     "setValue";
   let unsetValue = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
     switch (unsetValue) {
-    | Null => _unsetValue(t, Js.null, name, arguments)
-    | Undefined => _unsetValue(t, Js.undefined, name, arguments)
+    | Null => unsetValue_(t, Js.null, name, arguments)
+    | Undefined => unsetValue_(t, Js.undefined, name, arguments)
     };
 
-  let setValueString = (t, ~value: string, ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueString:
+    (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueStringArray =
-      (t, ~value: array(string), ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueStringArray:
+    (
+      t,
+      ~value: array(string),
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setValue";
 
-  let setValueInt = (t, ~value: int, ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueInt:
+    (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueIntArray = (t, ~value: array(int), ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueIntArray:
+    (t, ~value: array(int), ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueFloat = (t, ~value: float, ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueFloat:
+    (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueFloatArray = (t, ~value: array(float), ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueFloatArray:
+    (t, ~value: array(float), ~name: string, ~arguments: arguments=?, unit) =>
+    t =
+    "setValue";
 
-  let setValueBool = (t, ~value: bool, ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueBool:
+    (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
+    "setValue";
 
-  let setValueBoolArray = (t, ~value: array(bool), ~name, ~arguments=?, ()) =>
-    _setValue(t, value, name, arguments);
+  [@bs.send]
+  external setValueBoolArray:
+    (t, ~value: array(bool), ~name: string, ~arguments: arguments=?, unit) =>
+    t =
+    "setValue";
 
   [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
 };
@@ -234,36 +251,29 @@ module RecordProxy = {
 module RecordSourceSelectorProxy = {
   type t;
 
-  [@bs.send] external _create: (t, dataId, string) => RecordProxy.t = "create";
-  let create = (t, ~dataId, ~typeName: string) =>
-    _create(t, dataId, typeName);
-
-  [@bs.send] external _delete: (t, dataId) => unit = "delete";
-  let delete = (t, ~dataId) => _delete(t, dataId);
-
   [@bs.send]
-  external _get: (t, dataId) => Js.Nullable.t(RecordProxy.t) = "get";
-  let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
+  external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t =
+    "create";
+
+  [@bs.send] external delete: (t, ~dataId: dataId) => unit = "delete";
+
+  [@bs.send] [@bs.return nullable]
+  external get: (t, ~dataId: dataId) => option(RecordProxy.t) = "get";
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 
-  [@bs.send]
-  external _getRootField: (t, string) => Js.Nullable.t(RecordProxy.t) =
+  [@bs.send] [@bs.return nullable]
+  external getRootField: (t, ~fieldName: string) => option(RecordProxy.t) =
     "getRootField";
-  let getRootField = (t, ~fieldName): option(RecordProxy.t) =>
-    _getRootField(t, fieldName) |> toOpt;
 
-  [@bs.send]
-  external _getPluralRootField:
-    (t, string) => Js.Nullable.t(array(Js.Nullable.t(RecordProxy.t))) =
+  [@bs.send] [@bs.return nullable]
+  external getPluralRootField:
+    (t, ~fieldName: string) => option(array(Js.Nullable.t(RecordProxy.t))) =
     "getPluralRootField";
 
   let getPluralRootField =
       (t, ~fieldName): option(array(option(RecordProxy.t))) =>
-    switch (_getPluralRootField(t, fieldName) |> toOpt) {
-    | Some(arr) => Some(arr |> Array.map(v => v |> toOpt))
-    | None => None
-    };
+    getPluralRootField(t, ~fieldName) |> optArrayOfNullableToOptArrayOfOpt;
 
   [@bs.send] external invalidateStore: t => unit = "invalidateStore";
 };
@@ -271,16 +281,14 @@ module RecordSourceSelectorProxy = {
 module RecordSourceProxy = {
   type t;
 
-  [@bs.send] external _create: (t, dataId, string) => RecordProxy.t = "create";
-  let create = (t, ~dataId, ~typeName: string) =>
-    _create(t, dataId, typeName);
-
-  [@bs.send] external _delete: (t, dataId) => unit = "delete";
-  let delete = (t, ~dataId) => _delete(t, dataId);
-
   [@bs.send]
-  external _get: (t, dataId) => Js.Nullable.t(RecordProxy.t) = "get";
-  let get = (t, ~dataId): option(RecordProxy.t) => _get(t, dataId) |> toOpt;
+  external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t =
+    "create";
+
+  [@bs.send] external delete: (t, ~dataId: dataId) => unit = "delete";
+
+  [@bs.send] [@bs.return nullable]
+  external get: (t, ~dataId: dataId) => option(RecordProxy.t) = "get";
 
   [@bs.send] external getRoot: t => RecordProxy.t = "getRoot";
 
@@ -288,51 +296,50 @@ module RecordSourceProxy = {
 };
 
 module ConnectionHandler = {
-  type t;
-
   [@bs.module "relay-runtime"]
-  external connectionHandler: t = "ConnectionHandler";
-
-  [@bs.send]
-  external _getConnection:
-    (t, RecordProxy.t, string, option(arguments)) =>
-    Js.Nullable.t(RecordProxy.t) =
+  [@bs.scope "ConnectionHandler"]
+  [@bs.return nullable]
+  external getConnection:
+    (~record: RecordProxy.t, ~key: string, ~filters: arguments=?, unit) =>
+    option(RecordProxy.t) =
     "getConnection";
 
-  let getConnection = (~record, ~key, ~filters=?, ()) =>
-    _getConnection(connectionHandler, record, key, filters)
-    |> Js.Nullable.toOption;
-
-  [@bs.send]
-  external _createEdge:
-    (t, RecordSourceSelectorProxy.t, RecordProxy.t, RecordProxy.t, string) =>
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external createEdge:
+    (
+      ~store: RecordSourceSelectorProxy.t,
+      ~connection: RecordProxy.t,
+      ~node: RecordProxy.t,
+      ~edgeType: string
+    ) =>
     RecordProxy.t =
     "createEdge";
 
-  let createEdge = (~store, ~connection, ~node, ~edgeType) =>
-    _createEdge(connectionHandler, store, connection, node, edgeType);
-
-  [@bs.send]
-  external _insertEdgeBefore:
-    (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external insertEdgeBefore:
+    (
+      ~connection: RecordProxy.t,
+      ~newEdge: RecordProxy.t,
+      ~cursor: string=?,
+      unit
+    ) =>
+    unit =
     "insertEdgeBefore";
 
-  let insertEdgeBefore = (~connection, ~newEdge, ~cursor=?, ()) =>
-    _insertEdgeBefore(connectionHandler, connection, newEdge, cursor);
-
-  [@bs.send]
-  external _insertEdgeAfter:
-    (t, RecordProxy.t, RecordProxy.t, option(string)) => unit =
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external insertEdgeAfter:
+    (
+      ~connection: RecordProxy.t,
+      ~newEdge: RecordProxy.t,
+      ~cursor: string=?,
+      unit
+    ) =>
+    unit =
     "insertEdgeAfter";
 
-  let insertEdgeAfter = (~connection, ~newEdge, ~cursor=?, ()) =>
-    _insertEdgeAfter(connectionHandler, connection, newEdge, cursor);
-
-  [@bs.send]
-  external _deleteNode: (t, RecordProxy.t, dataId) => unit = "deleteNode";
-
-  let deleteNode = (~connection, ~nodeId) =>
-    _deleteNode(connectionHandler, connection, nodeId);
+  [@bs.module "relay-runtime"] [@bs.scope "ConnectionHandler"]
+  external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit =
+    "deleteNode";
 };
 
 /**
@@ -387,12 +394,10 @@ module Observable = {
   };
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external create: (sink('t) => option('a)) => t = "create";
+  external make: (sink('t) => option('a)) => t = "create";
 
   [@bs.send]
   external subscribe: (t, observer('t)) => subscription = "subscribe";
-
-  let make = create;
 };
 
 module Network = {
@@ -413,28 +418,31 @@ module Network = {
     (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
-  external makeFromPromise: (fetchFunctionPromise, option(subscribeFn)) => t =
+  external makePromiseBased:
+    (
+      ~fetchFunction: fetchFunctionPromise,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t =
     "create";
-
-  let makePromiseBased = (~fetchFunction, ~subscriptionFunction=?, ()) =>
-    makeFromPromise(fetchFunction, subscriptionFunction);
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
-  external makeFromObservable:
-    (fetchFunctionObservable, option(subscribeFn)) => t =
+  external makeObservableBased:
+    (
+      ~observableFunction: fetchFunctionObservable,
+      ~subscriptionFunction: subscribeFn=?,
+      unit
+    ) =>
+    t =
     "create";
-
-  let makeObservableBased = (~observableFunction, ~subscriptionFunction=?, ()) =>
-    makeFromObservable(observableFunction, subscriptionFunction);
 };
 
 module RecordSource = {
   type t;
 
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make: option(recordSourceRecords) => t = "RecordSource";
-
-  let make = (~records=?, ()) => _make(records);
+  external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource";
 
   [@bs.send] external toJSON: t => recordSourceRecords = "toJSON";
 };
@@ -445,10 +453,10 @@ module Store = {
   type storeConfig = {gcReleaseBufferSize: option(int)};
 
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make: (RecordSource.t, storeConfig) => t = "Store";
+  external make: (RecordSource.t, storeConfig) => t = "Store";
 
   let make = (~source, ~gcReleaseBufferSize=?, ()) =>
-    _make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
+    make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
@@ -470,24 +478,19 @@ module Environment = {
     network: Network.t,
     store: Store.t,
     [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
-    getDataID: option(('a, string) => string),
+    getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
     [@bs.as "UNSTABLE_defaultRenderPolicy"]
     defaultRenderPolicy: option(string),
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
-  external _make: environmentConfig('a) => t = "Environment";
+  external make: environmentConfig('a) => t = "Environment";
 
   let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ()) =>
-    _make({
+    make({
       network,
       store,
-      getDataID:
-        switch (getDataID) {
-        | Some(getDataID) =>
-          Some((nodeObj, typeName) => getDataID(~nodeObj, ~typeName))
-        | None => None
-        },
+      getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
     });
 
@@ -562,16 +565,16 @@ type preloadQueryConfig = {
 };
 
 [@bs.module "react-relay/hooks"]
-external _useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
+external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
 [@bs.module "react-relay/hooks"]
-external _preloadQuery:
+external preloadQuery:
   (Environment.t, queryNode, 'variables, preloadQueryConfig) => 'queryResponse =
   "preloadQuery";
 
 [@bs.module "react-relay/hooks"]
-external _usePreloadedQuery:
+external usePreloadedQuery:
   (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
   'queryResponse =
   "usePreloadedQuery";
@@ -598,7 +601,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       )
       : C.response => {
     let data =
-      _useQuery(
+      useQuery(
         C.query,
         variables
         |> _cleanVariables
@@ -617,7 +620,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
 
   let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
     let data =
-      _usePreloadedQuery(
+      usePreloadedQuery(
         C.query,
         token,
         switch (renderPolicy) {
@@ -695,7 +698,7 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
       ~networkCacheConfig=?,
       (),
     ) =>
-      _preloadQuery(
+      preloadQuery(
         environment,
         C.query,
         variables |> C.convertVariables |> _cleanVariables,
@@ -735,11 +738,11 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
  * FRAGMENT
  */
 [@bs.module "react-relay/hooks"]
-external _useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
+external useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
 [@bs.module "react-relay/hooks"]
-external _useFragmentOpt:
+external useFragmentOpt:
   (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
   "useFragment";
 
@@ -753,13 +756,13 @@ module type MakeUseFragmentConfig = {
 
 module MakeUseFragment = (C: MakeUseFragmentConfig) => {
   let use = (fr: C.fragmentRef): C.fragment => {
-    let data = _useFragment(C.fragmentSpec, fr);
+    let data = useFragment(C.fragmentSpec, fr);
     useConvertedValue(C.convertFragment, data);
   };
 
   let useOpt = (fr: option(C.fragmentRef)): option(C.fragment) => {
     let nullableFragmentData: Js.Nullable.t(C.fragmentRaw) =
-      _useFragmentOpt(
+      useFragmentOpt(
         C.fragmentSpec,
         switch (fr) {
         | Some(fr) => Some(fr)->Js.Nullable.fromOption
@@ -818,7 +821,7 @@ let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
 };
 
 [@bs.module "react-relay/hooks"]
-external _useRefetchableFragment:
+external useRefetchableFragment:
   (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
   "useRefetchableFragment";
 
@@ -835,7 +838,7 @@ module type MakeUseRefetchableFragmentConfig = {
 module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
   let useRefetchable = (fr: C.fragmentRef) => {
     let (fragmentData, refetchFn) =
-      _useRefetchableFragment(C.fragmentSpec, fr);
+      useRefetchableFragment(C.fragmentSpec, fr);
 
     let data = useConvertedValue(C.convertFragment, fragmentData);
     (
@@ -897,7 +900,7 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
 };
 
 [@bs.module "react-relay/hooks"]
-external _usePaginationFragment:
+external usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
     .
@@ -927,7 +930,7 @@ external _usePaginationFragment:
   "usePaginationFragment";
 
 [@bs.module "react-relay/hooks"]
-external _useBlockingPaginationFragment:
+external useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   {
     .
@@ -960,7 +963,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
   let useBlockingPagination =
       (fr: C.fragmentRef)
       : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
-    let p = _useBlockingPaginationFragment(C.fragmentSpec, fr);
+    let p = useBlockingPaginationFragment(C.fragmentSpec, fr);
     let data = useConvertedValue(C.convertFragment, p##data);
 
     {
@@ -988,7 +991,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
 
   let usePagination =
       (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
-    let p = _usePaginationFragment(C.fragmentSpec, fr);
+    let p = usePaginationFragment(C.fragmentSpec, fr);
     let data = useConvertedValue(C.convertFragment, p##data);
 
     {
@@ -1070,20 +1073,20 @@ type _commitMutationConfig('variables, 'response) = {
 exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
-external _commitMutation:
+external commitMutation_:
   (Environment.t, _commitMutationConfig('variables, 'response)) =>
   Disposable.t =
   "commitMutation";
 
 [@bs.module "react-relay/lib/relay-experimental"]
-external _useMutation:
+external useMutation:
   mutationNode =>
   (_useMutationConfig('response, 'variables) => Disposable.t, bool) =
   "useMutation";
 
 module MakeUseMutation = (C: MutationConfig) => {
   let use = () => {
-    let (mutate, mutating) = _useMutation(C.node);
+    let (mutate, mutating) = useMutation(C.node);
     (
       (
         ~onError=?,
@@ -1140,7 +1143,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
         (),
       )
       : Disposable.t =>
-    _commitMutation(
+    commitMutation_(
       environment,
       {
         variables: variables |> C.convertVariables |> _cleanVariables,
@@ -1195,7 +1198,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
     let (promise, resolve) = Promise.pending();
 
     let _: Disposable.t =
-      _commitMutation(
+      commitMutation_(
         environment,
         {
           variables: variables |> C.convertVariables |> _cleanVariables,
@@ -1228,12 +1231,13 @@ module MakeCommitMutation = (C: MutationConfig) => {
 };
 
 [@bs.module "relay-runtime"]
-external _commitLocalUpdate:
-  (Environment.t, RecordSourceSelectorProxy.t => unit) => unit =
+external commitLocalUpdate:
+  (
+    ~environment: Environment.t,
+    ~updater: RecordSourceSelectorProxy.t => unit
+  ) =>
+  unit =
   "commitLocalUpdate";
-
-let commitLocalUpdate = (~environment, ~updater) =>
-  _commitLocalUpdate(environment, updater);
 
 module type SubscriptionConfig = {
   type variables;

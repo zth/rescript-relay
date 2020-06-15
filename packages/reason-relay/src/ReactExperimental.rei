@@ -14,4 +14,6 @@ let useDeferredValue:
   ) =>
   'value;
 
-let unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit;
+[@bs.module "react"]
+external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
+  "unstable_withSuspenseConfig";
