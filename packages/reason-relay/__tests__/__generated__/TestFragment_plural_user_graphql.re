@@ -47,10 +47,7 @@ module Internal = {
 };
 
 type t;
-type fragmentRef;
-type fragmentRefSelector('a) =
-  array({.. "__$fragment_ref__TestFragment_plural_user": t} as 'a);
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+type fragmentRef = array(t);
 
 module Utils = {};
 
