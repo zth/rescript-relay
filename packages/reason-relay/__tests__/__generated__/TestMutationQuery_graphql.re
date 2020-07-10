@@ -2,9 +2,7 @@
 
 module Types = {
   type response_loggedInUser = {
-    getFragmentRefs:
-      unit =>
-      {. "__$fragment_ref__TestMutation_user": TestMutation_user_graphql.t},
+    getFragmentRef_TestMutation_user: unit => TestMutation_user_graphql.t,
   };
 
   type response = {loggedInUser: response_loggedInUser};
@@ -14,7 +12,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser":{"f":""}}} |json}
+    {json| {"__root":{"loggedInUser":{"f":"TestMutation_user"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

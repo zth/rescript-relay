@@ -23,12 +23,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response_node = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestRefetching_user": TestRefetching_user_graphql.t,
-      },
+    getFragmentRef_TestRefetching_user: unit => TestRefetching_user_graphql.t,
   };
 
   type response = {node: option(response_node)};
@@ -60,7 +55,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","f":""}}} |json}
+    {json| {"__root":{"node":{"n":"","f":"TestRefetching_user"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
