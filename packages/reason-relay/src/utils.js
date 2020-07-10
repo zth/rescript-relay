@@ -39,10 +39,10 @@ function traverse(
     newObj = getNewObj(newObj, currentObj);
     var fragmentRefNames = fragmentsOnRoot.split(",");
 
+    var boundFn = getFragmentRefs.bind(newObj);
+
     for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
-      newObj["getFragmentRef_" + fragmentRefNames[i]] = getFragmentRefs.bind(
-        newObj
-      );
+      newObj["getFragmentRef_" + fragmentRefNames[i]] = boundFn;
     }
   }
 
@@ -147,11 +147,12 @@ function traverse(
             if (shouldAddFragmentFn && typeof v === "object") {
               var objWithFragmentFn = Object.assign({}, v);
               var fragmentRefNames = instructions["f"].split(",");
+              var boundFn = getFragmentRefs.bind(objWithFragmentFn);
 
               for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
                 objWithFragmentFn[
                   "getFragmentRef_" + fragmentRefNames[i]
-                ] = getFragmentRefs.bind(objWithFragmentFn);
+                ] = boundFn;
               }
 
               return objWithFragmentFn;
@@ -221,13 +222,13 @@ function traverse(
             newObj = getNewObj(newObj, currentObj);
 
             var objWithFragmentFn = Object.assign({}, v);
-
             var fragmentRefNames = instructions["f"].split(",");
+            var boundFn = getFragmentRefs.bind(objWithFragmentFn);
 
             for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
               objWithFragmentFn[
                 "getFragmentRef_" + fragmentRefNames[i]
-              ] = getFragmentRefs.bind(objWithFragmentFn);
+              ] = boundFn;
             }
 
             newObj[key] = objWithFragmentFn;
