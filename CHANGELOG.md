@@ -4,6 +4,7 @@
 - _BREAKING CHANGE_ Bindings in `ReactExperimental` for `Suspense`, `SuspenseList`, `ConcurrentModeRoot.render`, `createRoot` and `useTransition` have been moved to the official community bindings in [Reason-React](https://github.com/reasonml/reason-react).
 - Peer dependencies updated `reason-react@^0.8.0` and `bs-platform@^7.3.2`
 - Cleaned up the bindings to Relay and their interface files to reduce runtime size
+- _BREAKING CHANGE_ Fragment refs are no longer structurally typed through `Js.t`. Previously, all fragment refs for an object would be retrieved by doing `someObject.getFragmentRefs()`. That call would return a `Js.t` object containing all fragment references, which would then be structurally matched to ensure fragment type safety. This is now replaced with emitting a function for each fragment ref instead, like `someObject.getFragmentRef_NameOfMyFragment_here()`. More verbose, but at the same time a _huge_ improvement for things like error messages and manual type annotations. It's also hopefully much easier to understand.
 
 # 0.9.2
 

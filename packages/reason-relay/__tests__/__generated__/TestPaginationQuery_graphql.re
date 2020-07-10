@@ -2,12 +2,8 @@
 
 module Types = {
   type response = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestPagination_query": TestPagination_query_graphql.t,
-      },
+    getFragmentRef_TestPagination_query:
+      unit => TestPagination_query_graphql.t,
   };
   type refetchVariables = {groupId: option(string)};
   let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
@@ -19,7 +15,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":""}}} |json}
+    {json| {"__root":{"":{"f":"TestPagination_query"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

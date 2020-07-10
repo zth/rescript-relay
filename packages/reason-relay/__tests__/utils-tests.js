@@ -16,14 +16,14 @@ describe("conversion", () => {
         {
           __root: {
             "": {
-              f: "",
+              f: "RootFragment_fragment",
             },
             otherProp: {
               n: "",
             },
             me: {
               n: "",
-              f: "",
+              f: "MeFragment_fragment",
             },
             me_age: {
               n: "",
@@ -33,7 +33,7 @@ describe("conversion", () => {
             },
             me_nestedObjects: {
               n: "",
-              f: "",
+              f: "SomeFragment_fragment",
             },
             me_nestedObjects_someProp: {
               n: "",
@@ -44,9 +44,9 @@ describe("conversion", () => {
         undefined
       )
     ).toEqual({
-      getFragmentRefs: expect.any(Function),
+      getFragmentRef_RootFragment_fragment: expect.any(Function),
       me: {
-        getFragmentRefs: expect.any(Function),
+        getFragmentRef_MeFragment_fragment: expect.any(Function),
         name: "Name",
         age: undefined,
         nicknames: [undefined, "SomeName"],
@@ -54,7 +54,7 @@ describe("conversion", () => {
           {
             someProp: undefined,
             otherProp: "Lars",
-            getFragmentRefs: expect.any(Function),
+            getFragmentRef_SomeFragment_fragment: expect.any(Function),
           },
           undefined,
         ],
@@ -173,20 +173,20 @@ describe("conversion", () => {
         {
           __root: {
             "": {
-              f: "",
+              f: "1",
             },
             someUnion: {
               n: "",
               u: "union_Union",
             },
             someUnion_user: {
-              f: "",
+              f: "2",
             },
             someUnion_user_ageRange: {
               e: "enum_Enum",
             },
             someUnion_user_meta: {
-              f: "",
+              f: "3",
             },
             someUnion_user_meta_ageRange: {
               e: "enum_Enum",
@@ -199,13 +199,13 @@ describe("conversion", () => {
               u: "union_Union",
             },
             friends_user: {
-              f: "",
+              f: "4",
             },
             friends_user_ageRange: {
               e: "enum_Enum",
             },
             friends_user_meta: {
-              f: "",
+              f: "5",
             },
             friends_user_meta_ageRange: {
               e: "enum_Enum",
@@ -214,7 +214,7 @@ describe("conversion", () => {
               n: "",
             },
             friends_observer: {
-              f: "",
+              f: "6",
             },
             friends_observer_name: {
               n: "",
@@ -223,7 +223,7 @@ describe("conversion", () => {
               e: "enum_Enum",
             },
             friends_observer_meta: {
-              f: "",
+              f: "7",
             },
             friends_observer_meta_ageRange: {
               e: "enum_Enum",
@@ -239,10 +239,10 @@ describe("conversion", () => {
               e: "enum_Enum",
             },
             friends_observer_friends_user: {
-              f: "",
+              f: "8",
             },
             friends_observer_friends_user_meta: {
-              f: "",
+              f: "9",
             },
             friends_observer_friends_user_meta_ageRange: {
               e: "enum_Enum",
@@ -259,16 +259,16 @@ describe("conversion", () => {
         undefined
       )
     ).toEqual({
-      getFragmentRefs: expect.any(Function),
+      getFragmentRef_1: expect.any(Function),
       someUnion: [
         123,
         {
-          getFragmentRefs: expect.any(Function),
+          getFragmentRef_2: expect.any(Function),
           __typename: "User",
           firstName: "First",
           ageRange: 123,
           meta: {
-            getFragmentRefs: expect.any(Function),
+            getFragmentRef_3: expect.any(Function),
             ageRange: 234,
             nullable: undefined,
           },
@@ -279,12 +279,12 @@ describe("conversion", () => {
         [
           123,
           {
-            getFragmentRefs: expect.any(Function),
+            getFragmentRef_4: expect.any(Function),
             __typename: "User",
             firstName: "First",
             ageRange: 123,
             meta: {
-              getFragmentRefs: expect.any(Function),
+              getFragmentRef_5: expect.any(Function),
               ageRange: 234,
               nullable: undefined,
             },
@@ -293,12 +293,12 @@ describe("conversion", () => {
         [
           123,
           {
-            getFragmentRefs: expect.any(Function),
+            getFragmentRef_6: expect.any(Function),
             __typename: "Observer",
             name: undefined,
             ageRange: 345,
             meta: {
-              getFragmentRefs: expect.any(Function),
+              getFragmentRef_7: expect.any(Function),
               ageRange: 456,
               nullable: undefined,
             },
@@ -307,12 +307,12 @@ describe("conversion", () => {
               [
                 123,
                 {
-                  getFragmentRefs: expect.any(Function),
+                  getFragmentRef_8: expect.any(Function),
                   __typename: "User",
                   firstName: "Second",
                   ageRange: 999,
                   meta: {
-                    getFragmentRefs: expect.any(Function),
+                    getFragmentRef_9: expect.any(Function),
                     ageRange: 123,
                     nullable: undefined,
                   },

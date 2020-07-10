@@ -26,12 +26,8 @@ module Types = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-      },
+    getFragmentRef_TestSubscription_user:
+      unit => TestSubscription_user_graphql.t,
   };
   type response_userUpdated = {user: option(response_userUpdated_user)};
 
@@ -42,7 +38,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":"TestSubscription_user"},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertResponse = v =>

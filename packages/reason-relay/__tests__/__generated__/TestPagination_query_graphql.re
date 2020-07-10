@@ -2,13 +2,8 @@
 
 module Types = {
   type fragment_members_edges_node_User = {
+    getFragmentRef_TestPagination_user: unit => TestPagination_user_graphql.t,
     id: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestPagination_user": TestPagination_user_graphql.t,
-      },
   };
   type fragment_members_edges_node_Group_adminsConnection_edges_node = {
     id: string,
@@ -82,7 +77,7 @@ let wrap_fragment_members_edges_node:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
+    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":"TestPagination_user"},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
@@ -97,10 +92,7 @@ module Internal = {
 };
 
 type t;
-type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TestPagination_query": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+type fragmentRef = t;
 
 module Utils = {
   open Types;

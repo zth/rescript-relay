@@ -126,8 +126,9 @@ describe("Language plugin tests", () => {
     });
 
     it("prints single fragment references", () => {
-      let generated = generate(
-        `
+      let generated = collapseString(
+        generate(
+          `
         fragment SomeComponent_user on User {
           id
         }
@@ -139,18 +140,20 @@ describe("Language plugin tests", () => {
               ...SomeComponent_user
             }
           }`
+        )
       );
 
       expect(
         generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
+          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
         )
       ).toBe(true);
     });
 
     it("prints two fragment references", () => {
-      let generated = generate(
-        `
+      let generated = collapseString(
+        generate(
+          `
         fragment SomeComponent_user on User {
           id
         }
@@ -167,24 +170,26 @@ describe("Language plugin tests", () => {
               ...OtherComponent_user
             }
           }`
+        )
       );
 
       expect(
         generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
+          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
         )
       ).toBe(true);
 
       expect(
         generated.includes(
-          '"__$fragment_ref__OtherComponent_user": OtherComponent_user_graphql.t'
+          "getFragmentRef_OtherComponent_user: unit => OtherComponent_user_graphql.t"
         )
       ).toBe(true);
     });
 
     it("prints many fragment references", () => {
-      let generated = generate(
-        `
+      let generated = collapseString(
+        generate(
+          `
         fragment SomeComponent_user on User {
           id
         }
@@ -211,29 +216,30 @@ describe("Language plugin tests", () => {
               ...LastComponent_user
             }
           }`
+        )
       );
 
       expect(
         generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
+          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
         )
       ).toBe(true);
 
       expect(
         generated.includes(
-          '"__$fragment_ref__OtherComponent_user": OtherComponent_user_graphql.t'
+          "getFragmentRef_OtherComponent_user: unit => OtherComponent_user_graphql.t"
         )
       ).toBe(true);
 
       expect(
         generated.includes(
-          '"__$fragment_ref__AnotherComponent_user": AnotherComponent_user_graphql.t'
+          "getFragmentRef_AnotherComponent_user: unit => AnotherComponent_user_graphql.t"
         )
       ).toBe(true);
 
       expect(
         generated.includes(
-          '"__$fragment_ref__LastComponent_user": LastComponent_user_graphql.t'
+          "getFragmentRef_LastComponent_user: unit => LastComponent_user_graphql.t"
         )
       ).toBe(true);
     });
