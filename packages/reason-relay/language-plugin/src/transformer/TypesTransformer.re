@@ -95,6 +95,7 @@ let intermediateToFull =
                )
           });
       | Array({propType: Object(definition)})
+      | TopLevelNodeField(_, definition)
       | Object(definition) =>
         addObject({
           atPath: newAtPath,
@@ -591,14 +592,53 @@ let rec mapObjProp =
         maybeMoreMembers,
       ),
     )) =>
-    makeUnion(
-      ~firstProps,
-      ~secondProps,
-      ~maybeMoreMembers,
-      ~state,
-      ~path,
-      ~optional=true,
-    )
+    // Node interface special treatment
+    // --
+    // To simplify using the Node interface, we'll convert any usage of the
+    // top level node field with just 1 subselection type into its own type.
+
+    switch (path, firstProps, secondProps) {
+    | (
+        // Match the `node` field name one level down (from `response` or `fragment`)
+        ["node", _],
+        [
+          Property((
+            _,
+            {
+              value: Init((_, StringLiteral({value: nodeFieldTypeName}))),
+              key: Identifier((_, "__typename")),
+            },
+          )),
+          ..._rest,
+        ],
+        // This matches what Relay outputs as the last matching case for any union/interface
+        [
+          Property((
+            _,
+            {
+              value: Init((_, StringLiteral({value: {|%other|}}))),
+              key: Identifier((_, "__typename")),
+            },
+          )),
+        ],
+      ) => {
+        nullable: true,
+        propType:
+          TopLevelNodeField(
+            nodeFieldTypeName,
+            firstProps |> makeObjShape(~state, ~path),
+          ),
+      }
+    | _ =>
+      makeUnion(
+        ~firstProps,
+        ~secondProps,
+        ~maybeMoreMembers,
+        ~state,
+        ~path,
+        ~optional=true,
+      )
+    }
 
   | Union(
       (_, Object({properties: firstProps})),

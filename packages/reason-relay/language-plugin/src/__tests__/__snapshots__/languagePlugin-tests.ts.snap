@@ -575,6 +575,55 @@ type operationType = ReasonRelay.mutationNode;
 "
 `;
 
+exports[`Language plugin tests Node interface collapses single selections on the node interface 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+
+module Types = {
+  type response_node = {
+    __typename: string,
+    firstName: string,
+  };
+
+  type response = {node: option(response_node)};
+  type variables = unit;
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}} |json}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type preloadToken;
+
+module Utils = {};
+
+type operationType = ReasonRelay.queryNode;
+"
+`;
+
 exports[`Language plugin tests Query connections generates helpers for connections with unions 1`] = `
 "// TestPagination_query.graphql
 /* @generated */

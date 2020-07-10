@@ -47,6 +47,7 @@ and propType =
   | FragmentRefValue(string)
   | TypeReference(string)
   | Union(union)
+  | TopLevelNodeField(string, object_)
 and propValue = {
   nullable: bool,
   propType,

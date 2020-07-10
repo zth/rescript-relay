@@ -449,37 +449,14 @@ module RecordSource = {
 
 module Store = {
   type t;
-  type missingFieldHandlers;
 
-  type storeConfig = {
-    gcReleaseBufferSize: option(int),
-    missingFieldHandlers,
-  };
+  type storeConfig = {gcReleaseBufferSize: option(int)};
 
   [@bs.module "relay-runtime"] [@bs.new]
   external make: (RecordSource.t, storeConfig) => t = "Store";
 
   let make = (~source, ~gcReleaseBufferSize=?, ()) =>
-    make(
-      source,
-      {
-        gcReleaseBufferSize,
-        missingFieldHandlers: [%raw
-          {|
-            [
-              {
-                kind: "linked",
-                handle: function(field, record, args, store) {
-                  if (field.name === "node") {
-                    return args.id;
-                  }
-                }
-              }
-            ]
-          |}
-        ],
-      },
-    );
+    make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
@@ -497,6 +474,8 @@ let mapRenderPolicy =
 module Environment = {
   type t;
 
+  type missingFieldHandlers;
+
   type environmentConfig('a) = {
     network: Network.t,
     store: Store.t,
@@ -504,6 +483,7 @@ module Environment = {
     getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
     [@bs.as "UNSTABLE_defaultRenderPolicy"]
     defaultRenderPolicy: option(string),
+    missingFieldHandlers,
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
@@ -515,6 +495,25 @@ module Environment = {
       store,
       getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
+      missingFieldHandlers: [%raw
+        {|
+            [
+              {
+                kind: "linked",
+                handle: function(field, record, args, store) {
+                  if (
+                    record != null &&
+                    record.__typename === require("relay-runtime").ROOT_TYPE &&
+                    field.name === "node" &&
+                    args.hasOwnProperty("id")
+                  ) {
+                    return args.id;
+                  }
+                }
+              }
+            ]
+          |}
+      ],
     });
 
   [@bs.send] external getStore: t => Store.t = "getStore";

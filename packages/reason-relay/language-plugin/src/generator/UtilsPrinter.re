@@ -193,7 +193,8 @@ type instruction =
   | ConvertUnion(string)
   | ConvertCustomField(string)
   | RootObject(string)
-  | HasFragments(list(string));
+  | HasFragments(list(string))
+  | ConvertTopLevelNodeField(string);
 
 type instructionContainer = {
   atPath: list(string),
@@ -354,6 +355,19 @@ let definitionToAssets =
            ~currentPath,
            ~converters,
          );
+    | TopLevelNodeField(name, {values}) =>
+      addInstruction({
+        atPath: currentPath,
+        instruction: ConvertTopLevelNodeField(name),
+      });
+
+      values
+      |> traverseProps(
+           ~converters,
+           ~inRootObject,
+           ~addInstruction,
+           ~currentPath,
+         );
     | Object({values}) =>
       values
       |> traverseProps(
@@ -444,6 +458,7 @@ let definitionToAssets =
                "f",
                nameList->Tablecloth.String.join(~sep=","),
              )
+           | ConvertTopLevelNodeField(typeName) => ("tnf", typeName)
            };
 
          switch (dict->Js.Dict.get(key)) {

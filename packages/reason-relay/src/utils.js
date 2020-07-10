@@ -86,6 +86,8 @@ function traverse(
           typeof instructions["u"] === "string" &&
           !!converters[instructions["u"]];
 
+        var isTopLevelNodeField = typeof instructions["tnf"] === "string";
+
         /**
          * Handle arrays
          */
@@ -175,6 +177,17 @@ function traverse(
               nullableValue,
               instructions["r"]
             );
+          }
+
+          if (isTopLevelNodeField) {
+            if (
+              !v ||
+              !v.hasOwnProperty("__typename") ||
+              v.__typename !== instructions["tnf"]
+            ) {
+              newObj = getNewObj(newObj, currentObj);
+              newObj[key] = nullableValue;
+            }
           }
 
           if (shouldConvertEnum) {
