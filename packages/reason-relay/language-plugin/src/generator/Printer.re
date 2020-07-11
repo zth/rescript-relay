@@ -121,6 +121,7 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | Scalar(scalar) => printScalar(scalar)
   | Object(obj) => printRecordReference(~obj, ~state)
+  | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~propValue, ~state)
   | Enum(enum) =>
     printEnumDefinition(enum, ~includeSemi=false, ~mode=`OnlyDefinition)

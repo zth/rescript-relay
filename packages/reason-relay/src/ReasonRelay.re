@@ -475,6 +475,8 @@ let mapRenderPolicy =
 module Environment = {
   type t;
 
+  type missingFieldHandlers;
+
   type environmentConfig('a) = {
     network: Network.t,
     store: Store.t,
@@ -482,6 +484,7 @@ module Environment = {
     getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
     [@bs.as "UNSTABLE_defaultRenderPolicy"]
     defaultRenderPolicy: option(string),
+    missingFieldHandlers,
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
@@ -493,6 +496,25 @@ module Environment = {
       store,
       getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
+      missingFieldHandlers: [%raw
+        {|
+            [
+              {
+                kind: "linked",
+                handle: function(field, record, args, store) {
+                  if (
+                    record != null &&
+                    record.__typename === require("relay-runtime").ROOT_TYPE &&
+                    field.name === "node" &&
+                    args.hasOwnProperty("id")
+                  ) {
+                    return args.id;
+                  }
+                }
+              }
+            ]
+          |}
+      ],
     });
 
   [@bs.send] external getStore: t => Store.t = "getStore";

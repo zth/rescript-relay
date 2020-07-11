@@ -672,6 +672,23 @@ describe("Language plugin tests", () => {
     });
   });
 
+  describe("Node interface", () => {
+    it("collapses single selections on the node interface", () => {
+      let generated = generate(
+        `query SomeQuery {
+          node(id: "123") {
+            __typename
+            ... on User {
+              firstName
+            }
+          }
+        }`
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
+  });
+
   describe("Misc", () => {
     it("generates required top level fields as not nullable", () => {
       let generated = generate(
