@@ -676,13 +676,13 @@ describe("Language plugin tests", () => {
     it("collapses single selections on the node interface", () => {
       let generated = generate(
         `query SomeQuery {
-      node(id: "123") {
-        __typename
-        ... on User {
-          firstName
-        }
-      }
-    }`
+          node(id: "123") {
+            __typename
+            ... on User {
+              firstName
+            }
+          }
+        }`
       );
 
       expect(generated).toMatchSnapshot();
