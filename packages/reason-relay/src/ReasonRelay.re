@@ -372,7 +372,7 @@ module Observable = {
   type sink('t) = {
     next: 't => unit,
     error: Js.Exn.t => unit,
-    completed: unit => unit,
+    complete: unit => unit,
     closed: bool,
   };
 
@@ -393,8 +393,9 @@ module Observable = {
     unsubscribe,
   };
 
+
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external make: (sink('t) => option('a)) => t = "create";
+  external make: (sink('t) => option(subscription)) => t = "create";
 
   [@bs.send]
   external subscribe: (t, observer('t)) => subscription = "subscribe";

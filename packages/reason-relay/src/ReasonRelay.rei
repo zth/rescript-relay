@@ -52,9 +52,7 @@ type recordSourceRecords;
 
 /**
  * Constants
- */ 
-
-/**
+ */ /**
  * The `dataId` for the Relay store's root.
  * Useful when for example referencing the `parentID` of a connection that's on the store root.
  * */
@@ -353,7 +351,7 @@ module Observable: {
   type sink('t) = {
     next: 't => unit,
     error: Js.Exn.t => unit,
-    completed: unit => unit,
+    complete: unit => unit,
     closed: bool,
   };
 
@@ -382,7 +380,7 @@ module Observable: {
     observer('t);
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external make: (sink('t) => option('a)) => t = "create";
+  external make: (sink('t) => option(subscription)) => t = "create";
 
   [@bs.send]
   external subscribe: (t, observer('t)) => subscription = "subscribe";
