@@ -1,16 +1,11 @@
-type suspenseConfig = {
-  timeoutMs: int,
-  busyDelayMs: option(int),
-  busyMinDurationMs: option(int),
-};
+type suspenseConfig = {timeoutMs: int};
 
 [@bs.module "react"]
-external _useDeferredValue: ('value, suspenseConfig) => 'value =
+external _useDeferredValue: ('value, option(suspenseConfig)) => 'value =
   "useDeferredValue";
 
-let useDeferredValue =
-    (~value, ~timeoutMs, ~busyDelayMs=?, ~busyMinDurationMs=?, ()) =>
-  _useDeferredValue(value, {timeoutMs, busyDelayMs, busyMinDurationMs});
+let useDeferredValue = (~value, ~config=?, ()) =>
+  _useDeferredValue(value, config);
 
 [@bs.module "react"]
 external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
