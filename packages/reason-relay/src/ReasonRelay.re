@@ -400,6 +400,8 @@ module Observable = {
   [@bs.send]
   external subscribe: (t('response), observer('response)) => subscription =
     "subscribe";
+
+  [@bs.send] external toPromise: t('t) => Promise.t('t) = "toPromise";
 };
 
 module Network = {

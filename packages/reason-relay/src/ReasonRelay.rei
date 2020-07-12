@@ -384,6 +384,8 @@ module Observable: {
 
   [@bs.send]
   external subscribe: (t('t), observer('t)) => subscription = "subscribe";
+
+  [@bs.send] external toPromise: t('t) => Promise.t('t) = "toPromise";
 };
 
 /**
