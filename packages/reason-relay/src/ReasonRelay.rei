@@ -821,6 +821,12 @@ external commitLocalUpdate:
   unit =
   "commitLocalUpdate";
 
+// Subscribing to invalidation states of the store
+[@bs.module "react-relay/hooks"]
+external useSubscribeToInvalidationState:
+  (array(dataId), unit => unit) => Disposable.t =
+  "useSubscribeToInvalidationState";
+
 /**
  * fetchQuery is used internally only.
  */

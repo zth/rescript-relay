@@ -1326,6 +1326,11 @@ external commitLocalUpdate:
   unit =
   "commitLocalUpdate";
 
+[@bs.module "react-relay/hooks"]
+external useSubscribeToInvalidationState:
+  (array(dataId), unit => unit) => Disposable.t =
+  "useSubscribeToInvalidationState";
+
 module type SubscriptionConfig = {
   type variables;
   type responseRaw;

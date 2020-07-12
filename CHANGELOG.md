@@ -9,6 +9,7 @@
 - _BREAKING CHANGE_ The top level `node` field is now enhanced by a) collapsing the union it was previously typed as if there's only one selection anyway, and b) automatically resolve any existing node from the cache through the `node` root field.
 - Bindings for `queryCacheExpirationTime` (setting an expiration time for all cache items in `ms`) when creating the store.
 - _BREAKING CHANGE_ `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
+- Bind `useSubscribeToInvalidationState`, which allows listening and reacting to invalidations of records in the store.
 
 # 0.9.2
 
