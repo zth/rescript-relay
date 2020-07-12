@@ -499,13 +499,22 @@ module Environment = {
   [@bs.module "relay-runtime"] [@bs.new]
   external make: environmentConfig('a) => t = "Environment";
 
-  let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ~treatMissingFieldsAsNull=?, ()) =>
+  let make =
+      (
+        ~network,
+        ~store,
+        ~getDataID=?,
+        ~defaultRenderPolicy=?,
+        ~treatMissingFieldsAsNull=?,
+        (),
+      ) =>
     make({
       network,
       store,
       getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
       treatMissingFieldsAsNull,
+      // This handler below enables automatic resolution of all cached items through the Node interface
       missingFieldHandlers: [%raw
         {|
             [
