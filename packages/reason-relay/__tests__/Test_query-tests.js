@@ -112,7 +112,7 @@ describe("Query", () => {
     await t.screen.findByText("Preloaded Second is idle");
   });
 
-  test.only("using fetch version works", async () => {
+  test("using fetch version works", async () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
