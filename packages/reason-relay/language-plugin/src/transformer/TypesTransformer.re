@@ -105,6 +105,7 @@ let intermediateToFull =
           foundInUnion: inUnion,
         });
         definition |> traverseDefinition(~inUnion, ~atPath=newAtPath);
+      | DataId
       | Array(_)
       | Scalar(_)
       | FragmentRefValue(_)
@@ -521,7 +522,10 @@ let rec mapObjProp =
         : Types.propValue =>
   switch (prop) {
   | String => {nullable: optional, propType: Scalar(String)}
-  | StringLiteral(_) => {nullable: optional, propType: Scalar(String)} // Reason does not have string literals, so we map literals to normal strings
+
+  // Reason does not have string literals, so we map literals to normal strings
+  | StringLiteral(_) => {nullable: optional, propType: Scalar(String)}
+
   | Nullable((_, String)) => {nullable: true, propType: Scalar(String)}
   | Nullable((_, StringLiteral(_))) => {
       nullable: true,
@@ -713,6 +717,9 @@ and makeObjShape =
   props
   |> List.iter((prop: Flow_ast.Type.Object.property('a, 'b)) =>
        switch (prop) {
+       // Map __id to dataId
+       | Property((_, {value: Init(_), key: Identifier((_, "__id" as id))})) =>
+         addValue(Types.(Prop(id, {nullable: false, propType: DataId})))
        // Map all $fragmentRefs. These are either a single type (+$fragmentRefs: SomeFragment_someType$ref), or an intersection of types (+$fragmentRefs: SomeFragment_someType$ref & SomeOtherFragment_someType$ref)
        | Property((
            _,

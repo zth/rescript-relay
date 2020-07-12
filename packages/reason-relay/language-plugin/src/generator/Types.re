@@ -40,6 +40,7 @@ and scalarValues =
   | CustomScalar(string)
   | Any
 and propType =
+  | DataId
   | Scalar(scalarValues)
   | Enum(fullEnum)
   | Object(object_)

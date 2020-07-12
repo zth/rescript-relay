@@ -258,6 +258,7 @@ let definitionToAssets =
             propType: propType,
           ) =>
     switch (propType) {
+    | DataId
     | Scalar(_)
     | FragmentRefValue(_) => ()
     | TypeReference(name) =>

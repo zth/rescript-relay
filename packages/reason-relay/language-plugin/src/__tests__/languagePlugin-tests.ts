@@ -708,6 +708,46 @@ describe("Language plugin tests", () => {
       );
     });
 
+    it("generates all __id selections as dataId type", () => {
+      let generated = generate(
+        `query SomeQuery {
+          __id
+          users {
+            __id
+            friendsConnection(first: 2) {
+              __id
+              edges {
+                __id
+                node {
+                  __id
+                }
+              }
+            }
+          }
+        }`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response = { __id: ReasonRelay.dataId, users: array(response_users), };`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response_users = { __id: ReasonRelay.dataId, friendsConnection: option(response_users_friendsConnection), };`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response_users_friendsConnection = { __id: ReasonRelay.dataId, edges: option(array(option(response_users_friendsConnection_edges))), };`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response_users_friendsConnection_edges = { __id: ReasonRelay.dataId, node: option(response_users_friendsConnection_edges_node), };`
+      );
+
+      expect(collapseString(generated)).toMatch(
+        `type response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, };`
+      );
+    });
+
     it.skip("generates connection helpers when connection is present", () => {
       let generated = generate(
         `query SomeQuery {

@@ -58,6 +58,8 @@ let printScalar = scalarValue =>
   | Any => printAnyType()
   };
 
+let printDataIdType = () => "ReasonRelay.dataId";
+
 let getEnumFutureAddedValueName = (enum: fullEnum) =>
   switch (enum.values->Tablecloth.Array.find(~f=e => e === "FutureAddedValue")) {
   | Some(_) => "FutureAddedValue_"
@@ -119,6 +121,7 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
   }
 and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
+  | DataId => printDataIdType()
   | Scalar(scalar) => printScalar(scalar)
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
