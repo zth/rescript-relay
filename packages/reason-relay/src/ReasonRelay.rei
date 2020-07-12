@@ -489,6 +489,7 @@ module Environment: {
                   string
                     =?,
       ~defaultRenderPolicy: renderPolicy=?,
+      ~treatMissingFieldsAsNull: bool=?,
       unit
     ) =>
     t;

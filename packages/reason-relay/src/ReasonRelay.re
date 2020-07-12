@@ -492,18 +492,20 @@ module Environment = {
     getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
     [@bs.as "UNSTABLE_defaultRenderPolicy"]
     defaultRenderPolicy: option(string),
+    treatMissingFieldsAsNull: option(bool),
     missingFieldHandlers,
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
   external make: environmentConfig('a) => t = "Environment";
 
-  let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ()) =>
+  let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ~treatMissingFieldsAsNull=?, ()) =>
     make({
       network,
       store,
       getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
+      treatMissingFieldsAsNull,
       missingFieldHandlers: [%raw
         {|
             [
