@@ -43,67 +43,67 @@ type operationType = ReasonRelay.queryNode;
 let node: operationType = [%raw
   {json| (function(){
 var v0 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "firstName",
   "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestMissingFieldHandlersMeQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestMissingFieldHandlersMeQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v0/*: any*/)
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestMissingFieldHandlersMeQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v0/*: any*/),
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestMissingFieldHandlersMeQuery",
     "id": null,
-    "text": "query TestMissingFieldHandlersMeQuery {\n  loggedInUser {\n    firstName\n    id\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestMissingFieldHandlersMeQuery",
+    "operationKind": "query",
+    "text": "query TestMissingFieldHandlersMeQuery {\n  loggedInUser {\n    firstName\n    id\n  }\n}\n"
   }
 };
 })() |json}

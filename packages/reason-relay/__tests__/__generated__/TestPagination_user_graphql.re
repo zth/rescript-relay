@@ -33,24 +33,20 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "TestPagination_user",
-  "type": "User",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "TestPagination_user",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "firstName",
       "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
       "storageKey": null
     },
     {
-      "kind": "LinkedField",
       "alias": null,
-      "name": "friendsConnection",
-      "storageKey": "friendsConnection(first:1)",
       "args": [
         {
           "kind": "Literal",
@@ -59,17 +55,21 @@ let node: operationType = [%raw
         }
       ],
       "concreteType": "UserConnection",
+      "kind": "LinkedField",
+      "name": "friendsConnection",
       "plural": false,
       "selections": [
         {
-          "kind": "ScalarField",
           "alias": null,
-          "name": "totalCount",
           "args": null,
+          "kind": "ScalarField",
+          "name": "totalCount",
           "storageKey": null
         }
-      ]
+      ],
+      "storageKey": "friendsConnection(first:1)"
     }
-  ]
+  ],
+  "type": "User"
 } |json}
 ];

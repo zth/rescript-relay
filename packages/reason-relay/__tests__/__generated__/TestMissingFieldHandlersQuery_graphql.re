@@ -53,82 +53,82 @@ var v0 = [
   }
 ],
 v1 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
   "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 },
 v2 = {
   "kind": "InlineFragment",
-  "type": "User",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "firstName",
       "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
       "storageKey": null
     }
-  ]
+  ],
+  "type": "User"
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestMissingFieldHandlersQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestMissingFieldHandlersQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": "node(id:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           (v2/*: any*/)
-        ]
+        ],
+        "storageKey": "node(id:\"123\")"
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestMissingFieldHandlersQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": "node(id:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           },
           (v2/*: any*/)
-        ]
+        ],
+        "storageKey": "node(id:\"123\")"
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestMissingFieldHandlersQuery",
     "id": null,
-    "text": "query TestMissingFieldHandlersQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n    }\n    id\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestMissingFieldHandlersQuery",
+    "operationKind": "query",
+    "text": "query TestMissingFieldHandlersQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n    }\n    id\n  }\n}\n"
   }
 };
 })() |json}

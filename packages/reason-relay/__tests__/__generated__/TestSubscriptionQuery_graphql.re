@@ -45,84 +45,84 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestSubscriptionQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestSubscriptionQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
+            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestSubscription_user",
-            "args": null
+            "name": "TestSubscription_user"
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestSubscriptionQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "id",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "firstName",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "avatarUrl",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "onlineStatus",
             "args": null,
+            "kind": "ScalarField",
+            "name": "onlineStatus",
             "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestSubscriptionQuery",
     "id": null,
-    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestSubscriptionQuery",
+    "operationKind": "query",
+    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n"
   }
 } |json}
 ];
