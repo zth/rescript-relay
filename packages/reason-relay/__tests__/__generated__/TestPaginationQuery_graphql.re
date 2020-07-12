@@ -52,10 +52,10 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "groupId",
-    "type": "ID!",
-    "defaultValue": null
+    "type": "ID!"
   }
 ],
 v1 = {
@@ -77,17 +77,17 @@ v2 = [
   (v1/*: any*/)
 ],
 v3 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 },
 v4 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "firstName",
   "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
   "storageKey": null
 },
 v5 = [
@@ -98,194 +98,194 @@ v5 = [
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestPaginationQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestPaginationQuery",
     "selections": [
       {
-        "kind": "FragmentSpread",
-        "name": "TestPagination_query",
         "args": [
           (v1/*: any*/)
-        ]
+        ],
+        "kind": "FragmentSpread",
+        "name": "TestPagination_query"
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestPaginationQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "members",
-        "storageKey": null,
         "args": (v2/*: any*/),
         "concreteType": "MemberConnection",
+        "kind": "LinkedField",
+        "name": "members",
         "plural": false,
         "selections": [
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "edges",
-            "storageKey": null,
             "args": null,
             "concreteType": "MemberEdge",
+            "kind": "LinkedField",
+            "name": "edges",
             "plural": true,
             "selections": [
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "node",
-                "storageKey": null,
                 "args": null,
                 "concreteType": null,
+                "kind": "LinkedField",
+                "name": "node",
                 "plural": false,
                 "selections": [
                   {
-                    "kind": "ScalarField",
                     "alias": null,
-                    "name": "__typename",
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "__typename",
                     "storageKey": null
                   },
                   (v3/*: any*/),
                   {
                     "kind": "InlineFragment",
-                    "type": "User",
                     "selections": [
                       (v4/*: any*/),
                       {
-                        "kind": "LinkedField",
                         "alias": null,
-                        "name": "friendsConnection",
-                        "storageKey": "friendsConnection(first:1)",
                         "args": (v5/*: any*/),
                         "concreteType": "UserConnection",
+                        "kind": "LinkedField",
+                        "name": "friendsConnection",
                         "plural": false,
                         "selections": [
                           {
-                            "kind": "ScalarField",
                             "alias": null,
-                            "name": "totalCount",
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "totalCount",
                             "storageKey": null
                           }
-                        ]
+                        ],
+                        "storageKey": "friendsConnection(first:1)"
                       }
-                    ]
+                    ],
+                    "type": "User"
                   },
                   {
                     "kind": "InlineFragment",
-                    "type": "Group",
                     "selections": [
                       {
-                        "kind": "ScalarField",
                         "alias": null,
-                        "name": "name",
                         "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
                         "storageKey": null
                       },
                       {
-                        "kind": "LinkedField",
                         "alias": null,
-                        "name": "adminsConnection",
-                        "storageKey": "adminsConnection(first:1)",
                         "args": (v5/*: any*/),
                         "concreteType": "UserConnection",
+                        "kind": "LinkedField",
+                        "name": "adminsConnection",
                         "plural": false,
                         "selections": [
                           {
-                            "kind": "LinkedField",
                             "alias": null,
-                            "name": "edges",
-                            "storageKey": null,
                             "args": null,
                             "concreteType": "UserEdge",
+                            "kind": "LinkedField",
+                            "name": "edges",
                             "plural": true,
                             "selections": [
                               {
-                                "kind": "LinkedField",
                                 "alias": null,
-                                "name": "node",
-                                "storageKey": null,
                                 "args": null,
                                 "concreteType": "User",
+                                "kind": "LinkedField",
+                                "name": "node",
                                 "plural": false,
                                 "selections": [
                                   (v3/*: any*/),
                                   (v4/*: any*/)
-                                ]
+                                ],
+                                "storageKey": null
                               }
-                            ]
+                            ],
+                            "storageKey": null
                           }
-                        ]
+                        ],
+                        "storageKey": "adminsConnection(first:1)"
                       }
-                    ]
+                    ],
+                    "type": "Group"
                   }
-                ]
+                ],
+                "storageKey": null
               },
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "cursor",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "cursor",
                 "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           },
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "pageInfo",
-            "storageKey": null,
             "args": null,
             "concreteType": "PageInfo",
+            "kind": "LinkedField",
+            "name": "pageInfo",
             "plural": false,
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "endCursor",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "endCursor",
                 "storageKey": null
               },
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "hasNextPage",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "hasNextPage",
                 "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedHandle",
         "alias": null,
-        "name": "members",
         "args": (v2/*: any*/),
-        "handle": "connection",
-        "key": "TestPagination_query_members",
         "filters": [
           "groupId",
           "onlineStatuses"
-        ]
+        ],
+        "handle": "connection",
+        "key": "TestPagination_query_members",
+        "kind": "LinkedHandle",
+        "name": "members"
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestPaginationQuery",
     "id": null,
-    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestPaginationQuery",
+    "operationKind": "query",
+    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() |json}
@@ -294,6 +294,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

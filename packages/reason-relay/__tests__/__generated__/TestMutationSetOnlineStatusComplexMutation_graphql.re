@@ -112,18 +112,15 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "input",
-    "type": "SetOnlineStatusInput!",
-    "defaultValue": null
+    "type": "SetOnlineStatusInput!"
   }
 ],
 v1 = [
   {
-    "kind": "LinkedField",
     "alias": null,
-    "name": "setOnlineStatusComplex",
-    "storageKey": null,
     "args": [
       {
         "kind": "Variable",
@@ -132,58 +129,61 @@ v1 = [
       }
     ],
     "concreteType": "SetOnlineStatusPayload",
+    "kind": "LinkedField",
+    "name": "setOnlineStatusComplex",
     "plural": false,
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "user",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "user",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "onlineStatus",
             "args": null,
+            "kind": "ScalarField",
+            "name": "onlineStatus",
             "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "storageKey": null
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestMutationSetOnlineStatusComplexMutation",
-    "type": "Mutation",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestMutationSetOnlineStatusComplexMutation",
+    "selections": (v1/*: any*/),
+    "type": "Mutation"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestMutationSetOnlineStatusComplexMutation",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": (v1/*: any*/)
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "TestMutationSetOnlineStatusComplexMutation",
     "id": null,
-    "text": "mutation TestMutationSetOnlineStatusComplexMutation(\n  $input: SetOnlineStatusInput!\n) {\n  setOnlineStatusComplex(input: $input) {\n    user {\n      id\n      onlineStatus\n    }\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestMutationSetOnlineStatusComplexMutation",
+    "operationKind": "mutation",
+    "text": "mutation TestMutationSetOnlineStatusComplexMutation(\n  $input: SetOnlineStatusInput!\n) {\n  setOnlineStatusComplex(input: $input) {\n    user {\n      id\n      onlineStatus\n    }\n  }\n}\n"
   }
 };
 })() |json}

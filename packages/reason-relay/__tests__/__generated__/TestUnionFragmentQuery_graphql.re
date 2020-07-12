@@ -56,110 +56,110 @@ var v0 = [
   }
 ],
 v1 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
   "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestUnionFragmentQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestUnionFragmentQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "member",
-        "storageKey": "member(id:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "member",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           {
+            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestUnionFragment_member",
-            "args": null
+            "name": "TestUnionFragment_member"
           },
           {
+            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestUnionFragment_plural_member",
-            "args": null
+            "name": "TestUnionFragment_plural_member"
           }
-        ]
+        ],
+        "storageKey": "member(id:\"123\")"
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestUnionFragmentQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "member",
-        "storageKey": "member(id:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "member",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           },
           {
             "kind": "InlineFragment",
-            "type": "User",
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "firstName",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "firstName",
                 "storageKey": null
               },
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "onlineStatus",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "onlineStatus",
                 "storageKey": null
               }
-            ]
+            ],
+            "type": "User"
           },
           {
             "kind": "InlineFragment",
-            "type": "Group",
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "name",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "name",
                 "storageKey": null
               }
-            ]
+            ],
+            "type": "Group"
           }
-        ]
+        ],
+        "storageKey": "member(id:\"123\")"
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestUnionFragmentQuery",
     "id": null,
-    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestUnionFragmentQuery",
+    "operationKind": "query",
+    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n"
   }
 };
 })() |json}
@@ -168,6 +168,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

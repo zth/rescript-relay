@@ -128,16 +128,40 @@ var v0 = [
   "members"
 ],
 v1 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "groupId",
+      "type": "ID!"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "onlineStatuses",
+      "type": "[OnlineStatus!]"
+    },
+    {
+      "defaultValue": 2,
+      "kind": "LocalArgument",
+      "name": "count",
+      "type": "Int"
+    },
+    {
+      "defaultValue": "",
+      "kind": "LocalArgument",
+      "name": "cursor",
+      "type": "String"
+    }
+  ],
   "kind": "Fragment",
-  "name": "TestPagination_query",
-  "type": "Query",
   "metadata": {
     "connection": [
       {
@@ -156,42 +180,14 @@ return {
         "backward": null,
         "path": (v0/*: any*/)
       },
-      "operation": require('./TestPaginationRefetchQuery_graphql.bs.js').node,
-      "fragmentPathInResult": []
+      "fragmentPathInResult": [],
+      "operation": require('./TestPaginationRefetchQuery_graphql.bs.js').node
     }
   },
-  "argumentDefinitions": [
-    {
-      "kind": "LocalArgument",
-      "name": "groupId",
-      "type": "ID!",
-      "defaultValue": null
-    },
-    {
-      "kind": "LocalArgument",
-      "name": "onlineStatuses",
-      "type": "[OnlineStatus!]",
-      "defaultValue": null
-    },
-    {
-      "kind": "LocalArgument",
-      "name": "count",
-      "type": "Int",
-      "defaultValue": 2
-    },
-    {
-      "kind": "LocalArgument",
-      "name": "cursor",
-      "type": "String",
-      "defaultValue": ""
-    }
-  ],
+  "name": "TestPagination_query",
   "selections": [
     {
-      "kind": "LinkedField",
       "alias": "members",
-      "name": "__TestPagination_query_members_connection",
-      "storageKey": null,
       "args": [
         {
           "kind": "Variable",
@@ -205,62 +201,58 @@ return {
         }
       ],
       "concreteType": "MemberConnection",
+      "kind": "LinkedField",
+      "name": "__TestPagination_query_members_connection",
       "plural": false,
       "selections": [
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "edges",
-          "storageKey": null,
           "args": null,
           "concreteType": "MemberEdge",
+          "kind": "LinkedField",
+          "name": "edges",
           "plural": true,
           "selections": [
             {
-              "kind": "LinkedField",
               "alias": null,
-              "name": "node",
-              "storageKey": null,
               "args": null,
               "concreteType": null,
+              "kind": "LinkedField",
+              "name": "node",
               "plural": false,
               "selections": [
                 {
-                  "kind": "ScalarField",
                   "alias": null,
-                  "name": "__typename",
                   "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
                   "storageKey": null
                 },
                 {
                   "kind": "InlineFragment",
-                  "type": "User",
                   "selections": [
                     (v1/*: any*/),
                     {
+                      "args": null,
                       "kind": "FragmentSpread",
-                      "name": "TestPagination_user",
-                      "args": null
+                      "name": "TestPagination_user"
                     }
-                  ]
+                  ],
+                  "type": "User"
                 },
                 {
                   "kind": "InlineFragment",
-                  "type": "Group",
                   "selections": [
                     (v1/*: any*/),
                     {
-                      "kind": "ScalarField",
                       "alias": null,
-                      "name": "name",
                       "args": null,
+                      "kind": "ScalarField",
+                      "name": "name",
                       "storageKey": null
                     },
                     {
-                      "kind": "LinkedField",
                       "alias": null,
-                      "name": "adminsConnection",
-                      "storageKey": "adminsConnection(first:1)",
                       "args": [
                         {
                           "kind": "Literal",
@@ -269,81 +261,89 @@ return {
                         }
                       ],
                       "concreteType": "UserConnection",
+                      "kind": "LinkedField",
+                      "name": "adminsConnection",
                       "plural": false,
                       "selections": [
                         {
-                          "kind": "LinkedField",
                           "alias": null,
-                          "name": "edges",
-                          "storageKey": null,
                           "args": null,
                           "concreteType": "UserEdge",
+                          "kind": "LinkedField",
+                          "name": "edges",
                           "plural": true,
                           "selections": [
                             {
-                              "kind": "LinkedField",
                               "alias": null,
-                              "name": "node",
-                              "storageKey": null,
                               "args": null,
                               "concreteType": "User",
+                              "kind": "LinkedField",
+                              "name": "node",
                               "plural": false,
                               "selections": [
                                 (v1/*: any*/),
                                 {
-                                  "kind": "ScalarField",
                                   "alias": null,
-                                  "name": "firstName",
                                   "args": null,
+                                  "kind": "ScalarField",
+                                  "name": "firstName",
                                   "storageKey": null
                                 }
-                              ]
+                              ],
+                              "storageKey": null
                             }
-                          ]
+                          ],
+                          "storageKey": null
                         }
-                      ]
+                      ],
+                      "storageKey": "adminsConnection(first:1)"
                     }
-                  ]
+                  ],
+                  "type": "Group"
                 }
-              ]
+              ],
+              "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "cursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
               "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         },
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "pageInfo",
-          "storageKey": null,
           "args": null,
           "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
           "plural": false,
           "selections": [
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "endCursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
               "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "hasNextPage",
               "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
               "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         }
-      ]
+      ],
+      "storageKey": null
     }
-  ]
+  ],
+  "type": "Query"
 };
 })() |json}
 ];

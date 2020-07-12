@@ -80,163 +80,163 @@ type operationType = ReasonRelay.queryNode;
 let node: operationType = [%raw
   {json| (function(){
 var v0 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 },
 v1 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "onlineStatus",
   "args": null,
+  "kind": "ScalarField",
+  "name": "onlineStatus",
   "storageKey": null
 },
 v2 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "firstName",
   "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestFragmentQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestFragmentQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
+            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestFragment_user",
-            "args": null
+            "name": "TestFragment_user"
           }
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "users",
-        "storageKey": null,
         "args": null,
         "concreteType": "UserConnection",
+        "kind": "LinkedField",
+        "name": "users",
         "plural": false,
         "selections": [
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "edges",
-            "storageKey": null,
             "args": null,
             "concreteType": "UserEdge",
+            "kind": "LinkedField",
+            "name": "edges",
             "plural": true,
             "selections": [
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "node",
-                "storageKey": null,
                 "args": null,
                 "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "node",
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
                   (v1/*: any*/),
                   {
+                    "args": null,
                     "kind": "FragmentSpread",
-                    "name": "TestFragment_plural_user",
-                    "args": null
+                    "name": "TestFragment_plural_user"
                   }
-                ]
+                ],
+                "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestFragmentQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v2/*: any*/),
           (v1/*: any*/),
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "lastName",
             "args": null,
+            "kind": "ScalarField",
+            "name": "lastName",
             "storageKey": null
           },
           (v0/*: any*/)
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "users",
-        "storageKey": null,
         "args": null,
         "concreteType": "UserConnection",
+        "kind": "LinkedField",
+        "name": "users",
         "plural": false,
         "selections": [
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "edges",
-            "storageKey": null,
             "args": null,
             "concreteType": "UserEdge",
+            "kind": "LinkedField",
+            "name": "edges",
             "plural": true,
             "selections": [
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "node",
-                "storageKey": null,
                 "args": null,
                 "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "node",
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
                   (v1/*: any*/),
                   (v2/*: any*/)
-                ]
+                ],
+                "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestFragmentQuery",
     "id": null,
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestFragmentQuery",
+    "operationKind": "query",
+    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
   }
 };
 })() |json}
@@ -245,6 +245,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });
