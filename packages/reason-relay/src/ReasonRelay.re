@@ -743,12 +743,14 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
           fetchPolicy: fetchPolicy->mapFetchQueryFetchPolicy,
         }),
       )
-      ->Observable.subscribe(
-          Observable.makeObserver(
-            ~next=res => {resolve(Ok(res->C.convertResponse))},
-            ~error=err => {resolve(Error(err))},
-            (),
-          ),
+      ->Observable.(
+          subscribe(
+            makeObserver(
+              ~next=res => {resolve(Ok(res->C.convertResponse))},
+              ~error=err => {resolve(Error(err))},
+              (),
+            ),
+          )
         );
 
     promise;
