@@ -445,7 +445,14 @@ module RecordSource: {
  */
 module Store: {
   type t;
-  let make: (~source: RecordSource.t, ~gcReleaseBufferSize: int=?, unit) => t;
+  let make:
+    (
+      ~source: RecordSource.t,
+      ~gcReleaseBufferSize: int=?,
+      ~queryCacheExpirationTime: int=?,
+      unit
+    ) =>
+    t;
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
 

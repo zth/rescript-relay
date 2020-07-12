@@ -393,7 +393,6 @@ module Observable = {
     unsubscribe,
   };
 
-
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external make: (sink('t) => option(subscription)) => t = "create";
 
@@ -451,13 +450,17 @@ module RecordSource = {
 module Store = {
   type t;
 
-  type storeConfig = {gcReleaseBufferSize: option(int)};
+  type storeConfig = {
+    gcReleaseBufferSize: option(int),
+    queryCacheExpirationTime: option(int),
+  };
 
   [@bs.module "relay-runtime"] [@bs.new]
   external make: (RecordSource.t, storeConfig) => t = "Store";
 
-  let make = (~source, ~gcReleaseBufferSize=?, ()) =>
-    make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
+  let make =
+      (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?, ()) =>
+    make(source, {gcReleaseBufferSize, queryCacheExpirationTime});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
