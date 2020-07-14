@@ -87,15 +87,18 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
-    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "status",
-    "type": "OnlineStatus"
+    "type": "OnlineStatus",
+    "defaultValue": null
   }
 ],
 v1 = [
   {
+    "kind": "LinkedField",
     "alias": null,
+    "name": "users",
+    "storageKey": null,
     "args": [
       {
         "kind": "Variable",
@@ -104,79 +107,76 @@ v1 = [
       }
     ],
     "concreteType": "UserConnection",
-    "kind": "LinkedField",
-    "name": "users",
     "plural": false,
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "edges",
+        "storageKey": null,
         "args": null,
         "concreteType": "UserEdge",
-        "kind": "LinkedField",
-        "name": "edges",
         "plural": true,
         "selections": [
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "node",
+            "storageKey": null,
             "args": null,
             "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "node",
             "plural": false,
             "selections": [
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "id",
+                "args": null,
                 "storageKey": null
               },
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "firstName",
+                "args": null,
                 "storageKey": null
               },
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "onlineStatus",
+                "args": null,
                 "storageKey": null
               }
-            ],
-            "storageKey": null
+            ]
           }
-        ],
-        "storageKey": null
+        ]
       }
-    ],
-    "storageKey": null
+    ]
   }
 ];
 return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "TestQuery",
-    "selections": (v1/*: any*/),
-    "type": "Query"
-  },
   "kind": "Request",
-  "operation": {
+  "fragment": {
+    "kind": "Fragment",
+    "name": "TestQuery",
+    "type": "Query",
+    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "selections": (v1/*: any*/)
+  },
+  "operation": {
     "kind": "Operation",
     "name": "TestQuery",
+    "argumentDefinitions": (v0/*: any*/),
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestQuery",
     "operationKind": "query",
-    "text": "query TestQuery(\n  $status: OnlineStatus\n) {\n  users(status: $status) {\n    edges {\n      node {\n        id\n        firstName\n        onlineStatus\n      }\n    }\n  }\n}\n"
+    "name": "TestQuery",
+    "id": null,
+    "text": "query TestQuery(\n  $status: OnlineStatus\n) {\n  users(status: $status) {\n    edges {\n      node {\n        id\n        firstName\n        onlineStatus\n      }\n    }\n  }\n}\n",
+    "metadata": {}
   }
 };
 })() |json}
@@ -185,7 +185,6 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
-  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

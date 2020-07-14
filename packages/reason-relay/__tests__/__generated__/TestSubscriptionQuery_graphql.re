@@ -45,84 +45,84 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| {
+  "kind": "Request",
   "fragment": {
-    "argumentDefinitions": [],
     "kind": "Fragment",
-    "metadata": null,
     "name": "TestSubscriptionQuery",
+    "type": "Query",
+    "metadata": null,
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestSubscription_user"
+            "name": "TestSubscription_user",
+            "args": null
           }
-        ],
-        "storageKey": null
+        ]
       }
-    ],
-    "type": "Query"
+    ]
   },
-  "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestSubscriptionQuery",
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "id",
+            "args": null,
             "storageKey": null
           },
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "firstName",
+            "args": null,
             "storageKey": null
           },
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "avatarUrl",
+            "args": null,
             "storageKey": null
           },
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "onlineStatus",
+            "args": null,
             "storageKey": null
           }
-        ],
-        "storageKey": null
+        ]
       }
     ]
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestSubscriptionQuery",
     "operationKind": "query",
-    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n"
+    "name": "TestSubscriptionQuery",
+    "id": null,
+    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n",
+    "metadata": {}
   }
 } |json}
 ];
@@ -130,7 +130,6 @@ let node: operationType = [%raw
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
-  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

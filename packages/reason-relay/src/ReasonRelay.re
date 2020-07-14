@@ -362,23 +362,23 @@ type cacheConfig = {
  * Misc
  */
 module Observable = {
-  type t('response);
+  type t;
 
   type subscription = {
     unsubscribe: unit => unit,
     closed: bool,
   };
 
-  type sink('response) = {
-    next: 'response => unit,
+  type sink('t) = {
+    next: 't => unit,
     error: Js.Exn.t => unit,
     complete: unit => unit,
     closed: bool,
   };
 
-  type observer('response) = {
+  type observer('t) = {
     start: option(subscription => unit),
-    next: option('response => unit),
+    next: option('t => unit),
     error: option(Js.Exn.t => unit),
     complete: option(unit => unit),
     unsubscribe: option(subscription => unit),
@@ -393,15 +393,12 @@ module Observable = {
     unsubscribe,
   };
 
+
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
-  external make: (sink('response) => option(subscription)) => t('response) =
-    "create";
+  external make: (sink('t) => option(subscription)) => t = "create";
 
   [@bs.send]
-  external subscribe: (t('response), observer('response)) => subscription =
-    "subscribe";
-
-  [@bs.send] external toPromise: t('t) => Promise.t('t) = "toPromise";
+  external subscribe: (t, observer('t)) => subscription = "subscribe";
 };
 
 module Network = {
@@ -413,14 +410,13 @@ module Network = {
     operationKind: string,
   };
 
-  type subscribeFn =
-    (operation, Js.Json.t, cacheConfig) => Observable.t(Js.Json.t);
+  type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   type fetchFunctionPromise =
     (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
 
   type fetchFunctionObservable =
-    (operation, Js.Json.t, cacheConfig) => Observable.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig) => Observable.t;
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
   external makePromiseBased:
@@ -455,17 +451,13 @@ module RecordSource = {
 module Store = {
   type t;
 
-  type storeConfig = {
-    gcReleaseBufferSize: option(int),
-    queryCacheExpirationTime: option(int),
-  };
+  type storeConfig = {gcReleaseBufferSize: option(int)};
 
   [@bs.module "relay-runtime"] [@bs.new]
   external make: (RecordSource.t, storeConfig) => t = "Store";
 
-  let make =
-      (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?, ()) =>
-    make(source, {gcReleaseBufferSize, queryCacheExpirationTime});
+  let make = (~source, ~gcReleaseBufferSize=?, ()) =>
+    make(source, {gcReleaseBufferSize: gcReleaseBufferSize});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
 };
@@ -492,29 +484,18 @@ module Environment = {
     getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
     [@bs.as "UNSTABLE_defaultRenderPolicy"]
     defaultRenderPolicy: option(string),
-    treatMissingFieldsAsNull: option(bool),
     missingFieldHandlers,
   };
 
   [@bs.module "relay-runtime"] [@bs.new]
   external make: environmentConfig('a) => t = "Environment";
 
-  let make =
-      (
-        ~network,
-        ~store,
-        ~getDataID=?,
-        ~defaultRenderPolicy=?,
-        ~treatMissingFieldsAsNull=?,
-        (),
-      ) =>
+  let make = (~network, ~store, ~getDataID=?, ~defaultRenderPolicy=?, ()) =>
     make({
       network,
       store,
       getDataID,
       defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
-      treatMissingFieldsAsNull,
-      // This handler below enables automatic resolution of all cached items through the Node interface
       missingFieldHandlers: [%raw
         {|
             [
@@ -587,25 +568,9 @@ let mapFetchPolicy =
   | Some(NetworkOnly) => Some("network-only")
   | None => None;
 
-type fetchQueryFetchPolicy =
-  | NetworkOnly
-  | StoreOrNetwork;
-
-let mapFetchQueryFetchPolicy =
-  fun
-  | Some(StoreOrNetwork) => Some("store-or-network")
-  | Some(NetworkOnly) => Some("network-only")
-  | None => None;
-
-type fetchQueryOptions = {
-  networkCacheConfig: option(cacheConfig),
-  fetchPolicy: option(string),
-};
-
-[@bs.module "react-relay/hooks"]
+[@bs.module "relay-runtime"]
 external fetchQuery:
-  (Environment.t, queryNode, 'variables, option(fetchQueryOptions)) =>
-  Observable.t('response) =
+  (Environment.t, queryNode, 'variables) => Js.Promise.t('response) =
   "fetchQuery";
 
 type useQueryConfig = {
@@ -694,64 +659,37 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       (
         ~environment: Environment.t,
         ~variables: C.variables,
-        ~onResult: Belt.Result.t(C.response, Js.Exn.t) => unit,
-        ~networkCacheConfig=?,
-        ~fetchPolicy=?,
-        (),
+        ~onResult: Belt.Result.t(C.response, Js.Promise.error) => unit,
       )
       : unit => {
     let _ =
-      fetchQuery(
-        environment,
-        C.query,
-        variables |> C.convertVariables,
-        Some({
-          networkCacheConfig,
-          fetchPolicy: fetchPolicy->mapFetchQueryFetchPolicy,
-        }),
-      )
-      ->Observable.(
-          subscribe(
-            makeObserver(
-              ~next=res => onResult(Ok(res->C.convertResponse)),
-              ~error=err => onResult(Error(err)),
-              (),
-            ),
-          )
-        );
+      fetchQuery(environment, C.query, variables |> C.convertVariables)
+      |> Js.Promise.then_(res => {
+           onResult(Ok(res |> C.convertResponse));
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => {
+           onResult(Error(err));
+           Js.Promise.resolve();
+         });
     ();
   };
 
   let fetchPromised =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~networkCacheConfig=?,
-        ~fetchPolicy=?,
-        (),
-      )
-      : Promise.t(Belt.Result.t(C.response, Js.Exn.t)) => {
+      (~environment: Environment.t, ~variables: C.variables)
+      : Promise.t(Belt.Result.t(C.response, Js.Promise.error)) => {
     let (promise, resolve) = Promise.pending();
 
     let _ =
-      fetchQuery(
-        environment,
-        C.query,
-        variables |> C.convertVariables,
-        Some({
-          networkCacheConfig,
-          fetchPolicy: fetchPolicy->mapFetchQueryFetchPolicy,
-        }),
-      )
-      ->Observable.(
-          subscribe(
-            makeObserver(
-              ~next=res => {resolve(Ok(res->C.convertResponse))},
-              ~error=err => {resolve(Error(err))},
-              (),
-            ),
-          )
-        );
+      fetchQuery(environment, C.query, variables |> C.convertVariables)
+      |> Js.Promise.then_(res => {
+           resolve(Ok(res |> C.convertResponse));
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => {
+           resolve(Error(err));
+           Js.Promise.resolve();
+         });
 
     promise;
   };
@@ -760,7 +698,6 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
 module type MakePreloadQueryConfig = {
   type variables;
   type queryPreloadToken;
-  type response;
   let query: queryNode;
   let convertVariables: variables => variables;
 };
@@ -795,11 +732,8 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
         },
       );
 
-  type rawPreloadToken('response) = {
-    source: Js.Nullable.t(Observable.t('response)),
-  };
-  external tokenToRaw: C.queryPreloadToken => rawPreloadToken(C.response) =
-    "%identity";
+  type rawPreloadToken = {source: Js.Nullable.t(Observable.t)};
+  external tokenToRaw: C.queryPreloadToken => rawPreloadToken = "%identity";
 
   let preloadTokenToObservable = token => {
     let raw = token->tokenToRaw;
@@ -1327,11 +1261,6 @@ external commitLocalUpdate:
   ) =>
   unit =
   "commitLocalUpdate";
-
-[@bs.module "react-relay/hooks"]
-external useSubscribeToInvalidationState:
-  (array(dataId), unit => unit) => Disposable.t =
-  "useSubscribeToInvalidationState";
 
 module type SubscriptionConfig = {
   type variables;

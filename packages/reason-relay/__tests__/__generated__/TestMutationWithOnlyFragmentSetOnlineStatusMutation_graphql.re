@@ -96,10 +96,10 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
-    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "onlineStatus",
-    "type": "OnlineStatus!"
+    "type": "OnlineStatus!",
+    "defaultValue": null
   }
 ],
 v1 = [
@@ -110,99 +110,99 @@ v1 = [
   }
 ];
 return {
+  "kind": "Request",
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
-    "metadata": null,
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
+    "type": "Mutation",
+    "metadata": null,
+    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "setOnlineStatus",
+        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": "SetOnlineStatusPayload",
-        "kind": "LinkedField",
-        "name": "setOnlineStatus",
         "plural": false,
         "selections": [
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "user",
+            "storageKey": null,
             "args": null,
             "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
             "plural": false,
             "selections": [
               {
-                "args": null,
                 "kind": "FragmentSpread",
-                "name": "TestMutation_user"
+                "name": "TestMutation_user",
+                "args": null
               }
-            ],
-            "storageKey": null
+            ]
           }
-        ],
-        "storageKey": null
+        ]
       }
-    ],
-    "type": "Mutation"
+    ]
   },
-  "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
+    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "setOnlineStatus",
+        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": "SetOnlineStatusPayload",
-        "kind": "LinkedField",
-        "name": "setOnlineStatus",
         "plural": false,
         "selections": [
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "user",
+            "storageKey": null,
             "args": null,
             "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
             "plural": false,
             "selections": [
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "id",
+                "args": null,
                 "storageKey": null
               },
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "firstName",
+                "args": null,
                 "storageKey": null
               },
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "onlineStatus",
+                "args": null,
                 "storageKey": null
               }
-            ],
-            "storageKey": null
+            ]
           }
-        ],
-        "storageKey": null
+        ]
       }
     ]
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
     "operationKind": "mutation",
-    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n"
+    "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
+    "id": null,
+    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n",
+    "metadata": {}
   }
 };
 })() |json}

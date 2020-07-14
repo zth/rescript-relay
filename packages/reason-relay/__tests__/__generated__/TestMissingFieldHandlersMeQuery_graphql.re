@@ -43,67 +43,67 @@ type operationType = ReasonRelay.queryNode;
 let node: operationType = [%raw
   {json| (function(){
 var v0 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "firstName",
+  "args": null,
   "storageKey": null
 };
 return {
+  "kind": "Request",
   "fragment": {
-    "argumentDefinitions": [],
     "kind": "Fragment",
-    "metadata": null,
     "name": "TestMissingFieldHandlersMeQuery",
+    "type": "Query",
+    "metadata": null,
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v0/*: any*/)
-        ],
-        "storageKey": null
+        ]
       }
-    ],
-    "type": "Query"
+    ]
   },
-  "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestMissingFieldHandlersMeQuery",
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v0/*: any*/),
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "id",
+            "args": null,
             "storageKey": null
           }
-        ],
-        "storageKey": null
+        ]
       }
     ]
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestMissingFieldHandlersMeQuery",
     "operationKind": "query",
-    "text": "query TestMissingFieldHandlersMeQuery {\n  loggedInUser {\n    firstName\n    id\n  }\n}\n"
+    "name": "TestMissingFieldHandlersMeQuery",
+    "id": null,
+    "text": "query TestMissingFieldHandlersMeQuery {\n  loggedInUser {\n    firstName\n    id\n  }\n}\n",
+    "metadata": {}
   }
 };
 })() |json}
@@ -112,7 +112,6 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
-  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

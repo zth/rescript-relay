@@ -44,88 +44,88 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| {
+  "kind": "Request",
   "fragment": {
-    "argumentDefinitions": [],
     "kind": "Fragment",
-    "metadata": null,
     "name": "TestRefetchingQuery",
+    "type": "Query",
+    "metadata": null,
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestRefetching_user"
+            "name": "TestRefetching_user",
+            "args": null
           }
-        ],
-        "storageKey": null
+        ]
       }
-    ],
-    "type": "Query"
+    ]
   },
-  "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestRefetchingQuery",
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "loggedInUser",
+        "storageKey": null,
         "args": null,
         "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "firstName",
+            "args": null,
             "storageKey": null
           },
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "friendsConnection",
+            "storageKey": null,
             "args": null,
             "concreteType": "UserConnection",
-            "kind": "LinkedField",
-            "name": "friendsConnection",
             "plural": false,
             "selections": [
               {
-                "alias": null,
-                "args": null,
                 "kind": "ScalarField",
+                "alias": null,
                 "name": "totalCount",
+                "args": null,
                 "storageKey": null
               }
-            ],
-            "storageKey": null
+            ]
           },
           {
-            "alias": null,
-            "args": null,
             "kind": "ScalarField",
+            "alias": null,
             "name": "id",
+            "args": null,
             "storageKey": null
           }
-        ],
-        "storageKey": null
+        ]
       }
     ]
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestRefetchingQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingQuery {\n  loggedInUser {\n    ...TestRefetching_user\n    id\n  }\n}\n\nfragment TestRefetching_user on User {\n  firstName\n  friendsConnection {\n    totalCount\n  }\n  id\n}\n"
+    "name": "TestRefetchingQuery",
+    "id": null,
+    "text": "query TestRefetchingQuery {\n  loggedInUser {\n    ...TestRefetching_user\n    id\n  }\n}\n\nfragment TestRefetching_user on User {\n  firstName\n  friendsConnection {\n    totalCount\n  }\n  id\n}\n",
+    "metadata": {}
   }
 } |json}
 ];
@@ -133,7 +133,6 @@ let node: operationType = [%raw
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
-  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

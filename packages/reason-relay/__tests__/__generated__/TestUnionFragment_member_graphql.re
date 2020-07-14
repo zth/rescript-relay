@@ -89,52 +89,52 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": null,
   "name": "TestUnionFragment_member",
+  "type": "Member",
+  "metadata": null,
+  "argumentDefinitions": [],
   "selections": [
     {
-      "alias": null,
-      "args": null,
       "kind": "ScalarField",
+      "alias": null,
       "name": "__typename",
+      "args": null,
       "storageKey": null
     },
     {
       "kind": "InlineFragment",
+      "type": "User",
       "selections": [
         {
-          "alias": null,
-          "args": null,
           "kind": "ScalarField",
+          "alias": null,
           "name": "firstName",
+          "args": null,
           "storageKey": null
         },
         {
-          "alias": null,
-          "args": null,
           "kind": "ScalarField",
+          "alias": null,
           "name": "onlineStatus",
+          "args": null,
           "storageKey": null
         }
-      ],
-      "type": "User"
+      ]
     },
     {
       "kind": "InlineFragment",
+      "type": "Group",
       "selections": [
         {
-          "alias": null,
-          "args": null,
           "kind": "ScalarField",
+          "alias": null,
           "name": "name",
+          "args": null,
           "storageKey": null
         }
-      ],
-      "type": "Group"
+      ]
     }
-  ],
-  "type": "Member"
+  ]
 } |json}
 ];

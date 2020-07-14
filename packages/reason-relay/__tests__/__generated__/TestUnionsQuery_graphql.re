@@ -183,168 +183,171 @@ var v0 = [
   }
 ],
 v1 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "__typename",
+  "args": null,
   "storageKey": null
 },
 v2 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "id",
+  "args": null,
   "storageKey": null
 },
 v3 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "firstName",
+  "args": null,
   "storageKey": null
 },
 v4 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "onlineStatus",
+  "args": null,
   "storageKey": null
 },
 v5 = {
   "kind": "InlineFragment",
+  "type": "User",
   "selections": [
     (v2/*: any*/),
     (v3/*: any*/),
     (v4/*: any*/)
-  ],
-  "type": "User"
+  ]
 },
 v6 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "name",
+  "args": null,
   "storageKey": null
 },
 v7 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
+  "alias": null,
   "name": "avatarUrl",
+  "args": null,
   "storageKey": null
 },
 v8 = {
   "kind": "InlineFragment",
+  "type": "User",
   "selections": [
     (v3/*: any*/),
     (v4/*: any*/)
-  ],
-  "type": "User"
+  ]
 };
 return {
+  "kind": "Request",
   "fragment": {
-    "argumentDefinitions": [],
     "kind": "Fragment",
-    "metadata": null,
     "name": "TestUnionsQuery",
+    "type": "Query",
+    "metadata": null,
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "members",
+        "storageKey": "members(groupId:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": "MemberConnection",
-        "kind": "LinkedField",
-        "name": "members",
         "plural": false,
         "selections": [
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "edges",
+            "storageKey": null,
             "args": null,
             "concreteType": "MemberEdge",
-            "kind": "LinkedField",
-            "name": "edges",
             "plural": true,
             "selections": [
               {
+                "kind": "LinkedField",
                 "alias": null,
+                "name": "node",
+                "storageKey": null,
                 "args": null,
                 "concreteType": null,
-                "kind": "LinkedField",
-                "name": "node",
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
                   (v5/*: any*/),
                   {
                     "kind": "InlineFragment",
+                    "type": "Group",
                     "selections": [
                       (v2/*: any*/),
                       (v6/*: any*/),
                       (v7/*: any*/),
                       {
+                        "kind": "LinkedField",
                         "alias": null,
+                        "name": "members",
+                        "storageKey": null,
                         "args": null,
                         "concreteType": null,
-                        "kind": "LinkedField",
-                        "name": "members",
                         "plural": true,
                         "selections": [
                           (v1/*: any*/),
                           (v5/*: any*/),
                           {
                             "kind": "InlineFragment",
+                            "type": "Group",
                             "selections": [
                               (v2/*: any*/),
                               (v6/*: any*/),
                               (v7/*: any*/)
-                            ],
-                            "type": "Group"
+                            ]
                           }
-                        ],
-                        "storageKey": null
+                        ]
                       }
-                    ],
-                    "type": "Group"
+                    ]
                   }
-                ],
-                "storageKey": null
+                ]
               }
-            ],
-            "storageKey": null
+            ]
           }
-        ],
-        "storageKey": "members(groupId:\"123\")"
+        ]
       }
-    ],
-    "type": "Query"
+    ]
   },
-  "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestUnionsQuery",
+    "argumentDefinitions": [],
     "selections": [
       {
+        "kind": "LinkedField",
         "alias": null,
+        "name": "members",
+        "storageKey": "members(groupId:\"123\")",
         "args": (v0/*: any*/),
         "concreteType": "MemberConnection",
-        "kind": "LinkedField",
-        "name": "members",
         "plural": false,
         "selections": [
           {
+            "kind": "LinkedField",
             "alias": null,
+            "name": "edges",
+            "storageKey": null,
             "args": null,
             "concreteType": "MemberEdge",
-            "kind": "LinkedField",
-            "name": "edges",
             "plural": true,
             "selections": [
               {
+                "kind": "LinkedField",
                 "alias": null,
+                "name": "node",
+                "storageKey": null,
                 "args": null,
                 "concreteType": null,
-                "kind": "LinkedField",
-                "name": "node",
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
@@ -352,15 +355,17 @@ return {
                   (v8/*: any*/),
                   {
                     "kind": "InlineFragment",
+                    "type": "Group",
                     "selections": [
                       (v6/*: any*/),
                       (v7/*: any*/),
                       {
+                        "kind": "LinkedField",
                         "alias": null,
+                        "name": "members",
+                        "storageKey": null,
                         "args": null,
                         "concreteType": null,
-                        "kind": "LinkedField",
-                        "name": "members",
                         "plural": true,
                         "selections": [
                           (v1/*: any*/),
@@ -368,35 +373,30 @@ return {
                           (v8/*: any*/),
                           {
                             "kind": "InlineFragment",
+                            "type": "Group",
                             "selections": [
                               (v6/*: any*/),
                               (v7/*: any*/)
-                            ],
-                            "type": "Group"
+                            ]
                           }
-                        ],
-                        "storageKey": null
+                        ]
                       }
-                    ],
-                    "type": "Group"
+                    ]
                   }
-                ],
-                "storageKey": null
+                ]
               }
-            ],
-            "storageKey": null
+            ]
           }
-        ],
-        "storageKey": "members(groupId:\"123\")"
+        ]
       }
     ]
   },
   "params": {
-    "id": null,
-    "metadata": {},
-    "name": "TestUnionsQuery",
     "operationKind": "query",
-    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              id\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "name": "TestUnionsQuery",
+    "id": null,
+    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              id\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n    }\n  }\n}\n",
+    "metadata": {}
   }
 };
 })() |json}
@@ -405,7 +405,6 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
-  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

@@ -15,10 +15,10 @@ describe("Fragment", () => {
           firstName: "First",
           onlineStatus: null,
           friendsConnection: {
-            totalCount: 20,
-          },
-        },
-      },
+            totalCount: 20
+          }
+        }
+      }
     });
 
     t.render(test_refetching());
@@ -31,7 +31,7 @@ describe("Fragment", () => {
       variables: {
         id: "user-1",
         showOnlineStatus: true,
-        friendsOnlineStatuses: ["Online", "Offline"],
+        friendsOnlineStatuses: ["Online", "Offline"]
       },
       data: {
         node: {
@@ -40,10 +40,10 @@ describe("Fragment", () => {
           firstName: "First",
           onlineStatus: "Online",
           friendsConnection: {
-            totalCount: 10,
-          },
-        },
-      },
+            totalCount: 10
+          }
+        }
+      }
     });
 
     t.fireEvent.click(t.screen.getByText("Fetch online status"));

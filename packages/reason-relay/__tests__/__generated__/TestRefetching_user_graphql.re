@@ -57,42 +57,45 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "friendsOnlineStatuses",
-      "type": "[OnlineStatus!]"
-    },
-    {
-      "defaultValue": false,
-      "kind": "LocalArgument",
-      "name": "showOnlineStatus",
-      "type": "Boolean!"
-    }
-  ],
   "kind": "Fragment",
+  "name": "TestRefetching_user",
+  "type": "User",
   "metadata": {
     "refetch": {
       "connection": null,
+      "operation": require('./TestRefetchingRefetchQuery_graphql.bs.js').node,
       "fragmentPathInResult": [
         "node"
-      ],
-      "operation": require('./TestRefetchingRefetchQuery_graphql.bs.js').node,
-      "identifierField": "id"
+      ]
     }
   },
-  "name": "TestRefetching_user",
+  "argumentDefinitions": [
+    {
+      "kind": "LocalArgument",
+      "name": "friendsOnlineStatuses",
+      "type": "[OnlineStatus!]",
+      "defaultValue": null
+    },
+    {
+      "kind": "LocalArgument",
+      "name": "showOnlineStatus",
+      "type": "Boolean!",
+      "defaultValue": false
+    }
+  ],
   "selections": [
     {
-      "alias": null,
-      "args": null,
       "kind": "ScalarField",
+      "alias": null,
       "name": "firstName",
+      "args": null,
       "storageKey": null
     },
     {
+      "kind": "LinkedField",
       "alias": null,
+      "name": "friendsConnection",
+      "storageKey": null,
       "args": [
         {
           "kind": "Variable",
@@ -101,42 +104,38 @@ let node: operationType = [%raw
         }
       ],
       "concreteType": "UserConnection",
-      "kind": "LinkedField",
-      "name": "friendsConnection",
       "plural": false,
       "selections": [
         {
-          "alias": null,
-          "args": null,
           "kind": "ScalarField",
+          "alias": null,
           "name": "totalCount",
+          "args": null,
           "storageKey": null
         }
-      ],
-      "storageKey": null
+      ]
     },
     {
-      "alias": null,
-      "args": null,
       "kind": "ScalarField",
+      "alias": null,
       "name": "id",
+      "args": null,
       "storageKey": null
     },
     {
-      "condition": "showOnlineStatus",
       "kind": "Condition",
       "passingValue": true,
+      "condition": "showOnlineStatus",
       "selections": [
         {
-          "alias": null,
-          "args": null,
           "kind": "ScalarField",
+          "alias": null,
           "name": "onlineStatus",
+          "args": null,
           "storageKey": null
         }
       ]
     }
-  ],
-  "type": "User"
+  ]
 } |json}
 ];
