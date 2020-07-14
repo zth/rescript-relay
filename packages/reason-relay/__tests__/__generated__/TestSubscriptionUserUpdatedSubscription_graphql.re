@@ -75,8 +75,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "userId",
-    "type": "ID!"
+    "name": "userId"
   }
 ],
 v1 = [
@@ -137,7 +136,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Subscription"
+    "type": "Subscription",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -186,6 +186,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "41b8b12bc049364fa2383c462f7c13de",
     "id": null,
     "metadata": {},
     "name": "TestSubscriptionUserUpdatedSubscription",

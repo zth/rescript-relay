@@ -74,7 +74,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -89,8 +89,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "status",
-    "type": "OnlineStatus"
+    "name": "status"
   }
 ],
 v1 = [
@@ -162,7 +161,8 @@ return {
     "metadata": null,
     "name": "TestQuery",
     "selections": (v1/*: any*/),
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -172,6 +172,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
+    "cacheID": "123064f3c998fd5b717ca05be99d7ee1",
     "id": null,
     "metadata": {},
     "name": "TestQuery",
@@ -182,9 +183,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

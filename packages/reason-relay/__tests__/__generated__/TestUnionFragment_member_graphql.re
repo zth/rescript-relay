@@ -119,7 +119,8 @@ let node: operationType = [%raw
           "storageKey": null
         }
       ],
-      "type": "User"
+      "type": "User",
+      "abstractKey": null
     },
     {
       "kind": "InlineFragment",
@@ -132,9 +133,11 @@ let node: operationType = [%raw
           "storageKey": null
         }
       ],
-      "type": "Group"
+      "type": "Group",
+      "abstractKey": null
     }
   ],
-  "type": "Member"
+  "type": "Member",
+  "abstractKey": "__isMember"
 } |json}
 ];

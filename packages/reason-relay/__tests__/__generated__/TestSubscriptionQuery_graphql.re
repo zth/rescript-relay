@@ -37,7 +37,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -68,7 +68,8 @@ let node: operationType = [%raw
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -118,6 +119,7 @@ let node: operationType = [%raw
     ]
   },
   "params": {
+    "cacheID": "0d224392d0c9bfbffa6f96b9a87f03d1",
     "id": null,
     "metadata": {},
     "name": "TestSubscriptionQuery",
@@ -127,9 +129,9 @@ let node: operationType = [%raw
 } |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

@@ -616,7 +616,7 @@ type useQueryConfig = {
   networkCacheConfig: option(cacheConfig),
 };
 
-type preloadQueryConfig = {
+type loadQueryConfig = {
   fetchKey: option(string),
   fetchPolicy: option(string),
   networkCacheConfig: option(cacheConfig),
@@ -626,10 +626,10 @@ type preloadQueryConfig = {
 external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
-[@bs.module "react-relay/hooks"]
-external preloadQuery:
-  (Environment.t, queryNode, 'variables, preloadQueryConfig) => 'queryResponse =
-  "preloadQuery";
+[@bs.module "react-relay/hooks"] [@bs.scope "loadQuery"]
+external loadQuery:
+  (Environment.t, queryNode, 'variables, loadQueryConfig) => 'queryResponse =
+  "loadQuery";
 
 [@bs.module "react-relay/hooks"]
 external usePreloadedQuery:
@@ -641,7 +641,7 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
-  type preloadToken;
+  type queryRef;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
@@ -676,11 +676,11 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     useConvertedValue(C.convertResponse, data);
   };
 
-  let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
+  let usePreloaded = (~queryRef: C.queryRef, ~renderPolicy=?, ()) => {
     let data =
       usePreloadedQuery(
         C.query,
-        token,
+        queryRef,
         switch (renderPolicy) {
         | Some(_) =>
           Some({"UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy})
@@ -757,16 +757,16 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   };
 };
 
-module type MakePreloadQueryConfig = {
+module type MakeLoadQueryConfig = {
   type variables;
-  type queryPreloadToken;
+  type loadedQueryRef;
   type response;
   let query: queryNode;
   let convertVariables: variables => variables;
 };
 
-module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
-  let preload:
+module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
+  let load:
     (
       ~environment: Environment.t,
       ~variables: C.variables,
@@ -775,7 +775,7 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
       ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
-    C.queryPreloadToken =
+    C.loadedQueryRef =
     (
       ~environment,
       ~variables,
@@ -784,7 +784,7 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
       ~networkCacheConfig=?,
       (),
     ) =>
-      preloadQuery(
+      loadQuery(
         environment,
         C.query,
         variables |> C.convertVariables |> _cleanVariables,
@@ -798,18 +798,18 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
   type rawPreloadToken('response) = {
     source: Js.Nullable.t(Observable.t('response)),
   };
-  external tokenToRaw: C.queryPreloadToken => rawPreloadToken(C.response) =
+  external tokenToRaw: C.loadedQueryRef => rawPreloadToken(C.response) =
     "%identity";
 
-  let preloadTokenToObservable = token => {
+  let queryRefToObservable = token => {
     let raw = token->tokenToRaw;
     raw.source->Js.Nullable.toOption;
   };
 
-  let preloadTokenToPromise = token => {
+  let queryRefToPromise = token => {
     let (promise, resolve) = Promise.pending();
 
-    switch (token->preloadTokenToObservable) {
+    switch (token->queryRefToObservable) {
     | None => resolve(Error())
     | Some(o) =>
       let _: Observable.subscription =

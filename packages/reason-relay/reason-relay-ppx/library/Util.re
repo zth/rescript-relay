@@ -318,7 +318,7 @@ let makeQuery = (~loc, ~moduleName) =>
             type responseRaw = Operation.Internal.responseRaw;
             type response = Types.response;
             type variables = Types.variables;
-            type preloadToken = Operation.preloadToken;
+            type queryRef = Operation.queryRef;
             let query = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let convertVariables = Operation.Internal.convertVariables;

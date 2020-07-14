@@ -16,8 +16,8 @@ module Query = [%relay.query
 
 module TestPreloaded = {
   [@react.component]
-  let make = (~preloadToken) => {
-    let query = Query.usePreloaded(~token=preloadToken, ());
+  let make = (~queryRef) => {
+    let query = Query.usePreloaded(~queryRef, ~renderPolicy=Partial, ());
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
@@ -58,7 +58,7 @@ module Test = {
     let environment = ReasonRelay.useEnvironmentFromContext();
 
     let (status, setStatus) = React.useState(() => Some(`Online));
-    let (preloadTokenFromModule, setPreloadTokenFromModule) =
+    let (queryRefFromModule, setQueryRefFromModule) =
       React.useState(() => None);
     let (hasWaitedForPreload, setHasWaitedForPreload) =
       React.useState(() => false);
@@ -107,9 +107,9 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          setPreloadTokenFromModule(_ =>
+          setQueryRefFromModule(_ =>
             Some(
-              TestQuery_graphql.preload(
+              TestQuery_graphql.load(
                 ~environment,
                 ~variables={status: Some(`Idle)},
                 (),
@@ -121,15 +121,15 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          let preloadToken =
-            TestQuery_graphql.preload(
+          let queryRef =
+            TestQuery_graphql.load(
               ~environment,
               ~variables={status: Some(`Idle)},
               (),
             );
 
-          preloadToken
-          ->TestQuery_graphql.preloadTokenToPromise
+          queryRef
+          ->TestQuery_graphql.queryRefToPromise
           ->Promise.get(res =>
               switch (res) {
               | Ok () => setHasWaitedForPreload(_ => true)
@@ -137,7 +137,7 @@ module Test = {
               }
             );
 
-          setPreloadTokenFromModule(_ => Some(preloadToken));
+          setQueryRefFromModule(_ => Some(queryRef));
         }}>
         {React.string("Test wait for preload")}
       </button>
@@ -172,8 +172,8 @@ module Test = {
       </button>
       {hasWaitedForPreload
          ? <div> {React.string("Has waited for preload")} </div> : React.null}
-      {switch (preloadTokenFromModule) {
-       | Some(preloadToken) => <TestPreloaded preloadToken />
+      {switch (queryRefFromModule) {
+       | Some(queryRef) => <TestPreloaded queryRef />
        | None => React.null
        }}
       {switch (fetchedResult) {

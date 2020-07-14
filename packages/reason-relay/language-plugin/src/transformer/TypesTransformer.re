@@ -373,7 +373,7 @@ let getPrintedFullState =
   // Print query assets
   switch (operationType) {
   | Query(_) =>
-    addToStr("type preloadToken;");
+    addToStr("type queryRef;");
     addSpacing();
   | _ => ()
   };

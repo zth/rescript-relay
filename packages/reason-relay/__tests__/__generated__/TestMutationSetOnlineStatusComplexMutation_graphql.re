@@ -114,8 +114,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input",
-    "type": "SetOnlineStatusInput!"
+    "name": "input"
   }
 ],
 v1 = [
@@ -169,7 +168,8 @@ return {
     "metadata": null,
     "name": "TestMutationSetOnlineStatusComplexMutation",
     "selections": (v1/*: any*/),
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -179,6 +179,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
+    "cacheID": "20484379745a128851fbf94268a240bf",
     "id": null,
     "metadata": {},
     "name": "TestMutationSetOnlineStatusComplexMutation",

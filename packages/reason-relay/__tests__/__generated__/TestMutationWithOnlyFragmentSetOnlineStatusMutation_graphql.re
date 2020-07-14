@@ -98,8 +98,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "onlineStatus",
-    "type": "OnlineStatus!"
+    "name": "onlineStatus"
   }
 ],
 v1 = [
@@ -144,7 +143,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -198,6 +198,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "728e76d85354e261c17c00ed16bca493",
     "id": null,
     "metadata": {},
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",

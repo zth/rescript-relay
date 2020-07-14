@@ -137,28 +137,24 @@ v1 = {
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "groupId",
-      "type": "ID!"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "onlineStatuses",
-      "type": "[OnlineStatus!]"
-    },
-    {
       "defaultValue": 2,
       "kind": "LocalArgument",
-      "name": "count",
-      "type": "Int"
+      "name": "count"
     },
     {
       "defaultValue": "",
       "kind": "LocalArgument",
-      "name": "cursor",
-      "type": "String"
+      "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "groupId"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "onlineStatuses"
     }
   ],
   "kind": "Fragment",
@@ -238,7 +234,8 @@ return {
                       "name": "TestPagination_user"
                     }
                   ],
-                  "type": "User"
+                  "type": "User",
+                  "abstractKey": null
                 },
                 {
                   "kind": "InlineFragment",
@@ -299,7 +296,8 @@ return {
                       "storageKey": "adminsConnection(first:1)"
                     }
                   ],
-                  "type": "Group"
+                  "type": "Group",
+                  "abstractKey": null
                 }
               ],
               "storageKey": null
@@ -343,7 +341,8 @@ return {
       "storageKey": null
     }
   ],
-  "type": "Query"
+  "type": "Query",
+  "abstractKey": null
 };
 })() |json}
 ];

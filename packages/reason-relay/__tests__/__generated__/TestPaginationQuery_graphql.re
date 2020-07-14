@@ -39,7 +39,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -54,8 +54,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "groupId",
-    "type": "ID!"
+    "name": "groupId"
   }
 ],
 v1 = {
@@ -112,7 +111,8 @@ return {
         "name": "TestPagination_query"
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -151,10 +151,10 @@ return {
                     "name": "__typename",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v3/*: any*/),
                       (v4/*: any*/),
                       {
                         "alias": null,
@@ -175,11 +175,13 @@ return {
                         "storageKey": "friendsConnection(first:1)"
                       }
                     ],
-                    "type": "User"
+                    "type": "User",
+                    "abstractKey": null
                   },
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -223,7 +225,16 @@ return {
                         "storageKey": "adminsConnection(first:1)"
                       }
                     ],
-                    "type": "Group"
+                    "type": "Group",
+                    "abstractKey": null
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v3/*: any*/)
+                    ],
+                    "type": "Node",
+                    "abstractKey": "__isNode"
                   }
                 ],
                 "storageKey": null
@@ -281,19 +292,20 @@ return {
     ]
   },
   "params": {
+    "cacheID": "0fe8e3dfbdfc941905d492c0c1fb63b1",
     "id": null,
     "metadata": {},
     "name": "TestPaginationQuery",
     "operationKind": "query",
-    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

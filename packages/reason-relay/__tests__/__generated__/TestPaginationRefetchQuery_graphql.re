@@ -27,30 +27,30 @@ module Types = {
       unit => TestPagination_query_graphql.t,
   };
   type refetchVariables = {
+    count: option(int),
+    cursor: option(string),
     groupId: option(string),
     onlineStatuses:
       option(
         array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       ),
-    count: option(int),
-    cursor: option(string),
   };
   let makeRefetchVariables =
-      (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ())
+      (~count=?, ~cursor=?, ~groupId=?, ~onlineStatuses=?, ())
       : refetchVariables => {
-    groupId,
-    onlineStatuses,
     count,
     cursor,
+    groupId,
+    onlineStatuses,
   };
   type variables = {
+    count: option(int),
+    cursor: option(string),
     groupId: string,
     onlineStatuses:
       option(
         array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       ),
-    count: option(int),
-    cursor: option(string),
   };
 };
 
@@ -69,7 +69,7 @@ module Internal = {
       );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatuses":{"n":"","e":"enum_OnlineStatus"},"count":{"n":""},"cursor":{"n":""}}} |json}
+    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
   let convertVariables = v =>
@@ -81,16 +81,16 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
   let makeVariables =
-      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
-    groupId,
-    onlineStatuses,
+      (~count=?, ~cursor=?, ~groupId, ~onlineStatuses=?, ()): variables => {
     count,
     cursor,
+    groupId,
+    onlineStatuses,
   };
 };
 
@@ -100,28 +100,24 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "groupId",
-    "type": "ID!"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "onlineStatuses",
-    "type": "[OnlineStatus!]"
-  },
-  {
     "defaultValue": 2,
     "kind": "LocalArgument",
-    "name": "count",
-    "type": "Int"
+    "name": "count"
   },
   {
     "defaultValue": "",
     "kind": "LocalArgument",
-    "name": "cursor",
-    "type": "String"
+    "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "groupId"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "onlineStatuses"
   }
 ],
 v1 = {
@@ -195,7 +191,8 @@ return {
         "name": "TestPagination_query"
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -234,10 +231,10 @@ return {
                     "name": "__typename",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v4/*: any*/),
                       (v5/*: any*/),
                       {
                         "alias": null,
@@ -258,11 +255,13 @@ return {
                         "storageKey": "friendsConnection(first:1)"
                       }
                     ],
-                    "type": "User"
+                    "type": "User",
+                    "abstractKey": null
                   },
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -306,7 +305,16 @@ return {
                         "storageKey": "adminsConnection(first:1)"
                       }
                     ],
-                    "type": "Group"
+                    "type": "Group",
+                    "abstractKey": null
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v4/*: any*/)
+                    ],
+                    "type": "Node",
+                    "abstractKey": "__isNode"
                   }
                 ],
                 "storageKey": null
@@ -364,22 +372,20 @@ return {
     ]
   },
   "params": {
+    "cacheID": "661064a85040ec7f5445b32e1ea4f26e",
     "id": null,
-    "metadata": {
-      "derivedFrom": "TestPagination_query",
-      "isRefetchableQuery": true
-    },
+    "metadata": {},
     "name": "TestPaginationRefetchQuery",
     "operationKind": "query",
-    "text": "query TestPaginationRefetchQuery(\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n  $count: Int = 2\n  $cursor: String = \"\"\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

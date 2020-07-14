@@ -70,6 +70,7 @@ let node: operationType = [%raw
       "storageKey": "friendsConnection(first:1)"
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

@@ -74,7 +74,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -91,8 +91,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "beforeDate",
-    "type": "Datetime"
+    "name": "beforeDate"
   }
 ],
 v1 = {
@@ -129,7 +128,8 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": (v3/*: any*/),
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 },
 v7 = {
   "alias": null,
@@ -181,7 +181,8 @@ return {
         "storageKey": "member(id:\"user-1\")"
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -224,27 +225,35 @@ return {
         "plural": false,
         "selections": [
           (v5/*: any*/),
-          (v7/*: any*/),
-          (v6/*: any*/)
+          (v6/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v7/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": "member(id:\"user-1\")"
       }
     ]
   },
   "params": {
+    "cacheID": "8df1a73e593492564f9372cfeeb6f4fa",
     "id": null,
     "metadata": {},
     "name": "TestCustomScalarsQuery",
     "operationKind": "query",
-    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      id\n    }\n  }\n}\n"
+    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

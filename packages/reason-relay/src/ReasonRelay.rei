@@ -534,7 +534,7 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
-  type preloadToken;
+  type queryRef;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
@@ -576,22 +576,22 @@ module MakeUseQuery:
       Promise.t(Belt.Result.t(C.response, Js.Exn.t));
 
     let usePreloaded:
-      (~token: C.preloadToken, ~renderPolicy: renderPolicy=?, unit) =>
+      (~queryRef: C.queryRef, ~renderPolicy: renderPolicy=?, unit) =>
       C.response;
   };
 
-module type MakePreloadQueryConfig = {
+module type MakeLoadQueryConfig = {
   type variables;
-  type queryPreloadToken;
+  type loadedQueryRef;
   type response;
   let query: queryNode;
   let convertVariables: variables => variables;
 };
 
-module MakePreloadQuery:
-  (C: MakePreloadQueryConfig) =>
+module MakeLoadQuery:
+  (C: MakeLoadQueryConfig) =>
    {
-    let preload:
+    let load:
       (
         ~environment: Environment.t,
         ~variables: C.variables,
@@ -600,12 +600,12 @@ module MakePreloadQuery:
         ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
-      C.queryPreloadToken;
+      C.loadedQueryRef;
 
-    let preloadTokenToObservable:
-      C.queryPreloadToken => option(Observable.t(C.response));
-    let preloadTokenToPromise:
-      C.queryPreloadToken => Promise.t(Belt.Result.t(unit, unit));
+    let queryRefToObservable:
+      C.loadedQueryRef => option(Observable.t(C.response));
+    let queryRefToPromise:
+      C.loadedQueryRef => Promise.t(Belt.Result.t(unit, unit));
   };
 
 /**
