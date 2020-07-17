@@ -1072,7 +1072,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1102,7 +1105,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };

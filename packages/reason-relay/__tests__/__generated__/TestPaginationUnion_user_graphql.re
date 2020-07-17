@@ -36,7 +36,7 @@ let node: operationType = [%raw
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "TestPagination_user",
+  "name": "TestPaginationUnion_user",
   "selections": [
     {
       "alias": null,
