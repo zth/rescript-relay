@@ -994,10 +994,9 @@ external usePaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1024,10 +1023,9 @@ external useBlockingPaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1058,9 +1056,9 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(count, {onComplete: onComplete}),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(count, {onComplete: onComplete}),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch:
@@ -1089,9 +1087,9 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(count, {onComplete: onComplete}),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(count, {onComplete: onComplete}),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
