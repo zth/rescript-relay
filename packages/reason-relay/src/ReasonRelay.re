@@ -896,17 +896,16 @@ type refetchFnRaw('variables) =
   ) =>
   unit;
 
+let nullableToOptionalExnHandler =
+  fun
+  | None => None
+  | Some(handler) =>
+    Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
+
 let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
   "fetchPolicy": fetchPolicy |> mapFetchPolicy,
   "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
-  "onComplete":
-    Some(
-      maybeExn =>
-        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
-        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
-        | _ => ()
-        },
-    ),
+  "onComplete": onComplete |> nullableToOptionalExnHandler,
 };
 
 [@bs.module "react-relay/hooks"]
@@ -962,7 +961,7 @@ module type MakeUsePaginationFragmentConfig = {
 };
 
 type paginationLoadMoreOptions = {
-  onComplete: option(option(Js.Exn.t) => unit),
+  onComplete: option(Js.nullable(Js.Exn.t) => unit),
 };
 
 type paginationLoadMoreFn =
@@ -1056,9 +1055,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, {onComplete: onComplete}),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, {onComplete: onComplete}),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch:
@@ -1087,9 +1092,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, {onComplete: onComplete}),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, {onComplete: onComplete}),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
