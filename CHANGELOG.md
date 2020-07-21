@@ -10,6 +10,7 @@
 - Bindings for `queryCacheExpirationTime` (setting an expiration time for all cache items in `ms`) when creating the store.
 - _BREAKING CHANGE_ `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
 - Bind `useSubscribeToInvalidationState`, which allows listening and reacting to invalidations of records in the store.
+- Fix refetching with pagination when the parent queries have variables that are left unchanged in the refetch
 
 # 0.9.2
 
