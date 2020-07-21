@@ -896,17 +896,16 @@ type refetchFnRaw('variables) =
   ) =>
   unit;
 
+let nullableToOptionalExnHandler =
+  fun
+  | None => None
+  | Some(handler) =>
+    Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
+
 let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
   "fetchPolicy": fetchPolicy |> mapFetchPolicy,
   "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
-  "onComplete":
-    Some(
-      maybeExn =>
-        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
-        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
-        | _ => ()
-        },
-    ),
+  "onComplete": onComplete |> nullableToOptionalExnHandler,
 };
 
 [@bs.module "react-relay/hooks"]
@@ -962,7 +961,7 @@ module type MakeUsePaginationFragmentConfig = {
 };
 
 type paginationLoadMoreOptions = {
-  onComplete: option(option(Js.Exn.t) => unit),
+  onComplete: option(Js.nullable(Js.Exn.t) => unit),
 };
 
 type paginationLoadMoreFn =
@@ -994,10 +993,9 @@ external usePaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1024,10 +1022,9 @@ external useBlockingPaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1058,9 +1055,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch:
@@ -1072,7 +1075,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1086,9 +1092,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
@@ -1102,7 +1114,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };

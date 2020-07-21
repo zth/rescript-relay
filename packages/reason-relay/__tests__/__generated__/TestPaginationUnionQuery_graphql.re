@@ -2,8 +2,8 @@
 
 module Types = {
   type response = {
-    getFragmentRef_TestPagination_query:
-      unit => TestPagination_query_graphql.t,
+    getFragmentRef_TestPaginationUnion_query:
+      unit => TestPaginationUnion_query_graphql.t,
   };
   type refetchVariables = {groupId: option(string)};
   let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
@@ -15,7 +15,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":"TestPagination_query"}}} |json}
+    {json| {"__root":{"":{"f":"TestPaginationUnion_query"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -102,14 +102,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestPaginationQuery",
+    "name": "TestPaginationUnionQuery",
     "selections": [
       {
         "args": [
           (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "TestPagination_query"
+        "name": "TestPaginationUnion_query"
       }
     ],
     "type": "Query"
@@ -118,7 +118,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "TestPaginationQuery",
+    "name": "TestPaginationUnionQuery",
     "selections": [
       {
         "alias": null,
@@ -274,7 +274,7 @@ return {
           "onlineStatuses"
         ],
         "handle": "connection",
-        "key": "TestPagination_query_members",
+        "key": "TestPaginationUnion_query_members",
         "kind": "LinkedHandle",
         "name": "members"
       }
@@ -283,9 +283,9 @@ return {
   "params": {
     "id": null,
     "metadata": {},
-    "name": "TestPaginationQuery",
+    "name": "TestPaginationUnionQuery",
     "operationKind": "query",
-    "text": "query TestPaginationQuery(\n  $groupId: ID!\n) {\n  ...TestPagination_query_3nceos\n}\n\nfragment TestPagination_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationUnionQuery(\n  $groupId: ID!\n) {\n  ...TestPaginationUnion_query_3nceos\n}\n\nfragment TestPaginationUnion_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() |json}

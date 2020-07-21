@@ -387,7 +387,7 @@ let makeSubscription = (~loc, ~moduleName) =>
             type response = Types.response;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
-            let convertVariables = Operation.Internal.convertResponse;
+            let convertVariables = Operation.Internal.convertVariables;
           })
       ],
       [%stri let subscribe = Subscription.subscribe],
