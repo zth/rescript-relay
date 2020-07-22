@@ -48,84 +48,84 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestMutationQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestMutationQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
+            "args": null,
             "kind": "FragmentSpread",
-            "name": "TestMutation_user",
-            "args": null
+            "name": "TestMutation_user"
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "TestMutationQuery",
-    "argumentDefinitions": [],
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "id",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "firstName",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "lastName",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "onlineStatus",
             "args": null,
+            "kind": "ScalarField",
+            "name": "onlineStatus",
             "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestMutationQuery",
     "id": null,
-    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestMutationQuery",
+    "operationKind": "query",
+    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n}\n"
   }
 } |json}
 ];
@@ -133,6 +133,7 @@ let node: operationType = [%raw
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

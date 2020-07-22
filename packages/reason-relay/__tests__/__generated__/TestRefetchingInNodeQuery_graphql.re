@@ -59,10 +59,10 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "userId",
-    "type": "ID!",
-    "defaultValue": null
+    "type": "ID!"
   }
 ],
 v1 = [
@@ -73,84 +73,79 @@ v1 = [
   }
 ],
 v2 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
   "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestRefetchingInNodeQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestRefetchingInNodeQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           (v2/*: any*/),
           {
             "kind": "InlineFragment",
-            "type": "User",
             "selections": [
               {
+                "args": null,
                 "kind": "FragmentSpread",
-                "name": "TestRefetchingInNode_user",
-                "args": null
+                "name": "TestRefetchingInNode_user"
               }
-            ]
+            ],
+            "type": "User"
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestRefetchingInNodeQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           (v2/*: any*/),
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           },
           {
             "kind": "InlineFragment",
-            "type": "User",
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "firstName",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "firstName",
                 "storageKey": null
               },
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "friendsConnection",
-                "storageKey": "friendsConnection(statuses:[\"Online\",\"Offline\"])",
                 "args": [
                   {
                     "kind": "Literal",
@@ -162,29 +157,34 @@ return {
                   }
                 ],
                 "concreteType": "UserConnection",
+                "kind": "LinkedField",
+                "name": "friendsConnection",
                 "plural": false,
                 "selections": [
                   {
-                    "kind": "ScalarField",
                     "alias": null,
-                    "name": "totalCount",
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "totalCount",
                     "storageKey": null
                   }
-                ]
+                ],
+                "storageKey": "friendsConnection(statuses:[\"Online\",\"Offline\"])"
               }
-            ]
+            ],
+            "type": "User"
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestRefetchingInNodeQuery",
     "id": null,
-    "text": "query TestRefetchingInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    __typename\n    ... on User {\n      ...TestRefetchingInNode_user\n    }\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user on User {\n  firstName\n  friendsConnection(statuses: [Online, Offline]) {\n    totalCount\n  }\n  id\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestRefetchingInNodeQuery",
+    "operationKind": "query",
+    "text": "query TestRefetchingInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    __typename\n    ... on User {\n      ...TestRefetchingInNode_user\n    }\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user on User {\n  firstName\n  friendsConnection(statuses: [Online, Offline]) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() |json}
@@ -193,6 +193,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

@@ -100,25 +100,25 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": false,
     "kind": "LocalArgument",
     "name": "showOnlineStatus",
-    "type": "Boolean!",
-    "defaultValue": false
+    "type": "Boolean!"
   },
   {
-    "kind": "LocalArgument",
-    "name": "friendsOnlineStatuses",
-    "type": "[OnlineStatus!]!",
     "defaultValue": [
       "Online",
       "Offline"
-    ]
+    ],
+    "kind": "LocalArgument",
+    "name": "friendsOnlineStatuses",
+    "type": "[OnlineStatus!]!"
   },
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "id",
-    "type": "ID!",
-    "defaultValue": null
+    "type": "ID!"
   }
 ],
 v1 = [
@@ -129,26 +129,21 @@ v1 = [
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestRefetchingInNodeRefetchQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestRefetchingInNodeRefetchQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           {
-            "kind": "FragmentSpread",
-            "name": "TestRefetchingInNode_user",
             "args": [
               {
                 "kind": "Variable",
@@ -160,56 +155,56 @@ return {
                 "name": "showOnlineStatus",
                 "variableName": "showOnlineStatus"
               }
-            ]
+            ],
+            "kind": "FragmentSpread",
+            "name": "TestRefetchingInNode_user"
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestRefetchingInNodeRefetchQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "__typename",
             "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "id",
             "args": null,
+            "kind": "ScalarField",
+            "name": "id",
             "storageKey": null
           },
           {
             "kind": "InlineFragment",
-            "type": "User",
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "firstName",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "firstName",
                 "storageKey": null
               },
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "friendsConnection",
-                "storageKey": null,
                 "args": [
                   {
                     "kind": "Variable",
@@ -218,46 +213,51 @@ return {
                   }
                 ],
                 "concreteType": "UserConnection",
+                "kind": "LinkedField",
+                "name": "friendsConnection",
                 "plural": false,
                 "selections": [
                   {
-                    "kind": "ScalarField",
                     "alias": null,
-                    "name": "totalCount",
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "totalCount",
                     "storageKey": null
                   }
-                ]
+                ],
+                "storageKey": null
               },
               {
+                "condition": "showOnlineStatus",
                 "kind": "Condition",
                 "passingValue": true,
-                "condition": "showOnlineStatus",
                 "selections": [
                   {
-                    "kind": "ScalarField",
                     "alias": null,
-                    "name": "onlineStatus",
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "onlineStatus",
                     "storageKey": null
                   }
                 ]
               }
-            ]
+            ],
+            "type": "User"
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestRefetchingInNodeRefetchQuery",
     "id": null,
-    "text": "query TestRefetchingInNodeRefetchQuery(\n  $showOnlineStatus: Boolean! = false\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n",
     "metadata": {
       "derivedFrom": "TestRefetchingInNode_user",
       "isRefetchableQuery": true
-    }
+    },
+    "name": "TestRefetchingInNodeRefetchQuery",
+    "operationKind": "query",
+    "text": "query TestRefetchingInNodeRefetchQuery(\n  $showOnlineStatus: Boolean! = false\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() |json}
@@ -266,6 +266,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

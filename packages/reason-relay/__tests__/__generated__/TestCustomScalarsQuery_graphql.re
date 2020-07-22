@@ -93,17 +93,17 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "beforeDate",
-    "type": "Datetime",
-    "defaultValue": null
+    "type": "Datetime"
   }
 ],
 v1 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "createdAt",
   "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
   "storageKey": null
 },
 v2 = [
@@ -124,123 +124,123 @@ v4 = [
   }
 ],
 v5 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
   "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 },
 v6 = {
   "kind": "InlineFragment",
-  "type": "User",
-  "selections": (v3/*: any*/)
+  "selections": (v3/*: any*/),
+  "type": "User"
 },
 v7 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TestCustomScalarsQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TestCustomScalarsQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "friends",
-            "storageKey": null,
             "args": (v2/*: any*/),
             "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "friends",
             "plural": true,
-            "selections": (v3/*: any*/)
+            "selections": (v3/*: any*/),
+            "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "member",
-        "storageKey": "member(id:\"user-1\")",
         "args": (v4/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "member",
         "plural": false,
         "selections": [
           (v5/*: any*/),
           (v6/*: any*/)
-        ]
+        ],
+        "storageKey": "member(id:\"user-1\")"
       }
-    ]
+    ],
+    "type": "Query"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestCustomScalarsQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "loggedInUser",
-        "storageKey": null,
         "args": null,
         "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
           (v1/*: any*/),
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "friends",
-            "storageKey": null,
             "args": (v2/*: any*/),
             "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "friends",
             "plural": true,
             "selections": [
               (v1/*: any*/),
               (v7/*: any*/)
-            ]
+            ],
+            "storageKey": null
           },
           (v7/*: any*/)
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "member",
-        "storageKey": "member(id:\"user-1\")",
         "args": (v4/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "member",
         "plural": false,
         "selections": [
           (v5/*: any*/),
           (v7/*: any*/),
           (v6/*: any*/)
-        ]
+        ],
+        "storageKey": "member(id:\"user-1\")"
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "TestCustomScalarsQuery",
     "id": null,
-    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      id\n    }\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TestCustomScalarsQuery",
+    "operationKind": "query",
+    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      id\n    }\n  }\n}\n"
   }
 };
 })() |json}
@@ -249,6 +249,7 @@ return {
 include ReasonRelay.MakePreloadQuery({
   type variables = Types.variables;
   type queryPreloadToken = preloadToken;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });
