@@ -32,6 +32,7 @@ module Types = {
   type response_userUpdated = {user: option(response_userUpdated_user)};
 
   type response = {userUpdated: option(response_userUpdated)};
+  type rawResponse = response;
   type variables = {userId: string};
 };
 
@@ -48,6 +49,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

@@ -13,6 +13,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -30,6 +31,8 @@ describe("Mutation", () => {
         setOnlineStatus: {
           user: {
             id: "user-1",
+            firstName: "First",
+            lastName: "Name",
             onlineStatus: "Idle",
           },
         },
@@ -48,6 +51,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -65,6 +69,8 @@ describe("Mutation", () => {
         setOnlineStatus: {
           user: {
             id: "user-1",
+            firstName: "First",
+            lastName: "Name",
             onlineStatus: "Idle",
           },
         },
@@ -84,6 +90,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -101,6 +108,8 @@ describe("Mutation", () => {
         setOnlineStatus: {
           user: {
             id: "user-1",
+            firstName: "First",
+            lastName: "Name",
             onlineStatus: "Idle",
           },
         },
@@ -125,6 +134,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -162,6 +172,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -179,6 +190,8 @@ describe("Mutation", () => {
         setOnlineStatus: {
           user: {
             id: "user-1",
+            firstName: "First",
+            lastName: "Name",
             onlineStatus: "Idle",
           },
         },
@@ -201,6 +214,7 @@ describe("Mutation", () => {
         loggedInUser: {
           id: "user-1",
           firstName: "First",
+          lastName: "Name",
           onlineStatus: "Online",
         },
       },
@@ -218,6 +232,8 @@ describe("Mutation", () => {
         setOnlineStatus: {
           user: {
             id: "user-1",
+            firstName: "First",
+            lastName: "Name",
             onlineStatus: "Idle",
           },
         },

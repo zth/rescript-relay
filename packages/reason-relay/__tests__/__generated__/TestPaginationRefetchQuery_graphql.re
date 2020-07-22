@@ -26,6 +26,7 @@ module Types = {
     getFragmentRef_TestPagination_query:
       unit => TestPagination_query_graphql.t,
   };
+  type rawResponse = response;
   type refetchVariables = {
     groupId: option(string),
     onlineStatuses:
@@ -67,6 +68,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"onlineStatuses":{"n":"","e":"enum_OnlineStatus"},"count":{"n":""},"cursor":{"n":""}}} |json}

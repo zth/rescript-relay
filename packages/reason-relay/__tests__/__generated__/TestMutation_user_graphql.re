@@ -25,6 +25,7 @@ module Types = {
   type fragment = {
     id: string,
     firstName: string,
+    lastName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
   };
@@ -71,6 +72,13 @@ let node: operationType = [%raw
       "kind": "ScalarField",
       "alias": null,
       "name": "firstName",
+      "args": null,
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "lastName",
       "args": null,
       "storageKey": null
     },

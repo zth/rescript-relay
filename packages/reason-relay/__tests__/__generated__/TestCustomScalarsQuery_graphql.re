@@ -19,6 +19,7 @@ module Types = {
         [ | `User(response_member_User) | `UnselectedUnionMember(string)],
       ),
   };
+  type rawResponse = response;
   type refetchVariables = {beforeDate: option(TestsUtils.Datetime.t)};
   let makeRefetchVariables = (~beforeDate=?, ()): refetchVariables => {
     beforeDate: beforeDate,
@@ -58,6 +59,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"beforeDate":{"n":"","c":"TestsUtils.Datetime"}}} |json}
