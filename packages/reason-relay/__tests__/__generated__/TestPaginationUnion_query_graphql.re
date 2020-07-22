@@ -2,7 +2,8 @@
 
 module Types = {
   type fragment_members_edges_node_User = {
-    getFragmentRef_TestPagination_user: unit => TestPagination_user_graphql.t,
+    getFragmentRef_TestPaginationUnion_user:
+      unit => TestPaginationUnion_user_graphql.t,
     id: string,
   };
   type fragment_members_edges_node_Group_adminsConnection_edges_node = {
@@ -77,7 +78,7 @@ let wrap_fragment_members_edges_node:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":"TestPagination_user"},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
+    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":"TestPaginationUnion_user"},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
@@ -136,7 +137,7 @@ v1 = {
 };
 return {
   "kind": "Fragment",
-  "name": "TestPagination_query",
+  "name": "TestPaginationUnion_query",
   "type": "Query",
   "metadata": {
     "connection": [
@@ -156,7 +157,7 @@ return {
         "backward": null,
         "path": (v0/*: any*/)
       },
-      "operation": require('./TestPaginationRefetchQuery_graphql.bs.js').node,
+      "operation": require('./TestPaginationUnionRefetchQuery_graphql.bs.js').node,
       "fragmentPathInResult": []
     }
   },
@@ -190,7 +191,7 @@ return {
     {
       "kind": "LinkedField",
       "alias": "members",
-      "name": "__TestPagination_query_members_connection",
+      "name": "__TestPaginationUnion_query_members_connection",
       "storageKey": null,
       "args": [
         {
@@ -239,7 +240,7 @@ return {
                     (v1/*: any*/),
                     {
                       "kind": "FragmentSpread",
-                      "name": "TestPagination_user",
+                      "name": "TestPaginationUnion_user",
                       "args": null
                     }
                   ]

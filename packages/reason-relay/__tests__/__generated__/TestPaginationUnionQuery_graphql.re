@@ -1,64 +1,22 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
-
 module Types = {
   type response = {
-    getFragmentRef_TestPagination_query:
-      unit => TestPagination_query_graphql.t,
+    getFragmentRef_TestPaginationUnion_query:
+      unit => TestPaginationUnion_query_graphql.t,
   };
   type rawResponse = response;
-  type refetchVariables = {
-    groupId: option(string),
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
-    count: option(int),
-    cursor: option(string),
+  type refetchVariables = {groupId: option(string)};
+  let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
+    groupId: groupId,
   };
-  let makeRefetchVariables =
-      (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ())
-      : refetchVariables => {
-    groupId,
-    onlineStatuses,
-    count,
-    cursor,
-  };
-  type variables = {
-    groupId: string,
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
-    count: option(int),
-    cursor: option(string),
-  };
+  type variables = {groupId: string};
 };
 
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":"TestPagination_query"}}} |json}
+    {json| {"__root":{"":{"f":"TestPaginationUnion_query"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -73,9 +31,9 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatuses":{"n":"","e":"enum_OnlineStatus"},"count":{"n":""},"cursor":{"n":""}}} |json}
+    {json| {} |json}
   ];
-  let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
+  let variablesConverterMap = ();
   let convertVariables = v =>
     v
     ->ReasonRelay._convertObj(
@@ -89,13 +47,7 @@ type preloadToken;
 
 module Utils = {
   open Types;
-  let makeVariables =
-      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
-    groupId,
-    onlineStatuses,
-    count,
-    cursor,
-  };
+  let makeVariables = (~groupId): variables => {groupId: groupId};
 };
 
 type operationType = ReasonRelay.queryNode;
@@ -108,24 +60,6 @@ var v0 = [
     "name": "groupId",
     "type": "ID!",
     "defaultValue": null
-  },
-  {
-    "kind": "LocalArgument",
-    "name": "onlineStatuses",
-    "type": "[OnlineStatus!]",
-    "defaultValue": null
-  },
-  {
-    "kind": "LocalArgument",
-    "name": "count",
-    "type": "Int",
-    "defaultValue": 2
-  },
-  {
-    "kind": "LocalArgument",
-    "name": "cursor",
-    "type": "String",
-    "defaultValue": ""
   }
 ],
 v1 = {
@@ -133,40 +67,34 @@ v1 = {
   "name": "groupId",
   "variableName": "groupId"
 },
-v2 = {
-  "kind": "Variable",
-  "name": "onlineStatuses",
-  "variableName": "onlineStatuses"
-},
-v3 = [
+v2 = [
   {
-    "kind": "Variable",
+    "kind": "Literal",
     "name": "after",
-    "variableName": "cursor"
+    "value": ""
   },
   {
-    "kind": "Variable",
+    "kind": "Literal",
     "name": "first",
-    "variableName": "count"
+    "value": 2
   },
-  (v1/*: any*/),
-  (v2/*: any*/)
+  (v1/*: any*/)
 ],
-v4 = {
+v3 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
 },
-v5 = {
+v4 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "firstName",
   "args": null,
   "storageKey": null
 },
-v6 = [
+v5 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -177,34 +105,23 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
         "kind": "FragmentSpread",
-        "name": "TestPagination_query",
+        "name": "TestPaginationUnion_query",
         "args": [
-          {
-            "kind": "Variable",
-            "name": "count",
-            "variableName": "count"
-          },
-          {
-            "kind": "Variable",
-            "name": "cursor",
-            "variableName": "cursor"
-          },
-          (v1/*: any*/),
-          (v2/*: any*/)
+          (v1/*: any*/)
         ]
       }
     ]
   },
   "operation": {
     "kind": "Operation",
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionQuery",
     "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
@@ -212,7 +129,7 @@ return {
         "alias": null,
         "name": "members",
         "storageKey": null,
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "MemberConnection",
         "plural": false,
         "selections": [
@@ -241,18 +158,18 @@ return {
                     "args": null,
                     "storageKey": null
                   },
-                  (v4/*: any*/),
+                  (v3/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "type": "User",
                     "selections": [
-                      (v5/*: any*/),
+                      (v4/*: any*/),
                       {
                         "kind": "LinkedField",
                         "alias": null,
                         "name": "friendsConnection",
                         "storageKey": "friendsConnection(first:1)",
-                        "args": (v6/*: any*/),
+                        "args": (v5/*: any*/),
                         "concreteType": "UserConnection",
                         "plural": false,
                         "selections": [
@@ -283,7 +200,7 @@ return {
                         "alias": null,
                         "name": "adminsConnection",
                         "storageKey": "adminsConnection(first:1)",
-                        "args": (v6/*: any*/),
+                        "args": (v5/*: any*/),
                         "concreteType": "UserConnection",
                         "plural": false,
                         "selections": [
@@ -305,8 +222,8 @@ return {
                                 "concreteType": "User",
                                 "plural": false,
                                 "selections": [
-                                  (v4/*: any*/),
-                                  (v5/*: any*/)
+                                  (v3/*: any*/),
+                                  (v4/*: any*/)
                                 ]
                               }
                             ]
@@ -357,9 +274,9 @@ return {
         "kind": "LinkedHandle",
         "alias": null,
         "name": "members",
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "handle": "connection",
-        "key": "TestPagination_query_members",
+        "key": "TestPaginationUnion_query_members",
         "filters": [
           "groupId",
           "onlineStatuses"
@@ -369,13 +286,10 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionQuery",
     "id": null,
-    "text": "query TestPaginationRefetchQuery(\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n  $count: Int = 2\n  $cursor: String = \"\"\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n",
-    "metadata": {
-      "derivedFrom": "TestPagination_query",
-      "isRefetchableQuery": true
-    }
+    "text": "query TestPaginationUnionQuery(\n  $groupId: ID!\n) {\n  ...TestPaginationUnion_query_3nceos\n}\n\nfragment TestPaginationUnion_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n",
+    "metadata": {}
   }
 };
 })() |json}

@@ -3,12 +3,12 @@ const t = require("@testing-library/react");
 const React = require("react");
 const queryMock = require("./queryMock");
 
-const { test_pagination } = require("./Test_pagination.bs");
+const { test_pagination } = require("./Test_paginationUnion.bs");
 
 describe("Pagination", () => {
   test("paginating works", async () => {
     queryMock.mockQuery({
-      name: "TestPaginationQuery",
+      name: "TestPaginationUnionQuery",
       variables: {
         groupId: "123"
       },
@@ -59,7 +59,7 @@ describe("Pagination", () => {
     await t.screen.findByText("Group Users with 1 admins");
 
     queryMock.mockQuery({
-      name: "TestPaginationRefetchQuery",
+      name: "TestPaginationUnionRefetchQuery",
       variables: {
         groupId: "123",
         count: 2,
@@ -96,7 +96,7 @@ describe("Pagination", () => {
 
   test("refetching the entire connection should work", async () => {
     queryMock.mockQuery({
-      name: "TestPaginationQuery",
+      name: "TestPaginationUnionQuery",
       variables: {
         groupId: "123"
       },
@@ -128,7 +128,7 @@ describe("Pagination", () => {
     await t.screen.findByText("User First has 2 friends");
 
     queryMock.mockQuery({
-      name: "TestPaginationRefetchQuery",
+      name: "TestPaginationUnionRefetchQuery",
       variables: {
         groupId: "123",
         onlineStatuses: ["Online", "Idle"],

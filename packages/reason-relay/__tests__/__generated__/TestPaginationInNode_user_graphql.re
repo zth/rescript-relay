@@ -4,6 +4,7 @@ module Types = {
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
+    id: string,
     firstName: string,
     friendsConnection: fragment_friendsConnection,
   };
@@ -34,11 +35,18 @@ type operationType = ReasonRelay.fragmentNode;
 let node: operationType = [%raw
   {json| {
   "kind": "Fragment",
-  "name": "TestPagination_user",
+  "name": "TestPaginationInNode_user",
   "type": "User",
   "metadata": null,
   "argumentDefinitions": [],
   "selections": [
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "id",
+      "args": null,
+      "storageKey": null
+    },
     {
       "kind": "ScalarField",
       "alias": null,
