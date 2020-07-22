@@ -346,9 +346,13 @@ let makeMutation = (~loc, ~moduleName) =>
             type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
             type response = Types.response;
+            type rawResponseRaw = Operation.Internal.rawResponseRaw;
+            type rawResponse = Types.rawResponse;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertRawResponse = Operation.Internal.convertRawResponse;
+            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
             let convertVariables = Operation.Internal.convertVariables;
           })
       ],
@@ -358,9 +362,13 @@ let makeMutation = (~loc, ~moduleName) =>
             type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
             type response = Types.response;
+            type rawResponseRaw = Operation.Internal.rawResponseRaw;
+            type rawResponse = Types.rawResponse;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertRawResponse = Operation.Internal.convertRawResponse;
+            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
             let convertVariables = Operation.Internal.convertVariables;
           })
       ],

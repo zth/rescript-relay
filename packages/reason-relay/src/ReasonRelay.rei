@@ -678,9 +678,13 @@ module type MutationConfig = {
   type variables;
   type responseRaw;
   type response;
+  type rawResponse;
+  type rawResponseRaw;
   let node: mutationNode;
   let convertResponse: responseRaw => response;
   let wrapResponse: response => responseRaw;
+  let convertRawResponse: rawResponseRaw => rawResponse;
+  let wrapRawResponse: rawResponse => rawResponseRaw;
   let convertVariables: variables => variables;
 };
 
@@ -689,11 +693,11 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type useMutationConfig('response, 'variables) = {
+type useMutationConfig('response, 'rawResponse, 'variables) = {
   onError: option(mutationError => unit),
   onCompleted: option(('response, option(array(mutationError))) => unit),
   onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('response),
+  optimisticResponse: option('rawResponse),
   optimisticUpdater: option(optimisticUpdaterFn),
   updater: option((RecordSourceSelectorProxy.t, 'response) => unit),
   variables: 'variables,
@@ -709,7 +713,7 @@ module MakeUseMutation:
           ~onError: mutationError => unit=?,
           ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
           ~onUnsubscribe: unit => unit=?,
-          ~optimisticResponse: C.response=?,
+          ~optimisticResponse: C.rawResponse=?,
           ~optimisticUpdater: optimisticUpdaterFn=?,
           ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
           ~variables: C.variables,
@@ -754,7 +758,7 @@ module MakeCommitMutation:
         ~environment: Environment.t,
         ~variables: C.variables,
         ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.response=?,
+        ~optimisticResponse: C.rawResponse=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
         ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
         ~onError: option(mutationError) => unit=?,
@@ -767,7 +771,7 @@ module MakeCommitMutation:
         ~environment: Environment.t,
         ~variables: C.variables,
         ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.response=?,
+        ~optimisticResponse: C.rawResponse=?,
         ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
         unit
       ) =>
