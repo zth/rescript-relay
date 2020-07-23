@@ -27,6 +27,8 @@ module.exports = {
         /bs-flow-parser/,
         /tablecloth-bucklescript/,
         /bs-sedlex/,
+        /ppx-sedlex/,
+        /bs-platform/,
         /bs-gen/,
         /invariant/
       ]
