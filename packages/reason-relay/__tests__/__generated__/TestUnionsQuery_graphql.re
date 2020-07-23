@@ -81,6 +81,7 @@ module Types = {
   };
 
   type response = {members: option(response_members)};
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -153,6 +154,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

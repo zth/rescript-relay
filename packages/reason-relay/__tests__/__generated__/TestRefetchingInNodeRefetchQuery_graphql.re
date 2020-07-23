@@ -28,6 +28,7 @@ module Types = {
   };
 
   type response = {node: option(response_node)};
+  type rawResponse = response;
   type refetchVariables = {
     showOnlineStatus: option(bool),
     friendsOnlineStatuses:
@@ -64,6 +65,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"friendsOnlineStatuses":{"e":"enum_OnlineStatus"}}} |json}

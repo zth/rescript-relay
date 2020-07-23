@@ -64,17 +64,18 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     text
   );
 
-  return new CompilerContext(extendedSchema)
+  const ctx = new CompilerContext(extendedSchema)
     .addAll(definitions)
-    .applyTransforms(RelayReasonGenerator.transforms)
+    .applyTransforms(RelayReasonGenerator.transforms);
+
+  return ctx
     .documents()
     .map(
       (doc: any) =>
         `// ${doc.name}.graphql\n${printCode(
           RelayReasonGenerator.generate(extendedSchema, doc, {
-            customScalars: {},
+            normalizationIR: ctx.get(doc.name),
             optionalInputFields: [],
-            existingFragmentNames: new Set([]),
             ...options,
           })
         )}`
@@ -747,22 +748,6 @@ describe("Language plugin tests", () => {
         `type response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, };`
       );
     });
-
-    it.skip("generates connection helpers when connection is present", () => {
-      let generated = generate(
-        `query SomeQuery {
-          me {
-            friendsConnection(first: 2) @connection(key: "SomeQuery_me_friendsConnection") {
-              edges {
-                node {
-                  id
-                }
-              }
-            }
-          }
-        }`
-      );
-    });
   });
 
   describe("Field names", () => {
@@ -878,6 +863,22 @@ describe("Language plugin tests", () => {
             }
           }`
       );
+    });
+  });
+
+  describe("raw_response_type", () => {
+    it("outputs code for handling @raw_response_type", () => {
+      let generated = generate(
+        `query SomeQuery @raw_response_type {
+            me {
+              firstName
+              lastName
+            }
+          }          
+          `
+      );
+
+      expect(generated).toMatchSnapshot();
     });
   });
 });

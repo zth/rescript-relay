@@ -5,6 +5,7 @@ module Types = {
     getFragmentRef_TestPaginationUnion_query:
       unit => TestPaginationUnion_query_graphql.t,
   };
+  type rawResponse = response;
   type refetchVariables = {groupId: option(string)};
   let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
     groupId: groupId,
@@ -25,6 +26,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

@@ -174,19 +174,16 @@ and printObject =
          }
        )
     |> Array.iteri((index, p) => {
-         if (index > 0) {
-           addToStr(",");
-         };
-
          addToStr(
            switch (p) {
            | FragmentRef(name) =>
-             (name |> getFragmentRefName |> printQuoted)
+             (index > 0 ? "," : "")
+             ++ (name |> getFragmentRefName |> printQuoted)
              ++ ": "
              ++ printFragmentRef(name)
            | Prop(_) => ""
            },
-         );
+         )
        });
 
     addToStr("}");
@@ -265,17 +262,16 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
   if (hasContents) {
     obj.values
     |> Array.iteri((index, p) => {
-         if (index > 0) {
-           addToStr(",");
-         };
-
          addToStr(
            switch (p) {
            | Prop(name, {nullable}) =>
-             "~" ++ printSafeName(name) ++ (nullable ? "=?" : "")
+             (index > 0 ? "," : "")
+             ++ "~"
+             ++ printSafeName(name)
+             ++ (nullable ? "=?" : "")
            | FragmentRef(_) => ""
            },
-         );
+         )
        });
 
     let shouldAddUnit =
@@ -290,17 +286,16 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
     obj.values
     |> Array.iteri((index, p) => {
-         if (index > 0) {
-           addToStr(",");
-         };
-
          addToStr(
            switch (p) {
            | Prop(name, _) =>
-             printSafeName(name) ++ ": " ++ printSafeName(name)
+             (index > 0 ? "," : "")
+             ++ printSafeName(name)
+             ++ ": "
+             ++ printSafeName(name)
            | FragmentRef(_) => ""
            },
-         );
+         )
        });
 
     addToStr("}");
@@ -345,6 +340,12 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
     "type response = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
+  | RawResponse(Some(Object(obj))) =>
+    "type rawResponse = "
+    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ ";"
+  | RawResponse(None) => "type rawResponse = response;"
+  | RawResponse(Some(Union(_)))
   | Operation(Union(_)) => raise(Invalid_top_level_shape)
   | Variables(Object(obj)) =>
     "type variables = "

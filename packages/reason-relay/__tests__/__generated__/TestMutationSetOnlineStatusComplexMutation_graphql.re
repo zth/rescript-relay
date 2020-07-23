@@ -37,6 +37,7 @@ module Types = {
   type response = {
     setOnlineStatusComplex: option(response_setOnlineStatusComplex),
   };
+  type rawResponse = response;
   type variables = {input: setOnlineStatusInput};
 };
 
@@ -68,6 +69,12 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"SetOnlineStatusInput"}},"SetOnlineStatusInput":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |json}
@@ -101,7 +108,7 @@ module Utils = {
     user: user,
   };
 
-  let makeOptimisticResponse = (~setOnlineStatusComplex=?, ()): response => {
+  let makeOptimisticResponse = (~setOnlineStatusComplex=?, ()): rawResponse => {
     setOnlineStatusComplex: setOnlineStatusComplex,
   };
 };

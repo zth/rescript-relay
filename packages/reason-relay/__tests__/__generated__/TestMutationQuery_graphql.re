@@ -6,6 +6,7 @@ module Types = {
   };
 
   type response = {loggedInUser: response_loggedInUser};
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -22,6 +23,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -101,6 +105,13 @@ let node: operationType = [%raw
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "lastName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "onlineStatus",
             "storageKey": null
           }
@@ -114,7 +125,7 @@ let node: operationType = [%raw
     "metadata": {},
     "name": "TestMutationQuery",
     "operationKind": "query",
-    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n"
+    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n}\n"
   }
 } |json}
 ];

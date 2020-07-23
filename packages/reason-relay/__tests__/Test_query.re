@@ -150,7 +150,6 @@ module Test = {
               fun
               | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
               | Error(_) => (),
-            (),
           )
         }>
         {React.string("Test fetch")}
@@ -160,7 +159,6 @@ module Test = {
           Query.fetchPromised(
             ~environment,
             ~variables={status: Some(`Online)},
-            (),
           )
           ->Promise.get(
               fun

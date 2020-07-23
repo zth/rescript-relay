@@ -8,6 +8,7 @@ module Types = {
   };
 
   type response = {node: option(response_node)};
+  type rawResponse = response;
   type refetchVariables = {userId: option(string)};
   let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
     userId: userId,
@@ -28,6 +29,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

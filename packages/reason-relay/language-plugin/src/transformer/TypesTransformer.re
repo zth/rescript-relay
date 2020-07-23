@@ -58,6 +58,11 @@ let intermediateToFull =
       | Some(v) => Some(v.definition)
       | None => None
       },
+    rawResponse:
+      switch (intermediateState.rawResponse) {
+      | Some(v) => Some(v.definition)
+      | None => None
+      },
     fragment: intermediateState.fragment,
   };
 
@@ -120,6 +125,12 @@ let intermediateToFull =
 
   switch (state^.response) {
   | Some(d) => d |> traverseDefinition(~inUnion=false, ~atPath=["response"])
+  | None => ()
+  };
+
+  switch (state^.rawResponse) {
+  | Some(d) =>
+    d |> traverseDefinition(~inUnion=false, ~atPath=["rawResponse"])
   | None => ()
   };
 
@@ -212,6 +223,13 @@ let getPrintedFullState =
   | (Some(variables), Types.Query(_)) =>
     addDefinition(Types.(RefetchVariables(variables)))
   | _ => ()
+  };
+
+  switch (state.fragment, state.rawResponse) {
+  | (None, Some(rawResponse)) =>
+    addDefinition(Types.(RawResponse(Some(Object(rawResponse)))))
+  | (None, None) => addDefinition(Types.(RawResponse(None)))
+  | (Some(_), _) => ()
   };
 
   switch (state.response) {
@@ -343,6 +361,50 @@ let getPrintedFullState =
     );
     addSpacing();
   | None => ()
+  };
+
+  switch (state.response, state.rawResponse) {
+  | (Some(_), Some(definition)) =>
+    switch (operationType) {
+    | Mutation(_) =>
+      addToStr(
+        TypesTransformerUtils.printConverterAssets(
+          ~rootObjects,
+          ~direction=Wrap,
+          ~nullableType=Null,
+          ~definition=Object(definition),
+          "wrapRawResponse",
+        ),
+      );
+      addSpacing();
+    | _ => ()
+    };
+
+    addToStr(
+      TypesTransformerUtils.printConverterAssets(
+        ~rootObjects,
+        ~definition=Object(definition),
+        "rawResponse",
+      ),
+    );
+    addSpacing();
+  | (Some(_), None) =>
+    switch (operationType) {
+    | Mutation(_) =>
+      addToStr(
+        "type wrapRawResponseRaw = wrapResponseRaw;"
+        ++ "let convertWrapRawResponse = convertWrapResponse;",
+      );
+      addSpacing();
+    | _ => ()
+    };
+
+    addToStr(
+      "type rawResponseRaw = responseRaw;"
+      ++ "let convertRawResponse = convertResponse;",
+    );
+    addSpacing();
+  | (None, _) => ()
   };
 
   switch (state.variables) {
@@ -478,7 +540,7 @@ let getPrintedFullState =
 
     response
     ->Printer.printObjectMaker(
-        ~targetType="response",
+        ~targetType="rawResponse",
         ~name="makeOptimisticResponse",
       )
     ->addToUtils;
@@ -849,6 +911,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
     objects: [],
     variables: None,
     response: None,
+    rawResponse: None,
     fragment: None,
   };
 
@@ -917,6 +980,20 @@ let flowTypesToFullState = (~content, ~operationType) => {
                      foundInUnion: false,
                      definition:
                        properties |> makeObjShape(~state, ~path=["response"]),
+                   }),
+               }
+             )
+           | _ when typeName == name ++ "RawResponse" =>
+             setState(state =>
+               {
+                 ...state,
+                 rawResponse:
+                   Some({
+                     originalFlowTypeName: None,
+                     foundInUnion: false,
+                     definition:
+                       properties
+                       |> makeObjShape(~state, ~path=["rawResponse"]),
                    }),
                }
              )
