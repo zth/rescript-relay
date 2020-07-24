@@ -2,8 +2,6 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
-external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
-
 module Types = {
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option(enum_OnlineStatus),
@@ -153,7 +151,9 @@ module Internal = {
 
 type preloadToken;
 
-module Utils = {};
+module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+};
 
 type operationType = ReasonRelay.queryNode;
 

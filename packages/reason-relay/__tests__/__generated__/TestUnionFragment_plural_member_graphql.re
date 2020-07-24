@@ -2,8 +2,6 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
-external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
-
 module Types = {
   type fragment_User = {
     onlineStatus: option(enum_OnlineStatus),
@@ -67,7 +65,9 @@ external getFragmentRef:
   fragmentRef =
   "%identity";
 
-module Utils = {};
+module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+};
 
 type operationType = ReasonRelay.fragmentNode;
 

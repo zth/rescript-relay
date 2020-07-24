@@ -2,8 +2,6 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
-external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
-
 module Types = {
   type response_node = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetching_user]),
@@ -63,6 +61,7 @@ module Internal = {
 type preloadToken;
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
       (~friendsOnlineStatuses=?, ~showOnlineStatus, ~id, ()): variables => {

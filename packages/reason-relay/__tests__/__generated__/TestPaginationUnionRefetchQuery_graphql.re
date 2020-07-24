@@ -2,8 +2,6 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
-external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
-
 module Types = {
   type response = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_query]),
@@ -64,6 +62,7 @@ module Internal = {
 type preloadToken;
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
       (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {

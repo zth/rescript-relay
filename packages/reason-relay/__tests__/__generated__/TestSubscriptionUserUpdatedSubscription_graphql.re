@@ -2,8 +2,6 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
-external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
-
 module Types = {
   type response_userUpdated_user = {
     id: string,
@@ -48,6 +46,7 @@ module Internal = {
 };
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables = (~userId): variables => {userId: userId};
 };

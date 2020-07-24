@@ -447,6 +447,10 @@ let getPrintedFullState =
   let addToUtils = str => utilsContent := utilsContent^ ++ str;
   let addSpacingToUtils = () => addToUtils("\n\n\n");
 
+  // Enum toString functions
+  state.enums
+  ->Belt.List.forEach(enum => enum->Printer.printEnumToStringFn->addToStr);
+
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
   | Some(connection) =>
@@ -571,11 +575,18 @@ let getPrintedFullState =
   finalStr^;
 };
 
-let validStringLiteralRegex = [%bs.re "/^[_a-zA-Z][_a-zA-Z0-9]*$/"];
+let validStringLiteralRegex = [%bs.re "/^[a-zA-Z][_a-zA-Z0-9]*$/"];
 
 let makeStringLiteralOrString = (value: string): Types.propType =>
-  validStringLiteralRegex->Js.Re.test_(value)
-    ? StringLiteral(value) : Scalar(String);
+  switch (
+    validStringLiteralRegex->Js.Re.test_(value),
+    ReservedKeywords.reservedKeywords->Belt.Array.getBy(word =>
+      word === value
+    ),
+  ) {
+  | (true, None) => StringLiteral(value)
+  | _ => Scalar(String)
+  };
 
 /**
  * Maps an object prop (represented by a Flow type) to a prop value
