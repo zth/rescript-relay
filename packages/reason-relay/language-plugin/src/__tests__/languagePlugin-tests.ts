@@ -143,15 +143,14 @@ describe("Language plugin tests", () => {
       );
 
       expect(
-        generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
-        )
+        generated.includes("ReasonRelay.fragmentRefs([ | `SomeComponent_user])")
       ).toBe(true);
     });
 
     it("prints two fragment references", () => {
-      let generated = generate(
-        `
+      let generated = collapseString(
+        generate(
+          `
         fragment SomeComponent_user on User {
           id
         }
@@ -168,24 +167,20 @@ describe("Language plugin tests", () => {
               ...OtherComponent_user
             }
           }`
+        )
       );
 
       expect(
         generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          '"__$fragment_ref__OtherComponent_user": OtherComponent_user_graphql.t'
+          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user], )"
         )
       ).toBe(true);
     });
 
     it("prints many fragment references", () => {
-      let generated = generate(
-        `
+      let generated = collapseString(
+        generate(
+          `
         fragment SomeComponent_user on User {
           id
         }
@@ -212,29 +207,12 @@ describe("Language plugin tests", () => {
               ...LastComponent_user
             }
           }`
+        )
       );
 
       expect(
         generated.includes(
-          '"__$fragment_ref__SomeComponent_user": SomeComponent_user_graphql.t'
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          '"__$fragment_ref__OtherComponent_user": OtherComponent_user_graphql.t'
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          '"__$fragment_ref__AnotherComponent_user": AnotherComponent_user_graphql.t'
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          '"__$fragment_ref__LastComponent_user": LastComponent_user_graphql.t'
+          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user | `AnotherComponent_user | `LastComponent_user ], )"
         )
       ).toBe(true);
     });
@@ -435,16 +413,23 @@ describe("Language plugin tests", () => {
     });
 
     it("handles plural fragments", () => {
-      let generated = generate(
-        `fragment SomeComponent_user on User @relay(plural: true) {
+      let generated = collapseString(
+        generate(
+          `fragment SomeComponent_user on User @relay(plural: true) {
           id
           firstName
         }`
+        )
       );
 
       expect(
-        collapseString(generated).includes(
+        generated.includes(
           `type fragment_t = { id: string, firstName: string, }; type fragment = array(fragment_t);`
+        )
+      ).toBe(true);
+      expect(
+        generated.includes(
+          "array(ReasonRelay.fragmentRefs([> | `SomeComponent_user]))"
         )
       ).toBe(true);
     });

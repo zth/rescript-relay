@@ -44,7 +44,6 @@ let printUnionWrapFnReference = (union: union) =>
   "wrap_" ++ union.atPath->Utils.makeRecordName;
 let printFragmentRef = name =>
   Tablecloth.String.capitalize(name) ++ "_graphql.t";
-let getFragmentRefName = name => "__$fragment_ref__" ++ name;
 let printAnyType = () => "ReasonRelay.any";
 
 let printScalar = scalarValue =>
@@ -151,43 +150,10 @@ and printPropValue = (~propValue, ~state) => {
 
   str^;
 }
-and printObject =
-    (
-      ~obj: object_,
-      ~printAs: objectPrintAs=Record,
-      ~state,
-      ~ignoreFragmentRefs=false,
-      (),
-    ) => {
-  switch (obj.values |> Array.length, printAs) {
-  | (0, _) => "unit"
-  | (_, OnlyFragmentRefs) =>
-    let str = ref("{.");
-    let addToStr = s => str := str^ ++ s;
-
-    obj.values
-    |> Tablecloth.Array.filter(~f=v =>
-         switch (v) {
-         | FragmentRef(_) => true
-         | Prop(_) => false
-         }
-       )
-    |> Array.iteri((index, p) => {
-         addToStr(
-           switch (p) {
-           | FragmentRef(name) =>
-             (index > 0 ? "," : "")
-             ++ (name |> getFragmentRefName |> printQuoted)
-             ++ ": "
-             ++ printFragmentRef(name)
-           | Prop(_) => ""
-           },
-         )
-       });
-
-    addToStr("}");
-    str^;
-  | (_, Record) =>
+and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
+  switch (obj.values |> Array.length) {
+  | 0 => "unit"
+  | _ =>
     let str = ref("");
     let addToStr = s => str := str^ ++ s;
 
@@ -235,9 +201,9 @@ and printObject =
 
       if (hasFragments && !ignoreFragmentRefs) {
         addToStr(
-          printRecordPropName("getFragmentRefs")
-          ++ ": unit => "
-          ++ printObject(~obj, ~state, ~printAs=OnlyFragmentRefs, ()),
+          printRecordPropName("fragmentRefs")
+          ++ ": "
+          ++ obj->printFragmentRefs,
         );
       };
 
@@ -246,6 +212,32 @@ and printObject =
 
     str^;
   };
+}
+and printFragmentRefs = (obj: object_) => {
+  let str = ref("ReasonRelay.fragmentRefs(");
+  let addToStr = s => str := str^ ++ s;
+
+  obj.values
+  |> Tablecloth.Array.filter(~f=v =>
+       switch (v) {
+       | FragmentRef(_) => true
+       | Prop(_) => false
+       }
+     )
+  |> Array.iteri((index, p) => {
+       index == 0 ? addToStr("[") : ();
+
+       addToStr(
+         switch (p) {
+         | FragmentRef(name) => " | `" ++ name
+         | Prop(_) => ""
+         },
+       );
+     });
+
+  addToStr("])");
+
+  str^;
 }
 and printArray = (~propValue, ~state) =>
   "array(" ++ printPropValue(~propValue, ~state) ++ ")"
@@ -597,29 +589,20 @@ let printEnum = (enum: fullEnum): string => {
 };
 
 let fragmentRefAssets = (~plural=false, fragmentName) => {
-  let fref = fragmentName |> getFragmentRefName;
-
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
   addToStr("type t;");
   addToStr("type fragmentRef;");
-  addToStr("type fragmentRefSelector('a) = ");
-
-  if (plural) {
-    addToStr("array(");
-  };
-
-  addToStr("{.. \"" ++ fref ++ "\": t} as 'a");
-
-  if (plural) {
-    addToStr(")");
-  };
-
-  addToStr(";");
 
   addToStr(
-    "external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \"%identity\";",
+    "external getFragmentRef: "
+    ++ (plural ? "array(" : "")
+    ++ " ReasonRelay.fragmentRefs([> | `"
+    ++ fragmentName
+    ++ "])"
+    ++ (plural ? ")" : "")
+    ++ " => fragmentRef = \"%identity\";",
   );
 
   str^;

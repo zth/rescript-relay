@@ -142,9 +142,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -156,9 +156,7 @@ type operationType = ReasonRelay.fragmentNode;
 
 module Types = {
   type fragment = {
-    getFragmentRefs:
-      unit =>
-      {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`SomeComponent_user]),
   };
 };
 
@@ -179,9 +177,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__SomeOtherComponent_user\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeOtherComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -214,9 +212,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -496,9 +494,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__SomeFragment_user\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeFragment_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -752,9 +750,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -826,9 +824,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -897,9 +895,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -1085,8 +1083,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_user\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`app_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -1120,8 +1119,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_observer\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`app_observer]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -1134,13 +1134,11 @@ type operationType = ReasonRelay.fragmentNode;
 module Types = {
   type response_participantById_User = {
     id: string,
-    getFragmentRefs:
-      unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_user]),
   };
   type response_participantById_Observer = {
     id: string,
-    getFragmentRefs:
-      unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_observer]),
   };
   type response_participantById = [
     | \`User(response_participantById_User)
@@ -1404,9 +1402,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. \\"__$fragment_ref__Participant_participant\\": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`Participant_participant]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
