@@ -9,14 +9,6 @@ type operationType =
   | Subscription(string)
   | Query(string);
 
-type objectPrintAs =
-  | OnlyFragmentRefs
-  | Record;
-
-type objectPrintMode =
-  | Full
-  | Signature;
-
 [@gentype]
 type connectionInfo = {
   key: string,
@@ -62,6 +54,7 @@ and object_ = {
 }
 and rootType =
   | Operation(rootStructure)
+  | RawResponse(option(rootStructure))
   | Fragment(rootStructure)
   | Variables(rootStructure)
   | ObjectTypeDeclaration({
@@ -108,6 +101,7 @@ type intermediateState = {
   objects: list(obj),
   variables: option(obj),
   response: option(obj),
+  rawResponse: option(obj),
   fragment: option(fragment),
 };
 
@@ -117,6 +111,7 @@ type fullState = {
   objects: list(finalizedObj),
   variables: option(object_),
   response: option(object_),
+  rawResponse: option(object_),
   fragment: option(fragment),
 };
 

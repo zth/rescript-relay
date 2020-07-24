@@ -23,9 +23,9 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response = {
-    getFragmentRef_TestPagination_query:
-      unit => TestPagination_query_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_query]),
   };
+  type rawResponse = response;
   type refetchVariables = {
     count: option(int),
     cursor: option(string),
@@ -57,7 +57,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":"TestPagination_query"}}} |json}
+    {json| {"__root":{"":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -67,6 +67,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |json}
@@ -170,7 +173,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionRefetchQuery",
     "selections": [
       {
         "args": [
@@ -188,7 +191,7 @@ return {
           (v2/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "TestPagination_query"
+        "name": "TestPaginationUnion_query"
       }
     ],
     "type": "Query",
@@ -198,7 +201,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -365,19 +368,19 @@ return {
           "onlineStatuses"
         ],
         "handle": "connection",
-        "key": "TestPagination_query_members",
+        "key": "TestPaginationUnion_query_members",
         "kind": "LinkedHandle",
         "name": "members"
       }
     ]
   },
   "params": {
-    "cacheID": "661064a85040ec7f5445b32e1ea4f26e",
+    "cacheID": "66615af413ef07d5369ef0bd94617e92",
     "id": null,
     "metadata": {},
-    "name": "TestPaginationRefetchQuery",
+    "name": "TestPaginationUnionRefetchQuery",
     "operationKind": "query",
-    "text": "query TestPaginationRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPagination_query_2z6KWr\n}\n\nfragment TestPagination_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPagination_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPagination_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() |json}

@@ -47,7 +47,11 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = array(t);
+type fragmentRef;
+external getFragmentRef:
+  array(ReasonRelay.fragmentRefs([> | `TestFragment_plural_user])) =>
+  fragmentRef =
+  "%identity";
 
 module Utils = {};
 

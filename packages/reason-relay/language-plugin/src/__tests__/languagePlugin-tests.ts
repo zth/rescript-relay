@@ -64,17 +64,18 @@ function generate(text: string, options?: any, extraDefs: string = "") {
     text
   );
 
-  return new CompilerContext(extendedSchema)
+  const ctx = new CompilerContext(extendedSchema)
     .addAll(definitions)
-    .applyTransforms(RelayReasonGenerator.transforms)
+    .applyTransforms(RelayReasonGenerator.transforms);
+
+  return ctx
     .documents()
     .map(
       (doc: any) =>
         `// ${doc.name}.graphql\n${printCode(
           RelayReasonGenerator.generate(extendedSchema, doc, {
-            customScalars: {},
+            normalizationIR: ctx.get(doc.name),
             optionalInputFields: [],
-            existingFragmentNames: new Set([]),
             ...options,
           })
         )}`
@@ -126,9 +127,8 @@ describe("Language plugin tests", () => {
     });
 
     it("prints single fragment references", () => {
-      let generated = collapseString(
-        generate(
-          `
+      let generated = generate(
+        `
         fragment SomeComponent_user on User {
           id
         }
@@ -140,13 +140,10 @@ describe("Language plugin tests", () => {
               ...SomeComponent_user
             }
           }`
-        )
       );
 
       expect(
-        generated.includes(
-          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
-        )
+        generated.includes("ReasonRelay.fragmentRefs([ | `SomeComponent_user])")
       ).toBe(true);
     });
 
@@ -175,13 +172,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          "getFragmentRef_OtherComponent_user: unit => OtherComponent_user_graphql.t"
+          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user], )"
         )
       ).toBe(true);
     });
@@ -221,25 +212,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t"
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          "getFragmentRef_OtherComponent_user: unit => OtherComponent_user_graphql.t"
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          "getFragmentRef_AnotherComponent_user: unit => AnotherComponent_user_graphql.t"
-        )
-      ).toBe(true);
-
-      expect(
-        generated.includes(
-          "getFragmentRef_LastComponent_user: unit => LastComponent_user_graphql.t"
+          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user | `AnotherComponent_user | `LastComponent_user ], )"
         )
       ).toBe(true);
     });
@@ -440,16 +413,23 @@ describe("Language plugin tests", () => {
     });
 
     it("handles plural fragments", () => {
-      let generated = generate(
-        `fragment SomeComponent_user on User @relay(plural: true) {
+      let generated = collapseString(
+        generate(
+          `fragment SomeComponent_user on User @relay(plural: true) {
           id
           firstName
         }`
+        )
       );
 
       expect(
-        collapseString(generated).includes(
+        generated.includes(
           `type fragment_t = { id: string, firstName: string, }; type fragment = array(fragment_t);`
+        )
+      ).toBe(true);
+      expect(
+        generated.includes(
+          "array(ReasonRelay.fragmentRefs([> | `SomeComponent_user]))"
         )
       ).toBe(true);
     });
@@ -747,22 +727,6 @@ describe("Language plugin tests", () => {
         `type response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, };`
       );
     });
-
-    it.skip("generates connection helpers when connection is present", () => {
-      let generated = generate(
-        `query SomeQuery {
-          me {
-            friendsConnection(first: 2) @connection(key: "SomeQuery_me_friendsConnection") {
-              edges {
-                node {
-                  id
-                }
-              }
-            }
-          }
-        }`
-      );
-    });
   });
 
   describe("Field names", () => {
@@ -878,6 +842,22 @@ describe("Language plugin tests", () => {
             }
           }`
       );
+    });
+  });
+
+  describe("raw_response_type", () => {
+    it("outputs code for handling @raw_response_type", () => {
+      let generated = generate(
+        `query SomeQuery @raw_response_type {
+            me {
+              firstName
+              lastName
+            }
+          }          
+          `
+      );
+
+      expect(generated).toMatchSnapshot();
     });
   });
 });

@@ -4,6 +4,7 @@ module Types = {
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
+    id: string,
     firstName: string,
     friendsConnection: fragment_friendsConnection,
   };
@@ -25,7 +26,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestPaginationInNode_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -36,8 +40,15 @@ let node: operationType = [%raw
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "TestPagination_user",
+  "name": "TestPaginationInNode_user",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,

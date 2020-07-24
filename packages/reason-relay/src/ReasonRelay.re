@@ -8,7 +8,7 @@ type fragmentNode;
 type mutationNode;
 type subscriptionNode;
 
-type wrappedFragmentRef;
+type fragmentRefs('fragments);
 
 type dataId;
 
@@ -896,17 +896,16 @@ type refetchFnRaw('variables) =
   ) =>
   unit;
 
+let nullableToOptionalExnHandler =
+  fun
+  | None => None
+  | Some(handler) =>
+    Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
+
 let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
   "fetchPolicy": fetchPolicy |> mapFetchPolicy,
   "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
-  "onComplete":
-    Some(
-      maybeExn =>
-        switch (onComplete, maybeExn |> Js.Nullable.toOption) {
-        | (Some(onComplete), maybeExn) => onComplete(maybeExn)
-        | _ => ()
-        },
-    ),
+  "onComplete": onComplete |> nullableToOptionalExnHandler,
 };
 
 [@bs.module "react-relay/hooks"]
@@ -962,7 +961,7 @@ module type MakeUsePaginationFragmentConfig = {
 };
 
 type paginationLoadMoreOptions = {
-  onComplete: option(option(Js.Exn.t) => unit),
+  onComplete: option(Js.nullable(Js.Exn.t) => unit),
 };
 
 type paginationLoadMoreFn =
@@ -994,10 +993,9 @@ external usePaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1024,10 +1022,9 @@ external useBlockingPaginationFragment:
   {
     .
     "data": 'fragmentData,
-    "loadNext":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "loadPrevious":
-      [@bs.meth] ((int, option(paginationLoadMoreOptions)) => Disposable.t),
+      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
     "hasNext": bool,
     "hasPrevious": bool,
     "isLoadingNext": bool,
@@ -1058,9 +1055,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       refetch:
@@ -1072,7 +1075,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1086,9 +1092,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(count, Some({onComplete: onComplete})),
+        p##loadNext(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(count, Some({onComplete: onComplete})),
+        p##loadPrevious(
+          count,
+          {onComplete: onComplete |> nullableToOptionalExnHandler},
+        ),
       hasNext: p##hasNext,
       hasPrevious: p##hasPrevious,
       isLoadingNext: p##isLoadingNext,
@@ -1102,7 +1114,10 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           (),
         ) =>
         p##refetch(
-          variables |> C.convertVariables |> _cleanVariables,
+          variables
+          |> C.convertVariables
+          |> _cleanVariables
+          |> _cleanObjectFromUndefined,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1116,9 +1131,13 @@ module type MutationConfig = {
   type variables;
   type responseRaw;
   type response;
+  type rawResponse;
+  type rawResponseRaw;
   let node: mutationNode;
   let convertResponse: responseRaw => response;
   let wrapResponse: response => responseRaw;
+  let convertRawResponse: rawResponseRaw => rawResponse;
+  let wrapRawResponse: rawResponse => rawResponseRaw;
   let convertVariables: variables => variables;
 };
 
@@ -1127,34 +1146,34 @@ type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
 
 type mutationError = {message: string};
 
-type useMutationConfig('response, 'variables) = {
+type useMutationConfig('response, 'rawResponse, 'variables) = {
   onError: option(mutationError => unit),
   onCompleted: option(('response, option(array(mutationError))) => unit),
   onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('response),
+  optimisticResponse: option('rawResponse),
   optimisticUpdater: option(optimisticUpdaterFn),
   updater: option(updaterFn('response)),
   variables: 'variables,
 };
 
-type _useMutationConfig('response, 'variables) = {
+type _useMutationConfig('response, 'rawResponse, 'variables) = {
   onError: option(mutationError => unit),
   onCompleted:
     option(('response, Js.Nullable.t(array(mutationError))) => unit),
   onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('response),
+  optimisticResponse: option('rawResponse),
   optimisticUpdater: option(optimisticUpdaterFn),
   updater: option(updaterFn('response)),
   variables: 'variables,
 };
 
-type _commitMutationConfig('variables, 'response) = {
+type _commitMutationConfig('variables, 'rawResponse, 'response) = {
   mutation: mutationNode,
   variables: 'variables,
   onCompleted:
     option(('response, Js.Nullable.t(array(mutationError))) => unit),
   onError: option(Js.Nullable.t(mutationError) => unit),
-  optimisticResponse: option('response),
+  optimisticResponse: option('rawResponse),
   optimisticUpdater: option(optimisticUpdaterFn),
   updater: option(updaterFn('response)),
 };
@@ -1163,14 +1182,20 @@ exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
 external commitMutation_:
-  (Environment.t, _commitMutationConfig('variables, 'response)) =>
+  (
+    Environment.t,
+    _commitMutationConfig('variables, 'rawResponse, 'response)
+  ) =>
   Disposable.t =
   "commitMutation";
 
 [@bs.module "react-relay/lib/relay-experimental"]
 external useMutation:
   mutationNode =>
-  (_useMutationConfig('response, 'variables) => Disposable.t, bool) =
+  (
+    _useMutationConfig('response, 'rawResponse, 'variables) => Disposable.t,
+    bool,
+  ) =
   "useMutation";
 
 module MakeUseMutation = (C: MutationConfig) => {
@@ -1202,7 +1227,7 @@ module MakeUseMutation = (C: MutationConfig) => {
           optimisticResponse:
             switch (optimisticResponse) {
             | None => None
-            | Some(r) => Some(r |> C.wrapResponse)
+            | Some(r) => Some(r |> C.wrapRawResponse)
             },
           onUnsubscribe,
           variables: variables |> C.convertVariables |> _cleanVariables,
@@ -1257,7 +1282,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
         optimisticResponse:
           switch (optimisticResponse) {
           | None => None
-          | Some(r) => Some(r |> C.wrapResponse)
+          | Some(r) => Some(r |> C.wrapRawResponse)
           },
         optimisticUpdater,
         updater:
@@ -1303,7 +1328,7 @@ module MakeCommitMutation = (C: MutationConfig) => {
           optimisticResponse:
             switch (optimisticResponse) {
             | None => None
-            | Some(r) => Some(r |> C.wrapResponse)
+            | Some(r) => Some(r |> C.wrapRawResponse)
             },
           optimisticUpdater,
           updater:

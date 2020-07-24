@@ -1,7 +1,7 @@
 module Query = [%relay.query
   {|
-    query TestPaginationQuery($groupId: ID!) {
-      ...TestPagination_query @arguments(groupId: $groupId)
+    query TestPaginationUnionQuery($groupId: ID!) {
+      ...TestPaginationUnion_query @arguments(groupId: $groupId)
     }
 |}
 ];
@@ -9,7 +9,7 @@ module Query = [%relay.query
 // This is just to ensure that fragments on unions work
 module UserFragment = [%relay.fragment
   {|
-  fragment TestPagination_user on User {
+  fragment TestPaginationUnion_user on User {
     firstName
     friendsConnection(first: 1) {
       totalCount
@@ -20,8 +20,8 @@ module UserFragment = [%relay.fragment
 
 module Fragment = [%relay.fragment
   {|
-    fragment TestPagination_query on Query
-      @refetchable(queryName: "TestPaginationRefetchQuery")
+    fragment TestPaginationUnion_query on Query
+      @refetchable(queryName: "TestPaginationUnionRefetchQuery")
       @argumentDefinitions(
         groupId: { type: "ID!" }
         onlineStatuses: { type: "[OnlineStatus!]" }
@@ -33,13 +33,13 @@ module Fragment = [%relay.fragment
         onlineStatuses: $onlineStatuses
         first: $count
         after: $cursor
-      ) @connection(key: "TestPagination_query_members") {
+      ) @connection(key: "TestPaginationUnion_query_members") {
         edges {
           node {
             __typename
             ... on User {
               id
-              ...TestPagination_user
+              ...TestPaginationUnion_user
             }
 
             ... on Group {
@@ -86,7 +86,7 @@ module Test = {
       React.useTransition(~config={timeoutMs: 5000}, ());
 
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
-      Fragment.usePagination(query.getFragmentRef_TestPagination_query());
+      Fragment.usePagination(query.fragmentRefs);
 
     <div>
       {data.members
@@ -95,12 +95,10 @@ module Test = {
            switch (member) {
            | `User(user) =>
              <div id={user.id}>
-               <UserDisplayer
-                 user={user.getFragmentRef_TestPagination_user()}
-               />
+               <UserDisplayer user={user.fragmentRefs} />
              </div>
            | `Group(group) =>
-             <div id={group.id}>
+             <div key={group.id}>
                {React.string(
                   "Group "
                   ++ group.name
@@ -113,7 +111,7 @@ module Test = {
                 )}
              </div>
            | `UnselectedUnionMember(_) =>
-             <div id={i |> string_of_int}>
+             <div key={i |> string_of_int}>
                {React.string("Unknown type")}
              </div>
            }

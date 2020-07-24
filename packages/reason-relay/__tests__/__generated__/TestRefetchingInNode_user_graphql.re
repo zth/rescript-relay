@@ -51,7 +51,7 @@ module Internal = {
 type t;
 type fragmentRef;
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `TestRefetching_user]) => fragmentRef =
+  ReasonRelay.fragmentRefs([> | `TestRefetchingInNode_user]) => fragmentRef =
   "%identity";
 
 module Utils = {};
@@ -62,7 +62,10 @@ let node: operationType = [%raw
   {json| {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
+      "defaultValue": [
+        "Online",
+        "Offline"
+      ],
       "kind": "LocalArgument",
       "name": "friendsOnlineStatuses"
     },
@@ -79,11 +82,11 @@ let node: operationType = [%raw
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": require('./TestRefetchingRefetchQuery_graphql.bs.js').node,
+      "operation": require('./TestRefetchingInNodeRefetchQuery_graphql.bs.js').node,
       "identifierField": "id"
     }
   },
-  "name": "TestRefetching_user",
+  "name": "TestRefetchingInNode_user",
   "selections": [
     {
       "alias": null,

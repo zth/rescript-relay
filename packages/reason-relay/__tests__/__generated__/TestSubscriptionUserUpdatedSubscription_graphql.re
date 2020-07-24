@@ -26,19 +26,19 @@ module Types = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRef_TestSubscription_user:
-      unit => TestSubscription_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
   type response_userUpdated = {user: option(response_userUpdated_user)};
 
   type response = {userUpdated: option(response_userUpdated)};
+  type rawResponse = response;
   type variables = {userId: string};
 };
 
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":"TestSubscription_user"},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertResponse = v =>
@@ -48,6 +48,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

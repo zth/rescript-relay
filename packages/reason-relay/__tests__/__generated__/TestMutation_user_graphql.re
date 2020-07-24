@@ -25,6 +25,7 @@ module Types = {
   type fragment = {
     id: string,
     firstName: string,
+    lastName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
   };
@@ -46,7 +47,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestMutation_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -71,6 +75,13 @@ let node: operationType = [%raw
       "args": null,
       "kind": "ScalarField",
       "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
       "storageKey": null
     },
     {

@@ -36,6 +36,7 @@ module Types = {
   };
 
   type response = {mutationWithReservedName: bool};
+  type rawResponse = response;
   type variables = {input: mutationWithReservedNameInput};
 };
 
@@ -66,6 +67,12 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
+
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"MutationWithReservedNameInput\\"}},\\"MutationWithReservedNameInput\\":{\\"nested\\":{\\"n\\":\\"\\",\\"r\\":\\"MutationWithReservedNameInput\\"}}} |json}
   ];
@@ -90,7 +97,7 @@ module Utils = {
 
   let makeVariables = (~input): variables => {input: input};
 
-  let makeOptimisticResponse = (~mutationWithReservedName): response => {
+  let makeOptimisticResponse = (~mutationWithReservedName): rawResponse => {
     mutationWithReservedName: mutationWithReservedName,
   };
 };
@@ -134,7 +141,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -146,14 +156,14 @@ type operationType = ReasonRelay.fragmentNode;
 
 module Types = {
   type fragment = {
-    getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`SomeComponent_user]),
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"\\":{\\"f\\":\\"SomeComponent_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -166,7 +176,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeOtherComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -198,7 +211,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeComponent_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -245,6 +261,7 @@ module Types = {
   };
 
   type response = {setUserLocation: response_setUserLocation};
+  type rawResponse = response;
   type variables = {input: setUserLocationInput};
 };
 
@@ -274,6 +291,12 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
@@ -317,7 +340,7 @@ module Utils = {
     changedUser: changedUser,
   };
 
-  let makeOptimisticResponse = (~setUserLocation): response => {
+  let makeOptimisticResponse = (~setUserLocation): rawResponse => {
     setUserLocation: setUserLocation,
   };
 };
@@ -347,13 +370,14 @@ module Types = {
   };
 
   type response = {setUserLocation: response_setUserLocation};
+  type rawResponse = response;
   type variables = {input: setUserLocationInput};
 };
 
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"SomeFragment_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -366,7 +390,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"SomeFragment_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -376,6 +400,12 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
@@ -415,7 +445,7 @@ module Utils = {
     changedUser: changedUser,
   };
 
-  let makeOptimisticResponse = (~setUserLocation): response => {
+  let makeOptimisticResponse = (~setUserLocation): rawResponse => {
     setUserLocation: setUserLocation,
   };
 };
@@ -463,7 +493,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`SomeFragment_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -495,6 +528,7 @@ module Types = {
   };
 
   type response = {setUserLocation: response_setUserLocation};
+  type rawResponse = response;
   type variables = {input: setUserLocationInput};
 };
 
@@ -524,6 +558,12 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"SetUserLocationInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"},\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}}} |json}
@@ -566,7 +606,7 @@ module Utils = {
     changedUser: changedUser,
   };
 
-  let makeOptimisticResponse = (~setUserLocation): response => {
+  let makeOptimisticResponse = (~setUserLocation): rawResponse => {
     setUserLocation: setUserLocation,
   };
 };
@@ -586,6 +626,7 @@ module Types = {
   };
 
   type response = {node: option(response_node)};
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -602,6 +643,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -705,7 +749,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -776,7 +823,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -844,7 +894,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`TestPagination_query]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -888,6 +941,7 @@ module Types = {
   };
 
   type response = {user: option(response_user)};
+  type rawResponse = response;
   type refetchVariables = {userId: option(string)};
   let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
     userId: userId,
@@ -908,6 +962,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -949,6 +1006,7 @@ module Types = {
   type response_userChanged = {user: option(response_userChanged_user)};
 
   type response = {userChanged: response_userChanged};
+  type rawResponse = response;
   type variables = {input: userChangedInput};
 };
 
@@ -965,6 +1023,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"input\\":{\\"r\\":\\"UserChangedInput\\"}},\\"UserChangedInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"}}} |json}
@@ -1021,7 +1082,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`app_user]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -1054,7 +1118,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`app_observer]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -1066,12 +1133,12 @@ type operationType = ReasonRelay.fragmentNode;
 
 module Types = {
   type response_participantById_User = {
-    getFragmentRef_app_user: unit => App_user_graphql.t,
     id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_user]),
   };
   type response_participantById_Observer = {
-    getFragmentRef_app_observer: unit => App_observer_graphql.t,
     id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_observer]),
   };
   type response_participantById = [
     | \`User(response_participantById_User)
@@ -1089,6 +1156,7 @@ module Types = {
         ],
       ),
   };
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -1121,7 +1189,7 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"app_user\\"},\\"participantById_observer\\":{\\"f\\":\\"app_observer\\"}}} |json}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
@@ -1133,6 +1201,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -1190,6 +1261,7 @@ module Types = {
         ],
       ),
   };
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -1234,6 +1306,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -1326,7 +1401,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | \`Participant_participant]) => fragmentRef =
+  \\"%identity\\";
 
 module Utils = {};
 
@@ -1405,6 +1483,7 @@ module Types = {
         ],
       ),
   };
+  type rawResponse = response;
   type variables = unit;
 };
 
@@ -1475,6 +1554,76 @@ module Internal = {
     ->ReasonRelay._convertObj(
         responseConverter,
         responseConverterMap,
+        Js.undefined,
+      );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay._convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type preloadToken;
+
+module Utils = {};
+
+type operationType = ReasonRelay.queryNode;
+"
+`;
+
+exports[`Language plugin tests raw_response_type outputs code for handling @raw_response_type 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+
+module Types = {
+  type rawResponse_me = {
+    firstName: string,
+    lastName: string,
+  };
+  type response_me = {
+    firstName: string,
+    lastName: string,
+  };
+
+  type response = {me: response_me};
+  type rawResponse = {me: rawResponse_me};
+  type variables = unit;
+};
+
+module Internal = {
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let responseConverterMap = ();
+  let convertResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let rawResponseConverterMap = ();
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
         Js.undefined,
       );
 

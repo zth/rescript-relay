@@ -3,20 +3,21 @@
 module Types = {
   type response_member = {
     __typename: string,
-    getFragmentRef_TestUnionFragment_member:
-      unit => TestUnionFragment_member_graphql.t,
-    getFragmentRef_TestUnionFragment_plural_member:
-      unit => TestUnionFragment_plural_member_graphql.t,
+    fragmentRefs:
+      ReasonRelay.fragmentRefs(
+        [ | `TestUnionFragment_member | `TestUnionFragment_plural_member],
+      ),
   };
 
   type response = {member: option(response_member)};
+  type rawResponse = response;
   type variables = unit;
 };
 
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"member":{"n":"","f":"TestUnionFragment_member,TestUnionFragment_plural_member"}}} |json}
+    {json| {"__root":{"member":{"n":"","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -26,6 +27,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}

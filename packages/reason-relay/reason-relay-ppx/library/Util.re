@@ -273,19 +273,38 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             let convertFragment = Operation.Internal.convertFragment;
           })
       ],
-      [%stri let use = UseFragment.use],
-      [%stri let useOpt = UseFragment.useOpt],
+      [%stri
+        let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
+      ],
+      [%stri
+        let useOpt = opt_fRef => UseFragment.useOpt(
+          switch(opt_fRef) {
+          | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
+          | None => None
+        })
+      ],
       hasConnection
-        ? [%stri let usePagination = UsePaginationFragment.usePagination]
+        ? [%stri
+          let usePagination = fRef =>
+            UsePaginationFragment.usePagination(
+              fRef |> Operation.getFragmentRef,
+            )
+        ]
         : [%stri ()],
       hasConnection
         ? [%stri
-          let useBlockingPagination = UsePaginationFragment.useBlockingPagination
+          let useBlockingPagination = fRef =>
+            UsePaginationFragment.useBlockingPagination(
+              fRef |> Operation.getFragmentRef,
+            )
         ]
         : [%stri ()],
       switch (refetchableQueryName) {
       | Some(_) => [%stri
-          let useRefetchable = UseRefetchableFragment.useRefetchable
+          let useRefetchable = fRef =>
+            UseRefetchableFragment.useRefetchable(
+              fRef |> Operation.getFragmentRef,
+            )
         ]
       | None =>
         %stri
@@ -346,9 +365,13 @@ let makeMutation = (~loc, ~moduleName) =>
             type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
             type response = Types.response;
+            type rawResponseRaw = Operation.Internal.rawResponseRaw;
+            type rawResponse = Types.rawResponse;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertRawResponse = Operation.Internal.convertRawResponse;
+            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
             let convertVariables = Operation.Internal.convertVariables;
           })
       ],
@@ -358,9 +381,13 @@ let makeMutation = (~loc, ~moduleName) =>
             type variables = Types.variables;
             type responseRaw = Operation.Internal.responseRaw;
             type response = Types.response;
+            type rawResponseRaw = Operation.Internal.rawResponseRaw;
+            type rawResponse = Types.rawResponse;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
             let wrapResponse = Operation.Internal.convertWrapResponse;
+            let convertRawResponse = Operation.Internal.convertRawResponse;
+            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
             let convertVariables = Operation.Internal.convertVariables;
           })
       ],
@@ -387,7 +414,7 @@ let makeSubscription = (~loc, ~moduleName) =>
             type response = Types.response;
             let node = Operation.node;
             let convertResponse = Operation.Internal.convertResponse;
-            let convertVariables = Operation.Internal.convertResponse;
+            let convertVariables = Operation.Internal.convertVariables;
           })
       ],
       [%stri let subscribe = Subscription.subscribe],

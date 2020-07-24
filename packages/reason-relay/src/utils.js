@@ -1,12 +1,3 @@
-/**
- * This is bound to each nested object with fragments,
- * and used as a dummy function for casting a record
- * to a Js.t object with the fragment references.
- */
-function getFragmentRefs() {
-  return this;
-}
-
 function getNewObj(maybeNewObj, currentObj) {
   return maybeNewObj || Object.assign({}, currentObj);
 }
@@ -31,19 +22,13 @@ function traverse(
   converters,
   nullableValue,
   instructionPaths,
-  fragmentsOnRoot
+  addFragmentOnRoot
 ) {
   var newObj;
 
-  if (fragmentsOnRoot != null) {
+  if (addFragmentOnRoot) {
     newObj = getNewObj(newObj, currentObj);
-    var fragmentRefNames = fragmentsOnRoot.split(",");
-
-    var boundFn = getFragmentRefs.bind(newObj);
-
-    for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
-      newObj["getFragmentRef_" + fragmentRefNames[i]] = boundFn;
-    }
+    newObj.fragmentRefs = newObj;
   }
 
   for (var key in currentObj) {
@@ -72,7 +57,7 @@ function traverse(
           typeof instructions["r"] === "string" &&
           fullInstructionMap[instructions["r"]];
 
-        var shouldAddFragmentFn = instructions["f"] != null;
+        var shouldAddFragmentFn = instructions["f"] === "";
 
         var shouldConvertEnum =
           typeof instructions["e"] === "string" &&
@@ -128,9 +113,8 @@ function traverse(
                 v.__typename.toLowerCase(),
               ]);
 
-              var unionRootFragments = (
-                instructionMap[getPathName(newPath)] || {}
-              ).f;
+              var unionRootHasFragment =
+                (instructionMap[getPathName(newPath)] || {}).f === "";
 
               var traversedValue = traverse(
                 fullInstructionMap,
@@ -140,7 +124,7 @@ function traverse(
                 converters,
                 nullableValue,
                 instructionPaths,
-                unionRootFragments
+                unionRootHasFragment
               );
 
               return converters[instructions["u"]](traversedValue);
@@ -148,15 +132,7 @@ function traverse(
 
             if (shouldAddFragmentFn && typeof v === "object") {
               var objWithFragmentFn = Object.assign({}, v);
-              var fragmentRefNames = instructions["f"].split(",");
-              var boundFn = getFragmentRefs.bind(objWithFragmentFn);
-
-              for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
-                objWithFragmentFn[
-                  "getFragmentRef_" + fragmentRefNames[i]
-                ] = boundFn;
-              }
-
+              objWithFragmentFn.fragmentRefs = objWithFragmentFn;
               return objWithFragmentFn;
             }
 
@@ -212,9 +188,8 @@ function traverse(
               v.__typename.toLowerCase(),
             ]);
 
-            var unionRootFragments = (
-              instructionMap[getPathName(newPath)] || {}
-            ).f;
+            var unionRootHasFragment =
+              (instructionMap[getPathName(newPath)] || {}).f === "";
 
             var traversedValue = traverse(
               fullInstructionMap,
@@ -224,7 +199,7 @@ function traverse(
               converters,
               nullableValue,
               instructionPaths,
-              unionRootFragments
+              unionRootHasFragment
             );
 
             newObj = getNewObj(newObj, currentObj);
@@ -235,14 +210,8 @@ function traverse(
             newObj = getNewObj(newObj, currentObj);
 
             var objWithFragmentFn = Object.assign({}, v);
-            var fragmentRefNames = instructions["f"].split(",");
-            var boundFn = getFragmentRefs.bind(objWithFragmentFn);
 
-            for (var i = 0; i <= fragmentRefNames.length - 1; i += 1) {
-              objWithFragmentFn[
-                "getFragmentRef_" + fragmentRefNames[i]
-              ] = boundFn;
-            }
+            objWithFragmentFn.fragmentRefs = objWithFragmentFn;
 
             newObj[key] = objWithFragmentFn;
           }
@@ -326,10 +295,8 @@ function traverser(
     return root;
   }
 
-  // We'll add a getFragmentRefs function to the root if needed here.
-  // getFragmentRefs is currently the only thing that's possible to add
-  // to the root.
-  var fragmentsOnRoot = (instructionMap[""] || {}).f;
+  // We'll add the fragmentRefs reference to the root if needed here.
+  var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
   var unionRootConverter = converters[(instructionMap[""] || {}).u];
 
   if (Array.isArray(root)) {

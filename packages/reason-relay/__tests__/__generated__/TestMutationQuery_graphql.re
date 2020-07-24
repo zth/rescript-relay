@@ -2,17 +2,18 @@
 
 module Types = {
   type response_loggedInUser = {
-    getFragmentRef_TestMutation_user: unit => TestMutation_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestMutation_user]),
   };
 
   type response = {loggedInUser: response_loggedInUser};
+  type rawResponse = response;
   type variables = unit;
 };
 
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser":{"f":"TestMutation_user"}}} |json}
+    {json| {"__root":{"loggedInUser":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -22,6 +23,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -102,6 +106,13 @@ let node: operationType = [%raw
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "lastName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "onlineStatus",
             "storageKey": null
           }
@@ -111,12 +122,12 @@ let node: operationType = [%raw
     ]
   },
   "params": {
-    "cacheID": "5b3541489d295624094118020dc521b2",
+    "cacheID": "ff8f6136d081d0756240bd180c60cf8c",
     "id": null,
     "metadata": {},
     "name": "TestMutationQuery",
     "operationKind": "query",
-    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  onlineStatus\n}\n"
+    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n}\n"
   }
 } |json}
 ];

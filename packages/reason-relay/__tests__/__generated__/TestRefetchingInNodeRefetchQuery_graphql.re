@@ -23,7 +23,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response_node = {
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetching_user]),
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetchingInNode_user]),
   };
 
   type response = {node: option(response_node)};
@@ -45,9 +45,7 @@ module Types = {
   };
   type variables = {
     friendsOnlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
+      array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
     showOnlineStatus: bool,
     id: string,
   };
@@ -71,7 +69,7 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"friendsOnlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"friendsOnlineStatuses":{"e":"enum_OnlineStatus"}}} |json}
   ];
   let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
   let convertVariables = v =>
@@ -88,7 +86,7 @@ type queryRef;
 module Utils = {
   open Types;
   let makeVariables =
-      (~friendsOnlineStatuses=?, ~showOnlineStatus, ~id, ()): variables => {
+      (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
     friendsOnlineStatuses,
     showOnlineStatus,
     id,
@@ -100,7 +98,10 @@ type operationType = ReasonRelay.queryNode;
 let node: operationType = [%raw
   {json| (function(){
 var v0 = {
-  "defaultValue": null,
+  "defaultValue": [
+    "Online",
+    "Offline"
+  ],
   "kind": "LocalArgument",
   "name": "friendsOnlineStatuses"
 },
@@ -130,7 +131,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestRefetchingRefetchQuery",
+    "name": "TestRefetchingInNodeRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -154,7 +155,7 @@ return {
               }
             ],
             "kind": "FragmentSpread",
-            "name": "TestRefetching_user"
+            "name": "TestRefetchingInNode_user"
           }
         ],
         "storageKey": null
@@ -171,7 +172,7 @@ return {
       (v1/*: any*/)
     ],
     "kind": "Operation",
-    "name": "TestRefetchingRefetchQuery",
+    "name": "TestRefetchingInNodeRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -253,12 +254,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5f6e3895ee9226e0416a9bd186edf459",
+    "cacheID": "04d4234bc755b04365ce0ee2a517f66a",
     "id": null,
     "metadata": {},
-    "name": "TestRefetchingRefetchQuery",
+    "name": "TestRefetchingInNodeRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]\n  $showOnlineStatus: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetching_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetching_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $showOnlineStatus: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() |json}

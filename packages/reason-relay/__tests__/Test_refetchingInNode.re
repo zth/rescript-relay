@@ -1,8 +1,11 @@
 module Query = [%relay.query
   {|
-    query TestRefetchingQuery {
-      loggedInUser {
-        ...TestRefetching_user
+    query TestRefetchingInNodeQuery($userId: ID!) {
+      node(id: $userId) {
+        __typename
+        ... on User {
+          ...TestRefetchingInNode_user
+        }
       }
     }
 |}
@@ -10,11 +13,11 @@ module Query = [%relay.query
 
 module Fragment = [%relay.fragment
   {|
-    fragment TestRefetching_user on User
-      @refetchable(queryName: "TestRefetchingRefetchQuery")
+    fragment TestRefetchingInNode_user on User
+      @refetchable(queryName: "TestRefetchingInNodeRefetchQuery")
       @argumentDefinitions(
-        friendsOnlineStatuses: { type: "[OnlineStatus!]" }
         showOnlineStatus: { type: "Boolean!", defaultValue: false }
+        friendsOnlineStatuses: { type: "[OnlineStatus!]!", defaultValue: [Online, Offline]}
       ) {
       firstName
       onlineStatus @include(if: $showOnlineStatus)
@@ -25,13 +28,10 @@ module Fragment = [%relay.fragment
 |}
 ];
 
-module Test = {
+module UserDisplayer = {
   [@react.component]
-  let make = () => {
-    let query = Query.use(~variables=(), ());
-
-    let (data, refetch) =
-      Fragment.useRefetchable(query.loggedInUser.fragmentRefs);
+  let make = (~queryRef) => {
+    let (data, refetch) = Fragment.useRefetchable(queryRef);
 
     let (startTransition, _) =
       React.useTransition(~config={timeoutMs: 5000}, ());
@@ -57,11 +57,7 @@ module Test = {
           startTransition(() =>
             refetch(
               ~variables=
-                Fragment.makeRefetchVariables(
-                  ~showOnlineStatus=true,
-                  ~friendsOnlineStatuses=[|`Online, `Offline|],
-                  (),
-                ),
+                Fragment.makeRefetchVariables(~showOnlineStatus=true, ()),
               (),
             )
           )
@@ -69,6 +65,18 @@ module Test = {
         {React.string("Fetch online status")}
       </button>
     </div>;
+  };
+};
+
+module Test = {
+  [@react.component]
+  let make = () => {
+    let query = Query.use(~variables={userId: "user-1"}, ());
+
+    switch (query.node) {
+    | Some(user) => <UserDisplayer queryRef={user.fragmentRefs} />
+    | None => React.string("-")
+    };
   };
 };
 

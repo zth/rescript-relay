@@ -10,11 +10,12 @@ module Query = [%relay.query
 
 module Mutation = [%relay.mutation
   {|
-    mutation TestMutationSetOnlineStatusMutation($onlineStatus: OnlineStatus!) {
+    mutation TestMutationSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
         user {
           id
           onlineStatus
+          ...TestFragment_user
         }
       }
     }
@@ -36,7 +37,7 @@ module ComplexMutation = [%relay.mutation
 
 module MutationWithOnlyFragment = [%relay.mutation
   {|
-    mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) {
+    mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
         user {
           ...TestMutation_user
@@ -51,6 +52,7 @@ module Fragment = [%relay.fragment
     fragment TestMutation_user on User {
       id
       firstName
+      lastName
       onlineStatus
     }
 |}
@@ -61,8 +63,7 @@ module Test = {
   let make = () => {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
-    let data =
-      Fragment.use(query.loggedInUser.getFragmentRef_TestMutation_user());
+    let data = Fragment.use(query.loggedInUser.fragmentRefs);
     let (mutate, isMutating) = Mutation.use();
     let (mutationResult, setMutationResult) = React.useState(() => None);
 
@@ -103,8 +104,15 @@ module Test = {
                 ~optimisticResponse=
                   makeOptimisticResponse(
                     ~setOnlineStatus=
-                      make_response_setOnlineStatus(
-                        ~user=make_response_setOnlineStatus_user(),
+                      make_rawResponse_setOnlineStatus(
+                        ~user=
+                          make_rawResponse_setOnlineStatus_user(
+                            ~id=data.id,
+                            ~firstName=data.firstName,
+                            ~lastName=data.lastName,
+                            ~onlineStatus=`Idle,
+                            (),
+                          ),
                         (),
                       ),
                     (),
@@ -177,11 +185,13 @@ module Test = {
                 ~optimisticResponse=
                   makeOptimisticResponse(
                     ~setOnlineStatus=
-                      make_response_setOnlineStatus(
+                      make_rawResponse_setOnlineStatus(
                         ~user=
-                          make_response_setOnlineStatus_user(
+                          make_rawResponse_setOnlineStatus_user(
                             ~id=data.id,
                             ~onlineStatus=`Idle,
+                            ~firstName=data.firstName,
+                            ~lastName=data.lastName,
                             (),
                           ),
                         (),

@@ -5,11 +5,12 @@
 - _BREAKING CHANGE_ Bindings in `ReactExperimental` for `Suspense`, `SuspenseList`, `ConcurrentModeRoot.render`, `createRoot` and `useTransition` have been moved to the official community bindings in [Reason-React](https://github.com/reasonml/reason-react).
 - Peer dependencies updated `reason-react@^0.9.1` and `bs-platform@^7.3.2`
 - Cleaned up the bindings to Relay and their interface files to reduce runtime size
-- _BREAKING CHANGE_ Fragment refs are no longer structurally typed through `Js.t`. Previously, all fragment refs for an object would be retrieved by doing `someObject.getFragmentRefs()`. That call would return a `Js.t` object containing all fragment references, which would then be structurally matched to ensure fragment type safety. This is now replaced with emitting a function for each fragment ref instead, like `someObject.getFragmentRef_NameOfMyFragment_here()`. More verbose, but at the same time a _huge_ improvement for things like error messages and manual type annotations. It's also hopefully much easier to understand.
+- _BREAKING CHANGE_ Fragment refs are now typed through polymorphic variants. Previously, all fragment refs for an object would be retrieved by doing `someObject.getFragmentRefs()`. That call would return a `Js.t` object containing all fragment references, which would then be structurally matched to ensure fragment type safety. This is now replaced with a regular prop called `fragmentRefs` that'll appear on any object with fragments spread. This improves the experience of using fragments immensely. Migration path: Where you previously did `someObj.getFragmentRefs()` now do `someObj.fragmentRefs` instead.
 - _BREAKING CHANGE_ The top level `node` field is now enhanced by a) collapsing the union it was previously typed as if there's only one selection anyway, and b) automatically resolve any existing node from the cache through the `node` root field.
 - Bindings for `queryCacheExpirationTime` (setting an expiration time for all cache items in `ms`) when creating the store.
 - _BREAKING CHANGE_ `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
 - Bind `useSubscribeToInvalidationState`, which allows listening and reacting to invalidations of records in the store.
+- Fix refetching with pagination when the parent queries have variables that are left unchanged in the refetch
 
 # 0.9.2
 

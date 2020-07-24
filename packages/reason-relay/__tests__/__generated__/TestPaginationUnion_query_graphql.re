@@ -2,8 +2,8 @@
 
 module Types = {
   type fragment_members_edges_node_User = {
-    getFragmentRef_TestPagination_user: unit => TestPagination_user_graphql.t,
     id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_user]),
   };
   type fragment_members_edges_node_Group_adminsConnection_edges_node = {
     id: string,
@@ -77,7 +77,7 @@ let wrap_fragment_members_edges_node:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":"TestPagination_user"},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
+    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
@@ -92,7 +92,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestPaginationUnion_query]) => fragmentRef =
+  "%identity";
 
 module Utils = {
   open Types;
@@ -177,10 +180,10 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": require('./TestPaginationRefetchQuery_graphql.bs.js').node
+      "operation": require('./TestPaginationUnionRefetchQuery_graphql.bs.js').node
     }
   },
-  "name": "TestPagination_query",
+  "name": "TestPaginationUnion_query",
   "selections": [
     {
       "alias": "members",
@@ -198,7 +201,7 @@ return {
       ],
       "concreteType": "MemberConnection",
       "kind": "LinkedField",
-      "name": "__TestPagination_query_members_connection",
+      "name": "__TestPaginationUnion_query_members_connection",
       "plural": false,
       "selections": [
         {
@@ -231,7 +234,7 @@ return {
                     {
                       "args": null,
                       "kind": "FragmentSpread",
-                      "name": "TestPagination_user"
+                      "name": "TestPaginationUnion_user"
                     }
                   ],
                   "type": "User",
