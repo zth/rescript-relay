@@ -575,7 +575,7 @@ let getPrintedFullState =
   finalStr^;
 };
 
-let validStringLiteralRegex = [%bs.re "/^[a-zA-Z][_a-zA-Z0-9]*$/"];
+let validStringLiteralRegex = [%bs.re "/^[_a-zA-Z][_a-zA-Z0-9]*$/"];
 
 let makeStringLiteralOrString = (value: string): Types.propType =>
   switch (
@@ -583,8 +583,10 @@ let makeStringLiteralOrString = (value: string): Types.propType =>
     ReservedKeywords.reservedKeywords->Belt.Array.getBy(word =>
       word === value
     ),
+    value,
   ) {
-  | (true, None) => StringLiteral(value)
+  | (_, _, "_") => Scalar(String)
+  | (true, None, _) => StringLiteral(value)
   | _ => Scalar(String)
   };
 
