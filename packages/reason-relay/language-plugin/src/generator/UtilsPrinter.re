@@ -260,6 +260,7 @@ let definitionToAssets =
     | DataId
     | Scalar(_)
     | Enum(_)
+    | StringLiteral(_)
     | FragmentRefValue(_) => ()
     | TypeReference(name) =>
       switch (

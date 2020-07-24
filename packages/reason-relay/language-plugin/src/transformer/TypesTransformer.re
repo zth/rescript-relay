@@ -113,6 +113,7 @@ let intermediateToFull =
       | DataId
       | Array(_)
       | Scalar(_)
+      | StringLiteral(_)
       | FragmentRefValue(_)
       | TypeReference(_) => ()
       };
@@ -570,6 +571,12 @@ let getPrintedFullState =
   finalStr^;
 };
 
+let validStringLiteralRegex = [%bs.re "/^[_a-zA-Z][_a-zA-Z0-9]*$/"];
+
+let makeStringLiteralOrString = (value: string): Types.propType =>
+  validStringLiteralRegex->Js.Re.test_(value)
+    ? StringLiteral(value) : Scalar(String);
+
 /**
  * Maps an object prop (represented by a Flow type) to a prop value
  * in our own model of the selections.
@@ -586,12 +593,15 @@ let rec mapObjProp =
   | String => {nullable: optional, propType: Scalar(String)}
 
   // Reason does not have string literals, so we map literals to normal strings
-  | StringLiteral(_) => {nullable: optional, propType: Scalar(String)}
+  | StringLiteral({value}) => {
+      nullable: optional,
+      propType: value->makeStringLiteralOrString,
+    }
 
   | Nullable((_, String)) => {nullable: true, propType: Scalar(String)}
-  | Nullable((_, StringLiteral(_))) => {
+  | Nullable((_, StringLiteral({value}))) => {
       nullable: true,
-      propType: Scalar(String),
+      propType: value->makeStringLiteralOrString,
     }
 
   // Our compiler fork already emits int/float as generic Flow types instead of number, so these are probably not needed, but leaving them in there anyway just in case.

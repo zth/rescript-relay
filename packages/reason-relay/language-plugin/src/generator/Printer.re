@@ -56,6 +56,8 @@ let printScalar = scalarValue =>
   | Any => printAnyType()
   };
 
+let printStringLiteral = literal => "[ | `" ++ literal ++ "]";
+
 let printDataIdType = () => "ReasonRelay.dataId";
 
 let getEnumFutureAddedValueName = (enum: fullEnum) =>
@@ -112,6 +114,7 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | DataId => printDataIdType()
   | Scalar(scalar) => printScalar(scalar)
+  | StringLiteral(literal) => printStringLiteral(literal)
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~propValue, ~state)

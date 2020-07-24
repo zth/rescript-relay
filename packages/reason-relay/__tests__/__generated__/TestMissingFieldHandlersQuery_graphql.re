@@ -2,7 +2,7 @@
 
 module Types = {
   type response_node = {
-    __typename: string,
+    __typename: [ | `User],
     firstName: string,
   };
 
