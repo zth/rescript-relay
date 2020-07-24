@@ -226,19 +226,7 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 "// SetUserLocationMutation.graphql
 /* @generated */
 
-type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
-
-let unwrap_enum_UserRole: string => enum_UserRole =
-  fun
-  | \\"Admin\\" => \`Admin
-  | \\"User\\" => \`User
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_UserRole: enum_UserRole => string =
-  fun
-  | \`Admin => \\"Admin\\"
-  | \`User => \\"User\\"
-  | \`FutureAddedValue(v) => v;
+type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
   type locationBounds = {
@@ -254,7 +242,7 @@ module Types = {
   type response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
-    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
+    role: enum_UserRole,
   };
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
@@ -456,24 +444,12 @@ type operationType = ReasonRelay.mutationNode;
 // SomeFragment_user.graphql
 /* @generated */
 
-type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
-
-let unwrap_enum_UserRole: string => enum_UserRole =
-  fun
-  | \\"Admin\\" => \`Admin
-  | \\"User\\" => \`User
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_UserRole: enum_UserRole => string =
-  fun
-  | \`Admin => \\"Admin\\"
-  | \`User => \\"User\\"
-  | \`FutureAddedValue(v) => v;
+type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
   type fragment = {
     firstName: string,
-    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
+    role: enum_UserRole,
   };
 };
 
@@ -1416,23 +1392,7 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-type enum_ObserverStatus = [
-  | \`Active
-  | \`Inactive
-  | \`FutureAddedValue(string)
-];
-
-let unwrap_enum_ObserverStatus: string => enum_ObserverStatus =
-  fun
-  | \\"Active\\" => \`Active
-  | \\"Inactive\\" => \`Inactive
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_ObserverStatus: enum_ObserverStatus => string =
-  fun
-  | \`Active => \\"Active\\"
-  | \`Inactive => \\"Inactive\\"
-  | \`FutureAddedValue(v) => v;
+type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
 
 module Types = {
   type response_participantById_Observer_manager_User = {
@@ -1441,7 +1401,7 @@ module Types = {
     id: string,
   };
   type response_participantById_Observer_manager_Observer = {
-    status: [ | \`Active | \`Inactive | \`FutureAddedValue(string)],
+    status: enum_ObserverStatus,
     isOnline: option(bool),
     id: string,
   };

@@ -470,16 +470,10 @@ describe("Language plugin tests", () => {
       );
 
       expect(
-        generated.includes(
-          "type enum_UserRole = [ | `Admin | `User | `FutureAddedValue(string)];"
-        )
+        generated.includes("type enum_UserRole = pri [> | `Admin | `User];")
       ).toBe(true);
 
-      expect(
-        generated.includes(
-          "role: [ | `Admin | `User | `FutureAddedValue(string)]"
-        )
-      ).toBe(true);
+      expect(generated.includes("role: enum_UserRole")).toBe(true);
     });
   });
 

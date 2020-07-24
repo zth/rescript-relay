@@ -64,26 +64,17 @@ let getEnumFutureAddedValueName = (enum: fullEnum) =>
   | None => "FutureAddedValue"
   };
 
-let printEnumDefinition = (enum: fullEnum, ~includeSemi: bool, ~mode): string => {
+let printEnumDefinition = (enum: fullEnum): string => {
   let enumName = makeEnumName(enum.name);
 
-  let str =
-    ref(
-      switch (mode) {
-      | `AsType => "type " ++ enumName ++ " = ["
-      | `OnlyDefinition => "["
-      },
-    );
+  let str = ref("type " ++ enumName ++ " = pri [>");
 
   let addToStr = s => str := str^ ++ s;
 
-  let futureAddedValueName = getEnumFutureAddedValueName(enum);
-
   enum.values
-  ->Belt.Array.concat([|futureAddedValueName ++ "(string)"|])
   ->Belt.Array.forEach(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
 
-  addToStr("]" ++ (includeSemi ? ";" : "") ++ "\n\n");
+  addToStr("];\n\n");
 
   str^;
 };
@@ -124,8 +115,7 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~propValue, ~state)
-  | Enum(enum) =>
-    printEnumDefinition(enum, ~includeSemi=false, ~mode=`OnlyDefinition)
+  | Enum(enum) => printEnumName(enum.name)
   | Union(union) =>
     union->printUnionTypeDefinition(
       ~includeSemi=false,
@@ -553,40 +543,7 @@ let printUnionTypes = (~state, ~printName, union: union) => {
   typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
 
-let printEnum = (enum: fullEnum): string => {
-  let enumName = makeEnumName(enum.name);
-
-  let str = ref(printEnumDefinition(enum, ~includeSemi=true, ~mode=`AsType));
-  let addToStr = s => str := str^ ++ s;
-
-  let futureAddedValueName = getEnumFutureAddedValueName(enum);
-
-  // Unwrap enum
-  addToStr(
-    "let unwrap_" ++ enumName ++ ": string => " ++ enumName ++ " = fun \n",
-  );
-
-  enum.values
-  ->Belt.Array.forEach(v => {
-      addToStr("| \"" ++ v ++ "\" => `" ++ printSafeName(v) ++ "\n")
-    });
-
-  addToStr("| v => `" ++ futureAddedValueName ++ "(v) \n\n");
-
-  // Wrap enum
-  addToStr(
-    "let wrap_" ++ enumName ++ ": " ++ enumName ++ " => string = fun \n",
-  );
-
-  enum.values
-  ->Belt.Array.forEach(v => {
-      addToStr("| `" ++ printSafeName(v) ++ " => \"" ++ v ++ "\" \n")
-    });
-
-  addToStr("| `" ++ futureAddedValueName ++ "(v) => v \n\n");
-
-  str^;
-};
+let printEnum = (enum: fullEnum): string => enum->printEnumDefinition;
 
 let fragmentRefAssets = (~plural=false, fragmentName) => {
   let str = ref("");

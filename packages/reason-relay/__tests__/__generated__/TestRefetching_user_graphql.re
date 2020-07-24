@@ -1,33 +1,13 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
     firstName: string,
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
     friendsConnection: fragment_friendsConnection,
     id: option(string),
   };
@@ -36,9 +16,9 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"id":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":""},"id":{"n":""}}} |json}
   ];
-  let fragmentConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
+  let fragmentConverterMap = ();
   let convertFragment = v =>
     v
     ->ReasonRelay._convertObj(

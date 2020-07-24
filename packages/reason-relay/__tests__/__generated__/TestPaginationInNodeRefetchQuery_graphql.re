@@ -1,25 +1,6 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   type response_node = {
@@ -29,10 +10,7 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
+    onlineStatuses: option(array(enum_OnlineStatus)),
     count: option(int),
     cursor: option(string),
     id: option(string),
@@ -45,10 +23,7 @@ module Types = {
     id,
   };
   type variables = {
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
+    onlineStatuses: option(array(enum_OnlineStatus)),
     count: option(int),
     cursor: option(string),
     id: string,
@@ -73,9 +48,9 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatuses":{"n":"","e":"enum_OnlineStatus"},"count":{"n":""},"cursor":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatuses":{"n":""},"count":{"n":""},"cursor":{"n":""}}} |json}
   ];
-  let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
+  let variablesConverterMap = ();
   let convertVariables = v =>
     v
     ->ReasonRelay._convertObj(
