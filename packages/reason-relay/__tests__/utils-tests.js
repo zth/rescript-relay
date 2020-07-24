@@ -2,51 +2,50 @@ const { traverser } = require("../src/utils");
 
 describe("conversion", () => {
   it("handles nullables at various levels", () => {
-    expect(
-      traverser(
-        {
+    const traversedObj = traverser(
+      {
+        me: {
+          name: "Name",
+          age: null,
+          nicknames: [null, "SomeName"],
+          nestedObjects: [{ someProp: null, otherProp: "Lars" }, null],
+        },
+        otherProp: null,
+      },
+      {
+        __root: {
+          "": {
+            f: "",
+          },
+          otherProp: {
+            n: "",
+          },
           me: {
-            name: "Name",
-            age: null,
-            nicknames: [null, "SomeName"],
-            nestedObjects: [{ someProp: null, otherProp: "Lars" }, null],
+            n: "",
+            f: "",
           },
-          otherProp: null,
-        },
-        {
-          __root: {
-            "": {
-              f: "",
-            },
-            otherProp: {
-              n: "",
-            },
-            me: {
-              n: "",
-              f: "",
-            },
-            me_age: {
-              n: "",
-            },
-            me_nicknames: {
-              n: "",
-            },
-            me_nestedObjects: {
-              n: "",
-              f: "",
-            },
-            me_nestedObjects_someProp: {
-              n: "",
-            },
+          me_age: {
+            n: "",
+          },
+          me_nicknames: {
+            n: "",
+          },
+          me_nestedObjects: {
+            n: "",
+            f: "",
+          },
+          me_nestedObjects_someProp: {
+            n: "",
           },
         },
-        {},
-        undefined
-      )
-    ).toEqual({
-      getFragmentRefs: expect.any(Function),
+      },
+      {},
+      undefined
+    );
+    expect(traversedObj).toEqual({
+      fragmentRefs: expect.any(Object),
       me: {
-        getFragmentRefs: expect.any(Function),
+        fragmentRefs: expect.any(Object),
         name: "Name",
         age: undefined,
         nicknames: [undefined, "SomeName"],
@@ -54,7 +53,7 @@ describe("conversion", () => {
           {
             someProp: undefined,
             otherProp: "Lars",
-            getFragmentRefs: expect.any(Function),
+            fragmentRefs: expect.any(Object),
           },
           undefined,
         ],
@@ -259,16 +258,16 @@ describe("conversion", () => {
         undefined
       )
     ).toEqual({
-      getFragmentRefs: expect.any(Function),
+      fragmentRefs: expect.any(Object),
       someUnion: [
         123,
         {
-          getFragmentRefs: expect.any(Function),
+          fragmentRefs: expect.any(Object),
           __typename: "User",
           firstName: "First",
           ageRange: 123,
           meta: {
-            getFragmentRefs: expect.any(Function),
+            fragmentRefs: expect.any(Object),
             ageRange: 234,
             nullable: undefined,
           },
@@ -279,12 +278,12 @@ describe("conversion", () => {
         [
           123,
           {
-            getFragmentRefs: expect.any(Function),
+            fragmentRefs: expect.any(Object),
             __typename: "User",
             firstName: "First",
             ageRange: 123,
             meta: {
-              getFragmentRefs: expect.any(Function),
+              fragmentRefs: expect.any(Object),
               ageRange: 234,
               nullable: undefined,
             },
@@ -293,12 +292,12 @@ describe("conversion", () => {
         [
           123,
           {
-            getFragmentRefs: expect.any(Function),
+            fragmentRefs: expect.any(Object),
             __typename: "Observer",
             name: undefined,
             ageRange: 345,
             meta: {
-              getFragmentRefs: expect.any(Function),
+              fragmentRefs: expect.any(Object),
               ageRange: 456,
               nullable: undefined,
             },
@@ -307,12 +306,12 @@ describe("conversion", () => {
               [
                 123,
                 {
-                  getFragmentRefs: expect.any(Function),
+                  fragmentRefs: expect.any(Object),
                   __typename: "User",
                   firstName: "Second",
                   ageRange: 999,
                   meta: {
-                    getFragmentRefs: expect.any(Function),
+                    fragmentRefs: expect.any(Object),
                     ageRange: 123,
                     nullable: undefined,
                   },

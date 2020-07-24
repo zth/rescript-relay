@@ -48,9 +48,10 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  array({.. "__$fragment_ref__TestFragment_plural_user": t} as 'a);
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  array(ReasonRelay.fragmentRefs([> | `TestFragment_plural_user])) =>
+  fragmentRef =
+  "%identity";
 
 module Utils = {};
 

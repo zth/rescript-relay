@@ -26,12 +26,7 @@ module Types = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
   type response_userUpdated = {user: option(response_userUpdated_user)};
 

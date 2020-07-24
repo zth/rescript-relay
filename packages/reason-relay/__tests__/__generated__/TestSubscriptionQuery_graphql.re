@@ -2,12 +2,7 @@
 
 module Types = {
   type response_loggedInUser = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestSubscription_user": TestSubscription_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
 
   type response = {loggedInUser: response_loggedInUser};

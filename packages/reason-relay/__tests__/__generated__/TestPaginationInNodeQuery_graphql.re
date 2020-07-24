@@ -4,12 +4,7 @@ module Types = {
   type response_node = {
     id: string,
     __typename: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestPaginationInNode_query": TestPaginationInNode_query_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_query]),
   };
 
   type response = {node: option(response_node)};

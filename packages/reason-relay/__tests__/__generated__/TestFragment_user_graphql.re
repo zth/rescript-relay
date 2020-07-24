@@ -26,12 +26,7 @@ module Types = {
     firstName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestFragment_sub_user": TestFragment_sub_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_sub_user]),
   };
 };
 
@@ -52,9 +47,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TestFragment_user": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestFragment_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 

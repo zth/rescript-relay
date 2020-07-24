@@ -3,13 +3,10 @@
 module Types = {
   type response_member = {
     __typename: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestUnionFragment_member": TestUnionFragment_member_graphql.t,
-        "__$fragment_ref__TestUnionFragment_plural_member": TestUnionFragment_plural_member_graphql.t,
-      },
+    fragmentRefs:
+      ReasonRelay.fragmentRefs(
+        [ | `TestUnionFragment_member | `TestUnionFragment_plural_member],
+      ),
   };
 
   type response = {member: option(response_member)};

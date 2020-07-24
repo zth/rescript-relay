@@ -67,7 +67,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
 
     switch (query.member) {
-    | Some(member) => <FragmentRenderer fragment={member.getFragmentRefs()} />
+    | Some(member) => <FragmentRenderer fragment={member.fragmentRefs} />
     | None => React.null
     };
   };

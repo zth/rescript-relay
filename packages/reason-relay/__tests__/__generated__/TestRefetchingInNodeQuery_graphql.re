@@ -3,12 +3,7 @@
 module Types = {
   type response_node = {
     __typename: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestRefetchingInNode_user": TestRefetchingInNode_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetchingInNode_user]),
   };
 
   type response = {node: option(response_node)};

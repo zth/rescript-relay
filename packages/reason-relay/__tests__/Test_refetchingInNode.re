@@ -74,7 +74,7 @@ module Test = {
     let query = Query.use(~variables={userId: "user-1"}, ());
 
     switch (query.node) {
-    | Some(user) => <UserDisplayer queryRef={user.getFragmentRefs()} />
+    | Some(user) => <UserDisplayer queryRef={user.fragmentRefs} />
     | None => React.string("-")
     };
   };

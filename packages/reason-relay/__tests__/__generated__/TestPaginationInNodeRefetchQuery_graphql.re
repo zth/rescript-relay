@@ -23,12 +23,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response_node = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestPaginationInNode_query": TestPaginationInNode_query_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_query]),
   };
 
   type response = {node: option(response_node)};

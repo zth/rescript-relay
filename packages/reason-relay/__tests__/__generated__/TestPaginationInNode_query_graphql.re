@@ -3,12 +3,7 @@
 module Types = {
   type fragment_friendsConnection_edges_node = {
     id: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestPaginationInNode_user": TestPaginationInNode_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_user]),
   };
   type fragment_friendsConnection_edges = {
     node: option(fragment_friendsConnection_edges_node),
@@ -40,9 +35,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TestPaginationInNode_query": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestPaginationInNode_query]) => fragmentRef =
+  "%identity";
 
 module Utils = {
   open Types;

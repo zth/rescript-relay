@@ -27,9 +27,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TestPaginationInNode_user": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestPaginationInNode_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 

@@ -1,12 +1,3 @@
-/**
- * This is bound to each nested object with fragments,
- * and used as a dummy function for casting a record
- * to a Js.t object with the fragment references.
- */
-function getFragmentRefs() {
-  return this;
-}
-
 function getNewObj(maybeNewObj, currentObj) {
   return maybeNewObj || Object.assign({}, currentObj);
 }
@@ -37,7 +28,7 @@ function traverse(
 
   if (addFragmentOnRoot) {
     newObj = getNewObj(newObj, currentObj);
-    newObj.getFragmentRefs = getFragmentRefs.bind(newObj);
+    newObj.fragmentRefs = newObj;
   }
 
   for (var key in currentObj) {
@@ -141,9 +132,7 @@ function traverse(
 
             if (shouldAddFragmentFn && typeof v === "object") {
               var objWithFragmentFn = Object.assign({}, v);
-              objWithFragmentFn.getFragmentRefs = getFragmentRefs.bind(
-                objWithFragmentFn
-              );
+              objWithFragmentFn.fragmentRefs = objWithFragmentFn;
               return objWithFragmentFn;
             }
 
@@ -222,9 +211,7 @@ function traverse(
 
             var objWithFragmentFn = Object.assign({}, v);
 
-            objWithFragmentFn.getFragmentRefs = getFragmentRefs.bind(
-              objWithFragmentFn
-            );
+            objWithFragmentFn.fragmentRefs = objWithFragmentFn;
 
             newObj[key] = objWithFragmentFn;
           }
@@ -308,9 +295,7 @@ function traverser(
     return root;
   }
 
-  // We'll add a getFragmentRefs function to the root if needed here.
-  // getFragmentRefs is currently the only thing that's possible to add
-  // to the root.
+  // We'll add the fragmentRefs reference to the root if needed here.
   var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
   var unionRootConverter = converters[(instructionMap[""] || {}).u];
 

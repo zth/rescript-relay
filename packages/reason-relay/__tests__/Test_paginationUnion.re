@@ -86,7 +86,7 @@ module Test = {
       React.useTransition(~config={timeoutMs: 5000}, ());
 
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
-      Fragment.usePagination(query.getFragmentRefs());
+      Fragment.usePagination(query.fragmentRefs);
 
     <div>
       {data.members
@@ -95,7 +95,7 @@ module Test = {
            switch (member) {
            | `User(user) =>
              <div id={user.id}>
-               <UserDisplayer user={user.getFragmentRefs()} />
+               <UserDisplayer user={user.fragmentRefs} />
              </div>
            | `Group(group) =>
              <div key={group.id}>

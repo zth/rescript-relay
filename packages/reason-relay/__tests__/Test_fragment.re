@@ -76,21 +76,19 @@ module Test = {
   [@react.component]
   let make = () => {
     let query = Query.use(~variables=(), ());
-    let data = Fragment.use(query.loggedInUser.getFragmentRefs());
+    let data = Fragment.use(query.loggedInUser.fragmentRefs);
 
     let (useOpt, setUseOpt) = React.useState(() => false);
 
     let dataOpt =
-      Fragment.useOpt(
-        useOpt ? Some(query.loggedInUser.getFragmentRefs()) : None,
-      );
+      Fragment.useOpt(useOpt ? Some(query.loggedInUser.fragmentRefs) : None);
 
     let users =
       switch (query) {
       | {users: Some({edges: Some(edges)})} =>
         edges->Belt.Array.keepMap(edge =>
           switch (edge) {
-          | Some({node: Some(node)}) => Some(node.getFragmentRefs())
+          | Some({node: Some(node)}) => Some(node.fragmentRefs)
           | _ => None
           }
         )

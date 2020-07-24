@@ -26,21 +26,14 @@ module Types = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TestFragment_plural_user": TestFragment_plural_user_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_plural_user]),
   };
   type response_users_edges = {node: option(response_users_edges_node)};
   type response_users = {
     edges: option(array(option(response_users_edges))),
   };
   type response_loggedInUser = {
-    getFragmentRefs:
-      unit =>
-      {. "__$fragment_ref__TestFragment_user": TestFragment_user_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_user]),
   };
 
   type response = {
