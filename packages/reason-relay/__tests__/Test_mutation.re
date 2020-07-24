@@ -63,8 +63,7 @@ module Test = {
   let make = () => {
     let environment = ReasonRelay.useEnvironmentFromContext();
     let query = Query.use(~variables=(), ());
-    let data =
-      Fragment.use(query.loggedInUser.getFragmentRef_TestMutation_user());
+    let data = Fragment.use(query.loggedInUser.getFragmentRefs());
     let (mutate, isMutating) = Mutation.use();
     let (mutationResult, setMutationResult) = React.useState(() => None);
 

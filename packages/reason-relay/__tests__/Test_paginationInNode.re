@@ -79,9 +79,7 @@ module UserNodeDisplayer = {
        ->Fragment.getConnectionNodes_friendsConnection
        ->Belt.Array.map(user =>
            <div key={user.id}>
-             <UserDisplayer
-               user={user.getFragmentRef_TestPaginationInNode_user()}
-             />
+             <UserDisplayer user={user.getFragmentRefs()} />
            </div>
          )
        ->React.array}
@@ -128,10 +126,7 @@ module Test = {
     let userId = "123";
     let query = Query.use(~variables={userId: userId}, ());
     switch (query.node) {
-    | Some(node) =>
-      <UserNodeDisplayer
-        queryRef={node.getFragmentRef_TestPaginationInNode_query()}
-      />
+    | Some(node) => <UserNodeDisplayer queryRef={node.getFragmentRefs()} />
     | None => React.string("-")
     };
   };

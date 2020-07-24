@@ -42,9 +42,9 @@ module PluralFragment = [%relay.fragment
 
 module FragmentRenderer = {
   [@react.component]
-  let make = (~fragment, ~pluralFragment) => {
+  let make = (~fragment) => {
     let regular = Fragment.use(fragment);
-    let plural = PluralFragment.use(pluralFragment);
+    let plural = PluralFragment.use([|fragment|]);
 
     <>
       {switch (regular) {
@@ -67,13 +67,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
 
     switch (query.member) {
-    | Some(member) =>
-      <FragmentRenderer
-        fragment={member.getFragmentRef_TestUnionFragment_member()}
-        pluralFragment=[|
-          member.getFragmentRef_TestUnionFragment_plural_member(),
-        |]
-      />
+    | Some(member) => <FragmentRenderer fragment={member.getFragmentRefs()} />
     | None => React.null
     };
   };

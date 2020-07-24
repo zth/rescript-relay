@@ -3,10 +3,13 @@
 module Types = {
   type response_member = {
     __typename: string,
-    getFragmentRef_TestUnionFragment_member:
-      unit => TestUnionFragment_member_graphql.t,
-    getFragmentRef_TestUnionFragment_plural_member:
-      unit => TestUnionFragment_plural_member_graphql.t,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestUnionFragment_member": TestUnionFragment_member_graphql.t,
+        "__$fragment_ref__TestUnionFragment_plural_member": TestUnionFragment_plural_member_graphql.t,
+      },
   };
 
   type response = {member: option(response_member)};
@@ -17,7 +20,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"member":{"n":"","f":"TestUnionFragment_member,TestUnionFragment_plural_member"}}} |json}
+    {json| {"__root":{"member":{"n":"","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

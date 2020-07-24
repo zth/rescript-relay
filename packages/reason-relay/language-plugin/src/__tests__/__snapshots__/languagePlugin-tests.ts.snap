@@ -141,7 +141,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -153,14 +156,16 @@ type operationType = ReasonRelay.fragmentNode;
 
 module Types = {
   type fragment = {
-    getFragmentRef_SomeComponent_user: unit => SomeComponent_user_graphql.t,
+    getFragmentRefs:
+      unit =>
+      {. \\"__$fragment_ref__SomeComponent_user\\": SomeComponent_user_graphql.t},
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"\\":{\\"f\\":\\"SomeComponent_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -173,7 +178,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeOtherComponent_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -205,7 +213,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeComponent_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -368,7 +379,7 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"SomeFragment_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -381,7 +392,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"SomeFragment_user\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\",\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -484,7 +495,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__SomeFragment_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -737,7 +751,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -808,7 +825,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -876,7 +896,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__TestPagination_query\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {
   open Types;
@@ -1061,7 +1084,9 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_user\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -1094,7 +1119,9 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) = {.. \\"__$fragment_ref__app_observer\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 
@@ -1106,12 +1133,14 @@ type operationType = ReasonRelay.fragmentNode;
 
 module Types = {
   type response_participantById_User = {
-    getFragmentRef_app_user: unit => App_user_graphql.t,
     id: string,
+    getFragmentRefs:
+      unit => {. \\"__$fragment_ref__app_user\\": App_user_graphql.t},
   };
   type response_participantById_Observer = {
-    getFragmentRef_app_observer: unit => App_observer_graphql.t,
     id: string,
+    getFragmentRefs:
+      unit => {. \\"__$fragment_ref__app_observer\\": App_observer_graphql.t},
   };
   type response_participantById = [
     | \`User(response_participantById_User)
@@ -1162,7 +1191,7 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"app_user\\"},\\"participantById_observer\\":{\\"f\\":\\"app_observer\\"}}} |json}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
@@ -1374,7 +1403,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. \\"__$fragment_ref__Participant_participant\\": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = \\"%identity\\";
 
 module Utils = {};
 

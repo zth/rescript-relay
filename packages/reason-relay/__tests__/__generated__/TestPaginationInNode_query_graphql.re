@@ -3,8 +3,12 @@
 module Types = {
   type fragment_friendsConnection_edges_node = {
     id: string,
-    getFragmentRef_TestPaginationInNode_user:
-      unit => TestPaginationInNode_user_graphql.t,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestPaginationInNode_user": TestPaginationInNode_user_graphql.t,
+      },
   };
   type fragment_friendsConnection_edges = {
     node: option(fragment_friendsConnection_edges_node),
@@ -22,7 +26,7 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":"TestPaginationInNode_user"},"id":{"n":""}}} |json}
+    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""},"id":{"n":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -35,7 +39,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+type fragmentRefSelector('a) =
+  {.. "__$fragment_ref__TestPaginationInNode_query": t} as 'a;
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {
   open Types;

@@ -23,8 +23,12 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response = {
-    getFragmentRef_TestPaginationUnion_query:
-      unit => TestPaginationUnion_query_graphql.t,
+    getFragmentRefs:
+      unit =>
+      {
+        .
+        "__$fragment_ref__TestPaginationUnion_query": TestPaginationUnion_query_graphql.t,
+      },
   };
   type rawResponse = response;
   type refetchVariables = {
@@ -58,7 +62,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":"TestPaginationUnion_query"}}} |json}
+    {json| {"__root":{"":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

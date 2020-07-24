@@ -8,7 +8,7 @@ type fragmentNode;
 type mutationNode;
 type subscriptionNode;
 
-type wrappedFragmentRef;
+type fragmentRefs('fragments);
 
 type dataId;
 

@@ -426,8 +426,8 @@ let getPrintedFullState =
 
   // Print fragment assets
   switch (state.fragment) {
-  | Some({plural}) =>
-    addToStr(Printer.fragmentRefAssets(~plural));
+  | Some({name, plural}) =>
+    addToStr(Printer.fragmentRefAssets(~plural, name));
     addSpacing();
   | None => ()
   };

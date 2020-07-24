@@ -273,19 +273,38 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             let convertFragment = Operation.Internal.convertFragment;
           })
       ],
-      [%stri let use = UseFragment.use],
-      [%stri let useOpt = UseFragment.useOpt],
+      [%stri
+        let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
+      ],
+      [%stri
+        let useOpt = opt_fRef => UseFragment.useOpt(
+          switch(opt_fRef) {
+          | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
+          | None => None
+        })
+      ],
       hasConnection
-        ? [%stri let usePagination = UsePaginationFragment.usePagination]
+        ? [%stri
+          let usePagination = fRef =>
+            UsePaginationFragment.usePagination(
+              fRef |> Operation.getFragmentRef,
+            )
+        ]
         : [%stri ()],
       hasConnection
         ? [%stri
-          let useBlockingPagination = UsePaginationFragment.useBlockingPagination
+          let useBlockingPagination = fRef =>
+            UsePaginationFragment.useBlockingPagination(
+              fRef |> Operation.getFragmentRef,
+            )
         ]
         : [%stri ()],
       switch (refetchableQueryName) {
       | Some(_) => [%stri
-          let useRefetchable = UseRefetchableFragment.useRefetchable
+          let useRefetchable = fRef =>
+            UseRefetchableFragment.useRefetchable(
+              fRef |> Operation.getFragmentRef,
+            )
         ]
       | None =>
         %stri

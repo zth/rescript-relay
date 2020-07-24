@@ -82,7 +82,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = array(t);
+type fragmentRef;
+type fragmentRefSelector('a) =
+  array({.. "__$fragment_ref__TestUnionFragment_plural_member": t} as 'a);
+external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
 
 module Utils = {};
 
