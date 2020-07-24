@@ -17,6 +17,7 @@ let reservedKeywordsInReasonRelay = [
   "refetchVariables",
   "t",
   "fragmentRef",
+  "fragmentRefs",
   "fragmentRefSelector",
   "operationType"
 ];
