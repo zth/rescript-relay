@@ -6,3 +6,5 @@ let useDeferredValue:
 [@bs.module "react"]
 external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
   "unstable_withSuspenseConfig";
+
+let renderConcurrentRootAtElementWithId: (React.element, string) => unit;
