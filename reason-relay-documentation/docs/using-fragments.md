@@ -75,8 +75,8 @@ module UserFragment = [%relay.fragment {|
 |}];
 
 [@react.component]
-let make = (~user as userRef) => {
-  let user = UserFragment.use(userRef);
+let make = (~user) => {
+  let user = UserFragment.use(user);
 
   <div>{React.string(user.firstName ++ " " ++ user.lastName)}</div>
 }
@@ -85,7 +85,7 @@ let make = (~user as userRef) => {
 Let's break down what's happening here:
 
 1. We define a fragment on the GraphQL type `User` through `[%relay.fragment]`.
-2. We define a React component that takes a `user` prop, which we rename to `userRef`. _The renaming is totally optional_ and just something that helps clarify that the prop has to do with a _fragment reference_. Fragment references are central to how Relay fragments work, and we'll talk about them in the section below.
+2. We define a React component that takes a `user` prop.
 3. `[%relay.fragment]` will autogenerate a React hook called `use`, which takes any object containing a fragment reference for that particular fragment, and returns the data.
 4. Just as with queries, `use` for fragments is integrated with [React suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), meaning that `use` will suspend if the data's not already there.
 
@@ -110,7 +110,7 @@ let make = (~userId) => {
   }, ());
 
   switch(queryData.userById) {
-    | Some(user) => <UserProfileHeader user={user.getFragmentRefs()} />
+    | Some(user) => <UserProfileHeader user={user.fragmentRefs} />
     | None => React.null
   };
 }
@@ -119,11 +119,11 @@ let make = (~userId) => {
 Let's break down what has changed:
 
 1. In order for us to be able to render `<UserProfileHeader />` in `<UserProfile />`, we need to provide it with the data it needs from the `User` type. It defines what data it needs from `User` via the fragment `UserProfileHeader_user`, so we _spread that fragment_ on a `User` object in our query. This will ensure that the data demands on `User` for `<UserProfileHeader />` is fetched in the query.
-2. When we get the data from `Query.use`, the object where we spread `UserProfileHeader_user` will include a _fragment reference_ for that fragment. Fragment references are how Relay carries the data for fragments, and each fragment `use` hook knows how to _take an object containing its own fragment reference and use it to get its own data_.
+2. When we get the data from `Query.use`, the object where we spread `UserProfileHeader_user` will include a _fragment reference_ for that fragment. Fragment references are how Relay carries the data for fragments, and each fragment `use` hook knows how to _take a `fragmentRefs` prop containing its own fragment reference and use it to get its own data_.
 
-Any object (it's actually a ReasonML record, but I'll confusingly enough call it object here) where one or more fragments have been spread will have a method called `getFragmentRefs()`. That method will return an object with fragment references for all fragments spread there. Incidentally, this is exactly what the respective fragment's `use` hook wants!
+Any object (it's actually a ReasonML record, but I'll call it object here) where one or more fragments have been spread will have a prop called `fragmentRefs`. That prop will contain all fragment references for all fragments spread. Incidentally, this is exactly what the respective fragment's `use` hook wants!
 
-3. We make sure we actually got a user, and then we take the `userById` object (where we spread `UserProfileHeader_user`), run `userById.getFragmentRefs()` to get the fragment references, and pass the result to `<UserProfileHeader />`. That component then passes that to the fragment `UserProfileHeader_user` `use` hook, which then exchanges it for the actual fragment data.
+3. We make sure we actually got a user, and then we take the `userById` object (where we spread `UserProfileHeader_user`), and pass the fragment references to `<UserProfileHeader />` via `userById.fragmentReferences`. That component then passes that to the fragment `UserProfileHeader_user` `use` hook, which then exchanges it for the actual fragment data.
 
 Phew! That's a lot to break down. It's really not that complicated to use though.
 
@@ -144,12 +144,12 @@ module UserFragment = [%relay.fragment {|
 |}];
 
 [@react.component]
-let make = (~user as userRef) => {
-  let userData = UserFragment.use(userRef);
+let make = (~user) => {
+  let user = UserFragment.use(user);
 
   <div>
-    <Avatar user={userData.getFragmentRefs()} />
-    {React.string(userData.firstName ++ " " ++ userData.lastName)}
+    <Avatar user={user.fragmentRefs} />
+    {React.string(user.firstName ++ " " ++ user.lastName)}
   </div>
 }
 ```
@@ -157,7 +157,7 @@ let make = (~user as userRef) => {
 See the difference? Let's break it down:
 
 1. We want to render `<Avatar />`, and it needs data from `User`. So, we spread its data demands on the user type that we're already getting data for. That will create a fragment reference for `Avatar_user` on the `user` record we get back from `UserFragment.use`.
-2. We then use `userData.getFragmentRefs()` to get the fragment reference for `Avatar_user`, and pass it to `<Avatar />`. `<Avatar />` then uses that to get the data it needs from `User`.
+2. We then pass `userData.fragmentRefs` to `<Avatar />`. `<Avatar />` then uses that to get the data it needs from `User`.
 
 We don't have to change anything anywhere else. `<UserProfile />`, who defines the query and fetches the data, does not need to know anything about this change. It just knows that it needs to get the data for `UserProfileHeader_user` - it's not concerned with how that data looks or if it includes more fragments. It just gets the data for `UserProfileHeader_user`, passes it along and minds its own business.
 
@@ -172,7 +172,7 @@ Before we move on to the next thing, there's a few things that's worth keeping i
 - Use fragments as much as you can. They are optimized for performance and help promote well contained and isolated components
 - A component can use any number of fragments, not just one
 - A fragment can use other fragments
-- Any object where a fragment has been spread will have a method called `getFragmentRefs()`. You'll use this method to get the object with fragment refs you need, and pass that to the respective fragment's `use` hooks.
+- Any object where a fragment has been spread will have a prop called `fragmentRefs`. This contains references for all fragments that have been spread on that object. You pass that `fragmentReferences` prop to the respective fragment's `use` hooks.
 
 With that in mind, Let's jump in to [mutations](mutations).
 
