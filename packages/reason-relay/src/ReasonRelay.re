@@ -640,6 +640,22 @@ type loadQueryConfig = {
 external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
+[@bs.module "react-relay/hooks"]
+external useQueryLoader:
+  queryNode =>
+  (
+    Js.nullable('queryRef),
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~networkCacheConfig: cacheConfig=?,
+      unit
+    ) =>
+    unit,
+    unit => unit,
+  ) =
+  "useQueryLoader";
+
 [@bs.module "react-relay/hooks"] [@bs.scope "loadQuery"]
 external loadQuery:
   (Environment.t, queryNode, 'variables, loadQueryConfig) => 'queryResponse =
@@ -688,6 +704,13 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       );
 
     useConvertedValue(C.convertResponse, data);
+  };
+
+  let useLoader = () => {
+    let (nullableQueryRef, loadQueryFn, disposableFn) =
+      useQueryLoader(C.query);
+
+    (Js.Nullable.toOption(nullableQueryRef), loadQueryFn, disposableFn);
   };
 
   let usePreloaded = (~queryRef: C.queryRef, ~renderPolicy=?, ()) => {

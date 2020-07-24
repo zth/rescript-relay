@@ -277,11 +277,13 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
         let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
       ],
       [%stri
-        let useOpt = opt_fRef => UseFragment.useOpt(
-          switch(opt_fRef) {
-          | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
-          | None => None
-        })
+        let useOpt = opt_fRef =>
+          UseFragment.useOpt(
+            switch (opt_fRef) {
+            | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
+            | None => None
+            },
+          )
       ],
       hasConnection
         ? [%stri
@@ -344,6 +346,7 @@ let makeQuery = (~loc, ~moduleName) =>
           })
       ],
       [%stri let use = UseQuery.use],
+      [%stri let useLoader = UseQuery.useLoader],
       [%stri let fetch = UseQuery.fetch],
       [%stri let fetchPromised = UseQuery.fetchPromised],
       [%stri let usePreloaded = UseQuery.usePreloaded],

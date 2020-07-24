@@ -569,6 +569,20 @@ module MakeUseQuery:
       ) =>
       C.response;
 
+    let useLoader:
+      unit =>
+      (
+        option(C.queryRef),
+        (
+          ~variables: C.variables,
+          ~fetchPolicy: fetchPolicy=?,
+          ~networkCacheConfig: cacheConfig=?,
+          unit
+        ) =>
+        unit,
+        unit => unit,
+      );
+
     let fetch:
       (
         ~environment: Environment.t,
