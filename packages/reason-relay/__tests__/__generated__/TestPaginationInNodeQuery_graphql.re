@@ -4,8 +4,7 @@ module Types = {
   type response_node = {
     id: string,
     __typename: string,
-    getFragmentRef_TestPaginationInNode_query:
-      unit => TestPaginationInNode_query_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_query]),
   };
 
   type response = {node: option(response_node)};
@@ -20,7 +19,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","f":"TestPaginationInNode_query"}}} |json}
+    {json| {"__root":{"node":{"n":"","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

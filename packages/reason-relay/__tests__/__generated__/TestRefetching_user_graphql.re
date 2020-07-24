@@ -49,7 +49,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestRefetching_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 

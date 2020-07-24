@@ -2,8 +2,7 @@
 
 module Types = {
   type response_loggedInUser = {
-    getFragmentRef_TestSubscription_user:
-      unit => TestSubscription_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
 
   type response = {loggedInUser: response_loggedInUser};
@@ -14,7 +13,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser":{"f":"TestSubscription_user"}}} |json}
+    {json| {"__root":{"loggedInUser":{"f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

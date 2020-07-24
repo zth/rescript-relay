@@ -31,9 +31,7 @@ module Test = {
     let query = Query.use(~variables=(), ());
 
     let (data, refetch) =
-      Fragment.useRefetchable(
-        query.loggedInUser.getFragmentRef_TestRefetching_user(),
-      );
+      Fragment.useRefetchable(query.loggedInUser.fragmentRefs);
 
     let (startTransition, _) =
       React.useTransition(~config={timeoutMs: 5000}, ());

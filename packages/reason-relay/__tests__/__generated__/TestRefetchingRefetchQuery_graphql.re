@@ -23,7 +23,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
 
 module Types = {
   type response_node = {
-    getFragmentRef_TestRefetching_user: unit => TestRefetching_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetching_user]),
   };
 
   type response = {node: option(response_node)};
@@ -56,7 +56,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","f":"TestRefetching_user"}}} |json}
+    {json| {"__root":{"node":{"n":"","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

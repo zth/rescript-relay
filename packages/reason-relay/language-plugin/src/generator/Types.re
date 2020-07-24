@@ -9,14 +9,6 @@ type operationType =
   | Subscription(string)
   | Query(string);
 
-type objectPrintAs =
-  | OnlyFragmentRefs
-  | Record;
-
-type objectPrintMode =
-  | Full
-  | Signature;
-
 [@gentype]
 type connectionInfo = {
   key: string,

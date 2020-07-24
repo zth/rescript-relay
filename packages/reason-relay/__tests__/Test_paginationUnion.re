@@ -86,9 +86,7 @@ module Test = {
       React.useTransition(~config={timeoutMs: 5000}, ());
 
     let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
-      Fragment.usePagination(
-        query.getFragmentRef_TestPaginationUnion_query(),
-      );
+      Fragment.usePagination(query.fragmentRefs);
 
     <div>
       {data.members
@@ -96,10 +94,8 @@ module Test = {
        ->Belt.Array.mapWithIndex((i, member) =>
            switch (member) {
            | `User(user) =>
-             <div key={user.id}>
-               <UserDisplayer
-                 user={user.getFragmentRef_TestPaginationUnion_user()}
-               />
+             <div id={user.id}>
+               <UserDisplayer user={user.fragmentRefs} />
              </div>
            | `Group(group) =>
              <div key={group.id}>

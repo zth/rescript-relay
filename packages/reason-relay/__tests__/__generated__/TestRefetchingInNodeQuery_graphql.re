@@ -3,8 +3,7 @@
 module Types = {
   type response_node = {
     __typename: string,
-    getFragmentRef_TestRefetchingInNode_user:
-      unit => TestRefetchingInNode_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetchingInNode_user]),
   };
 
   type response = {node: option(response_node)};
@@ -19,7 +18,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","tnf":"User","f":"TestRefetchingInNode_user"}}} |json}
+    {json| {"__root":{"node":{"n":"","tnf":"User","f":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>

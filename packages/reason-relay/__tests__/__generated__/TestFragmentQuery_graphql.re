@@ -26,15 +26,14 @@ module Types = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRef_TestFragment_plural_user:
-      unit => TestFragment_plural_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_plural_user]),
   };
   type response_users_edges = {node: option(response_users_edges_node)};
   type response_users = {
     edges: option(array(option(response_users_edges))),
   };
   type response_loggedInUser = {
-    getFragmentRef_TestFragment_user: unit => TestFragment_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_user]),
   };
 
   type response = {
@@ -48,7 +47,7 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser":{"f":"TestFragment_user"},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":"TestFragment_plural_user"},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertResponse = v =>

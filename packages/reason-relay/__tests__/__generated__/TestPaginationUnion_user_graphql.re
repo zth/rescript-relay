@@ -25,7 +25,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestPaginationUnion_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 

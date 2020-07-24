@@ -74,10 +74,7 @@ module Test = {
     let query = Query.use(~variables={userId: "user-1"}, ());
 
     switch (query.node) {
-    | Some(user) =>
-      <UserDisplayer
-        queryRef={user.getFragmentRef_TestRefetchingInNode_user()}
-      />
+    | Some(user) => <UserDisplayer queryRef={user.fragmentRefs} />
     | None => React.string("-")
     };
   };

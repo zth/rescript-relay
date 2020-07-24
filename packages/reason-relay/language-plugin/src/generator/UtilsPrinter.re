@@ -193,7 +193,7 @@ type instruction =
   | ConvertUnion(string)
   | ConvertCustomField(string)
   | RootObject(string)
-  | HasFragments(list(string))
+  | HasFragments
   | ConvertTopLevelNodeField(string);
 
 type instructionContainer = {
@@ -386,14 +386,12 @@ let definitionToAssets =
         ~inRootObject: option(string),
         propValues,
       ) => {
-    let fragmentReferences = [||];
+    let hasFragments = ref(false);
 
     propValues
     |> Tablecloth.Array.forEach(~f=p =>
          switch (p) {
-         | FragmentRef(name) =>
-           let _ = fragmentReferences->Js.Array2.push(name);
-           ();
+         | FragmentRef(_) => hasFragments := true
          | Prop(name, {nullable, propType}) =>
            let newPath = [name, ...currentPath];
 
@@ -415,11 +413,8 @@ let definitionToAssets =
          }
        );
 
-    if (fragmentReferences->Tablecloth.Array.length > 0) {
-      addInstruction({
-        atPath: currentPath,
-        instruction: HasFragments(fragmentReferences->Belt.List.fromArray),
-      });
+    if (hasFragments^) {
+      addInstruction({atPath: currentPath, instruction: HasFragments});
     };
   }
   and makeRootObjectInstruction = (~name, ~converters, obj: object_) => {
@@ -455,11 +450,8 @@ let definitionToAssets =
            | ConvertUnion(name) => ("u", name)
            | ConvertCustomField(name) => ("c", name)
            | RootObject(name) => ("r", name)
-           | HasFragments(nameList) => (
-               "f",
-               nameList->Tablecloth.String.join(~sep=","),
-             )
            | ConvertTopLevelNodeField(typeName) => ("tnf", typeName)
+           | HasFragments => ("f", "")
            };
 
          switch (dict->Js.Dict.get(key)) {

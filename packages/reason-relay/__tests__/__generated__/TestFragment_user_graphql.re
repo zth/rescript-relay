@@ -26,15 +26,14 @@ module Types = {
     firstName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-    getFragmentRef_TestFragment_sub_user:
-      unit => TestFragment_sub_user_graphql.t,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_sub_user]),
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"":{"f":"TestFragment_sub_user"}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"":{"f":""}}} |json}
   ];
   let fragmentConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertFragment = v =>
@@ -47,7 +46,10 @@ module Internal = {
 };
 
 type t;
-type fragmentRef = t;
+type fragmentRef;
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TestFragment_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
