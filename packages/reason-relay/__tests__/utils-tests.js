@@ -2,47 +2,48 @@ const { traverser } = require("../src/utils");
 
 describe("conversion", () => {
   it("handles nullables at various levels", () => {
-    const traversedObj = traverser(
-      {
-        me: {
-          name: "Name",
-          age: null,
-          nicknames: [null, "SomeName"],
-          nestedObjects: [{ someProp: null, otherProp: "Lars" }, null],
-        },
-        otherProp: null,
-      },
-      {
-        __root: {
-          "": {
-            f: "",
-          },
-          otherProp: {
-            n: "",
-          },
+    expect(
+      traverser(
+        {
           me: {
-            n: "",
-            f: "",
+            name: "Name",
+            age: null,
+            nicknames: [null, "SomeName"],
+            nestedObjects: [{ someProp: null, otherProp: "Lars" }, null],
           },
-          me_age: {
-            n: "",
-          },
-          me_nicknames: {
-            n: "",
-          },
-          me_nestedObjects: {
-            n: "",
-            f: "",
-          },
-          me_nestedObjects_someProp: {
-            n: "",
+          otherProp: null,
+        },
+        {
+          __root: {
+            "": {
+              f: "",
+            },
+            otherProp: {
+              n: "",
+            },
+            me: {
+              n: "",
+              f: "",
+            },
+            me_age: {
+              n: "",
+            },
+            me_nicknames: {
+              n: "",
+            },
+            me_nestedObjects: {
+              n: "",
+              f: "",
+            },
+            me_nestedObjects_someProp: {
+              n: "",
+            },
           },
         },
-      },
-      {},
-      undefined
-    );
-    expect(traversedObj).toEqual({
+        {},
+        undefined
+      )
+    ).toEqual({
       fragmentRefs: expect.any(Object),
       me: {
         fragmentRefs: expect.any(Object),
