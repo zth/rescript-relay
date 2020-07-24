@@ -50,9 +50,9 @@ First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _n
 yarn add react@0.0.0-experimental-d7382b6c4 react-dom@0.0.0-experimental-d7382b6c4
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 9, so install that exact version
+# We currently depend on Relay version 10.0.1, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@9.1.0 relay-compiler@9.1.0 react-relay@0.0.0-experimental-94e87455 relay-config@9.1.0 reason-promise
+yarn add reason-relay graphql relay-runtime@10.0.1 relay-compiler@10.0.1 react-relay@0.0.0-experimental-8058ef82 relay-config@10.0.1 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
