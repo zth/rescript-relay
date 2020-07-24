@@ -210,7 +210,7 @@ Your Relay environment needs to be available in React's context in your app. To 
 
 ```reason
 /* Index.re */
-React.renderConcurrentRootAtElementWithId(
+ReactExperimental.renderConcurrentRootAtElementWithId(
   <ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />
   </ReasonRelay.Context.Provider>,
