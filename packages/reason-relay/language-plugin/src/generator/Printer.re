@@ -543,7 +543,13 @@ let printUnionTypes = (~state, ~printName, union: union) => {
   typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
 
-let printEnum = (enum: fullEnum): string => enum->printEnumDefinition;
+let printEnum = (enum: fullEnum): string =>
+  enum->printEnumDefinition
+  ++ "external "
+  ++ printEnumName(enum.name)
+  ++ "_toString: "
+  ++ printEnumName(enum.name)
+  ++ " => string = \"%identity\";";
 
 let fragmentRefAssets = (~plural=false, fragmentName) => {
   let str = ref("");

@@ -2,6 +2,8 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
+external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
+
 module Types = {
   type response_node = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_query]),

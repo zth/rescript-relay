@@ -2,6 +2,8 @@
 
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
+external enum_OnlineStatus_toString: enum_OnlineStatus => string = "%identity";
+
 module Types = {
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option(enum_OnlineStatus),
