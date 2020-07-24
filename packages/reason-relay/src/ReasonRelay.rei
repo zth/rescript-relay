@@ -44,6 +44,21 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
 [@bs.module "relay-runtime"]
 external isClientID: dataId => bool = "isClientID";
 
+// Relay feature flags
+type featureFlags = {
+  [@bs.as "ENABLE_VARIABLE_CONNECTION_KEY"]
+  mutable enableVariableConnectionKey: bool,
+  [@bs.as "ENABLE_PARTIAL_RENDERING_DEFAULT"]
+  mutable enablePartialRenderingDefault: bool,
+  [@bs.as "ENABLE_RELAY_CONTAINERS_SUSPENSE"]
+  mutable enableRelayContainersSuspense: bool,
+  [@bs.as "ENABLE_PRECISE_TYPE_REFINEMENT"]
+  mutable enablePrecisTypeRefinement: bool,
+};
+
+[@bs.module "relay-runtime"]
+external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
+
 /**
  * An abstract type representing all records in the store serialized to JSON in a way
  * that you can use to re-hydrate the store.

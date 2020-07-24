@@ -29,6 +29,20 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
 
 [@bs.module "relay-runtime"]
 external isClientID: dataId => bool = "isClientID";
+
+type featureFlags = {
+  [@bs.as "ENABLE_VARIABLE_CONNECTION_KEY"]
+  mutable enableVariableConnectionKey: bool,
+  [@bs.as "ENABLE_PARTIAL_RENDERING_DEFAULT"]
+  mutable enablePartialRenderingDefault: bool,
+  [@bs.as "ENABLE_RELAY_CONTAINERS_SUSPENSE"]
+  mutable enableRelayContainersSuspense: bool,
+  [@bs.as "ENABLE_PRECISE_TYPE_REFINEMENT"]
+  mutable enablePrecisTypeRefinement: bool,
+};
+
+[@bs.module "relay-runtime"]
+external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
 /**
  * Various helpers.
  */
