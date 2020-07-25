@@ -640,18 +640,17 @@ type loadQueryConfig = {
 external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
+type useQueryLoaderOptions = {
+  fetchPolicy: option(fetchPolicy),
+  networkCacheConfig: option(cacheConfig),
+};
+
 [@bs.module "react-relay/hooks"]
 external useQueryLoader:
   queryNode =>
   (
     Js.nullable('queryRef),
-    (
-      ~variables: 'variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~networkCacheConfig: cacheConfig=?,
-      unit
-    ) =>
-    unit,
+    ('variables, useQueryLoaderOptions) => unit,
     unit => unit,
   ) =
   "useQueryLoader";
@@ -710,7 +709,22 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     let (nullableQueryRef, loadQueryFn, disposableFn) =
       useQueryLoader(C.query);
 
-    (Js.Nullable.toOption(nullableQueryRef), loadQueryFn, disposableFn);
+    // TODO: Working around the fact that I seem unable to use React.useCallback with labelled arguments
+    // using good old Obj.magic.
+    let loadQuery =
+      React.useCallback1(
+        (
+          (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
+            loadQueryFn(
+              variables->C.convertVariables,
+              {fetchPolicy, networkCacheConfig},
+            )
+        )
+        ->Obj.magic,
+        [|loadQueryFn|],
+      );
+
+    (Js.Nullable.toOption(nullableQueryRef), loadQuery, disposableFn);
   };
 
   let usePreloaded = (~queryRef: C.queryRef, ~renderPolicy=?, ()) => {

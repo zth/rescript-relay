@@ -64,6 +64,8 @@ module Test = {
       React.useState(() => false);
     let (fetchedResult, setFetchedResult) = React.useState(() => None);
 
+    let (loadedQueryRef, loadQuery, _dispose) = Query.useLoader();
+
     let collectUsers = (res: Query.Types.response) =>
       switch (res) {
       | {users: Some({edges: Some(edges)})} =>
@@ -156,6 +158,10 @@ module Test = {
         {React.string("Test fetch")}
       </button>
       <button
+        onClick={_ => loadQuery(~variables={status: Some(`Idle)}, ())}>
+        {React.string("Test query loader")}
+      </button>
+      <button
         onClick={_ =>
           Query.fetchPromised(
             ~environment,
@@ -172,9 +178,10 @@ module Test = {
       </button>
       {hasWaitedForPreload
          ? <div> {React.string("Has waited for preload")} </div> : React.null}
-      {switch (queryRefFromModule) {
-       | Some(queryRef) => <TestPreloaded queryRef />
-       | None => React.null
+      {switch (queryRefFromModule, loadedQueryRef) {
+       | (_, Some(queryRef))
+       | (Some(queryRef), _) => <TestPreloaded queryRef />
+       | _ => React.null
        }}
       {switch (fetchedResult) {
        | Some([|{firstName: "First", onlineStatus: Some(`Online)}|]) =>
