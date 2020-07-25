@@ -4,8 +4,7 @@ module Types = {
   type fragment_membersConnection_edges_node = {
     id: string,
     fullName: string,
-    getFragmentRefs:
-      unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
   };
   type fragment_membersConnection_edges = {
     node: option(fragment_membersConnection_edges_node),
@@ -17,14 +16,14 @@ module Types = {
   type fragment = {
     name: string,
     membersConnection: option(fragment_membersConnection),
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"membersConnection":{"n":""},"membersConnection_edges":{"n":"","na":""},"membersConnection_edges_node":{"n":"","f":""},"id":{"n":""}}} |json}
+    {json| {"__root":{"membersConnection":{"n":""},"membersConnection_edges":{"n":"","na":""},"membersConnection_edges_node":{"n":"","f":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -38,9 +37,10 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `SingleTicketWorkingGroup_workingGroup]) =>
+  fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -49,96 +49,97 @@ type operationType = ReasonRelay.fragmentNode;
 let node: operationType = [%raw
   {json| (function(){
 var v0 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
+  "argumentDefinitions": [
+    {
+      "defaultValue": false,
+      "kind": "LocalArgument",
+      "name": "includeMembers"
+    }
+  ],
   "kind": "Fragment",
-  "name": "SingleTicketWorkingGroup_workingGroup",
-  "type": "WorkingGroup",
   "metadata": {
     "refetch": {
       "connection": null,
-      "operation": require('./SingleTicketWorkingGroupRefetchQuery_graphql.bs.js').node,
       "fragmentPathInResult": [
         "node"
-      ]
+      ],
+      "operation": require('./SingleTicketWorkingGroupRefetchQuery_graphql.bs.js').node,
+      "identifierField": "id"
     }
   },
-  "argumentDefinitions": [
-    {
-      "kind": "LocalArgument",
-      "name": "includeMembers",
-      "type": "Boolean!",
-      "defaultValue": false
-    }
-  ],
+  "name": "SingleTicketWorkingGroup_workingGroup",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "name",
       "args": null,
+      "kind": "ScalarField",
+      "name": "name",
       "storageKey": null
     },
     (v0/*: any*/),
     {
+      "condition": "includeMembers",
       "kind": "Condition",
       "passingValue": true,
-      "condition": "includeMembers",
       "selections": [
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "membersConnection",
-          "storageKey": null,
           "args": null,
           "concreteType": "UserConnection",
+          "kind": "LinkedField",
+          "name": "membersConnection",
           "plural": false,
           "selections": [
             {
-              "kind": "LinkedField",
               "alias": null,
-              "name": "edges",
-              "storageKey": null,
               "args": null,
               "concreteType": "UserEdge",
+              "kind": "LinkedField",
+              "name": "edges",
               "plural": true,
               "selections": [
                 {
-                  "kind": "LinkedField",
                   "alias": null,
-                  "name": "node",
-                  "storageKey": null,
                   "args": null,
                   "concreteType": "User",
+                  "kind": "LinkedField",
+                  "name": "node",
                   "plural": false,
                   "selections": [
                     (v0/*: any*/),
                     {
-                      "kind": "ScalarField",
                       "alias": null,
-                      "name": "fullName",
                       "args": null,
+                      "kind": "ScalarField",
+                      "name": "fullName",
                       "storageKey": null
                     },
                     {
+                      "args": null,
                       "kind": "FragmentSpread",
-                      "name": "Avatar_user",
-                      "args": null
+                      "name": "Avatar_user"
                     }
-                  ]
+                  ],
+                  "storageKey": null
                 }
-              ]
+              ],
+              "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         }
       ]
     }
-  ]
+  ],
+  "type": "WorkingGroup",
+  "abstractKey": null
 };
 })() |json}
 ];

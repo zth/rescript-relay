@@ -11,6 +11,7 @@ module Types = {
   };
 
   type response = {deleteTodoItem: option(response_deleteTodoItem)};
+  type rawResponse = response;
   type variables = {input: deleteTodoItemInput};
 };
 
@@ -41,6 +42,12 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
+
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"DeleteTodoItemInput"}},"DeleteTodoItemInput":{"clientMutationId":{"n":""}}} |json}
   ];
@@ -70,7 +77,7 @@ module Utils = {
     clientMutationId,
   };
 
-  let makeOptimisticResponse = (~deleteTodoItem=?, ()): response => {
+  let makeOptimisticResponse = (~deleteTodoItem=?, ()): rawResponse => {
     deleteTodoItem: deleteTodoItem,
   };
 };
@@ -81,18 +88,14 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input",
-    "type": "DeleteTodoItemInput!",
-    "defaultValue": null
+    "name": "input"
   }
 ],
 v1 = [
   {
-    "kind": "LinkedField",
     "alias": null,
-    "name": "deleteTodoItem",
-    "storageKey": null,
     "args": [
       {
         "kind": "Variable",
@@ -101,47 +104,52 @@ v1 = [
       }
     ],
     "concreteType": "DeleteTodoItemPayload",
+    "kind": "LinkedField",
+    "name": "deleteTodoItem",
     "plural": false,
     "selections": [
       {
-        "kind": "ScalarField",
         "alias": null,
-        "name": "deletedTodoItemId",
         "args": null,
+        "kind": "ScalarField",
+        "name": "deletedTodoItemId",
         "storageKey": null
       },
       {
-        "kind": "ScalarField",
         "alias": null,
-        "name": "clientMutationId",
         "args": null,
+        "kind": "ScalarField",
+        "name": "clientMutationId",
         "storageKey": null
       }
-    ]
+    ],
+    "storageKey": null
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "SingleTodoDeleteMutation",
-    "type": "Mutation",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "SingleTodoDeleteMutation",
+    "selections": (v1/*: any*/),
+    "type": "Mutation",
+    "abstractKey": null
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "SingleTodoDeleteMutation",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": (v1/*: any*/)
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "SingleTodoDeleteMutation",
+    "cacheID": "6c0c28a190aca7b12ad8ab91424c3d36",
     "id": null,
-    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n    clientMutationId\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "SingleTodoDeleteMutation",
+    "operationKind": "mutation",
+    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n    clientMutationId\n  }\n}\n"
   }
 };
 })() |json}

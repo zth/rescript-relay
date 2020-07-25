@@ -15,6 +15,7 @@ module Types = {
   };
 
   type response = {addTodoItem: option(response_addTodoItem)};
+  type rawResponse = response;
   type variables = {input: addTodoItemInput};
 };
 
@@ -44,6 +45,12 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"AddTodoItemInput"}},"AddTodoItemInput":{"clientMutationId":{"n":""}}} |json}
@@ -79,7 +86,7 @@ module Utils = {
     addedTodoItem: addedTodoItem,
   };
 
-  let makeOptimisticResponse = (~addTodoItem=?, ()): response => {
+  let makeOptimisticResponse = (~addTodoItem=?, ()): rawResponse => {
     addTodoItem: addTodoItem,
   };
 };
@@ -90,18 +97,14 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input",
-    "type": "AddTodoItemInput!",
-    "defaultValue": null
+    "name": "input"
   }
 ],
 v1 = [
   {
-    "kind": "LinkedField",
     "alias": null,
-    "name": "addTodoItem",
-    "storageKey": null,
     "args": [
       {
         "kind": "Variable",
@@ -110,65 +113,70 @@ v1 = [
       }
     ],
     "concreteType": "AddTodoItemPayload",
+    "kind": "LinkedField",
+    "name": "addTodoItem",
     "plural": false,
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "addedTodoItem",
-        "storageKey": null,
         "args": null,
         "concreteType": "TodoItem",
+        "kind": "LinkedField",
+        "name": "addedTodoItem",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "id",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "text",
-            "args": null,
             "storageKey": null
           },
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "completed",
             "args": null,
+            "kind": "ScalarField",
+            "name": "completed",
             "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "storageKey": null
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "TodoListAddTodoMutation",
-    "type": "Mutation",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TodoListAddTodoMutation",
+    "selections": (v1/*: any*/),
+    "type": "Mutation",
+    "abstractKey": null
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TodoListAddTodoMutation",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": (v1/*: any*/)
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "TodoListAddTodoMutation",
+    "cacheID": "c011aa6f7e05ca44cf05f93d4ec8c1aa",
     "id": null,
-    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItem {\n      id\n      text\n      completed\n    }\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TodoListAddTodoMutation",
+    "operationKind": "mutation",
+    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItem {\n      id\n      text\n      completed\n    }\n  }\n}\n"
   }
 };
 })() |json}

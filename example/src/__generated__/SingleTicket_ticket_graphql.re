@@ -2,16 +2,11 @@
 
 module Types = {
   type fragment_assignee_User = {
-    getFragmentRefs:
-      unit => {. "__$fragment_ref__Avatar_user": Avatar_user_graphql.t},
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
   };
   type fragment_assignee_WorkingGroup = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-      },
+    fragmentRefs:
+      ReasonRelay.fragmentRefs([ | `SingleTicketWorkingGroup_workingGroup]),
   };
   type fragment_assignee = [
     | `User(fragment_assignee_User)
@@ -32,12 +27,7 @@ module Types = {
     subject: string,
     lastUpdated: option(string),
     trackingId: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__TicketStatusBadge_ticket": TicketStatusBadge_ticket_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TicketStatusBadge_ticket]),
   };
 };
 
@@ -84,9 +74,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__SingleTicket_ticket": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `SingleTicket_ticket]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -94,85 +84,88 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "SingleTicket_ticket",
-  "type": "Ticket",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "SingleTicket_ticket",
   "selections": [
     {
-      "kind": "LinkedField",
       "alias": null,
-      "name": "assignee",
-      "storageKey": null,
       "args": null,
       "concreteType": null,
+      "kind": "LinkedField",
+      "name": "assignee",
       "plural": false,
       "selections": [
         {
-          "kind": "ScalarField",
           "alias": null,
-          "name": "__typename",
           "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
           "storageKey": null
         },
         {
           "kind": "InlineFragment",
-          "type": "User",
           "selections": [
             {
+              "args": null,
               "kind": "FragmentSpread",
-              "name": "Avatar_user",
-              "args": null
+              "name": "Avatar_user"
             }
-          ]
+          ],
+          "type": "User",
+          "abstractKey": null
         },
         {
           "kind": "InlineFragment",
-          "type": "WorkingGroup",
           "selections": [
             {
+              "args": null,
               "kind": "FragmentSpread",
-              "name": "SingleTicketWorkingGroup_workingGroup",
-              "args": null
+              "name": "SingleTicketWorkingGroup_workingGroup"
             }
-          ]
+          ],
+          "type": "WorkingGroup",
+          "abstractKey": null
         }
-      ]
+      ],
+      "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "id",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "subject",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "lastUpdated",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "trackingId",
       "args": null,
+      "kind": "ScalarField",
+      "name": "trackingId",
       "storageKey": null
     },
     {
+      "args": null,
       "kind": "FragmentSpread",
-      "name": "TicketStatusBadge_ticket",
-      "args": null
+      "name": "TicketStatusBadge_ticket"
     }
-  ]
+  ],
+  "type": "Ticket",
+  "abstractKey": null
 } |json}
 ];

@@ -122,7 +122,7 @@ let make = (~query as queryRef) => {
            ->Belt.Array.map(todoItem =>
                <SingleTodo
                  key={todoItem.id}
-                 todoItem={todoItem.getFragmentRefs()}
+                 todoItem={todoItem.fragmentRefs}
                  checked=true
                />
              )

@@ -54,9 +54,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TicketStatusBadge_ticket": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TicketStatusBadge_ticket]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -64,26 +64,27 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "TicketStatusBadge_ticket",
-  "type": "Ticket",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "TicketStatusBadge_ticket",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "status",
       "args": null,
+      "kind": "ScalarField",
+      "name": "status",
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "dbId",
       "args": null,
+      "kind": "ScalarField",
+      "name": "dbId",
       "storageKey": null
     }
-  ]
+  ],
+  "type": "Ticket",
+  "abstractKey": null
 } |json}
 ];

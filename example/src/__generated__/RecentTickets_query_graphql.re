@@ -3,12 +3,7 @@
 module Types = {
   type fragment_ticketsConnection_edges_node = {
     id: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__SingleTicket_ticket": SingleTicket_ticket_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTicket_ticket]),
   };
   type fragment_ticketsConnection_edges = {
     node: option(fragment_ticketsConnection_edges_node),
@@ -42,9 +37,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__RecentTickets_query": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `RecentTickets_query]) => fragmentRef =
+  "%identity";
 
 module Utils = {
   open Types;
@@ -76,9 +71,19 @@ var v0 = [
   "ticketsConnection"
 ];
 return {
+  "argumentDefinitions": [
+    {
+      "defaultValue": "",
+      "kind": "LocalArgument",
+      "name": "after"
+    },
+    {
+      "defaultValue": 2,
+      "kind": "LocalArgument",
+      "name": "first"
+    }
+  ],
   "kind": "Fragment",
-  "name": "RecentTickets_query",
-  "type": "Query",
   "metadata": {
     "connection": [
       {
@@ -97,110 +102,99 @@ return {
         "backward": null,
         "path": (v0/*: any*/)
       },
-      "operation": require('./RecentTicketsRefetchQuery_graphql.bs.js').node,
-      "fragmentPathInResult": []
+      "fragmentPathInResult": [],
+      "operation": require('./RecentTicketsRefetchQuery_graphql.bs.js').node
     }
   },
-  "argumentDefinitions": [
-    {
-      "kind": "LocalArgument",
-      "name": "first",
-      "type": "Int!",
-      "defaultValue": 2
-    },
-    {
-      "kind": "LocalArgument",
-      "name": "after",
-      "type": "String!",
-      "defaultValue": ""
-    }
-  ],
+  "name": "RecentTickets_query",
   "selections": [
     {
-      "kind": "LinkedField",
       "alias": "ticketsConnection",
-      "name": "__RecentTickets_ticketsConnection_connection",
-      "storageKey": null,
       "args": null,
       "concreteType": "TicketConnection",
+      "kind": "LinkedField",
+      "name": "__RecentTickets_ticketsConnection_connection",
       "plural": false,
       "selections": [
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "pageInfo",
-          "storageKey": null,
           "args": null,
           "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
           "plural": false,
           "selections": [
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "endCursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
               "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "hasNextPage",
               "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
               "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         },
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "edges",
-          "storageKey": null,
           "args": null,
           "concreteType": "TicketEdge",
+          "kind": "LinkedField",
+          "name": "edges",
           "plural": true,
           "selections": [
             {
-              "kind": "LinkedField",
               "alias": null,
-              "name": "node",
-              "storageKey": null,
               "args": null,
               "concreteType": "Ticket",
+              "kind": "LinkedField",
+              "name": "node",
               "plural": false,
               "selections": [
                 {
-                  "kind": "ScalarField",
                   "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "id",
-                  "args": null,
                   "storageKey": null
                 },
                 {
-                  "kind": "ScalarField",
                   "alias": null,
-                  "name": "__typename",
                   "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
                   "storageKey": null
                 },
                 {
+                  "args": null,
                   "kind": "FragmentSpread",
-                  "name": "SingleTicket_ticket",
-                  "args": null
+                  "name": "SingleTicket_ticket"
                 }
-              ]
+              ],
+              "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "cursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
               "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         }
-      ]
+      ],
+      "storageKey": null
     }
-  ]
+  ],
+  "type": "Query",
+  "abstractKey": null
 };
 })() |json}
 ];

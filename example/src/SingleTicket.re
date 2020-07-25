@@ -30,11 +30,11 @@ let make = (~ticket as ticketRef) => {
       {switch (ticket.assignee) {
        | Some(assignee) =>
          switch (assignee) {
-         | `User(user) => <Avatar user={user.getFragmentRefs()} />
+         | `User(user) => <Avatar user={user.fragmentRefs} />
          | `WorkingGroup(workingGroup) =>
            <React.Suspense fallback={<Loading />}>
              <SingleTicketWorkingGroup
-               workingGroup={workingGroup.getFragmentRefs()}
+               workingGroup={workingGroup.fragmentRefs}
              />
            </React.Suspense>
          | `UnselectedUnionMember(_) => <span> {React.string("-")} </span>
@@ -43,7 +43,7 @@ let make = (~ticket as ticketRef) => {
        }}
     </td>
     <td> {React.string(ticket.subject)} </td>
-    <td> <TicketStatusBadge ticket={ticket.getFragmentRefs()} /> </td>
+    <td> <TicketStatusBadge ticket={ticket.fragmentRefs} /> </td>
     <td>
       {React.string(Belt.Option.getWithDefault(ticket.lastUpdated, "-"))}
     </td>

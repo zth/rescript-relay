@@ -2,24 +2,20 @@
 
 module Types = {
   type response = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__RecentTickets_query": RecentTickets_query_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `RecentTickets_query]),
   };
+  type rawResponse = response;
   type refetchVariables = {
-    first: option(int),
     after: option(string),
+    first: option(int),
   };
-  let makeRefetchVariables = (~first=?, ~after=?, ()): refetchVariables => {
-    first,
+  let makeRefetchVariables = (~after=?, ~first=?, ()): refetchVariables => {
     after,
+    first,
   };
   type variables = {
-    first: int,
     after: string,
+    first: int,
   };
 };
 
@@ -37,6 +33,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
+
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
   ];
@@ -50,11 +49,11 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
-  let makeVariables = (~first, ~after): variables => {first, after};
+  let makeVariables = (~after, ~first): variables => {after, first};
 };
 
 type operationType = ReasonRelay.queryNode;
@@ -63,16 +62,14 @@ let node: operationType = [%raw
   {json| (function(){
 var v0 = [
   {
+    "defaultValue": "",
     "kind": "LocalArgument",
-    "name": "first",
-    "type": "Int!",
-    "defaultValue": 2
+    "name": "after"
   },
   {
+    "defaultValue": 2,
     "kind": "LocalArgument",
-    "name": "after",
-    "type": "String!",
-    "defaultValue": ""
+    "name": "first"
   }
 ],
 v1 = [
@@ -88,216 +85,226 @@ v1 = [
   }
 ],
 v2 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 },
 v3 = {
-  "kind": "ScalarField",
   "alias": null,
-  "name": "__typename",
   "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "RecentTicketsRefetchQuery",
-    "type": "Query",
-    "metadata": null,
     "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "RecentTicketsRefetchQuery",
     "selections": [
       {
+        "args": (v1/*: any*/),
         "kind": "FragmentSpread",
-        "name": "RecentTickets_query",
-        "args": (v1/*: any*/)
+        "name": "RecentTickets_query"
       }
-    ]
+    ],
+    "type": "Query",
+    "abstractKey": null
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "RecentTicketsRefetchQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "ticketsConnection",
-        "storageKey": null,
         "args": (v1/*: any*/),
         "concreteType": "TicketConnection",
+        "kind": "LinkedField",
+        "name": "ticketsConnection",
         "plural": false,
         "selections": [
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "pageInfo",
-            "storageKey": null,
             "args": null,
             "concreteType": "PageInfo",
+            "kind": "LinkedField",
+            "name": "pageInfo",
             "plural": false,
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "endCursor",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "endCursor",
                 "storageKey": null
               },
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "hasNextPage",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "hasNextPage",
                 "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           },
           {
-            "kind": "LinkedField",
             "alias": null,
-            "name": "edges",
-            "storageKey": null,
             "args": null,
             "concreteType": "TicketEdge",
+            "kind": "LinkedField",
+            "name": "edges",
             "plural": true,
             "selections": [
               {
-                "kind": "LinkedField",
                 "alias": null,
-                "name": "node",
-                "storageKey": null,
                 "args": null,
                 "concreteType": "Ticket",
+                "kind": "LinkedField",
+                "name": "node",
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
                   {
-                    "kind": "LinkedField",
                     "alias": null,
-                    "name": "assignee",
-                    "storageKey": null,
                     "args": null,
                     "concreteType": null,
+                    "kind": "LinkedField",
+                    "name": "assignee",
                     "plural": false,
                     "selections": [
                       (v3/*: any*/),
-                      (v2/*: any*/),
                       {
                         "kind": "InlineFragment",
-                        "type": "User",
                         "selections": [
                           {
-                            "kind": "ScalarField",
                             "alias": null,
-                            "name": "avatarUrl",
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "avatarUrl",
                             "storageKey": null
                           },
                           {
-                            "kind": "ScalarField",
                             "alias": null,
-                            "name": "fullName",
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "fullName",
                             "storageKey": null
                           }
-                        ]
+                        ],
+                        "type": "User",
+                        "abstractKey": null
                       },
                       {
                         "kind": "InlineFragment",
-                        "type": "WorkingGroup",
                         "selections": [
                           {
-                            "kind": "ScalarField",
                             "alias": null,
-                            "name": "name",
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "name",
                             "storageKey": null
-                          }
-                        ]
+                          },
+                          (v2/*: any*/)
+                        ],
+                        "type": "WorkingGroup",
+                        "abstractKey": null
+                      },
+                      {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          (v2/*: any*/)
+                        ],
+                        "type": "Node",
+                        "abstractKey": "__isNode"
                       }
-                    ]
+                    ],
+                    "storageKey": null
                   },
                   {
-                    "kind": "ScalarField",
                     "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "subject",
-                    "args": null,
                     "storageKey": null
                   },
                   {
-                    "kind": "ScalarField",
                     "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "lastUpdated",
-                    "args": null,
                     "storageKey": null
                   },
                   {
-                    "kind": "ScalarField",
                     "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "trackingId",
-                    "args": null,
                     "storageKey": null
                   },
                   {
-                    "kind": "ScalarField",
                     "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "status",
-                    "args": null,
                     "storageKey": null
                   },
                   {
-                    "kind": "ScalarField",
                     "alias": null,
-                    "name": "dbId",
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "dbId",
                     "storageKey": null
                   },
                   (v3/*: any*/)
-                ]
+                ],
+                "storageKey": null
               },
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "cursor",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "cursor",
                 "storageKey": null
               }
-            ]
+            ],
+            "storageKey": null
           }
-        ]
+        ],
+        "storageKey": null
       },
       {
-        "kind": "LinkedHandle",
         "alias": null,
-        "name": "ticketsConnection",
         "args": (v1/*: any*/),
+        "filters": null,
         "handle": "connection",
         "key": "RecentTickets_ticketsConnection",
-        "filters": null
+        "kind": "LinkedHandle",
+        "name": "ticketsConnection"
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "RecentTicketsRefetchQuery",
+    "cacheID": "f1587652ca0eb7dba3ec45d79698549a",
     "id": null,
-    "text": "query RecentTicketsRefetchQuery(\n  $first: Int! = 2\n  $after: String! = \"\"\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  ticketsConnection(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n  dbId\n}\n",
-    "metadata": {
-      "derivedFrom": "RecentTickets_query",
-      "isRefetchableQuery": true
-    }
+    "metadata": {},
+    "name": "RecentTicketsRefetchQuery",
+    "operationKind": "query",
+    "text": "query RecentTicketsRefetchQuery(\n  $after: String! = \"\"\n  $first: Int! = 2\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  ticketsConnection(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n  dbId\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

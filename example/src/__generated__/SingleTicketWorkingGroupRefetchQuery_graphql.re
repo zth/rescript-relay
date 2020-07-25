@@ -2,15 +2,12 @@
 
 module Types = {
   type response_node = {
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__SingleTicketWorkingGroup_workingGroup": SingleTicketWorkingGroup_workingGroup_graphql.t,
-      },
+    fragmentRefs:
+      ReasonRelay.fragmentRefs([ | `SingleTicketWorkingGroup_workingGroup]),
   };
 
   type response = {node: option(response_node)};
+  type rawResponse = response;
   type refetchVariables = {
     includeMembers: option(bool),
     id: option(string),
@@ -39,6 +36,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type rawResponseRaw = responseRaw;
+  let convertRawResponse = convertResponse;
+
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
   ];
@@ -52,7 +52,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -66,178 +66,181 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| (function(){
-var v0 = [
-  {
-    "kind": "LocalArgument",
-    "name": "includeMembers",
-    "type": "Boolean!",
-    "defaultValue": false
-  },
-  {
-    "kind": "LocalArgument",
-    "name": "id",
-    "type": "ID!",
-    "defaultValue": null
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
+},
+v1 = {
+  "defaultValue": false,
+  "kind": "LocalArgument",
+  "name": "includeMembers"
+},
+v2 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
+v3 = {
   "alias": null,
-  "name": "id",
   "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
-  "kind": "Request",
   "fragment": {
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
-    "name": "SingleTicketWorkingGroupRefetchQuery",
-    "type": "Query",
     "metadata": null,
-    "argumentDefinitions": (v0/*: any*/),
+    "name": "SingleTicketWorkingGroupRefetchQuery",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           {
-            "kind": "FragmentSpread",
-            "name": "SingleTicketWorkingGroup_workingGroup",
             "args": [
               {
                 "kind": "Variable",
                 "name": "includeMembers",
                 "variableName": "includeMembers"
               }
-            ]
+            ],
+            "kind": "FragmentSpread",
+            "name": "SingleTicketWorkingGroup_workingGroup"
           }
-        ]
+        ],
+        "storageKey": null
       }
-    ]
+    ],
+    "type": "Query",
+    "abstractKey": null
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "SingleTicketWorkingGroupRefetchQuery",
-    "argumentDefinitions": (v0/*: any*/),
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "node",
-        "storageKey": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
             "alias": null,
-            "name": "__typename",
             "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
             "storageKey": null
           },
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
-            "type": "WorkingGroup",
             "selections": [
               {
-                "kind": "ScalarField",
                 "alias": null,
-                "name": "name",
                 "args": null,
+                "kind": "ScalarField",
+                "name": "name",
                 "storageKey": null
               },
               {
+                "condition": "includeMembers",
                 "kind": "Condition",
                 "passingValue": true,
-                "condition": "includeMembers",
                 "selections": [
                   {
-                    "kind": "LinkedField",
                     "alias": null,
-                    "name": "membersConnection",
-                    "storageKey": null,
                     "args": null,
                     "concreteType": "UserConnection",
+                    "kind": "LinkedField",
+                    "name": "membersConnection",
                     "plural": false,
                     "selections": [
                       {
-                        "kind": "LinkedField",
                         "alias": null,
-                        "name": "edges",
-                        "storageKey": null,
                         "args": null,
                         "concreteType": "UserEdge",
+                        "kind": "LinkedField",
+                        "name": "edges",
                         "plural": true,
                         "selections": [
                           {
-                            "kind": "LinkedField",
                             "alias": null,
-                            "name": "node",
-                            "storageKey": null,
                             "args": null,
                             "concreteType": "User",
+                            "kind": "LinkedField",
+                            "name": "node",
                             "plural": false,
                             "selections": [
-                              (v2/*: any*/),
+                              (v3/*: any*/),
                               {
-                                "kind": "ScalarField",
                                 "alias": null,
-                                "name": "fullName",
                                 "args": null,
+                                "kind": "ScalarField",
+                                "name": "fullName",
                                 "storageKey": null
                               },
                               {
-                                "kind": "ScalarField",
                                 "alias": null,
-                                "name": "avatarUrl",
                                 "args": null,
+                                "kind": "ScalarField",
+                                "name": "avatarUrl",
                                 "storageKey": null
                               }
-                            ]
+                            ],
+                            "storageKey": null
                           }
-                        ]
+                        ],
+                        "storageKey": null
                       }
-                    ]
+                    ],
+                    "storageKey": null
                   }
                 ]
               }
-            ]
+            ],
+            "type": "WorkingGroup",
+            "abstractKey": null
           }
-        ]
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "operationKind": "query",
-    "name": "SingleTicketWorkingGroupRefetchQuery",
+    "cacheID": "ab34f3c15793ee137833c416d7085617",
     "id": null,
-    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n        ...Avatar_user\n      }\n    }\n  }\n  id\n}\n",
-    "metadata": {
-      "derivedFrom": "SingleTicketWorkingGroup_workingGroup",
-      "isRefetchableQuery": true
-    }
+    "metadata": {},
+    "name": "SingleTicketWorkingGroupRefetchQuery",
+    "operationKind": "query",
+    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n        ...Avatar_user\n      }\n    }\n  }\n  id\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
+  type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });
