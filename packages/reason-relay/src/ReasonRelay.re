@@ -709,6 +709,7 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     let (nullableQueryRef, loadQueryFn, disposableFn) =
       useQueryLoader(C.query);
 
+    // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
     let loadQuery =
         (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
       loadQueryFn(
