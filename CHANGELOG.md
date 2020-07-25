@@ -13,6 +13,7 @@
 - Fix refetching with pagination when the parent queries have variables that are left unchanged in the refetch
 - _BREAKING CHANGE_ What was previously called `Query.preload` is now called `Query.load`, to align with Relay's naming. The return type of `Query.load` has also been renamed to `queryRef` (from `preloadToken`), and all names related to that have been changed accordingly.
 - Bind `RelayFeatureFlags`.
+- Bind and document `Query.useLoader`.
 
 # 0.9.2
 
