@@ -4,7 +4,7 @@
 
 A new, fresh release! This brings Relay to version `10.0.1`, binds a bunch of new things, and changes a few APIs (and their implementations) to be more ergonomic.
 
-I'd like to highlight contributions from (Arnarkari93)[https://github.com/Arnarkari93], (tsnobip)[https://github.com/tsnobip] and (wokalski)[https://github.com/wokalski], who all have made significant and great contributions for this release.
+I'd like to highlight contributions from [Arnarkari93](https://github.com/Arnarkari93), [tsnobip](https://github.com/tsnobip) and [wokalski](https://github.com/wokalski), who all have made significant and great contributions for this release.
 
 ## Upgrade versions
 
