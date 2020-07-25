@@ -29,24 +29,24 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
-    showOnlineStatus: option(bool),
     friendsOnlineStatuses:
       option(
         array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
       ),
+    showOnlineStatus: option(bool),
     id: option(string),
   };
   let makeRefetchVariables =
-      (~showOnlineStatus=?, ~friendsOnlineStatuses=?, ~id=?, ())
+      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
       : refetchVariables => {
-    showOnlineStatus,
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
   type variables = {
-    showOnlineStatus: bool,
     friendsOnlineStatuses:
       array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    showOnlineStatus: bool,
     id: string,
   };
 };
@@ -81,14 +81,14 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
   let makeVariables =
-      (~showOnlineStatus, ~friendsOnlineStatuses, ~id): variables => {
-    showOnlineStatus,
+      (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
 };
@@ -97,30 +97,25 @@ type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
   {json| (function(){
-var v0 = [
-  {
-    "defaultValue": false,
-    "kind": "LocalArgument",
-    "name": "showOnlineStatus",
-    "type": "Boolean!"
-  },
-  {
-    "defaultValue": [
-      "Online",
-      "Offline"
-    ],
-    "kind": "LocalArgument",
-    "name": "friendsOnlineStatuses",
-    "type": "[OnlineStatus!]!"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "id",
-    "type": "ID!"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": [
+    "Online",
+    "Offline"
+  ],
+  "kind": "LocalArgument",
+  "name": "friendsOnlineStatuses"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
+},
+v2 = {
+  "defaultValue": false,
+  "kind": "LocalArgument",
+  "name": "showOnlineStatus"
+},
+v3 = [
   {
     "kind": "Variable",
     "name": "id",
@@ -129,14 +124,18 @@ v1 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "TestRefetchingInNodeRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -162,17 +161,22 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v2/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Operation",
     "name": "TestRefetchingInNodeRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -241,7 +245,8 @@ return {
                 ]
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -249,22 +254,20 @@ return {
     ]
   },
   "params": {
+    "cacheID": "04d4234bc755b04365ce0ee2a517f66a",
     "id": null,
-    "metadata": {
-      "derivedFrom": "TestRefetchingInNode_user",
-      "isRefetchableQuery": true
-    },
+    "metadata": {},
     "name": "TestRefetchingInNodeRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingInNodeRefetchQuery(\n  $showOnlineStatus: Boolean! = false\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $showOnlineStatus: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

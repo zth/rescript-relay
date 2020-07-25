@@ -29,6 +29,20 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
 
 [@bs.module "relay-runtime"]
 external isClientID: dataId => bool = "isClientID";
+
+type featureFlags = {
+  [@bs.as "ENABLE_VARIABLE_CONNECTION_KEY"]
+  mutable enableVariableConnectionKey: bool,
+  [@bs.as "ENABLE_PARTIAL_RENDERING_DEFAULT"]
+  mutable enablePartialRenderingDefault: bool,
+  [@bs.as "ENABLE_RELAY_CONTAINERS_SUSPENSE"]
+  mutable enableRelayContainersSuspense: bool,
+  [@bs.as "ENABLE_PRECISE_TYPE_REFINEMENT"]
+  mutable enablePrecisTypeRefinement: bool,
+};
+
+[@bs.module "relay-runtime"]
+external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
 /**
  * Various helpers.
  */
@@ -616,7 +630,7 @@ type useQueryConfig = {
   networkCacheConfig: option(cacheConfig),
 };
 
-type preloadQueryConfig = {
+type loadQueryConfig = {
   fetchKey: option(string),
   fetchPolicy: option(string),
   networkCacheConfig: option(cacheConfig),
@@ -626,10 +640,25 @@ type preloadQueryConfig = {
 external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
+type useQueryLoaderOptions = {
+  fetchPolicy: option(fetchPolicy),
+  networkCacheConfig: option(cacheConfig),
+};
+
 [@bs.module "react-relay/hooks"]
-external preloadQuery:
-  (Environment.t, queryNode, 'variables, preloadQueryConfig) => 'queryResponse =
-  "preloadQuery";
+external useQueryLoader:
+  queryNode =>
+  (
+    Js.nullable('queryRef),
+    ('variables, useQueryLoaderOptions) => unit,
+    unit => unit,
+  ) =
+  "useQueryLoader";
+
+[@bs.module "react-relay/hooks"] [@bs.scope "loadQuery"]
+external loadQuery:
+  (Environment.t, queryNode, 'variables, loadQueryConfig) => 'queryResponse =
+  "loadQuery";
 
 [@bs.module "react-relay/hooks"]
 external usePreloadedQuery:
@@ -641,7 +670,7 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
-  type preloadToken;
+  type queryRef;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
@@ -676,11 +705,26 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     useConvertedValue(C.convertResponse, data);
   };
 
-  let usePreloaded = (~token: C.preloadToken, ~renderPolicy=?, ()) => {
+  let useLoader = () => {
+    let (nullableQueryRef, loadQueryFn, disposableFn) =
+      useQueryLoader(C.query);
+
+    // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
+    let loadQuery =
+        (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
+      loadQueryFn(
+        variables->C.convertVariables,
+        {fetchPolicy, networkCacheConfig},
+      );
+
+    (Js.Nullable.toOption(nullableQueryRef), loadQuery, disposableFn);
+  };
+
+  let usePreloaded = (~queryRef: C.queryRef, ~renderPolicy=?, ()) => {
     let data =
       usePreloadedQuery(
         C.query,
-        token,
+        queryRef,
         switch (renderPolicy) {
         | Some(_) =>
           Some({"UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy})
@@ -757,16 +801,16 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
   };
 };
 
-module type MakePreloadQueryConfig = {
+module type MakeLoadQueryConfig = {
   type variables;
-  type queryPreloadToken;
+  type loadedQueryRef;
   type response;
   let query: queryNode;
   let convertVariables: variables => variables;
 };
 
-module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
-  let preload:
+module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
+  let load:
     (
       ~environment: Environment.t,
       ~variables: C.variables,
@@ -775,7 +819,7 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
       ~networkCacheConfig: cacheConfig=?,
       unit
     ) =>
-    C.queryPreloadToken =
+    C.loadedQueryRef =
     (
       ~environment,
       ~variables,
@@ -784,7 +828,7 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
       ~networkCacheConfig=?,
       (),
     ) =>
-      preloadQuery(
+      loadQuery(
         environment,
         C.query,
         variables |> C.convertVariables |> _cleanVariables,
@@ -798,18 +842,18 @@ module MakePreloadQuery = (C: MakePreloadQueryConfig) => {
   type rawPreloadToken('response) = {
     source: Js.Nullable.t(Observable.t('response)),
   };
-  external tokenToRaw: C.queryPreloadToken => rawPreloadToken(C.response) =
+  external tokenToRaw: C.loadedQueryRef => rawPreloadToken(C.response) =
     "%identity";
 
-  let preloadTokenToObservable = token => {
+  let queryRefToObservable = token => {
     let raw = token->tokenToRaw;
     raw.source->Js.Nullable.toOption;
   };
 
-  let preloadTokenToPromise = token => {
+  let queryRefToPromise = token => {
     let (promise, resolve) = Promise.pending();
 
-    switch (token->preloadTokenToObservable) {
+    switch (token->queryRefToObservable) {
     | None => resolve(Error())
     | Some(o) =>
       let _: Observable.subscription =

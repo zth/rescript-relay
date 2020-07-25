@@ -74,7 +74,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -167,7 +167,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -235,6 +236,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "e013001bfc36566c430b38b57317a2d6",
     "id": null,
     "metadata": {},
     "name": "TestFragmentQuery",
@@ -245,9 +247,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

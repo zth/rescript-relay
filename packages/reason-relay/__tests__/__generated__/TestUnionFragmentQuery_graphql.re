@@ -44,7 +44,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -96,7 +96,8 @@ return {
         "storageKey": "member(id:\"123\")"
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -114,11 +115,8 @@ return {
         "selections": [
           (v1/*: any*/),
           {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
+            "kind": "TypeDiscriminator",
+            "abstractKey": "__isMember"
           },
           {
             "kind": "InlineFragment",
@@ -138,7 +136,8 @@ return {
                 "storageKey": null
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           },
           {
             "kind": "InlineFragment",
@@ -151,7 +150,22 @@ return {
                 "storageKey": null
               }
             ],
-            "type": "Group"
+            "type": "Group",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "id",
+                "storageKey": null
+              }
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
           }
         ],
         "storageKey": "member(id:\"123\")"
@@ -159,19 +173,20 @@ return {
     ]
   },
   "params": {
+    "cacheID": "0d7eadaa771e8f878dc640c17cfc6714",
     "id": null,
     "metadata": {},
     "name": "TestUnionFragmentQuery",
     "operationKind": "query",
-    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n"
+    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __isMember: __typename\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __isMember: __typename\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

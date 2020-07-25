@@ -16,9 +16,9 @@ const formatGeneratedModule: FormatModule = ({
     // @ts-ignore The type definitions are actually wrong from DefinitivelyTyped
     documentType === "ConcreteRequest" &&
     moduleName.toLowerCase().endsWith("query_graphql")
-      ? `include ReasonRelay.MakePreloadQuery({
+      ? `include ReasonRelay.MakeLoadQuery({
     type variables = Types.variables;
-    type queryPreloadToken = preloadToken;
+    type loadedQueryRef = queryRef;
     type response = Types.response;
     let query = node;
     let convertVariables = Internal.convertVariables;

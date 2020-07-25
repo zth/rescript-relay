@@ -29,14 +29,14 @@ module Types = {
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
     friendsConnection: fragment_friendsConnection,
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"},"id":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
   ];
   let fragmentConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
   let convertFragment = v =>
@@ -64,14 +64,12 @@ let node: operationType = [%raw
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "friendsOnlineStatuses",
-      "type": "[OnlineStatus!]"
+      "name": "friendsOnlineStatuses"
     },
     {
       "defaultValue": false,
       "kind": "LocalArgument",
-      "name": "showOnlineStatus",
-      "type": "Boolean!"
+      "name": "showOnlineStatus"
     }
   ],
   "kind": "Fragment",
@@ -140,6 +138,7 @@ let node: operationType = [%raw
       ]
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

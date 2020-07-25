@@ -11,6 +11,9 @@
 - _BREAKING CHANGE_ `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
 - Bind `useSubscribeToInvalidationState`, which allows listening and reacting to invalidations of records in the store.
 - Fix refetching with pagination when the parent queries have variables that are left unchanged in the refetch
+- _BREAKING CHANGE_ What was previously called `Query.preload` is now called `Query.load`, to align with Relay's naming. The return type of `Query.load` has also been renamed to `queryRef` (from `preloadToken`), and all names related to that have been changed accordingly.
+- Bind `RelayFeatureFlags`.
+- Bind and document `Query.useLoader`.
 
 # 0.9.2
 

@@ -92,6 +92,7 @@ let node: operationType = [%raw
       "storageKey": null
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

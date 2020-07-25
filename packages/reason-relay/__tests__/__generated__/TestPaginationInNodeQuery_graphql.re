@@ -46,7 +46,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -61,8 +61,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "userId",
-    "type": "ID!"
+    "name": "userId"
   }
 ],
 v1 = [
@@ -124,13 +123,15 @@ return {
                 "name": "TestPaginationInNode_query"
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           }
         ],
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -261,7 +262,8 @@ return {
                 "name": "friendsConnection"
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -269,6 +271,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "4c309879b0c140449fa423561652e94f",
     "id": null,
     "metadata": {},
     "name": "TestPaginationInNodeQuery",
@@ -279,9 +282,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

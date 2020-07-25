@@ -43,16 +43,16 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-d28bd2994 react-dom@0.0.0-experimental-d28bd2994
+yarn add react@0.0.0-experimental-d7382b6c4 react-dom@0.0.0-experimental-d7382b6c4
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 9, so install that exact version
+# We currently depend on Relay version 10.0.1, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@9.0.0 relay-compiler@9.0.0 react-relay@0.0.0-experimental-8cc94ddc relay-config@9.0.0 reason-promise
+yarn add reason-relay graphql relay-runtime@10.0.1 relay-compiler@10.0.1 react-relay@0.0.0-experimental-8058ef82 relay-config@10.0.1 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -70,14 +70,14 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-f6b8d31a7` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-d7382b6c4` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-d28bd2994",
-    "react-dom": "0.0.0-experimental-d28bd2994"
+    "react": "0.0.0-experimental-d7382b6c4",
+    "react-dom": "0.0.0-experimental-d7382b6c4"
   }
 }
 ```
@@ -191,7 +191,11 @@ let environment =
   ReasonRelay.Environment.make(
     ~network,
     ~store=
-      ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
+      ReasonRelay.Store.make(
+        ~source=ReasonRelay.RecordSource.make(),
+        ~gcReleaseBufferSize=10, // This sets the query cache size to 10
+        ()
+      ),
     (),
   );
 ```

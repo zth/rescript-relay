@@ -82,6 +82,7 @@ let node: operationType = [%raw
       "name": "TestFragment_sub_user"
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

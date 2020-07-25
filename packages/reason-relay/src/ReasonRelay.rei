@@ -44,6 +44,21 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID";
 [@bs.module "relay-runtime"]
 external isClientID: dataId => bool = "isClientID";
 
+// Relay feature flags
+type featureFlags = {
+  [@bs.as "ENABLE_VARIABLE_CONNECTION_KEY"]
+  mutable enableVariableConnectionKey: bool,
+  [@bs.as "ENABLE_PARTIAL_RENDERING_DEFAULT"]
+  mutable enablePartialRenderingDefault: bool,
+  [@bs.as "ENABLE_RELAY_CONTAINERS_SUSPENSE"]
+  mutable enableRelayContainersSuspense: bool,
+  [@bs.as "ENABLE_PRECISE_TYPE_REFINEMENT"]
+  mutable enablePrecisTypeRefinement: bool,
+};
+
+[@bs.module "relay-runtime"]
+external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
+
 /**
  * An abstract type representing all records in the store serialized to JSON in a way
  * that you can use to re-hydrate the store.
@@ -534,7 +549,7 @@ module type MakeUseQueryConfig = {
   type responseRaw;
   type response;
   type variables;
-  type preloadToken;
+  type queryRef;
   let query: queryNode;
   let convertResponse: responseRaw => response;
   let convertVariables: variables => variables;
@@ -553,6 +568,20 @@ module MakeUseQuery:
         unit
       ) =>
       C.response;
+
+    let useLoader:
+      unit =>
+      (
+        option(C.queryRef),
+        (
+          ~variables: C.variables,
+          ~fetchPolicy: fetchPolicy=?,
+          ~networkCacheConfig: cacheConfig=?,
+          unit
+        ) =>
+        unit,
+        unit => unit,
+      );
 
     let fetch:
       (
@@ -576,22 +605,22 @@ module MakeUseQuery:
       Promise.t(Belt.Result.t(C.response, Js.Exn.t));
 
     let usePreloaded:
-      (~token: C.preloadToken, ~renderPolicy: renderPolicy=?, unit) =>
+      (~queryRef: C.queryRef, ~renderPolicy: renderPolicy=?, unit) =>
       C.response;
   };
 
-module type MakePreloadQueryConfig = {
+module type MakeLoadQueryConfig = {
   type variables;
-  type queryPreloadToken;
+  type loadedQueryRef;
   type response;
   let query: queryNode;
   let convertVariables: variables => variables;
 };
 
-module MakePreloadQuery:
-  (C: MakePreloadQueryConfig) =>
+module MakeLoadQuery:
+  (C: MakeLoadQueryConfig) =>
    {
-    let preload:
+    let load:
       (
         ~environment: Environment.t,
         ~variables: C.variables,
@@ -600,12 +629,12 @@ module MakePreloadQuery:
         ~networkCacheConfig: cacheConfig=?,
         unit
       ) =>
-      C.queryPreloadToken;
+      C.loadedQueryRef;
 
-    let preloadTokenToObservable:
-      C.queryPreloadToken => option(Observable.t(C.response));
-    let preloadTokenToPromise:
-      C.queryPreloadToken => Promise.t(Belt.Result.t(unit, unit));
+    let queryRefToObservable:
+      C.loadedQueryRef => option(Observable.t(C.response));
+    let queryRefToPromise:
+      C.loadedQueryRef => Promise.t(Belt.Result.t(unit, unit));
   };
 
 /**
