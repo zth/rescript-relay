@@ -709,19 +709,11 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
     let (nullableQueryRef, loadQueryFn, disposableFn) =
       useQueryLoader(C.query);
 
-    // TODO: Working around the fact that I seem unable to use React.useCallback with labelled arguments
-    // using good old Obj.magic.
     let loadQuery =
-      React.useCallback1(
-        (
-          (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
-            loadQueryFn(
-              variables->C.convertVariables,
-              {fetchPolicy, networkCacheConfig},
-            )
-        )
-        ->Obj.magic,
-        [|loadQueryFn|],
+        (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
+      loadQueryFn(
+        variables->C.convertVariables,
+        {fetchPolicy, networkCacheConfig},
       );
 
     (Js.Nullable.toOption(nullableQueryRef), loadQuery, disposableFn);
