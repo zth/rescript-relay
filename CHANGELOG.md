@@ -6,7 +6,7 @@ A new, fresh release! This brings Relay to version `10.0.1`, binds a bunch of ne
 
 I'd like to highlight contributions from [Arnarkari93](https://github.com/Arnarkari93), [tsnobip](https://github.com/tsnobip) and [wokalski](https://github.com/wokalski), who all have made significant and great contributions for this release.
 
-(Check out this)[https://github.com/zth/reason-relay/commit/8ed636db21a2de5648cc0ff85d2827997a195654] for an example diff of upgrading a project.
+[Check out this](https://github.com/zth/reason-relay/commit/8ed636db21a2de5648cc0ff85d2827997a195654) for an example diff of upgrading a project.
 
 ## Upgrade versions
 
