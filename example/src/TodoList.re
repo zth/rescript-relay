@@ -24,7 +24,7 @@ module AddTodoMutation = [%relay.mutation
   mutation TodoListAddTodoMutation(
     $input: AddTodoItemInput!
     $connections: [String!]!
-  ) {
+  ) @raw_response_type {
     addTodoItem(input: $input) {
       addedTodoItemEdge @appendEdge(connections: $connections) {
         node {
@@ -64,6 +64,23 @@ let make = (~query as queryRef) => {
                     ~input=make_addTodoItemInput(~text=newTodoText, ()),
                   ),
                 ~onCompleted=(_, _) => {setNewTodoText(_ => "")},
+                ~optimisticResponse={
+                  addTodoItem:
+                    Some({
+                      addedTodoItemEdge:
+                        Some({
+                          node:
+                            Some({
+                              id:
+                                ReasonRelay.(
+                                  generateUniqueClientID()->dataIdToString
+                                ),
+                              text: newTodoText,
+                              completed: Some(false),
+                            }),
+                        }),
+                    }),
+                },
                 (),
               )
             );

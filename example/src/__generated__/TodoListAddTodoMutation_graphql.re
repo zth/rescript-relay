@@ -5,6 +5,17 @@ module Types = {
     text: string,
     clientMutationId: option(string),
   };
+  type rawResponse_addTodoItem_addedTodoItemEdge_node = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  };
+  type rawResponse_addTodoItem_addedTodoItemEdge = {
+    node: option(rawResponse_addTodoItem_addedTodoItemEdge_node),
+  };
+  type rawResponse_addTodoItem = {
+    addedTodoItemEdge: option(rawResponse_addTodoItem_addedTodoItemEdge),
+  };
   type response_addTodoItem_addedTodoItemEdge_node = {
     id: string,
     text: string,
@@ -18,7 +29,7 @@ module Types = {
   };
 
   type response = {addTodoItem: option(response_addTodoItem)};
-  type rawResponse = response;
+  type rawResponse = {addTodoItem: option(rawResponse_addTodoItem)};
   type variables = {
     input: addTodoItemInput,
     connections: array(string),
@@ -52,11 +63,31 @@ module Internal = {
         Js.undefined,
       );
 
-  type wrapRawResponseRaw = wrapResponseRaw;
-  let convertWrapRawResponse = convertWrapResponse;
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+  ];
+  let wrapRawResponseConverterMap = ();
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
+      );
 
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+  ];
+  let rawResponseConverterMap = ();
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
+        Js.undefined,
+      );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"AddTodoItemInput"}},"AddTodoItemInput":{"clientMutationId":{"n":""}}} |json}
@@ -82,6 +113,24 @@ module Utils = {
   let makeVariables = (~input, ~connections): variables => {
     input,
     connections,
+  };
+
+  let make_rawResponse_addTodoItem_addedTodoItemEdge_node =
+      (~id, ~text, ~completed=?, ())
+      : rawResponse_addTodoItem_addedTodoItemEdge_node => {
+    id,
+    text,
+    completed,
+  };
+
+  let make_rawResponse_addTodoItem_addedTodoItemEdge =
+      (~node=?, ()): rawResponse_addTodoItem_addedTodoItemEdge => {
+    node: node,
+  };
+
+  let make_rawResponse_addTodoItem =
+      (~addedTodoItemEdge=?, ()): rawResponse_addTodoItem => {
+    addedTodoItemEdge: addedTodoItemEdge,
   };
 
   let make_response_addTodoItem_addedTodoItemEdge_node =
