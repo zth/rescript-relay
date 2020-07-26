@@ -9,6 +9,7 @@ module Types = {
     node: option(fragment_todosConnection_edges_node),
   };
   type fragment_todosConnection = {
+    __id: ReasonRelay.dataId,
     edges: option(array(option(fragment_todosConnection_edges))),
   };
 
@@ -169,6 +170,18 @@ let node: operationType = [%raw
             }
           ],
           "storageKey": null
+        },
+        {
+          "kind": "ClientExtension",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "__id",
+              "storageKey": null
+            }
+          ]
         }
       ],
       "storageKey": null

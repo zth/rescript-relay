@@ -380,7 +380,19 @@ return {
             ],
             "storageKey": null
           },
-          (v3/*: any*/)
+          (v3/*: any*/),
+          {
+            "kind": "ClientExtension",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "__id",
+                "storageKey": null
+              }
+            ]
+          }
         ],
         "storageKey": "todosConnection(after:\"\",first:10)"
       },
