@@ -2,13 +2,11 @@ module TodoListFragment = [%relay.fragment
   {|
   fragment TodoList_query on Query
     @argumentDefinitions(
-      first: {type: "Int!", defaultValue: 10}
-      after: {type: "String!", defaultValue: ""}
-    )
-  {
+      first: { type: "Int!", defaultValue: 10 }
+      after: { type: "String!", defaultValue: "" }
+    ) {
     todosConnection(first: $first, after: $after)
-      @connection(key: "TodoList_query_todosConnection")
-    {
+      @connection(key: "TodoList_query_todosConnection") {
       edges {
         node {
           id
