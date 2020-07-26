@@ -20,9 +20,15 @@ You're encouraged to follow along this walkthrough and play with the concepts th
 
 Let's get started!
 
-#### Concurrent Mode is required
+#### Concurrent Mode is encouraged
 
-There are currently no official bindings for the React experimental API's in `reason-react`. ReasonRelay therefore ships `ReactExperimental`, a module with bindings to suspense and concurrent mode-related React API's. You're encouraged to use this until there's an official alternative, which likely won't be shipped until React's API's are released as stable.
+You will have the absolute best experience using ReasonRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too. There are a few rough edges to keep in mind when not running in concurrent mode, namely:
+
+- You won't have the same control over when things suspend and not as you do in concurrent mode. This can be problematic when doing refetches, which suspend after some default duration in a way you can't really control without concurrent mode.
+
+##### Extra bindings for experimental APIs with no official bindings yet
+
+Not all experimental APIs from React are currently bound in the official `reason-react` bindings. ReasonRelay therefore ships `ReactExperimental`, a module with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
 This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
@@ -43,7 +49,7 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
@@ -220,7 +226,7 @@ ReactExperimental.renderConcurrentRootAtElementWithId(
 
 ##### 2. Rendering your app in Concurrent Mode
 
-We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-required), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
+We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
 
 ## Time to make your first query
 
