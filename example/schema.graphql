@@ -5,6 +5,7 @@ input AddTodoItemInput {
 
 type AddTodoItemPayload {
   addedTodoItem: TodoItem
+  addedTodoItemEdge: TodoItemEdge
   clientMutationId: String
 }
 
@@ -27,10 +28,17 @@ type DeleteTodoItemPayload {
   clientMutationId: String
 }
 
+type DeleteTodoSimple {
+  deletedTodoItemId: ID!
+}
+
 type Mutation {
   addTodoItem(input: AddTodoItemInput!): AddTodoItemPayload
   updateTodoItem(input: UpdateTodoItemInput!): UpdateTodoItemPayload
   deleteTodoItem(input: DeleteTodoItemInput!): DeleteTodoItemPayload
+  addTodoSimple(text: String!): TodoItem!
+  updateTodoSimple(id: ID!, text: String!, completed: Boolean): TodoItem
+  deleteTodoSimple(id: ID!): DeleteTodoSimple
 }
 
 """An object with an ID"""
@@ -63,9 +71,10 @@ type Query {
   userById(id: ID!): User
   siteStatistics: SiteStatistics!
   ticketsConnection(status: TicketStatus, after: String, first: Int, before: String, last: Int): TicketConnection!
-  tickets(status: TicketStatus, limit: Int!, offset: Int!): [Ticket]!
+  tickets(status: TicketStatus, limit: Int!, offset: Int!): TicketsPaginated!
   todosConnection(after: String, first: Int, before: String, last: Int): TodoItemConnection!
-  todos(limit: Int!, offset: Int!): [TodoItem]!
+  todos(limit: Int!, offset: Int!): TodosPaginated!
+  allTodos: [TodoItem!]!
 }
 
 type SiteStatistics implements Node {
@@ -109,6 +118,12 @@ type TicketEdge {
   cursor: String!
 }
 
+type TicketsPaginated {
+  total: Int!
+  hasNextPage: Boolean!
+  results: [Ticket!]!
+}
+
 enum TicketStatus {
   Done
   Progress
@@ -140,6 +155,12 @@ type TodoItemEdge {
 
   """A cursor for use in pagination"""
   cursor: String!
+}
+
+type TodosPaginated {
+  total: Int!
+  hasNextPage: Boolean!
+  results: [TodoItem!]!
 }
 
 input UpdateTodoItemInput {
