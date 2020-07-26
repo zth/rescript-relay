@@ -64,7 +64,7 @@ In ReasonRelay, every `[%relay.query]` node automatically generates a `useLoader
 
 So, the typical way to preload a query would be like this:
 
-```reasonml
+```reason
 // SomeComponent.re
 module Query = [%relay.query
   {|
