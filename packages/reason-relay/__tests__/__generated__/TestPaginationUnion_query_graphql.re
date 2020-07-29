@@ -99,7 +99,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_members:
+  let getConnectionNodes:
     option(fragment_members) => array(fragment_members_edges_node) =
     connection =>
       switch (connection) {
