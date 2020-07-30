@@ -90,11 +90,11 @@ module Test = {
 
     <div>
       {data.members
-       ->Fragment.getConnectionNodes_members
+       ->Fragment.getConnectionNodes
        ->Belt.Array.mapWithIndex((i, member) =>
            switch (member) {
            | `User(user) =>
-             <div id={user.id}>
+             <div key={user.id}>
                <UserDisplayer user={user.fragmentRefs} />
              </div>
            | `Group(group) =>

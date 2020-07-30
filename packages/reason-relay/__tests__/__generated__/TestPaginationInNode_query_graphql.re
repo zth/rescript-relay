@@ -41,7 +41,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_friendsConnection:
+  let getConnectionNodes:
     fragment_friendsConnection => array(fragment_friendsConnection_edges_node) =
     connection =>
       switch (connection.edges) {

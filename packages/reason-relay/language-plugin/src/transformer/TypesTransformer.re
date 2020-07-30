@@ -464,6 +464,7 @@ let getPrintedFullState =
     | (Some(obj), _) =>
       obj.definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
+           ~functionName="getConnectionNodes",
            ~state,
            ~connectionLocation=connection.fieldName,
          )
@@ -474,6 +475,7 @@ let getPrintedFullState =
         when connPath == ["fragment"] =>
       definition
       |> UtilsPrinter.printGetConnectionNodesFunction(
+           ~functionName="getConnectionNodes",
            ~state,
            ~connectionLocation=connection.fieldName,
          )

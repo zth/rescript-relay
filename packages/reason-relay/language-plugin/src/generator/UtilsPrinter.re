@@ -52,7 +52,7 @@ let printConnectionTraverser =
 
 let printFullGetConnectionNodesFnDefinition =
     (
-      ~connectionLocation,
+      ~functionName,
       ~connectionPropNullable,
       ~connectionTypeName,
       ~nodeTypeName,
@@ -60,8 +60,8 @@ let printFullGetConnectionNodesFnDefinition =
       ~edgesNullable,
       ~nodeNullable,
     ) =>
-  "let getConnectionNodes_"
-  ++ connectionLocation
+  "let "
+  ++ functionName
   ++ ": "
   ++ (connectionPropNullable ? "option(" : "")
   ++ connectionTypeName
@@ -78,7 +78,13 @@ let printFullGetConnectionNodesFnDefinition =
   ++ ";";
 
 let printGetConnectionNodesFunction =
-    (~state: fullState, ~connectionLocation: string, obj: object_): string => {
+    (
+      ~functionName,
+      ~state: fullState,
+      ~connectionLocation: string,
+      obj: object_,
+    )
+    : string => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
@@ -144,7 +150,7 @@ let printGetConnectionNodesFunction =
                          ) =>
                          addToStr(
                            printFullGetConnectionNodesFnDefinition(
-                             ~connectionLocation,
+                             ~functionName,
                              ~connectionPropNullable,
                              ~connectionTypeName,
                              ~nodeTypeName,
@@ -160,7 +166,7 @@ let printGetConnectionNodesFunction =
                          ) =>
                          addToStr(
                            printFullGetConnectionNodesFnDefinition(
-                             ~connectionLocation,
+                             ~functionName,
                              ~connectionPropNullable,
                              ~connectionTypeName,
                              ~nodeTypeName=
