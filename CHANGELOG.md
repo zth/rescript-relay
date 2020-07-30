@@ -1,5 +1,9 @@
 # master
 
+- Fixed a bug where `fragmentRefs` would produce a circular reference which can't be stringified.
+- _BREAKING CHANGE_ All `getConnectionNodes_path_to_connection` generated functions are now named just `getConnectionNodes`, since Relay only allows a single `@connection` per operation/fragment, which makes name clashes impossible.
+  _Migration path_: Rename all calls to `getConnectionNodes_some_path_here` to just `getConnectionNodes`.
+
 # 0.10.0
 
 A new, fresh release! This brings Relay to version `10.0.1`, binds a bunch of new things, and changes a few APIs (and their implementations) to be more ergonomic.
