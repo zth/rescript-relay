@@ -918,16 +918,6 @@ module MakeUseFragment = (C: MakeUseFragmentConfig) => {
 };
 
 /** Refetchable */
-type refetchFn('variables) =
-  (
-    ~variables: 'variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~renderPolicy: renderPolicy=?,
-    ~onComplete: option(Js.Exn.t) => unit=?,
-    unit
-  ) =>
-  unit;
-
 type refetchFnRaw('variables) =
   (
     'variables,
@@ -938,7 +928,7 @@ type refetchFnRaw('variables) =
       "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
     }
   ) =>
-  unit;
+  Disposable.t;
 
 let nullableToOptionalExnHandler =
   fun
@@ -1017,7 +1007,15 @@ type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   loadPrevious: paginationLoadMoreFn,
   hasNext: bool,
   hasPrevious: bool,
-  refetch: refetchFn('variables),
+  refetch:
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~renderPolicy: renderPolicy=?,
+      ~onComplete: option(Js.Exn.t) => unit=?,
+      unit
+    ) =>
+    Disposable.t,
 };
 
 type paginationFragmentReturn('fragmentData, 'variables) = {
@@ -1028,7 +1026,15 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
   hasPrevious: bool,
   isLoadingNext: bool,
   isLoadingPrevious: bool,
-  refetch: refetchFn('variables),
+  refetch:
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~renderPolicy: renderPolicy=?,
+      ~onComplete: option(Js.Exn.t) => unit=?,
+      unit
+    ) =>
+    Disposable.t,
 };
 
 [@bs.module "react-relay/hooks"]
@@ -1055,7 +1061,7 @@ external usePaginationFragment:
             "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
           }
         ) =>
-        unit
+        Disposable.t
       ),
   } =
   "usePaginationFragment";
@@ -1084,7 +1090,7 @@ external useBlockingPaginationFragment:
             "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
           }
         ) =>
-        unit
+        Disposable.t
       ),
   } =
   "useBlockingPaginationFragment";

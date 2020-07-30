@@ -103,16 +103,18 @@ module UserNodeDisplayer = {
          : React.null}
       <button
         onClick={_ =>
-          startTransition(() =>
-            refetch(
-              ~variables=
-                Fragment.makeRefetchVariables(
-                  ~onlineStatuses=[|`Online, `Idle|],
-                  (),
-                ),
-              (),
-            )
-          )
+          startTransition(() => {
+            let _ =
+              refetch(
+                ~variables=
+                  Fragment.makeRefetchVariables(
+                    ~onlineStatuses=[|`Online, `Idle|],
+                    (),
+                  ),
+                (),
+              );
+            ();
+          })
         }>
         {React.string("Refetch connection")}
       </button>

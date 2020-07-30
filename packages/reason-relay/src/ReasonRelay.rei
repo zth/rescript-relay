@@ -657,16 +657,6 @@ module MakeUseFragment:
   };
 
 /** Refetchable */
-type refetchFn('variables) =
-  (
-    ~variables: 'variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~renderPolicy: renderPolicy=?,
-    ~onComplete: option(Js.Exn.t) => unit=?,
-    unit
-  ) =>
-  unit;
-
 module type MakeUseRefetchableFragmentConfig = {
   type fragmentRaw;
   type fragment;
@@ -681,7 +671,18 @@ module MakeUseRefetchableFragment:
   (C: MakeUseRefetchableFragmentConfig) =>
    {
     let useRefetchable:
-      C.fragmentRef => (C.fragment, refetchFn(C.variables));
+      C.fragmentRef =>
+      (
+        C.fragment,
+        (
+          ~variables: C.variables,
+          ~fetchPolicy: fetchPolicy=?,
+          ~renderPolicy: renderPolicy=?,
+          ~onComplete: option(Js.Exn.t) => unit=?,
+          unit
+        ) =>
+        Disposable.t,
+      );
   };
 
 /** Pagination */
@@ -704,7 +705,15 @@ type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
   loadPrevious: paginationLoadMoreFn,
   hasNext: bool,
   hasPrevious: bool,
-  refetch: refetchFn('variables),
+  refetch:
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~renderPolicy: renderPolicy=?,
+      ~onComplete: option(Js.Exn.t) => unit=?,
+      unit
+    ) =>
+    Disposable.t,
 };
 
 type paginationFragmentReturn('fragmentData, 'variables) = {
@@ -715,7 +724,15 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
   hasPrevious: bool,
   isLoadingNext: bool,
   isLoadingPrevious: bool,
-  refetch: refetchFn('variables),
+  refetch:
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~renderPolicy: renderPolicy=?,
+      ~onComplete: option(Js.Exn.t) => unit=?,
+      unit
+    ) =>
+    Disposable.t,
 };
 
 module MakeUsePaginationFragment:

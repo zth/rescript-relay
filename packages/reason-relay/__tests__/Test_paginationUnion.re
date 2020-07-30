@@ -124,17 +124,19 @@ module Test = {
          : React.null}
       <button
         onClick={_ =>
-          startTransition(() =>
-            refetch(
-              ~variables=
-                Fragment.makeRefetchVariables(
-                  ~groupId,
-                  ~onlineStatuses=[|`Online, `Idle|],
-                  (),
-                ),
-              (),
-            )
-          )
+          startTransition(() => {
+            let _ =
+              refetch(
+                ~variables=
+                  Fragment.makeRefetchVariables(
+                    ~groupId,
+                    ~onlineStatuses=[|`Online, `Idle|],
+                    (),
+                  ),
+                (),
+              );
+            ();
+          })
         }>
         {React.string("Refetch connection")}
       </button>

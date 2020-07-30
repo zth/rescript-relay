@@ -54,17 +54,19 @@ module Test = {
       </div>
       <button
         onClick={_ =>
-          startTransition(() =>
-            refetch(
-              ~variables=
-                Fragment.makeRefetchVariables(
-                  ~showOnlineStatus=true,
-                  ~friendsOnlineStatuses=[|`Online, `Offline|],
-                  (),
-                ),
-              (),
-            )
-          )
+          startTransition(() => {
+            let _ =
+              refetch(
+                ~variables=
+                  Fragment.makeRefetchVariables(
+                    ~showOnlineStatus=true,
+                    ~friendsOnlineStatuses=[|`Online, `Offline|],
+                    (),
+                  ),
+                (),
+              );
+            ();
+          })
         }>
         {React.string("Fetch online status")}
       </button>

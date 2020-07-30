@@ -3,6 +3,8 @@
 - Fixed a bug where `fragmentRefs` would produce a circular reference which can't be stringified.
 - _BREAKING CHANGE_ All `getConnectionNodes_path_to_connection` generated functions are now named just `getConnectionNodes`, since Relay only allows a single `@connection` per operation/fragment, which makes name clashes impossible.
   _Migration path_: Rename all calls to `getConnectionNodes_some_path_here` to just `getConnectionNodes`.
+- _BREAKING CHANGE_ All `refetch` functions now properly return a `Disposable.t`.
+  _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refeth(...)->ignore` for example.
 
 # 0.10.0
 
