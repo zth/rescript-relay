@@ -756,7 +756,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_participantsConnection:
+  let getConnectionNodes:
     option(fragment_participantsConnection) =>
     array(fragment_participantsConnection_edges_node) =
     connection =>
@@ -830,7 +830,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_friendsConnection:
+  let getConnectionNodes:
     option(fragment_me_friendsConnection) =>
     array(fragment_me_friendsConnection_edges_node) =
     connection =>
@@ -901,7 +901,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_usersConnection:
+  let getConnectionNodes:
     option(fragment_usersConnection) =>
     array(fragment_usersConnection_edges_node) =
     connection =>
