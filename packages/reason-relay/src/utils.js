@@ -28,7 +28,7 @@ function traverse(
 
   if (addFragmentOnRoot) {
     newObj = getNewObj(newObj, currentObj);
-    newObj.fragmentRefs = newObj;
+    newObj.fragmentRefs = Object.assign({}, newObj);
   }
 
   for (var key in currentObj) {
@@ -132,7 +132,10 @@ function traverse(
 
             if (shouldAddFragmentFn && typeof v === "object") {
               var objWithFragmentFn = Object.assign({}, v);
-              objWithFragmentFn.fragmentRefs = objWithFragmentFn;
+              objWithFragmentFn.fragmentRefs = Object.assign(
+                {},
+                objWithFragmentFn
+              );
               return objWithFragmentFn;
             }
 
@@ -211,7 +214,10 @@ function traverse(
 
             var objWithFragmentFn = Object.assign({}, v);
 
-            objWithFragmentFn.fragmentRefs = objWithFragmentFn;
+            objWithFragmentFn.fragmentRefs = Object.assign(
+              {},
+              objWithFragmentFn
+            );
 
             newObj[key] = objWithFragmentFn;
           }
