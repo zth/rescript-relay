@@ -5,6 +5,7 @@
   _Migration path_: Rename all calls to `getConnectionNodes_some_path_here` to just `getConnectionNodes`.
 - _BREAKING CHANGE_ All `refetch` functions now properly return a `Disposable.t`.
   _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refeth(...)->ignore` for example.
+- Types are now always emitted as recursive, fixing a bug where types wouldn't/can't be printed in the right order.
 
 # 0.10.0
 
