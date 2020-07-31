@@ -22,16 +22,17 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
-  type setOnlineStatusInput = {
-    onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
-  };
-  type response_setOnlineStatusComplex_user = {
+  [@ocaml.warning "-30"];
+  type response_setOnlineStatusComplex = {
+    user: option(response_setOnlineStatusComplex_user),
+  }
+  and response_setOnlineStatusComplex_user = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-  };
-  type response_setOnlineStatusComplex = {
-    user: option(response_setOnlineStatusComplex_user),
+  }
+  and setOnlineStatusInput = {
+    onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
   };
 
   type response = {

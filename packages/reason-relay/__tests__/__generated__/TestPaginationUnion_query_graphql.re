@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_members_edges_node_User = {
     id: string,
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_user]),
@@ -31,7 +32,10 @@ module Types = {
     | `Group(fragment_members_edges_node_Group)
     | `UnselectedUnionMember(string)
   ];
-  type fragment_members_edges = {
+  type fragment_members = {
+    edges: option(array(option(fragment_members_edges))),
+  }
+  and fragment_members_edges = {
     node:
       option(
         [
@@ -40,9 +44,6 @@ module Types = {
           | `UnselectedUnionMember(string)
         ],
       ),
-  };
-  type fragment_members = {
-    edges: option(array(option(fragment_members_edges))),
   };
 
   type fragment = {members: option(fragment_members)};

@@ -22,15 +22,16 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
-  type response_users_edges_node = {
+  [@ocaml.warning "-30"];
+  type response_users = {
+    edges: option(array(option(response_users_edges))),
+  }
+  and response_users_edges = {node: option(response_users_edges_node)}
+  and response_users_edges_node = {
     id: string,
     firstName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-  };
-  type response_users_edges = {node: option(response_users_edges_node)};
-  type response_users = {
-    edges: option(array(option(response_users_edges))),
   };
 
   type response = {users: option(response_users)};

@@ -1,15 +1,16 @@
 /* @generated */
 
 module Types = {
-  type fragment_friendsConnection_edges_node = {
-    id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_user]),
-  };
-  type fragment_friendsConnection_edges = {
-    node: option(fragment_friendsConnection_edges_node),
-  };
+  [@ocaml.warning "-30"];
   type fragment_friendsConnection = {
     edges: option(array(option(fragment_friendsConnection_edges))),
+  }
+  and fragment_friendsConnection_edges = {
+    node: option(fragment_friendsConnection_edges_node),
+  }
+  and fragment_friendsConnection_edges_node = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_user]),
   };
 
   type fragment = {

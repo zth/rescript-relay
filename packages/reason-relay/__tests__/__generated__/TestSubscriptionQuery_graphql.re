@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_loggedInUser = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };

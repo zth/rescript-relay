@@ -341,7 +341,8 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
 
   str^;
 }
-and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
+and printRootType =
+    (~recursiveMode=None, ~state: fullState, ~ignoreFragmentRefs, rootType) => {
   switch (rootType) {
   | Operation(Object(obj)) =>
     "type response = "
@@ -377,16 +378,26 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
        )
     ++ ";"
   | ObjectTypeDeclaration({name, definition}) =>
-    "type "
-    ++ Tablecloth.String.uncapitalize(name)
-    ++ (
-      switch (definition.values |> Tablecloth.Array.length) {
-      | 0 => ""
-      | _ =>
-        " = " ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
-      }
-    )
-    ++ ";"
+    let typeDef =
+      Tablecloth.String.uncapitalize(name)
+      ++ (
+        switch (definition.values |> Tablecloth.Array.length) {
+        | 0 => ""
+        | _ =>
+          " = "
+          ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
+        }
+      );
+
+    let (prefix, suffix) =
+      switch (recursiveMode) {
+      | None => (" type ", "; ")
+      | Some(`Head) => (" type ", " ")
+      | Some(`Member) => (" and ", " ")
+      | Some(`Tail) => (" and ", "; ")
+      };
+
+    prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
@@ -400,8 +411,8 @@ and printRootType = (~state: fullState, ~ignoreFragmentRefs, rootType) =>
        )
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
-  }
-
+  };
+}
 and printUnionTypeDefinition =
     (union, ~includeSemi, ~prefixWithTypesModule): string => {
   let futureAddedValueName =

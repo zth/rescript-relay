@@ -241,23 +241,23 @@ let wrap_enum_UserRole: enum_UserRole => string =
   | \`FutureAddedValue(v) => v;
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
-    clientMutationId: option(string),
-    userId: string,
-    location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = {
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
     role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
-  };
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and setUserLocationInput = {
+    clientMutationId: option(string),
+    userId: string,
+    location: option(locationBounds),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -354,19 +354,19 @@ exports[`Language plugin tests Mutation generates the correct type structure whe
 /* @generated */
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked
+  and setUserLocationInput = {
     clientMutationId: option(string),
     userId: string,
     location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked;
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -509,22 +509,22 @@ exports[`Language plugin tests Mutation prints the correct basic structure for m
 /* @generated */
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = {
+    id: string,
+    firstName: string,
+  }
+  and setUserLocationInput = {
     clientMutationId: option(string),
     userId: string,
     location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = {
-    id: string,
-    firstName: string,
-  };
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -686,7 +686,10 @@ module Types = {
     | \`Observer(fragment_participantsConnection_edges_node_Observer)
     | \`UnselectedUnionMember(string)
   ];
-  type fragment_participantsConnection_edges = {
+  type fragment_participantsConnection = {
+    edges: option(array(option(fragment_participantsConnection_edges))),
+  }
+  and fragment_participantsConnection_edges = {
     node:
       option(
         [
@@ -695,9 +698,6 @@ module Types = {
           | \`UnselectedUnionMember(string)
         ],
       ),
-  };
-  type fragment_participantsConnection = {
-    edges: option(array(option(fragment_participantsConnection_edges))),
   };
 
   type fragment = {
@@ -790,18 +790,18 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 /* @generated */
 
 module Types = {
-  type fragment_me_friendsConnection_edges_node = {
-    id: string,
-    firstName: string,
-  };
-  type fragment_me_friendsConnection_edges = {
-    node: option(fragment_me_friendsConnection_edges_node),
-  };
-  type fragment_me_friendsConnection = {
-    edges: option(array(option(fragment_me_friendsConnection_edges))),
-  };
   type fragment_me = {
     friendsConnection: option(fragment_me_friendsConnection),
+  }
+  and fragment_me_friendsConnection = {
+    edges: option(array(option(fragment_me_friendsConnection_edges))),
+  }
+  and fragment_me_friendsConnection_edges = {
+    node: option(fragment_me_friendsConnection_edges_node),
+  }
+  and fragment_me_friendsConnection_edges_node = {
+    id: string,
+    firstName: string,
   };
 
   type fragment = {me: fragment_me};
@@ -864,15 +864,15 @@ exports[`Language plugin tests Query connections generates helpers for root leve
 /* @generated */
 
 module Types = {
-  type fragment_usersConnection_edges_node = {
-    id: string,
-    firstName: string,
-  };
-  type fragment_usersConnection_edges = {
-    node: option(fragment_usersConnection_edges_node),
-  };
   type fragment_usersConnection = {
     edges: option(array(option(fragment_usersConnection_edges))),
+  }
+  and fragment_usersConnection_edges = {
+    node: option(fragment_usersConnection_edges_node),
+  }
+  and fragment_usersConnection_edges_node = {
+    id: string,
+    firstName: string,
   };
 
   type fragment = {usersConnection: option(fragment_usersConnection)};
@@ -995,15 +995,15 @@ exports[`Language plugin tests Subscription prints the correct basic structure f
 /* @generated */
 
 module Types = {
-  type userChangedInput = {
+  type response_userChanged = {user: option(response_userChanged_user)}
+  and response_userChanged_user = {
+    id: string,
+    firstName: string,
+  }
+  and userChangedInput = {
     clientMutationId: option(string),
     userId: string,
   };
-  type response_userChanged_user = {
-    id: string,
-    firstName: string,
-  };
-  type response_userChanged = {user: option(response_userChanged_user)};
 
   type response = {userChanged: response_userChanged};
   type rawResponse = response;
@@ -1586,11 +1586,11 @@ exports[`Language plugin tests raw_response_type outputs code for handling @raw_
 /* @generated */
 
 module Types = {
-  type rawResponse_me = {
+  type response_me = {
     firstName: string,
     lastName: string,
-  };
-  type response_me = {
+  }
+  and rawResponse_me = {
     firstName: string,
     lastName: string,
   };

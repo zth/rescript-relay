@@ -22,6 +22,8 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
+  [@ocaml.warning "-30"];
+
   type fragment_t = {
     id: string,
     firstName: string,

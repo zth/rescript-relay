@@ -22,19 +22,20 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
-  type rawResponse_setOnlineStatus_user = {
+  [@ocaml.warning "-30"];
+  type response_setOnlineStatus = {
+    user: option(response_setOnlineStatus_user),
+  }
+  and response_setOnlineStatus_user = ReasonRelay.allFieldsMasked
+  and rawResponse_setOnlineStatus = {
+    user: option(rawResponse_setOnlineStatus_user),
+  }
+  and rawResponse_setOnlineStatus_user = {
     id: string,
     firstName: string,
     lastName: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-  };
-  type rawResponse_setOnlineStatus = {
-    user: option(rawResponse_setOnlineStatus_user),
-  };
-  type response_setOnlineStatus_user = ReasonRelay.allFieldsMasked;
-  type response_setOnlineStatus = {
-    user: option(response_setOnlineStatus_user),
   };
 
   type response = {setOnlineStatus: option(response_setOnlineStatus)};
