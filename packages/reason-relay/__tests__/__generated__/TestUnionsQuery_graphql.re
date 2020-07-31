@@ -22,6 +22,7 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_members_edges_node_Group_members_User = {
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
@@ -66,7 +67,10 @@ module Types = {
     | `Group(response_members_edges_node_Group)
     | `UnselectedUnionMember(string)
   ];
-  type response_members_edges = {
+  type response_members = {
+    edges: option(array(option(response_members_edges))),
+  }
+  and response_members_edges = {
     node:
       option(
         [
@@ -75,9 +79,6 @@ module Types = {
           | `UnselectedUnionMember(string)
         ],
       ),
-  };
-  type response_members = {
-    edges: option(array(option(response_members_edges))),
   };
 
   type response = {members: option(response_members)};

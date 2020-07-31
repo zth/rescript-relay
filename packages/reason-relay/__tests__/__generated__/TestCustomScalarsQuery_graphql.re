@@ -1,16 +1,17 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_member_User = {createdAt: TestsUtils.Datetime.t};
   type response_member = [
     | `User(response_member_User)
     | `UnselectedUnionMember(string)
   ];
-  type response_loggedInUser_friends = {createdAt: TestsUtils.Datetime.t};
   type response_loggedInUser = {
     createdAt: TestsUtils.Datetime.t,
     friends: array(response_loggedInUser_friends),
-  };
+  }
+  and response_loggedInUser_friends = {createdAt: TestsUtils.Datetime.t};
 
   type response = {
     loggedInUser: response_loggedInUser,

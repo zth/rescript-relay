@@ -86,6 +86,9 @@ let getPrintedFullState =
   // Print definitions and declarations
   addToStr("module Types = {\n");
 
+  // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
+  addToStr("[@ocaml.warning \"-30\"];\n");
+
   let shouldIgnoreFragmentRefs =
     switch (operationType) {
     | Mutation(_) => true
@@ -97,17 +100,49 @@ let getPrintedFullState =
       union->Printer.printUnionTypes(~state, ~printName)->addToStr
     });
 
-  Printer.(
+  // Split declarations so we can print object declarations first and as mutuals
+  let (otherDeclarations, objectDeclarations) =
     typeDeclarations^
-    |> List.rev
-    |> List.iter(def => {
+    |> Tablecloth.List.splitWhen(
+         ~f=
+           fun
+           | Types.ObjectTypeDeclaration(_) => true
+           | _ => false,
+       );
+
+  let numObjectDeclarations = Tablecloth.List.length(objectDeclarations);
+
+  // Print object declarations first
+
+  Printer.(
+    objectDeclarations
+    |> List.iteri((index, def) => {
          def
          |> printRootType(
+              ~recursiveMode=
+                switch (index, numObjectDeclarations) {
+                | (0, _) => Some(`Head)
+                | (index, num) when index + 1 == num => Some(`Tail)
+                | _ => Some(`Member)
+                },
               ~state,
               ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
          |> addToStr
        })
+  );
+
+  Printer.(
+    otherDeclarations
+    |> List.iter(def =>
+         def
+         |> printRootType(
+              ~recursiveMode=None,
+              ~state,
+              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
+            )
+         |> addToStr
+       )
   );
 
   addSpacing();

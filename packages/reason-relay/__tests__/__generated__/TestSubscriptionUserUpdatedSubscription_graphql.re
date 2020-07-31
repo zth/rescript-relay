@@ -22,13 +22,14 @@ let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
   | `FutureAddedValue(v) => v;
 
 module Types = {
-  type response_userUpdated_user = {
+  [@ocaml.warning "-30"];
+  type response_userUpdated = {user: option(response_userUpdated_user)}
+  and response_userUpdated_user = {
     id: string,
     onlineStatus:
       option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
-  type response_userUpdated = {user: option(response_userUpdated_user)};
 
   type response = {userUpdated: option(response_userUpdated)};
   type rawResponse = response;

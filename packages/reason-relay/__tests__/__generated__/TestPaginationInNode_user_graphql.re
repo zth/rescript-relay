@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
