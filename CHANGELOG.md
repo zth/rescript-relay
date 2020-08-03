@@ -1,14 +1,30 @@
 # master
 
-- Fixed a bug where `fragmentRefs` would produce a circular reference which can't be stringified.
+# 0.11.0
+
+Another release, primarily to enable zero cost enums via `bs-platform` `8.2.0`. No new Relay version, and hopefully a managable amount of breaking changes.
+
+## Upgrade versions
+
+- `bs-platform@^8.2.0` Note this _must_ be `8.2.0` as we rely on things from that release.
+
+## Breaking changes
+
+- _BREAKING CHANGE_ All enums are now zero cost as `bs-platform` > `8.2.0` models polyvariants without payloads as strings. This does however force us to remove the `FutureAddedValue(string)` case, but it's worth it in the long run.
+  _Migration path_: Where you previously matched on `FutureAddedValue(_)`, now instead match on a default `_`. So `FutureAddedValue(_) => ...` becomes `_ => ...`. But hey, maybe you were using that string `FutureAddedValue` provided?! You can still get it, every module with enums will now contain `toString` functions for turning your enum into an actual string. If you have an enum called `OnlineStatus`, your module will have a function like `Fragment.onlineStatus_toString(enumGoesHere)`.
 - _BREAKING CHANGE_ All `getConnectionNodes_path_to_connection` generated functions are now named just `getConnectionNodes`, since Relay only allows a single `@connection` per operation/fragment, which makes name clashes impossible.
   _Migration path_: Rename all calls to `getConnectionNodes_some_path_here` to just `getConnectionNodes`.
 - _BREAKING CHANGE_ All `refetch` functions now properly return a `Disposable.t`.
-  _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refeth(...)->ignore` for example.
+  _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refetch(...)->ignore` for example.
+
+## New bindings
+
+No new bindings this release.
+
+## Fixes & misc
+
+- Fixed a bug where `fragmentRefs` would produce a circular reference which can't be stringified.
 - Types are now always emitted as recursive, fixing a bug where types wouldn't/can't be printed in the right order.
-- Bump `bs-platform` to `8.2.0`.
-- _BREAKING CHANGE_ All enums are now zero cost as `bs-platform` > `8.2.0` models polyvariants without payloads as strings. This does however force us to remove the `FutureAddedValue(string)` case, but it's worth it in the long run.
-  _Migration path_: Where you previously matched on `FutureAddedValue(_)`, now instead match on a default `_`. So `FutureAddedValue(_) => ...` becomes `_ => ...`. But hey, maybe you were using that string `FutureAddedValue` provided?! You can still get it, every module with enums will now contain `toString` functions for turning your enum into an actual string. If you have an enum called `OnlineStatus`, your module will have a function like `Fragment.onlineStatus_toString(enumGoesHere)`.
 
 # 0.10.0
 
