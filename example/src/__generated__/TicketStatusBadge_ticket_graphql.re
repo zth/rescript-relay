@@ -1,38 +1,12 @@
 /* @generated */
 
-type enum_TicketStatus = [
-  | `Done
-  | `OnHold
-  | `Progress
-  | `Rejected
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_TicketStatus: string => enum_TicketStatus =
-  fun
-  | "Done" => `Done
-  | "OnHold" => `OnHold
-  | "Progress" => `Progress
-  | "Rejected" => `Rejected
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_TicketStatus: enum_TicketStatus => string =
-  fun
-  | `Done => "Done"
-  | `OnHold => "OnHold"
-  | `Progress => "Progress"
-  | `Rejected => "Rejected"
-  | `FutureAddedValue(v) => v;
+type enum_TicketStatus = pri [> | `Done | `OnHold | `Progress | `Rejected];
 
 module Types = {
+  [@ocaml.warning "-30"];
+
   type fragment = {
-    status: [
-      | `Done
-      | `OnHold
-      | `Progress
-      | `Rejected
-      | `FutureAddedValue(string)
-    ],
+    status: enum_TicketStatus,
     dbId: string,
   };
 };
@@ -40,9 +14,9 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"status":{"e":"enum_TicketStatus"}}} |json}
+    {json| {} |json}
   ];
-  let fragmentConverterMap = {"enum_TicketStatus": unwrap_enum_TicketStatus};
+  let fragmentConverterMap = ();
   let convertFragment = v =>
     v
     ->ReasonRelay._convertObj(
@@ -58,7 +32,9 @@ external getFragmentRef:
   ReasonRelay.fragmentRefs([> | `TicketStatusBadge_ticket]) => fragmentRef =
   "%identity";
 
-module Utils = {};
+module Utils = {
+  external ticketStatus_toString: enum_TicketStatus => string = "%identity";
+};
 
 type operationType = ReasonRelay.fragmentNode;
 

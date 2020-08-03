@@ -1,20 +1,21 @@
 /* @generated */
 
 module Types = {
-  type fragment_ticketsConnection_edges_node = {
-    id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTicket_ticket]),
-  };
-  type fragment_ticketsConnection_edges = {
-    node: option(fragment_ticketsConnection_edges_node),
-  };
-  type fragment_ticketsConnection_pageInfo = {
-    endCursor: option(string),
-    hasNextPage: bool,
-  };
+  [@ocaml.warning "-30"];
   type fragment_ticketsConnection = {
     pageInfo: fragment_ticketsConnection_pageInfo,
     edges: option(array(option(fragment_ticketsConnection_edges))),
+  }
+  and fragment_ticketsConnection_pageInfo = {
+    endCursor: option(string),
+    hasNextPage: bool,
+  }
+  and fragment_ticketsConnection_edges = {
+    node: option(fragment_ticketsConnection_edges_node),
+  }
+  and fragment_ticketsConnection_edges_node = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTicket_ticket]),
   };
 
   type fragment = {ticketsConnection: fragment_ticketsConnection};
@@ -43,7 +44,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_ticketsConnection:
+  let getConnectionNodes:
     fragment_ticketsConnection => array(fragment_ticketsConnection_edges_node) =
     connection =>
       switch (connection.edges) {

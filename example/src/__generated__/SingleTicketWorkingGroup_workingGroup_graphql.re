@@ -1,16 +1,17 @@
 /* @generated */
 
 module Types = {
-  type fragment_membersConnection_edges_node = {
+  [@ocaml.warning "-30"];
+  type fragment_membersConnection = {
+    edges: option(array(option(fragment_membersConnection_edges))),
+  }
+  and fragment_membersConnection_edges = {
+    node: option(fragment_membersConnection_edges_node),
+  }
+  and fragment_membersConnection_edges_node = {
     id: string,
     fullName: string,
     fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
-  };
-  type fragment_membersConnection_edges = {
-    node: option(fragment_membersConnection_edges_node),
-  };
-  type fragment_membersConnection = {
-    edges: option(array(option(fragment_membersConnection_edges))),
   };
 
   type fragment = {

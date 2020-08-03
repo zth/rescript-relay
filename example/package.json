@@ -23,13 +23,13 @@
     "react-relay": "0.0.0-experimental-8058ef82",
     "reason-promise": "^1.1.1",
     "reason-react": "^0.9.1",
-    "reason-relay": "0.10.0",
+    "reason-relay": "0.11.0",
     "relay-compiler": "10.0.1",
     "relay-config": "10.0.1",
     "relay-runtime": "10.0.1"
   },
   "devDependencies": {
-    "bs-platform": "8.0.3",
+    "bs-platform": "8.2.0",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",

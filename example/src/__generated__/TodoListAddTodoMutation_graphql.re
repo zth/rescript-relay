@@ -1,31 +1,32 @@
 /* @generated */
 
 module Types = {
-  type addTodoItemInput = {
-    text: string,
-    clientMutationId: option(string),
-  };
-  type rawResponse_addTodoItem_addedTodoItemEdge_node = {
-    id: string,
-    text: string,
-    completed: option(bool),
-  };
-  type rawResponse_addTodoItem_addedTodoItemEdge = {
-    node: option(rawResponse_addTodoItem_addedTodoItemEdge_node),
-  };
-  type rawResponse_addTodoItem = {
-    addedTodoItemEdge: option(rawResponse_addTodoItem_addedTodoItemEdge),
-  };
-  type response_addTodoItem_addedTodoItemEdge_node = {
-    id: string,
-    text: string,
-    completed: option(bool),
-  };
-  type response_addTodoItem_addedTodoItemEdge = {
-    node: option(response_addTodoItem_addedTodoItemEdge_node),
-  };
+  [@ocaml.warning "-30"];
   type response_addTodoItem = {
     addedTodoItemEdge: option(response_addTodoItem_addedTodoItemEdge),
+  }
+  and response_addTodoItem_addedTodoItemEdge = {
+    node: option(response_addTodoItem_addedTodoItemEdge_node),
+  }
+  and response_addTodoItem_addedTodoItemEdge_node = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  }
+  and rawResponse_addTodoItem = {
+    addedTodoItemEdge: option(rawResponse_addTodoItem_addedTodoItemEdge),
+  }
+  and rawResponse_addTodoItem_addedTodoItemEdge = {
+    node: option(rawResponse_addTodoItem_addedTodoItemEdge_node),
+  }
+  and rawResponse_addTodoItem_addedTodoItemEdge_node = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  }
+  and addTodoItemInput = {
+    text: string,
+    clientMutationId: option(string),
   };
 
   type response = {addTodoItem: option(response_addTodoItem)};

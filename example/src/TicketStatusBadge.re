@@ -26,5 +26,5 @@ let make = (~ticket as ticketRef) =>
     <label className="badge badge-gradient-danger">
       {React.string("REJECTED")}
     </label>
-  | `FutureAddedValue(_) => React.null
+  | _ => React.null
   };

@@ -51,16 +51,18 @@ let make = (~workingGroup as wgRef) => {
          <button
            type_="button"
            onClick={_ =>
-             startTransition(() =>
-               refetch(
-                 ~variables=
-                   WorkingGroupFragment.makeRefetchVariables(
-                     ~includeMembers=true,
-                     (),
-                   ),
-                 (),
-               )
-             )
+             startTransition(() => {
+               let _ =
+                 refetch(
+                   ~variables=
+                     WorkingGroupFragment.makeRefetchVariables(
+                       ~includeMembers=true,
+                       (),
+                     ),
+                   (),
+                 );
+               ();
+             })
            }>
            {React.string(isPending ? "Loading..." : "See members")}
          </button>

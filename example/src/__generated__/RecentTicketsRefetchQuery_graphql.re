@@ -1,6 +1,8 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
+
   type response = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `RecentTickets_query]),
   };

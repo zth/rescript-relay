@@ -1,19 +1,20 @@
 /* @generated */
 
 module Types = {
-  type updateTodoItemInput = {
+  [@ocaml.warning "-30"];
+  type response_updateTodoItem = {
+    updatedTodoItem: option(response_updateTodoItem_updatedTodoItem),
+  }
+  and response_updateTodoItem_updatedTodoItem = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  }
+  and updateTodoItemInput = {
     id: string,
     text: string,
     completed: bool,
     clientMutationId: option(string),
-  };
-  type response_updateTodoItem_updatedTodoItem = {
-    id: string,
-    text: string,
-    completed: option(bool),
-  };
-  type response_updateTodoItem = {
-    updatedTodoItem: option(response_updateTodoItem_updatedTodoItem),
   };
 
   type response = {updateTodoItem: option(response_updateTodoItem)};

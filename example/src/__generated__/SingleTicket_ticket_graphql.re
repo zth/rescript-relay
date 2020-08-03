@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_assignee_User = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
   };

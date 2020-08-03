@@ -114,7 +114,7 @@ let make = (~query as queryRef) => {
       <div className="list-wrapper">
         <ul className="d-flex flex-column-reverse todo-list todo-list-custom">
           {todoListData.todosConnection
-           ->TodoListFragment.getConnectionNodes_todosConnection
+           ->TodoListFragment.getConnectionNodes
            ->Belt.Array.map(todoItem =>
                <SingleTodo
                  key={todoItem.id}

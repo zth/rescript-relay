@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_siteStatistics = {
     fragmentRefs:
       ReasonRelay.fragmentRefs([ | `TopCardsDisplayer_siteStatistics]),

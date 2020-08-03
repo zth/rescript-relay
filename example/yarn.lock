@@ -1066,10 +1066,10 @@ bs-fetch@^0.5.0:
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.5.2.tgz#a9f4582ddb1414d3467b900305c738813481988c"
   integrity sha512-CYweTJcgLeLOqzR3vNsB+NmyEFhWThnPNdZmmF28nkFmo0CQEf+20eSHZJDO6EuAhhoRqJ0qp2VgxtH6zBB5xA==
 
-bs-platform@8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-8.0.3.tgz#574e41ec04fee381d4c400dac547735368caa48f"
-  integrity sha512-I7wulOPM0/NGamwm9CDh9rGjW1oIKltPwwEIOJrL8DBFRXI8OFSACtWGlpaoOw76Xpf+KcVokr00keS2NlzA3A==
+bs-platform@8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-8.2.0.tgz#f3f4c06d5710a4c782f0ed030b1fe11e74a0a6d7"
+  integrity sha512-quvmUac/ZxGDsT7L5+6RNXrLPvLHkWFownacaqlwVoyAm770bPyupTRU49ALPGk3HpjfD5eE+lpGdOSPtuwJiA==
 
 bser@2.1.1:
   version "2.1.1"
@@ -3986,10 +3986,10 @@ reason-react@^0.9.1:
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
   integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
 
-reason-relay@0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.10.0.tgz#6570ec692588af2e541f764b04c7bf00d177b4fe"
-  integrity sha512-goW59t7yWZdiGrCwlwzqu85HZMdCMZ02Ogsc250gEcoRmTHpv3ic2fDaOkGQ2u9i+ZAALugXGDHsrwRMvydjfQ==
+reason-relay@0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.11.0.tgz#b6831591f594cf2b5476f42d1cb874b26c97f558"
+  integrity sha512-BSYsasF6yxYfnByxLA2e+OAB/cIDXmcFr0gp04Oc6SFrjGcbe48FhySu4ESqYGy2LrCRIHzuUSKiVYFjJjoe6Q==
   dependencies:
     mkdirp-sync "^0.0.3"
     reason "^3.3.4"

@@ -1,16 +1,17 @@
 /* @generated */
 
 module Types = {
-  type fragment_todosConnection_edges_node = {
-    id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTodo_todoItem]),
-  };
-  type fragment_todosConnection_edges = {
-    node: option(fragment_todosConnection_edges_node),
-  };
+  [@ocaml.warning "-30"];
   type fragment_todosConnection = {
     __id: ReasonRelay.dataId,
     edges: option(array(option(fragment_todosConnection_edges))),
+  }
+  and fragment_todosConnection_edges = {
+    node: option(fragment_todosConnection_edges_node),
+  }
+  and fragment_todosConnection_edges_node = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTodo_todoItem]),
   };
 
   type fragment = {todosConnection: fragment_todosConnection};
@@ -39,7 +40,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_todosConnection:
+  let getConnectionNodes:
     fragment_todosConnection => array(fragment_todosConnection_edges_node) =
     connection =>
       switch (connection.edges) {

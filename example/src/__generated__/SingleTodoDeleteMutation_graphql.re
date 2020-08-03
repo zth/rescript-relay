@@ -1,12 +1,13 @@
 /* @generated */
 
 module Types = {
-  type deleteTodoItemInput = {
-    id: string,
-    clientMutationId: option(string),
-  };
+  [@ocaml.warning "-30"];
   type response_deleteTodoItem = {
     deletedTodoItemId: option(string),
+    clientMutationId: option(string),
+  }
+  and deleteTodoItemInput = {
+    id: string,
     clientMutationId: option(string),
   };
 
