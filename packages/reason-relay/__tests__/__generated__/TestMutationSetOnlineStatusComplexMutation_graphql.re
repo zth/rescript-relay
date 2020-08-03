@@ -1,25 +1,6 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   [@ocaml.warning "-30"];
@@ -28,12 +9,9 @@ module Types = {
   }
   and response_setOnlineStatusComplex_user = {
     id: string,
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
   }
-  and setOnlineStatusInput = {
-    onlineStatus: [ | `Idle | `Offline | `Online | `FutureAddedValue(string)],
-  };
+  and setOnlineStatusInput = {onlineStatus: enum_OnlineStatus};
 
   type response = {
     setOnlineStatusComplex: option(response_setOnlineStatusComplex),
@@ -45,11 +23,9 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}} |json}
   ];
-  let wrapResponseConverterMap = {
-    "enum_OnlineStatus": wrap_enum_OnlineStatus,
-  };
+  let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -60,9 +36,9 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}} |json}
   ];
-  let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
+  let responseConverterMap = ();
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -78,9 +54,9 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"input":{"r":"SetOnlineStatusInput"}},"SetOnlineStatusInput":{"onlineStatus":{"e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"input":{"r":"SetOnlineStatusInput"}},"SetOnlineStatusInput":{}} |json}
   ];
-  let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
+  let variablesConverterMap = ();
   let convertVariables = v =>
     v
     ->ReasonRelay._convertObj(
@@ -91,6 +67,7 @@ module Internal = {
 };
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let make_setOnlineStatusInput = (~onlineStatus): setOnlineStatusInput => {
     onlineStatus: onlineStatus,

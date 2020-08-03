@@ -1,33 +1,13 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   [@ocaml.warning "-30"];
   type response_userUpdated = {user: option(response_userUpdated_user)}
   and response_userUpdated_user = {
     id: string,
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
 
@@ -39,9 +19,9 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"userUpdated":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated_user_onlineStatus":{"n":""}}} |json}
   ];
-  let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
+  let responseConverterMap = ();
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -67,6 +47,7 @@ module Internal = {
 };
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables = (~userId): variables => {userId: userId};
 };

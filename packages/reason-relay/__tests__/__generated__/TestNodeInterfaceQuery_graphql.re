@@ -3,7 +3,7 @@
 module Types = {
   [@ocaml.warning "-30"];
   type response_node = {
-    __typename: string,
+    __typename: [ | `User],
     firstName: string,
   };
 

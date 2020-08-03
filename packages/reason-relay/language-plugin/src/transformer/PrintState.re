@@ -310,6 +310,10 @@ let getPrintedFullState =
   let addToUtils = str => utilsContent := utilsContent^ ++ str;
   let addSpacingToUtils = () => addToUtils("\n\n\n");
 
+  // Enum toString functions
+  state.enums
+  ->Belt.List.forEach(enum => enum->Printer.printEnumToStringFn->addToStr);
+
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
   | Some(connection) =>

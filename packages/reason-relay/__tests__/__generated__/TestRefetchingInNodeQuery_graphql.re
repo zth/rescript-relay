@@ -3,7 +3,7 @@
 module Types = {
   [@ocaml.warning "-30"];
   type response_node = {
-    __typename: string,
+    __typename: [ | `User],
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetchingInNode_user]),
   };
 

@@ -195,7 +195,6 @@ let printGetConnectionNodesFunction =
 type instruction =
   | ConvertNullableProp
   | ConvertNullableArrayContents
-  | ConvertEnum(string)
   | ConvertUnion(string)
   | ConvertCustomField(string)
   | RootObject(string)
@@ -266,6 +265,8 @@ let definitionToAssets =
     switch (propType) {
     | DataId
     | Scalar(_)
+    | Enum(_)
+    | StringLiteral(_)
     | FragmentRefValue(_) => ()
     | TypeReference(name) =>
       switch (
@@ -310,16 +311,7 @@ let definitionToAssets =
           );
         }
       }
-    | Enum({name}) =>
-      converters->Js.Dict.set(
-        Printer.printEnumName(name),
-        switch (direction) {
-        | Wrap => Printer.printEnumWrapFnReference(name)
-        | Unwrap => Printer.printEnumUnwrapFnReference(name)
-        },
-      );
 
-      addInstruction({atPath: currentPath, instruction: ConvertEnum(name)});
     | Union({atPath, members} as union) =>
       converters->Js.Dict.set(
         Printer.makeUnionName(atPath),
@@ -452,7 +444,6 @@ let definitionToAssets =
            switch (instruction.instruction) {
            | ConvertNullableProp => ("n", "")
            | ConvertNullableArrayContents => ("na", "")
-           | ConvertEnum(name) => ("e", Printer.printEnumName(name))
            | ConvertUnion(name) => ("u", name)
            | ConvertCustomField(name) => ("c", name)
            | RootObject(name) => ("r", name)

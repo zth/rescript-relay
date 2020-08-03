@@ -6,6 +6,9 @@
 - _BREAKING CHANGE_ All `refetch` functions now properly return a `Disposable.t`.
   _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refeth(...)->ignore` for example.
 - Types are now always emitted as recursive, fixing a bug where types wouldn't/can't be printed in the right order.
+- Bump `bs-platform` to `8.2.0`.
+- _BREAKING CHANGE_ All enums are now zero cost as `bs-platform` > `8.2.0` models polyvariants without payloads as strings. This does however force us to remove the `FutureAddedValue(string)` case, but it's worth it in the long run.
+  _Migration path_: Where you previously matched on `FutureAddedValue(_)`, now instead match on a default `_`. So `FutureAddedValue(_) => ...` becomes `_ => ...`. But hey, maybe you were using that string `FutureAddedValue` provided?! You can still get it, every module with enums will now contain `toString` functions for turning your enum into an actual string. If you have an enum called `OnlineStatus`, your module will have a function like `Fragment.onlineStatus_toString(enumGoesHere)`.
 
 # 0.10.0
 

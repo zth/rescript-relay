@@ -1,25 +1,6 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   [@ocaml.warning "-30"];
@@ -30,8 +11,7 @@ module Types = {
   and response_users_edges = {node: option(response_users_edges_node)}
   and response_users_edges_node = {
     id: string,
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_plural_user]),
   };
 
@@ -46,9 +26,9 @@ module Types = {
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"loggedInUser":{"f":""},"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":"","f":""},"users_edges_node_onlineStatus":{"n":""}}} |json}
   ];
-  let responseConverterMap = {"enum_OnlineStatus": unwrap_enum_OnlineStatus};
+  let responseConverterMap = ();
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -75,7 +55,9 @@ module Internal = {
 
 type queryRef;
 
-module Utils = {};
+module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+};
 
 type operationType = ReasonRelay.queryNode;
 

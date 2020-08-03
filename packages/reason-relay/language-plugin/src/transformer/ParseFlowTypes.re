@@ -16,6 +16,21 @@ let parse_options: option(Parser_env.parse_options) =
 
 type propList('a, 'b) = list(Flow_ast.Type.Object.property('a, 'b));
 
+let validStringLiteralRegex = [%bs.re
+  "/^(?:_[_a-zA-Z0-9]+|[a-zA-Z][_a-zA-Z0-9]*)$/"
+];
+
+let makeStringLiteralOrString = (value: string): Types.propType =>
+  switch (
+    validStringLiteralRegex->Js.Re.test_(value),
+    ReservedKeywords.reservedKeywords->Belt.Array.getBy(word =>
+      word === value
+    ),
+  ) {
+  | (true, None) => StringLiteral(value)
+  | _ => Scalar(String)
+  };
+
 let rec flowTypesToFullState = (~content, ~operationType) => {
   let initialState: Types.intermediateState = {
     enums: [],
@@ -344,13 +359,15 @@ and mapObjProp =
   switch (prop) {
   | String => {nullable: optional, propType: Scalar(String)}
 
-  // Reason does not have string literals, so we map literals to normal strings
-  | StringLiteral(_) => {nullable: optional, propType: Scalar(String)}
+  | StringLiteral({value}) => {
+      nullable: optional,
+      propType: value->makeStringLiteralOrString,
+    }
 
   | Nullable((_, String)) => {nullable: true, propType: Scalar(String)}
-  | Nullable((_, StringLiteral(_))) => {
+  | Nullable((_, StringLiteral({value}))) => {
       nullable: true,
-      propType: Scalar(String),
+      propType: value->makeStringLiteralOrString,
     }
 
   // Our compiler fork already emits int/float as generic Flow types instead of number, so these are probably not needed, but leaving them in there anyway just in case.

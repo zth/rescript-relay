@@ -27,6 +27,7 @@ exports[`Language plugin tests Field names Reserved keywords renames reserved ke
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type mutationWithReservedNameInput = {
     [@bs.as \\"or\\"]
     or_: bool,
@@ -122,6 +123,8 @@ exports[`Language plugin tests Fragment prints indications of existing fragment 
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {id: string};
 };
 
@@ -155,6 +158,8 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | \`SomeComponent_user]),
   };
@@ -192,6 +197,8 @@ exports[`Language plugin tests Fragment prints the correct fragment ref extracto
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {id: string};
 };
 
@@ -226,28 +233,17 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 "// SetUserLocationMutation.graphql
 /* @generated */
 
-type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
-
-let unwrap_enum_UserRole: string => enum_UserRole =
-  fun
-  | \\"Admin\\" => \`Admin
-  | \\"User\\" => \`User
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_UserRole: enum_UserRole => string =
-  fun
-  | \`Admin => \\"Admin\\"
-  | \`User => \\"User\\"
-  | \`FutureAddedValue(v) => v;
+type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
   }
   and response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
-    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
+    role: enum_UserRole,
   }
   and setUserLocationInput = {
     clientMutationId: option(string),
@@ -268,9 +264,9 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |json}
   ];
-  let wrapResponseConverterMap = {\\"enum_UserRole\\": wrap_enum_UserRole};
+  let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -281,9 +277,9 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"},\\"setUserLocation_changedUser_role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
+    {json| {\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}} |json}
   ];
-  let responseConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
+  let responseConverterMap = ();
   let convertResponse = v =>
     v
     ->ReasonRelay._convertObj(
@@ -312,6 +308,7 @@ module Internal = {
 };
 
 module Utils = {
+  external userRole_toString: enum_UserRole => string = \\"%identity\\";
   open Types;
   let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
     lat,
@@ -354,6 +351,7 @@ exports[`Language plugin tests Mutation generates the correct type structure whe
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
   }
@@ -456,33 +454,23 @@ type operationType = ReasonRelay.mutationNode;
 // SomeFragment_user.graphql
 /* @generated */
 
-type enum_UserRole = [ | \`Admin | \`User | \`FutureAddedValue(string)];
-
-let unwrap_enum_UserRole: string => enum_UserRole =
-  fun
-  | \\"Admin\\" => \`Admin
-  | \\"User\\" => \`User
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_UserRole: enum_UserRole => string =
-  fun
-  | \`Admin => \\"Admin\\"
-  | \`User => \\"User\\"
-  | \`FutureAddedValue(v) => v;
+type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     firstName: string,
-    role: [ | \`Admin | \`User | \`FutureAddedValue(string)],
+    role: enum_UserRole,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"role\\":{\\"e\\":\\"enum_UserRole\\"}}} |json}
+    {json| {} |json}
   ];
-  let fragmentConverterMap = {\\"enum_UserRole\\": unwrap_enum_UserRole};
+  let fragmentConverterMap = ();
   let convertFragment = v =>
     v
     ->ReasonRelay._convertObj(
@@ -498,7 +486,9 @@ external getFragmentRef:
   ReasonRelay.fragmentRefs([> | \`SomeFragment_user]) => fragmentRef =
   \\"%identity\\";
 
-module Utils = {};
+module Utils = {
+  external userRole_toString: enum_UserRole => string = \\"%identity\\";
+};
 
 type operationType = ReasonRelay.fragmentNode;
 "
@@ -509,6 +499,7 @@ exports[`Language plugin tests Mutation prints the correct basic structure for m
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
   }
@@ -620,8 +611,9 @@ exports[`Language plugin tests Node interface collapses single selections on the
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_node = {
-    __typename: string,
+    __typename: [ | \`User],
     firstName: string,
   };
 
@@ -673,6 +665,7 @@ exports[`Language plugin tests Query connections generates helpers for connectio
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_participantsConnection_edges_node_User = {
     firstName: string,
     id: string,
@@ -790,6 +783,7 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_me = {
     friendsConnection: option(fragment_me_friendsConnection),
   }
@@ -864,6 +858,7 @@ exports[`Language plugin tests Query connections generates helpers for root leve
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_usersConnection = {
     edges: option(array(option(fragment_usersConnection_edges))),
   }
@@ -935,6 +930,7 @@ exports[`Language plugin tests Query prints simple responses and variables 1`] =
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_user = {
     id: string,
     firstName: string,
@@ -995,6 +991,7 @@ exports[`Language plugin tests Subscription prints the correct basic structure f
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_userChanged = {user: option(response_userChanged_user)}
   and response_userChanged_user = {
     id: string,
@@ -1060,6 +1057,8 @@ exports[`Language plugin tests Unions generates code to unwrap fragments on unio
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     id: string,
     firstName: string,
@@ -1096,6 +1095,8 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     id: string,
     name: string,
@@ -1132,6 +1133,7 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_User = {
     id: string,
     fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_user]),
@@ -1231,6 +1233,7 @@ exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_User_location = {
     lat: float,
     lng: float,
@@ -1336,6 +1339,7 @@ exports[`Language plugin tests Unions handles fragments on unions 1`] = `
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_User_location = {
     id: string,
     lat: float,
@@ -1416,32 +1420,17 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-type enum_ObserverStatus = [
-  | \`Active
-  | \`Inactive
-  | \`FutureAddedValue(string)
-];
-
-let unwrap_enum_ObserverStatus: string => enum_ObserverStatus =
-  fun
-  | \\"Active\\" => \`Active
-  | \\"Inactive\\" => \`Inactive
-  | v => \`FutureAddedValue(v);
-
-let wrap_enum_ObserverStatus: enum_ObserverStatus => string =
-  fun
-  | \`Active => \\"Active\\"
-  | \`Inactive => \\"Inactive\\"
-  | \`FutureAddedValue(v) => v;
+type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_Observer_manager_User = {
     lastName: string,
     firstName: string,
     id: string,
   };
   type response_participantById_Observer_manager_Observer = {
-    status: [ | \`Active | \`Inactive | \`FutureAddedValue(string)],
+    status: enum_ObserverStatus,
     isOnline: option(bool),
     id: string,
   };
@@ -1542,12 +1531,11 @@ let wrap_response_participantById:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_status\\":{\\"e\\":\\"enum_ObserverStatus\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |json}
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |json}
   ];
   let responseConverterMap = {
     \\"response_participantById\\": unwrap_response_participantById,
     \\"response_participantById_Observer_manager\\": unwrap_response_participantById_Observer_manager,
-    \\"enum_ObserverStatus\\": unwrap_enum_ObserverStatus,
   };
   let convertResponse = v =>
     v
@@ -1575,7 +1563,10 @@ module Internal = {
 
 type queryRef;
 
-module Utils = {};
+module Utils = {
+  external observerStatus_toString: enum_ObserverStatus => string =
+    \\"%identity\\";
+};
 
 type operationType = ReasonRelay.queryNode;
 "
@@ -1586,6 +1577,7 @@ exports[`Language plugin tests raw_response_type outputs code for handling @raw_
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_me = {
     firstName: string,
     lastName: string,

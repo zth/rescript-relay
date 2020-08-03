@@ -85,6 +85,7 @@ let intermediateToFull =
       | DataId
       | Array(_)
       | Scalar(_)
+      | StringLiteral(_)
       | FragmentRefValue(_)
       | TypeReference(_) => ()
       };

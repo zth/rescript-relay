@@ -1,25 +1,6 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   [@ocaml.warning "-30"];
@@ -32,10 +13,7 @@ module Types = {
     count: option(int),
     cursor: option(string),
     groupId: option(string),
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
+    onlineStatuses: option(array(enum_OnlineStatus)),
   };
   let makeRefetchVariables =
       (~count=?, ~cursor=?, ~groupId=?, ~onlineStatuses=?, ())
@@ -49,10 +27,7 @@ module Types = {
     count: option(int),
     cursor: option(string),
     groupId: string,
-    onlineStatuses:
-      option(
-        array([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
-      ),
+    onlineStatuses: option(array(enum_OnlineStatus)),
   };
 };
 
@@ -74,9 +49,9 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":"","e":"enum_OnlineStatus"}}} |json}
+    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":""}}} |json}
   ];
-  let variablesConverterMap = {"enum_OnlineStatus": wrap_enum_OnlineStatus};
+  let variablesConverterMap = ();
   let convertVariables = v =>
     v
     ->ReasonRelay._convertObj(
@@ -89,6 +64,7 @@ module Internal = {
 type queryRef;
 
 module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
       (~count=?, ~cursor=?, ~groupId, ~onlineStatuses=?, ()): variables => {

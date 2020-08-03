@@ -1,31 +1,11 @@
 /* @generated */
 
-type enum_OnlineStatus = [
-  | `Idle
-  | `Offline
-  | `Online
-  | `FutureAddedValue(string)
-];
-
-let unwrap_enum_OnlineStatus: string => enum_OnlineStatus =
-  fun
-  | "Idle" => `Idle
-  | "Offline" => `Offline
-  | "Online" => `Online
-  | v => `FutureAddedValue(v);
-
-let wrap_enum_OnlineStatus: enum_OnlineStatus => string =
-  fun
-  | `Idle => "Idle"
-  | `Offline => "Offline"
-  | `Online => "Online"
-  | `FutureAddedValue(v) => v;
+type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
   [@ocaml.warning "-30"];
   type response_members_edges_node_Group_members_User = {
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
     firstName: string,
     id: string,
   };
@@ -40,8 +20,7 @@ module Types = {
     | `UnselectedUnionMember(string)
   ];
   type response_members_edges_node_User = {
-    onlineStatus:
-      option([ | `Idle | `Offline | `Online | `FutureAddedValue(string)]),
+    onlineStatus: option(enum_OnlineStatus),
     firstName: string,
     id: string,
   };
@@ -141,11 +120,10 @@ let wrap_response_members_edges_node:
 module Internal = {
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges_node_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members_edges_node_group_members_user_onlineStatus":{"n":"","e":"enum_OnlineStatus"},"members_edges_node_group_members_group_avatarUrl":{"n":""},"members_edges_node_group_avatarUrl":{"n":""}}} |json}
+    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""},"members_edges_node_group_avatarUrl":{"n":""}}} |json}
   ];
   let responseConverterMap = {
     "response_members_edges_node": unwrap_response_members_edges_node,
-    "enum_OnlineStatus": unwrap_enum_OnlineStatus,
     "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
   };
   let convertResponse = v =>
@@ -174,7 +152,9 @@ module Internal = {
 
 type queryRef;
 
-module Utils = {};
+module Utils = {
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+};
 
 type operationType = ReasonRelay.queryNode;
 

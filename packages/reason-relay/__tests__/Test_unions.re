@@ -41,7 +41,7 @@ let mapOnlineStatus = (s: option(Query.Operation.enum_OnlineStatus)) =>
   | Some(`Online) => "online"
   | Some(`Offline) => "offline"
   | Some(`Idle) => "idle"
-  | Some(`FutureAddedValue(_)) => "-"
+  | Some(_) => "-"
   | None => "[no status]"
   };
 

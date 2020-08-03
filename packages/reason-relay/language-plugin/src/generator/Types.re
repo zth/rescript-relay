@@ -34,6 +34,7 @@ and scalarValues =
 and propType =
   | DataId
   | Scalar(scalarValues)
+  | StringLiteral(string)
   | Enum(fullEnum)
   | Object(object_)
   | Array(propValue)
