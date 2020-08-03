@@ -3,6 +3,7 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option(enum_OnlineStatus),
     firstName: string,
@@ -45,7 +46,10 @@ module Types = {
     | `Group(response_members_edges_node_Group)
     | `UnselectedUnionMember(string)
   ];
-  type response_members_edges = {
+  type response_members = {
+    edges: option(array(option(response_members_edges))),
+  }
+  and response_members_edges = {
     node:
       option(
         [
@@ -54,9 +58,6 @@ module Types = {
           | `UnselectedUnionMember(string)
         ],
       ),
-  };
-  type response_members = {
-    edges: option(array(option(response_members_edges))),
   };
 
   type response = {members: option(response_members)};
@@ -149,7 +150,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
@@ -181,49 +182,58 @@ v2 = {
   "storageKey": null
 },
 v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "firstName",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "onlineStatus",
-  "storageKey": null
-},
-v5 = {
   "kind": "InlineFragment",
   "selections": [
     (v2/*: any*/),
-    (v3/*: any*/),
-    (v4/*: any*/)
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "onlineStatus",
+      "storageKey": null
+    }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 },
-v6 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v7 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatarUrl",
   "storageKey": null
 },
-v8 = {
+v6 = {
   "kind": "InlineFragment",
   "selections": [
-    (v3/*: any*/),
-    (v4/*: any*/)
+    (v2/*: any*/),
+    (v4/*: any*/),
+    (v5/*: any*/)
   ],
-  "type": "User"
+  "type": "Group",
+  "abstractKey": null
+},
+v7 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v2/*: any*/)
+  ],
+  "type": "Node",
+  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -257,13 +267,13 @@ return {
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
-                  (v5/*: any*/),
+                  (v3/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
                       (v2/*: any*/),
-                      (v6/*: any*/),
-                      (v7/*: any*/),
+                      (v4/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -273,21 +283,14 @@ return {
                         "plural": true,
                         "selections": [
                           (v1/*: any*/),
-                          (v5/*: any*/),
-                          {
-                            "kind": "InlineFragment",
-                            "selections": [
-                              (v2/*: any*/),
-                              (v6/*: any*/),
-                              (v7/*: any*/)
-                            ],
-                            "type": "Group"
-                          }
+                          (v3/*: any*/),
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       }
                     ],
-                    "type": "Group"
+                    "type": "Group",
+                    "abstractKey": null
                   }
                 ],
                 "storageKey": null
@@ -299,7 +302,8 @@ return {
         "storageKey": "members(groupId:\"123\")"
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -332,13 +336,13 @@ return {
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
-                  (v2/*: any*/),
-                  (v8/*: any*/),
+                  (v3/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v6/*: any*/),
-                      (v7/*: any*/),
+                      (v2/*: any*/),
+                      (v4/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -348,22 +352,17 @@ return {
                         "plural": true,
                         "selections": [
                           (v1/*: any*/),
-                          (v2/*: any*/),
-                          (v8/*: any*/),
-                          {
-                            "kind": "InlineFragment",
-                            "selections": [
-                              (v6/*: any*/),
-                              (v7/*: any*/)
-                            ],
-                            "type": "Group"
-                          }
+                          (v3/*: any*/),
+                          (v6/*: any*/),
+                          (v7/*: any*/)
                         ],
                         "storageKey": null
                       }
                     ],
-                    "type": "Group"
-                  }
+                    "type": "Group",
+                    "abstractKey": null
+                  },
+                  (v7/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -376,19 +375,20 @@ return {
     ]
   },
   "params": {
+    "cacheID": "464cf1fe26e84aecf1d63a8c3837206c",
     "id": null,
     "metadata": {},
     "name": "TestUnionsQuery",
     "operationKind": "query",
-    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              id\n            }\n          }\n        }\n        ... on Node {\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

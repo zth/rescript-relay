@@ -90,11 +90,11 @@ module Test = {
 
     <div>
       {data.members
-       ->Fragment.getConnectionNodes_members
+       ->Fragment.getConnectionNodes
        ->Belt.Array.mapWithIndex((i, member) =>
            switch (member) {
            | `User(user) =>
-             <div id={user.id}>
+             <div key={user.id}>
                <UserDisplayer user={user.fragmentRefs} />
              </div>
            | `Group(group) =>
@@ -124,17 +124,19 @@ module Test = {
          : React.null}
       <button
         onClick={_ =>
-          startTransition(() =>
-            refetch(
-              ~variables=
-                Fragment.makeRefetchVariables(
-                  ~groupId,
-                  ~onlineStatuses=[|`Online, `Idle|],
-                  (),
-                ),
-              (),
-            )
-          )
+          startTransition(() => {
+            let _ =
+              refetch(
+                ~variables=
+                  Fragment.makeRefetchVariables(
+                    ~groupId,
+                    ~onlineStatuses=[|`Online, `Idle|],
+                    (),
+                  ),
+                (),
+              );
+            ();
+          })
         }>
         {React.string("Refetch connection")}
       </button>

@@ -25,9 +25,10 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TopCardsDisplayer_siteStatistics": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TopCardsDisplayer_siteStatistics]) =>
+  fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -35,33 +36,34 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "TopCardsDisplayer_siteStatistics",
-  "type": "SiteStatistics",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "TopCardsDisplayer_siteStatistics",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "weeklySales",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "weeklyOrders",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "currentVisitorsOnline",
       "args": null,
+      "kind": "ScalarField",
+      "name": "currentVisitorsOnline",
       "storageKey": null
     }
-  ]
+  ],
+  "type": "SiteStatistics",
+  "abstractKey": null
 } |json}
 ];

@@ -3,17 +3,16 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
-  type response_users_edges_node = {
+  [@ocaml.warning "-30"];
+  type response_loggedInUser = {
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_user]),
+  }
+  and response_users = {edges: option(array(option(response_users_edges)))}
+  and response_users_edges = {node: option(response_users_edges_node)}
+  and response_users_edges_node = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_plural_user]),
-  };
-  type response_users_edges = {node: option(response_users_edges_node)};
-  type response_users = {
-    edges: option(array(option(response_users_edges))),
-  };
-  type response_loggedInUser = {
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_user]),
   };
 
   type response = {
@@ -54,7 +53,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
@@ -149,7 +148,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -217,6 +217,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "e013001bfc36566c430b38b57317a2d6",
     "id": null,
     "metadata": {},
     "name": "TestFragmentQuery",
@@ -227,9 +228,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

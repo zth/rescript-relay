@@ -63,6 +63,34 @@ describe("conversion", () => {
     });
   });
 
+  it("does not produce circular references", () => {
+    let traversedObj = traverser(
+      {
+        otherProp: null,
+      },
+      {
+        __root: {
+          "": {
+            f: "",
+          },
+          otherProp: {
+            n: "",
+          },
+        },
+      },
+      {},
+      undefined
+    );
+
+    try {
+      expect(JSON.stringify(traversedObj)).toBeDefined();
+    } catch (e) {
+      console.error(e);
+    }
+
+    expect.assertions(1);
+  });
+
   it("handles converting enums", () => {
     expect(
       traverser(

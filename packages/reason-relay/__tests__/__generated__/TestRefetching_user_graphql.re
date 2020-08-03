@@ -3,20 +3,21 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
     firstName: string,
     onlineStatus: option(enum_OnlineStatus),
     friendsConnection: fragment_friendsConnection,
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":""},"id":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -46,14 +47,12 @@ let node: operationType = [%raw
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "friendsOnlineStatuses",
-      "type": "[OnlineStatus!]"
+      "name": "friendsOnlineStatuses"
     },
     {
       "defaultValue": false,
       "kind": "LocalArgument",
-      "name": "showOnlineStatus",
-      "type": "Boolean!"
+      "name": "showOnlineStatus"
     }
   ],
   "kind": "Fragment",
@@ -122,6 +121,7 @@ let node: operationType = [%raw
       ]
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

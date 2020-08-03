@@ -1,15 +1,50 @@
 # master
 
-- _BREAKING CHANGE_ `Observable.make` returns the optional subscription object. The `sink` provided by `Observable` now also has the correct `complete` prop (`completed` -> `complete`). And, `Observable.t` now correctly takes a type param for the `'response`; `Observable.t('response)`.
+- Fixed a bug where `fragmentRefs` would produce a circular reference which can't be stringified.
+- _BREAKING CHANGE_ All `getConnectionNodes_path_to_connection` generated functions are now named just `getConnectionNodes`, since Relay only allows a single `@connection` per operation/fragment, which makes name clashes impossible.
+  _Migration path_: Rename all calls to `getConnectionNodes_some_path_here` to just `getConnectionNodes`.
+- _BREAKING CHANGE_ All `refetch` functions now properly return a `Disposable.t`.
+  _Migration path_: Handle the new return properly, via `let _ = refetch(...)` or `refeth(...)->ignore` for example.
+- Types are now always emitted as recursive, fixing a bug where types wouldn't/can't be printed in the right order.
+
+# 0.10.0
+
+A new, fresh release! This brings Relay to version `10.0.1`, binds a bunch of new things, and changes a few APIs (and their implementations) to be more ergonomic.
+
+I'd like to highlight contributions from [Arnarkari93](https://github.com/Arnarkari93), [tsnobip](https://github.com/tsnobip) and [wokalski](https://github.com/wokalski), who all have made significant and great contributions for this release.
+
+[Check out this](https://github.com/zth/reason-relay/commit/8ed636db21a2de5648cc0ff85d2827997a195654) for an example diff of upgrading a project.
+
+## Upgrade versions
+
+- `reason-react@^0.9.1`
+- `bs-platform@^8.0.3` (although anything > `7` should work)
+- `react-relay` to `0.0.0-experimental-8058ef82`, the rest of the Relay packages to `10.0.1`
+
+## Breaking changes
+
+- Bindings in `ReactExperimental` for `Suspense`, `SuspenseList`, `ConcurrentModeRoot.render`, `createRoot` and `useTransition` have been moved to the official community bindings in [Reason-React](https://github.com/reasonml/reason-react).
+  _Migration path_: Change `ReactExperimental` to just `React` for said modules and functions.
+- Fragment refs are now typed through polymorphic variants. Previously, all fragment refs for an object would be retrieved by doing `someObject.getFragmentRefs()`. That call would return a `Js.t` object containing all fragment references, which would then be structurally matched to ensure fragment type safety. This is now replaced with a regular prop called `fragmentRefs` that'll appear on any object with fragments spread. This improves the experience of using fragments immensely.
+  _Migration path_: Where you previously did `someObj.getFragmentRefs()` now do `someObj.fragmentRefs` instead.
+- The top level `node` field is now enhanced by a) collapsing the union it was previously typed as if there's only one selection anyway, and b) automatically resolve any existing node from the cache through the `node` root field.
+- `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
+  _Migration path_: Add a trailing `()` to all `Query.fetch` and `Query.fetchPromised` calls.
+- What was previously called `Query.preload` is now called `Query.load`, to align with Relay's naming. The return type of `Query.load` has also been renamed to `queryRef` (from `preloadToken`), and all names related to that have been changed accordingly.
+  _Migration path_: Change all `Query.preload` to `Query.load`.
+- `Observable.make` returns the optional subscription object. The `sink` provided by `Observable` now also has the correct `complete` prop (`completed` -> `complete`). And, `Observable.t` now correctly takes a type param for the `'response`; `Observable.t('response)`.
+
+## New bindings
+
 - Add `toPromise` binding for `Observable`, allowing for an easy way of turning an observable into a promise.
-- _BREAKING CHANGE_ Bindings in `ReactExperimental` for `Suspense`, `SuspenseList`, `ConcurrentModeRoot.render`, `createRoot` and `useTransition` have been moved to the official community bindings in [Reason-React](https://github.com/reasonml/reason-react).
-- Peer dependencies updated `reason-react@^0.9.1` and `bs-platform@^7.3.2`
-- Cleaned up the bindings to Relay and their interface files to reduce runtime size
-- _BREAKING CHANGE_ Fragment refs are now typed through polymorphic variants. Previously, all fragment refs for an object would be retrieved by doing `someObject.getFragmentRefs()`. That call would return a `Js.t` object containing all fragment references, which would then be structurally matched to ensure fragment type safety. This is now replaced with a regular prop called `fragmentRefs` that'll appear on any object with fragments spread. This improves the experience of using fragments immensely. Migration path: Where you previously did `someObj.getFragmentRefs()` now do `someObj.fragmentRefs` instead.
-- _BREAKING CHANGE_ The top level `node` field is now enhanced by a) collapsing the union it was previously typed as if there's only one selection anyway, and b) automatically resolve any existing node from the cache through the `node` root field.
 - Bindings for `queryCacheExpirationTime` (setting an expiration time for all cache items in `ms`) when creating the store.
-- _BREAKING CHANGE_ `Query.fetch` and `Query.fetchPromised` now need to be applied with `()` unless all args are specified. Two new args have been added: `fetchPolicy`, which controls cache behavior at the store level, and `networkCacheConfig` which controls caching at the network layer.
 - Bind `useSubscribeToInvalidationState`, which allows listening and reacting to invalidations of records in the store.
+- Bind and document `Query.useLoader`.
+- Bind `RelayFeatureFlags`.
+
+## Fixes & misc
+
+- Cleaned up the bindings to Relay and their interface files to reduce runtime size
 - Fix refetching with pagination when the parent queries have variables that are left unchanged in the refetch
 
 # 0.9.2

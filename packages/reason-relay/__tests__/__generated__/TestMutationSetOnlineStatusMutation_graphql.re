@@ -3,21 +3,22 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
-  type rawResponse_setOnlineStatus_user = {
+  [@ocaml.warning "-30"];
+  type response_setOnlineStatus = {
+    user: option(response_setOnlineStatus_user),
+  }
+  and response_setOnlineStatus_user = {
+    id: string,
+    onlineStatus: option(enum_OnlineStatus),
+  }
+  and rawResponse_setOnlineStatus = {
+    user: option(rawResponse_setOnlineStatus_user),
+  }
+  and rawResponse_setOnlineStatus_user = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
     firstName: string,
     lastName: string,
-  };
-  type rawResponse_setOnlineStatus = {
-    user: option(rawResponse_setOnlineStatus_user),
-  };
-  type response_setOnlineStatus_user = {
-    id: string,
-    onlineStatus: option(enum_OnlineStatus),
-  };
-  type response_setOnlineStatus = {
-    user: option(response_setOnlineStatus_user),
   };
 
   type response = {setOnlineStatus: option(response_setOnlineStatus)};
@@ -135,8 +136,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "onlineStatus",
-    "type": "OnlineStatus!"
+    "name": "onlineStatus"
   }
 ],
 v1 = [
@@ -197,7 +197,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -246,6 +247,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "4268475f132103f907cf195a54f2934d",
     "id": null,
     "metadata": {},
     "name": "TestMutationSetOnlineStatusMutation",

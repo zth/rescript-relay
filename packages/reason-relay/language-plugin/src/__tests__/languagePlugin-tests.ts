@@ -702,23 +702,23 @@ describe("Language plugin tests", () => {
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response = { __id: ReasonRelay.dataId, users: array(response_users), };`
+        `response = { __id: ReasonRelay.dataId, users: array(response_users), }`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response_users = { __id: ReasonRelay.dataId, friendsConnection: option(response_users_friendsConnection), };`
+        `response_users = { __id: ReasonRelay.dataId, friendsConnection: option(response_users_friendsConnection), }`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response_users_friendsConnection = { __id: ReasonRelay.dataId, edges: option(array(option(response_users_friendsConnection_edges))), };`
+        `response_users_friendsConnection = { __id: ReasonRelay.dataId, edges: option(array(option(response_users_friendsConnection_edges))), }`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response_users_friendsConnection_edges = { __id: ReasonRelay.dataId, node: option(response_users_friendsConnection_edges_node), };`
+        `response_users_friendsConnection_edges = { __id: ReasonRelay.dataId, node: option(response_users_friendsConnection_edges_node), }`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, };`
+        `response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, }`
       );
     });
   });

@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_loggedInUser = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetching_user]),
   };
@@ -40,7 +41,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -71,7 +72,8 @@ let node: operationType = [%raw
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -125,6 +127,7 @@ let node: operationType = [%raw
     ]
   },
   "params": {
+    "cacheID": "0a7445625d0b3447562da87481fa549f",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingQuery",
@@ -134,9 +137,9 @@ let node: operationType = [%raw
 } |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_loggedInUser = {firstName: string};
 
   type response = {loggedInUser: response_loggedInUser};
@@ -38,7 +39,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -73,7 +74,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -103,6 +105,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "14a3f04c27bb562c234a822188b92eb9",
     "id": null,
     "metadata": {},
     "name": "TestMissingFieldHandlersMeQuery",
@@ -113,9 +116,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

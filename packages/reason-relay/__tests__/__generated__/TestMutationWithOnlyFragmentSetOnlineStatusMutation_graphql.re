@@ -3,18 +3,19 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
-  type rawResponse_setOnlineStatus_user = {
+  [@ocaml.warning "-30"];
+  type response_setOnlineStatus = {
+    user: option(response_setOnlineStatus_user),
+  }
+  and response_setOnlineStatus_user = ReasonRelay.allFieldsMasked
+  and rawResponse_setOnlineStatus = {
+    user: option(rawResponse_setOnlineStatus_user),
+  }
+  and rawResponse_setOnlineStatus_user = {
     id: string,
     firstName: string,
     lastName: string,
     onlineStatus: option(enum_OnlineStatus),
-  };
-  type rawResponse_setOnlineStatus = {
-    user: option(rawResponse_setOnlineStatus_user),
-  };
-  type response_setOnlineStatus_user = ReasonRelay.allFieldsMasked;
-  type response_setOnlineStatus = {
-    user: option(response_setOnlineStatus_user),
   };
 
   type response = {setOnlineStatus: option(response_setOnlineStatus)};
@@ -128,8 +129,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "onlineStatus",
-    "type": "OnlineStatus!"
+    "name": "onlineStatus"
   }
 ],
 v1 = [
@@ -174,7 +174,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -235,6 +236,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "b6a21c829becb6c4d26cd0efc3bba80d",
     "id": null,
     "metadata": {},
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",

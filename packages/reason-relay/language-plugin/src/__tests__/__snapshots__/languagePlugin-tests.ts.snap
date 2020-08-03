@@ -27,6 +27,7 @@ exports[`Language plugin tests Field names Reserved keywords renames reserved ke
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type mutationWithReservedNameInput = {
     [@bs.as \\"or\\"]
     or_: bool,
@@ -122,6 +123,8 @@ exports[`Language plugin tests Fragment prints indications of existing fragment 
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {id: string};
 };
 
@@ -155,6 +158,8 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | \`SomeComponent_user]),
   };
@@ -192,6 +197,8 @@ exports[`Language plugin tests Fragment prints the correct fragment ref extracto
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {id: string};
 };
 
@@ -229,23 +236,24 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
-    clientMutationId: option(string),
-    userId: string,
-    location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = {
+  [@ocaml.warning \\"-30\\"];
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = {
     id: string,
     firstName: string,
     role: enum_UserRole,
-  };
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and setUserLocationInput = {
+    clientMutationId: option(string),
+    userId: string,
+    location: option(locationBounds),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -343,19 +351,20 @@ exports[`Language plugin tests Mutation generates the correct type structure whe
 /* @generated */
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
+  [@ocaml.warning \\"-30\\"];
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked
+  and setUserLocationInput = {
     clientMutationId: option(string),
     userId: string,
     location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked;
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -448,6 +457,8 @@ type operationType = ReasonRelay.mutationNode;
 type enum_UserRole = pri [> | \`Admin | \`User];
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     firstName: string,
     role: enum_UserRole,
@@ -488,22 +499,23 @@ exports[`Language plugin tests Mutation prints the correct basic structure for m
 /* @generated */
 
 module Types = {
-  type locationBounds = {
-    lat: float,
-    lng: float,
-    child: option(locationBounds),
-  };
-  type setUserLocationInput = {
+  [@ocaml.warning \\"-30\\"];
+  type response_setUserLocation = {
+    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and response_setUserLocation_changedUser = {
+    id: string,
+    firstName: string,
+  }
+  and setUserLocationInput = {
     clientMutationId: option(string),
     userId: string,
     location: option(locationBounds),
-  };
-  type response_setUserLocation_changedUser = {
-    id: string,
-    firstName: string,
-  };
-  type response_setUserLocation = {
-    changedUser: option(response_setUserLocation_changedUser),
+  }
+  and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option(locationBounds),
   };
 
   type response = {setUserLocation: response_setUserLocation};
@@ -599,6 +611,7 @@ exports[`Language plugin tests Node interface collapses single selections on the
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_node = {
     __typename: [ | \`User],
     firstName: string,
@@ -639,7 +652,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -652,6 +665,7 @@ exports[`Language plugin tests Query connections generates helpers for connectio
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_participantsConnection_edges_node_User = {
     firstName: string,
     id: string,
@@ -665,7 +679,10 @@ module Types = {
     | \`Observer(fragment_participantsConnection_edges_node_Observer)
     | \`UnselectedUnionMember(string)
   ];
-  type fragment_participantsConnection_edges = {
+  type fragment_participantsConnection = {
+    edges: option(array(option(fragment_participantsConnection_edges))),
+  }
+  and fragment_participantsConnection_edges = {
     node:
       option(
         [
@@ -674,9 +691,6 @@ module Types = {
           | \`UnselectedUnionMember(string)
         ],
       ),
-  };
-  type fragment_participantsConnection = {
-    edges: option(array(option(fragment_participantsConnection_edges))),
   };
 
   type fragment = {
@@ -735,7 +749,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_participantsConnection:
+  let getConnectionNodes:
     option(fragment_participantsConnection) =>
     array(fragment_participantsConnection_edges_node) =
     connection =>
@@ -769,18 +783,19 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 /* @generated */
 
 module Types = {
-  type fragment_me_friendsConnection_edges_node = {
-    id: string,
-    firstName: string,
-  };
-  type fragment_me_friendsConnection_edges = {
-    node: option(fragment_me_friendsConnection_edges_node),
-  };
-  type fragment_me_friendsConnection = {
-    edges: option(array(option(fragment_me_friendsConnection_edges))),
-  };
+  [@ocaml.warning \\"-30\\"];
   type fragment_me = {
     friendsConnection: option(fragment_me_friendsConnection),
+  }
+  and fragment_me_friendsConnection = {
+    edges: option(array(option(fragment_me_friendsConnection_edges))),
+  }
+  and fragment_me_friendsConnection_edges = {
+    node: option(fragment_me_friendsConnection_edges_node),
+  }
+  and fragment_me_friendsConnection_edges_node = {
+    id: string,
+    firstName: string,
   };
 
   type fragment = {me: fragment_me};
@@ -809,7 +824,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_friendsConnection:
+  let getConnectionNodes:
     option(fragment_me_friendsConnection) =>
     array(fragment_me_friendsConnection_edges_node) =
     connection =>
@@ -843,15 +858,16 @@ exports[`Language plugin tests Query connections generates helpers for root leve
 /* @generated */
 
 module Types = {
-  type fragment_usersConnection_edges_node = {
-    id: string,
-    firstName: string,
-  };
-  type fragment_usersConnection_edges = {
-    node: option(fragment_usersConnection_edges_node),
-  };
+  [@ocaml.warning \\"-30\\"];
   type fragment_usersConnection = {
     edges: option(array(option(fragment_usersConnection_edges))),
+  }
+  and fragment_usersConnection_edges = {
+    node: option(fragment_usersConnection_edges_node),
+  }
+  and fragment_usersConnection_edges_node = {
+    id: string,
+    firstName: string,
   };
 
   type fragment = {usersConnection: option(fragment_usersConnection)};
@@ -880,7 +896,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_usersConnection:
+  let getConnectionNodes:
     option(fragment_usersConnection) =>
     array(fragment_usersConnection_edges_node) =
     connection =>
@@ -914,6 +930,7 @@ exports[`Language plugin tests Query prints simple responses and variables 1`] =
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_user = {
     id: string,
     firstName: string,
@@ -958,7 +975,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -974,15 +991,16 @@ exports[`Language plugin tests Subscription prints the correct basic structure f
 /* @generated */
 
 module Types = {
-  type userChangedInput = {
+  [@ocaml.warning \\"-30\\"];
+  type response_userChanged = {user: option(response_userChanged_user)}
+  and response_userChanged_user = {
+    id: string,
+    firstName: string,
+  }
+  and userChangedInput = {
     clientMutationId: option(string),
     userId: string,
   };
-  type response_userChanged_user = {
-    id: string,
-    firstName: string,
-  };
-  type response_userChanged = {user: option(response_userChanged_user)};
 
   type response = {userChanged: response_userChanged};
   type rawResponse = response;
@@ -1039,6 +1057,8 @@ exports[`Language plugin tests Unions generates code to unwrap fragments on unio
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     id: string,
     firstName: string,
@@ -1075,6 +1095,8 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
+
   type fragment = {
     id: string,
     name: string,
@@ -1111,6 +1133,7 @@ type operationType = ReasonRelay.fragmentNode;
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_User = {
     id: string,
     fragmentRefs: ReasonRelay.fragmentRefs([ | \`app_user]),
@@ -1197,7 +1220,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -1210,6 +1233,7 @@ exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_User_location = {
     lat: float,
     lng: float,
@@ -1302,7 +1326,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 
@@ -1315,6 +1339,7 @@ exports[`Language plugin tests Unions handles fragments on unions 1`] = `
 /* @generated */
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type fragment_User_location = {
     id: string,
     lat: float,
@@ -1398,6 +1423,7 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
 
 module Types = {
+  [@ocaml.warning \\"-30\\"];
   type response_participantById_Observer_manager_User = {
     lastName: string,
     firstName: string,
@@ -1535,7 +1561,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   external observerStatus_toString: enum_ObserverStatus => string =
@@ -1551,11 +1577,12 @@ exports[`Language plugin tests raw_response_type outputs code for handling @raw_
 /* @generated */
 
 module Types = {
-  type rawResponse_me = {
+  [@ocaml.warning \\"-30\\"];
+  type response_me = {
     firstName: string,
     lastName: string,
-  };
-  type response_me = {
+  }
+  and rawResponse_me = {
     firstName: string,
     lastName: string,
   };
@@ -1605,7 +1632,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {};
 

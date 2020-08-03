@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type response_node = {
     __typename: [ | `User],
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestRefetchingInNode_user]),
@@ -45,7 +46,7 @@ module Internal = {
       );
 };
 
-type preloadToken;
+type queryRef;
 
 module Utils = {
   open Types;
@@ -60,8 +61,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "userId",
-    "type": "ID!"
+    "name": "userId"
   }
 ],
 v1 = [
@@ -103,13 +103,15 @@ return {
                 "name": "TestRefetchingInNode_user"
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           }
         ],
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -171,7 +173,8 @@ return {
                 "storageKey": "friendsConnection(statuses:[\"Online\",\"Offline\"])"
               }
             ],
-            "type": "User"
+            "type": "User",
+            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -179,6 +182,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "79c28e4ac7972486b1a6034f8c257222",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingInNodeQuery",
@@ -189,9 +193,9 @@ return {
 })() |json}
 ];
 
-include ReasonRelay.MakePreloadQuery({
+include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
-  type queryPreloadToken = preloadToken;
+  type loadedQueryRef = queryRef;
   type response = Types.response;
   let query = node;
   let convertVariables = Internal.convertVariables;

@@ -3,17 +3,13 @@
 module Types = {
   type fragment_todosConnection_edges_node = {
     id: string,
-    getFragmentRefs:
-      unit =>
-      {
-        .
-        "__$fragment_ref__SingleTodo_todoItem": SingleTodo_todoItem_graphql.t,
-      },
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTodo_todoItem]),
   };
   type fragment_todosConnection_edges = {
     node: option(fragment_todosConnection_edges_node),
   };
   type fragment_todosConnection = {
+    __id: ReasonRelay.dataId,
     edges: option(array(option(fragment_todosConnection_edges))),
   };
 
@@ -37,9 +33,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__TodoList_query": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `TodoList_query]) => fragmentRef =
+  "%identity";
 
 module Utils = {
   open Types;
@@ -67,9 +63,19 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
+  "argumentDefinitions": [
+    {
+      "defaultValue": "",
+      "kind": "LocalArgument",
+      "name": "after"
+    },
+    {
+      "defaultValue": 10,
+      "kind": "LocalArgument",
+      "name": "first"
+    }
+  ],
   "kind": "Fragment",
-  "name": "TodoList_query",
-  "type": "Query",
   "metadata": {
     "connection": [
       {
@@ -82,105 +88,106 @@ let node: operationType = [%raw
       }
     ]
   },
-  "argumentDefinitions": [
-    {
-      "kind": "LocalArgument",
-      "name": "first",
-      "type": "Int!",
-      "defaultValue": 10
-    },
-    {
-      "kind": "LocalArgument",
-      "name": "after",
-      "type": "String!",
-      "defaultValue": ""
-    }
-  ],
+  "name": "TodoList_query",
   "selections": [
     {
-      "kind": "LinkedField",
       "alias": "todosConnection",
-      "name": "__TodoList_query_todosConnection_connection",
-      "storageKey": null,
       "args": null,
       "concreteType": "TodoItemConnection",
+      "kind": "LinkedField",
+      "name": "__TodoList_query_todosConnection_connection",
       "plural": false,
       "selections": [
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "edges",
-          "storageKey": null,
           "args": null,
           "concreteType": "TodoItemEdge",
+          "kind": "LinkedField",
+          "name": "edges",
           "plural": true,
           "selections": [
             {
-              "kind": "LinkedField",
               "alias": null,
-              "name": "node",
-              "storageKey": null,
               "args": null,
               "concreteType": "TodoItem",
+              "kind": "LinkedField",
+              "name": "node",
               "plural": false,
               "selections": [
                 {
-                  "kind": "ScalarField",
                   "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "id",
-                  "args": null,
                   "storageKey": null
                 },
                 {
-                  "kind": "ScalarField",
                   "alias": null,
-                  "name": "__typename",
                   "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
                   "storageKey": null
                 },
                 {
+                  "args": null,
                   "kind": "FragmentSpread",
-                  "name": "SingleTodo_todoItem",
-                  "args": null
+                  "name": "SingleTodo_todoItem"
                 }
-              ]
+              ],
+              "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "cursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
               "storageKey": null
             }
-          ]
+          ],
+          "storageKey": null
         },
         {
-          "kind": "LinkedField",
           "alias": null,
-          "name": "pageInfo",
-          "storageKey": null,
           "args": null,
           "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
           "plural": false,
           "selections": [
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "endCursor",
               "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
               "storageKey": null
             },
             {
-              "kind": "ScalarField",
               "alias": null,
-              "name": "hasNextPage",
               "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        },
+        {
+          "kind": "ClientExtension",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "__id",
               "storageKey": null
             }
           ]
         }
-      ]
+      ],
+      "storageKey": null
     }
-  ]
+  ],
+  "type": "Query",
+  "abstractKey": null
 } |json}
 ];

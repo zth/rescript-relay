@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_members_edges_node_User = {
     id: string,
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_user]),
@@ -31,7 +32,10 @@ module Types = {
     | `Group(fragment_members_edges_node_Group)
     | `UnselectedUnionMember(string)
   ];
-  type fragment_members_edges = {
+  type fragment_members = {
+    edges: option(array(option(fragment_members_edges))),
+  }
+  and fragment_members_edges = {
     node:
       option(
         [
@@ -40,9 +44,6 @@ module Types = {
           | `UnselectedUnionMember(string)
         ],
       ),
-  };
-  type fragment_members = {
-    edges: option(array(option(fragment_members_edges))),
   };
 
   type fragment = {members: option(fragment_members)};
@@ -99,7 +100,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_members:
+  let getConnectionNodes:
     option(fragment_members) => array(fragment_members_edges_node) =
     connection =>
       switch (connection) {
@@ -140,28 +141,24 @@ v1 = {
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "groupId",
-      "type": "ID!"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "onlineStatuses",
-      "type": "[OnlineStatus!]"
-    },
-    {
       "defaultValue": 2,
       "kind": "LocalArgument",
-      "name": "count",
-      "type": "Int"
+      "name": "count"
     },
     {
       "defaultValue": "",
       "kind": "LocalArgument",
-      "name": "cursor",
-      "type": "String"
+      "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "groupId"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "onlineStatuses"
     }
   ],
   "kind": "Fragment",
@@ -241,7 +238,8 @@ return {
                       "name": "TestPaginationUnion_user"
                     }
                   ],
-                  "type": "User"
+                  "type": "User",
+                  "abstractKey": null
                 },
                 {
                   "kind": "InlineFragment",
@@ -302,7 +300,8 @@ return {
                       "storageKey": "adminsConnection(first:1)"
                     }
                   ],
-                  "type": "Group"
+                  "type": "Group",
+                  "abstractKey": null
                 }
               ],
               "storageKey": null
@@ -346,7 +345,8 @@ return {
       "storageKey": null
     }
   ],
-  "type": "Query"
+  "type": "Query",
+  "abstractKey": null
 };
 })() |json}
 ];

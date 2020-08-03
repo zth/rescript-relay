@@ -3,12 +3,13 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
-  type response_userUpdated_user = {
+  [@ocaml.warning "-30"];
+  type response_userUpdated = {user: option(response_userUpdated_user)}
+  and response_userUpdated_user = {
     id: string,
     onlineStatus: option(enum_OnlineStatus),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
   };
-  type response_userUpdated = {user: option(response_userUpdated_user)};
 
   type response = {userUpdated: option(response_userUpdated)};
   type rawResponse = response;
@@ -59,8 +60,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "userId",
-    "type": "ID!"
+    "name": "userId"
   }
 ],
 v1 = [
@@ -121,7 +121,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Subscription"
+    "type": "Subscription",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -170,6 +171,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "41b8b12bc049364fa2383c462f7c13de",
     "id": null,
     "metadata": {},
     "name": "TestSubscriptionUserUpdatedSubscription",

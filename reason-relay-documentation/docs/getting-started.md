@@ -20,9 +20,15 @@ You're encouraged to follow along this walkthrough and play with the concepts th
 
 Let's get started!
 
-#### Concurrent Mode is required
+#### Concurrent Mode is encouraged
 
-There are currently no official bindings for the React experimental API's in `reason-react`. ReasonRelay therefore ships `ReactExperimental`, a module with bindings to suspense and concurrent mode-related React API's. You're encouraged to use this until there's an official alternative, which likely won't be shipped until React's API's are released as stable.
+You will have the absolute best experience using ReasonRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too. There are a few rough edges to keep in mind when not running in concurrent mode, namely:
+
+- You won't have the same control over when things suspend and not as you do in concurrent mode. This can be problematic when doing refetches, which suspend after some default duration in a way you can't really control without concurrent mode.
+
+##### Extra bindings for experimental APIs with no official bindings yet
+
+Not all experimental APIs from React are currently bound in the official `reason-react` bindings. ReasonRelay therefore ships `ReactExperimental`, a module with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
 This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
@@ -43,16 +49,16 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-required), it requires `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _not_ work with `bs-platform < 7.0.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-d28bd2994 react-dom@0.0.0-experimental-d28bd2994
+yarn add react@0.0.0-experimental-d7382b6c4 react-dom@0.0.0-experimental-d7382b6c4
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 9, so install that exact version
+# We currently depend on Relay version 10.0.1, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@9.0.0 relay-compiler@9.0.0 react-relay@0.0.0-experimental-8cc94ddc relay-config@9.0.0 reason-promise
+yarn add reason-relay graphql relay-runtime@10.0.1 relay-compiler@10.0.1 react-relay@0.0.0-experimental-8058ef82 relay-config@10.0.1 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -70,14 +76,14 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-f6b8d31a7` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-d7382b6c4` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-d28bd2994",
-    "react-dom": "0.0.0-experimental-d28bd2994"
+    "react": "0.0.0-experimental-d7382b6c4",
+    "react-dom": "0.0.0-experimental-d7382b6c4"
   }
 }
 ```
@@ -191,7 +197,11 @@ let environment =
   ReasonRelay.Environment.make(
     ~network,
     ~store=
-      ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
+      ReasonRelay.Store.make(
+        ~source=ReasonRelay.RecordSource.make(),
+        ~gcReleaseBufferSize=10, // This sets the query cache size to 10
+        ()
+      ),
     (),
   );
 ```
@@ -216,7 +226,7 @@ ReactExperimental.renderConcurrentRootAtElementWithId(
 
 ##### 2. Rendering your app in Concurrent Mode
 
-We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-required), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
+We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
 
 ## Time to make your first query
 

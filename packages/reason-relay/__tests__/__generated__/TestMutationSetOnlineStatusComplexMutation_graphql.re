@@ -3,14 +3,15 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
-  type setOnlineStatusInput = {onlineStatus: enum_OnlineStatus};
-  type response_setOnlineStatusComplex_user = {
-    id: string,
-    onlineStatus: option(enum_OnlineStatus),
-  };
+  [@ocaml.warning "-30"];
   type response_setOnlineStatusComplex = {
     user: option(response_setOnlineStatusComplex_user),
-  };
+  }
+  and response_setOnlineStatusComplex_user = {
+    id: string,
+    onlineStatus: option(enum_OnlineStatus),
+  }
+  and setOnlineStatusInput = {onlineStatus: enum_OnlineStatus};
 
   type response = {
     setOnlineStatusComplex: option(response_setOnlineStatusComplex),
@@ -98,8 +99,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input",
-    "type": "SetOnlineStatusInput!"
+    "name": "input"
   }
 ],
 v1 = [
@@ -153,7 +153,8 @@ return {
     "metadata": null,
     "name": "TestMutationSetOnlineStatusComplexMutation",
     "selections": (v1/*: any*/),
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -163,6 +164,7 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
+    "cacheID": "20484379745a128851fbf94268a240bf",
     "id": null,
     "metadata": {},
     "name": "TestMutationSetOnlineStatusComplexMutation",

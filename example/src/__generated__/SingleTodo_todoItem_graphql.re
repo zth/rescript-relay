@@ -25,9 +25,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) =
-  {.. "__$fragment_ref__SingleTodo_todoItem": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `SingleTodo_todoItem]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -35,33 +35,34 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "SingleTodo_todoItem",
-  "type": "TodoItem",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "SingleTodo_todoItem",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "id",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "text",
-      "args": null,
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "completed",
       "args": null,
+      "kind": "ScalarField",
+      "name": "completed",
       "storageKey": null
     }
-  ]
+  ],
+  "type": "TodoItem",
+  "abstractKey": null
 } |json}
 ];

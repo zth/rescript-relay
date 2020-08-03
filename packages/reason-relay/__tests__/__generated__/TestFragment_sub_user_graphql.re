@@ -1,6 +1,8 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
+
   type fragment = {lastName: string};
 };
 
@@ -44,6 +46,7 @@ let node: operationType = [%raw
       "storageKey": null
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

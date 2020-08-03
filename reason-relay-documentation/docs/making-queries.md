@@ -56,9 +56,55 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `[%relay.query]` node automatically generates a `preload` function that you can call with the same parameters as the `use` hook (plus passing your `environment`, as `preload` runs outside of React's context). `preload` gives you back a token, which you can then pass to `Query.usePreloaded(~token=token, ())`. This will either suspend the component (if the data's not ready) or render it right away if the data's already there.
+In ReasonRelay, every `[%relay.query]` node automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
-A very useful pattern that's encouraged over using the lazy approach. In short, use `preload` as much as you can where it makes sense.
+1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaed`, like `let queryData = Query.usePreloaded(~queryRef=queryRef, ())`, to get the data for the query as soon as it's available.
+2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
+3. `disposeQuery` - a function that disposes the query reference manually. Calling this would turn `option(queryRef)` into `None`.
+
+So, the typical way to preload a query would be like this:
+
+```reason
+// SomeComponent.re
+module Query = [%relay.query
+  {|
+  query SomeComponentQuery($userId: ID!) {
+    user(id: $userId) {
+      ...SomeUserComponent_user
+    }
+  }
+  |}
+];
+
+[@react.component]
+let make = (~queryRef) => {
+  let queryData = Query.usePreloaded(~queryRef, ());
+
+  // Use the data for the query here
+};
+
+// SomeOtherComponent.re
+[@react.component]
+let make = (~userId) => {
+  let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader();
+
+  switch (queryRef) {
+  | Some(queryRef) => <SomeComponent queryRef />
+  | None =>
+    <button onClick={_ => {loadQuery(~variables={id: userId}, ())}}>
+      {React.string("See full user")}
+    </button>
+  };
+};
+}
+```
+
+Let's break down what's going on:
+
+1. We have a component called `<SomeComponent />` that has a query. However, that component won't make that query itself. Rather, it expects whatever parent that's rendering it to have started loading that query as soon as possible, rather than waiting until the component has actually rendered.
+2. `<SomeOtherComponent />` outputs a button that when pressed starts loading the query for `<SomeComponent />`. This means that query starts loading as soon as physically possible - right when the user clicks the button. No waiting for renders, state updates and what not. Data is requested as soon as possible.
+
+A very useful pattern that's encouraged over using the lazy approach. In short, use `Query.useLoader` as much as you can where it makes sense.
 
 ## API Reference
 
@@ -112,27 +158,43 @@ The results are delivered through a `Belt.Result.t` in the `onResult` callback.
 | `variables`   | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
 | `onResult`    | `Belt.Result.t('response, Js.Promise.error)` | _Yes_    | Callback for getting the data (or error) when it's retrieved.                     |
 
-### `preload`
+### `useLoader`
 
-Starts preloading a query. Please read more in the section on [preloading queries](#preloaded-queries).
+Uses gives you a loader with which you can start loading a query without needing React to trigger the query through a render like with `Query.use`.
 
-Returns `preloadToken`, which is what you need to pass to that same query's [`usePreloaded`](#usepreloaded) in order to get your data.
+Returns a tuple of `(option(queryRef), loadQuery, disposeQuery)`.
 
-> `preload` uses Relay's `preloadQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#preloadquery).
+##### `option(queryRef)`
 
-##### Parameters
+Pass this `queryRef` to the `Query.usePreloaded` hook to get data for the query.
 
-`preload` takes the same parameters as [`use`](#use), but also needs you to pass it your `environment` (`Environment.t`).
+#### `loadQuery`
+
+A function that starts loading the query, populating `queryRef`. Signature looks like this:
+
+`let loadQuery: (~variables: queryVariables, ~fetchPolicy: fetchPolicy=?, ~networkCacheConfig: networkCacheConfig=?, ()) => unit;`
+
+Call this as soon as possible to start your query.
+
+#### disposeQuery
+
+A function that manually disposes the query, turning `queryRef` into `None`. Signature:
+
+`let disposeQuery: unit => unit;`
+
+> `useLoader` uses Relay's `useQueryLoader` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usequeryloader).
+
+           |
 
 ### `usePreloaded`
 
-Uses a preloaded query. Pass the result of `preload` to this hook and `usePreloaded` will either deliver the query data if it's ready, or suspend the component until the data's there. Please read more in the section on [preloading queries](#preloaded-queries).
+Uses a preloaded query. Pass the `queryRef` from `Query.useLoader` to this hook and `usePreloaded` will either deliver the query data if it's ready, or suspend the component until the data's there. Please read more in the section on [preloading queries](#preloaded-queries).
 
 Returns the query's `response`.
 
 | Name           | Type                                         | Required | Notes                                                                                                                                        |
 | -------------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `token`        | `preloadToken`                               | _Yes_    | The token returned by `Query.preload`.                                                                                                       |
+| `queryRef`     | `queryRef`                                   | _Yes_    | The query referenced returned by `loadQuery` from `Query.useLoader`.                                                                         |
 | `renderPolicy` | [`renderPolicy`](api-reference#renderpolicy) | No       | Control if Relay should partially render views with data it already has in the store, or all data at once when it's fetched from the server. |
 
 > `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery).

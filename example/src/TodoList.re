@@ -2,13 +2,12 @@ module TodoListFragment = [%relay.fragment
   {|
   fragment TodoList_query on Query
     @argumentDefinitions(
-      first: {type: "Int!", defaultValue: 10}
-      after: {type: "String!", defaultValue: ""}
-    )
-  {
+      first: { type: "Int!", defaultValue: 10 }
+      after: { type: "String!", defaultValue: "" }
+    ) {
     todosConnection(first: $first, after: $after)
-      @connection(key: "TodoList_query_todosConnection")
-    {
+      @connection(key: "TodoList_query_todosConnection") {
+      __id
       edges {
         node {
           id
@@ -22,12 +21,17 @@ module TodoListFragment = [%relay.fragment
 
 module AddTodoMutation = [%relay.mutation
   {|
-  mutation TodoListAddTodoMutation($input: AddTodoItemInput!) {
+  mutation TodoListAddTodoMutation(
+    $input: AddTodoItemInput!
+    $connections: [String!]!
+  ) @raw_response_type {
     addTodoItem(input: $input) {
-      addedTodoItem {
-        id
-        text
-        completed
+      addedTodoItemEdge @appendEdge(connections: $connections) {
+        node {
+          id
+          text
+          completed
+        }
       }
     }
   }
@@ -53,38 +57,30 @@ let make = (~query as queryRef) => {
               addTodo(
                 ~variables=
                   makeVariables(
+                    ~connections=[|
+                      todoListData.todosConnection.__id
+                      ->ReasonRelay.dataIdToString,
+                    |],
                     ~input=make_addTodoItemInput(~text=newTodoText, ()),
                   ),
                 ~onCompleted=(_, _) => {setNewTodoText(_ => "")},
-                ~updater=
-                  (store, _response) =>
-                    ReasonRelayUtils.(
-                      switch (
-                        resolveNestedRecord(
-                          ~rootRecord=
-                            store->ReasonRelay.RecordSourceSelectorProxy.getRootField(
-                              ~fieldName="addTodoItem",
-                            ),
-                          ~path=["addedTodoItem"],
-                        )
-                      ) {
-                      | Some(node) =>
-                        createAndAddEdgeToConnections(
-                          ~store,
-                          ~node,
-                          ~connections=[
-                            {
-                              parentID: ReasonRelay.storeRootId,
-                              key: "TodoList_query_todosConnection",
-                              filters: None,
-                            },
-                          ],
-                          ~edgeName="TodoItemEdge",
-                          ~insertAt=Start,
-                        )
-                      | None => ()
-                      }
-                    ),
+                ~optimisticResponse={
+                  addTodoItem:
+                    Some({
+                      addedTodoItemEdge:
+                        Some({
+                          node:
+                            Some({
+                              id:
+                                ReasonRelay.(
+                                  generateUniqueClientID()->dataIdToString
+                                ),
+                              text: newTodoText,
+                              completed: Some(false),
+                            }),
+                        }),
+                    }),
+                },
                 (),
               )
             );
@@ -122,7 +118,7 @@ let make = (~query as queryRef) => {
            ->Belt.Array.map(todoItem =>
                <SingleTodo
                  key={todoItem.id}
-                 todoItem={todoItem.getFragmentRefs()}
+                 todoItem={todoItem.fragmentRefs}
                  checked=true
                />
              )

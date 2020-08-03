@@ -24,8 +24,9 @@ module Internal = {
 
 type t;
 type fragmentRef;
-type fragmentRefSelector('a) = {.. "__$fragment_ref__Avatar_user": t} as 'a;
-external getFragmentRef: fragmentRefSelector('a) => fragmentRef = "%identity";
+external getFragmentRef:
+  ReasonRelay.fragmentRefs([> | `Avatar_user]) => fragmentRef =
+  "%identity";
 
 module Utils = {};
 
@@ -33,26 +34,27 @@ type operationType = ReasonRelay.fragmentNode;
 
 let node: operationType = [%raw
   {json| {
-  "kind": "Fragment",
-  "name": "Avatar_user",
-  "type": "User",
-  "metadata": null,
   "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "Avatar_user",
   "selections": [
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "avatarUrl",
       "args": null,
+      "kind": "ScalarField",
+      "name": "avatarUrl",
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
       "alias": null,
-      "name": "fullName",
       "args": null,
+      "kind": "ScalarField",
+      "name": "fullName",
       "storageKey": null
     }
-  ]
+  ],
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

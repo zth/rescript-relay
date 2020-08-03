@@ -5,23 +5,41 @@ module Types = {
     text: string,
     clientMutationId: option(string),
   };
-  type response_addTodoItem_addedTodoItem = {
+  type rawResponse_addTodoItem_addedTodoItemEdge_node = {
     id: string,
     text: string,
     completed: option(bool),
   };
+  type rawResponse_addTodoItem_addedTodoItemEdge = {
+    node: option(rawResponse_addTodoItem_addedTodoItemEdge_node),
+  };
+  type rawResponse_addTodoItem = {
+    addedTodoItemEdge: option(rawResponse_addTodoItem_addedTodoItemEdge),
+  };
+  type response_addTodoItem_addedTodoItemEdge_node = {
+    id: string,
+    text: string,
+    completed: option(bool),
+  };
+  type response_addTodoItem_addedTodoItemEdge = {
+    node: option(response_addTodoItem_addedTodoItemEdge_node),
+  };
   type response_addTodoItem = {
-    addedTodoItem: option(response_addTodoItem_addedTodoItem),
+    addedTodoItemEdge: option(response_addTodoItem_addedTodoItemEdge),
   };
 
   type response = {addTodoItem: option(response_addTodoItem)};
-  type variables = {input: addTodoItemInput};
+  type rawResponse = {addTodoItem: option(rawResponse_addTodoItem)};
+  type variables = {
+    input: addTodoItemInput,
+    connections: array(string),
+  };
 };
 
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem_addedTodoItem_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
@@ -34,7 +52,7 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem_addedTodoItem_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
@@ -42,6 +60,32 @@ module Internal = {
     ->ReasonRelay._convertObj(
         responseConverter,
         responseConverterMap,
+        Js.undefined,
+      );
+
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+  ];
+  let wrapRawResponseConverterMap = ();
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
+      );
+
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+  ];
+  let rawResponseConverterMap = ();
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay._convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
         Js.undefined,
       );
 
@@ -66,20 +110,48 @@ module Utils = {
     clientMutationId,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  let makeVariables = (~input, ~connections): variables => {
+    input,
+    connections,
+  };
 
-  let make_response_addTodoItem_addedTodoItem =
-      (~id, ~text, ~completed=?, ()): response_addTodoItem_addedTodoItem => {
+  let make_rawResponse_addTodoItem_addedTodoItemEdge_node =
+      (~id, ~text, ~completed=?, ())
+      : rawResponse_addTodoItem_addedTodoItemEdge_node => {
     id,
     text,
     completed,
   };
 
-  let make_response_addTodoItem = (~addedTodoItem=?, ()): response_addTodoItem => {
-    addedTodoItem: addedTodoItem,
+  let make_rawResponse_addTodoItem_addedTodoItemEdge =
+      (~node=?, ()): rawResponse_addTodoItem_addedTodoItemEdge => {
+    node: node,
   };
 
-  let makeOptimisticResponse = (~addTodoItem=?, ()): response => {
+  let make_rawResponse_addTodoItem =
+      (~addedTodoItemEdge=?, ()): rawResponse_addTodoItem => {
+    addedTodoItemEdge: addedTodoItemEdge,
+  };
+
+  let make_response_addTodoItem_addedTodoItemEdge_node =
+      (~id, ~text, ~completed=?, ())
+      : response_addTodoItem_addedTodoItemEdge_node => {
+    id,
+    text,
+    completed,
+  };
+
+  let make_response_addTodoItem_addedTodoItemEdge =
+      (~node=?, ()): response_addTodoItem_addedTodoItemEdge => {
+    node: node,
+  };
+
+  let make_response_addTodoItem =
+      (~addedTodoItemEdge=?, ()): response_addTodoItem => {
+    addedTodoItemEdge: addedTodoItemEdge,
+  };
+
+  let makeOptimisticResponse = (~addTodoItem=?, ()): rawResponse => {
     addTodoItem: addTodoItem,
   };
 };
@@ -88,87 +160,138 @@ type operationType = ReasonRelay.mutationNode;
 
 let node: operationType = [%raw
   {json| (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
-    "kind": "LocalArgument",
+    "kind": "Variable",
     "name": "input",
-    "type": "AddTodoItemInput!",
-    "defaultValue": null
+    "variableName": "input"
   }
 ],
-v1 = [
-  {
-    "kind": "LinkedField",
-    "alias": null,
-    "name": "addTodoItem",
-    "storageKey": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
+v3 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "TodoItemEdge",
+  "kind": "LinkedField",
+  "name": "addedTodoItemEdge",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "TodoItem",
+      "kind": "LinkedField",
+      "name": "node",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "id",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "text",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "completed",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+};
+return {
+  "fragment": {
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
     ],
-    "concreteType": "AddTodoItemPayload",
-    "plural": false,
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "TodoListAddTodoMutation",
     "selections": [
       {
-        "kind": "LinkedField",
         "alias": null,
-        "name": "addedTodoItem",
-        "storageKey": null,
-        "args": null,
-        "concreteType": "TodoItem",
+        "args": (v2/*: any*/),
+        "concreteType": "AddTodoItemPayload",
+        "kind": "LinkedField",
+        "name": "addTodoItem",
         "plural": false,
         "selections": [
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "id",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "text",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "completed",
-            "args": null,
-            "storageKey": null
-          }
-        ]
+          (v3/*: any*/)
+        ],
+        "storageKey": null
       }
-    ]
-  }
-];
-return {
-  "kind": "Request",
-  "fragment": {
-    "kind": "Fragment",
-    "name": "TodoListAddTodoMutation",
+    ],
     "type": "Mutation",
-    "metadata": null,
-    "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "abstractKey": null
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "TodoListAddTodoMutation",
-    "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "AddTodoItemPayload",
+        "kind": "LinkedField",
+        "name": "addTodoItem",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "appendEdge",
+            "key": "",
+            "kind": "LinkedHandle",
+            "name": "addedTodoItemEdge",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "TodoListAddTodoMutation",
+    "cacheID": "24a0ab7c7226072ae69fe6c5dcac2e97",
     "id": null,
-    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItem {\n      id\n      text\n      completed\n    }\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "TodoListAddTodoMutation",
+    "operationKind": "mutation",
+    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItemEdge {\n      node {\n        id\n        text\n        completed\n      }\n    }\n  }\n}\n"
   }
 };
 })() |json}

@@ -50,15 +50,13 @@ let make = () => {
   <div className="main-panel">
     <div className="content-wrapper">
       <Header />
-      <TopCardsDisplayer
-        siteStatistics={query.siteStatistics.getFragmentRefs()}
-      />
+      <TopCardsDisplayer siteStatistics={query.siteStatistics.fragmentRefs} />
       <div className="row">
         <div className="col-8 grid-margin">
-          <RecentTickets query={query.getFragmentRefs()} />
+          <RecentTickets query={query.fragmentRefs} />
         </div>
         <div className="col-4 grid-margin">
-          <TodoList query={query.getFragmentRefs()} />
+          <TodoList query={query.fragmentRefs} />
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 /* @generated */
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_friendsConnection = {totalCount: int};
 
   type fragment = {
@@ -73,6 +74,7 @@ let node: operationType = [%raw
       "storageKey": "friendsConnection(first:1)"
     }
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 } |json}
 ];

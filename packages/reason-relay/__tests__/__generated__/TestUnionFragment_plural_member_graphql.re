@@ -3,6 +3,7 @@
 type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 
 module Types = {
+  [@ocaml.warning "-30"];
   type fragment_User = {
     onlineStatus: option(enum_OnlineStatus),
     firstName: string,
@@ -105,7 +106,8 @@ let node: operationType = [%raw
           "storageKey": null
         }
       ],
-      "type": "User"
+      "type": "User",
+      "abstractKey": null
     },
     {
       "kind": "InlineFragment",
@@ -118,9 +120,11 @@ let node: operationType = [%raw
           "storageKey": null
         }
       ],
-      "type": "Group"
+      "type": "Group",
+      "abstractKey": null
     }
   ],
-  "type": "Member"
+  "type": "Member",
+  "abstractKey": "__isMember"
 } |json}
 ];

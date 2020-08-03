@@ -1,27 +1,28 @@
 /* @generated */
 
 module Types = {
-  type fragment_friendsConnection_edges_node = {
-    id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_user]),
-  };
-  type fragment_friendsConnection_edges = {
-    node: option(fragment_friendsConnection_edges_node),
-  };
+  [@ocaml.warning "-30"];
   type fragment_friendsConnection = {
     edges: option(array(option(fragment_friendsConnection_edges))),
+  }
+  and fragment_friendsConnection_edges = {
+    node: option(fragment_friendsConnection_edges_node),
+  }
+  and fragment_friendsConnection_edges_node = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationInNode_user]),
   };
 
   type fragment = {
     friendsConnection: fragment_friendsConnection,
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""},"id":{"n":""}}} |json}
+    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
@@ -41,7 +42,7 @@ external getFragmentRef:
 
 module Utils = {
   open Types;
-  let getConnectionNodes_friendsConnection:
+  let getConnectionNodes:
     fragment_friendsConnection => array(fragment_friendsConnection_edges_node) =
     connection =>
       switch (connection.edges) {
@@ -78,22 +79,19 @@ v1 = {
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "onlineStatuses",
-      "type": "[OnlineStatus!]"
-    },
-    {
       "defaultValue": 2,
       "kind": "LocalArgument",
-      "name": "count",
-      "type": "Int"
+      "name": "count"
     },
     {
       "defaultValue": "",
       "kind": "LocalArgument",
-      "name": "cursor",
-      "type": "String"
+      "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "onlineStatuses"
     }
   ],
   "kind": "Fragment",
@@ -210,7 +208,8 @@ return {
     },
     (v1/*: any*/)
   ],
-  "type": "User"
+  "type": "User",
+  "abstractKey": null
 };
 })() |json}
 ];

@@ -47,10 +47,7 @@ let make = (~query as queryRef) => {
             {data.ticketsConnection
              ->Fragment.getConnectionNodes_ticketsConnection
              ->Belt.Array.map(ticket =>
-                 <SingleTicket
-                   key={ticket.id}
-                   ticket={ticket.getFragmentRefs()}
-                 />
+                 <SingleTicket key={ticket.id} ticket={ticket.fragmentRefs} />
                )
              ->React.array}
           </tbody>

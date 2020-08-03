@@ -54,13 +54,15 @@ module UserDisplayer = {
       </div>
       <button
         onClick={_ =>
-          startTransition(() =>
-            refetch(
-              ~variables=
-                Fragment.makeRefetchVariables(~showOnlineStatus=true, ()),
-              (),
-            )
-          )
+          startTransition(() => {
+            let _ =
+              refetch(
+                ~variables=
+                  Fragment.makeRefetchVariables(~showOnlineStatus=true, ()),
+                (),
+              );
+            ();
+          })
         }>
         {React.string("Fetch online status")}
       </button>
