@@ -31,331 +31,14 @@ let makeStringLiteralOrString = (value: string): Types.propType =>
   | _ => Scalar(String)
   };
 
-let rec flowTypesToFullState = (~content, ~operationType) => {
-  let initialState: Types.intermediateState = {
-    enums: [],
-    objects: [],
-    variables: None,
-    response: None,
-    rawResponse: None,
-    fragment: None,
-  };
-
-  let state = ref(initialState);
-
-  let setState = updater => state := updater(state^);
-
-  // This iterates through all top level type declarations from the Flow types generated
-  // by the Relay compiler, and extracts the things we're interested in.
-  switch (
-    operationType,
-    Parser_flow.program(~fail=true, ~parse_options, content),
-  ) {
-  | (
-      Types.Mutation(name) | Query(name) | Subscription(name),
-      ((_, statements, _), []),
-    ) =>
-    statements
-    |> List.iter(((_, statement): Flow_ast.Statement.t(Loc.t, Loc.t)) =>
-         switch (statement) {
-         /*** Avoid full mutation object */
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({right: (_, Object(_)), id: (_, typeName)}),
-               )),
-           })
-             when typeName == name =>
-           ()
-         /***
-          * Objects
-          */
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({
-                   right: (_, Object({properties})),
-                   id: (_, typeName),
-                 }),
-               )),
-           }) =>
-           switch (typeName) {
-           | _ when typeName == name ++ "Variables" =>
-             setState(state =>
-               {
-                 ...state,
-                 variables:
-                   Some({
-                     originalFlowTypeName: None,
-                     foundInUnion: false,
-                     definition:
-                       properties
-                       |> makeObjShape(~state, ~path=["variables"]),
-                   }),
-               }
-             )
-           | _ when typeName == name ++ "Response" =>
-             setState(state =>
-               {
-                 ...state,
-                 response:
-                   Some({
-                     originalFlowTypeName: None,
-                     foundInUnion: false,
-                     definition:
-                       properties |> makeObjShape(~state, ~path=["response"]),
-                   }),
-               }
-             )
-           | _ when typeName == name ++ "RawResponse" =>
-             setState(state =>
-               {
-                 ...state,
-                 rawResponse:
-                   Some({
-                     originalFlowTypeName: None,
-                     foundInUnion: false,
-                     definition:
-                       properties
-                       |> makeObjShape(~state, ~path=["rawResponse"]),
-                   }),
-               }
-             )
-           | typeName =>
-             setState(state =>
-               {
-                 ...state,
-                 objects: [
-                   {
-                     originalFlowTypeName: Some(typeName),
-                     foundInUnion: false,
-                     definition:
-                       properties |> makeObjShape(~state, ~path=["objects"]),
-                   },
-                   ...state.objects,
-                 ],
-               }
-             )
-           }
-         /***
-          * Enums
-          */
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({
-                   right: (
-                     _,
-                     Union(
-                       (_, StringLiteral({value: firstMember})),
-                       maybeSecondMember,
-                       maybeMore,
-                     ),
-                   ),
-                   id: (_, typeName),
-                 }),
-               )),
-           }) =>
-           let enum: Types.fullEnum = {
-             name: typeName,
-             values: [|firstMember|],
-           };
-
-           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
-
-           [maybeSecondMember, ...maybeMore]
-           ->Belt.List.forEach(
-               fun
-               | (_, StringLiteral({value: v}))
-                   when v != "%future added value" =>
-                 addValue(v)
-               | _ => (),
-             );
-
-           setState(state => {...state, enums: [enum, ...state.enums]});
-         | _ => ()
-         }
-       )
-  | (Fragment(name, plural), ((_, statements, _), [])) =>
-    statements
-    |> List.iter(((_, statement): Flow_ast.Statement.t(Loc.t, Loc.t)) =>
-         switch (statement) {
-         /***
-          * Objects
-          */
-
-         /***
-          * Match fragments
-          */
-         // Union
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({
-                   right: (
-                     _,
-                     // Match unions
-                     Union(
-                       (_, Object({properties: firstProps})),
-                       (_, Object({properties: secondProps})),
-                       maybeMoreMembers,
-                     ) |
-                     Generic({
-                       id: Unqualified((_, "$ReadOnlyArray")),
-                       targs:
-                         Some((
-                           _,
-                           [
-                             (
-                               _,
-                               Union(
-                                 (_, Object({properties: firstProps})),
-                                 (_, Object({properties: secondProps})),
-                                 maybeMoreMembers,
-                               ),
-                             ),
-                           ],
-                         )),
-                     }),
-                   ),
-                   id: (_, typeName),
-                 }),
-               )),
-           }) =>
-           switch (typeName) {
-           | _ when typeName == name =>
-             setState(state =>
-               {
-                 ...state,
-                 fragment:
-                   Some({
-                     plural,
-                     definition:
-                       Union(
-                         makeUnionDefinition(
-                           ~firstProps,
-                           ~state,
-                           ~secondProps,
-                           ~maybeMoreMembers,
-                           ~path=["fragment"],
-                         ),
-                       ),
-                     name,
-                   }),
-               }
-             )
-           | _ => ()
-           }
-         // Regular objects
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({
-                   right: (
-                     _,
-                     // Match regular object, or a $ReadOnlyArray (plural fragments)
-                     Object({properties}) |
-                     Generic({
-                       id: Unqualified((_, "$ReadOnlyArray")),
-                       targs: Some((_, [(_, Object({properties}))])),
-                     }),
-                   ),
-                   id: (_, typeName),
-                 }),
-               )),
-           }) =>
-           switch (typeName) {
-           | _ when typeName == name =>
-             setState(state =>
-               {
-                 ...state,
-                 fragment:
-                   Some({
-                     plural,
-                     definition:
-                       Object(
-                         properties
-                         |> makeObjShape(~state, ~path=["fragment"]),
-                       ),
-                     name,
-                   }),
-               }
-             )
-           | _ when !Tablecloth.String.contains(~substring="$", typeName) =>
-             setState(state =>
-               {
-                 ...state,
-                 objects: [
-                   {
-                     foundInUnion: false,
-                     originalFlowTypeName: Some(typeName),
-                     definition:
-                       properties |> makeObjShape(~state, ~path=["objects"]),
-                   },
-                   ...state.objects,
-                 ],
-               }
-             )
-           | _ => ()
-           }
-         /***
-          * Enums
-          */
-         | ExportNamedDeclaration({
-             declaration:
-               Some((
-                 _,
-                 TypeAlias({
-                   right: (
-                     _,
-                     Union(
-                       (_, StringLiteral({value: firstMember})),
-                       maybeSecondMember,
-                       maybeMore,
-                     ),
-                   ),
-                   id: (_, typeName),
-                 }),
-               )),
-           }) =>
-           let enum: Types.fullEnum = {
-             name: typeName,
-             values: [|firstMember|],
-           };
-
-           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
-
-           [maybeSecondMember, ...maybeMore]
-           ->Belt.List.forEach(
-               fun
-               | (_, StringLiteral({value: v}))
-                   when v != "%future added value" =>
-                 addValue(v)
-               | _ => (),
-             );
-
-           setState(state => {...state, enums: [enum, ...state.enums]});
-         | _ => ()
-         }
-       )
-  | (_, _errors) => Js.log("Parse error.")
-  };
-
-  state^ |> StateTransformer.intermediateToFull;
-}
-and mapObjProp =
-    (
-      ~optional,
-      ~state: Types.intermediateState,
-      ~path: list(string),
-      (_, prop): Flow_ast.Type.t('a, 'b),
-    )
-    : Types.propValue =>
+let rec mapObjProp =
+        (
+          ~optional,
+          ~state: Types.intermediateState,
+          ~path: list(string),
+          (_, prop): Flow_ast.Type.t('a, 'b),
+        )
+        : Types.propValue =>
   switch (prop) {
   | String => {nullable: optional, propType: Scalar(String)}
 
@@ -679,4 +362,322 @@ and makeUnion =
         ),
       ),
   };
+};
+
+let flowTypesToFullState = (~content, ~operationType) => {
+  let initialState: Types.intermediateState = {
+    enums: [],
+    objects: [],
+    variables: None,
+    response: None,
+    rawResponse: None,
+    fragment: None,
+  };
+
+  let state = ref(initialState);
+
+  let setState = updater => state := updater(state^);
+
+  // This iterates through all top level type declarations from the Flow types generated
+  // by the Relay compiler, and extracts the things we're interested in.
+  switch (
+    operationType,
+    Parser_flow.program(~fail=true, ~parse_options, content),
+  ) {
+  | (
+      Types.Mutation(name) | Query(name) | Subscription(name),
+      ((_, statements, _), []),
+    ) =>
+    statements
+    |> List.iter(((_, statement): Flow_ast.Statement.t(Loc.t, Loc.t)) =>
+         switch (statement) {
+         /*** Avoid full mutation object */
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({right: (_, Object(_)), id: (_, typeName)}),
+               )),
+           })
+             when typeName == name =>
+           ()
+         /***
+          * Objects
+          */
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (_, Object({properties})),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           switch (typeName) {
+           | _ when typeName == name ++ "Variables" =>
+             setState(state =>
+               {
+                 ...state,
+                 variables:
+                   Some({
+                     originalFlowTypeName: None,
+                     foundInUnion: false,
+                     definition:
+                       properties
+                       |> makeObjShape(~state, ~path=["variables"]),
+                   }),
+               }
+             )
+           | _ when typeName == name ++ "Response" =>
+             setState(state =>
+               {
+                 ...state,
+                 response:
+                   Some({
+                     originalFlowTypeName: None,
+                     foundInUnion: false,
+                     definition:
+                       properties |> makeObjShape(~state, ~path=["response"]),
+                   }),
+               }
+             )
+           | _ when typeName == name ++ "RawResponse" =>
+             setState(state =>
+               {
+                 ...state,
+                 rawResponse:
+                   Some({
+                     originalFlowTypeName: None,
+                     foundInUnion: false,
+                     definition:
+                       properties
+                       |> makeObjShape(~state, ~path=["rawResponse"]),
+                   }),
+               }
+             )
+           | typeName =>
+             setState(state =>
+               {
+                 ...state,
+                 objects: [
+                   {
+                     originalFlowTypeName: Some(typeName),
+                     foundInUnion: false,
+                     definition:
+                       properties |> makeObjShape(~state, ~path=["objects"]),
+                   },
+                   ...state.objects,
+                 ],
+               }
+             )
+           }
+         /***
+          * Enums
+          */
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     Union(
+                       (_, StringLiteral({value: firstMember})),
+                       maybeSecondMember,
+                       maybeMore,
+                     ),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           let enum: Types.fullEnum = {
+             name: typeName,
+             values: [|firstMember|],
+           };
+
+           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+
+           [maybeSecondMember, ...maybeMore]
+           ->Belt.List.forEach(
+               fun
+               | (_, StringLiteral({value: v}))
+                   when v != "%future added value" =>
+                 addValue(v)
+               | _ => (),
+             );
+
+           setState(state => {...state, enums: [enum, ...state.enums]});
+         | _ => ()
+         }
+       )
+  | (Fragment(name, plural), ((_, statements, _), [])) =>
+    statements
+    |> List.iter(((_, statement): Flow_ast.Statement.t(Loc.t, Loc.t)) =>
+         switch (statement) {
+         /***
+          * Objects
+          */
+
+         /***
+          * Match fragments
+          */
+         // Union
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     // Match unions
+                     Union(
+                       (_, Object({properties: firstProps})),
+                       (_, Object({properties: secondProps})),
+                       maybeMoreMembers,
+                     ) |
+                     Generic({
+                       id: Unqualified((_, "$ReadOnlyArray")),
+                       targs:
+                         Some((
+                           _,
+                           [
+                             (
+                               _,
+                               Union(
+                                 (_, Object({properties: firstProps})),
+                                 (_, Object({properties: secondProps})),
+                                 maybeMoreMembers,
+                               ),
+                             ),
+                           ],
+                         )),
+                     }),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           switch (typeName) {
+           | _ when typeName == name =>
+             setState(state =>
+               {
+                 ...state,
+                 fragment:
+                   Some({
+                     plural,
+                     definition:
+                       Union(
+                         makeUnionDefinition(
+                           ~firstProps,
+                           ~state,
+                           ~secondProps,
+                           ~maybeMoreMembers,
+                           ~path=["fragment"],
+                         ),
+                       ),
+                     name,
+                   }),
+               }
+             )
+           | _ => ()
+           }
+         // Regular objects
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     // Match regular object, or a $ReadOnlyArray (plural fragments)
+                     Object({properties}) |
+                     Generic({
+                       id: Unqualified((_, "$ReadOnlyArray")),
+                       targs: Some((_, [(_, Object({properties}))])),
+                     }),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           switch (typeName) {
+           | _ when typeName == name =>
+             setState(state =>
+               {
+                 ...state,
+                 fragment:
+                   Some({
+                     plural,
+                     definition:
+                       Object(
+                         properties
+                         |> makeObjShape(~state, ~path=["fragment"]),
+                       ),
+                     name,
+                   }),
+               }
+             )
+           | _ when !Tablecloth.String.contains(~substring="$", typeName) =>
+             setState(state =>
+               {
+                 ...state,
+                 objects: [
+                   {
+                     foundInUnion: false,
+                     originalFlowTypeName: Some(typeName),
+                     definition:
+                       properties |> makeObjShape(~state, ~path=["objects"]),
+                   },
+                   ...state.objects,
+                 ],
+               }
+             )
+           | _ => ()
+           }
+         /***
+          * Enums
+          */
+         | ExportNamedDeclaration({
+             declaration:
+               Some((
+                 _,
+                 TypeAlias({
+                   right: (
+                     _,
+                     Union(
+                       (_, StringLiteral({value: firstMember})),
+                       maybeSecondMember,
+                       maybeMore,
+                     ),
+                   ),
+                   id: (_, typeName),
+                 }),
+               )),
+           }) =>
+           let enum: Types.fullEnum = {
+             name: typeName,
+             values: [|firstMember|],
+           };
+
+           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+
+           [maybeSecondMember, ...maybeMore]
+           ->Belt.List.forEach(
+               fun
+               | (_, StringLiteral({value: v}))
+                   when v != "%future added value" =>
+                 addValue(v)
+               | _ => (),
+             );
+
+           setState(state => {...state, enums: [enum, ...state.enums]});
+         | _ => ()
+         }
+       )
+  | (_, _errors) => Js.log("Parse error.")
+  };
+
+  state^ |> StateTransformer.intermediateToFull;
 };
