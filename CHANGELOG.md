@@ -4,6 +4,8 @@
 
 Another release, primarily to enable zero cost enums via `bs-platform` `8.2.0`. No new Relay version, and hopefully a managable amount of breaking changes.
 
+[Check out this](https://github.com/zth/reason-relay/commit/7880e10aad73c8f302b5cb2eeef424c6d8fc8368) for an example diff of upgrading a project.
+
 ## Upgrade versions
 
 - `bs-platform@^8.2.0` Note this _must_ be `8.2.0` as we rely on things from that release.
