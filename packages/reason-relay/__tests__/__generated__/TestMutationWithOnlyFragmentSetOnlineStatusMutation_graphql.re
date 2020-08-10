@@ -31,7 +31,7 @@ module Internal = {
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         wrapResponseConverter,
         wrapResponseConverterMap,
         Js.null,
@@ -44,7 +44,7 @@ module Internal = {
   let responseConverterMap = ();
   let convertResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         responseConverter,
         responseConverterMap,
         Js.undefined,
@@ -57,7 +57,7 @@ module Internal = {
   let wrapRawResponseConverterMap = ();
   let convertWrapRawResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         wrapRawResponseConverter,
         wrapRawResponseConverterMap,
         Js.null,
@@ -70,7 +70,7 @@ module Internal = {
   let rawResponseConverterMap = ();
   let convertRawResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         rawResponseConverter,
         rawResponseConverterMap,
         Js.undefined,
@@ -82,7 +82,7 @@ module Internal = {
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         variablesConverter,
         variablesConverterMap,
         Js.undefined,

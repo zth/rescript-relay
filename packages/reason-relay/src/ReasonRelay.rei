@@ -78,10 +78,10 @@ external storeRootId: dataId = "ROOT_ID";
 [@bs.module "relay-runtime"]
 external storeRootType: string = "ROOT_TYPE";
 
-let _cleanObjectFromUndefined: Js.t({..}) => Js.t({..});
-let _cleanVariables: 'a => 'a;
-let _convertObj:
-  ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd;
+[@bs.module "./utils"]
+external convertObj:
+  ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
+  "traverser";
 
 /**
  * Read the following section on working with the Relay store:
@@ -117,36 +117,44 @@ module RecordProxy: {
     (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
     "getValue";
 
-  let getValueStringArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueStringArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(string)));
+    option(array(option(string))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueInt:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
     "getValue";
 
-  let getValueIntArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueIntArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(int)));
+    option(array(option(int))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueFloat:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
     "getValue";
 
-  let getValueFloatArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueFloatArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(float)));
+    option(array(option(float))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueBool:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
     "getValue";
 
-  let getValueBoolArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueBoolArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(bool)));
+    option(array(option(bool))) =
+    "getValue";
 
   [@bs.send]
   external setLinkedRecord:
@@ -286,7 +294,7 @@ module RecordProxy: {
     t =
     "setLinkedRecords";
 
-  let invalidateRecord: t => unit;
+  [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
 };
 
 /**
@@ -924,9 +932,11 @@ type fetchQueryOptions = {
   fetchPolicy: option(string),
 };
 
-let fetchQuery:
+[@bs.module "react-relay/hooks"]
+external fetchQuery:
   (Environment.t, queryNode, 'variables, option(fetchQueryOptions)) =>
-  Observable.t('response);
+  Observable.t('response) =
+  "fetchQuery";
 
 /**
  * SUBSCRIPTIONS

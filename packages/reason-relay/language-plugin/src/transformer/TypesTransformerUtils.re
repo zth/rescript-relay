@@ -33,7 +33,7 @@ let printConverterAssets =
   ++ assets.convertersDefinition
   ++ "let convert"
   ++ Tablecloth.String.capitalize(name)
-  ++ " = v => v->ReasonRelay._convertObj("
+  ++ " = v => v->ReasonRelay.convertObj("
   ++ name
   ++ "Converter, "
   ++ name

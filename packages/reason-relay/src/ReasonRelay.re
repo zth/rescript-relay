@@ -48,7 +48,7 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
  */
 
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let _cleanObjectFromUndefined = [%raw
+let cleanObjectFromUndefinedRaw = [%raw
   {|
   function (obj) {
     var newObj = {};
@@ -65,7 +65,7 @@ let _cleanObjectFromUndefined = [%raw
 ];
 
 // Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let _cleanVariables = [%raw
+let cleanVariablesRaw = [%raw
   {|
   function (variables) {
     if (typeof variables !== "object" || variables == null) {
@@ -78,7 +78,7 @@ let _cleanVariables = [%raw
 ];
 
 [@bs.module "./utils"]
-external _convertObj:
+external convertObj:
   ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
   "traverser";
 
@@ -121,46 +121,48 @@ module RecordProxy = {
   [@bs.send] external getType: t => string = "getType";
 
   [@bs.send] [@bs.return nullable]
-  external getValueArr:
-    (t, ~name: string, ~arguments: option(arguments)) =>
-    option(array('value)) =
-    "getValue";
-
-  [@bs.send] [@bs.return nullable]
   external getValueString:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
     "getValue";
 
-  let getValueStringArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(string))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueStringArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(string))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueInt:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
     "getValue";
 
-  let getValueIntArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(int))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueIntArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(int))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueFloat:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
     "getValue";
 
-  let getValueFloatArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(float))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueFloatArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(float))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueBool:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
     "getValue";
 
-  let getValueBoolArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(bool))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueBoolArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(bool))) =
+    "getValue";
 
   [@bs.send]
   external setLinkedRecord:
@@ -732,9 +734,9 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       useQuery(
         C.query,
         variables
-        |> _cleanVariables
+        |> cleanVariablesRaw
         |> C.convertVariables
-        |> _cleanObjectFromUndefined,
+        |> cleanObjectFromUndefinedRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -872,7 +874,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       loadQuery(
         environment,
         C.query,
-        variables |> C.convertVariables |> _cleanVariables,
+        variables |> C.convertVariables |> cleanVariablesRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -1016,8 +1018,8 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
         refetchFn(
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~fetchPolicy, ~renderPolicy, ~onComplete),
         ),
     );
@@ -1168,8 +1170,8 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
         p##refetch(
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1207,8 +1209,8 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
         p##refetch(
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1247,7 +1249,7 @@ type useMutationConfig('response, 'rawResponse, 'variables) = {
   variables: 'variables,
 };
 
-type _useMutationConfig('response, 'rawResponse, 'variables) = {
+type useMutationConfigRaw('response, 'rawResponse, 'variables) = {
   onError: option(mutationError => unit),
   onCompleted:
     option(('response, Js.Nullable.t(array(mutationError))) => unit),
@@ -1258,7 +1260,7 @@ type _useMutationConfig('response, 'rawResponse, 'variables) = {
   variables: 'variables,
 };
 
-type _commitMutationConfig('variables, 'rawResponse, 'response) = {
+type commitMutationConfigRaw('variables, 'rawResponse, 'response) = {
   mutation: mutationNode,
   variables: 'variables,
   onCompleted:
@@ -1272,10 +1274,10 @@ type _commitMutationConfig('variables, 'rawResponse, 'response) = {
 exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
-external commitMutation_:
+external commitMutationRaw:
   (
     Environment.t,
-    _commitMutationConfig('variables, 'rawResponse, 'response)
+    commitMutationConfigRaw('variables, 'rawResponse, 'response)
   ) =>
   Disposable.t =
   "commitMutation";
@@ -1284,7 +1286,7 @@ external commitMutation_:
 external useMutation:
   mutationNode =>
   (
-    _useMutationConfig('response, 'rawResponse, 'variables) => Disposable.t,
+    useMutationConfigRaw('response, 'rawResponse, 'variables) => Disposable.t,
     bool,
   ) =
   "useMutation";
@@ -1321,7 +1323,7 @@ module MakeUseMutation = (C: MutationConfig) => {
             | Some(r) => Some(r |> C.wrapRawResponse)
             },
           onUnsubscribe,
-          variables: variables |> C.convertVariables |> _cleanVariables,
+          variables: variables |> C.convertVariables |> cleanVariablesRaw,
           optimisticUpdater,
           updater:
             switch (updater) {
@@ -1348,10 +1350,10 @@ module MakeCommitMutation = (C: MutationConfig) => {
         (),
       )
       : Disposable.t =>
-    commitMutation_(
+    commitMutationRaw(
       environment,
       {
-        variables: variables |> C.convertVariables |> _cleanVariables,
+        variables: variables |> C.convertVariables |> cleanVariablesRaw,
         mutation: C.node,
         onCompleted:
           Some(
@@ -1403,10 +1405,10 @@ module MakeCommitMutation = (C: MutationConfig) => {
     let (promise, resolve) = Promise.pending();
 
     let _: Disposable.t =
-      commitMutation_(
+      commitMutationRaw(
         environment,
         {
-          variables: variables |> C.convertVariables |> _cleanVariables,
+          variables: variables |> C.convertVariables |> cleanVariablesRaw,
           mutation: C.node,
           onCompleted:
             Some(
@@ -1458,7 +1460,7 @@ module type SubscriptionConfig = {
   let convertVariables: variables => variables;
 };
 
-type _subscriptionConfig('response, 'variables) = {
+type subscriptionConfigRaw('response, 'variables) = {
   .
   "subscription": subscriptionNode,
   "variables": 'variables,
@@ -1470,7 +1472,8 @@ type _subscriptionConfig('response, 'variables) = {
 
 [@bs.module "relay-runtime"]
 external requestSubscription:
-  (Environment.t, _subscriptionConfig('response, 'variables)) => Disposable.t =
+  (Environment.t, subscriptionConfigRaw('response, 'variables)) =>
+  Disposable.t =
   "requestSubscription";
 
 module MakeUseSubscription = (C: SubscriptionConfig) => {
@@ -1488,7 +1491,7 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       environment,
       {
         "subscription": C.node,
-        "variables": variables |> C.convertVariables |> _cleanVariables,
+        "variables": variables |> C.convertVariables |> cleanVariablesRaw,
         "onCompleted": onCompleted,
         "onError": onError,
         "onNext":
