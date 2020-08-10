@@ -1,5 +1,8 @@
 # master
 
+
+- _BREAKING CHANGE_ replace unsetValue with setValueToUndefined and setValueToNull
+
 # 0.11.0
 
 Another release, primarily to enable zero cost enums via `bs-platform` `8.2.0`. No new Relay version, and hopefully a managable amount of breaking changes.

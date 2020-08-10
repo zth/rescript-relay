@@ -94,10 +94,6 @@ let optArrayOfNullableToOptArrayOfOpt:
 module RecordProxy = {
   type t;
 
-  type unsetValueType =
-    | Null
-    | Undefined;
-
   [@bs.send]
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
 
@@ -172,13 +168,28 @@ module RecordProxy = {
     "setLinkedRecord";
 
   [@bs.send]
-  external unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setLinkedRecord";
-  let unsetLinkedRecord = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetLinkedRecord(t, Js.null, name, arguments)
-    | Undefined => unsetLinkedRecord(t, Js.undefined, name, arguments)
-    };
+
+  [@bs.send]
+  external setLinkedRecordToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecord";
 
   [@bs.send]
   external setLinkedRecords:
@@ -193,22 +204,52 @@ module RecordProxy = {
     "setLinkedRecords";
 
   [@bs.send]
-  external unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordsToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setLinkedRecords";
-  let unsetLinkedRecords = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetLinkedRecords(t, Js.null, name, arguments)
-    | Undefined => unsetLinkedRecords(t, Js.undefined, name, arguments)
-    };
 
   [@bs.send]
-  external unsetValue_: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordsToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
+
+  [@bs.send]
+  external setValueToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setValue";
-  let unsetValue = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetValue_(t, Js.null, name, arguments)
-    | Undefined => unsetValue_(t, Js.undefined, name, arguments)
-    };
+
+  [@bs.send]
+  external setValueToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setValue";
 
   [@bs.send]
   external setValueString:

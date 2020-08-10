@@ -11,22 +11,22 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
+    onlineStatuses: option(array(enum_OnlineStatus)),
     count: option(int),
     cursor: option(string),
-    onlineStatuses: option(array(enum_OnlineStatus)),
     id: option(string),
   };
   let makeRefetchVariables =
-      (~count=?, ~cursor=?, ~onlineStatuses=?, ~id=?, ()): refetchVariables => {
+      (~onlineStatuses=?, ~count=?, ~cursor=?, ~id=?, ()): refetchVariables => {
+    onlineStatuses,
     count,
     cursor,
-    onlineStatuses,
     id,
   };
   type variables = {
+    onlineStatuses: option(array(enum_OnlineStatus)),
     count: option(int),
     cursor: option(string),
-    onlineStatuses: option(array(enum_OnlineStatus)),
     id: string,
   };
 };
@@ -49,7 +49,7 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatuses":{"n":""},"count":{"n":""},"cursor":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -67,10 +67,10 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~count=?, ~cursor=?, ~onlineStatuses=?, ~id, ()): variables => {
+      (~onlineStatuses=?, ~count=?, ~cursor=?, ~id, ()): variables => {
+    onlineStatuses,
     count,
     cursor,
-    onlineStatuses,
     id,
   };
 };

@@ -91,10 +91,6 @@ let _convertObj:
 module RecordProxy: {
   type t;
 
-  type unsetValueType =
-    | Null
-    | Undefined;
-
   [@bs.send]
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
 
@@ -218,35 +214,77 @@ module RecordProxy: {
     t =
     "setValue";
 
-  let unsetValue:
+  [@bs.send]
+  external setValueToUndefined:
     (
       t,
+      [@bs.as {json|undefined|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setValue";
 
-  let unsetLinkedRecord:
+  [@bs.send]
+  external setValueToNull:
     (
       t,
+      [@bs.as {json|null|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setValue";
 
-  let unsetLinkedRecords:
+  [@bs.send]
+  external setLinkedRecordToUndefined:
     (
       t,
+      [@bs.as {json|undefined|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setLinkedRecord";
+
+  [@bs.send]
+  external setLinkedRecordToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecord";
+
+  [@bs.send]
+  external setLinkedRecordsToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
+
+  [@bs.send]
+  external setLinkedRecordsToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
 
   let invalidateRecord: t => unit;
 };
