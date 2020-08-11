@@ -421,24 +421,19 @@ module Observable: {
     closed: bool,
   };
 
-  type observer('response) = {
-    start: option(subscription => unit),
-    next: option('response => unit),
-    error: option(Js.Exn.t => unit),
-    complete: option(unit => unit),
-    unsubscribe: option(subscription => unit),
-  };
+  type observer('response);
 
-  let makeObserver:
+  [@bs.obj]
+  external makeObserver:
     (
       ~start: subscription => unit=?,
-      ~next: 't => unit=?,
+      ~next: 'response => unit=?,
       ~error: Js.Exn.t => unit=?,
       ~complete: unit => unit=?,
       ~unsubscribe: subscription => unit=?,
       unit
     ) =>
-    observer('t);
+    observer('response);
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external make: (sink('t) => option(subscription)) => t('t) = "create";

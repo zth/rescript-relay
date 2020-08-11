@@ -433,22 +433,19 @@ module Observable = {
     closed: bool,
   };
 
-  type observer('response) = {
-    start: option(subscription => unit),
-    next: option('response => unit),
-    error: option(Js.Exn.t => unit),
-    complete: option(unit => unit),
-    unsubscribe: option(subscription => unit),
-  };
+  type observer('response);
 
-  let makeObserver =
-      (~start=?, ~next=?, ~error=?, ~complete=?, ~unsubscribe=?, ()) => {
-    start,
-    next,
-    error,
-    complete,
-    unsubscribe,
-  };
+  [@bs.obj]
+  external makeObserver:
+    (
+      ~start: subscription => unit=?,
+      ~next: 'response => unit=?,
+      ~error: Js.Exn.t => unit=?,
+      ~complete: unit => unit=?,
+      ~unsubscribe: subscription => unit=?,
+      unit
+    ) =>
+    observer('response);
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external make: (sink('response) => option(subscription)) => t('response) =
@@ -542,14 +539,16 @@ module Environment = {
 
   type missingFieldHandlers;
 
+  [@bs.deriving abstract]
   type environmentConfig('a) = {
     network: Network.t,
     store: Store.t,
-    [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
-    getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
-    [@bs.as "UNSTABLE_defaultRenderPolicy"]
-    defaultRenderPolicy: option(string),
-    treatMissingFieldsAsNull: option(bool),
+    [@bs.optional] [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
+    getDataID: (~nodeObj: 'a, ~typeName: string) => string,
+    [@bs.optional] [@bs.as "UNSTABLE_defaultRenderPolicy"]
+    defaultRenderPolicy: string,
+    [@bs.optional]
+    treatMissingFieldsAsNull: bool,
     missingFieldHandlers,
   };
 
@@ -565,15 +564,16 @@ module Environment = {
         ~treatMissingFieldsAsNull=?,
         (),
       ) =>
-    make({
-      network,
-      store,
-      getDataID,
-      defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
-      treatMissingFieldsAsNull,
-      // This handler below enables automatic resolution of all cached items through the Node interface
-      missingFieldHandlers: [%raw
-        {|
+    make(
+      environmentConfig(
+        ~network,
+        ~store,
+        ~getDataID?,
+        ~defaultRenderPolicy=?defaultRenderPolicy->mapRenderPolicy,
+        ~treatMissingFieldsAsNull?,
+        // This handler below enables automatic resolution of all cached items through the Node interface
+        ~missingFieldHandlers=[%raw
+          {|
             [
               {
                 kind: "linked",
@@ -590,8 +590,10 @@ module Environment = {
               }
             ]
           |}
-      ],
-    });
+        ],
+        (),
+      ),
+    );
 
   [@bs.send] external getStore: t => Store.t = "getStore";
 };
@@ -961,17 +963,18 @@ module MakeUseFragment = (C: MakeUseFragmentConfig) => {
 };
 
 /** Refetchable */
+[@bs.deriving abstract]
+type refetchableFnOpts = {
+  [@bs.optional]
+  fetchPolicy: string,
+  [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
+  renderPolicy: string,
+  [@bs.optional]
+  onComplete: Js.Nullable.t(Js.Exn.t) => unit,
+};
+
 type refetchFnRaw('variables) =
-  (
-    'variables,
-    {
-      .
-      "fetchPolicy": option(string),
-      "UNSTABLE_renderPolicy": option(string),
-      "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-    }
-  ) =>
-  Disposable.t;
+  ('variables, refetchableFnOpts) => Disposable.t;
 
 let nullableToOptionalExnHandler =
   fun
@@ -979,11 +982,13 @@ let nullableToOptionalExnHandler =
   | Some(handler) =>
     Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
 
-let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
-  "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-  "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
-  "onComplete": onComplete |> nullableToOptionalExnHandler,
-};
+let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) =>
+  refetchableFnOpts(
+    ~fetchPolicy=?fetchPolicy |> mapFetchPolicy,
+    ~renderPolicy=?renderPolicy |> mapRenderPolicy,
+    ~onComplete=?onComplete |> nullableToOptionalExnHandler,
+    (),
+  );
 
 [@bs.module "react-relay/hooks"]
 external useRefetchableFragment:
@@ -1080,62 +1085,27 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
     Disposable.t,
 };
 
+type paginationFragmentReturnRaw('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: (. int, paginationLoadMoreOptions) => Disposable.t,
+  loadPrevious: (. int, paginationLoadMoreOptions) => Disposable.t,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: (. 'variables, refetchableFnOpts) => Disposable.t,
+};
+
 [@bs.module "react-relay/hooks"]
 external usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "loadPrevious":
-      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch":
-      [@bs.meth] (
-        (
-          'variables,
-          {
-            .
-            "fetchPolicy": option(string),
-            "UNSTABLE_renderPolicy": option(string),
-            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-          }
-        ) =>
-        Disposable.t
-      ),
-  } =
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
   "usePaginationFragment";
 
 [@bs.module "react-relay/hooks"]
 external useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "loadPrevious":
-      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch":
-      [@bs.meth] (
-        (
-          'variables,
-          {
-            .
-            "fetchPolicy": option(string),
-            "UNSTABLE_renderPolicy": option(string),
-            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-          }
-        ) =>
-        Disposable.t
-      ),
-  } =
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
   "useBlockingPaginationFragment";
 
 module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
@@ -1143,22 +1113,22 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       (fr: C.fragmentRef)
       : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
     let p = useBlockingPaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p##data);
+    let data = useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(
+        p.loadNext(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(
+        p.loadPrevious(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
+      hasNext: p.hasNext,
+      hasPrevious: p.hasPrevious,
       refetch:
         (
           ~variables: C.variables,
@@ -1167,7 +1137,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           ~onComplete=?,
           (),
         ) =>
-        p##refetch(
+        p.refetch(.
           variables
           |> C.convertVariables
           |> cleanVariablesRaw
@@ -1180,24 +1150,24 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
   let usePagination =
       (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
     let p = usePaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p##data);
+    let data = useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(
+        p.loadNext(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(
+        p.loadPrevious(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
-      isLoadingNext: p##isLoadingNext,
-      isLoadingPrevious: p##isLoadingPrevious,
+      hasNext: p.hasNext,
+      hasPrevious: p.hasPrevious,
+      isLoadingNext: p.isLoadingNext,
+      isLoadingPrevious: p.isLoadingPrevious,
       refetch:
         (
           ~variables: C.variables,
@@ -1206,7 +1176,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           ~onComplete=?,
           (),
         ) =>
-        p##refetch(
+        p.refetch(.
           variables
           |> C.convertVariables
           |> cleanVariablesRaw
@@ -1460,14 +1430,18 @@ module type SubscriptionConfig = {
   let convertVariables: variables => variables;
 };
 
+[@bs.deriving abstract]
 type subscriptionConfigRaw('response, 'variables) = {
-  .
-  "subscription": subscriptionNode,
-  "variables": 'variables,
-  "onCompleted": option(unit => unit),
-  "onError": option(Js.Exn.t => unit),
-  "onNext": option('response => unit),
-  "updater": option(updaterFn('response)),
+  subscription: subscriptionNode,
+  variables: 'variables,
+  [@bs.optional]
+  onCompleted: unit => unit,
+  [@bs.optional]
+  onError: Js.Exn.t => unit,
+  [@bs.optional]
+  onNext: 'response => unit,
+  [@bs.optional]
+  updater: updaterFn('response),
 };
 
 [@bs.module "relay-runtime"]
@@ -1489,22 +1463,23 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       ) =>
     requestSubscription(
       environment,
-      {
-        "subscription": C.node,
-        "variables": variables |> C.convertVariables |> cleanVariablesRaw,
-        "onCompleted": onCompleted,
-        "onError": onError,
-        "onNext":
+      subscriptionConfigRaw(
+        ~subscription=C.node,
+        ~variables=variables |> C.convertVariables |> cleanVariablesRaw,
+        ~onCompleted?,
+        ~onError?,
+        ~onNext=?
           switch (onNext) {
           | None => None
           | Some(onNext) => Some(r => onNext(r |> C.convertResponse))
           },
-        "updater":
+        ~updater=?
           switch (updater) {
           | None => None
           | Some(updater) =>
             Some((store, r) => updater(store, C.convertResponse(r)))
           },
-      },
+        (),
+      ),
     );
 };
