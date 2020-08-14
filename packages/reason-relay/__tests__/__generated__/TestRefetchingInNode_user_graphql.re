@@ -10,19 +10,19 @@ module Types = {
     firstName: string,
     onlineStatus: option(enum_OnlineStatus),
     friendsConnection: fragment_friendsConnection,
-    id: string,
+    id: option(string),
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":""},"id":{"n":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         fragmentConverter,
         fragmentConverterMap,
         Js.undefined,

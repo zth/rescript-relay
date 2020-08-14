@@ -1,5 +1,10 @@
 # master
 
+
+- _BREAKING CHANGE_ replace unsetValue with setValueToUndefined and setValueToNull
+- clean bindings, renamed internal raw types and functions with names ending with `Raw`, 
+use abstract records instead of Js.t objects for a more robust type-check and to avoid undefined fields
+
 # 0.11.0
 
 Another release, primarily to enable zero cost enums via `bs-platform` `8.2.0`. No new Relay version, and hopefully a managable amount of breaking changes.

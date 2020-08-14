@@ -17,7 +17,7 @@ module Internal = {
   let responseConverterMap = ();
   let convertResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         responseConverter,
         responseConverterMap,
         Js.undefined,
@@ -32,7 +32,7 @@ module Internal = {
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         variablesConverter,
         variablesConverterMap,
         Js.undefined,

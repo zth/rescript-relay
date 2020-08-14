@@ -10,24 +10,24 @@ module Types = {
   };
   type rawResponse = response;
   type refetchVariables = {
-    count: option(int),
-    cursor: option(string),
     groupId: option(string),
     onlineStatuses: option(array(enum_OnlineStatus)),
-  };
-  let makeRefetchVariables =
-      (~count=?, ~cursor=?, ~groupId=?, ~onlineStatuses=?, ())
-      : refetchVariables => {
-    count,
-    cursor,
-    groupId,
-    onlineStatuses,
-  };
-  type variables = {
     count: option(int),
     cursor: option(string),
+  };
+  let makeRefetchVariables =
+      (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ())
+      : refetchVariables => {
+    groupId,
+    onlineStatuses,
+    count,
+    cursor,
+  };
+  type variables = {
     groupId: string,
     onlineStatuses: option(array(enum_OnlineStatus)),
+    count: option(int),
+    cursor: option(string),
   };
 };
 
@@ -39,7 +39,7 @@ module Internal = {
   let responseConverterMap = ();
   let convertResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         responseConverter,
         responseConverterMap,
         Js.undefined,
@@ -49,12 +49,12 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatuses":{"n":""},"count":{"n":""},"cursor":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         variablesConverter,
         variablesConverterMap,
         Js.undefined,
@@ -67,11 +67,11 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~count=?, ~cursor=?, ~groupId, ~onlineStatuses=?, ()): variables => {
-    count,
-    cursor,
+      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
     groupId,
     onlineStatuses,
+    count,
+    cursor,
   };
 };
 

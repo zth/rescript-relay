@@ -48,7 +48,7 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
  */
 
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let _cleanObjectFromUndefined = [%raw
+let cleanObjectFromUndefinedRaw = [%raw
   {|
   function (obj) {
     var newObj = {};
@@ -65,7 +65,7 @@ let _cleanObjectFromUndefined = [%raw
 ];
 
 // Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let _cleanVariables = [%raw
+let cleanVariablesRaw = [%raw
   {|
   function (variables) {
     if (typeof variables !== "object" || variables == null) {
@@ -78,7 +78,7 @@ let _cleanVariables = [%raw
 ];
 
 [@bs.module "./utils"]
-external _convertObj:
+external convertObj:
   ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
   "traverser";
 
@@ -93,10 +93,6 @@ let optArrayOfNullableToOptArrayOfOpt:
 
 module RecordProxy = {
   type t;
-
-  type unsetValueType =
-    | Null
-    | Undefined;
 
   [@bs.send]
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
@@ -125,46 +121,48 @@ module RecordProxy = {
   [@bs.send] external getType: t => string = "getType";
 
   [@bs.send] [@bs.return nullable]
-  external getValueArr:
-    (t, ~name: string, ~arguments: option(arguments)) =>
-    option(array('value)) =
-    "getValue";
-
-  [@bs.send] [@bs.return nullable]
   external getValueString:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
     "getValue";
 
-  let getValueStringArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(string))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueStringArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(string))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueInt:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
     "getValue";
 
-  let getValueIntArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(int))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueIntArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(int))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueFloat:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
     "getValue";
 
-  let getValueFloatArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(float))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueFloatArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(float))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueBool:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
     "getValue";
 
-  let getValueBoolArray =
-      (t, ~name, ~arguments=?, ()): option(array(option(bool))) =>
-    getValueArr(~name, ~arguments, t);
+  [@bs.send] [@bs.return nullable]
+  external getValueBoolArray:
+    (t, ~name: string, ~arguments: arguments=?, unit) =>
+    option(array(option(bool))) =
+    "getValue";
 
   [@bs.send]
   external setLinkedRecord:
@@ -172,13 +170,28 @@ module RecordProxy = {
     "setLinkedRecord";
 
   [@bs.send]
-  external unsetLinkedRecord: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setLinkedRecord";
-  let unsetLinkedRecord = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetLinkedRecord(t, Js.null, name, arguments)
-    | Undefined => unsetLinkedRecord(t, Js.undefined, name, arguments)
-    };
+
+  [@bs.send]
+  external setLinkedRecordToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecord";
 
   [@bs.send]
   external setLinkedRecords:
@@ -193,22 +206,52 @@ module RecordProxy = {
     "setLinkedRecords";
 
   [@bs.send]
-  external unsetLinkedRecords: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordsToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setLinkedRecords";
-  let unsetLinkedRecords = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetLinkedRecords(t, Js.null, name, arguments)
-    | Undefined => unsetLinkedRecords(t, Js.undefined, name, arguments)
-    };
 
   [@bs.send]
-  external unsetValue_: (t, 'nullable, string, option(arguments)) => t =
+  external setLinkedRecordsToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
+
+  [@bs.send]
+  external setValueToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
     "setValue";
-  let unsetValue = (t, ~name, ~unsetValue, ~arguments=?, ()) =>
-    switch (unsetValue) {
-    | Null => unsetValue_(t, Js.null, name, arguments)
-    | Undefined => unsetValue_(t, Js.undefined, name, arguments)
-    };
+
+  [@bs.send]
+  external setValueToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setValue";
 
   [@bs.send]
   external setValueString:
@@ -390,22 +433,19 @@ module Observable = {
     closed: bool,
   };
 
-  type observer('response) = {
-    start: option(subscription => unit),
-    next: option('response => unit),
-    error: option(Js.Exn.t => unit),
-    complete: option(unit => unit),
-    unsubscribe: option(subscription => unit),
-  };
+  type observer('response);
 
-  let makeObserver =
-      (~start=?, ~next=?, ~error=?, ~complete=?, ~unsubscribe=?, ()) => {
-    start,
-    next,
-    error,
-    complete,
-    unsubscribe,
-  };
+  [@bs.obj]
+  external makeObserver:
+    (
+      ~start: subscription => unit=?,
+      ~next: 'response => unit=?,
+      ~error: Js.Exn.t => unit=?,
+      ~complete: unit => unit=?,
+      ~unsubscribe: subscription => unit=?,
+      unit
+    ) =>
+    observer('response);
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external make: (sink('response) => option(subscription)) => t('response) =
@@ -499,14 +539,16 @@ module Environment = {
 
   type missingFieldHandlers;
 
+  [@bs.deriving abstract]
   type environmentConfig('a) = {
     network: Network.t,
     store: Store.t,
-    [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
-    getDataID: option((~nodeObj: 'a, ~typeName: string) => string),
-    [@bs.as "UNSTABLE_defaultRenderPolicy"]
-    defaultRenderPolicy: option(string),
-    treatMissingFieldsAsNull: option(bool),
+    [@bs.optional] [@bs.as "UNSTABLE_DO_NOT_USE_getDataID"]
+    getDataID: (~nodeObj: 'a, ~typeName: string) => string,
+    [@bs.optional] [@bs.as "UNSTABLE_defaultRenderPolicy"]
+    defaultRenderPolicy: string,
+    [@bs.optional]
+    treatMissingFieldsAsNull: bool,
     missingFieldHandlers,
   };
 
@@ -522,15 +564,16 @@ module Environment = {
         ~treatMissingFieldsAsNull=?,
         (),
       ) =>
-    make({
-      network,
-      store,
-      getDataID,
-      defaultRenderPolicy: defaultRenderPolicy->mapRenderPolicy,
-      treatMissingFieldsAsNull,
-      // This handler below enables automatic resolution of all cached items through the Node interface
-      missingFieldHandlers: [%raw
-        {|
+    make(
+      environmentConfig(
+        ~network,
+        ~store,
+        ~getDataID?,
+        ~defaultRenderPolicy=?defaultRenderPolicy->mapRenderPolicy,
+        ~treatMissingFieldsAsNull?,
+        // This handler below enables automatic resolution of all cached items through the Node interface
+        ~missingFieldHandlers=[%raw
+          {|
             [
               {
                 kind: "linked",
@@ -547,8 +590,10 @@ module Environment = {
               }
             ]
           |}
-      ],
-    });
+        ],
+        (),
+      ),
+    );
 
   [@bs.send] external getStore: t => Store.t = "getStore";
 };
@@ -691,9 +736,9 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       useQuery(
         C.query,
         variables
-        |> _cleanVariables
+        |> cleanVariablesRaw
         |> C.convertVariables
-        |> _cleanObjectFromUndefined,
+        |> cleanObjectFromUndefinedRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -831,7 +876,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       loadQuery(
         environment,
         C.query,
-        variables |> C.convertVariables |> _cleanVariables,
+        variables |> C.convertVariables |> cleanVariablesRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -918,17 +963,18 @@ module MakeUseFragment = (C: MakeUseFragmentConfig) => {
 };
 
 /** Refetchable */
+[@bs.deriving abstract]
+type refetchableFnOpts = {
+  [@bs.optional]
+  fetchPolicy: string,
+  [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
+  renderPolicy: string,
+  [@bs.optional]
+  onComplete: Js.Nullable.t(Js.Exn.t) => unit,
+};
+
 type refetchFnRaw('variables) =
-  (
-    'variables,
-    {
-      .
-      "fetchPolicy": option(string),
-      "UNSTABLE_renderPolicy": option(string),
-      "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-    }
-  ) =>
-  Disposable.t;
+  ('variables, refetchableFnOpts) => Disposable.t;
 
 let nullableToOptionalExnHandler =
   fun
@@ -936,11 +982,13 @@ let nullableToOptionalExnHandler =
   | Some(handler) =>
     Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
 
-let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) => {
-  "fetchPolicy": fetchPolicy |> mapFetchPolicy,
-  "UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy,
-  "onComplete": onComplete |> nullableToOptionalExnHandler,
-};
+let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) =>
+  refetchableFnOpts(
+    ~fetchPolicy=?fetchPolicy |> mapFetchPolicy,
+    ~renderPolicy=?renderPolicy |> mapRenderPolicy,
+    ~onComplete=?onComplete |> nullableToOptionalExnHandler,
+    (),
+  );
 
 [@bs.module "react-relay/hooks"]
 external useRefetchableFragment:
@@ -975,8 +1023,8 @@ module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
         refetchFn(
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~fetchPolicy, ~renderPolicy, ~onComplete),
         ),
     );
@@ -1037,62 +1085,27 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
     Disposable.t,
 };
 
+type paginationFragmentReturnRaw('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: (. int, paginationLoadMoreOptions) => Disposable.t,
+  loadPrevious: (. int, paginationLoadMoreOptions) => Disposable.t,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: (. 'variables, refetchableFnOpts) => Disposable.t,
+};
+
 [@bs.module "react-relay/hooks"]
 external usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "loadPrevious":
-      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch":
-      [@bs.meth] (
-        (
-          'variables,
-          {
-            .
-            "fetchPolicy": option(string),
-            "UNSTABLE_renderPolicy": option(string),
-            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-          }
-        ) =>
-        Disposable.t
-      ),
-  } =
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
   "usePaginationFragment";
 
 [@bs.module "react-relay/hooks"]
 external useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
-  {
-    .
-    "data": 'fragmentData,
-    "loadNext": [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "loadPrevious":
-      [@bs.meth] ((int, paginationLoadMoreOptions) => Disposable.t),
-    "hasNext": bool,
-    "hasPrevious": bool,
-    "isLoadingNext": bool,
-    "isLoadingPrevious": bool,
-    "refetch":
-      [@bs.meth] (
-        (
-          'variables,
-          {
-            .
-            "fetchPolicy": option(string),
-            "UNSTABLE_renderPolicy": option(string),
-            "onComplete": option(Js.Nullable.t(Js.Exn.t) => unit),
-          }
-        ) =>
-        Disposable.t
-      ),
-  } =
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
   "useBlockingPaginationFragment";
 
 module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
@@ -1100,22 +1113,22 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       (fr: C.fragmentRef)
       : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
     let p = useBlockingPaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p##data);
+    let data = useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(
+        p.loadNext(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(
+        p.loadPrevious(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
+      hasNext: p.hasNext,
+      hasPrevious: p.hasPrevious,
       refetch:
         (
           ~variables: C.variables,
@@ -1124,11 +1137,11 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           ~onComplete=?,
           (),
         ) =>
-        p##refetch(
+        p.refetch(.
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1137,24 +1150,24 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
   let usePagination =
       (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
     let p = usePaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p##data);
+    let data = useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
       loadNext: (~count, ~onComplete=?, ()) =>
-        p##loadNext(
+        p.loadNext(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
       loadPrevious: (~count, ~onComplete=?, ()) =>
-        p##loadPrevious(
+        p.loadPrevious(.
           count,
           {onComplete: onComplete |> nullableToOptionalExnHandler},
         ),
-      hasNext: p##hasNext,
-      hasPrevious: p##hasPrevious,
-      isLoadingNext: p##isLoadingNext,
-      isLoadingPrevious: p##isLoadingPrevious,
+      hasNext: p.hasNext,
+      hasPrevious: p.hasPrevious,
+      isLoadingNext: p.isLoadingNext,
+      isLoadingPrevious: p.isLoadingPrevious,
       refetch:
         (
           ~variables: C.variables,
@@ -1163,11 +1176,11 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
           ~onComplete=?,
           (),
         ) =>
-        p##refetch(
+        p.refetch(.
           variables
           |> C.convertVariables
-          |> _cleanVariables
-          |> _cleanObjectFromUndefined,
+          |> cleanVariablesRaw
+          |> cleanObjectFromUndefinedRaw,
           makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
         ),
     };
@@ -1206,7 +1219,7 @@ type useMutationConfig('response, 'rawResponse, 'variables) = {
   variables: 'variables,
 };
 
-type _useMutationConfig('response, 'rawResponse, 'variables) = {
+type useMutationConfigRaw('response, 'rawResponse, 'variables) = {
   onError: option(mutationError => unit),
   onCompleted:
     option(('response, Js.Nullable.t(array(mutationError))) => unit),
@@ -1217,7 +1230,7 @@ type _useMutationConfig('response, 'rawResponse, 'variables) = {
   variables: 'variables,
 };
 
-type _commitMutationConfig('variables, 'rawResponse, 'response) = {
+type commitMutationConfigRaw('variables, 'rawResponse, 'response) = {
   mutation: mutationNode,
   variables: 'variables,
   onCompleted:
@@ -1231,10 +1244,10 @@ type _commitMutationConfig('variables, 'rawResponse, 'response) = {
 exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
-external commitMutation_:
+external commitMutationRaw:
   (
     Environment.t,
-    _commitMutationConfig('variables, 'rawResponse, 'response)
+    commitMutationConfigRaw('variables, 'rawResponse, 'response)
   ) =>
   Disposable.t =
   "commitMutation";
@@ -1243,7 +1256,7 @@ external commitMutation_:
 external useMutation:
   mutationNode =>
   (
-    _useMutationConfig('response, 'rawResponse, 'variables) => Disposable.t,
+    useMutationConfigRaw('response, 'rawResponse, 'variables) => Disposable.t,
     bool,
   ) =
   "useMutation";
@@ -1280,7 +1293,7 @@ module MakeUseMutation = (C: MutationConfig) => {
             | Some(r) => Some(r |> C.wrapRawResponse)
             },
           onUnsubscribe,
-          variables: variables |> C.convertVariables |> _cleanVariables,
+          variables: variables |> C.convertVariables |> cleanVariablesRaw,
           optimisticUpdater,
           updater:
             switch (updater) {
@@ -1307,10 +1320,10 @@ module MakeCommitMutation = (C: MutationConfig) => {
         (),
       )
       : Disposable.t =>
-    commitMutation_(
+    commitMutationRaw(
       environment,
       {
-        variables: variables |> C.convertVariables |> _cleanVariables,
+        variables: variables |> C.convertVariables |> cleanVariablesRaw,
         mutation: C.node,
         onCompleted:
           Some(
@@ -1362,10 +1375,10 @@ module MakeCommitMutation = (C: MutationConfig) => {
     let (promise, resolve) = Promise.pending();
 
     let _: Disposable.t =
-      commitMutation_(
+      commitMutationRaw(
         environment,
         {
-          variables: variables |> C.convertVariables |> _cleanVariables,
+          variables: variables |> C.convertVariables |> cleanVariablesRaw,
           mutation: C.node,
           onCompleted:
             Some(
@@ -1417,19 +1430,24 @@ module type SubscriptionConfig = {
   let convertVariables: variables => variables;
 };
 
-type _subscriptionConfig('response, 'variables) = {
-  .
-  "subscription": subscriptionNode,
-  "variables": 'variables,
-  "onCompleted": option(unit => unit),
-  "onError": option(Js.Exn.t => unit),
-  "onNext": option('response => unit),
-  "updater": option(updaterFn('response)),
+[@bs.deriving abstract]
+type subscriptionConfigRaw('response, 'variables) = {
+  subscription: subscriptionNode,
+  variables: 'variables,
+  [@bs.optional]
+  onCompleted: unit => unit,
+  [@bs.optional]
+  onError: Js.Exn.t => unit,
+  [@bs.optional]
+  onNext: 'response => unit,
+  [@bs.optional]
+  updater: updaterFn('response),
 };
 
 [@bs.module "relay-runtime"]
 external requestSubscription:
-  (Environment.t, _subscriptionConfig('response, 'variables)) => Disposable.t =
+  (Environment.t, subscriptionConfigRaw('response, 'variables)) =>
+  Disposable.t =
   "requestSubscription";
 
 module MakeUseSubscription = (C: SubscriptionConfig) => {
@@ -1445,22 +1463,23 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       ) =>
     requestSubscription(
       environment,
-      {
-        "subscription": C.node,
-        "variables": variables |> C.convertVariables |> _cleanVariables,
-        "onCompleted": onCompleted,
-        "onError": onError,
-        "onNext":
+      subscriptionConfigRaw(
+        ~subscription=C.node,
+        ~variables=variables |> C.convertVariables |> cleanVariablesRaw,
+        ~onCompleted?,
+        ~onError?,
+        ~onNext=?
           switch (onNext) {
           | None => None
           | Some(onNext) => Some(r => onNext(r |> C.convertResponse))
           },
-        "updater":
+        ~updater=?
           switch (updater) {
           | None => None
           | Some(updater) =>
             Some((store, r) => updater(store, C.convertResponse(r)))
           },
-      },
+        (),
+      ),
     );
 };

@@ -11,20 +11,20 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
-    friendsOnlineStatuses: option(array(enum_OnlineStatus)),
     showOnlineStatus: option(bool),
+    friendsOnlineStatuses: option(array(enum_OnlineStatus)),
     id: option(string),
   };
   let makeRefetchVariables =
-      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
+      (~showOnlineStatus=?, ~friendsOnlineStatuses=?, ~id=?, ())
       : refetchVariables => {
-    friendsOnlineStatuses,
     showOnlineStatus,
+    friendsOnlineStatuses,
     id,
   };
   type variables = {
-    friendsOnlineStatuses: array(enum_OnlineStatus),
     showOnlineStatus: bool,
+    friendsOnlineStatuses: array(enum_OnlineStatus),
     id: string,
   };
 };
@@ -37,7 +37,7 @@ module Internal = {
   let responseConverterMap = ();
   let convertResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         responseConverter,
         responseConverterMap,
         Js.undefined,
@@ -52,7 +52,7 @@ module Internal = {
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         variablesConverter,
         variablesConverterMap,
         Js.undefined,
@@ -65,9 +65,9 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
-    friendsOnlineStatuses,
+      (~showOnlineStatus, ~friendsOnlineStatuses, ~id): variables => {
     showOnlineStatus,
+    friendsOnlineStatuses,
     id,
   };
 };

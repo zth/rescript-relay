@@ -78,10 +78,10 @@ external storeRootId: dataId = "ROOT_ID";
 [@bs.module "relay-runtime"]
 external storeRootType: string = "ROOT_TYPE";
 
-let _cleanObjectFromUndefined: Js.t({..}) => Js.t({..});
-let _cleanVariables: 'a => 'a;
-let _convertObj:
-  ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd;
+[@bs.module "./utils"]
+external convertObj:
+  ('a, Js.Dict.t(Js.Dict.t(Js.Dict.t(string))), 'b, 'c) => 'd =
+  "traverser";
 
 /**
  * Read the following section on working with the Relay store:
@@ -90,10 +90,6 @@ let _convertObj:
 
 module RecordProxy: {
   type t;
-
-  type unsetValueType =
-    | Null
-    | Undefined;
 
   [@bs.send]
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom";
@@ -121,36 +117,44 @@ module RecordProxy: {
     (t, ~name: string, ~arguments: arguments=?, unit) => option(string) =
     "getValue";
 
-  let getValueStringArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueStringArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(string)));
+    option(array(option(string))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueInt:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(int) =
     "getValue";
 
-  let getValueIntArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueIntArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(int)));
+    option(array(option(int))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueFloat:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(float) =
     "getValue";
 
-  let getValueFloatArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueFloatArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(float)));
+    option(array(option(float))) =
+    "getValue";
 
   [@bs.send] [@bs.return nullable]
   external getValueBool:
     (t, ~name: string, ~arguments: arguments=?, unit) => option(bool) =
     "getValue";
 
-  let getValueBoolArray:
+  [@bs.send] [@bs.return nullable]
+  external getValueBoolArray:
     (t, ~name: string, ~arguments: arguments=?, unit) =>
-    option(array(option(bool)));
+    option(array(option(bool))) =
+    "getValue";
 
   [@bs.send]
   external setLinkedRecord:
@@ -218,37 +222,79 @@ module RecordProxy: {
     t =
     "setValue";
 
-  let unsetValue:
+  [@bs.send]
+  external setValueToUndefined:
     (
       t,
+      [@bs.as {json|undefined|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setValue";
 
-  let unsetLinkedRecord:
+  [@bs.send]
+  external setValueToNull:
     (
       t,
+      [@bs.as {json|null|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setValue";
 
-  let unsetLinkedRecords:
+  [@bs.send]
+  external setLinkedRecordToUndefined:
     (
       t,
+      [@bs.as {json|undefined|json}] _,
       ~name: string,
-      ~unsetValue: unsetValueType,
       ~arguments: arguments=?,
       unit
     ) =>
-    t;
+    t =
+    "setLinkedRecord";
 
-  let invalidateRecord: t => unit;
+  [@bs.send]
+  external setLinkedRecordToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecord";
+
+  [@bs.send]
+  external setLinkedRecordsToUndefined:
+    (
+      t,
+      [@bs.as {json|undefined|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
+
+  [@bs.send]
+  external setLinkedRecordsToNull:
+    (
+      t,
+      [@bs.as {json|null|json}] _,
+      ~name: string,
+      ~arguments: arguments=?,
+      unit
+    ) =>
+    t =
+    "setLinkedRecords";
+
+  [@bs.send] external invalidateRecord: t => unit = "invalidateRecord";
 };
 
 /**
@@ -375,24 +421,19 @@ module Observable: {
     closed: bool,
   };
 
-  type observer('response) = {
-    start: option(subscription => unit),
-    next: option('response => unit),
-    error: option(Js.Exn.t => unit),
-    complete: option(unit => unit),
-    unsubscribe: option(subscription => unit),
-  };
+  type observer('response);
 
-  let makeObserver:
+  [@bs.obj]
+  external makeObserver:
     (
       ~start: subscription => unit=?,
-      ~next: 't => unit=?,
+      ~next: 'response => unit=?,
       ~error: Js.Exn.t => unit=?,
       ~complete: unit => unit=?,
       ~unsubscribe: subscription => unit=?,
       unit
     ) =>
-    observer('t);
+    observer('response);
 
   [@bs.module "relay-runtime"] [@bs.scope "Observable"]
   external make: (sink('t) => option(subscription)) => t('t) = "create";
@@ -886,9 +927,11 @@ type fetchQueryOptions = {
   fetchPolicy: option(string),
 };
 
-let fetchQuery:
+[@bs.module "react-relay/hooks"]
+external fetchQuery:
   (Environment.t, queryNode, 'variables, option(fetchQueryOptions)) =>
-  Observable.t('response);
+  Observable.t('response) =
+  "fetchQuery";
 
 /**
  * SUBSCRIPTIONS

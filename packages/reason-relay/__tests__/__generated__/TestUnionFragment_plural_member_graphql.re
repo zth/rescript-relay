@@ -52,7 +52,7 @@ module Internal = {
   let fragmentConverterMap = {"fragment": unwrap_fragment};
   let convertFragment = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         fragmentConverter,
         fragmentConverterMap,
         Js.undefined,
