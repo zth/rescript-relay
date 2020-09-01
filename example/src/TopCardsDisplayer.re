@@ -46,16 +46,12 @@ let make = (~siteStatistics as siteStatisticsRef) => {
       CurrentVisitorsSubscription.subscribe(
         ~environment,
         ~variables=(),
-        ~updater=
-          (
-            _store: ReasonRelay.RecordSourceSelectorProxy.t,
-            response: CurrentVisitorsSubscription.Types.response,
-          ) => {
+        ~onNext=
+          (response: CurrentVisitorsSubscription.Types.response) => {
             switch (response.siteStatisticsUpdated) {
             | Some(siteStatisticsUpdated) =>
-              /* Logging the response in the updater for clarity
-                 Note that the store (and thus the UI gets updated "automatically"),
-                 so this updater is not necessary and can be omitted */
+              /* Console-logging the response for demo purposes
+                 Note that the store (and thus the UI) gets updated "automatically" */
               Js.log2(
                 "Subscription response - current visitors online: ",
                 siteStatisticsUpdated.currentVisitorsOnline,
