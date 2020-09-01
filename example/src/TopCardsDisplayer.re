@@ -15,6 +15,16 @@ module SiteStatisticsFragment = [%relay.fragment
 |}
 ];
 
+module CurrentVisitorsSubscription = [%relay.subscription
+  {|
+  subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {
+    siteStatisticsUpdated {
+      currentVisitorsOnline
+    }
+  }
+|}
+];
+
 /**
  * A few things to note about the following component:
  * - I rename siteStatistics to siteStatisticsRef, which is purely because I
@@ -29,6 +39,35 @@ module SiteStatisticsFragment = [%relay.fragment
 [@react.component]
 let make = (~siteStatistics as siteStatisticsRef) => {
   let siteStatistics = SiteStatisticsFragment.use(siteStatisticsRef);
+
+  let environment = ReasonRelay.useEnvironmentFromContext();
+  React.useEffect0(() => {
+    let subscription =
+      CurrentVisitorsSubscription.subscribe(
+        ~environment,
+        ~variables=(),
+        ~updater=
+          (
+            _store: ReasonRelay.RecordSourceSelectorProxy.t,
+            response: CurrentVisitorsSubscription.Types.response,
+          ) => {
+            switch (response.siteStatisticsUpdated) {
+            | Some(siteStatisticsUpdated) =>
+              /* Logging the response in the updater for clarity
+                 Note that the store (and thus the UI gets updated "automatically"),
+                 so this updater is not necessary and can be omitted */
+              Js.log2(
+                "Subscription response - current visitors online: ",
+                siteStatisticsUpdated.currentVisitorsOnline,
+              )
+            | None => ()
+            }
+          },
+        (),
+      );
+
+    Some(() => ReasonRelay.Disposable.dispose(subscription));
+  });
 
   <div className="row">
     <div className="col-md-4 stretch-card grid-margin">
