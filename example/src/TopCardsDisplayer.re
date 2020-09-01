@@ -47,7 +47,7 @@ let make = (~siteStatistics as siteStatisticsRef) => {
         ~environment,
         ~variables=(),
         ~onNext=
-          (response: CurrentVisitorsSubscription.Types.response) => {
+          response => {
             switch (response.siteStatisticsUpdated) {
             | Some(siteStatisticsUpdated) =>
               /* Console-logging the response for demo purposes
