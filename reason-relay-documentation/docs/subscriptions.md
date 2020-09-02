@@ -10,23 +10,53 @@ sidebar_label: Subscriptions
 
 ## Subscriptions in Relay
 
-Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws)
+Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws). Those are the minimal required bindings for our example to work, but they are tied to reason-relay itself, and would need to be adjusted in order to be used for other purposes.
+
+```reason
+/* SubscriptionsTransportWs.re */
+type operationOptions = {
+  query: string,
+  variables: Js.Json.t,
+};
+
+type observable('a) = {
+  .
+  [@bs.meth]
+  "subscribe":
+    ReasonRelay.Observable.sink('a) => ReasonRelay.Observable.subscription,
+};
+
+type t('a) = {. [@bs.meth] "request": operationOptions => observable('a)};
+
+[@bs.new] [@bs.module "subscriptions-transport-ws"]
+external createSubscriptionClient: (string, 'a) => t('b) =
+  "SubscriptionClient";
+
+let createSubscriptionClient = createSubscriptionClient;
+```
+
+The following code is a Reason version of the example from the official Relay [documentation](https://relay.dev/docs/en/subscriptions#configure-network):
 
 ```reason
 /* RelayEnv.re */
-let subscriptionClient = SubscriptionTransportWS.make("wss://localhost:9090", ());
+let subscriptionClient =
+  SubscriptionsTransportWs.createSubscriptionClient(
+    "ws://localhost:4000/graphql",
+    {"reconnect": true},
+  );
 
-let subscriptionFunction:
-  ReasonRelay.Network.subscribeFn => ReasonRelay.Observable.t =
+let subscriptionFunction: ReasonRelay.Network.subscribeFn =
   (config, variables, _cacheConfig) => {
     let query = config.text;
-    let subscriptionQuery = { query, variables };
+    let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
+      query,
+      variables,
+    };
+
     ReasonRelay.Observable.make(sink => {
-      let observable =
-        SubscriptionTransportWS.request(subscriptionClient, subscriptionQuery);
-      let subscription = SubscriptionTransportWS.subscribe(observable, sink);
-      let unsubscribeFn: unit => unit = SubscriptionTransportWS.unsubscribe(subscription);
-      Some(unsubscribeFn);
+      let observable = subscriptionClient##request(subscriptionQuery);
+      let subscription = observable##subscribe(sink);
+      Some(subscription);
     });
   };
 
@@ -93,6 +123,8 @@ let make = (~ticketId) => {
   ...
 };
 ```
+
+See the [examples](https://github.com/zth/reason-relay/tree/master/example) folder for a working subscription sample.
 
 ## API Reference
 

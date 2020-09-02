@@ -49,12 +49,42 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
     );
 
 /**
+ * A subscriptionClient and subscription function, using subscriptions-transport-ws
+ * See the official Relay documentation for more details:
+ * https://relay.dev/docs/en/subscriptions#configure-network
+ */
+let subscriptionClient =
+  SubscriptionsTransportWs.createSubscriptionClient(
+    "ws://localhost:4000/graphql",
+    {"reconnect": true},
+  );
+
+let subscriptionFunction: ReasonRelay.Network.subscribeFn =
+  (config, variables, _cacheConfig) => {
+    let query = config.text;
+    let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
+      query,
+      variables,
+    };
+
+    ReasonRelay.Observable.make(sink => {
+      let observable = subscriptionClient##request(subscriptionQuery);
+      let subscription = observable##subscribe(sink);
+      Some(subscription);
+    });
+  };
+
+/**
  * This sets up the network layer. We make a promise based network network
  * layer here, but Relay also has own observables that you could set up
  * your network layer to use instead of promises.
  */
 let network =
-  ReasonRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ());
+  ReasonRelay.Network.makePromiseBased(
+    ~fetchFunction=fetchQuery,
+    ~subscriptionFunction,
+    (),
+  );
 
 /**
  * This creates the actual environment, which consists of a network layer,

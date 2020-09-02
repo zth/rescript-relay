@@ -26,7 +26,8 @@
     "reason-relay": "0.11.0",
     "relay-compiler": "10.0.1",
     "relay-config": "10.0.1",
-    "relay-runtime": "10.0.1"
+    "relay-runtime": "10.0.1",
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "bs-platform": "8.2.0",
