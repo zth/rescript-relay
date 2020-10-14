@@ -3,12 +3,12 @@ import { GraphQLTag } from "relay-compiler/lib/language/RelayLanguagePluginInter
 const invariant = require("invariant");
 
 function parseFile(text: string, file: string) {
-  if (!text.includes("[%relay.")) {
+  if (!text.includes("[%relay.") && !text.includes("%relay.")) {
     return [];
   }
 
   invariant(
-    text.indexOf("[%relay.") >= 0,
+    text.indexOf("[%relay.") >= 0 || text.indexOf("%relay.") >= 0,
     "RelayFileIRParser: Files should be filtered before passed to the " +
       "parser, got unfiltered file `%s`.",
     file
@@ -19,14 +19,27 @@ function parseFile(text: string, file: string) {
    * regexp, but this will do just to get things working.
    */
 
-  const matched = text.match(
+  const matchedReason = text.match(
     /(?<=\[%relay\.(query|fragment|mutation|subscription))([\s\S]*?)(?=];)/g
   );
 
-  if (matched) {
+  if (matchedReason) {
     // Removes {||} used in multiline Reason strings
-    return matched.map(text => ({
+    return matchedReason.map(text => ({
       template: text.replace(/({\||\|})/g, ""),
+      keyName: null,
+      sourceLocationOffset: { line: 1, column: 1 }
+    }));
+  }
+
+  const matchedReScript = text.match(
+    /(?<=%relay\.(query|fragment|mutation|subscription)\()([\s\S]*?)(?=\))/g
+  );
+
+  if (matchedReScript) {
+    // Removes `` used in multiline ReScript strings
+    return matchedReScript.map(text => ({
+      template: text.replace(/`/g, ""),
       keyName: null,
       sourceLocationOffset: { line: 1, column: 1 }
     }));
