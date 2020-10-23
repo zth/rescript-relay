@@ -202,7 +202,6 @@ let getPrintedFullState =
   switch (state.response) {
   | Some(definition) =>
     switch (operationType) {
-    | Query(_)
     | Mutation(_) =>
       addToStr(
         TypesTransformerUtils.printConverterAssets(
