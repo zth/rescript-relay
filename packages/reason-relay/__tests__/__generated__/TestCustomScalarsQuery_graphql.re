@@ -45,6 +45,22 @@ let wrap_response_member:
   | `UnselectedUnionMember(v) => {"__typename": v};
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
+  ];
+  let wrapResponseConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "response_member": wrap_response_member,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
@@ -60,6 +76,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
 
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;

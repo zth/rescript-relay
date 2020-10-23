@@ -15,14 +15,14 @@ module Types = {
 
   type fragment = {
     friendsConnection: fragment_friendsConnection,
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""},"id":{"n":""}}} |json}
+    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>

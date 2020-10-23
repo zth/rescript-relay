@@ -10,14 +10,14 @@ module Types = {
     firstName: string,
     onlineStatus: option(enum_OnlineStatus),
     friendsConnection: fragment_friendsConnection,
-    id: option(string),
+    id: string,
   };
 };
 
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatus":{"n":""},"id":{"n":""}}} |json}
+    {json| {"__root":{"onlineStatus":{"n":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>

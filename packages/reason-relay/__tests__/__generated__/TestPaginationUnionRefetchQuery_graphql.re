@@ -10,28 +10,41 @@ module Types = {
   };
   type rawResponse = response;
   type refetchVariables = {
+    count: option(int),
+    cursor: option(string),
     groupId: option(string),
     onlineStatuses: option(array(enum_OnlineStatus)),
-    count: option(int),
-    cursor: option(string),
   };
   let makeRefetchVariables =
-      (~groupId=?, ~onlineStatuses=?, ~count=?, ~cursor=?, ())
+      (~count=?, ~cursor=?, ~groupId=?, ~onlineStatuses=?, ())
       : refetchVariables => {
-    groupId,
-    onlineStatuses,
     count,
     cursor,
+    groupId,
+    onlineStatuses,
   };
   type variables = {
-    groupId: string,
-    onlineStatuses: option(array(enum_OnlineStatus)),
     count: option(int),
     cursor: option(string),
+    groupId: string,
+    onlineStatuses: option(array(enum_OnlineStatus)),
   };
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"":{"f":""}}} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"":{"f":""}}} |json}
@@ -45,11 +58,14 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"onlineStatuses":{"n":""},"count":{"n":""},"cursor":{"n":""}}} |json}
+    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
@@ -67,11 +83,11 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~groupId, ~onlineStatuses=?, ~count=?, ~cursor=?, ()): variables => {
-    groupId,
-    onlineStatuses,
+      (~count=?, ~cursor=?, ~groupId, ~onlineStatuses=?, ()): variables => {
     count,
     cursor,
+    groupId,
+    onlineStatuses,
   };
 };
 
