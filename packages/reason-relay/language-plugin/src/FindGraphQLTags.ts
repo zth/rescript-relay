@@ -33,7 +33,7 @@ function parseFile(text: string, file: string) {
   }
 
   const matchedReScript = text.match(
-    /(?<=%relay\.(query|fragment|mutation|subscription)\()([\s\S]*?)(?=\))/g
+    /(?<=%relay\.(query|fragment|mutation|subscription)\()([\s\S]*?)(?=(\`\s*)\))(\`)/g
   );
 
   if (matchedReScript) {
