@@ -305,16 +305,11 @@ let makeFragment =
       ],
       hasInlineDirective
         ? [%stri
-          [@bs.module "react-relay"]
-          external readInlineData:
-            (fragmentNode, 'fragmentRef) => 'fragmentData =
-            "readInlineData"
-        ]
-        : [%stri ()],
-      hasInlineDirective
-        ? [%stri
-          let readInline = (fr: Operation.fragmentRef): Types.fragment => {
-            readInlineData(Operation.node, fr)
+          let readInline = (fRef): Types.fragment => {
+            ReasonRelay.internal_readInlineData(
+              Operation.node,
+              fRef->Operation.getFragmentRef,
+            )
             ->Operation.Internal.convertFragment;
           }
         ]

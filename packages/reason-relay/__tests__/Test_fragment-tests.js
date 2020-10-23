@@ -84,4 +84,29 @@ describe("Fragment", () => {
     t.fireEvent.click(t.screen.getByText("Hide opt"));
     await t.screen.findByText("Opt not activated");
   });
+
+  test("reading fragments inline works", async () => {
+    queryMock.mockQuery({
+      name: "TestFragmentQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          lastName: "Last",
+          onlineStatus: "Online",
+        },
+        users: null,
+      },
+    });
+
+    t.render(test_fragment());
+
+    await t.screen.findByText("Set data via inline");
+
+    t.fireEvent.click(t.screen.getByText("Set data via inline"));
+    await t.screen.findByText(
+      "Inline data: " +
+        JSON.stringify({ firstName: "First", onlineStatus: "Online" })
+    );
+  });
 });

@@ -11,20 +11,20 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
-    showOnlineStatus: option(bool),
     friendsOnlineStatuses: option(array(enum_OnlineStatus)),
+    showOnlineStatus: option(bool),
     id: option(string),
   };
   let makeRefetchVariables =
-      (~showOnlineStatus=?, ~friendsOnlineStatuses=?, ~id=?, ())
+      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
       : refetchVariables => {
-    showOnlineStatus,
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
   type variables = {
-    showOnlineStatus: bool,
     friendsOnlineStatuses: array(enum_OnlineStatus),
+    showOnlineStatus: bool,
     id: string,
   };
 };
@@ -65,9 +65,9 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~showOnlineStatus, ~friendsOnlineStatuses, ~id): variables => {
-    showOnlineStatus,
+      (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
 };
