@@ -48,6 +48,8 @@ let fragmentExtension =
           | (Some(_), true) => true
           | _ => false
           },
+        ~hasInlineDirective=
+          operationStr |> fragmentHasInlineDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },

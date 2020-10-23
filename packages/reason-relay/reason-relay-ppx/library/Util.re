@@ -160,6 +160,17 @@ let fragmentHasConnectionNotation = (~loc, str) =>
   | _ => false
   };
 
+// Returns whether a fragment has an @inline directive defined or not
+let fragmentHasInlineDirective = (~loc, str) =>
+  switch (extractGraphQLOperation(~loc, str)) {
+  | Fragment({name: _, directives}) =>
+    directives
+    |> List.exists((directive: Graphql_parser.directive) =>
+         directive.name == "inline"
+       )
+  | _ => false
+  };
+
 let getGraphQLModuleName = opName =>
   String.capitalize_ascii(opName) ++ "_graphql";
 
@@ -215,7 +226,14 @@ let makeModuleNameAst = (~loc, ~moduleName) => {
  * This constructs a module definition AST, in this case for fragments. Note it's only the definition structure,
  * not the full definition.
  */
-let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
+let makeFragment =
+    (
+      ~loc,
+      ~moduleName,
+      ~refetchableQueryName,
+      ~hasConnection,
+      ~hasInlineDirective,
+    ) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
@@ -285,6 +303,22 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             },
           )
       ],
+      hasInlineDirective
+        ? [%stri
+          [@bs.module "react-relay"]
+          external readInlineData:
+            (fragmentNode, 'fragmentRef) => 'fragmentData =
+            "readInlineData"
+        ]
+        : [%stri ()],
+      hasInlineDirective
+        ? [%stri
+          let readInline = (fr: Operation.fragmentRef): Types.fragment => {
+            readInlineData(Operation.node, fr)
+            ->Operation.Internal.convertFragment;
+          }
+        ]
+        : [%stri ()],
       hasConnection
         ? [%stri
           let usePagination = fRef =>
