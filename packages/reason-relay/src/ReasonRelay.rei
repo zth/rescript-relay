@@ -694,6 +694,9 @@ module MakeLoadQuery:
 /**
  * FRAGMENT
  */
+[@bs.module "react-relay"]
+external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
+  "readInlineData";
 
 module type MakeUseFragmentConfig = {
   type fragmentRaw;

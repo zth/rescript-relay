@@ -1,5 +1,6 @@
 # master
 
+- Bind `readInlineData` for fragments annotated with `@inline`
 - Generate a `commitLocalPayload` for any query annotated with `@raw_response_type`, to allow comitting local only payloads in a type safe way.
 - _BREAKING CHANGE_ replace unsetValue with setValueToUndefined and setValueToNull
 - clean bindings, renamed internal raw types and functions with names ending with `Raw`,

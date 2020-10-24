@@ -929,6 +929,10 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
 external useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
+[@bs.module "react-relay"]
+external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
+  "readInlineData";
+
 [@bs.module "react-relay/hooks"]
 external useFragmentOpt:
   (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =

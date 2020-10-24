@@ -5,7 +5,10 @@ type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 module Types = {
   [@ocaml.warning "-30"];
   type response_loggedInUser = {
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_user]),
+    fragmentRefs:
+      ReasonRelay.fragmentRefs(
+        [ | `TestFragment_user | `TestFragment_inline],
+      ),
   }
   and response_users = {edges: option(array(option(response_users_edges)))}
   and response_users_edges = {node: option(response_users_edges_node)}
@@ -83,7 +86,7 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "firstName",
   "storageKey": null
 },
 v1 = {
@@ -97,7 +100,7 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "firstName",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -119,6 +122,14 @@ return {
             "args": null,
             "kind": "FragmentSpread",
             "name": "TestFragment_user"
+          },
+          {
+            "kind": "InlineDataFragmentSpread",
+            "name": "TestFragment_inline",
+            "selections": [
+              (v0/*: any*/),
+              (v1/*: any*/)
+            ]
           }
         ],
         "storageKey": null
@@ -147,7 +158,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
+                  (v2/*: any*/),
                   (v1/*: any*/),
                   {
                     "args": null,
@@ -181,7 +192,7 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v0/*: any*/),
           (v1/*: any*/),
           {
             "alias": null,
@@ -190,7 +201,7 @@ return {
             "name": "lastName",
             "storageKey": null
           },
-          (v0/*: any*/)
+          (v2/*: any*/)
         ],
         "storageKey": null
       },
@@ -218,9 +229,9 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v0/*: any*/),
+                  (v2/*: any*/),
                   (v1/*: any*/),
-                  (v2/*: any*/)
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -233,12 +244,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e013001bfc36566c430b38b57317a2d6",
+    "cacheID": "694e23796b26fa28d35a7a972e55f200",
     "id": null,
     "metadata": {},
     "name": "TestFragmentQuery",
     "operationKind": "query",
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
   }
 };
 })() |json}
