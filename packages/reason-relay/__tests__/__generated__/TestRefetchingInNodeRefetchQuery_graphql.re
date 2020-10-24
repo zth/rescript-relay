@@ -11,25 +11,38 @@ module Types = {
   type response = {node: option(response_node)};
   type rawResponse = response;
   type refetchVariables = {
-    showOnlineStatus: option(bool),
     friendsOnlineStatuses: option(array(enum_OnlineStatus)),
+    showOnlineStatus: option(bool),
     id: option(string),
   };
   let makeRefetchVariables =
-      (~showOnlineStatus=?, ~friendsOnlineStatuses=?, ~id=?, ())
+      (~friendsOnlineStatuses=?, ~showOnlineStatus=?, ~id=?, ())
       : refetchVariables => {
-    showOnlineStatus,
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
   type variables = {
-    showOnlineStatus: bool,
     friendsOnlineStatuses: array(enum_OnlineStatus),
+    showOnlineStatus: bool,
     id: string,
   };
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"node":{"n":"","f":""}}} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"node":{"n":"","f":""}}} |json}
@@ -42,6 +55,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
 
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
@@ -65,9 +81,9 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
   open Types;
   let makeVariables =
-      (~showOnlineStatus, ~friendsOnlineStatuses, ~id): variables => {
-    showOnlineStatus,
+      (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
     friendsOnlineStatuses,
+    showOnlineStatus,
     id,
   };
 };
