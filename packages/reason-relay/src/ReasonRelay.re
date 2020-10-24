@@ -402,6 +402,13 @@ module ConnectionHandler = {
 /**
  * QUERY
  */
+type operationDescriptor;
+
+[@bs.module "relay-runtime"]
+external internal_createOperationDescriptor:
+  (queryNode, 'variables) => operationDescriptor =
+  "createOperationDescriptor";
+
 module Disposable = {
   type t;
 
@@ -596,6 +603,9 @@ module Environment = {
     );
 
   [@bs.send] external getStore: t => Store.t = "getStore";
+  [@bs.send]
+  external commitPayload: (t, operationDescriptor, 'payload) => unit =
+    "commitPayload";
 };
 
 module Context = {

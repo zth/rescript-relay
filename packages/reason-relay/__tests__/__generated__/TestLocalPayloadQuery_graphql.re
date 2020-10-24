@@ -3,11 +3,17 @@
 module Types = {
   [@ocaml.warning "-30"];
   type response_loggedInUser = {
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestSubscription_user]),
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs([ | `TestLocalPayload_user]),
+  }
+  and rawResponse_loggedInUser = {
+    id: string,
+    firstName: string,
+    avatarUrl: option(string),
   };
 
   type response = {loggedInUser: response_loggedInUser};
-  type rawResponse = response;
+  type rawResponse = {loggedInUser: rawResponse_loggedInUser};
   type variables = unit;
 };
 
@@ -38,11 +44,31 @@ module Internal = {
         Js.undefined,
       );
 
-  type wrapRawResponseRaw = wrapResponseRaw;
-  let convertWrapRawResponse = convertWrapResponse;
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"loggedInUser_avatarUrl":{"n":""}}} |json}
+  ];
+  let wrapRawResponseConverterMap = ();
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
+      );
 
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"loggedInUser_avatarUrl":{"n":""}}} |json}
+  ];
+  let rawResponseConverterMap = ();
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
+        Js.undefined,
+      );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
@@ -64,12 +90,20 @@ module Utils = {};
 type operationType = ReasonRelay.queryNode;
 
 let node: operationType = [%raw
-  {json| {
+  {json| (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestSubscriptionQuery",
+    "name": "TestLocalPayloadQuery",
     "selections": [
       {
         "alias": null,
@@ -79,10 +113,11 @@ let node: operationType = [%raw
         "name": "loggedInUser",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "TestSubscription_user"
+            "name": "TestLocalPayload_user"
           }
         ],
         "storageKey": null
@@ -95,7 +130,7 @@ let node: operationType = [%raw
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestSubscriptionQuery",
+    "name": "TestLocalPayloadQuery",
     "selections": [
       {
         "alias": null,
@@ -105,13 +140,7 @@ let node: operationType = [%raw
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -125,13 +154,6 @@ let node: operationType = [%raw
             "kind": "ScalarField",
             "name": "avatarUrl",
             "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "onlineStatus",
-            "storageKey": null
           }
         ],
         "storageKey": null
@@ -139,14 +161,15 @@ let node: operationType = [%raw
     ]
   },
   "params": {
-    "cacheID": "0d224392d0c9bfbffa6f96b9a87f03d1",
+    "cacheID": "d815eea59afda254bed2d1af9be06a9a",
     "id": null,
     "metadata": {},
-    "name": "TestSubscriptionQuery",
+    "name": "TestLocalPayloadQuery",
     "operationKind": "query",
-    "text": "query TestSubscriptionQuery {\n  loggedInUser {\n    ...TestSubscription_user\n    id\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n"
+    "text": "query TestLocalPayloadQuery {\n  loggedInUser {\n    id\n    ...TestLocalPayload_user\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n}\n"
   }
-} |json}
+};
+})() |json}
 ];
 
 include ReasonRelay.MakeLoadQuery({

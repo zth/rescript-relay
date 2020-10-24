@@ -152,6 +152,17 @@ let rec selectionSetHasConnection = selections =>
   | None => false
   };
 
+// Returns whether a query has a @raw_response_type
+let queryHasRawResponseTypeDirective = (~loc, str) =>
+  switch (extractGraphQLOperation(~loc, str)) {
+  | Operation({optype: Query, name: Some(_), directives}) =>
+    directives
+    |> List.exists((directive: Graphql_parser.directive) =>
+         directive.name == "raw_response_type"
+       )
+  | _ => false
+  };
+
 // Returns whether a fragment has a @connection annotation or not
 let fragmentHasConnectionNotation = (~loc, str) =>
   switch (extractGraphQLOperation(~loc, str)) {
@@ -356,7 +367,7 @@ let makeFragment =
 /**
  * Check out the comments for makeFragment, this does the same thing but for queries.
  */
-let makeQuery = (~loc, ~moduleName) =>
+let makeQuery = (~loc, ~moduleName, ~hasRawResponseType) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
@@ -379,6 +390,27 @@ let makeQuery = (~loc, ~moduleName) =>
       [%stri let fetch = UseQuery.fetch],
       [%stri let fetchPromised = UseQuery.fetchPromised],
       [%stri let usePreloaded = UseQuery.usePreloaded],
+      hasRawResponseType
+        ? [%stri
+          let commitLocalPayload =
+              (
+                ~environment: ReasonRelay.Environment.t,
+                ~variables: Types.variables,
+                ~payload: Types.rawResponse,
+              ) => {
+            let operationDescriptor =
+              ReasonRelay.internal_createOperationDescriptor(
+                Operation.node,
+                variables->Operation.Internal.convertVariables,
+              );
+
+            environment->ReasonRelay.Environment.commitPayload(
+              operationDescriptor,
+              payload->Operation.Internal.convertWrapRawResponse,
+            );
+          }
+        ]
+        : [%stri ()],
     ]),
   );
 

@@ -17,6 +17,9 @@ let queryExtension =
 
       makeQuery(
         ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
+        ~hasRawResponseType=
+          operationStr
+          |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },

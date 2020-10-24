@@ -230,6 +230,7 @@ let getPrintedFullState =
   switch (state.response, state.rawResponse) {
   | (Some(_), Some(definition)) =>
     switch (operationType) {
+    | Query(_)
     | Mutation(_) =>
       addToStr(
         TypesTransformerUtils.printConverterAssets(
@@ -254,6 +255,7 @@ let getPrintedFullState =
     addSpacing();
   | (Some(_), None) =>
     switch (operationType) {
+    | Query(_)
     | Mutation(_) =>
       addToStr(
         "type wrapRawResponseRaw = wrapResponseRaw;"
