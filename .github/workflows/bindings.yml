@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Clean up before building
         run: |
-          rm -rf __tests__
+          ls -la && rm -rf ./__tests__
       - name: Install
         run: |
           yarn install
