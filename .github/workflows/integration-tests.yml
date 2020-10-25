@@ -4,13 +4,8 @@ on: [push]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-
     name: Integration tests
-    runs-on: ${{ matrix.platform }}
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -24,14 +19,12 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-
       - name: install yarn
         run: |
           npm install -g yarn
       - name: set yarn cache dir
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
-
       - name: Github actions yarn cache
         uses: actions/cache@v1
         with:
@@ -44,32 +37,26 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-
       - name: Install - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |
           yarn install
-
       - name: Build - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |
           yarn build
-
       - name: Install - bindings
         working-directory: packages/reason-relay
         run: |
           yarn install
-
       - name: Build - bindings
         working-directory: packages/reason-relay
         run: |
           yarn build
-
       - name: Build - Relay test files
         working-directory: packages/reason-relay
         run: |
           yarn build:test
-
       - name: Integration tests
         working-directory: packages/reason-relay
         run: |
