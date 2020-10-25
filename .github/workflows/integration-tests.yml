@@ -39,8 +39,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-              - name: Install esy
-              run: npm install -g esy
       - name: Build PPX
         uses: esy/github-action@v1
         with:
