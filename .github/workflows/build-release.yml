@@ -27,8 +27,6 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-      - name: Test PPX
-        run: esy test
       - name: Copy built PPX file
         run: |
           mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
@@ -49,13 +47,22 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
+          - name: Install esy
+          run: npm install -g esy
+      - name: Build PPX
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
       - name: install yarn
         run: |
           npm install -g yarn
       - name: set yarn cache dir
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
-
+      - name: Clean up before building
+        run: |
+          rm -rf packages/reason-relay/__tests__
       - name: Build assets
         run: |
           ./build-ci.sh

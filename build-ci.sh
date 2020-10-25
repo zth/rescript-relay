@@ -6,11 +6,11 @@ mkdir -p _release/src;
 
 # build language plugin
 echo "Build language plugin...";
-cd packages/reason-relay/language-plugin/; yarn; yarn test; yarn build; cd ..;
+cd packages/reason-relay/language-plugin/; yarn; yarn build; cd ..;
 
 # build bindings
 echo "Build bindings...";
-yarn; yarn build; yarn test;
+yarn; yarn build;
 
 # copy bindings and readme
 echo "Copying bindings and assets..."
