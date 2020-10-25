@@ -62,7 +62,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Clean up before building
         run: |
-          rm -rf packages/reason-relay/__tests__
+          rm -rf packages/reason-relay/__tests__/*
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
