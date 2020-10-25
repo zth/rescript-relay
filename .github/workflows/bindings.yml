@@ -10,7 +10,6 @@ jobs:
 
     name: Bindings
     runs-on: ${{ matrix.platform }}
-    needs: ppx
     defaults:
       run:
         working-directory: packages/reason-relay
