@@ -1,0 +1,49 @@
+name: Language plugin
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+
+    name: Build
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: packages/reason-relay/language-plugin
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+        env:
+          CI: true
+      - name: install yarn
+        run: |
+          npm install -g yarn
+
+      - name: set yarn cache dir
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Github actions yarn cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install
+        run: |
+          yarn install
+
+      - name: Build
+        run: |
+          yarn build
+
+      - name: Test
+        run: |
+          yarn test:ci

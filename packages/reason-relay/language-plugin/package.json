@@ -10,6 +10,7 @@
     "bs:start": "bsb -make-world -w",
     "bs:clean": "bsb -clean-world",
     "test": "jest src",
+    "test:ci": "jest src --runInBand --ci",
     "ts:check": "yarn tsc --check",
     "ts:build": "yarn tsc",
     "ts:watch": "yarn tsc --watch"
