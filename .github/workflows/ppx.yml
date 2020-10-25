@@ -6,7 +6,7 @@ jobs:
   test:
     strategy:
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, macos-latest]
 
     name: PPX
     runs-on: ${{ matrix.platform }}
@@ -29,3 +29,9 @@ jobs:
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test
+
+      - name: Upload PPX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ppx-${{ matrix.platform }}
+          path: _esy/default/build/default/bin/ReasonRelayPpxApp.exe
