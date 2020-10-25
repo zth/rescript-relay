@@ -8,7 +8,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-latest]
 
-    name: Build PPX
+    name: Build PPX for release
     runs-on: ${{ matrix.platform }}
     defaults:
       run:
@@ -39,7 +39,7 @@ jobs:
           path: packages/reason-relay/reason-relay-ppx/ppx-*
           if-no-files-found: error
   build-release:
-    name: Build Release
+    name: Build release package
     runs-on: ubuntu-latest
     needs: build-ppx
     steps:
