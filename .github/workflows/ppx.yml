@@ -32,11 +32,11 @@ jobs:
 
       - name: Copy built PPX file
         run: |
-          ls -la ./_esy/default/build/default/bin && mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
 
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ matrix.platform }}
-          path: ppx-*
+          path: packages/reason-relay/reason-relay-ppx/ppx-*
           if-no-files-found: error
