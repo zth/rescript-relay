@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+$#!/usr/bin/env bash
 
 # make release folder structure
 rm -rf _release;
@@ -23,7 +23,7 @@ rm ../../_release/src/*.bs.js;
 # copy config files
 echo "Copying config files..."
 cp bsconfig.release.json ../../_release/bsconfig.json;
-cp package.json ../../_release/;
+./copyPackageJson.js ../../_release $INPUT_TAG_NAME
 cp yarn.lock ../../_release/;
 
 # copy real post-install

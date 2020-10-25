@@ -1,6 +1,11 @@
 name: Build Release
 
-on: [push]
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Optional tag name"
+        required: false
 
 jobs:
   build-ppx:
@@ -72,12 +77,10 @@ jobs:
           name: |
             ppx-ubuntu-latest
             ppx-macos-latest
-      - name: Prepare package
-        run: |
-          cd _release && npm pack
-      - name: Upload package
-        uses: actions/upload-artifact@v2
-        with:
-          name: package
-          path: _release/*.tgz
-          if-no-files-found: error
+      - name: Publish to NPM
+        uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        dry-run: true
+        tag: ${{ inputs.tag_name }}
+        package: ./_release/package.json
