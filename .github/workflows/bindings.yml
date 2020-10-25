@@ -1,18 +1,38 @@
-name: Language plugin
+name: Bindings
 
 on: [push]
 
 jobs:
-  test:
+  ppx:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+    name: Build PPX
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12.19.0
+        env:
+          CI: true
+      - name: Install esy
+        run: npm install -g esy
+      - uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
+
+  build:
     strategy:
       matrix:
         platform: [ubuntu-latest]
 
-    name: Language plugin
+    name: Bindings
     runs-on: ${{ matrix.platform }}
+    needs: ppx
     defaults:
       run:
-        working-directory: packages/reason-relay/language-plugin
+        working-directory: packages/reason-relay
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -43,7 +63,3 @@ jobs:
       - name: Build
         run: |
           yarn build
-
-      - name: Test
-        run: |
-          yarn test:ci
