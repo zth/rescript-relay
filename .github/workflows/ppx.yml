@@ -22,7 +22,10 @@ jobs:
           CI: true
       - name: Install esy
         run: npm install -g esy
-      - uses: esy/github-action@v1
+      - name: Build PPX
+        uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
+      - name: Test PPX
+        run: esy test
