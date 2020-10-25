@@ -16,6 +16,13 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build PPX
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
       - name: install yarn
         run: |
           npm install -g yarn
@@ -29,9 +36,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Clean up before building
-        run: |
-          rm -rf ./__tests__/*
       - name: Install
         run: |
           yarn install
