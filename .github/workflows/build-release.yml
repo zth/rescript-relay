@@ -64,6 +64,8 @@ jobs:
         run: |
           rm -rf packages/reason-relay/__tests__
       - name: Build assets
+        env:
+          INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
         run: |
           ./build-ci.sh
       - name: Download all built PPXes
@@ -82,5 +84,5 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           dry-run: true
-          tag: ${{ inputs.tag_name }}
+          tag: ${{ github.event.inputs.tag_name }}
           package: ./_release/package.json
