@@ -79,8 +79,8 @@ jobs:
             ppx-macos-latest
       - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v1
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
-        dry-run: true
-        tag: ${{ inputs.tag_name }}
-        package: ./_release/package.json
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          dry-run: true
+          tag: ${{ inputs.tag_name }}
+          package: ./_release/package.json
