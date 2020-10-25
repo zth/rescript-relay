@@ -32,7 +32,7 @@ jobs:
 
       - name: Copy built PPX file
         run: |
-          mv packages/reason-relay/reason-relay-ppx/_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          mv reason-relay-ppx/_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
 
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
