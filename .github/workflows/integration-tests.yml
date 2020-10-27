@@ -39,14 +39,14 @@ jobs:
         working-directory: packages/reason-relay
         run: |
           yarn install
-      - name: Build - bindings
-        working-directory: packages/reason-relay
-        run: |
-          yarn build
       - name: Build - Relay test files
         working-directory: packages/reason-relay
         run: |
           yarn build:test
+      - name: Build - bindings
+        working-directory: packages/reason-relay
+        run: |
+          yarn build
       - name: Integration tests
         working-directory: packages/reason-relay
         run: |
