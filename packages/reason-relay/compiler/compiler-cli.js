@@ -39,7 +39,7 @@ async function runCompiler() {
       [
         "--language",
         path.resolve(
-          __dirname + "/../language-plugin/reason-relay-language-plugin.js"
+          __dirname + "/../language-plugin/dist/reason-relay-language-plugin.js"
         ),
         process.argv.find(a => a === "--watch")
       ].filter(Boolean)
