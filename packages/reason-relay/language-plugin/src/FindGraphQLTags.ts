@@ -3,12 +3,12 @@ import { GraphQLTag } from "relay-compiler/lib/language/RelayLanguagePluginInter
 const invariant = require("invariant");
 
 function parseFile(text: string, file: string) {
-  if (!text.includes("[%relay.") && !text.includes("%relay.")) {
+  if (!text.includes("%relay")) {
     return [];
   }
 
   invariant(
-    text.indexOf("[%relay.") >= 0 || text.indexOf("%relay.") >= 0,
+    text.indexOf("%relay") >= 0,
     "RelayFileIRParser: Files should be filtered before passed to the " +
       "parser, got unfiltered file `%s`.",
     file
