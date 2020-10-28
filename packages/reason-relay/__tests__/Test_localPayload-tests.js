@@ -12,6 +12,7 @@ describe("LocalPayload", () => {
       variables: {},
       data: {
         loggedInUser: {
+          id: "user-1",
           firstName: "First",
           avatarUrl: "avatar-url",
         },
