@@ -1,4 +1,6 @@
-$#!/usr/bin/env bash
+#!/usr/bin/env bash
+
+set -e;
 
 # make release folder structure
 rm -rf _release;
