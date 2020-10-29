@@ -928,7 +928,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
  * FRAGMENT
  */
 [@bs.module "react-relay/hooks"]
-external useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
+external internal_useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "useFragment";
 
 [@bs.module "react-relay"]
@@ -936,47 +936,9 @@ external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData 
   "readInlineData";
 
 [@bs.module "react-relay/hooks"]
-external useFragmentOpt:
+external internal_useFragmentOpt:
   (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
   "useFragment";
-
-module type MakeUseFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-};
-
-module MakeUseFragment = (C: MakeUseFragmentConfig) => {
-  let use = (fr: C.fragmentRef): C.fragment => {
-    let data = useFragment(C.fragmentSpec, fr);
-    useConvertedValue(C.convertFragment, data);
-  };
-
-  let useOpt = (fr: option(C.fragmentRef)): option(C.fragment) => {
-    let nullableFragmentData: Js.Nullable.t(C.fragmentRaw) =
-      useFragmentOpt(
-        C.fragmentSpec,
-        switch (fr) {
-        | Some(fr) => Some(fr)->Js.Nullable.fromOption
-        | None => Js.Nullable.null
-        },
-      );
-
-    let data: option(C.fragmentRaw) =
-      nullableFragmentData->Js.Nullable.toOption;
-
-    useConvertedValue(
-      rawFragment =>
-        switch (rawFragment) {
-        | Some(rawFragment) => Some(rawFragment->C.convertFragment)
-        | None => None
-        },
-      data,
-    );
-  };
-};
 
 /** Refetchable */
 [@bs.deriving abstract]

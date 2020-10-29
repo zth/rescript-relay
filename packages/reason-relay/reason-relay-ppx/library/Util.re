@@ -321,26 +321,48 @@ let makeFragment =
         ]
         : [%stri ()],
       [%stri
-        module UseFragment =
-          ReasonRelay.MakeUseFragment({
-            type fragmentRaw = Operation.Internal.fragmentRaw;
-            type fragment = Types.fragment;
-            type fragmentRef = Operation.fragmentRef;
-            let fragmentSpec = Operation.node;
-            let convertFragment = Operation.Internal.convertFragment;
-          })
+        let use = (fRef): Types.fragment => {
+          let data =
+            ReasonRelay.internal_useFragment(
+              Operation.node,
+              fRef->Operation.getFragmentRef,
+            );
+
+          ReasonRelay.internal_useConvertedValue(
+            Operation.Internal.convertFragment,
+            data,
+          );
+        }
       ],
       [%stri
-        let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
-      ],
-      [%stri
-        let useOpt = opt_fRef =>
-          UseFragment.useOpt(
+        let useOpt = (opt_fRef): option(Types.fragment) => {
+          let fr =
             switch (opt_fRef) {
-            | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
+            | Some(fRef) => Some(fRef->Operation.getFragmentRef)
             | None => None
-            },
-          )
+            };
+
+          let nullableFragmentData: Js.Nullable.t(Types.fragment) =
+            ReasonRelay.internal_useFragmentOpt(
+              Operation.node,
+              switch (fr) {
+              | Some(fr) => Some(fr)->Js.Nullable.fromOption
+              | None => Js.Nullable.null
+              },
+            );
+
+          let data = nullableFragmentData->Js.Nullable.toOption;
+
+          ReasonRelay.internal_useConvertedValue(
+            rawFragment =>
+              switch (rawFragment) {
+              | Some(rawFragment) =>
+                Some(rawFragment->Operation.Internal.convertFragment)
+              | None => None
+              },
+            data,
+          );
+        }
       ],
       hasInlineDirective
         ? [%stri

@@ -701,24 +701,18 @@ module MakeLoadQuery:
 /**
  * FRAGMENT
  */
+[@bs.module "react-relay/hooks"]
+external internal_useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
+  "useFragment";
+
+[@bs.module "react-relay/hooks"]
+external internal_useFragmentOpt:
+  (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
+  "useFragment";
+
 [@bs.module "react-relay"]
 external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
   "readInlineData";
-
-module type MakeUseFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-};
-
-module MakeUseFragment:
-  (C: MakeUseFragmentConfig) =>
-   {
-    let use: C.fragmentRef => C.fragment;
-    let useOpt: option(C.fragmentRef) => option(C.fragment);
-  };
 
 let internal_useConvertedValue: ('a => 'a, 'a) => 'a;
 
