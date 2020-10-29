@@ -84,6 +84,13 @@ external convertObj:
   "traverser";
 
 /**
+ * Internal utils.
+ */
+
+let internal_cleanVariablesRaw: 't => 't;
+let internal_cleanObjectFromUndefinedRaw: 't => 't;
+
+/**
  * Read the following section on working with the Relay store:
  * https://relay.dev/docs/en/relay-store
  */
@@ -713,34 +720,35 @@ module MakeUseFragment:
     let useOpt: option(C.fragmentRef) => option(C.fragment);
   };
 
+let internal_useConvertedValue: ('a => 'a, 'a) => 'a;
+
 /** Refetchable */
-module type MakeUseRefetchableFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
+[@bs.deriving abstract]
+type refetchableFnOpts = {
+  [@bs.optional]
+  fetchPolicy: string,
+  [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
+  renderPolicy: string,
+  [@bs.optional]
+  onComplete: Js.Nullable.t(Js.Exn.t) => unit,
 };
 
-module MakeUseRefetchableFragment:
-  (C: MakeUseRefetchableFragmentConfig) =>
-   {
-    let useRefetchable:
-      C.fragmentRef =>
-      (
-        C.fragment,
-        (
-          ~variables: C.variables,
-          ~fetchPolicy: fetchPolicy=?,
-          ~renderPolicy: renderPolicy=?,
-          ~onComplete: option(Js.Exn.t) => unit=?,
-          unit
-        ) =>
-        Disposable.t,
-      );
-  };
+let internal_makeRefetchableFnOpts:
+  (
+    ~fetchPolicy: fetchPolicy=?,
+    ~renderPolicy: renderPolicy=?,
+    ~onComplete: option(Js.Exn.t) => unit=?,
+    unit
+  ) =>
+  refetchableFnOpts;
+
+type refetchFnRaw('variables) =
+  ('variables, refetchableFnOpts) => Disposable.t;
+
+[@bs.module "react-relay/hooks"]
+external internal_useRefetchableFragment:
+  (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
+  "useRefetchableFragment";
 
 /** Pagination */
 module type MakeUsePaginationFragmentConfig = {

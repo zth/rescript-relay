@@ -263,16 +263,44 @@ let makeFragment =
       [%stri module Types = Operation.Types],
       switch (refetchableQueryName) {
       | Some(queryName) => [%stri
-          module UseRefetchableFragment =
-            ReasonRelay.MakeUseRefetchableFragment({
-              type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Types.fragment;
-              type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.Types.refetchVariables;
-              let fragmentSpec = Operation.node;
-              let convertFragment = Operation.Internal.convertFragment;
-              let convertVariables = RefetchableOperation.Internal.convertVariables;
-            })
+          let useRefetchable = fRef => {
+            let (fragmentData, refetchFn) =
+              ReasonRelay.internal_useRefetchableFragment(
+                Operation.node,
+                fRef->Operation.getFragmentRef,
+              );
+
+            let data: Types.fragment =
+              ReasonRelay.internal_useConvertedValue(
+                Operation.Internal.convertFragment,
+                fragmentData,
+              );
+            (
+              data,
+              (
+                (
+                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~fetchPolicy: option(ReasonRelay.fetchPolicy),
+                  ~renderPolicy: option(ReasonRelay.renderPolicy),
+                  ~onComplete: option(option(Js.Exn.t) => unit),
+                  (),
+                ) => (
+                  refetchFn(
+                    variables
+                    ->RefetchableOperation.Internal.convertVariables
+                    ->ReasonRelay.internal_cleanVariablesRaw
+                    ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                    ReasonRelay.internal_makeRefetchableFnOpts(
+                      ~fetchPolicy?,
+                      ~renderPolicy?,
+                      ~onComplete?,
+                      (),
+                    ),
+                  ): ReasonRelay.Disposable.t
+                )
+              ),
+            );
+          }
         ]
       | None =>
         %stri
@@ -341,17 +369,6 @@ let makeFragment =
             )
         ]
         : [%stri ()],
-      switch (refetchableQueryName) {
-      | Some(_) => [%stri
-          let useRefetchable = fRef =>
-            UseRefetchableFragment.useRefetchable(
-              fRef |> Operation.getFragmentRef,
-            )
-        ]
-      | None =>
-        %stri
-        ()
-      },
       switch (refetchableQueryName, hasConnection) {
       | (_, true)
       | (Some(_), _) => [%stri

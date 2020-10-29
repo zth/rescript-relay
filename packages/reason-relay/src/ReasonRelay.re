@@ -48,7 +48,7 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags";
  */
 
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let cleanObjectFromUndefinedRaw = [%raw
+let internal_cleanObjectFromUndefinedRaw = [%raw
   {|
   function (obj) {
     var newObj = {};
@@ -65,7 +65,7 @@ let cleanObjectFromUndefinedRaw = [%raw
 ];
 
 // Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let cleanVariablesRaw = [%raw
+let internal_cleanVariablesRaw = [%raw
   {|
   function (variables) {
     if (typeof variables !== "object" || variables == null) {
@@ -631,6 +631,8 @@ module Context = {
 let useConvertedValue = (convert, v) =>
   React.useMemo1(() => convert(v), [|v|]);
 
+let internal_useConvertedValue = useConvertedValue;
+
 exception EnvironmentNotFoundInContext;
 
 let useEnvironmentFromContext = () => {
@@ -746,9 +748,9 @@ module MakeUseQuery = (C: MakeUseQueryConfig) => {
       useQuery(
         C.query,
         variables
-        |> cleanVariablesRaw
+        |> internal_cleanVariablesRaw
         |> C.convertVariables
-        |> cleanObjectFromUndefinedRaw,
+        |> internal_cleanObjectFromUndefinedRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -886,7 +888,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       loadQuery(
         environment,
         C.query,
-        variables |> C.convertVariables |> cleanVariablesRaw,
+        variables |> C.convertVariables |> internal_cleanVariablesRaw,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,
@@ -996,54 +998,21 @@ let nullableToOptionalExnHandler =
   | Some(handler) =>
     Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
 
-let makeRefetchableFnOpts = (~fetchPolicy, ~renderPolicy, ~onComplete) =>
+let makeRefetchableFnOpts =
+    (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
   refetchableFnOpts(
-    ~fetchPolicy=?fetchPolicy |> mapFetchPolicy,
-    ~renderPolicy=?renderPolicy |> mapRenderPolicy,
-    ~onComplete=?onComplete |> nullableToOptionalExnHandler,
+    ~fetchPolicy=?fetchPolicy->mapFetchPolicy,
+    ~renderPolicy=?renderPolicy->mapRenderPolicy,
+    ~onComplete=?onComplete->nullableToOptionalExnHandler,
     (),
   );
 
+let internal_makeRefetchableFnOpts = makeRefetchableFnOpts;
+
 [@bs.module "react-relay/hooks"]
-external useRefetchableFragment:
+external internal_useRefetchableFragment:
   (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
   "useRefetchableFragment";
-
-module type MakeUseRefetchableFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type fragmentRef;
-  type variables;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
-};
-
-module MakeUseRefetchableFragment = (C: MakeUseRefetchableFragmentConfig) => {
-  let useRefetchable = (fr: C.fragmentRef) => {
-    let (fragmentData, refetchFn) =
-      useRefetchableFragment(C.fragmentSpec, fr);
-
-    let data = useConvertedValue(C.convertFragment, fragmentData);
-    (
-      data,
-      (
-        ~variables: C.variables,
-        ~fetchPolicy=?,
-        ~renderPolicy=?,
-        ~onComplete=?,
-        (),
-      ) =>
-        refetchFn(
-          variables
-          |> C.convertVariables
-          |> cleanVariablesRaw
-          |> cleanObjectFromUndefinedRaw,
-          makeRefetchableFnOpts(~fetchPolicy, ~renderPolicy, ~onComplete),
-        ),
-    );
-  };
-};
 
 /** Pagination */
 module type MakeUsePaginationFragmentConfig = {
@@ -1153,10 +1122,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
         ) =>
         p.refetch(.
           variables
-          |> C.convertVariables
-          |> cleanVariablesRaw
-          |> cleanObjectFromUndefinedRaw,
-          makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
+          ->C.convertVariables
+          ->internal_cleanVariablesRaw
+          ->internal_cleanObjectFromUndefinedRaw,
+          makeRefetchableFnOpts(
+            ~onComplete?,
+            ~fetchPolicy?,
+            ~renderPolicy?,
+            (),
+          ),
         ),
     };
   };
@@ -1192,10 +1166,15 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
         ) =>
         p.refetch(.
           variables
-          |> C.convertVariables
-          |> cleanVariablesRaw
-          |> cleanObjectFromUndefinedRaw,
-          makeRefetchableFnOpts(~onComplete, ~fetchPolicy, ~renderPolicy),
+          ->C.convertVariables
+          ->internal_cleanVariablesRaw
+          ->internal_cleanObjectFromUndefinedRaw,
+          makeRefetchableFnOpts(
+            ~onComplete?,
+            ~fetchPolicy?,
+            ~renderPolicy?,
+            (),
+          ),
         ),
     };
   };
@@ -1307,7 +1286,8 @@ module MakeUseMutation = (C: MutationConfig) => {
             | Some(r) => Some(r |> C.wrapRawResponse)
             },
           onUnsubscribe,
-          variables: variables |> C.convertVariables |> cleanVariablesRaw,
+          variables:
+            variables |> C.convertVariables |> internal_cleanVariablesRaw,
           optimisticUpdater,
           updater:
             switch (updater) {
@@ -1337,7 +1317,8 @@ module MakeCommitMutation = (C: MutationConfig) => {
     commitMutationRaw(
       environment,
       {
-        variables: variables |> C.convertVariables |> cleanVariablesRaw,
+        variables:
+          variables |> C.convertVariables |> internal_cleanVariablesRaw,
         mutation: C.node,
         onCompleted:
           Some(
@@ -1392,7 +1373,8 @@ module MakeCommitMutation = (C: MutationConfig) => {
       commitMutationRaw(
         environment,
         {
-          variables: variables |> C.convertVariables |> cleanVariablesRaw,
+          variables:
+            variables |> C.convertVariables |> internal_cleanVariablesRaw,
           mutation: C.node,
           onCompleted:
             Some(
@@ -1479,7 +1461,8 @@ module MakeUseSubscription = (C: SubscriptionConfig) => {
       environment,
       subscriptionConfigRaw(
         ~subscription=C.node,
-        ~variables=variables |> C.convertVariables |> cleanVariablesRaw,
+        ~variables=
+          variables |> C.convertVariables |> internal_cleanVariablesRaw,
         ~onCompleted?,
         ~onError?,
         ~onNext=?
