@@ -19,12 +19,12 @@ function getFileFilter(baseDir: string) {
       );
       return false;
     }
-    return text.indexOf("[%relay.") >= 0;
+    return text.indexOf("[%relay.") >= 0 || text.indexOf("%relay.") >= 0;
   };
 }
 
 module.exports = () => ({
-  inputExtensions: ["re"],
+  inputExtensions: ["re", "res"],
   outputExtension: "re",
   schemaExtensions: [],
   typeGenerator: RelayReasonGenerator,

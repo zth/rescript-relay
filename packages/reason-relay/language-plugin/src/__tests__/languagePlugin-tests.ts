@@ -1,87 +1,13 @@
-import { Source, parse } from "graphql";
-import * as fs from "fs";
-import * as path from "path";
-import * as RelayReasonGenerator from "../RelayReasonGenerator";
-const getLanguagePlugin = require("../index");
-import { printCode } from "../generator/Printer.gen";
-
-const CompilerContext = require("relay-compiler/lib/core/CompilerContext");
-
-import * as RelayIRTransforms from "relay-compiler/lib/core/RelayIRTransforms";
-
+import { join, resolve } from "path";
 import {
-  Parser,
-  // @ts-ignore
-  convertASTDocuments,
-  Root,
-  Schema,
-  Fragment,
-} from "relay-compiler";
+  collapseString,
+  generate as generateCurryFunc,
+  generateSchema,
+} from "../test-utils";
 
-const create = require("relay-compiler").Schema.create;
-
-function parseGraphQLText(
-  schema: any,
-  text: string
-): {
-  definitions: ReadonlyArray<Fragment | Root>;
-  schema: any;
-} {
-  const ast = parse(text);
-  const extendedSchema = schema.extend(ast);
-  const definitions = convertASTDocuments(
-    extendedSchema,
-    [ast],
-    Parser.transform.bind(Parser)
-  );
-  return {
-    definitions,
-    schema: extendedSchema,
-  };
-}
-
-const testSchema = create(
-  new Source(
-    fs.readFileSync(
-      path.resolve(path.join(__dirname, "testSchema.graphql")),
-      "utf8"
-    )
-  )
+const generate = generateCurryFunc(
+  generateSchema(resolve(join(__dirname, "..", "test-utils", "testSchema.graphql")))
 );
-
-function collapseString(str: string) {
-  return str.replace(/\r?\n|\r|\t/g, "").replace(/\s+/g, " ");
-}
-
-function generate(text: string, options?: any, extraDefs: string = "") {
-  const relaySchema = testSchema.extend([
-    ...RelayIRTransforms.schemaExtensions,
-    ...getLanguagePlugin().schemaExtensions,
-    extraDefs,
-  ]);
-  const { definitions, schema: extendedSchema } = parseGraphQLText(
-    relaySchema,
-    text
-  );
-
-  const ctx = new CompilerContext(extendedSchema)
-    .addAll(definitions)
-    .applyTransforms(RelayReasonGenerator.transforms);
-
-  return ctx
-    .documents()
-    .map(
-      (doc: any) =>
-        `// ${doc.name}.graphql\n${printCode(
-          RelayReasonGenerator.generate(extendedSchema, doc, {
-            normalizationIR: ctx.get(doc.name),
-            optionalInputFields: [],
-            ...options,
-          })
-        )}`
-    )
-    .join("\n\n");
-}
 
 describe("Language plugin tests", () => {
   describe("Query", () => {

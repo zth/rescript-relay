@@ -1,10 +1,19 @@
 # master
 
-- Bind `readInlineData` for fragments annotated with `@inline`
-- Generate a `commitLocalPayload` for any query annotated with `@raw_response_type`, to allow comitting local only payloads in a type safe way.
-- _BREAKING CHANGE_ replace unsetValue with setValueToUndefined and setValueToNull
-- clean bindings, renamed internal raw types and functions with names ending with `Raw`,
-- use abstract records instead of Js.t objects for a more robust type-check and to avoid undefined fields
+## Breaking changes
+
+- _BREAKING CHANGE_ Replace unsetValue with setValueToUndefined and setValueToNull [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
+
+## New bindings
+
+- Bind `readInlineData` for fragments annotated with `@inline` [#117](https://github.com/zth/reason-relay/pull/117) ([@zth](https://github.com/zth))
+- Clean bindings, renamed internal raw types and functions with names ending with `Raw` [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
+
+## Fixes & misc
+
+- Generate a `commitLocalPayload` for any query annotated with `@raw_response_type`, to allow comitting local only payloads in a type safe way. [#118](https://github.com/zth/reason-relay/pull/118) ([@zth](https://github.com/zth))
+- Use abstract records instead of Js.t objects for a more robust type-check and to avoid undefined fields [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
+- Add support for parsing ReScript (.res) files [#115](https://github.com/zth/reason-relay/pull/115) ([@sorenhoyer](https://github.com/sorenhoyer))
 
 # 0.11.0
 
