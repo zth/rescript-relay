@@ -17,6 +17,9 @@ let queryExtension =
 
       makeQuery(
         ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
+        ~hasRawResponseType=
+          operationStr
+          |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },
@@ -48,6 +51,8 @@ let fragmentExtension =
           | (Some(_), true) => true
           | _ => false
           },
+        ~hasInlineDirective=
+          operationStr |> fragmentHasInlineDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },

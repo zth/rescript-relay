@@ -152,11 +152,33 @@ let rec selectionSetHasConnection = selections =>
   | None => false
   };
 
+// Returns whether a query has a @raw_response_type
+let queryHasRawResponseTypeDirective = (~loc, str) =>
+  switch (extractGraphQLOperation(~loc, str)) {
+  | Operation({optype: Query, name: Some(_), directives}) =>
+    directives
+    |> List.exists((directive: Graphql_parser.directive) =>
+         directive.name == "raw_response_type"
+       )
+  | _ => false
+  };
+
 // Returns whether a fragment has a @connection annotation or not
 let fragmentHasConnectionNotation = (~loc, str) =>
   switch (extractGraphQLOperation(~loc, str)) {
   | Fragment({name: _, selection_set}) =>
     selectionSetHasConnection(selection_set)
+  | _ => false
+  };
+
+// Returns whether a fragment has an @inline directive defined or not
+let fragmentHasInlineDirective = (~loc, str) =>
+  switch (extractGraphQLOperation(~loc, str)) {
+  | Fragment({name: _, directives}) =>
+    directives
+    |> List.exists((directive: Graphql_parser.directive) =>
+         directive.name == "inline"
+       )
   | _ => false
   };
 
@@ -215,7 +237,14 @@ let makeModuleNameAst = (~loc, ~moduleName) => {
  * This constructs a module definition AST, in this case for fragments. Note it's only the definition structure,
  * not the full definition.
  */
-let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
+let makeFragment =
+    (
+      ~loc,
+      ~moduleName,
+      ~refetchableQueryName,
+      ~hasConnection,
+      ~hasInlineDirective,
+    ) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
@@ -285,6 +314,17 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
             },
           )
       ],
+      hasInlineDirective
+        ? [%stri
+          let readInline = (fRef): Types.fragment => {
+            ReasonRelay.internal_readInlineData(
+              Operation.node,
+              fRef->Operation.getFragmentRef,
+            )
+            ->Operation.Internal.convertFragment;
+          }
+        ]
+        : [%stri ()],
       hasConnection
         ? [%stri
           let usePagination = fRef =>
@@ -327,7 +367,7 @@ let makeFragment = (~loc, ~moduleName, ~refetchableQueryName, ~hasConnection) =>
 /**
  * Check out the comments for makeFragment, this does the same thing but for queries.
  */
-let makeQuery = (~loc, ~moduleName) =>
+let makeQuery = (~loc, ~moduleName, ~hasRawResponseType) =>
   Ast_helper.Mod.mk(
     Pmod_structure([
       [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
@@ -350,6 +390,27 @@ let makeQuery = (~loc, ~moduleName) =>
       [%stri let fetch = UseQuery.fetch],
       [%stri let fetchPromised = UseQuery.fetchPromised],
       [%stri let usePreloaded = UseQuery.usePreloaded],
+      hasRawResponseType
+        ? [%stri
+          let commitLocalPayload =
+              (
+                ~environment: ReasonRelay.Environment.t,
+                ~variables: Types.variables,
+                ~payload: Types.rawResponse,
+              ) => {
+            let operationDescriptor =
+              ReasonRelay.internal_createOperationDescriptor(
+                Operation.node,
+                variables->Operation.Internal.convertVariables,
+              );
+
+            environment->ReasonRelay.Environment.commitPayload(
+              operationDescriptor,
+              payload->Operation.Internal.convertWrapRawResponse,
+            );
+          }
+        ]
+        : [%stri ()],
     ]),
   );
 

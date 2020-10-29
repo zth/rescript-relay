@@ -24,6 +24,19 @@ module Types = {
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":""},"users_edges_node_onlineStatus":{"n":""}}} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":""},"users_edges_node_onlineStatus":{"n":""}}} |json}
@@ -36,6 +49,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
 
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;

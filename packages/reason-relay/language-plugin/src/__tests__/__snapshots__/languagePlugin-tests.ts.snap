@@ -636,6 +636,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
 
@@ -959,6 +962,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
 
@@ -1204,6 +1210,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
 
@@ -1309,6 +1318,9 @@ module Internal = {
         responseConverterMap,
         Js.undefined,
       );
+
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
 
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
@@ -1545,6 +1557,9 @@ module Internal = {
         Js.undefined,
       );
 
+  type wrapRawResponseRaw = wrapResponseRaw;
+  let convertWrapRawResponse = convertWrapResponse;
+
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
 
@@ -1604,6 +1619,19 @@ module Internal = {
         responseConverter,
         responseConverterMap,
         Js.undefined,
+      );
+
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let wrapRawResponseConverterMap = ();
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
       );
 
   type rawResponseRaw;

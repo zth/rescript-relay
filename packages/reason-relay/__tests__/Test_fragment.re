@@ -3,6 +3,7 @@ module Query = [%relay.query
     query TestFragmentQuery {
       loggedInUser {
         ...TestFragment_user
+        ...TestFragment_inline
       }
       users {
         edges {
@@ -31,6 +32,15 @@ module Fragment = [%relay.fragment
       firstName
       onlineStatus
       ...TestFragment_sub_user
+    }
+|}
+];
+
+module InlineFragment = [%relay.fragment
+  {|
+    fragment TestFragment_inline on User @inline {
+      firstName
+      onlineStatus
     }
 |}
 ];
@@ -79,6 +89,7 @@ module Test = {
     let data = Fragment.use(query.loggedInUser.fragmentRefs);
 
     let (useOpt, setUseOpt) = React.useState(() => false);
+    let (dataViaInline, setDataViaInline) = React.useState(() => None);
 
     let dataOpt =
       Fragment.useOpt(useOpt ? Some(query.loggedInUser.fragmentRefs) : None);
@@ -118,6 +129,25 @@ module Test = {
          <div> {React.string(data.firstName ++ " is here!")} </div>
        | None => <div> {React.string("Opt not activated")} </div>
        }}
+      {switch (dataViaInline) {
+       | None => React.null
+       | Some(data) =>
+         <div>
+           {(
+              "Inline data: "
+              ++ data->Js.Json.stringifyAny->Belt.Option.getWithDefault("")
+            )
+            ->React.string}
+         </div>
+       }}
+      <button
+        onClick={_ => {
+          setDataViaInline(_ =>
+            Some(InlineFragment.readInline(query.loggedInUser.fragmentRefs))
+          )
+        }}>
+        {React.string("Set data via inline")}
+      </button>
     </div>;
   };
 };

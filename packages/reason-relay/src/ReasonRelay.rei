@@ -523,6 +523,16 @@ type renderPolicy =
   | Partial; // Allow rendering any fragments that already have the data needed
 
 /**
+ * Handle creating and using operation descriptors.
+ */
+type operationDescriptor;
+
+[@bs.module "relay-runtime"]
+external internal_createOperationDescriptor:
+  (queryNode, 'variables) => operationDescriptor =
+  "createOperationDescriptor";
+
+/**
  * Module representing the environment, which you'll need to use and
  * pass to various functions. Takes a few configuration options like store
  * and network layer.
@@ -551,6 +561,9 @@ module Environment: {
     t;
 
   [@bs.send] external getStore: t => Store.t = "getStore";
+  [@bs.send]
+  external commitPayload: (t, operationDescriptor, 'payload) => unit =
+    "commitPayload";
 };
 
 /**
@@ -681,6 +694,9 @@ module MakeLoadQuery:
 /**
  * FRAGMENT
  */
+[@bs.module "react-relay"]
+external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
+  "readInlineData";
 
 module type MakeUseFragmentConfig = {
   type fragmentRaw;

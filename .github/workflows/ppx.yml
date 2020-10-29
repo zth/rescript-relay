@@ -1,0 +1,31 @@
+name: PPX
+
+on: [push]
+
+jobs:
+  ppx:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
+
+    name: PPX
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: packages/reason-relay/reason-relay-ppx
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12.19.0
+        env:
+          CI: true
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build PPX
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
+      - name: Test PPX
+        run: esy test
