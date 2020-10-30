@@ -89,6 +89,8 @@ external convertObj:
 
 let internal_cleanVariablesRaw: 't => 't;
 let internal_cleanObjectFromUndefinedRaw: 't => 't;
+let internal_nullableToOptionalExnHandler:
+  option(option('b) => 'a) => option(Js.Nullable.t('b) => 'a);
 
 /**
  * Read the following section on working with the Relay store:
@@ -717,16 +719,6 @@ external internal_useRefetchableFragment:
   "useRefetchableFragment";
 
 /** Pagination */
-module type MakeUsePaginationFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
-};
-
 type paginationLoadMoreFn =
   (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;
 
@@ -745,6 +737,21 @@ type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
       unit
     ) =>
     Disposable.t,
+};
+
+type paginationLoadMoreOptions = {
+  onComplete: option(Js.nullable(Js.Exn.t) => unit),
+};
+
+type paginationFragmentReturnRaw('fragmentData, 'variables) = {
+  data: 'fragmentData,
+  loadNext: (. int, paginationLoadMoreOptions) => Disposable.t,
+  loadPrevious: (. int, paginationLoadMoreOptions) => Disposable.t,
+  hasNext: bool,
+  hasPrevious: bool,
+  isLoadingNext: bool,
+  isLoadingPrevious: bool,
+  refetch: (. 'variables, refetchableFnOpts) => Disposable.t,
 };
 
 type paginationFragmentReturn('fragmentData, 'variables) = {
@@ -766,34 +773,21 @@ type paginationFragmentReturn('fragmentData, 'variables) = {
     Disposable.t,
 };
 
-module MakeUsePaginationFragment:
-  (C: MakeUsePaginationFragmentConfig) =>
-   {
-    let useBlockingPagination:
-      C.fragmentRef =>
-      paginationBlockingFragmentReturn(C.fragment, C.variables);
+[@bs.module "react-relay/hooks"]
+external internal_usePaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
+  "usePaginationFragment";
 
-    let usePagination:
-      C.fragmentRef => paginationFragmentReturn(C.fragment, C.variables);
-  };
+[@bs.module "react-relay/hooks"]
+external internal_useBlockingPaginationFragment:
+  (fragmentNode, 'fragmentRef) =>
+  paginationFragmentReturnRaw('fragmentData, 'variables) =
+  "useBlockingPaginationFragment";
 
 /**
  * MUTATION
  */
-
-module type MutationConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  type rawResponse;
-  type rawResponseRaw;
-  let node: mutationNode;
-  let convertResponse: responseRaw => response;
-  let wrapResponse: response => responseRaw;
-  let convertRawResponse: rawResponseRaw => rawResponse;
-  let wrapRawResponse: rawResponse => rawResponseRaw;
-  let convertVariables: variables => variables;
-};
 
 type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
 type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;

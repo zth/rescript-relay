@@ -306,20 +306,6 @@ let makeFragment =
         %stri
         ()
       },
-      hasConnection
-        ? [%stri
-          module UsePaginationFragment =
-            ReasonRelay.MakeUsePaginationFragment({
-              type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Types.fragment;
-              type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.Types.refetchVariables;
-              let fragmentSpec = Operation.node;
-              let convertFragment = Operation.Internal.convertFragment;
-              let convertVariables = RefetchableOperation.Internal.convertVariables;
-            })
-        ]
-        : [%stri ()],
       [%stri
         let use = (fRef): Types.fragment => {
           let data =
@@ -377,18 +363,130 @@ let makeFragment =
         : [%stri ()],
       hasConnection
         ? [%stri
-          let usePagination = fRef =>
-            UsePaginationFragment.usePagination(
-              fRef |> Operation.getFragmentRef,
-            )
+          let usePagination =
+              (fr)
+              : ReasonRelay.paginationFragmentReturn(
+                  Types.fragment,
+                  RefetchableOperation.Types.refetchVariables,
+                ) => {
+            let p =
+              ReasonRelay.internal_usePaginationFragment(
+                Operation.node,
+                Operation.getFragmentRef(fr),
+              );
+            let data =
+              ReasonRelay.internal_useConvertedValue(
+                Operation.Internal.convertFragment,
+                p.data,
+              );
+
+            {
+              data,
+              loadNext: (~count, ~onComplete=?, ()) =>
+                p.loadNext(.
+                  count,
+                  {
+                    onComplete:
+                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                  },
+                ),
+              loadPrevious: (~count, ~onComplete=?, ()) =>
+                p.loadPrevious(.
+                  count,
+                  {
+                    onComplete:
+                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                  },
+                ),
+              hasNext: p.hasNext,
+              hasPrevious: p.hasPrevious,
+              isLoadingNext: p.isLoadingNext,
+              isLoadingPrevious: p.isLoadingPrevious,
+              refetch:
+                (
+                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~fetchPolicy=?,
+                  ~renderPolicy=?,
+                  ~onComplete=?,
+                  (),
+                ) =>
+                p.refetch(.
+                  variables
+                  ->RefetchableOperation.Internal.convertVariables
+                  ->ReasonRelay.internal_cleanVariablesRaw
+                  ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                  ReasonRelay.internal_makeRefetchableFnOpts(
+                    ~onComplete?,
+                    ~fetchPolicy?,
+                    ~renderPolicy?,
+                    (),
+                  ),
+                ),
+            };
+          }
         ]
         : [%stri ()],
       hasConnection
         ? [%stri
-          let useBlockingPagination = fRef =>
-            UsePaginationFragment.useBlockingPagination(
-              fRef |> Operation.getFragmentRef,
-            )
+          let useBlockingPagination =
+              (fRef)
+              : ReasonRelay.paginationBlockingFragmentReturn(
+                  Types.fragment,
+                  RefetchableOperation.Types.refetchVariables,
+                ) => {
+            let p =
+              ReasonRelay.internal_useBlockingPaginationFragment(
+                Operation.node,
+                Operation.getFragmentRef(fRef),
+              );
+            let data =
+              ReasonRelay.internal_useConvertedValue(
+                Operation.Internal.convertFragment,
+                p.data,
+              );
+
+            {
+              data,
+              loadNext: (~count, ~onComplete=?, ()) =>
+                p.loadNext(.
+                  count,
+                  {
+                    onComplete:
+                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                  },
+                ),
+              loadPrevious: (~count, ~onComplete=?, ()) =>
+                p.loadPrevious(.
+                  count,
+                  {
+                    onComplete:
+                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                  },
+                ),
+              hasNext: p.hasNext,
+              hasPrevious: p.hasPrevious,
+              refetch:
+                (
+                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~fetchPolicy=?,
+                  ~renderPolicy=?,
+                  ~onComplete=?,
+                  (),
+                ) =>
+                p.refetch(.
+                  variables
+                  ->RefetchableOperation.Internal.convertVariables
+                  ->ReasonRelay.internal_cleanVariablesRaw
+                  ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                  ReasonRelay.internal_makeRefetchableFnOpts(
+                    ~onComplete?,
+                    ~fetchPolicy?,
+                    ~renderPolicy?,
+                    (),
+                  ),
+                ),
+            };
+          }
         ]
         : [%stri ()],
       switch (refetchableQueryName, hasConnection) {

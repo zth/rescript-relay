@@ -818,18 +818,18 @@ type refetchableFnOpts = {
 type refetchFnRaw('variables) =
   ('variables, refetchableFnOpts) => Disposable.t;
 
-let nullableToOptionalExnHandler =
+let internal_nullableToOptionalExnHandler =
   fun
   | None => None
   | Some(handler) =>
-    Some(maybeExn => maybeExn |> Js.Nullable.toOption |> handler);
+    Some(maybeExn => maybeExn->Js.Nullable.toOption->handler);
 
 let makeRefetchableFnOpts =
     (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
   refetchableFnOpts(
     ~fetchPolicy=?fetchPolicy->mapFetchPolicy,
     ~renderPolicy=?renderPolicy->mapRenderPolicy,
-    ~onComplete=?onComplete->nullableToOptionalExnHandler,
+    ~onComplete=?onComplete->internal_nullableToOptionalExnHandler,
     (),
   );
 
@@ -841,16 +841,6 @@ external internal_useRefetchableFragment:
   "useRefetchableFragment";
 
 /** Pagination */
-module type MakeUsePaginationFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
-};
-
 type paginationLoadMoreOptions = {
   onComplete: option(Js.nullable(Js.Exn.t) => unit),
 };
@@ -906,122 +896,20 @@ type paginationFragmentReturnRaw('fragmentData, 'variables) = {
 };
 
 [@bs.module "react-relay/hooks"]
-external usePaginationFragment:
+external internal_usePaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   paginationFragmentReturnRaw('fragmentData, 'variables) =
   "usePaginationFragment";
 
 [@bs.module "react-relay/hooks"]
-external useBlockingPaginationFragment:
+external internal_useBlockingPaginationFragment:
   (fragmentNode, 'fragmentRef) =>
   paginationFragmentReturnRaw('fragmentData, 'variables) =
   "useBlockingPaginationFragment";
 
-module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
-  let useBlockingPagination =
-      (fr: C.fragmentRef)
-      : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
-    let p = useBlockingPaginationFragment(C.fragmentSpec, fr);
-    let data = internal_useConvertedValue(C.convertFragment, p.data);
-
-    {
-      data,
-      loadNext: (~count, ~onComplete=?, ()) =>
-        p.loadNext(.
-          count,
-          {onComplete: onComplete |> nullableToOptionalExnHandler},
-        ),
-      loadPrevious: (~count, ~onComplete=?, ()) =>
-        p.loadPrevious(.
-          count,
-          {onComplete: onComplete |> nullableToOptionalExnHandler},
-        ),
-      hasNext: p.hasNext,
-      hasPrevious: p.hasPrevious,
-      refetch:
-        (
-          ~variables: C.variables,
-          ~fetchPolicy=?,
-          ~renderPolicy=?,
-          ~onComplete=?,
-          (),
-        ) =>
-        p.refetch(.
-          variables
-          ->C.convertVariables
-          ->internal_cleanVariablesRaw
-          ->internal_cleanObjectFromUndefinedRaw,
-          makeRefetchableFnOpts(
-            ~onComplete?,
-            ~fetchPolicy?,
-            ~renderPolicy?,
-            (),
-          ),
-        ),
-    };
-  };
-
-  let usePagination =
-      (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
-    let p = usePaginationFragment(C.fragmentSpec, fr);
-    let data = internal_useConvertedValue(C.convertFragment, p.data);
-
-    {
-      data,
-      loadNext: (~count, ~onComplete=?, ()) =>
-        p.loadNext(.
-          count,
-          {onComplete: onComplete |> nullableToOptionalExnHandler},
-        ),
-      loadPrevious: (~count, ~onComplete=?, ()) =>
-        p.loadPrevious(.
-          count,
-          {onComplete: onComplete |> nullableToOptionalExnHandler},
-        ),
-      hasNext: p.hasNext,
-      hasPrevious: p.hasPrevious,
-      isLoadingNext: p.isLoadingNext,
-      isLoadingPrevious: p.isLoadingPrevious,
-      refetch:
-        (
-          ~variables: C.variables,
-          ~fetchPolicy=?,
-          ~renderPolicy=?,
-          ~onComplete=?,
-          (),
-        ) =>
-        p.refetch(.
-          variables
-          ->C.convertVariables
-          ->internal_cleanVariablesRaw
-          ->internal_cleanObjectFromUndefinedRaw,
-          makeRefetchableFnOpts(
-            ~onComplete?,
-            ~fetchPolicy?,
-            ~renderPolicy?,
-            (),
-          ),
-        ),
-    };
-  };
-};
-
 /**
  * MUTATION
  */
-module type MutationConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  type rawResponse;
-  type rawResponseRaw;
-  let node: mutationNode;
-  let convertResponse: responseRaw => response;
-  let wrapResponse: response => responseRaw;
-  let convertRawResponse: rawResponseRaw => rawResponse;
-  let wrapRawResponse: rawResponse => rawResponseRaw;
-  let convertVariables: variables => variables;
-};
 
 type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
 type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
