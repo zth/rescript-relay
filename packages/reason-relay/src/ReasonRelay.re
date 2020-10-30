@@ -1063,7 +1063,7 @@ type commitMutationConfigRaw('variables, 'rawResponse, 'response) = {
 exception Mutation_failed(array(mutationError));
 
 [@bs.module "relay-runtime"]
-external commitMutationRaw:
+external internal_commitMutation:
   (
     Environment.t,
     commitMutationConfigRaw('variables, 'rawResponse, 'response)
@@ -1072,162 +1072,13 @@ external commitMutationRaw:
   "commitMutation";
 
 [@bs.module "react-relay/lib/relay-experimental"]
-external useMutation:
+external internal_useMutation:
   mutationNode =>
   (
     useMutationConfigRaw('response, 'rawResponse, 'variables) => Disposable.t,
     bool,
   ) =
   "useMutation";
-
-module MakeUseMutation = (C: MutationConfig) => {
-  let use = () => {
-    let (mutate, mutating) = useMutation(C.node);
-    (
-      (
-        ~onError=?,
-        ~onCompleted=?,
-        ~onUnsubscribe=?,
-        ~optimisticResponse=?,
-        ~optimisticUpdater=?,
-        ~updater=?,
-        ~variables,
-        (),
-      ) =>
-        mutate({
-          onError,
-          onCompleted:
-            switch (onCompleted) {
-            | Some(fn) =>
-              Some(
-                (r, errors) =>
-                  fn(r |> C.convertResponse, Js.Nullable.toOption(errors)),
-              )
-
-            | None => None
-            },
-          optimisticResponse:
-            switch (optimisticResponse) {
-            | None => None
-            | Some(r) => Some(r |> C.wrapRawResponse)
-            },
-          onUnsubscribe,
-          variables:
-            variables |> C.convertVariables |> internal_cleanVariablesRaw,
-          optimisticUpdater,
-          updater:
-            switch (updater) {
-            | None => None
-            | Some(updater) =>
-              Some((store, r) => updater(store, r |> C.convertResponse))
-            },
-        }),
-      mutating,
-    );
-  };
-};
-
-module MakeCommitMutation = (C: MutationConfig) => {
-  let commitMutation =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater=?,
-        ~optimisticResponse=?,
-        ~updater=?,
-        ~onCompleted=?,
-        ~onError=?,
-        (),
-      )
-      : Disposable.t =>
-    commitMutationRaw(
-      environment,
-      {
-        variables:
-          variables |> C.convertVariables |> internal_cleanVariablesRaw,
-        mutation: C.node,
-        onCompleted:
-          Some(
-            (res, err) =>
-              switch (onCompleted) {
-              | Some(cb) =>
-                cb(res->C.convertResponse, Js.Nullable.toOption(err))
-              | None => ()
-              },
-          ),
-        onError:
-          Some(
-            err =>
-              switch (onError) {
-              | Some(cb) => cb(Js.Nullable.toOption(err))
-              | None => ()
-              },
-          ),
-        optimisticResponse:
-          switch (optimisticResponse) {
-          | None => None
-          | Some(r) => Some(r |> C.wrapRawResponse)
-          },
-        optimisticUpdater,
-        updater:
-          switch (updater) {
-          | None => None
-          | Some(updater) =>
-            Some((store, r) => updater(store, r |> C.convertResponse))
-          },
-      },
-    );
-
-  let commitMutationPromised =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater=?,
-        ~optimisticResponse=?,
-        ~updater=?,
-        (),
-      )
-      : Promise.t(
-          Belt.Result.t(
-            (C.response, option(array(mutationError))),
-            option(mutationError),
-          ),
-        ) => {
-    let (promise, resolve) = Promise.pending();
-
-    let _: Disposable.t =
-      commitMutationRaw(
-        environment,
-        {
-          variables:
-            variables |> C.convertVariables |> internal_cleanVariablesRaw,
-          mutation: C.node,
-          onCompleted:
-            Some(
-              (res, err) =>
-                resolve(
-                  Ok((res->C.convertResponse, Js.Nullable.toOption(err))),
-                ),
-            ),
-          onError: Some(err => resolve(Error(Js.Nullable.toOption(err)))),
-          optimisticResponse:
-            switch (optimisticResponse) {
-            | None => None
-            | Some(r) => Some(r |> C.wrapRawResponse)
-            },
-          optimisticUpdater,
-          updater:
-            switch (updater) {
-            | None => None
-            | Some(updater) =>
-              Some((store, r) => updater(store, r |> C.convertResponse))
-            },
-        },
-      );
-
-    promise;
-  };
-};
 
 [@bs.module "relay-runtime"]
 external commitLocalUpdate:

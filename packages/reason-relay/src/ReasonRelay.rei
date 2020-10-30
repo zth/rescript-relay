@@ -810,26 +810,25 @@ type useMutationConfig('response, 'rawResponse, 'variables) = {
   variables: 'variables,
 };
 
-module MakeUseMutation:
-  (C: MutationConfig) =>
-   {
-    let use:
-      unit =>
-      (
-        (
-          ~onError: mutationError => unit=?,
-          ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
-          ~onUnsubscribe: unit => unit=?,
-          ~optimisticResponse: C.rawResponse=?,
-          ~optimisticUpdater: optimisticUpdaterFn=?,
-          ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-          ~variables: C.variables,
-          unit
-        ) =>
-        Disposable.t,
-        bool,
-      );
-  };
+type useMutationConfigRaw('response, 'rawResponse, 'variables) = {
+  onError: option(mutationError => unit),
+  onCompleted:
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
+  onUnsubscribe: option(unit => unit),
+  optimisticResponse: option('rawResponse),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+  variables: 'variables,
+};
+
+[@bs.module "react-relay/lib/relay-experimental"]
+external internal_useMutation:
+  mutationNode =>
+  (
+    useMutationConfigRaw('response, 'rawResponse, 'variables) => Disposable.t,
+    bool,
+  ) =
+  "useMutation";
 
 /**
  * Context provider for the Relay environment.
@@ -857,38 +856,25 @@ let useEnvironmentFromContext: unit => Environment.t;
 
 exception Mutation_failed(array(mutationError));
 
-module MakeCommitMutation:
-  (C: MutationConfig) =>
-   {
-    let commitMutation:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.rawResponse=?,
-        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
-        ~onError: option(mutationError) => unit=?,
-        unit
-      ) =>
-      Disposable.t;
+type commitMutationConfigRaw('variables, 'rawResponse, 'response) = {
+  mutation: mutationNode,
+  variables: 'variables,
+  onCompleted:
+    option(('response, Js.Nullable.t(array(mutationError))) => unit),
+  onError: option(Js.Nullable.t(mutationError) => unit),
+  optimisticResponse: option('rawResponse),
+  optimisticUpdater: option(optimisticUpdaterFn),
+  updater: option(updaterFn('response)),
+};
 
-    let commitMutationPromised:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.rawResponse=?,
-        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        unit
-      ) =>
-      Promise.t(
-        Belt.Result.t(
-          (C.response, option(array(mutationError))),
-          option(mutationError),
-        ),
-      );
-  };
+[@bs.module "relay-runtime"]
+external internal_commitMutation:
+  (
+    Environment.t,
+    commitMutationConfigRaw('variables, 'rawResponse, 'response)
+  ) =>
+  Disposable.t =
+  "commitMutation";
 
 /**
  * A way of committing a local update to the store.
