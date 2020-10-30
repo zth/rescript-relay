@@ -54,12 +54,16 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build PPX
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
       - name: install yarn
         run: |
           npm install -g yarn
-      - name: set yarn cache dir
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Clean up before building
         run: |
           rm -rf packages/reason-relay/__tests__/*
@@ -79,10 +83,15 @@ jobs:
           name: |
             ppx-ubuntu-latest
             ppx-macos-latest
-      - name: Publish to NPM
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          dry-run: true
-          tag: ${{ github.event.inputs.tag_name }}
-          package: ./_release/package.json
+      - name: Publish to NPM (tagged)
+        if: ${{ github.event.inputs.tag_name }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd _release && npm publish --dry-run --tag ${{ github.event.inputs.tag_name }}
+      - name: Publish to NPM (master)
+        if: ${{ !github.event.inputs.tag_name }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd _release && npm publish --dry-run
