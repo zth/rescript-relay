@@ -1094,15 +1094,6 @@ external useSubscribeToInvalidationState:
   (array(dataId), unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState";
 
-module type SubscriptionConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  let node: subscriptionNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
-};
-
 [@bs.deriving abstract]
 type subscriptionConfigRaw('response, 'variables) = {
   subscription: subscriptionNode,
@@ -1118,42 +1109,7 @@ type subscriptionConfigRaw('response, 'variables) = {
 };
 
 [@bs.module "relay-runtime"]
-external requestSubscription:
+external internal_requestSubscription:
   (Environment.t, subscriptionConfigRaw('response, 'variables)) =>
   Disposable.t =
   "requestSubscription";
-
-module MakeUseSubscription = (C: SubscriptionConfig) => {
-  let subscribe =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onCompleted: option(unit => unit)=?,
-        ~onError: option(Js.Exn.t => unit)=?,
-        ~onNext: option(C.response => unit)=?,
-        ~updater: option(updaterFn(C.response))=?,
-        (),
-      ) =>
-    requestSubscription(
-      environment,
-      subscriptionConfigRaw(
-        ~subscription=C.node,
-        ~variables=
-          variables |> C.convertVariables |> internal_cleanVariablesRaw,
-        ~onCompleted?,
-        ~onError?,
-        ~onNext=?
-          switch (onNext) {
-          | None => None
-          | Some(onNext) => Some(r => onNext(r |> C.convertResponse))
-          },
-        ~updater=?
-          switch (updater) {
-          | None => None
-          | Some(updater) =>
-            Some((store, r) => updater(store, C.convertResponse(r)))
-          },
-        (),
-      ),
-    );
-};

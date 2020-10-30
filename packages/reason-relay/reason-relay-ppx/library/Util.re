@@ -881,16 +881,57 @@ let makeSubscription = (~loc, ~moduleName) =>
       [%stri include Operation.Utils],
       [%stri module Types = Operation.Types],
       [%stri
-        module Subscription =
-          ReasonRelay.MakeUseSubscription({
-            type variables = Types.variables;
-            type responseRaw = Operation.Internal.responseRaw;
-            type response = Types.response;
-            let node = Operation.node;
-            let convertResponse = Operation.Internal.convertResponse;
-            let convertVariables = Operation.Internal.convertVariables;
-          })
+        let subscribe:
+          (
+            ~environment: ReasonRelay.Environment.t,
+            ~variables: Types.variables,
+            ~onCompleted: unit => unit=?,
+            ~onError: Js.Exn.t => unit=?,
+            ~onNext: Types.response => unit=?,
+            ~updater: ReasonRelay.updaterFn(Types.response)=?,
+            unit
+          ) =>
+          ReasonRelay.Disposable.t =
+          (
+            ~environment: ReasonRelay.Environment.t,
+            ~variables: Types.variables,
+            ~onCompleted: option(unit => unit)=?,
+            ~onError: option(Js.Exn.t => unit)=?,
+            ~onNext: option(Types.response => unit)=?,
+            ~updater: option(ReasonRelay.updaterFn(Types.response))=?,
+            (),
+          ) =>
+            ReasonRelay.internal_requestSubscription(
+              environment,
+              ReasonRelay.subscriptionConfigRaw(
+                ~subscription=Operation.node,
+                ~variables=
+                  variables
+                  ->Operation.Internal.convertVariables
+                  ->ReasonRelay.internal_cleanVariablesRaw,
+                ~onCompleted?,
+                ~onError?,
+                ~onNext=?
+                  switch (onNext) {
+                  | None => None
+                  | Some(onNext) =>
+                    Some(r => onNext(r->Operation.Internal.convertResponse))
+                  },
+                ~updater=?
+                  switch (updater) {
+                  | None => None
+                  | Some(updater) =>
+                    Some(
+                      (store, r) =>
+                        updater(
+                          store,
+                          Operation.Internal.convertResponse(r),
+                        ),
+                    )
+                  },
+                (),
+              ),
+            )
       ],
-      [%stri let subscribe = Subscription.subscribe],
     ]),
   );

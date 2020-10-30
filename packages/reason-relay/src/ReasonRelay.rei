@@ -909,30 +909,22 @@ external fetchQuery:
   Observable.t('response) =
   "fetchQuery";
 
-/**
- * SUBSCRIPTIONS
- */
-module type SubscriptionConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  let node: subscriptionNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
+[@bs.deriving abstract]
+type subscriptionConfigRaw('response, 'variables) = {
+  subscription: subscriptionNode,
+  variables: 'variables,
+  [@bs.optional]
+  onCompleted: unit => unit,
+  [@bs.optional]
+  onError: Js.Exn.t => unit,
+  [@bs.optional]
+  onNext: 'response => unit,
+  [@bs.optional]
+  updater: updaterFn('response),
 };
 
-module MakeUseSubscription:
-  (C: SubscriptionConfig) =>
-   {
-    let subscribe:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onCompleted: unit => unit=?,
-        ~onError: Js.Exn.t => unit=?,
-        ~onNext: C.response => unit=?,
-        ~updater: updaterFn(C.response)=?,
-        unit
-      ) =>
-      Disposable.t;
-  };
+[@bs.module "relay-runtime"]
+external internal_requestSubscription:
+  (Environment.t, subscriptionConfigRaw('response, 'variables)) =>
+  Disposable.t =
+  "requestSubscription";
