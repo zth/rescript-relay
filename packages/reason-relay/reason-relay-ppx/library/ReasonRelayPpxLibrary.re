@@ -15,7 +15,7 @@ let queryExtension =
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
 
-      makeQuery(
+      Query.make(
         ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
         ~hasRawResponseType=
           operationStr
@@ -38,7 +38,7 @@ let fragmentExtension =
         operationStr
         |> extractFragmentRefetchableQueryName(~loc=operationStrLoc);
 
-      makeFragment(
+      Fragment.make(
         ~moduleName=
           operationStr |> extractTheFragmentName(~loc=operationStrLoc),
         ~refetchableQueryName,
@@ -67,7 +67,7 @@ let mutationExtension =
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
 
-      makeMutation(
+      Mutation.make(
         ~moduleName=
           operationStr |> extractTheMutationName(~loc=operationStrLoc),
         ~loc=operationStrLoc,
@@ -84,7 +84,7 @@ let subscriptionExtension =
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
 
-      makeSubscription(
+      Subscription.make(
         ~moduleName=
           operationStr |> extractTheSubscriptionName(~loc=operationStrLoc),
         ~loc=operationStrLoc,
