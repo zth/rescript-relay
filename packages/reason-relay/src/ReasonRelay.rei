@@ -529,6 +529,8 @@ type renderPolicy =
   | Full // Always render the full result
   | Partial; // Allow rendering any fragments that already have the data needed
 
+let mapRenderPolicy: option(renderPolicy) => option(string);
+
 /**
  * Handle creating and using operation descriptors.
  */
@@ -606,69 +608,39 @@ let mapFetchQueryFetchPolicy:
  * Internally used functors and configs.
  * You won't need to know about these.
  */
-module type MakeUseQueryConfig = {
-  type responseRaw;
-  type response;
-  type variables;
-  type queryRef;
-  let query: queryNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
+type useQueryConfig = {
+  fetchKey: option(string),
+  fetchPolicy: option(string),
+  [@bs.as "UNSTABLE_renderPolicy"]
+  renderPolicy: option(string),
+  networkCacheConfig: option(cacheConfig),
 };
 
-module MakeUseQuery:
-  (C: MakeUseQueryConfig) =>
-   {
-    let use:
-      (
-        ~variables: C.variables,
-        ~fetchPolicy: fetchPolicy=?,
-        ~renderPolicy: renderPolicy=?,
-        ~fetchKey: string=?,
-        ~networkCacheConfig: cacheConfig=?,
-        unit
-      ) =>
-      C.response;
+[@bs.module "react-relay/hooks"]
+external internal_useQuery:
+  (queryNode, 'variables, useQueryConfig) => 'queryResponse =
+  "useLazyLoadQuery";
 
-    let useLoader:
-      unit =>
-      (
-        option(C.queryRef),
-        (
-          ~variables: C.variables,
-          ~fetchPolicy: fetchPolicy=?,
-          ~networkCacheConfig: cacheConfig=?,
-          unit
-        ) =>
-        unit,
-        unit => unit,
-      );
+[@bs.module "react-relay/hooks"]
+external internal_usePreloadedQuery:
+  (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
+  'queryResponse =
+  "usePreloadedQuery";
 
-    let fetch:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onResult: Belt.Result.t(C.response, Js.Exn.t) => unit,
-        ~networkCacheConfig: cacheConfig=?,
-        ~fetchPolicy: fetchQueryFetchPolicy=?,
-        unit
-      ) =>
-      unit;
+type useQueryLoaderOptions = {
+  fetchPolicy: option(fetchPolicy),
+  networkCacheConfig: option(cacheConfig),
+};
 
-    let fetchPromised:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~networkCacheConfig: cacheConfig=?,
-        ~fetchPolicy: fetchQueryFetchPolicy=?,
-        unit
-      ) =>
-      Promise.t(Belt.Result.t(C.response, Js.Exn.t));
-
-    let usePreloaded:
-      (~queryRef: C.queryRef, ~renderPolicy: renderPolicy=?, unit) =>
-      C.response;
-  };
+[@bs.module "react-relay/hooks"]
+external internal_useQueryLoader:
+  queryNode =>
+  (
+    Js.nullable('queryRef),
+    ('variables, useQueryLoaderOptions) => unit,
+    unit => unit,
+  ) =
+  "useQueryLoader";
 
 module type MakeLoadQueryConfig = {
   type variables;

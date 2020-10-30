@@ -628,10 +628,8 @@ module Context = {
   };
 };
 
-let useConvertedValue = (convert, v) =>
+let internal_useConvertedValue = (convert, v) =>
   React.useMemo1(() => convert(v), [|v|]);
-
-let internal_useConvertedValue = useConvertedValue;
 
 exception EnvironmentNotFoundInContext;
 
@@ -694,7 +692,8 @@ type loadQueryConfig = {
 };
 
 [@bs.module "react-relay/hooks"]
-external useQuery: (queryNode, 'variables, useQueryConfig) => 'queryResponse =
+external internal_useQuery:
+  (queryNode, 'variables, useQueryConfig) => 'queryResponse =
   "useLazyLoadQuery";
 
 type useQueryLoaderOptions = {
@@ -703,7 +702,7 @@ type useQueryLoaderOptions = {
 };
 
 [@bs.module "react-relay/hooks"]
-external useQueryLoader:
+external internal_useQueryLoader:
   queryNode =>
   (
     Js.nullable('queryRef),
@@ -718,145 +717,10 @@ external loadQuery:
   "loadQuery";
 
 [@bs.module "react-relay/hooks"]
-external usePreloadedQuery:
+external internal_usePreloadedQuery:
   (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
   'queryResponse =
   "usePreloadedQuery";
-
-module type MakeUseQueryConfig = {
-  type responseRaw;
-  type response;
-  type variables;
-  type queryRef;
-  let query: queryNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
-};
-
-module MakeUseQuery = (C: MakeUseQueryConfig) => {
-  let use =
-      (
-        ~variables,
-        ~fetchPolicy=?,
-        ~renderPolicy=?,
-        ~fetchKey=?,
-        ~networkCacheConfig=?,
-        (),
-      )
-      : C.response => {
-    let data =
-      useQuery(
-        C.query,
-        variables
-        |> internal_cleanVariablesRaw
-        |> C.convertVariables
-        |> internal_cleanObjectFromUndefinedRaw,
-        {
-          fetchKey,
-          fetchPolicy: fetchPolicy |> mapFetchPolicy,
-          renderPolicy: renderPolicy |> mapRenderPolicy,
-          networkCacheConfig,
-        },
-      );
-
-    useConvertedValue(C.convertResponse, data);
-  };
-
-  let useLoader = () => {
-    let (nullableQueryRef, loadQueryFn, disposableFn) =
-      useQueryLoader(C.query);
-
-    // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
-    let loadQuery =
-        (~variables: C.variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
-      loadQueryFn(
-        variables->C.convertVariables,
-        {fetchPolicy, networkCacheConfig},
-      );
-
-    (Js.Nullable.toOption(nullableQueryRef), loadQuery, disposableFn);
-  };
-
-  let usePreloaded = (~queryRef: C.queryRef, ~renderPolicy=?, ()) => {
-    let data =
-      usePreloadedQuery(
-        C.query,
-        queryRef,
-        switch (renderPolicy) {
-        | Some(_) =>
-          Some({"UNSTABLE_renderPolicy": renderPolicy |> mapRenderPolicy})
-        | None => None
-        },
-      );
-    data |> useConvertedValue(C.convertResponse);
-  };
-
-  let fetch =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onResult: Belt.Result.t(C.response, Js.Exn.t) => unit,
-        ~networkCacheConfig=?,
-        ~fetchPolicy=?,
-        (),
-      )
-      : unit => {
-    let _ =
-      fetchQuery(
-        environment,
-        C.query,
-        variables |> C.convertVariables,
-        Some({
-          networkCacheConfig,
-          fetchPolicy: fetchPolicy->mapFetchQueryFetchPolicy,
-        }),
-      )
-      ->Observable.(
-          subscribe(
-            makeObserver(
-              ~next=res => onResult(Ok(res->C.convertResponse)),
-              ~error=err => onResult(Error(err)),
-              (),
-            ),
-          )
-        );
-    ();
-  };
-
-  let fetchPromised =
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~networkCacheConfig=?,
-        ~fetchPolicy=?,
-        (),
-      )
-      : Promise.t(Belt.Result.t(C.response, Js.Exn.t)) => {
-    let (promise, resolve) = Promise.pending();
-
-    let _ =
-      fetchQuery(
-        environment,
-        C.query,
-        variables |> C.convertVariables,
-        Some({
-          networkCacheConfig,
-          fetchPolicy: fetchPolicy->mapFetchQueryFetchPolicy,
-        }),
-      )
-      ->Observable.(
-          subscribe(
-            makeObserver(
-              ~next=res => {resolve(Ok(res->C.convertResponse))},
-              ~error=err => {resolve(Error(err))},
-              (),
-            ),
-          )
-        );
-
-    promise;
-  };
-};
 
 module type MakeLoadQueryConfig = {
   type variables;
@@ -1058,7 +922,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
       (fr: C.fragmentRef)
       : paginationBlockingFragmentReturn(C.fragment, C.variables) => {
     let p = useBlockingPaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p.data);
+    let data = internal_useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
@@ -1100,7 +964,7 @@ module MakeUsePaginationFragment = (C: MakeUsePaginationFragmentConfig) => {
   let usePagination =
       (fr: C.fragmentRef): paginationFragmentReturn(C.fragment, C.variables) => {
     let p = usePaginationFragment(C.fragmentSpec, fr);
-    let data = useConvertedValue(C.convertFragment, p.data);
+    let data = internal_useConvertedValue(C.convertFragment, p.data);
 
     {
       data,
