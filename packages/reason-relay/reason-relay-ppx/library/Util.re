@@ -277,28 +277,3 @@ let extractOperationStr = (~loc, ~expr) =>
       "All [%%relay] operations must be provided a string, like [%%relay.query {| { query SomeQuery { id } |}]",
     )
   };
-
-/**
- * This returns an AST record representing a module name definition.
- */
-let makeModuleNameAst = (~loc, ~moduleName) => {
-  pmod_attributes: [],
-  pmod_loc: loc,
-  pmod_desc:
-    Pmod_ident({loc, txt: Lident(getGraphQLModuleName(moduleName))}),
-};
-
-let makeModuleAccessorAst = (~loc, ~moduleName, ~path) => {
-  pmod_attributes: [],
-  pmod_loc: loc,
-  pmod_desc:
-    Pmod_ident({loc, txt: Ldot(path, getGraphQLModuleName(moduleName))}),
-};
-
-let makeGraphQLModuleAccessor1 =
-    (~loc, ~moduleName, ~innerModuleName, ~typeName) => {
-  Ldot(
-    Ldot(Lident(typeName), innerModuleName),
-    getGraphQLModuleName(moduleName),
-  );
-};

@@ -4,40 +4,58 @@ open Util;
 /**
  * Check out the comments for makeFragment, this does the same thing but for subscriptions.
  */
-let make = (~loc, ~moduleName) =>
+let make = (~loc, ~moduleName) => {
+  let typeFromGeneratedModule = makeTypeAccessor(~loc, ~moduleName);
+  let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
+  let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
+
   Ast_helper.Mod.mk(
     Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
+      [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
+      [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         let subscribe:
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~onCompleted: unit => unit=?,
             ~onError: Js.Exn.t => unit=?,
-            ~onNext: Types.response => unit=?,
-            ~updater: ReasonRelay.updaterFn(Types.response)=?,
+            ~onNext: [%t typeFromGeneratedModule(["Types", "response"])] =>
+                     unit
+                       =?,
+            ~updater: ReasonRelay.updaterFn(
+                        [%t typeFromGeneratedModule(["Types", "response"])],
+                      )
+                        =?,
             unit
           ) =>
           ReasonRelay.Disposable.t =
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~onCompleted: option(unit => unit)=?,
             ~onError: option(Js.Exn.t => unit)=?,
-            ~onNext: option(Types.response => unit)=?,
-            ~updater: option(ReasonRelay.updaterFn(Types.response))=?,
+            ~onNext:
+               option(
+                 [%t typeFromGeneratedModule(["Types", "response"])] => unit,
+               )=?,
+            ~updater:
+               option(
+                 ReasonRelay.updaterFn(
+                   [%t typeFromGeneratedModule(["Types", "response"])],
+                 ),
+               )=?,
             (),
           ) =>
             ReasonRelay.internal_requestSubscription(
               environment,
               ReasonRelay.subscriptionConfigRaw(
-                ~subscription=Operation.node,
+                ~subscription=[%e valFromGeneratedModule(["node"])],
                 ~variables=
                   variables
-                  ->Operation.Internal.convertVariables
+                  ->[%e
+                      valFromGeneratedModule(["Internal", "convertVariables"])
+                    ]
                   ->ReasonRelay.internal_cleanVariablesRaw,
                 ~onCompleted?,
                 ~onError?,
@@ -45,7 +63,17 @@ let make = (~loc, ~moduleName) =>
                   switch (onNext) {
                   | None => None
                   | Some(onNext) =>
-                    Some(r => onNext(r->Operation.Internal.convertResponse))
+                    Some(
+                      r =>
+                        onNext(
+                          r->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertResponse",
+                               ])
+                             ],
+                        ),
+                    )
                   },
                 ~updater=?
                   switch (updater) {
@@ -55,7 +83,14 @@ let make = (~loc, ~moduleName) =>
                       (store, r) =>
                         updater(
                           store,
-                          Operation.Internal.convertResponse(r),
+                          [%e
+                            valFromGeneratedModule([
+                              "Internal",
+                              "convertResponse",
+                            ])
+                          ](
+                            r,
+                          ),
                         ),
                     )
                   },
@@ -65,3 +100,4 @@ let make = (~loc, ~moduleName) =>
       ],
     ]),
   );
+};
