@@ -560,7 +560,7 @@ let printUnionTypes = (~state, ~printName, union: union) => {
 let printEnumToStringFn = (enum: fullEnum): string =>
   "external "
   ++ Tablecloth.String.uncapitalize(enum.name)
-  ++ "_toString: "
+  ++ "_toString: Types."
   ++ printEnumName(enum.name)
   ++ " => string = \"%identity\";";
 

@@ -4,29 +4,32 @@ open Util;
 /**
  * Check out the comments for makeFragment, this does the same thing but for queries.
  */
-let make = (~loc, ~moduleName, ~hasRawResponseType) =>
+let make = (~loc, ~moduleName, ~hasRawResponseType) => {
+  let typeFromGeneratedModule = makeTypeAccessor(~loc, ~moduleName);
+  let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
+  let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
+
   Ast_helper.Mod.mk(
     Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
+      [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
+      [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         let use =
             (
-              ~variables: Types.variables,
+              ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
               ~fetchPolicy: option(ReasonRelay.fetchPolicy)=?,
               ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
               ~fetchKey: option(string)=?,
               ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
               (),
             )
-            : Types.response => {
-          let data: Types.response =
+            : [%t typeFromGeneratedModule(["Types", "response"])] => {
+          let data: [%t typeFromGeneratedModule(["Types", "response"])] =
             ReasonRelay.internal_useQuery(
-              Operation.node,
+              [%e valFromGeneratedModule(["node"])],
               variables
               ->ReasonRelay.internal_cleanVariablesRaw
-              ->Operation.Internal.convertVariables
+              ->[%e valFromGeneratedModule(["Internal", "convertVariables"])]
               ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
               {
                 fetchKey,
@@ -37,7 +40,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
             );
 
           ReasonRelay.internal_useConvertedValue(
-            Operation.Internal.convertResponse,
+            [%e valFromGeneratedModule(["Internal", "convertResponse"])],
             data,
           );
         }
@@ -46,9 +49,14 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
         let useLoader =
             ()
             : (
-                option(Operation.queryRef),
+                option([%t typeFromGeneratedModule(["queryRef"])]),
                 (
-                  ~variables: Types.variables,
+                  ~variables: [%t
+                                typeFromGeneratedModule([
+                                  "Types",
+                                  "variables",
+                                ])
+                              ],
                   ~fetchPolicy: ReasonRelay.fetchPolicy=?,
                   ~networkCacheConfig: ReasonRelay.cacheConfig=?,
                   unit
@@ -57,18 +65,27 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
                 unit => unit,
               ) => {
           let (nullableQueryRef, loadQueryFn, disposableFn) =
-            ReasonRelay.internal_useQueryLoader(Operation.node);
+            ReasonRelay.internal_useQueryLoader(
+              [%e valFromGeneratedModule(["node"])],
+            );
 
           // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
           let loadQuery =
               (
-                ~variables: Types.variables,
+                ~variables: [%t
+                   typeFromGeneratedModule(["Types", "variables"])
+                 ],
                 ~fetchPolicy=?,
                 ~networkCacheConfig=?,
                 (),
               ) =>
             loadQueryFn(
-              variables->Operation.Internal.convertVariables,
+              variables->[%e
+                           valFromGeneratedModule([
+                             "Internal",
+                             "convertVariables",
+                           ])
+                         ],
               {fetchPolicy, networkCacheConfig},
             );
 
@@ -79,8 +96,15 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
         let fetch =
             (
               ~environment: ReasonRelay.Environment.t,
-              ~variables: Types.variables,
-              ~onResult: Belt.Result.t(Types.response, Js.Exn.t) => unit,
+              ~variables: [%t
+                 typeFromGeneratedModule(["Types", "variables"])
+               ],
+              ~onResult:
+                 Belt.Result.t(
+                   [%t typeFromGeneratedModule(["Types", "response"])],
+                   Js.Exn.t,
+                 ) =>
+                 unit,
               ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
               ~fetchPolicy: option(ReasonRelay.fetchQueryFetchPolicy)=?,
               (),
@@ -89,8 +113,13 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
           let _ =
             ReasonRelay.fetchQuery(
               environment,
-              Operation.node,
-              variables->Operation.Internal.convertVariables,
+              [%e valFromGeneratedModule(["node"])],
+              variables->[%e
+                           valFromGeneratedModule([
+                             "Internal",
+                             "convertVariables",
+                           ])
+                         ],
               Some({
                 networkCacheConfig,
                 fetchPolicy: fetchPolicy->ReasonRelay.mapFetchQueryFetchPolicy,
@@ -102,7 +131,14 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
                     ~next=
                       res =>
                         onResult(
-                          Ok(res->Operation.Internal.convertResponse),
+                          Ok(
+                            res->[%e
+                                   valFromGeneratedModule([
+                                     "Internal",
+                                     "convertResponse",
+                                   ])
+                                 ],
+                          ),
                         ),
                     ~error=err => onResult(Error(err)),
                     (),
@@ -116,19 +152,31 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
         let fetchPromised =
             (
               ~environment: ReasonRelay.Environment.t,
-              ~variables: Types.variables,
+              ~variables: [%t
+                 typeFromGeneratedModule(["Types", "variables"])
+               ],
               ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
               ~fetchPolicy: option(ReasonRelay.fetchQueryFetchPolicy)=?,
               (),
             )
-            : Promise.t(Belt.Result.t(Types.response, Js.Exn.t)) => {
+            : Promise.t(
+                Belt.Result.t(
+                  [%t typeFromGeneratedModule(["Types", "response"])],
+                  Js.Exn.t,
+                ),
+              ) => {
           let (promise, resolve) = Promise.pending();
 
           let _ =
             ReasonRelay.fetchQuery(
               environment,
-              Operation.node,
-              variables->Operation.Internal.convertVariables,
+              [%e valFromGeneratedModule(["node"])],
+              variables->[%e
+                           valFromGeneratedModule([
+                             "Internal",
+                             "convertVariables",
+                           ])
+                         ],
               Some({
                 networkCacheConfig,
                 fetchPolicy: fetchPolicy->ReasonRelay.mapFetchQueryFetchPolicy,
@@ -139,7 +187,16 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
                   makeObserver(
                     ~next=
                       res => {
-                        resolve(Ok(res->Operation.Internal.convertResponse))
+                        resolve(
+                          Ok(
+                            res->[%e
+                                   valFromGeneratedModule([
+                                     "Internal",
+                                     "convertResponse",
+                                   ])
+                                 ],
+                          ),
+                        )
                       },
                     ~error=err => {resolve(Error(err))},
                     (),
@@ -153,14 +210,14 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
       [%stri
         let usePreloaded =
             (
-              ~queryRef: Operation.queryRef,
+              ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],
               ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
               (),
             )
-            : Types.response => {
-          let data: Types.response =
+            : [%t typeFromGeneratedModule(["Types", "response"])] => {
+          let data: [%t typeFromGeneratedModule(["Types", "response"])] =
             ReasonRelay.internal_usePreloadedQuery(
-              Operation.node,
+              [%e valFromGeneratedModule(["node"])],
               queryRef,
               switch (renderPolicy) {
               | Some(_) =>
@@ -172,7 +229,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
               },
             );
           ReasonRelay.internal_useConvertedValue(
-            Operation.Internal.convertResponse,
+            [%e valFromGeneratedModule(["Internal", "convertResponse"])],
             data,
           );
         }
@@ -182,21 +239,36 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) =>
           let commitLocalPayload =
               (
                 ~environment: ReasonRelay.Environment.t,
-                ~variables: Types.variables,
-                ~payload: Types.rawResponse,
+                ~variables: [%t
+                   typeFromGeneratedModule(["Types", "variables"])
+                 ],
+                ~payload: [%t
+                   typeFromGeneratedModule(["Types", "rawResponse"])
+                 ],
               ) => {
             let operationDescriptor =
               ReasonRelay.internal_createOperationDescriptor(
-                Operation.node,
-                variables->Operation.Internal.convertVariables,
+                [%e valFromGeneratedModule(["node"])],
+                variables->[%e
+                             valFromGeneratedModule([
+                               "Internal",
+                               "convertVariables",
+                             ])
+                           ],
               );
 
             environment->ReasonRelay.Environment.commitPayload(
               operationDescriptor,
-              payload->Operation.Internal.convertWrapRawResponse,
+              payload->[%e
+                         valFromGeneratedModule([
+                           "Internal",
+                           "convertWrapRawResponse",
+                         ])
+                       ],
             );
           }
         ]
         : [%stri ()],
     ]),
   );
+};

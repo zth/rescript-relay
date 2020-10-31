@@ -185,6 +185,61 @@ let fragmentHasInlineDirective = (~loc, str) =>
 let getGraphQLModuleName = opName =>
   String.capitalize_ascii(opName) ++ "_graphql";
 
+let makeTypeAccessor = (~loc, ~moduleName, path) =>
+  Ppxlib.Ast_helper.Typ.constr(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
+        | [innerModule, t] =>
+          Ldot(
+            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
+            t,
+          )
+        | _ => Lident(getGraphQLModuleName(moduleName))
+        },
+      loc,
+    },
+    [],
+  );
+
+let makeExprAccessor = (~loc, ~moduleName, path) =>
+  Ppxlib.Ast_helper.Exp.ident(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
+        | [innerModule, t] =>
+          Ldot(
+            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
+            t,
+          )
+        | _ => Lident(getGraphQLModuleName(moduleName))
+        },
+      loc,
+    },
+  );
+
+let makeModuleIdent = (~loc, ~moduleName, path) =>
+  Ppxlib.Ast_helper.Mod.ident(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
+        | [innerModule, t] =>
+          Ldot(
+            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
+            t,
+          )
+        | _ => Lident(getGraphQLModuleName(moduleName))
+        },
+      loc,
+    },
+  );
+
 /**
  * This is some AST voodoo to extract the provided string from [%relay.<operation> {| ...string here... |}].
  * It basically just matches on the correct AST structure for having an extension node with a string, and
@@ -233,3 +288,17 @@ let makeModuleNameAst = (~loc, ~moduleName) => {
     Pmod_ident({loc, txt: Lident(getGraphQLModuleName(moduleName))}),
 };
 
+let makeModuleAccessorAst = (~loc, ~moduleName, ~path) => {
+  pmod_attributes: [],
+  pmod_loc: loc,
+  pmod_desc:
+    Pmod_ident({loc, txt: Ldot(path, getGraphQLModuleName(moduleName))}),
+};
+
+let makeGraphQLModuleAccessor1 =
+    (~loc, ~moduleName, ~innerModuleName, ~typeName) => {
+  Ldot(
+    Ldot(Lident(typeName), innerModuleName),
+    getGraphQLModuleName(moduleName),
+  );
+};

@@ -74,17 +74,17 @@ let getPrintedFullState =
   | None => ()
   };
 
+  addSpacing();
+
+  // Print definitions and declarations
+  addToStr("module Types = {\n");
+
   // Print enums
   state.enums
   ->Belt.List.forEach(enum => {
       addToStr(enum->Printer.printEnum);
       addSpacing();
     });
-
-  addSpacing();
-
-  // Print definitions and declarations
-  addToStr("module Types = {\n");
 
   // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
   addToStr("[@ocaml.warning \"-30\"];\n");

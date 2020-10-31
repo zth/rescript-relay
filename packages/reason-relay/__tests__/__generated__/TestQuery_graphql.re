@@ -1,8 +1,8 @@
 /* @generated */
 
-type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
-
 module Types = {
+  type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
+
   [@ocaml.warning "-30"];
   type response_users = {
     edges: option(array(option(response_users_edges))),
@@ -72,7 +72,8 @@ module Internal = {
 type queryRef;
 
 module Utils = {
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+  external onlineStatus_toString: Types.enum_OnlineStatus => string =
+    "%identity";
   open Types;
   let makeVariables = (~status=?, ()): variables => {status: status};
 };

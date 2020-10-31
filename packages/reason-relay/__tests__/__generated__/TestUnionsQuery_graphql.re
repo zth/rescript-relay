@@ -1,8 +1,8 @@
 /* @generated */
 
-type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
-
 module Types = {
+  type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
+
   [@ocaml.warning "-30"];
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option(enum_OnlineStatus),
@@ -172,7 +172,8 @@ module Internal = {
 type queryRef;
 
 module Utils = {
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+  external onlineStatus_toString: Types.enum_OnlineStatus => string =
+    "%identity";
 };
 
 type operationType = ReasonRelay.queryNode;
