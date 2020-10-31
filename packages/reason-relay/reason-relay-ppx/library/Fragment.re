@@ -22,7 +22,39 @@ let make =
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
-      // Internal module
+      [%stri
+        module Internal = {
+          [@bs.module "react-relay"]
+          external readInlineData:
+            (
+              ReasonRelay.fragmentNode,
+              [%t typeFromGeneratedModule(["fragmentRef"])]
+            ) =>
+            [%t typeFromGeneratedModule(["Types", "fragment"])] =
+            "readInlineData";
+
+          [@bs.module "react-relay/hooks"]
+          external useFragment:
+            (
+              ReasonRelay.fragmentNode,
+              [%t typeFromGeneratedModule(["fragmentRef"])]
+            ) =>
+            [%t typeFromGeneratedModule(["Types", "fragment"])] =
+            "useFragment";
+
+          [@bs.module "react-relay/hooks"]
+          external useFragmentOpt:
+            (
+              ReasonRelay.fragmentNode,
+              Js.Nullable.t([%t typeFromGeneratedModule(["fragmentRef"])])
+            ) =>
+            Js.Nullable.t(
+              [%t typeFromGeneratedModule(["Types", "fragment"])],
+            ) =
+            "useFragment";
+        }
+      ],
+      // Internal refetch module
       switch (refetchableQueryName) {
       | None =>
         %stri
@@ -133,7 +165,7 @@ let make =
       [%stri
         let use = (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
           let data =
-            ReasonRelay.internal_useFragment(
+            Internal.useFragment(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             );
@@ -159,7 +191,7 @@ let make =
             Js.Nullable.t(
               [%t typeFromGeneratedModule(["Types", "fragment"])],
             ) =
-            ReasonRelay.internal_useFragmentOpt(
+            Internal.useFragmentOpt(
               [%e valFromGeneratedModule(["node"])],
               switch (fr) {
               | Some(fr) => Some(fr)->Js.Nullable.fromOption
@@ -191,7 +223,7 @@ let make =
         ? [%stri
           let readInline =
               (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
-            ReasonRelay.internal_readInlineData(
+            Internal.readInlineData(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             )

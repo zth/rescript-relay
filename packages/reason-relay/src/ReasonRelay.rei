@@ -672,22 +672,6 @@ module MakeLoadQuery:
       C.loadedQueryRef => Promise.t(Belt.Result.t(unit, unit));
   };
 
-/**
- * FRAGMENT
- */
-[@bs.module "react-relay/hooks"]
-external internal_useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "useFragment";
-
-[@bs.module "react-relay/hooks"]
-external internal_useFragmentOpt:
-  (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
-  "useFragment";
-
-[@bs.module "react-relay"]
-external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "readInlineData";
-
 let internal_useConvertedValue: ('a => 'a, 'a) => 'a;
 
 /** Refetchable */

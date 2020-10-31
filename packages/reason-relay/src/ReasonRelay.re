@@ -788,22 +788,6 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   };
 };
 
-/**
- * FRAGMENT
- */
-[@bs.module "react-relay/hooks"]
-external internal_useFragment: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "useFragment";
-
-[@bs.module "react-relay"]
-external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "readInlineData";
-
-[@bs.module "react-relay/hooks"]
-external internal_useFragmentOpt:
-  (fragmentNode, Js.Nullable.t('fragmentRef)) => Js.Nullable.t('fragmentData) =
-  "useFragment";
-
 /** Refetchable */
 [@bs.deriving abstract]
 type refetchableFnOpts = {
