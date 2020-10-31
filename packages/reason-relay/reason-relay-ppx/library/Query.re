@@ -16,7 +16,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       [%stri
         module Internal = {
           [@bs.module "relay-runtime"]
-          external createOperationDescriptor:
+          external internal_createOperationDescriptor:
             (
               ReasonRelay.queryNode,
               [%t typeFromGeneratedModule(["Types", "variables"])]
@@ -33,7 +33,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           };
 
           [@bs.module "react-relay/hooks"]
-          external useQuery:
+          external internal_useQuery:
             (
               ReasonRelay.queryNode,
               [%t typeFromGeneratedModule(["Types", "variables"])],
@@ -43,7 +43,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             "useLazyLoadQuery";
 
           [@bs.module "react-relay/hooks"]
-          external usePreloadedQuery:
+          external internal_usePreloadedQuery:
             (
               ReasonRelay.queryNode,
               'token,
@@ -58,7 +58,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           };
 
           [@bs.module "react-relay/hooks"]
-          external useQueryLoader:
+          external internal_useQueryLoader:
             ReasonRelay.queryNode =>
             (
               Js.nullable([%t typeFromGeneratedModule(["queryRef"])]),
@@ -72,7 +72,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             "useQueryLoader";
 
           [@bs.module "react-relay/hooks"]
-          external fetchQuery:
+          external internal_fetchQuery:
             (
               ReasonRelay.Environment.t,
               ReasonRelay.queryNode,
@@ -97,7 +97,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            Internal.useQuery(
+            Internal.internal_useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
               ->ReasonRelay_Internal.internal_cleanVariablesRaw
@@ -137,7 +137,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                 unit => unit,
               ) => {
           let (nullableQueryRef, loadQueryFn, disposableFn) =
-            Internal.useQueryLoader([%e valFromGeneratedModule(["node"])]);
+            Internal.internal_useQueryLoader(
+              [%e valFromGeneratedModule(["node"])],
+            );
 
           // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
           let loadQuery =
@@ -181,7 +183,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : unit => {
           let _ =
-            Internal.fetchQuery(
+            Internal.internal_fetchQuery(
               environment,
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
@@ -238,7 +240,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           let (promise, resolve) = Promise.pending();
 
           let _ =
-            Internal.fetchQuery(
+            Internal.internal_fetchQuery(
               environment,
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
@@ -286,7 +288,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            Internal.usePreloadedQuery(
+            Internal.internal_usePreloadedQuery(
               [%e valFromGeneratedModule(["node"])],
               queryRef,
               switch (renderPolicy) {
@@ -317,7 +319,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                  ],
               ) => {
             let operationDescriptor =
-              Internal.createOperationDescriptor(
+              Internal.internal_createOperationDescriptor(
                 [%e valFromGeneratedModule(["node"])],
                 variables->[%e
                              valFromGeneratedModule([

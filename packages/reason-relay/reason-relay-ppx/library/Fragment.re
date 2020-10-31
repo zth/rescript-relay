@@ -25,7 +25,7 @@ let make =
       [%stri
         module Internal = {
           [@bs.module "react-relay"]
-          external readInlineData:
+          external internal_readInlineData:
             (
               ReasonRelay.fragmentNode,
               [%t typeFromGeneratedModule(["fragmentRef"])]
@@ -34,7 +34,7 @@ let make =
             "readInlineData";
 
           [@bs.module "react-relay/hooks"]
-          external useFragment:
+          external internal_useFragment:
             (
               ReasonRelay.fragmentNode,
               [%t typeFromGeneratedModule(["fragmentRef"])]
@@ -43,7 +43,7 @@ let make =
             "useFragment";
 
           [@bs.module "react-relay/hooks"]
-          external useFragmentOpt:
+          external internal_useFragmentOpt:
             (
               ReasonRelay.fragmentNode,
               Js.Nullable.t([%t typeFromGeneratedModule(["fragmentRef"])])
@@ -71,7 +71,7 @@ let make =
               onComplete: Js.Nullable.t(Js.Exn.t) => unit,
             };
 
-            let makeRefetchableFnOpts =
+            let internal_makeRefetchableFnOpts =
                 (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
               refetchableFnOpts(
                 ~fetchPolicy=?fetchPolicy->ReasonRelay.mapFetchPolicy,
@@ -162,7 +162,7 @@ let make =
             };
 
             [@bs.module "react-relay/hooks"]
-            external usePaginationFragment:
+            external internal_usePaginationFragment:
               (
                 ReasonRelay.fragmentNode,
                 [%t typeFromGeneratedModule(["fragmentRef"])]
@@ -171,7 +171,7 @@ let make =
               "usePaginationFragment";
 
             [@bs.module "react-relay/hooks"]
-            external useBlockingPaginationFragment:
+            external internal_useBlockingPaginationFragment:
               (
                 ReasonRelay.fragmentNode,
                 [%t typeFromGeneratedModule(["fragmentRef"])]
@@ -180,7 +180,7 @@ let make =
               "useBlockingPaginationFragment";
 
             [@bs.module "react-relay/hooks"]
-            external useRefetchableFragment:
+            external internal_useRefetchableFragment:
               (
                 ReasonRelay.fragmentNode,
                 [%t typeFromGeneratedModule(["fragmentRef"])]
@@ -207,7 +207,7 @@ let make =
       | Some(queryName) => [%stri
           let useRefetchable = fRef => {
             let (fragmentData, refetchFn) =
-              InternalRefetch.useRefetchableFragment(
+              InternalRefetch.internal_useRefetchableFragment(
                 [%e valFromGeneratedModule(["node"])],
                 fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
@@ -244,7 +244,7 @@ let make =
                       ]
                     ->ReasonRelay_Internal.internal_cleanVariablesRaw
                     ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-                    InternalRefetch.makeRefetchableFnOpts(
+                    InternalRefetch.internal_makeRefetchableFnOpts(
                       ~fetchPolicy?,
                       ~renderPolicy?,
                       ~onComplete?,
@@ -263,7 +263,7 @@ let make =
       [%stri
         let use = (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
           let data =
-            Internal.useFragment(
+            Internal.internal_useFragment(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             );
@@ -289,7 +289,7 @@ let make =
             Js.Nullable.t(
               [%t typeFromGeneratedModule(["Types", "fragment"])],
             ) =
-            Internal.useFragmentOpt(
+            Internal.internal_useFragmentOpt(
               [%e valFromGeneratedModule(["node"])],
               switch (fr) {
               | Some(fr) => Some(fr)->Js.Nullable.fromOption
@@ -321,7 +321,7 @@ let make =
         ? [%stri
           let readInline =
               (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
-            Internal.readInlineData(
+            Internal.internal_readInlineData(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             )
@@ -333,7 +333,7 @@ let make =
       | (true, Some(queryName)) => [%stri
           let usePagination = (fr): InternalRefetch.paginationFragmentReturn => {
             let p =
-              InternalRefetch.usePaginationFragment(
+              InternalRefetch.internal_usePaginationFragment(
                 [%e valFromGeneratedModule(["node"])],
                 [%e valFromGeneratedModule(["getFragmentRef"])](fr),
               );
@@ -390,7 +390,7 @@ let make =
                     ]
                   ->ReasonRelay_Internal.internal_cleanVariablesRaw
                   ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-                  InternalRefetch.makeRefetchableFnOpts(
+                  InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
                     ~renderPolicy?,
@@ -409,7 +409,7 @@ let make =
           let useBlockingPagination =
               (fRef): InternalRefetch.paginationBlockingFragmentReturn => {
             let p =
-              InternalRefetch.useBlockingPaginationFragment(
+              InternalRefetch.internal_useBlockingPaginationFragment(
                 [%e valFromGeneratedModule(["node"])],
                 fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
@@ -464,7 +464,7 @@ let make =
                     ]
                   ->ReasonRelay_Internal.internal_cleanVariablesRaw
                   ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-                  InternalRefetch.makeRefetchableFnOpts(
+                  InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
                     ~renderPolicy?,

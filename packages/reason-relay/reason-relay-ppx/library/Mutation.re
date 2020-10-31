@@ -80,13 +80,13 @@ let make = (~loc, ~moduleName) => {
           };
 
           [@bs.module "relay-runtime"]
-          external commitMutation:
+          external internal_commitMutation:
             (ReasonRelay.Environment.t, commitMutationConfigRaw) =>
             ReasonRelay.Disposable.t =
             "commitMutation";
 
           [@bs.module "react-relay/lib/relay-experimental"]
-          external useMutation:
+          external internal_useMutation:
             ReasonRelay.mutationNode =>
             (useMutationConfigRaw => ReasonRelay.Disposable.t, bool) =
             "useMutation";
@@ -133,7 +133,7 @@ let make = (~loc, ~moduleName) => {
             ~onError=?,
             (),
           ) => (
-            Internal.commitMutation(
+            Internal.internal_commitMutation(
               environment,
               {
                 variables:
@@ -245,7 +245,7 @@ let make = (~loc, ~moduleName) => {
               let (promise, resolve) = Promise.pending();
 
               let _: ReasonRelay.Disposable.t =
-                Internal.commitMutation(
+                Internal.internal_commitMutation(
                   environment,
                   {
                     variables:
@@ -361,7 +361,9 @@ let make = (~loc, ~moduleName) => {
           ) =
           () => {
             let (mutate, mutating) =
-              Internal.useMutation([%e valFromGeneratedModule(["node"])]);
+              Internal.internal_useMutation(
+                [%e valFromGeneratedModule(["node"])],
+              );
             (
               (
                 ~onError=?,

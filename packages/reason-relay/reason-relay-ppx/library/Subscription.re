@@ -38,7 +38,7 @@ let make = (~loc, ~moduleName) => {
           };
 
           [@bs.module "relay-runtime"]
-          external requestSubscription:
+          external internal_requestSubscription:
             (ReasonRelay.Environment.t, subscriptionConfig) =>
             ReasonRelay.Disposable.t =
             "requestSubscription";
@@ -70,7 +70,7 @@ let make = (~loc, ~moduleName) => {
             ~updater: option(Internal.updaterFn)=?,
             (),
           ) =>
-            Internal.requestSubscription(
+            Internal.internal_requestSubscription(
               environment,
               Internal.subscriptionConfig(
                 ~subscription=[%e valFromGeneratedModule(["node"])],
