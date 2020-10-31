@@ -788,106 +788,11 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   };
 };
 
-/** Refetchable */
-[@bs.deriving abstract]
-type refetchableFnOpts = {
-  [@bs.optional]
-  fetchPolicy: string,
-  [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
-  renderPolicy: string,
-  [@bs.optional]
-  onComplete: Js.Nullable.t(Js.Exn.t) => unit,
-};
-
-type refetchFnRaw('variables) =
-  ('variables, refetchableFnOpts) => Disposable.t;
-
 let internal_nullableToOptionalExnHandler =
   fun
   | None => None
   | Some(handler) =>
     Some(maybeExn => maybeExn->Js.Nullable.toOption->handler);
-
-let internal_makeRefetchableFnOpts =
-    (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
-  refetchableFnOpts(
-    ~fetchPolicy=?fetchPolicy->mapFetchPolicy,
-    ~renderPolicy=?renderPolicy->mapRenderPolicy,
-    ~onComplete=?onComplete->internal_nullableToOptionalExnHandler,
-    (),
-  );
-
-[@bs.module "react-relay/hooks"]
-external internal_useRefetchableFragment:
-  (fragmentNode, 'fragmentRef) => ('fragmentData, refetchFnRaw('variables)) =
-  "useRefetchableFragment";
-
-/** Pagination */
-type paginationLoadMoreOptions = {
-  onComplete: option(Js.nullable(Js.Exn.t) => unit),
-};
-
-type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;
-
-type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch:
-    (
-      ~variables: 'variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~renderPolicy: renderPolicy=?,
-      ~onComplete: option(Js.Exn.t) => unit=?,
-      unit
-    ) =>
-    Disposable.t,
-};
-
-type paginationFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  isLoadingNext: bool,
-  isLoadingPrevious: bool,
-  refetch:
-    (
-      ~variables: 'variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~renderPolicy: renderPolicy=?,
-      ~onComplete: option(Js.Exn.t) => unit=?,
-      unit
-    ) =>
-    Disposable.t,
-};
-
-type paginationFragmentReturnRaw('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: (. int, paginationLoadMoreOptions) => Disposable.t,
-  loadPrevious: (. int, paginationLoadMoreOptions) => Disposable.t,
-  hasNext: bool,
-  hasPrevious: bool,
-  isLoadingNext: bool,
-  isLoadingPrevious: bool,
-  refetch: (. 'variables, refetchableFnOpts) => Disposable.t,
-};
-
-[@bs.module "react-relay/hooks"]
-external internal_usePaginationFragment:
-  (fragmentNode, 'fragmentRef) =>
-  paginationFragmentReturnRaw('fragmentData, 'variables) =
-  "usePaginationFragment";
-
-[@bs.module "react-relay/hooks"]
-external internal_useBlockingPaginationFragment:
-  (fragmentNode, 'fragmentRef) =>
-  paginationFragmentReturnRaw('fragmentData, 'variables) =
-  "useBlockingPaginationFragment";
 
 /**
  * MUTATION

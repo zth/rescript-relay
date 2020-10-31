@@ -71,7 +71,7 @@ module UserNodeDisplayer = {
     let (startTransition, _) =
       React.useTransition(~config={timeoutMs: 5000}, ());
 
-    let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
+    let {data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(queryRef);
 
     <div>

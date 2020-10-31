@@ -81,6 +81,104 @@ let make =
                 (),
               );
 
+            type paginationLoadMoreOptions = {
+              onComplete: option(Js.nullable(Js.Exn.t) => unit),
+            };
+
+            type paginationLoadMoreFn =
+              (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>
+              ReasonRelay.Disposable.t;
+
+            type paginationFragmentReturnRaw = {
+              data: [%t typeFromGeneratedModule(["Types", "fragment"])],
+              loadNext:
+                (. int, paginationLoadMoreOptions) => ReasonRelay.Disposable.t,
+              loadPrevious:
+                (. int, paginationLoadMoreOptions) => ReasonRelay.Disposable.t,
+              hasNext: bool,
+              hasPrevious: bool,
+              isLoadingNext: bool,
+              isLoadingPrevious: bool,
+              refetch:
+                (
+                  . [%t
+                      makeTypeAccessor(
+                        ~loc,
+                        ~moduleName=queryName,
+                        ["Types", "refetchVariables"],
+                      )
+                    ],
+                  refetchableFnOpts
+                ) =>
+                ReasonRelay.Disposable.t,
+            };
+
+            type paginationBlockingFragmentReturn = {
+              data: [%t typeFromGeneratedModule(["Types", "fragment"])],
+              loadNext: paginationLoadMoreFn,
+              loadPrevious: paginationLoadMoreFn,
+              hasNext: bool,
+              hasPrevious: bool,
+              refetch:
+                (
+                  ~variables: [%t
+                                makeTypeAccessor(
+                                  ~loc,
+                                  ~moduleName=queryName,
+                                  ["Types", "refetchVariables"],
+                                )
+                              ],
+                  ~fetchPolicy: ReasonRelay.fetchPolicy=?,
+                  ~renderPolicy: ReasonRelay.renderPolicy=?,
+                  ~onComplete: option(Js.Exn.t) => unit=?,
+                  unit
+                ) =>
+                ReasonRelay.Disposable.t,
+            };
+
+            type paginationFragmentReturn = {
+              data: [%t typeFromGeneratedModule(["Types", "fragment"])],
+              loadNext: paginationLoadMoreFn,
+              loadPrevious: paginationLoadMoreFn,
+              hasNext: bool,
+              hasPrevious: bool,
+              isLoadingNext: bool,
+              isLoadingPrevious: bool,
+              refetch:
+                (
+                  ~variables: [%t
+                                makeTypeAccessor(
+                                  ~loc,
+                                  ~moduleName=queryName,
+                                  ["Types", "refetchVariables"],
+                                )
+                              ],
+                  ~fetchPolicy: ReasonRelay.fetchPolicy=?,
+                  ~renderPolicy: ReasonRelay.renderPolicy=?,
+                  ~onComplete: option(Js.Exn.t) => unit=?,
+                  unit
+                ) =>
+                ReasonRelay.Disposable.t,
+            };
+
+            [@bs.module "react-relay/hooks"]
+            external usePaginationFragment:
+              (
+                ReasonRelay.fragmentNode,
+                [%t typeFromGeneratedModule(["fragmentRef"])]
+              ) =>
+              paginationFragmentReturnRaw =
+              "usePaginationFragment";
+
+            [@bs.module "react-relay/hooks"]
+            external useBlockingPaginationFragment:
+              (
+                ReasonRelay.fragmentNode,
+                [%t typeFromGeneratedModule(["fragmentRef"])]
+              ) =>
+              paginationFragmentReturnRaw =
+              "useBlockingPaginationFragment";
+
             [@bs.module "react-relay/hooks"]
             external useRefetchableFragment:
               (
@@ -233,20 +331,9 @@ let make =
         : [%stri ()],
       switch (hasConnection, refetchableQueryName) {
       | (true, Some(queryName)) => [%stri
-          let usePagination =
-              (fr)
-              : ReasonRelay.paginationFragmentReturn(
-                  [%t typeFromGeneratedModule(["Types", "fragment"])],
-                  [%t
-                    makeTypeAccessor(
-                      ~loc,
-                      ~moduleName=queryName,
-                      ["Types", "refetchVariables"],
-                    )
-                  ],
-                ) => {
+          let usePagination = (fr): InternalRefetch.paginationFragmentReturn => {
             let p =
-              ReasonRelay.internal_usePaginationFragment(
+              InternalRefetch.usePaginationFragment(
                 [%e valFromGeneratedModule(["node"])],
                 [%e valFromGeneratedModule(["getFragmentRef"])](fr),
               );
@@ -303,7 +390,7 @@ let make =
                     ]
                   ->ReasonRelay.internal_cleanVariablesRaw
                   ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
-                  ReasonRelay.internal_makeRefetchableFnOpts(
+                  InternalRefetch.makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
                     ~renderPolicy?,
@@ -320,19 +407,9 @@ let make =
       switch (hasConnection, refetchableQueryName) {
       | (true, Some(queryName)) => [%stri
           let useBlockingPagination =
-              (fRef)
-              : ReasonRelay.paginationBlockingFragmentReturn(
-                  [%t typeFromGeneratedModule(["Types", "fragment"])],
-                  [%t
-                    makeTypeAccessor(
-                      ~loc,
-                      ~moduleName=queryName,
-                      ["Types", "refetchVariables"],
-                    )
-                  ],
-                ) => {
+              (fRef): InternalRefetch.paginationBlockingFragmentReturn => {
             let p =
-              ReasonRelay.internal_useBlockingPaginationFragment(
+              InternalRefetch.useBlockingPaginationFragment(
                 [%e valFromGeneratedModule(["node"])],
                 fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
@@ -387,7 +464,7 @@ let make =
                     ]
                   ->ReasonRelay.internal_cleanVariablesRaw
                   ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
-                  ReasonRelay.internal_makeRefetchableFnOpts(
+                  InternalRefetch.makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
                     ~renderPolicy?,
