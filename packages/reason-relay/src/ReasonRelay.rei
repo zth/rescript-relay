@@ -538,11 +538,6 @@ let mapRenderPolicy: option(renderPolicy) => option(string);
  */
 type operationDescriptor;
 
-[@bs.module "relay-runtime"]
-external internal_createOperationDescriptor:
-  (queryNode, 'variables) => operationDescriptor =
-  "createOperationDescriptor";
-
 /**
  * Module representing the environment, which you'll need to use and
  * pass to various functions. Takes a few configuration options like store

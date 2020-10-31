@@ -404,11 +404,6 @@ module ConnectionHandler = {
  */
 type operationDescriptor;
 
-[@bs.module "relay-runtime"]
-external internal_createOperationDescriptor:
-  (queryNode, 'variables) => operationDescriptor =
-  "createOperationDescriptor";
-
 module Disposable = {
   type t;
 

@@ -15,6 +15,15 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         module Internal = {
+          [@bs.module "relay-runtime"]
+          external createOperationDescriptor:
+            (
+              ReasonRelay.queryNode,
+              [%t typeFromGeneratedModule(["Types", "variables"])]
+            ) =>
+            ReasonRelay.operationDescriptor =
+            "createOperationDescriptor";
+
           type useQueryConfig = {
             fetchKey: option(string),
             fetchPolicy: option(string),
@@ -308,7 +317,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                  ],
               ) => {
             let operationDescriptor =
-              ReasonRelay.internal_createOperationDescriptor(
+              Internal.createOperationDescriptor(
                 [%e valFromGeneratedModule(["node"])],
                 variables->[%e
                              valFromGeneratedModule([
