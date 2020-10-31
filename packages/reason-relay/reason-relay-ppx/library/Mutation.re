@@ -4,27 +4,38 @@ open Util;
 /**
  * Check out the comments for makeFragment, this does the same thing but for mutations.
  */
-let make = (~loc, ~moduleName) =>
+let make = (~loc, ~moduleName) => {
+  let typeFromGeneratedModule = makeTypeAccessor(~loc, ~moduleName);
+  let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
+  let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
+
   Ast_helper.Mod.mk(
     Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
+      [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
+      [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         let commitMutation:
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~optimisticUpdater: ReasonRelay.optimisticUpdaterFn=?,
-            ~optimisticResponse: Types.rawResponse=?,
+            ~optimisticResponse: [%t
+                                   typeFromGeneratedModule([
+                                     "Types",
+                                     "rawResponse",
+                                   ])
+                                 ]
+                                   =?,
             ~updater: (
                         ReasonRelay.RecordSourceSelectorProxy.t,
-                        Types.response
+                        [%t typeFromGeneratedModule(["Types", "response"])]
                       ) =>
                       unit
                         =?,
             ~onCompleted: (
-                            Types.response,
+                            [%t
+                              typeFromGeneratedModule(["Types", "response"])
+                            ],
                             option(array(ReasonRelay.mutationError))
                           ) =>
                           unit
@@ -35,7 +46,7 @@ let make = (~loc, ~moduleName) =>
           ReasonRelay.Disposable.t =
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
@@ -48,16 +59,23 @@ let make = (~loc, ~moduleName) =>
               {
                 variables:
                   variables
-                  ->Operation.Internal.convertVariables
+                  ->[%e
+                      valFromGeneratedModule(["Internal", "convertVariables"])
+                    ]
                   ->ReasonRelay.internal_cleanVariablesRaw,
-                mutation: Operation.node,
+                mutation: [%e valFromGeneratedModule(["node"])],
                 onCompleted:
                   Some(
                     (res, err) =>
                       switch (onCompleted) {
                       | Some(cb) =>
                         cb(
-                          res->Operation.Internal.convertResponse,
+                          res->[%e
+                                 valFromGeneratedModule([
+                                   "Internal",
+                                   "convertResponse",
+                                 ])
+                               ],
                           Js.Nullable.toOption(err),
                         )
                       | None => ()
@@ -75,7 +93,14 @@ let make = (~loc, ~moduleName) =>
                   switch (optimisticResponse) {
                   | None => None
                   | Some(r) =>
-                    Some(r->Operation.Internal.convertWrapRawResponse)
+                    Some(
+                      r->[%e
+                           valFromGeneratedModule([
+                             "Internal",
+                             "convertWrapRawResponse",
+                           ])
+                         ],
+                    )
                   },
                 optimisticUpdater,
                 updater:
@@ -84,7 +109,15 @@ let make = (~loc, ~moduleName) =>
                   | Some(updater) =>
                     Some(
                       (store, r) =>
-                        updater(store, r->Operation.Internal.convertResponse),
+                        updater(
+                          store,
+                          r->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertResponse",
+                               ])
+                             ],
+                        ),
                     )
                   },
               },
@@ -95,12 +128,18 @@ let make = (~loc, ~moduleName) =>
         let commitMutationPromised:
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~optimisticUpdater: ReasonRelay.optimisticUpdaterFn=?,
-            ~optimisticResponse: Types.rawResponse=?,
+            ~optimisticResponse: [%t
+                                   typeFromGeneratedModule([
+                                     "Types",
+                                     "rawResponse",
+                                   ])
+                                 ]
+                                   =?,
             ~updater: (
                         ReasonRelay.RecordSourceSelectorProxy.t,
-                        Types.response
+                        [%t typeFromGeneratedModule(["Types", "response"])]
                       ) =>
                       unit
                         =?,
@@ -108,13 +147,16 @@ let make = (~loc, ~moduleName) =>
           ) =>
           Promise.t(
             Belt.Result.t(
-              (Types.response, option(array(ReasonRelay.mutationError))),
+              (
+                [%t typeFromGeneratedModule(["Types", "response"])],
+                option(array(ReasonRelay.mutationError)),
+              ),
               option(ReasonRelay.mutationError),
             ),
           ) =
           (
             ~environment: ReasonRelay.Environment.t,
-            ~variables: Types.variables,
+            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
@@ -129,15 +171,25 @@ let make = (~loc, ~moduleName) =>
                   {
                     variables:
                       variables
-                      ->Operation.Internal.convertVariables
+                      ->[%e
+                          valFromGeneratedModule([
+                            "Internal",
+                            "convertVariables",
+                          ])
+                        ]
                       ->ReasonRelay.internal_cleanVariablesRaw,
-                    mutation: Operation.node,
+                    mutation: [%e valFromGeneratedModule(["node"])],
                     onCompleted:
                       Some(
                         (res, err) =>
                           resolve(
                             Ok((
-                              res->Operation.Internal.convertResponse,
+                              res->[%e
+                                     valFromGeneratedModule([
+                                       "Internal",
+                                       "convertResponse",
+                                     ])
+                                   ],
                               Js.Nullable.toOption(err),
                             )),
                           ),
@@ -150,7 +202,14 @@ let make = (~loc, ~moduleName) =>
                       switch (optimisticResponse) {
                       | None => None
                       | Some(r) =>
-                        Some(r->Operation.Internal.convertWrapRawResponse)
+                        Some(
+                          r->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertWrapRawResponse",
+                               ])
+                             ],
+                        )
                       },
                     optimisticUpdater,
                     updater:
@@ -161,7 +220,12 @@ let make = (~loc, ~moduleName) =>
                           (store, r) =>
                             updater(
                               store,
-                              r->Operation.Internal.convertResponse,
+                              r->[%e
+                                   valFromGeneratedModule([
+                                     "Internal",
+                                     "convertResponse",
+                                   ])
+                                 ],
                             ),
                         )
                       },
@@ -173,7 +237,7 @@ let make = (~loc, ~moduleName) =>
               Promise.t(
                 Belt.Result.t(
                   (
-                    Types.response,
+                    [%t typeFromGeneratedModule(["Types", "response"])],
                     option(array(ReasonRelay.mutationError)),
                   ),
                   option(ReasonRelay.mutationError),
@@ -188,21 +252,29 @@ let make = (~loc, ~moduleName) =>
             (
               ~onError: ReasonRelay.mutationError => unit=?,
               ~onCompleted: (
-                              Types.response,
+                              [%t
+                                typeFromGeneratedModule(["Types", "response"])
+                              ],
                               option(array(ReasonRelay.mutationError))
                             ) =>
                             unit
                               =?,
               ~onUnsubscribe: unit => unit=?,
-              ~optimisticResponse: Types.rawResponse=?,
+              ~optimisticResponse: [%t
+                                     typeFromGeneratedModule([
+                                       "Types",
+                                       "rawResponse",
+                                     ])
+                                   ]
+                                     =?,
               ~optimisticUpdater: ReasonRelay.optimisticUpdaterFn=?,
               ~updater: (
                           ReasonRelay.RecordSourceSelectorProxy.t,
-                          Types.response
+                          [%t typeFromGeneratedModule(["Types", "response"])]
                         ) =>
                         unit
                           =?,
-              ~variables: Types.variables,
+              ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
               unit
             ) =>
             ReasonRelay.Disposable.t,
@@ -210,7 +282,9 @@ let make = (~loc, ~moduleName) =>
           ) =
           () => {
             let (mutate, mutating) =
-              ReasonRelay.internal_useMutation(Operation.node);
+              ReasonRelay.internal_useMutation(
+                [%e valFromGeneratedModule(["node"])],
+              );
             (
               (
                 ~onError=?,
@@ -230,7 +304,12 @@ let make = (~loc, ~moduleName) =>
                       Some(
                         (r, errors) =>
                           fn(
-                            r->Operation.Internal.convertResponse,
+                            r->[%e
+                                 valFromGeneratedModule([
+                                   "Internal",
+                                   "convertResponse",
+                                 ])
+                               ],
                             Js.Nullable.toOption(errors),
                           ),
                       )
@@ -241,12 +320,24 @@ let make = (~loc, ~moduleName) =>
                     switch (optimisticResponse) {
                     | None => None
                     | Some(r) =>
-                      Some(r->Operation.Internal.convertWrapRawResponse)
+                      Some(
+                        r->[%e
+                             valFromGeneratedModule([
+                               "Internal",
+                               "convertWrapRawResponse",
+                             ])
+                           ],
+                      )
                     },
                   onUnsubscribe,
                   variables:
                     variables
-                    ->Operation.Internal.convertVariables
+                    ->[%e
+                        valFromGeneratedModule([
+                          "Internal",
+                          "convertVariables",
+                        ])
+                      ]
                     ->ReasonRelay.internal_cleanVariablesRaw,
                   optimisticUpdater,
                   updater:
@@ -257,7 +348,12 @@ let make = (~loc, ~moduleName) =>
                         (store, r) =>
                           updater(
                             store,
-                            r->Operation.Internal.convertResponse,
+                            r->[%e
+                                 valFromGeneratedModule([
+                                   "Internal",
+                                   "convertResponse",
+                                 ])
+                               ],
                           ),
                       )
                     },
@@ -268,3 +364,4 @@ let make = (~loc, ~moduleName) =>
       ],
     ]),
   );
+};
