@@ -981,23 +981,3 @@ external commitLocalUpdate:
 external useSubscribeToInvalidationState:
   (array(dataId), unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState";
-
-[@bs.deriving abstract]
-type subscriptionConfigRaw('response, 'variables) = {
-  subscription: subscriptionNode,
-  variables: 'variables,
-  [@bs.optional]
-  onCompleted: unit => unit,
-  [@bs.optional]
-  onError: Js.Exn.t => unit,
-  [@bs.optional]
-  onNext: 'response => unit,
-  [@bs.optional]
-  updater: updaterFn('response),
-};
-
-[@bs.module "relay-runtime"]
-external internal_requestSubscription:
-  (Environment.t, subscriptionConfigRaw('response, 'variables)) =>
-  Disposable.t =
-  "requestSubscription";

@@ -14,6 +14,33 @@ let make = (~loc, ~moduleName) => {
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
+        module Internal = {
+          [@bs.deriving abstract]
+          type subscriptionConfig = {
+            subscription: ReasonRelay.subscriptionNode,
+            variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+            [@bs.optional]
+            onCompleted: unit => unit,
+            [@bs.optional]
+            onError: Js.Exn.t => unit,
+            [@bs.optional]
+            onNext:
+              [%t typeFromGeneratedModule(["Types", "response"])] => unit,
+            [@bs.optional]
+            updater:
+              ReasonRelay.updaterFn(
+                [%t typeFromGeneratedModule(["Types", "response"])],
+              ),
+          };
+
+          [@bs.module "relay-runtime"]
+          external requestSubscription:
+            (ReasonRelay.Environment.t, subscriptionConfig) =>
+            ReasonRelay.Disposable.t =
+            "requestSubscription";
+        }
+      ],
+      [%stri
         let subscribe:
           (
             ~environment: ReasonRelay.Environment.t,
@@ -47,9 +74,9 @@ let make = (~loc, ~moduleName) => {
                )=?,
             (),
           ) =>
-            ReasonRelay.internal_requestSubscription(
+            Internal.requestSubscription(
               environment,
-              ReasonRelay.subscriptionConfigRaw(
+              Internal.subscriptionConfig(
                 ~subscription=[%e valFromGeneratedModule(["node"])],
                 ~variables=
                   variables
