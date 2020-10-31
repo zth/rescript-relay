@@ -14,6 +14,69 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
+        module Internal = {
+          type useQueryConfig = {
+            fetchKey: option(string),
+            fetchPolicy: option(string),
+            [@bs.as "UNSTABLE_renderPolicy"]
+            renderPolicy: option(string),
+            networkCacheConfig: option(ReasonRelay.cacheConfig),
+          };
+
+          [@bs.module "react-relay/hooks"]
+          external useQuery:
+            (
+              ReasonRelay.queryNode,
+              [%t typeFromGeneratedModule(["Types", "variables"])],
+              useQueryConfig
+            ) =>
+            [%t typeFromGeneratedModule(["Types", "response"])] =
+            "useLazyLoadQuery";
+
+          [@bs.module "react-relay/hooks"]
+          external usePreloadedQuery:
+            (
+              ReasonRelay.queryNode,
+              'token,
+              option({. "UNSTABLE_renderPolicy": option(string)})
+            ) =>
+            [%t typeFromGeneratedModule(["Types", "response"])] =
+            "usePreloadedQuery";
+
+          type useQueryLoaderOptions = {
+            fetchPolicy: option(ReasonRelay.fetchPolicy),
+            networkCacheConfig: option(ReasonRelay.cacheConfig),
+          };
+
+          [@bs.module "react-relay/hooks"]
+          external useQueryLoader:
+            ReasonRelay.queryNode =>
+            (
+              Js.nullable([%t typeFromGeneratedModule(["queryRef"])]),
+              (
+                [%t typeFromGeneratedModule(["Types", "variables"])],
+                useQueryLoaderOptions
+              ) =>
+              unit,
+              unit => unit,
+            ) =
+            "useQueryLoader";
+
+          [@bs.module "react-relay/hooks"]
+          external fetchQuery:
+            (
+              ReasonRelay.Environment.t,
+              ReasonRelay.queryNode,
+              [%t typeFromGeneratedModule(["Types", "variables"])],
+              option(ReasonRelay.fetchQueryOptions)
+            ) =>
+            ReasonRelay.Observable.t(
+              [%t typeFromGeneratedModule(["Types", "response"])],
+            ) =
+            "fetchQuery";
+        }
+      ],
+      [%stri
         let use =
             (
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
@@ -25,7 +88,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            ReasonRelay.internal_useQuery(
+            Internal.useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
               ->ReasonRelay.internal_cleanVariablesRaw
@@ -65,9 +128,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                 unit => unit,
               ) => {
           let (nullableQueryRef, loadQueryFn, disposableFn) =
-            ReasonRelay.internal_useQueryLoader(
-              [%e valFromGeneratedModule(["node"])],
-            );
+            Internal.useQueryLoader([%e valFromGeneratedModule(["node"])]);
 
           // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
           let loadQuery =
@@ -111,7 +172,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : unit => {
           let _ =
-            ReasonRelay.fetchQuery(
+            Internal.fetchQuery(
               environment,
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
@@ -168,7 +229,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           let (promise, resolve) = Promise.pending();
 
           let _ =
-            ReasonRelay.fetchQuery(
+            Internal.fetchQuery(
               environment,
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
@@ -216,7 +277,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            ReasonRelay.internal_usePreloadedQuery(
+            Internal.usePreloadedQuery(
               [%e valFromGeneratedModule(["node"])],
               queryRef,
               switch (renderPolicy) {

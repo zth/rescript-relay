@@ -671,56 +671,16 @@ type fetchQueryOptions = {
   fetchPolicy: option(string),
 };
 
-[@bs.module "react-relay/hooks"]
-external fetchQuery:
-  (Environment.t, queryNode, 'variables, option(fetchQueryOptions)) =>
-  Observable.t('response) =
-  "fetchQuery";
-
-type useQueryConfig = {
-  fetchKey: option(string),
-  fetchPolicy: option(string),
-  [@bs.as "UNSTABLE_renderPolicy"]
-  renderPolicy: option(string),
-  networkCacheConfig: option(cacheConfig),
-};
-
 type loadQueryConfig = {
   fetchKey: option(string),
   fetchPolicy: option(string),
   networkCacheConfig: option(cacheConfig),
 };
 
-[@bs.module "react-relay/hooks"]
-external internal_useQuery:
-  (queryNode, 'variables, useQueryConfig) => 'queryResponse =
-  "useLazyLoadQuery";
-
-type useQueryLoaderOptions = {
-  fetchPolicy: option(fetchPolicy),
-  networkCacheConfig: option(cacheConfig),
-};
-
-[@bs.module "react-relay/hooks"]
-external internal_useQueryLoader:
-  queryNode =>
-  (
-    Js.nullable('queryRef),
-    ('variables, useQueryLoaderOptions) => unit,
-    unit => unit,
-  ) =
-  "useQueryLoader";
-
 [@bs.module "react-relay/hooks"] [@bs.scope "loadQuery"]
 external loadQuery:
   (Environment.t, queryNode, 'variables, loadQueryConfig) => 'queryResponse =
   "loadQuery";
-
-[@bs.module "react-relay/hooks"]
-external internal_usePreloadedQuery:
-  (queryNode, 'token, option({. "UNSTABLE_renderPolicy": option(string)})) =>
-  'queryResponse =
-  "usePreloadedQuery";
 
 module type MakeLoadQueryConfig = {
   type variables;
