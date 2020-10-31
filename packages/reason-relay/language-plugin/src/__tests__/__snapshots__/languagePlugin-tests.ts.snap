@@ -623,6 +623,19 @@ module Types = {
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}} |json}
@@ -949,6 +962,19 @@ module Types = {
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}} |json}
@@ -1195,6 +1221,21 @@ let wrap_response_participantById:
   | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"},\\"participantById_observer\\":{\\"f\\":\\"\\"}}} |json}
@@ -1304,6 +1345,21 @@ let wrap_response_participantById:
   | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |json}
@@ -1541,6 +1597,22 @@ let wrap_response_participantById:
   | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+    \\"response_participantById_Observer_manager\\": wrap_response_participantById_Observer_manager,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"},\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"}}} |json}
@@ -1608,6 +1680,19 @@ module Types = {
 };
 
 module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let wrapResponseConverterMap = ();
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
