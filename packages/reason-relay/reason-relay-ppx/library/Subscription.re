@@ -83,14 +83,12 @@ let make = (~loc, ~moduleName) => {
                       (store, r) =>
                         updater(
                           store,
-                          [%e
-                            valFromGeneratedModule([
-                              "Internal",
-                              "convertResponse",
-                            ])
-                          ](
-                            r,
-                          ),
+                          r->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertResponse",
+                               ])
+                             ],
                         ),
                     )
                   },

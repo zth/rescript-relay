@@ -47,9 +47,9 @@ let make =
                        ["Types", "refetchVariables"],
                      )
                    ],
-                  ~fetchPolicy: option(ReasonRelay.fetchPolicy),
-                  ~renderPolicy: option(ReasonRelay.renderPolicy),
-                  ~onComplete: option(option(Js.Exn.t) => unit),
+                  ~fetchPolicy: option(ReasonRelay.fetchPolicy)=?,
+                  ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
+                  ~onComplete: option(option(Js.Exn.t) => unit)=?,
                   (),
                 ) => (
                   refetchFn(
@@ -251,7 +251,7 @@ let make =
             let p =
               ReasonRelay.internal_useBlockingPaginationFragment(
                 [%e valFromGeneratedModule(["node"])],
-                [%e valFromGeneratedModule(["getFragmentRef"])](fRef),
+                fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
             let data =
               ReasonRelay.internal_useConvertedValue(
