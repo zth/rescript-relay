@@ -12,42 +12,41 @@ let make =
       ~refetchableQueryName,
       ~hasConnection,
       ~hasInlineDirective,
-    ) =>
+    ) => {
+  let typeFromGeneratedModule = makeTypeAccessor(~loc, ~moduleName);
+  let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
+  let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
+
   Ast_helper.Mod.mk(
     Pmod_structure([
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]], // %m also comes from Ppxlib and means "make a module definition"
-      switch (refetchableQueryName) {
-      | Some(queryName) => [%stri
-          module RefetchableOperation = [%m
-            makeModuleNameAst(~loc, ~moduleName=queryName)
-          ]
-        ]
-      | None =>
-        %stri
-        ()
-      },
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
+      [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
+      [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       switch (refetchableQueryName) {
       | Some(queryName) => [%stri
           let useRefetchable = fRef => {
             let (fragmentData, refetchFn) =
               ReasonRelay.internal_useRefetchableFragment(
-                Operation.node,
-                fRef->Operation.getFragmentRef,
+                [%e valFromGeneratedModule(["node"])],
+                fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
 
-            let data: Types.fragment =
+            let data: [%t typeFromGeneratedModule(["Types", "fragment"])] =
               ReasonRelay.internal_useConvertedValue(
-                Operation.Internal.convertFragment,
+                [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 fragmentData,
               );
             (
               data,
               (
                 (
-                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~variables: [%t
+                     makeTypeAccessor(
+                       ~loc,
+                       ~moduleName=queryName,
+                       ["Types", "refetchVariables"],
+                     )
+                   ],
                   ~fetchPolicy: option(ReasonRelay.fetchPolicy),
                   ~renderPolicy: option(ReasonRelay.renderPolicy),
                   ~onComplete: option(option(Js.Exn.t) => unit),
@@ -55,7 +54,13 @@ let make =
                 ) => (
                   refetchFn(
                     variables
-                    ->RefetchableOperation.Internal.convertVariables
+                    ->[%e
+                        makeExprAccessor(
+                          ~loc,
+                          ~moduleName=queryName,
+                          ["Internal", "convertVariables"],
+                        )
+                      ]
                     ->ReasonRelay.internal_cleanVariablesRaw
                     ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
                     ReasonRelay.internal_makeRefetchableFnOpts(
@@ -75,30 +80,36 @@ let make =
         ()
       },
       [%stri
-        let use = (fRef): Types.fragment => {
+        let use = (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
           let data =
             ReasonRelay.internal_useFragment(
-              Operation.node,
-              fRef->Operation.getFragmentRef,
+              [%e valFromGeneratedModule(["node"])],
+              fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             );
 
           ReasonRelay.internal_useConvertedValue(
-            Operation.Internal.convertFragment,
+            [%e valFromGeneratedModule(["Internal", "convertFragment"])],
             data,
           );
         }
       ],
       [%stri
-        let useOpt = (opt_fRef): option(Types.fragment) => {
+        let useOpt =
+            (opt_fRef)
+            : option([%t typeFromGeneratedModule(["Types", "fragment"])]) => {
           let fr =
             switch (opt_fRef) {
-            | Some(fRef) => Some(fRef->Operation.getFragmentRef)
+            | Some(fRef) =>
+              Some(fRef->[%e valFromGeneratedModule(["getFragmentRef"])])
             | None => None
             };
 
-          let nullableFragmentData: Js.Nullable.t(Types.fragment) =
+          let nullableFragmentData:
+            Js.Nullable.t(
+              [%t typeFromGeneratedModule(["Types", "fragment"])],
+            ) =
             ReasonRelay.internal_useFragmentOpt(
-              Operation.node,
+              [%e valFromGeneratedModule(["node"])],
               switch (fr) {
               | Some(fr) => Some(fr)->Js.Nullable.fromOption
               | None => Js.Nullable.null
@@ -111,7 +122,14 @@ let make =
             rawFragment =>
               switch (rawFragment) {
               | Some(rawFragment) =>
-                Some(rawFragment->Operation.Internal.convertFragment)
+                Some(
+                  rawFragment->[%e
+                                 valFromGeneratedModule([
+                                   "Internal",
+                                   "convertFragment",
+                                 ])
+                               ],
+                )
               | None => None
               },
             data,
@@ -120,31 +138,38 @@ let make =
       ],
       hasInlineDirective
         ? [%stri
-          let readInline = (fRef): Types.fragment => {
+          let readInline =
+              (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
             ReasonRelay.internal_readInlineData(
-              Operation.node,
-              fRef->Operation.getFragmentRef,
+              [%e valFromGeneratedModule(["node"])],
+              fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             )
-            ->Operation.Internal.convertFragment;
+            ->[%e valFromGeneratedModule(["Internal", "convertFragment"])];
           }
         ]
         : [%stri ()],
-      hasConnection
-        ? [%stri
+      switch (hasConnection, refetchableQueryName) {
+      | (true, Some(queryName)) => [%stri
           let usePagination =
               (fr)
               : ReasonRelay.paginationFragmentReturn(
-                  Types.fragment,
-                  RefetchableOperation.Types.refetchVariables,
+                  [%t typeFromGeneratedModule(["Types", "fragment"])],
+                  [%t
+                    makeTypeAccessor(
+                      ~loc,
+                      ~moduleName=queryName,
+                      ["Types", "refetchVariables"],
+                    )
+                  ],
                 ) => {
             let p =
               ReasonRelay.internal_usePaginationFragment(
-                Operation.node,
-                Operation.getFragmentRef(fr),
+                [%e valFromGeneratedModule(["node"])],
+                [%e valFromGeneratedModule(["getFragmentRef"])](fr),
               );
             let data =
               ReasonRelay.internal_useConvertedValue(
-                Operation.Internal.convertFragment,
+                [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 p.data,
               );
 
@@ -172,7 +197,13 @@ let make =
               isLoadingPrevious: p.isLoadingPrevious,
               refetch:
                 (
-                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~variables: [%t
+                     makeTypeAccessor(
+                       ~loc,
+                       ~moduleName=queryName,
+                       ["Types", "refetchVariables"],
+                     )
+                   ],
                   ~fetchPolicy=?,
                   ~renderPolicy=?,
                   ~onComplete=?,
@@ -180,7 +211,13 @@ let make =
                 ) =>
                 p.refetch(.
                   variables
-                  ->RefetchableOperation.Internal.convertVariables
+                  ->[%e
+                      makeExprAccessor(
+                        ~loc,
+                        ~moduleName=queryName,
+                        ["Internal", "convertVariables"],
+                      )
+                    ]
                   ->ReasonRelay.internal_cleanVariablesRaw
                   ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
                   ReasonRelay.internal_makeRefetchableFnOpts(
@@ -193,23 +230,32 @@ let make =
             };
           }
         ]
-        : [%stri ()],
-      hasConnection
-        ? [%stri
+      | _ =>
+        %stri
+        ()
+      },
+      switch (hasConnection, refetchableQueryName) {
+      | (true, Some(queryName)) => [%stri
           let useBlockingPagination =
               (fRef)
               : ReasonRelay.paginationBlockingFragmentReturn(
-                  Types.fragment,
-                  RefetchableOperation.Types.refetchVariables,
+                  [%t typeFromGeneratedModule(["Types", "fragment"])],
+                  [%t
+                    makeTypeAccessor(
+                      ~loc,
+                      ~moduleName=queryName,
+                      ["Types", "refetchVariables"],
+                    )
+                  ],
                 ) => {
             let p =
               ReasonRelay.internal_useBlockingPaginationFragment(
-                Operation.node,
-                Operation.getFragmentRef(fRef),
+                [%e valFromGeneratedModule(["node"])],
+                [%e valFromGeneratedModule(["getFragmentRef"])](fRef),
               );
             let data =
               ReasonRelay.internal_useConvertedValue(
-                Operation.Internal.convertFragment,
+                [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 p.data,
               );
 
@@ -235,7 +281,13 @@ let make =
               hasPrevious: p.hasPrevious,
               refetch:
                 (
-                  ~variables: RefetchableOperation.Types.refetchVariables,
+                  ~variables: [%t
+                     makeTypeAccessor(
+                       ~loc,
+                       ~moduleName=queryName,
+                       ["Types", "refetchVariables"],
+                     )
+                   ],
                   ~fetchPolicy=?,
                   ~renderPolicy=?,
                   ~onComplete=?,
@@ -243,7 +295,13 @@ let make =
                 ) =>
                 p.refetch(.
                   variables
-                  ->RefetchableOperation.Internal.convertVariables
+                  ->[%e
+                      makeExprAccessor(
+                        ~loc,
+                        ~moduleName=queryName,
+                        ["Internal", "convertVariables"],
+                      )
+                    ]
                   ->ReasonRelay.internal_cleanVariablesRaw
                   ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
                   ReasonRelay.internal_makeRefetchableFnOpts(
@@ -256,11 +314,19 @@ let make =
             };
           }
         ]
-        : [%stri ()],
+      | _ =>
+        %stri
+        ()
+      },
       switch (refetchableQueryName, hasConnection) {
-      | (_, true)
-      | (Some(_), _) => [%stri
-          let makeRefetchVariables = RefetchableOperation.Types.makeRefetchVariables
+      | (Some(queryName), _) => [%stri
+          let makeRefetchVariables = [%e
+            makeExprAccessor(
+              ~loc,
+              ~moduleName=queryName,
+              ["Types", "makeRefetchVariables"],
+            )
+          ]
         ]
       | _ =>
         %stri
@@ -268,3 +334,4 @@ let make =
       },
     ]),
   );
+};
