@@ -22,11 +22,62 @@ let make =
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
+      // Internal module
+      switch (refetchableQueryName) {
+      | None =>
+        %stri
+        ()
+      | Some(queryName) => [%stri
+          module InternalRefetch = {
+            [@bs.deriving abstract]
+            type refetchableFnOpts = {
+              [@bs.optional]
+              fetchPolicy: string,
+              [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
+              renderPolicy: string,
+              [@bs.optional]
+              onComplete: Js.Nullable.t(Js.Exn.t) => unit,
+            };
+
+            let makeRefetchableFnOpts =
+                (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
+              refetchableFnOpts(
+                ~fetchPolicy=?fetchPolicy->ReasonRelay.mapFetchPolicy,
+                ~renderPolicy=?renderPolicy->ReasonRelay.mapRenderPolicy,
+                ~onComplete=?
+                  onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                (),
+              );
+
+            [@bs.module "react-relay/hooks"]
+            external useRefetchableFragment:
+              (
+                ReasonRelay.fragmentNode,
+                [%t typeFromGeneratedModule(["fragmentRef"])]
+              ) =>
+              (
+                [%t typeFromGeneratedModule(["Types", "fragment"])],
+                (
+                  [%t
+                    makeTypeAccessor(
+                      ~loc,
+                      ~moduleName=queryName,
+                      ["Types", "refetchVariables"],
+                    )
+                  ],
+                  refetchableFnOpts
+                ) =>
+                ReasonRelay.Disposable.t,
+              ) =
+              "useRefetchableFragment";
+          }
+        ]
+      },
       switch (refetchableQueryName) {
       | Some(queryName) => [%stri
           let useRefetchable = fRef => {
             let (fragmentData, refetchFn) =
-              ReasonRelay.internal_useRefetchableFragment(
+              InternalRefetch.useRefetchableFragment(
                 [%e valFromGeneratedModule(["node"])],
                 fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
@@ -63,7 +114,7 @@ let make =
                       ]
                     ->ReasonRelay.internal_cleanVariablesRaw
                     ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
-                    ReasonRelay.internal_makeRefetchableFnOpts(
+                    InternalRefetch.makeRefetchableFnOpts(
                       ~fetchPolicy?,
                       ~renderPolicy?,
                       ~onComplete?,

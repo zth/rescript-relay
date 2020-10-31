@@ -824,7 +824,7 @@ let internal_nullableToOptionalExnHandler =
   | Some(handler) =>
     Some(maybeExn => maybeExn->Js.Nullable.toOption->handler);
 
-let makeRefetchableFnOpts =
+let internal_makeRefetchableFnOpts =
     (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
   refetchableFnOpts(
     ~fetchPolicy=?fetchPolicy->mapFetchPolicy,
@@ -832,8 +832,6 @@ let makeRefetchableFnOpts =
     ~onComplete=?onComplete->internal_nullableToOptionalExnHandler,
     (),
   );
-
-let internal_makeRefetchableFnOpts = makeRefetchableFnOpts;
 
 [@bs.module "react-relay/hooks"]
 external internal_useRefetchableFragment:
