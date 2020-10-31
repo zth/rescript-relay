@@ -6,7 +6,9 @@ import {
 } from "../test-utils";
 
 const generate = generateCurryFunc(
-  generateSchema(resolve(join(__dirname, "..", "test-utils", "testSchema.graphql")))
+  generateSchema(
+    resolve(join(__dirname, "..", "test-utils", "testSchema.graphql"))
+  )
 );
 
 describe("Language plugin tests", () => {
@@ -22,7 +24,9 @@ describe("Language plugin tests", () => {
       );
 
       expect(
-        generated.includes("type operationType = ReasonRelay.queryNode;")
+        generated.includes(
+          "type operationType = ReasonRelay.queryNode(relayOperationNode);"
+        )
       ).toBe(true);
     });
 
@@ -239,7 +243,9 @@ describe("Language plugin tests", () => {
               }
             }
           }`
-        ).includes("type operationType = ReasonRelay.mutationNode;")
+        ).includes(
+          "type operationType = ReasonRelay.mutationNode(relayOperationNode);"
+        )
       ).toBe(true);
     });
 
@@ -306,7 +312,9 @@ describe("Language plugin tests", () => {
               }
             }
           }`
-        ).includes("type operationType = ReasonRelay.subscriptionNode;")
+        ).includes(
+          "type operationType = ReasonRelay.subscriptionNode(relayOperationNode);"
+        )
       ).toBe(true);
     });
 
@@ -334,7 +342,9 @@ describe("Language plugin tests", () => {
             id
             firstName
           }`
-        ).includes("type operationType = ReasonRelay.fragmentNode;")
+        ).includes(
+          "type operationType = ReasonRelay.fragmentNode(relayOperationNode);"
+        )
       ).toBe(true);
     });
 
