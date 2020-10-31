@@ -77,7 +77,7 @@ let make =
                 ~fetchPolicy=?fetchPolicy->ReasonRelay.mapFetchPolicy,
                 ~renderPolicy=?renderPolicy->ReasonRelay.mapRenderPolicy,
                 ~onComplete=?
-                  onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                  onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
                 (),
               );
 
@@ -213,7 +213,7 @@ let make =
               );
 
             let data: [%t typeFromGeneratedModule(["Types", "fragment"])] =
-              ReasonRelay.internal_useConvertedValue(
+              ReasonRelay_Internal.internal_useConvertedValue(
                 [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 fragmentData,
               );
@@ -242,8 +242,8 @@ let make =
                           ["Internal", "convertVariables"],
                         )
                       ]
-                    ->ReasonRelay.internal_cleanVariablesRaw
-                    ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                    ->ReasonRelay_Internal.internal_cleanVariablesRaw
+                    ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                     InternalRefetch.makeRefetchableFnOpts(
                       ~fetchPolicy?,
                       ~renderPolicy?,
@@ -268,7 +268,7 @@ let make =
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             );
 
-          ReasonRelay.internal_useConvertedValue(
+          ReasonRelay_Internal.internal_useConvertedValue(
             [%e valFromGeneratedModule(["Internal", "convertFragment"])],
             data,
           );
@@ -299,7 +299,7 @@ let make =
 
           let data = nullableFragmentData->Js.Nullable.toOption;
 
-          ReasonRelay.internal_useConvertedValue(
+          ReasonRelay_Internal.internal_useConvertedValue(
             rawFragment =>
               switch (rawFragment) {
               | Some(rawFragment) =>
@@ -338,7 +338,7 @@ let make =
                 [%e valFromGeneratedModule(["getFragmentRef"])](fr),
               );
             let data =
-              ReasonRelay.internal_useConvertedValue(
+              ReasonRelay_Internal.internal_useConvertedValue(
                 [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 p.data,
               );
@@ -350,7 +350,7 @@ let make =
                   count,
                   {
                     onComplete:
-                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                      onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
                   },
                 ),
               loadPrevious: (~count, ~onComplete=?, ()) =>
@@ -358,7 +358,7 @@ let make =
                   count,
                   {
                     onComplete:
-                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                      onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
                   },
                 ),
               hasNext: p.hasNext,
@@ -388,8 +388,8 @@ let make =
                         ["Internal", "convertVariables"],
                       )
                     ]
-                  ->ReasonRelay.internal_cleanVariablesRaw
-                  ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                  ->ReasonRelay_Internal.internal_cleanVariablesRaw
+                  ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                   InternalRefetch.makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
@@ -414,7 +414,7 @@ let make =
                 fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
               );
             let data =
-              ReasonRelay.internal_useConvertedValue(
+              ReasonRelay_Internal.internal_useConvertedValue(
                 [%e valFromGeneratedModule(["Internal", "convertFragment"])],
                 p.data,
               );
@@ -426,7 +426,7 @@ let make =
                   count,
                   {
                     onComplete:
-                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                      onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
                   },
                 ),
               loadPrevious: (~count, ~onComplete=?, ()) =>
@@ -434,7 +434,7 @@ let make =
                   count,
                   {
                     onComplete:
-                      onComplete->ReasonRelay.internal_nullableToOptionalExnHandler,
+                      onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
                   },
                 ),
               hasNext: p.hasNext,
@@ -462,8 +462,8 @@ let make =
                         ["Internal", "convertVariables"],
                       )
                     ]
-                  ->ReasonRelay.internal_cleanVariablesRaw
-                  ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+                  ->ReasonRelay_Internal.internal_cleanVariablesRaw
+                  ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                   InternalRefetch.makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,

@@ -100,9 +100,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             Internal.useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
-              ->ReasonRelay.internal_cleanVariablesRaw
+              ->ReasonRelay_Internal.internal_cleanVariablesRaw
               ->[%e valFromGeneratedModule(["Internal", "convertVariables"])]
-              ->ReasonRelay.internal_cleanObjectFromUndefinedRaw,
+              ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
               {
                 fetchKey,
                 fetchPolicy: fetchPolicy->ReasonRelay.mapFetchPolicy,
@@ -111,7 +111,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
               },
             );
 
-          ReasonRelay.internal_useConvertedValue(
+          ReasonRelay_Internal.internal_useConvertedValue(
             [%e valFromGeneratedModule(["Internal", "convertResponse"])],
             data,
           );
@@ -298,7 +298,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
               | None => None
               },
             );
-          ReasonRelay.internal_useConvertedValue(
+          ReasonRelay_Internal.internal_useConvertedValue(
             [%e valFromGeneratedModule(["Internal", "convertResponse"])],
             data,
           );

@@ -84,15 +84,6 @@ external convertObj:
   "traverser";
 
 /**
- * Internal utils.
- */
-
-let internal_cleanVariablesRaw: 't => 't;
-let internal_cleanObjectFromUndefinedRaw: 't => 't;
-let internal_nullableToOptionalExnHandler:
-  option(option('b) => 'a) => option(Js.Nullable.t('b) => 'a);
-
-/**
  * Read the following section on working with the Relay store:
  * https://relay.dev/docs/en/relay-store
  */
@@ -628,8 +619,6 @@ module MakeLoadQuery:
     let queryRefToPromise:
       C.loadedQueryRef => Promise.t(Belt.Result.t(unit, unit));
   };
-
-let internal_useConvertedValue: ('a => 'a, 'a) => 'a;
 
 /**
  * MUTATION

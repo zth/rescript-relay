@@ -79,7 +79,7 @@ let make = (~loc, ~moduleName) => {
                   ->[%e
                       valFromGeneratedModule(["Internal", "convertVariables"])
                     ]
-                  ->ReasonRelay.internal_cleanVariablesRaw,
+                  ->ReasonRelay_Internal.internal_cleanVariablesRaw,
                 ~onCompleted?,
                 ~onError?,
                 ~onNext=?

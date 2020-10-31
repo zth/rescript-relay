@@ -141,7 +141,7 @@ let make = (~loc, ~moduleName) => {
                   ->[%e
                       valFromGeneratedModule(["Internal", "convertVariables"])
                     ]
-                  ->ReasonRelay.internal_cleanVariablesRaw,
+                  ->ReasonRelay_Internal.internal_cleanVariablesRaw,
                 mutation: [%e valFromGeneratedModule(["node"])],
                 onCompleted:
                   Some(
@@ -256,7 +256,7 @@ let make = (~loc, ~moduleName) => {
                             "convertVariables",
                           ])
                         ]
-                      ->ReasonRelay.internal_cleanVariablesRaw,
+                      ->ReasonRelay_Internal.internal_cleanVariablesRaw,
                     mutation: [%e valFromGeneratedModule(["node"])],
                     onCompleted:
                       Some(
@@ -415,7 +415,7 @@ let make = (~loc, ~moduleName) => {
                           "convertVariables",
                         ])
                       ]
-                    ->ReasonRelay.internal_cleanVariablesRaw,
+                    ->ReasonRelay_Internal.internal_cleanVariablesRaw,
                   optimisticUpdater,
                   updater:
                     switch (updater) {
