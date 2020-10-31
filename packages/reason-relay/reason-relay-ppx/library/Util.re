@@ -185,60 +185,57 @@ let fragmentHasInlineDirective = (~loc, str) =>
 let getGraphQLModuleName = opName =>
   String.capitalize_ascii(opName) ++ "_graphql";
 
-let makeTypeAccessor = (~loc, ~moduleName, path) =>
+let makeTypeAccessor = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
   Ppxlib.Ast_helper.Typ.constr(
     ~loc,
     {
       txt:
         switch (path) {
-        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
-        | [innerModule, t] =>
-          Ldot(
-            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
-            t,
-          )
-        | _ => Lident(getGraphQLModuleName(moduleName))
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
         },
       loc,
     },
     [],
   );
+};
 
-let makeExprAccessor = (~loc, ~moduleName, path) =>
+let makeExprAccessor = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
   Ppxlib.Ast_helper.Exp.ident(
     ~loc,
     {
       txt:
         switch (path) {
-        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
-        | [innerModule, t] =>
-          Ldot(
-            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
-            t,
-          )
-        | _ => Lident(getGraphQLModuleName(moduleName))
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
         },
       loc,
     },
   );
+};
 
-let makeModuleIdent = (~loc, ~moduleName, path) =>
+let makeModuleIdent = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
   Ppxlib.Ast_helper.Mod.ident(
     ~loc,
     {
       txt:
         switch (path) {
-        | [t] => Ldot(Lident(getGraphQLModuleName(moduleName)), t)
-        | [innerModule, t] =>
-          Ldot(
-            Ldot(Lident(getGraphQLModuleName(moduleName)), innerModule),
-            t,
-          )
-        | _ => Lident(getGraphQLModuleName(moduleName))
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
         },
       loc,
     },
   );
+};
 
 /**
  * This is some AST voodoo to extract the provided string from [%relay.<operation> {| ...string here... |}].
