@@ -61,7 +61,10 @@ let make = (~loc, ~moduleName) => {
           };
 
           type commitMutationConfigRaw = {
-            mutation: ReasonRelay.mutationNode,
+            mutation:
+              ReasonRelay.mutationNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             onCompleted:
               option(
@@ -87,7 +90,9 @@ let make = (~loc, ~moduleName) => {
 
           [@bs.module "react-relay/lib/relay-experimental"]
           external internal_useMutation:
-            ReasonRelay.mutationNode =>
+            ReasonRelay.mutationNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ) =>
             (useMutationConfigRaw => ReasonRelay.Disposable.t, bool) =
             "useMutation";
         }

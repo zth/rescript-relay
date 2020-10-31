@@ -595,7 +595,9 @@ let operationType = (operationType: Types.operationType) => {
     | Subscription(_) => "subscription"
     };
 
-  "type operationType = ReasonRelay." ++ opType ++ "Node;";
+  "type relayOperationNode; \n\ntype operationType = ReasonRelay."
+  ++ opType
+  ++ "Node(relayOperationNode);";
 };
 
 let printType = typeText => {j|type $typeText;|j};

@@ -5,10 +5,10 @@ type allFieldsMasked = {.};
 
 type any;
 
-type queryNode;
-type fragmentNode;
-type mutationNode;
-type subscriptionNode;
+type queryNode('node);
+type fragmentNode('node);
+type mutationNode('node);
+type subscriptionNode('node);
 
 type fragmentRefs('fragments);
 
@@ -640,14 +640,16 @@ type loadQueryConfig = {
 
 [@bs.module "react-relay/hooks"] [@bs.scope "loadQuery"]
 external loadQuery:
-  (Environment.t, queryNode, 'variables, loadQueryConfig) => 'queryResponse =
+  (Environment.t, queryNode('a), 'variables, loadQueryConfig) =>
+  'queryResponse =
   "loadQuery";
 
 module type MakeLoadQueryConfig = {
   type variables;
   type loadedQueryRef;
   type response;
-  let query: queryNode;
+  type node;
+  let query: queryNode(node);
   let convertVariables: variables => variables;
 };
 

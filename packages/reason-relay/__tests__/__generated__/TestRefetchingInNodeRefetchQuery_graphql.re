@@ -89,7 +89,9 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| (function(){
@@ -265,6 +267,7 @@ include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
   type loadedQueryRef = queryRef;
   type response = Types.response;
+  type node = relayOperationNode;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

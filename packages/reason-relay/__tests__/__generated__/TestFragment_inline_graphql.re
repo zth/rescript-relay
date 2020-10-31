@@ -37,7 +37,9 @@ module Utils = {
     "%identity";
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| {

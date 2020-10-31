@@ -18,7 +18,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           [@bs.module "relay-runtime"]
           external internal_createOperationDescriptor:
             (
-              ReasonRelay.queryNode,
+              ReasonRelay.queryNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
               [%t typeFromGeneratedModule(["Types", "variables"])]
             ) =>
             ReasonRelay.operationDescriptor =
@@ -35,7 +37,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           [@bs.module "react-relay/hooks"]
           external internal_useQuery:
             (
-              ReasonRelay.queryNode,
+              ReasonRelay.queryNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
               [%t typeFromGeneratedModule(["Types", "variables"])],
               useQueryConfig
             ) =>
@@ -45,7 +49,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           [@bs.module "react-relay/hooks"]
           external internal_usePreloadedQuery:
             (
-              ReasonRelay.queryNode,
+              ReasonRelay.queryNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
               'token,
               option({. "UNSTABLE_renderPolicy": option(string)})
             ) =>
@@ -59,7 +65,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
 
           [@bs.module "react-relay/hooks"]
           external internal_useQueryLoader:
-            ReasonRelay.queryNode =>
+            ReasonRelay.queryNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ) =>
             (
               Js.nullable([%t typeFromGeneratedModule(["queryRef"])]),
               (
@@ -75,7 +83,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           external internal_fetchQuery:
             (
               ReasonRelay.Environment.t,
-              ReasonRelay.queryNode,
+              ReasonRelay.queryNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
               [%t typeFromGeneratedModule(["Types", "variables"])],
               option(ReasonRelay.fetchQueryOptions)
             ) =>

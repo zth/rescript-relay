@@ -53,7 +53,9 @@ module Utils = {
   let makeVariables = (~userId): variables => {userId: userId};
 };
 
-type operationType = ReasonRelay.subscriptionNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.subscriptionNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| (function(){

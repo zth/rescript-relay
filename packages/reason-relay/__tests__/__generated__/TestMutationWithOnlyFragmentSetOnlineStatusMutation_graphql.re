@@ -122,7 +122,9 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| (function(){

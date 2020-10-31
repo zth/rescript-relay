@@ -11,10 +11,10 @@ type any;
 /**
  * The type of the actual node that Relay uses for operations.
  */
-type queryNode;
-type fragmentNode;
-type mutationNode;
-type subscriptionNode;
+type queryNode('node);
+type fragmentNode('node);
+type mutationNode('node);
+type subscriptionNode('node);
 
 /**
  * Helper to signify fragment references
@@ -596,7 +596,8 @@ module type MakeLoadQueryConfig = {
   type variables;
   type loadedQueryRef;
   type response;
-  let query: queryNode;
+  type node;
+  let query: queryNode(node);
   let convertVariables: variables => variables;
 };
 

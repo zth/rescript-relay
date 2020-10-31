@@ -20,6 +20,7 @@ const formatGeneratedModule: FormatModule = ({
     type variables = Types.variables;
     type loadedQueryRef = queryRef;
     type response = Types.response;
+    type node = relayOperationNode;
     let query = node;
     let convertVariables = Internal.convertVariables;
   });`

@@ -24,7 +24,10 @@ let make = (~loc, ~moduleName) => {
 
           [@bs.deriving abstract]
           type subscriptionConfig = {
-            subscription: ReasonRelay.subscriptionNode,
+            subscription:
+              ReasonRelay.subscriptionNode(
+                [%t typeFromGeneratedModule(["relayOperationNode"])],
+              ),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
             [@bs.optional]
             onCompleted: unit => unit,
