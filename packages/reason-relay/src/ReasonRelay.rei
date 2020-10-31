@@ -678,40 +678,7 @@ let internal_useConvertedValue: ('a => 'a, 'a) => 'a;
  * MUTATION
  */
 
-type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
-type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
-
 type mutationError = {message: string};
-
-type useMutationConfig('response, 'rawResponse, 'variables) = {
-  onError: option(mutationError => unit),
-  onCompleted: option(('response, option(array(mutationError))) => unit),
-  onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('rawResponse),
-  optimisticUpdater: option(optimisticUpdaterFn),
-  updater: option((RecordSourceSelectorProxy.t, 'response) => unit),
-  variables: 'variables,
-};
-
-type useMutationConfigRaw('response, 'rawResponse, 'variables) = {
-  onError: option(mutationError => unit),
-  onCompleted:
-    option(('response, Js.Nullable.t(array(mutationError))) => unit),
-  onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('rawResponse),
-  optimisticUpdater: option(optimisticUpdaterFn),
-  updater: option(updaterFn('response)),
-  variables: 'variables,
-};
-
-[@bs.module "react-relay/lib/relay-experimental"]
-external internal_useMutation:
-  mutationNode =>
-  (
-    useMutationConfigRaw('response, 'rawResponse, 'variables) => Disposable.t,
-    bool,
-  ) =
-  "useMutation";
 
 /**
  * Context provider for the Relay environment.
@@ -738,26 +705,6 @@ exception EnvironmentNotFoundInContext;
 let useEnvironmentFromContext: unit => Environment.t;
 
 exception Mutation_failed(array(mutationError));
-
-type commitMutationConfigRaw('variables, 'rawResponse, 'response) = {
-  mutation: mutationNode,
-  variables: 'variables,
-  onCompleted:
-    option(('response, Js.Nullable.t(array(mutationError))) => unit),
-  onError: option(Js.Nullable.t(mutationError) => unit),
-  optimisticResponse: option('rawResponse),
-  optimisticUpdater: option(optimisticUpdaterFn),
-  updater: option(updaterFn('response)),
-};
-
-[@bs.module "relay-runtime"]
-external internal_commitMutation:
-  (
-    Environment.t,
-    commitMutationConfigRaw('variables, 'rawResponse, 'response)
-  ) =>
-  Disposable.t =
-  "commitMutation";
 
 /**
  * A way of committing a local update to the store.

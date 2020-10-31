@@ -15,6 +15,13 @@ let make = (~loc, ~moduleName) => {
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         module Internal = {
+          type updaterFn =
+            (
+              ReasonRelay.RecordSourceSelectorProxy.t,
+              [%t typeFromGeneratedModule(["Types", "response"])]
+            ) =>
+            unit;
+
           [@bs.deriving abstract]
           type subscriptionConfig = {
             subscription: ReasonRelay.subscriptionNode,
@@ -27,10 +34,7 @@ let make = (~loc, ~moduleName) => {
             onNext:
               [%t typeFromGeneratedModule(["Types", "response"])] => unit,
             [@bs.optional]
-            updater:
-              ReasonRelay.updaterFn(
-                [%t typeFromGeneratedModule(["Types", "response"])],
-              ),
+            updater: updaterFn,
           };
 
           [@bs.module "relay-runtime"]
@@ -50,10 +54,7 @@ let make = (~loc, ~moduleName) => {
             ~onNext: [%t typeFromGeneratedModule(["Types", "response"])] =>
                      unit
                        =?,
-            ~updater: ReasonRelay.updaterFn(
-                        [%t typeFromGeneratedModule(["Types", "response"])],
-                      )
-                        =?,
+            ~updater: Internal.updaterFn=?,
             unit
           ) =>
           ReasonRelay.Disposable.t =
@@ -66,12 +67,7 @@ let make = (~loc, ~moduleName) => {
                option(
                  [%t typeFromGeneratedModule(["Types", "response"])] => unit,
                )=?,
-            ~updater:
-               option(
-                 ReasonRelay.updaterFn(
-                   [%t typeFromGeneratedModule(["Types", "response"])],
-                 ),
-               )=?,
+            ~updater: option(Internal.updaterFn)=?,
             (),
           ) =>
             Internal.requestSubscription(
