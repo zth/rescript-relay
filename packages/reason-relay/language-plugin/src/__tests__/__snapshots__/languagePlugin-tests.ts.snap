@@ -233,9 +233,9 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 "// SetUserLocationMutation.graphql
 /* @generated */
 
-type enum_UserRole = pri [> | \`Admin | \`User];
-
 module Types = {
+  type enum_UserRole = pri [> | \`Admin | \`User];
+
   [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
@@ -308,7 +308,7 @@ module Internal = {
 };
 
 module Utils = {
-  external userRole_toString: enum_UserRole => string = \\"%identity\\";
+  external userRole_toString: Types.enum_UserRole => string = \\"%identity\\";
   open Types;
   let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
     lat,
@@ -454,9 +454,9 @@ type operationType = ReasonRelay.mutationNode;
 // SomeFragment_user.graphql
 /* @generated */
 
-type enum_UserRole = pri [> | \`Admin | \`User];
-
 module Types = {
+  type enum_UserRole = pri [> | \`Admin | \`User];
+
   [@ocaml.warning \\"-30\\"];
 
   type fragment = {
@@ -487,7 +487,7 @@ external getFragmentRef:
   \\"%identity\\";
 
 module Utils = {
-  external userRole_toString: enum_UserRole => string = \\"%identity\\";
+  external userRole_toString: Types.enum_UserRole => string = \\"%identity\\";
 };
 
 type operationType = ReasonRelay.fragmentNode;
@@ -1488,9 +1488,9 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
-
 module Types = {
+  type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
+
   [@ocaml.warning \\"-30\\"];
   type response_participantById_Observer_manager_User = {
     lastName: string,
@@ -1651,7 +1651,7 @@ module Internal = {
 type queryRef;
 
 module Utils = {
-  external observerStatus_toString: enum_ObserverStatus => string =
+  external observerStatus_toString: Types.enum_ObserverStatus => string =
     \\"%identity\\";
 };
 
