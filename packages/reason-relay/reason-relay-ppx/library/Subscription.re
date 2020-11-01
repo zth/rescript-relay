@@ -62,15 +62,12 @@ let make = (~loc, ~moduleName) => {
           ) =>
           ReasonRelay.Disposable.t =
           (
-            ~environment: ReasonRelay.Environment.t,
-            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            ~onCompleted: option(unit => unit)=?,
-            ~onError: option(Js.Exn.t => unit)=?,
-            ~onNext:
-               option(
-                 [%t typeFromGeneratedModule(["Types", "response"])] => unit,
-               )=?,
-            ~updater: option(Internal.updaterFn)=?,
+            ~environment,
+            ~variables,
+            ~onCompleted=?,
+            ~onError=?,
+            ~onNext=?,
+            ~updater=?,
             (),
           ) =>
             Internal.internal_requestSubscription(

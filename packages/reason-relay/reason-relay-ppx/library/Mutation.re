@@ -129,8 +129,8 @@ let make = (~loc, ~moduleName) => {
           ) =>
           ReasonRelay.Disposable.t =
           (
-            ~environment: ReasonRelay.Environment.t,
-            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+            ~environment,
+            ~variables,
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
@@ -239,8 +239,8 @@ let make = (~loc, ~moduleName) => {
             ),
           ) =
           (
-            ~environment: ReasonRelay.Environment.t,
-            ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+            ~environment,
+            ~variables,
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
