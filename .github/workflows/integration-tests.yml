@@ -43,6 +43,14 @@ jobs:
         working-directory: packages/reason-relay
         run: |
           yarn build:test
+      - name: git status
+        id: git_status
+        run: |
+          echo "::set-output name=status::$( git status --porcelain )"
+      - name: Exit if files modified
+        run: |
+          exit 1
+        if: steps.git_status.outputs.status
       - name: Build - bindings
         working-directory: packages/reason-relay
         run: |
