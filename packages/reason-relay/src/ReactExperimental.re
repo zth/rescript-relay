@@ -1,9 +1,7 @@
 type callback('input, 'output) = 'input => 'output;
 
 [@bs.module "react"]
-external _useDeferredValue: ('value) => 'value = "useDeferredValue";
-
-let useDeferredValue = (~value) => _useDeferredValue(value);
+external _unstable_useDeferredValue: ('value) => 'value = "unstable_useDeferredValue";
 
 [@bs.module "react"]
 external _unstable_useTransition: unit =>
@@ -28,6 +26,6 @@ let renderConcurrentRootAtElementWithId: (React.element, string) => unit =
       )
     | Some(element) =>
       ReactDOMExperimental.unstable_createRoot(element)
-      ->ReactDOMExperimental.render(content)
+      ->ReactDOMRe.Experimental.render(content)
     };
   };

@@ -28,7 +28,7 @@ You will have the absolute best experience using ReasonRelay in concurrent mode,
 
 ##### Extra bindings for experimental APIs with no official bindings yet
 
-Not all experimental APIs from React are currently bound in the official `reason-react` bindings. ReasonRelay therefore ships `ReactExperimental`, a module with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
+Not all experimental APIs from React are currently bound in the official `reason-react` bindings. ReasonRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
 This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
@@ -53,12 +53,12 @@ First thing's first - ReasonRelay _requires BuckleScript 7 or above_. It will _n
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-d7382b6c4 react-dom@0.0.0-experimental-d7382b6c4
+yarn add react@0.0.0-experimental-4ead6b530 react-dom@0.0.0-experimental-4ead6b530
 
 # Add reason-relay and dependencies to the project
 # We currently depend on Relay version 10.0.1, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@10.0.1 relay-compiler@10.0.1 react-relay@0.0.0-experimental-8058ef82 relay-config@10.0.1 reason-promise
+yarn add reason-relay graphql relay-runtime@10.0.1 relay-compiler@10.0.1 react-relay@0.0.0-experimental-183bdd28 relay-config@10.0.1 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -76,14 +76,14 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-d7382b6c4` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-4ead6b530` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-d7382b6c4",
-    "react-dom": "0.0.0-experimental-d7382b6c4"
+    "react": "0.0.0-experimental-4ead6b530",
+    "react-dom": "0.0.0-experimental-4ead6b530"
   }
 }
 ```

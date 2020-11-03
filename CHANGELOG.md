@@ -1,8 +1,17 @@
 # master
 
+## Upgrade versions
+
+- `react` to `0.0.0-experimental-4ead6b530`
+- `react-dom` to `0.0.0-experimental-4ead6b530`
+- `react-relay` to `0.0.0-experimental-183bdd28`
+
 ## Breaking changes
 
 - _BREAKING CHANGE_ Replace unsetValue with setValueToUndefined and setValueToNull [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
+- _BREAKING CHANGE_ Replace `React.useTransition(~config={timeoutMs: 5000}, ())` with `ReactExperimental.unstable_useTransition()` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
+- _BREAKING CHANGE_ Replace `React.useDeferredValue` with `ReactExperimental.unstable_useDeferredValue` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
+- _BREAKING CHANGE_ Replace `ReactDOMRe.Experimental.createRoot` with `ReactDOMExperimental.unstable_createRoot` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 
 ## New bindings
 
