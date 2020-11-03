@@ -1,15 +1,13 @@
-type suspenseConfig = {timeoutMs: int};
+type callback('input, 'output) = 'input => 'output;
 
 [@bs.module "react"]
-external _useDeferredValue: ('value, option(suspenseConfig)) => 'value =
-  "useDeferredValue";
-
-let useDeferredValue = (~value, ~config=?, ()) =>
-  _useDeferredValue(value, config);
+external _unstable_useDeferredValue: ('value) => 'value = "unstable_useDeferredValue";
 
 [@bs.module "react"]
-external unstable_withSuspenseConfig: (unit => unit, suspenseConfig) => unit =
-  "unstable_withSuspenseConfig";
+external _unstable_useTransition: unit =>
+  (callback(callback(unit, unit), unit), bool) = "unstable_useTransition";
+
+let unstable_useTransition = () => _unstable_useTransition();
 
 [@bs.val] [@bs.return nullable]
 external getElementById: string => option(Dom.element) =
@@ -27,7 +25,7 @@ let renderConcurrentRootAtElementWithId: (React.element, string) => unit =
         ),
       )
     | Some(element) =>
-      ReactDOMRe.Experimental.createRoot(element)
+      ReactDOMExperimental.unstable_createRoot(element)
       ->ReactDOMRe.Experimental.render(content)
     };
   };

@@ -34,7 +34,7 @@ module Test = {
       Fragment.useRefetchable(query.loggedInUser.fragmentRefs);
 
     let (startTransition, _) =
-      React.useTransition(~config={timeoutMs: 5000}, ());
+      ReactExperimental.unstable_useTransition();
 
     <div>
       {React.string(
