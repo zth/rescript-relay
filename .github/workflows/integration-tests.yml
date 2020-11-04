@@ -27,7 +27,7 @@ jobs:
       - name: Install - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |
-          yarn install
+          yarn --frozen-lockfile
       - name: Build - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |

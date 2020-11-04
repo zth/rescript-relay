@@ -18,7 +18,7 @@ jobs:
           CI: true
       - name: Install
         run: |
-          yarn install
+          yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build

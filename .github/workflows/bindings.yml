@@ -25,7 +25,7 @@ jobs:
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Install
         run: |
-          yarn install
+          yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build
