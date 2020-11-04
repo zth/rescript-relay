@@ -23,12 +23,9 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-      - name: install yarn
-        run: |
-          npm install -g yarn
       - name: Install
         run: |
-          yarn install
+          yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build
