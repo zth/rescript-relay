@@ -19,9 +19,6 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-      - name: install yarn
-        run: |
-          npm install -g yarn
       - name: Build PPX
         uses: esy/github-action@v1
         with:
