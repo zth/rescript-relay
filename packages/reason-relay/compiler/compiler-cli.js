@@ -22,7 +22,9 @@ if (!relayConfig.artifactDirectory) {
 function runRelayCompiler(args) {
   spawn("relay-compiler", args, {
     stdio: "inherit"
-  });
+  })
+    // Propagate the relay compiler's exit code.
+    .on('close', process.exit.bind(process));
 }
 
 function findArg(name) {
