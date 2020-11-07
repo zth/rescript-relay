@@ -34,7 +34,7 @@ module UserDisplayer = {
     let (data, refetch) = Fragment.useRefetchable(queryRef);
 
     let (startTransition, _) =
-      React.useTransition(~config={timeoutMs: 5000}, ());
+      ReactExperimental.unstable_useTransition();
 
     <div>
       {React.string(

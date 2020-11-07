@@ -19,9 +19,6 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
-      - name: install yarn
-        run: |
-          npm install -g yarn
       - name: Build PPX
         uses: esy/github-action@v1
         with:
@@ -30,7 +27,7 @@ jobs:
       - name: Install - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |
-          yarn install
+          yarn --frozen-lockfile
       - name: Build - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |
@@ -39,14 +36,22 @@ jobs:
         working-directory: packages/reason-relay
         run: |
           yarn install
-      - name: Build - bindings
-        working-directory: packages/reason-relay
-        run: |
-          yarn build
       - name: Build - Relay test files
         working-directory: packages/reason-relay
         run: |
           yarn build:test
+      - name: git status
+        id: git_status
+        run: |
+          echo "::set-output name=status::$( git status --porcelain )"
+      - name: Exit if files modified
+        run: |
+          exit 1
+        if: steps.git_status.outputs.status
+      - name: Build - bindings
+        working-directory: packages/reason-relay
+        run: |
+          yarn build
       - name: Integration tests
         working-directory: packages/reason-relay
         run: |
