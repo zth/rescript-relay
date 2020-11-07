@@ -1,8 +1,8 @@
 /* @generated */
 
-type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
-
 module Types = {
+  type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
+
   [@ocaml.warning "-30"];
   type response_users = {
     edges: option(array(option(response_users_edges))),
@@ -72,12 +72,15 @@ module Internal = {
 type queryRef;
 
 module Utils = {
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity";
+  external onlineStatus_toString: Types.enum_OnlineStatus => string =
+    "%identity";
   open Types;
   let makeVariables = (~status=?, ()): variables => {status: status};
 };
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| (function(){
@@ -183,6 +186,7 @@ include ReasonRelay.MakeLoadQuery({
   type variables = Types.variables;
   type loadedQueryRef = queryRef;
   type response = Types.response;
+  type node = relayOperationNode;
   let query = node;
   let convertVariables = Internal.convertVariables;
 });

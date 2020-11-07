@@ -560,7 +560,7 @@ let printUnionTypes = (~state, ~printName, union: union) => {
 let printEnumToStringFn = (enum: fullEnum): string =>
   "external "
   ++ Tablecloth.String.uncapitalize(enum.name)
-  ++ "_toString: "
+  ++ "_toString: Types."
   ++ printEnumName(enum.name)
   ++ " => string = \"%identity\";";
 
@@ -595,7 +595,9 @@ let operationType = (operationType: Types.operationType) => {
     | Subscription(_) => "subscription"
     };
 
-  "type operationType = ReasonRelay." ++ opType ++ "Node;";
+  "type relayOperationNode; \n\ntype operationType = ReasonRelay."
+  ++ opType
+  ++ "Node(relayOperationNode);";
 };
 
 let printType = typeText => {j|type $typeText;|j};

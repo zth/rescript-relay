@@ -185,6 +185,58 @@ let fragmentHasInlineDirective = (~loc, str) =>
 let getGraphQLModuleName = opName =>
   String.capitalize_ascii(opName) ++ "_graphql";
 
+let makeTypeAccessor = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
+  Ppxlib.Ast_helper.Typ.constr(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
+        },
+      loc,
+    },
+    [],
+  );
+};
+
+let makeExprAccessor = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
+  Ppxlib.Ast_helper.Exp.ident(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
+        },
+      loc,
+    },
+  );
+};
+
+let makeModuleIdent = (~loc, ~moduleName, path) => {
+  let gqlModuleName = Lident(getGraphQLModuleName(moduleName));
+
+  Ppxlib.Ast_helper.Mod.ident(
+    ~loc,
+    {
+      txt:
+        switch (path) {
+        | [t] => Ldot(gqlModuleName, t)
+        | [innerModule, t] => Ldot(Ldot(gqlModuleName, innerModule), t)
+        | _ => gqlModuleName
+        },
+      loc,
+    },
+  );
+};
+
 /**
  * This is some AST voodoo to extract the provided string from [%relay.<operation> {| ...string here... |}].
  * It basically just matches on the correct AST structure for having an extension node with a string, and
@@ -222,265 +274,3 @@ let extractOperationStr = (~loc, ~expr) =>
       "All [%%relay] operations must be provided a string, like [%%relay.query {| { query SomeQuery { id } |}]",
     )
   };
-
-/**
- * This returns an AST record representing a module name definition.
- */
-let makeModuleNameAst = (~loc, ~moduleName) => {
-  pmod_attributes: [],
-  pmod_loc: loc,
-  pmod_desc:
-    Pmod_ident({loc, txt: Lident(getGraphQLModuleName(moduleName))}),
-};
-
-/**
- * This constructs a module definition AST, in this case for fragments. Note it's only the definition structure,
- * not the full definition.
- */
-let makeFragment =
-    (
-      ~loc,
-      ~moduleName,
-      ~refetchableQueryName,
-      ~hasConnection,
-      ~hasInlineDirective,
-    ) =>
-  Ast_helper.Mod.mk(
-    Pmod_structure([
-      // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]], // %m also comes from Ppxlib and means "make a module definition"
-      switch (refetchableQueryName) {
-      | Some(queryName) => [%stri
-          module RefetchableOperation = [%m
-            makeModuleNameAst(~loc, ~moduleName=queryName)
-          ]
-        ]
-      | None =>
-        %stri
-        ()
-      },
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
-      switch (refetchableQueryName) {
-      | Some(queryName) => [%stri
-          module UseRefetchableFragment =
-            ReasonRelay.MakeUseRefetchableFragment({
-              type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Types.fragment;
-              type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.Types.refetchVariables;
-              let fragmentSpec = Operation.node;
-              let convertFragment = Operation.Internal.convertFragment;
-              let convertVariables = RefetchableOperation.Internal.convertVariables;
-            })
-        ]
-      | None =>
-        %stri
-        ()
-      },
-      hasConnection
-        ? [%stri
-          module UsePaginationFragment =
-            ReasonRelay.MakeUsePaginationFragment({
-              type fragmentRaw = Operation.Internal.fragmentRaw;
-              type fragment = Types.fragment;
-              type fragmentRef = Operation.fragmentRef;
-              type variables = RefetchableOperation.Types.refetchVariables;
-              let fragmentSpec = Operation.node;
-              let convertFragment = Operation.Internal.convertFragment;
-              let convertVariables = RefetchableOperation.Internal.convertVariables;
-            })
-        ]
-        : [%stri ()],
-      [%stri
-        module UseFragment =
-          ReasonRelay.MakeUseFragment({
-            type fragmentRaw = Operation.Internal.fragmentRaw;
-            type fragment = Types.fragment;
-            type fragmentRef = Operation.fragmentRef;
-            let fragmentSpec = Operation.node;
-            let convertFragment = Operation.Internal.convertFragment;
-          })
-      ],
-      [%stri
-        let use = fRef => UseFragment.use(fRef |> Operation.getFragmentRef)
-      ],
-      [%stri
-        let useOpt = opt_fRef =>
-          UseFragment.useOpt(
-            switch (opt_fRef) {
-            | Some(fRef) => Some(fRef |> Operation.getFragmentRef)
-            | None => None
-            },
-          )
-      ],
-      hasInlineDirective
-        ? [%stri
-          let readInline = (fRef): Types.fragment => {
-            ReasonRelay.internal_readInlineData(
-              Operation.node,
-              fRef->Operation.getFragmentRef,
-            )
-            ->Operation.Internal.convertFragment;
-          }
-        ]
-        : [%stri ()],
-      hasConnection
-        ? [%stri
-          let usePagination = fRef =>
-            UsePaginationFragment.usePagination(
-              fRef |> Operation.getFragmentRef,
-            )
-        ]
-        : [%stri ()],
-      hasConnection
-        ? [%stri
-          let useBlockingPagination = fRef =>
-            UsePaginationFragment.useBlockingPagination(
-              fRef |> Operation.getFragmentRef,
-            )
-        ]
-        : [%stri ()],
-      switch (refetchableQueryName) {
-      | Some(_) => [%stri
-          let useRefetchable = fRef =>
-            UseRefetchableFragment.useRefetchable(
-              fRef |> Operation.getFragmentRef,
-            )
-        ]
-      | None =>
-        %stri
-        ()
-      },
-      switch (refetchableQueryName, hasConnection) {
-      | (_, true)
-      | (Some(_), _) => [%stri
-          let makeRefetchVariables = RefetchableOperation.Types.makeRefetchVariables
-        ]
-      | _ =>
-        %stri
-        ()
-      },
-    ]),
-  );
-
-/**
- * Check out the comments for makeFragment, this does the same thing but for queries.
- */
-let makeQuery = (~loc, ~moduleName, ~hasRawResponseType) =>
-  Ast_helper.Mod.mk(
-    Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
-      [%stri
-        module UseQuery =
-          ReasonRelay.MakeUseQuery({
-            type responseRaw = Operation.Internal.responseRaw;
-            type response = Types.response;
-            type variables = Types.variables;
-            type queryRef = Operation.queryRef;
-            let query = Operation.node;
-            let convertResponse = Operation.Internal.convertResponse;
-            let convertVariables = Operation.Internal.convertVariables;
-          })
-      ],
-      [%stri let use = UseQuery.use],
-      [%stri let useLoader = UseQuery.useLoader],
-      [%stri let fetch = UseQuery.fetch],
-      [%stri let fetchPromised = UseQuery.fetchPromised],
-      [%stri let usePreloaded = UseQuery.usePreloaded],
-      hasRawResponseType
-        ? [%stri
-          let commitLocalPayload =
-              (
-                ~environment: ReasonRelay.Environment.t,
-                ~variables: Types.variables,
-                ~payload: Types.rawResponse,
-              ) => {
-            let operationDescriptor =
-              ReasonRelay.internal_createOperationDescriptor(
-                Operation.node,
-                variables->Operation.Internal.convertVariables,
-              );
-
-            environment->ReasonRelay.Environment.commitPayload(
-              operationDescriptor,
-              payload->Operation.Internal.convertWrapRawResponse,
-            );
-          }
-        ]
-        : [%stri ()],
-    ]),
-  );
-
-/**
- * Check out the comments for makeFragment, this does the same thing but for mutations.
- */
-let makeMutation = (~loc, ~moduleName) =>
-  Ast_helper.Mod.mk(
-    Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
-      [%stri
-        module Mutation =
-          ReasonRelay.MakeCommitMutation({
-            type variables = Types.variables;
-            type responseRaw = Operation.Internal.responseRaw;
-            type response = Types.response;
-            type rawResponseRaw = Operation.Internal.rawResponseRaw;
-            type rawResponse = Types.rawResponse;
-            let node = Operation.node;
-            let convertResponse = Operation.Internal.convertResponse;
-            let wrapResponse = Operation.Internal.convertWrapResponse;
-            let convertRawResponse = Operation.Internal.convertRawResponse;
-            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
-            let convertVariables = Operation.Internal.convertVariables;
-          })
-      ],
-      [%stri
-        module UseMutation =
-          ReasonRelay.MakeUseMutation({
-            type variables = Types.variables;
-            type responseRaw = Operation.Internal.responseRaw;
-            type response = Types.response;
-            type rawResponseRaw = Operation.Internal.rawResponseRaw;
-            type rawResponse = Types.rawResponse;
-            let node = Operation.node;
-            let convertResponse = Operation.Internal.convertResponse;
-            let wrapResponse = Operation.Internal.convertWrapResponse;
-            let convertRawResponse = Operation.Internal.convertRawResponse;
-            let wrapRawResponse = Operation.Internal.convertWrapRawResponse;
-            let convertVariables = Operation.Internal.convertVariables;
-          })
-      ],
-      [%stri let commitMutation = Mutation.commitMutation],
-      [%stri let commitMutationPromised = Mutation.commitMutationPromised],
-      [%stri let use = UseMutation.use],
-    ]),
-  );
-
-/**
- * Check out the comments for makeFragment, this does the same thing but for subscriptions.
- */
-let makeSubscription = (~loc, ~moduleName) =>
-  Ast_helper.Mod.mk(
-    Pmod_structure([
-      [%stri module Operation = [%m makeModuleNameAst(~loc, ~moduleName)]],
-      [%stri include Operation.Utils],
-      [%stri module Types = Operation.Types],
-      [%stri
-        module Subscription =
-          ReasonRelay.MakeUseSubscription({
-            type variables = Types.variables;
-            type responseRaw = Operation.Internal.responseRaw;
-            type response = Types.response;
-            let node = Operation.node;
-            let convertResponse = Operation.Internal.convertResponse;
-            let convertVariables = Operation.Internal.convertVariables;
-          })
-      ],
-      [%stri let subscribe = Subscription.subscribe],
-    ]),
-  );

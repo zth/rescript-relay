@@ -85,7 +85,7 @@ module Test = {
     let (startTransition, _) =
       ReactExperimental.unstable_useTransition();
 
-    let ReasonRelay.{data, hasNext, loadNext, isLoadingNext, refetch} =
+    let {data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(query.fragmentRefs);
 
     <div>

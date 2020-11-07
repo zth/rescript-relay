@@ -103,7 +103,9 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 "
 `;
 
@@ -151,7 +153,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 
 // SomeOtherComponent_user.graphql
@@ -188,7 +192,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -225,7 +231,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -233,9 +241,9 @@ exports[`Language plugin tests Mutation generates the correct converter for comp
 "// SetUserLocationMutation.graphql
 /* @generated */
 
-type enum_UserRole = pri [> | \`Admin | \`User];
-
 module Types = {
+  type enum_UserRole = pri [> | \`Admin | \`User];
+
   [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
     changedUser: option(response_setUserLocation_changedUser),
@@ -308,7 +316,7 @@ module Internal = {
 };
 
 module Utils = {
-  external userRole_toString: enum_UserRole => string = \\"%identity\\";
+  external userRole_toString: Types.enum_UserRole => string = \\"%identity\\";
   open Types;
   let make_locationBounds = (~lat, ~lng, ~child=?, ()): locationBounds => {
     lat,
@@ -342,7 +350,9 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 "
 `;
 
@@ -448,15 +458,17 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
 
 // SomeFragment_user.graphql
 /* @generated */
 
-type enum_UserRole = pri [> | \`Admin | \`User];
-
 module Types = {
+  type enum_UserRole = pri [> | \`Admin | \`User];
+
   [@ocaml.warning \\"-30\\"];
 
   type fragment = {
@@ -487,10 +499,12 @@ external getFragmentRef:
   \\"%identity\\";
 
 module Utils = {
-  external userRole_toString: enum_UserRole => string = \\"%identity\\";
+  external userRole_toString: Types.enum_UserRole => string = \\"%identity\\";
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -602,7 +616,9 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 "
 `;
 
@@ -672,7 +688,9 @@ type queryRef;
 
 module Utils = {};
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
@@ -790,7 +808,9 @@ module Utils = {
       };
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -865,7 +885,9 @@ module Utils = {
       };
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -937,7 +959,9 @@ module Utils = {
       };
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -1014,7 +1038,9 @@ module Utils = {
   let makeVariables = (~userId): variables => {userId: userId};
 };
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
@@ -1080,7 +1106,9 @@ module Utils = {
   let makeVariables = (~input): variables => {input: input};
 };
 
-type operationType = ReasonRelay.subscriptionNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.subscriptionNode(relayOperationNode);
 "
 `;
 
@@ -1120,7 +1148,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 
 // app_observer.graphql
@@ -1158,7 +1188,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 
 // appQuery.graphql
@@ -1274,7 +1306,9 @@ type queryRef;
 
 module Utils = {};
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
@@ -1398,7 +1432,9 @@ type queryRef;
 
 module Utils = {};
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
@@ -1480,7 +1516,9 @@ external getFragmentRef:
 
 module Utils = {};
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 "
 `;
 
@@ -1488,9 +1526,9 @@ exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
 
-type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
-
 module Types = {
+  type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
+
   [@ocaml.warning \\"-30\\"];
   type response_participantById_Observer_manager_User = {
     lastName: string,
@@ -1651,11 +1689,13 @@ module Internal = {
 type queryRef;
 
 module Utils = {
-  external observerStatus_toString: enum_ObserverStatus => string =
+  external observerStatus_toString: Types.enum_ObserverStatus => string =
     \\"%identity\\";
 };
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
@@ -1749,6 +1789,8 @@ type queryRef;
 
 module Utils = {};
 
-type operationType = ReasonRelay.queryNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;

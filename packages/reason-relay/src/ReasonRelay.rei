@@ -11,10 +11,10 @@ type any;
 /**
  * The type of the actual node that Relay uses for operations.
  */
-type queryNode;
-type fragmentNode;
-type mutationNode;
-type subscriptionNode;
+type queryNode('node);
+type fragmentNode('node);
+type mutationNode('node);
+type subscriptionNode('node);
 
 /**
  * Helper to signify fragment references
@@ -522,15 +522,12 @@ type renderPolicy =
   | Full // Always render the full result
   | Partial; // Allow rendering any fragments that already have the data needed
 
+let mapRenderPolicy: option(renderPolicy) => option(string);
+
 /**
  * Handle creating and using operation descriptors.
  */
 type operationDescriptor;
-
-[@bs.module "relay-runtime"]
-external internal_createOperationDescriptor:
-  (queryNode, 'variables) => operationDescriptor =
-  "createOperationDescriptor";
 
 /**
  * Module representing the environment, which you'll need to use and
@@ -595,79 +592,12 @@ type fetchQueryFetchPolicy =
 let mapFetchQueryFetchPolicy:
   option(fetchQueryFetchPolicy) => option(string);
 
-/**
- * Internally used functors and configs.
- * You won't need to know about these.
- */
-module type MakeUseQueryConfig = {
-  type responseRaw;
-  type response;
-  type variables;
-  type queryRef;
-  let query: queryNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
-};
-
-module MakeUseQuery:
-  (C: MakeUseQueryConfig) =>
-   {
-    let use:
-      (
-        ~variables: C.variables,
-        ~fetchPolicy: fetchPolicy=?,
-        ~renderPolicy: renderPolicy=?,
-        ~fetchKey: string=?,
-        ~networkCacheConfig: cacheConfig=?,
-        unit
-      ) =>
-      C.response;
-
-    let useLoader:
-      unit =>
-      (
-        option(C.queryRef),
-        (
-          ~variables: C.variables,
-          ~fetchPolicy: fetchPolicy=?,
-          ~networkCacheConfig: cacheConfig=?,
-          unit
-        ) =>
-        unit,
-        unit => unit,
-      );
-
-    let fetch:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onResult: Belt.Result.t(C.response, Js.Exn.t) => unit,
-        ~networkCacheConfig: cacheConfig=?,
-        ~fetchPolicy: fetchQueryFetchPolicy=?,
-        unit
-      ) =>
-      unit;
-
-    let fetchPromised:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~networkCacheConfig: cacheConfig=?,
-        ~fetchPolicy: fetchQueryFetchPolicy=?,
-        unit
-      ) =>
-      Promise.t(Belt.Result.t(C.response, Js.Exn.t));
-
-    let usePreloaded:
-      (~queryRef: C.queryRef, ~renderPolicy: renderPolicy=?, unit) =>
-      C.response;
-  };
-
 module type MakeLoadQueryConfig = {
   type variables;
   type loadedQueryRef;
   type response;
-  let query: queryNode;
+  type node;
+  let query: queryNode(node);
   let convertVariables: variables => variables;
 };
 
@@ -692,170 +622,10 @@ module MakeLoadQuery:
   };
 
 /**
- * FRAGMENT
- */
-[@bs.module "react-relay"]
-external internal_readInlineData: (fragmentNode, 'fragmentRef) => 'fragmentData =
-  "readInlineData";
-
-module type MakeUseFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-};
-
-module MakeUseFragment:
-  (C: MakeUseFragmentConfig) =>
-   {
-    let use: C.fragmentRef => C.fragment;
-    let useOpt: option(C.fragmentRef) => option(C.fragment);
-  };
-
-/** Refetchable */
-module type MakeUseRefetchableFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
-};
-
-module MakeUseRefetchableFragment:
-  (C: MakeUseRefetchableFragmentConfig) =>
-   {
-    let useRefetchable:
-      C.fragmentRef =>
-      (
-        C.fragment,
-        (
-          ~variables: C.variables,
-          ~fetchPolicy: fetchPolicy=?,
-          ~renderPolicy: renderPolicy=?,
-          ~onComplete: option(Js.Exn.t) => unit=?,
-          unit
-        ) =>
-        Disposable.t,
-      );
-  };
-
-/** Pagination */
-module type MakeUsePaginationFragmentConfig = {
-  type fragmentRaw;
-  type fragment;
-  type variables;
-  type fragmentRef;
-  let fragmentSpec: fragmentNode;
-  let convertFragment: fragmentRaw => fragment;
-  let convertVariables: variables => variables;
-};
-
-type paginationLoadMoreFn =
-  (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;
-
-type paginationBlockingFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch:
-    (
-      ~variables: 'variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~renderPolicy: renderPolicy=?,
-      ~onComplete: option(Js.Exn.t) => unit=?,
-      unit
-    ) =>
-    Disposable.t,
-};
-
-type paginationFragmentReturn('fragmentData, 'variables) = {
-  data: 'fragmentData,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  isLoadingNext: bool,
-  isLoadingPrevious: bool,
-  refetch:
-    (
-      ~variables: 'variables,
-      ~fetchPolicy: fetchPolicy=?,
-      ~renderPolicy: renderPolicy=?,
-      ~onComplete: option(Js.Exn.t) => unit=?,
-      unit
-    ) =>
-    Disposable.t,
-};
-
-module MakeUsePaginationFragment:
-  (C: MakeUsePaginationFragmentConfig) =>
-   {
-    let useBlockingPagination:
-      C.fragmentRef =>
-      paginationBlockingFragmentReturn(C.fragment, C.variables);
-
-    let usePagination:
-      C.fragmentRef => paginationFragmentReturn(C.fragment, C.variables);
-  };
-
-/**
  * MUTATION
  */
 
-module type MutationConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  type rawResponse;
-  type rawResponseRaw;
-  let node: mutationNode;
-  let convertResponse: responseRaw => response;
-  let wrapResponse: response => responseRaw;
-  let convertRawResponse: rawResponseRaw => rawResponse;
-  let wrapRawResponse: rawResponse => rawResponseRaw;
-  let convertVariables: variables => variables;
-};
-
-type updaterFn('response) = (RecordSourceSelectorProxy.t, 'response) => unit;
-type optimisticUpdaterFn = RecordSourceSelectorProxy.t => unit;
-
 type mutationError = {message: string};
-
-type useMutationConfig('response, 'rawResponse, 'variables) = {
-  onError: option(mutationError => unit),
-  onCompleted: option(('response, option(array(mutationError))) => unit),
-  onUnsubscribe: option(unit => unit),
-  optimisticResponse: option('rawResponse),
-  optimisticUpdater: option(optimisticUpdaterFn),
-  updater: option((RecordSourceSelectorProxy.t, 'response) => unit),
-  variables: 'variables,
-};
-
-module MakeUseMutation:
-  (C: MutationConfig) =>
-   {
-    let use:
-      unit =>
-      (
-        (
-          ~onError: mutationError => unit=?,
-          ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
-          ~onUnsubscribe: unit => unit=?,
-          ~optimisticResponse: C.rawResponse=?,
-          ~optimisticUpdater: optimisticUpdaterFn=?,
-          ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-          ~variables: C.variables,
-          unit
-        ) =>
-        Disposable.t,
-        bool,
-      );
-  };
 
 /**
  * Context provider for the Relay environment.
@@ -883,39 +653,6 @@ let useEnvironmentFromContext: unit => Environment.t;
 
 exception Mutation_failed(array(mutationError));
 
-module MakeCommitMutation:
-  (C: MutationConfig) =>
-   {
-    let commitMutation:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.rawResponse=?,
-        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        ~onCompleted: (C.response, option(array(mutationError))) => unit=?,
-        ~onError: option(mutationError) => unit=?,
-        unit
-      ) =>
-      Disposable.t;
-
-    let commitMutationPromised:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~optimisticUpdater: optimisticUpdaterFn=?,
-        ~optimisticResponse: C.rawResponse=?,
-        ~updater: (RecordSourceSelectorProxy.t, C.response) => unit=?,
-        unit
-      ) =>
-      Promise.t(
-        Belt.Result.t(
-          (C.response, option(array(mutationError))),
-          option(mutationError),
-        ),
-      );
-  };
-
 /**
  * A way of committing a local update to the store.
  */
@@ -942,37 +679,3 @@ type fetchQueryOptions = {
   networkCacheConfig: option(cacheConfig),
   fetchPolicy: option(string),
 };
-
-[@bs.module "react-relay/hooks"]
-external fetchQuery:
-  (Environment.t, queryNode, 'variables, option(fetchQueryOptions)) =>
-  Observable.t('response) =
-  "fetchQuery";
-
-/**
- * SUBSCRIPTIONS
- */
-module type SubscriptionConfig = {
-  type variables;
-  type responseRaw;
-  type response;
-  let node: subscriptionNode;
-  let convertResponse: responseRaw => response;
-  let convertVariables: variables => variables;
-};
-
-module MakeUseSubscription:
-  (C: SubscriptionConfig) =>
-   {
-    let subscribe:
-      (
-        ~environment: Environment.t,
-        ~variables: C.variables,
-        ~onCompleted: unit => unit=?,
-        ~onError: Js.Exn.t => unit=?,
-        ~onNext: C.response => unit=?,
-        ~updater: updaterFn(C.response)=?,
-        unit
-      ) =>
-      Disposable.t;
-  };
