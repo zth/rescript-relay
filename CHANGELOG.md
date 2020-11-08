@@ -12,6 +12,7 @@
 - _BREAKING CHANGE_ Replace `React.useTransition(~config={timeoutMs: 5000}, ())` with `ReactExperimental.unstable_useTransition()` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 - _BREAKING CHANGE_ Replace `React.useDeferredValue` with `ReactExperimental.unstable_useDeferredValue` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 - _BREAKING CHANGE_ Replace `ReactDOMRe.Experimental.createRoot` with `ReactDOMExperimental.unstable_createRoot` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
+- _BREAKING CHANGE_ Remove `Query.fetchPromised`. Users can convert the fetch to a promise themselves if needed. ([@zth](https://github.com/zth))
 
 ## New bindings
 

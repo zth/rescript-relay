@@ -130,24 +130,6 @@ describe("Query", () => {
     await t.screen.findByText("Fetched!");
   });
 
-  test("using fetch promised version works", async () => {
-    queryMock.mockQuery(
-      makeMockedQuery(
-        {
-          status: "Online",
-        },
-        [{ id: "user-1", firstName: "First", onlineStatus: "Online" }]
-      )
-    );
-
-    t.render(test_query());
-    await t.screen.findByText("First is online");
-
-    t.fireEvent.click(t.screen.getByText("Test fetch promised"));
-
-    await t.screen.findByText("Fetched!");
-  });
-
   test("using query loader works", async () => {
     queryMock.mockQuery(
       makeMockedQuery(

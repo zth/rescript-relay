@@ -161,21 +161,6 @@ module Test = {
         onClick={_ => loadQuery(~variables={status: Some(`Idle)}, ())}>
         {React.string("Test query loader")}
       </button>
-      <button
-        onClick={_ =>
-          Query.fetchPromised(
-            ~environment,
-            ~variables={status: Some(`Online)},
-            (),
-          )
-          ->Promise.get(
-              fun
-              | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
-              | Error(_) => (),
-            )
-        }>
-        {React.string("Test fetch promised")}
-      </button>
       {hasWaitedForPreload
          ? <div> {React.string("Has waited for preload")} </div> : React.null}
       {switch (queryRefFromModule, loadedQueryRef) {

@@ -231,65 +231,6 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
-        let fetchPromised =
-            (
-              ~environment: ReasonRelay.Environment.t,
-              ~variables: [%t
-                 typeFromGeneratedModule(["Types", "variables"])
-               ],
-              ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
-              ~fetchPolicy: option(ReasonRelay.fetchQueryFetchPolicy)=?,
-              (),
-            )
-            : Promise.t(
-                Belt.Result.t(
-                  [%t typeFromGeneratedModule(["Types", "response"])],
-                  Js.Exn.t,
-                ),
-              ) => {
-          let (promise, resolve) = Promise.pending();
-
-          let _ =
-            Internal.internal_fetchQuery(
-              environment,
-              [%e valFromGeneratedModule(["node"])],
-              variables->[%e
-                           valFromGeneratedModule([
-                             "Internal",
-                             "convertVariables",
-                           ])
-                         ],
-              Some({
-                networkCacheConfig,
-                fetchPolicy: fetchPolicy->ReasonRelay.mapFetchQueryFetchPolicy,
-              }),
-            )
-            ->ReasonRelay.Observable.(
-                subscribe(
-                  makeObserver(
-                    ~next=
-                      res => {
-                        resolve(
-                          Ok(
-                            res->[%e
-                                   valFromGeneratedModule([
-                                     "Internal",
-                                     "convertResponse",
-                                   ])
-                                 ],
-                          ),
-                        )
-                      },
-                    ~error=err => {resolve(Error(err))},
-                    (),
-                  ),
-                )
-              );
-
-          promise;
-        }
-      ],
-      [%stri
         let usePreloaded =
             (
               ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],
