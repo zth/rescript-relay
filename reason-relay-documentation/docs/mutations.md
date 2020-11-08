@@ -102,6 +102,91 @@ So, what's going on here?
 
 There, now we have a basic optimistic update set up! Instead of waiting for the mutation to complete, Relay will update all parts of the UI using that particular todo item's `text` field right away, and it'll roll back to the old value appropriately if the mutation fails.
 
+### `@raw_response_type` - getting exactly what Relay expects from the server
+
+> TLDR; Annotating your query/mutation/subscription with `@raw_response_type` will tell Relay to emit types for the _full_ server response it expects back. This ensures that the `optimisticResponse` you provide is exactly what Relay expects it to be.
+
+The Relay compiler is full of tricks. Among a ton of other things, it'll automatically import all of your fragments (and the fragments they use) and include in the final operation that's sent to the server. It'll also add a few smart refinements to your operations, in order for it to understand what type of response is coming back.
+
+This is really cool, and means Relay doesn't need to parse or transform queries at runtime, since the compiler can do all of that at buildtime instead, and just emit optimized instructions that the runtime can use to understand what it's getting back from the server.
+
+However, this also means that when you're doing optimistic updates, you'll need to provide the _full server response_ for things to work as you expect them to. In most cases this is simple, but once you start adding fragments to the mix, things can get hairy quickly. What'd fragment A contain again? And did that spread other fragments...?
+
+But fear not! Relay has you covered, as usual. Imagine the following GraphQL:
+
+```graphql
+fragment Avatar_user on User {
+  id
+  avatarUrl
+  firstName
+}
+
+fragment SomeComponent_user on User {
+  id
+  firstName
+  lastName
+  ...Avatar_user
+}
+
+fragment SomeOtherComponent_blogPost on BlogPost {
+  id
+  title
+  author {
+    id
+    firstName
+    ...SomeComponent_user
+  }
+}
+
+mutation AddBlogPost($input: AddBlogPostInput!) {
+  addBlogPost(input: $input) {
+    addedBlogPost {
+      id
+      title
+      ...SomeOtherComponent_blogPost
+    }
+  }
+}
+```
+
+So, there's a mutation, and that mutation includes a fragment. No big deal. Except that fragment includes a fragment. That includes a fragment. Yuck.
+
+Well, there's a solution for this. Adding `@raw_response_type` to this mutation flattens this for us! The resulting type would look something like this in pseudo-reason:
+
+```
+// You can't construct records like this, but hey, who cares in docs
+type rawResponse = {
+  addedBlogPost: option({
+    id: string,
+    title: string,
+    author: {
+      id: string,
+      firstName: string,
+      lastName: string
+    }
+  })
+}
+```
+
+Look at that. All fragments are flattened and included in the type. This type corresponds to _exactly_ what Relay expects the server to return, which makes your optimistic update work just as you want it to!
+
+#### `ReasonRelay.generateUniqueClientID` for `id` fields in optimistic updates
+
+Now, the type for the optimistic response above contains a bunch of `id` fields. `id`'s you naturally don't have yet since they'll be created on the server. Relay ships with a function just for this - `generateUniqueClientID`.
+
+You use it like this:
+
+```reason
+~optimisticResponse={
+  addedBlogPost: Some({
+    id: ReasonRelay.(generateUniqueClientID->dataIdToString),
+    ...
+  })
+}
+```
+
+This will generate a local, unique id. As soon as the actual server update comes back, the optimistic response will be rolled back, and this `id` will be replaced with the actual one from the server. Nice!
+
 ## More information
 
 There's plenty of more advanced things you can do with optimistic updates in Relay. We won't be covering them in detail here, but you're encouraged to read [the Relay documentation on optimistic updates here](https://relay.dev/docs/en/mutations#optimistic-updates), and then check out [interacting with the store in ReasonRelay](interacting-with-the-store).
