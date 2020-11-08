@@ -163,6 +163,48 @@ We don't have to change anything anywhere else. `<UserProfile />`, who defines t
 
 This is a core strength of Relay called _data masking_ - no data is available to anyone unless they explicitly ask for it. You can [read more about data masking in Relay here](https://relay.dev/docs/en/thinking-in-relay.html#data-masking).
 
+## Using fragments outside of React's render phase
+
+You can also use fragments outside of React's render phase (read: without using hooks). In addition to `Fragment.use`, each fragment will autogenerate a function called `Fragment.readInline`.
+
+This works the same way as `Fragment.use` as in you feed it an object with a fragment reference for that particular fragment. But, when you run the function, you'll get a one-shot snapshot of that fragment data from the store as it is _right now_.
+
+Great for logging and similar activities. Example:
+
+```reason
+/* SomeCoolLogger.re */
+module UserFragment = [%relay.fragment {|
+  fragment SomeCoolLogger_user on User {
+    customerId
+    someOtherMetaDataProp
+  }
+|}];
+
+let logPurchase = (user) => {
+  // We read the fragment data from the store here, without needing to use a hook
+  let userData = UserFragment.readInline(user);
+
+  SomeLoggingService.log(
+    ~customerId=userId.customerId,
+    ~someOtherMetaDataProp=userId.someOtherMetaDataProp,
+    ()
+  );
+}
+```
+
+```reason
+/* BuyButton.re */
+[@react.component]
+let make = (~user) => {
+  <button onClick={_ => {
+    // user here contains the fragment reference for SomeCoolLogger_user defined above
+    SomeCoolLogger.logPurchase(user);
+  }}>
+    {React.string("Buy stuff!")}
+  </button>
+}
+```
+
 ## On to the next thing
 
 That's a basic introduction to fragments. There are a few more concepts around fragments that are worth spending some time to grok. However, none of them are specific to using Relay with Reason, so you can read more about them in the [Relay documentation](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#rendering-data-basics) below.
@@ -185,3 +227,9 @@ With that in mind, Let's jump in to [mutations](mutations).
 `SomeFragment.use` is a React hook that takes an object containing a fragment reference for that particular fragment, and returns the fragment data.
 
 > `use` uses Relay's `useFragment` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usefragment).
+
+### `readInline`
+
+`SomeFragment.readInline` is a function that takes an object containing a fragment reference for that particular fragment, and returns the fragment data. Can be used outside of React's render phase.
+
+> `readInline` uses Relay's `readInlineData` under the hood.
