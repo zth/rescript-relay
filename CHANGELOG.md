@@ -25,6 +25,7 @@
 - Use abstract records instead of Js.t objects for a more robust type-check and to avoid undefined fields [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
 - Add support for parsing ReScript (.res) files [#115](https://github.com/zth/reason-relay/pull/115) ([@sorenhoyer](https://github.com/sorenhoyer))
 - Move a bunch of things from the bindings to the PPX. This will simplify a lot of things, improve the type safety some, and pave the way for some pretty interesting upcoming editor tooling. ([@zth](https://github.com/zth))
+- Remove `internal_cleanVariablesRaw`, since `bs-platform` since `7.3` does what that did by default. ([@zth](https://github.com/zth))
 
 # 0.11.0
 

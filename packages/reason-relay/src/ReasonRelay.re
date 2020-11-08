@@ -675,7 +675,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       loadQuery(
         environment,
         C.query,
-        variables |> C.convertVariables |> internal_cleanVariablesRaw,
+        variables->C.convertVariables,
         {
           fetchKey,
           fetchPolicy: fetchPolicy |> mapFetchPolicy,

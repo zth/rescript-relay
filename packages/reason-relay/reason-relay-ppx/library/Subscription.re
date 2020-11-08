@@ -75,11 +75,12 @@ let make = (~loc, ~moduleName) => {
               Internal.subscriptionConfig(
                 ~subscription=[%e valFromGeneratedModule(["node"])],
                 ~variables=
-                  variables
-                  ->[%e
-                      valFromGeneratedModule(["Internal", "convertVariables"])
-                    ]
-                  ->ReasonRelay_Internal.internal_cleanVariablesRaw,
+                  variables->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertVariables",
+                               ])
+                             ],
                 ~onCompleted?,
                 ~onError?,
                 ~onNext=?

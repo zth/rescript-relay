@@ -142,11 +142,13 @@ let make = (~loc, ~moduleName) => {
               environment,
               {
                 variables:
-                  variables
-                  ->[%e
-                      valFromGeneratedModule(["Internal", "convertVariables"])
-                    ]
-                  ->ReasonRelay_Internal.internal_cleanVariablesRaw,
+                  variables->[%e
+                               valFromGeneratedModule([
+                                 "Internal",
+                                 "convertVariables",
+                               ])
+                             ],
+
                 mutation: [%e valFromGeneratedModule(["node"])],
                 onCompleted:
                   Some(
@@ -254,14 +256,13 @@ let make = (~loc, ~moduleName) => {
                   environment,
                   {
                     variables:
-                      variables
-                      ->[%e
-                          valFromGeneratedModule([
-                            "Internal",
-                            "convertVariables",
-                          ])
-                        ]
-                      ->ReasonRelay_Internal.internal_cleanVariablesRaw,
+                      variables->[%e
+                                   valFromGeneratedModule([
+                                     "Internal",
+                                     "convertVariables",
+                                   ])
+                                 ],
+
                     mutation: [%e valFromGeneratedModule(["node"])],
                     onCompleted:
                       Some(
@@ -415,14 +416,13 @@ let make = (~loc, ~moduleName) => {
                     },
                   onUnsubscribe,
                   variables:
-                    variables
-                    ->[%e
-                        valFromGeneratedModule([
-                          "Internal",
-                          "convertVariables",
-                        ])
-                      ]
-                    ->ReasonRelay_Internal.internal_cleanVariablesRaw,
+                    variables->[%e
+                                 valFromGeneratedModule([
+                                   "Internal",
+                                   "convertVariables",
+                                 ])
+                               ],
+
                   optimisticUpdater,
                   updater:
                     switch (updater) {

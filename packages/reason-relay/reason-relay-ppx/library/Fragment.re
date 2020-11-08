@@ -254,7 +254,6 @@ let make =
                           ["Internal", "convertVariables"],
                         )
                       ]
-                    ->ReasonRelay_Internal.internal_cleanVariablesRaw
                     ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                     InternalRefetch.internal_makeRefetchableFnOpts(
                       ~fetchPolicy?,
@@ -400,7 +399,6 @@ let make =
                         ["Internal", "convertVariables"],
                       )
                     ]
-                  ->ReasonRelay_Internal.internal_cleanVariablesRaw
                   ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                   InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,
@@ -474,7 +472,6 @@ let make =
                         ["Internal", "convertVariables"],
                       )
                     ]
-                  ->ReasonRelay_Internal.internal_cleanVariablesRaw
                   ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                   InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,

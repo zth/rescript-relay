@@ -110,7 +110,6 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             Internal.internal_useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
-              ->ReasonRelay_Internal.internal_cleanVariablesRaw
               ->[%e valFromGeneratedModule(["Internal", "convertVariables"])]
               ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
               {

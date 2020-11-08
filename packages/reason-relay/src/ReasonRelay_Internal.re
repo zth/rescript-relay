@@ -6,6 +6,10 @@
 let internal_cleanObjectFromUndefinedRaw = [%raw
   {|
   function (obj) {
+    if (!obj) {
+      return obj;
+    }
+
     var newObj = {};
 
     Object.keys(obj).forEach(function(key) {
@@ -15,19 +19,6 @@ let internal_cleanObjectFromUndefinedRaw = [%raw
     });
 
     return newObj;
-  }
-|}
-];
-
-// Since BS compiles unit to 0, we have to convert that to an empty object when dealing with variables in order for Relay to be happy
-let internal_cleanVariablesRaw = [%raw
-  {|
-  function (variables) {
-    if (typeof variables !== "object" || variables == null) {
-      return {};
-    }
-
-    return variables;
   }
 |}
 ];
