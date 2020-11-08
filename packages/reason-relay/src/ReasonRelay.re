@@ -1,5 +1,3 @@
-open ReasonRelay_Internal;
-
 type arguments;
 type allFieldsMasked = {.};
 

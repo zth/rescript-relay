@@ -44,45 +44,6 @@ describe("Mutation", () => {
     await t.screen.findByText("First is idle");
   });
 
-  test("basic mutations work via commitMutationPromised", async () => {
-    queryMock.mockQuery({
-      name: "TestMutationQuery",
-      data: {
-        loggedInUser: {
-          id: "user-1",
-          firstName: "First",
-          lastName: "Name",
-          onlineStatus: "Online",
-        },
-      },
-    });
-
-    t.render(test_mutation());
-    await t.screen.findByText("First is online");
-
-    queryMock.mockQuery({
-      name: "TestMutationSetOnlineStatusMutation",
-      variables: {
-        onlineStatus: "Idle",
-      },
-      data: {
-        setOnlineStatus: {
-          user: {
-            id: "user-1",
-            firstName: "First",
-            lastName: "Name",
-            onlineStatus: "Idle",
-          },
-        },
-      },
-    });
-
-    t.fireEvent.click(t.screen.getByText("Change online status promised"));
-
-    await t.screen.findByText("First is idle");
-    await t.screen.findByText("Has result");
-  });
-
   test("basic mutations work via useMutation hook", async () => {
     queryMock.mockQuery({
       name: "TestMutationQuery",

@@ -13,6 +13,7 @@
 - _BREAKING CHANGE_ Replace `React.useDeferredValue` with `ReactExperimental.unstable_useDeferredValue` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 - _BREAKING CHANGE_ Replace `ReactDOMRe.Experimental.createRoot` with `ReactDOMExperimental.unstable_createRoot` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 - _BREAKING CHANGE_ Remove `Query.fetchPromised`. Users can convert the fetch to a promise themselves if needed. ([@zth](https://github.com/zth))
+- _BREAKING CHANGE_ Remove `Mutation.commitMutationPromised`. Users can convert the mutation to a promise themselves if needed. ([@zth](https://github.com/zth))
 
 ## New bindings
 
