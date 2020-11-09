@@ -101,7 +101,7 @@ module TicketStatusFragment = [%relay.fragment
   }
 |}];
 
-module TicketStatusSubscription = [%relay.mutation
+module TicketStatusSubscription = [%relay.subscription
   {|
   subscription TicketStatusSubscription($id: ID!) {
      ticket(id: $id) {
@@ -114,11 +114,11 @@ module TicketStatusSubscription = [%relay.mutation
 [@react.component]
 let make = (~ticketId) => {
   let environment = ReasonRelay.useEnvironmentFromContext();
-  React.useEffect1(() => {
+  React.useEffect2(() => {
     let subscription =
       TicketStatusSubscription.subscribe(~environment, ~variables={id: ticketId}, ());
     Some(() => ReasonRelay.Disposable.dispose(subscription));
-  }, [|ticketId|]);
+  }, (ticketId, environment));
 
   ...
 };
