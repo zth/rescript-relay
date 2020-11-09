@@ -165,7 +165,7 @@ This is a core strength of Relay called _data masking_ - no data is available to
 
 ## Using fragments outside of React's render phase
 
-You can also use fragments outside of React's render phase (read: without using hooks). In addition to `Fragment.use`, each fragment will autogenerate a function called `Fragment.readInline`.
+You can also use fragments outside of React's render phase (read: without using hooks). In addition to `Fragment.use`, each fragment will autogenerate a function called `Fragment.readInline` _if your fragment is annotated with `@inline`_.`@inline` tells Relay you'll want to read this fragment outside of React's render phase.
 
 This works the same way as `Fragment.use` as in you feed it an object with a fragment reference for that particular fragment. But, when you run the function, you'll get a one-shot snapshot of that fragment data from the store as it is _right now_.
 
@@ -174,7 +174,7 @@ Great for logging and similar activities. Example:
 ```reason
 /* SomeCoolLogger.re */
 module UserFragment = [%relay.fragment {|
-  fragment SomeCoolLogger_user on User {
+  fragment SomeCoolLogger_user on User @inline {
     customerId
     someOtherMetaDataProp
   }
