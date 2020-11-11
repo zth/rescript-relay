@@ -1,5 +1,5 @@
 type arguments;
-type allFieldsMasked = {.};
+type allFieldsMasked = Js.t({.});
 
 type any;
 

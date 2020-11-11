@@ -1,5 +1,5 @@
 type arguments;
-type allFieldsMasked = {.};
+type allFieldsMasked = Js.t({.});
 
 /**
  * Abstract helper type to signify something that could not be
