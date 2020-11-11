@@ -9,26 +9,19 @@ module Types = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_query]),
   };
   type rawResponse = response;
-  type refetchVariables = {
-    count: option(int),
-    cursor: option(string),
-    groupId: option(string),
-    onlineStatuses: option(array(enum_OnlineStatus)),
-  };
-  let makeRefetchVariables =
-      (~count=?, ~cursor=?, ~groupId=?, ~onlineStatuses=?, ())
-      : refetchVariables => {
-    count,
-    cursor,
-    groupId,
-    onlineStatuses,
-  };
-  type variables = {
-    count: option(int),
-    cursor: option(string),
-    groupId: string,
-    onlineStatuses: option(array(enum_OnlineStatus)),
-  };
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables:
+    (
+      ~count: int=?,
+      ~cursor: string=?,
+      ~groupId: string=?,
+      ~onlineStatuses: array(enum_OnlineStatus)=?,
+      unit
+    ) =>
+    refetchVariables =
+    "";
+  type variables;
 };
 
 module Internal = {
@@ -83,13 +76,17 @@ module Utils = {
   external onlineStatus_toString: Types.enum_OnlineStatus => string =
     "%identity";
   open Types;
-  let makeVariables =
-      (~count=?, ~cursor=?, ~groupId, ~onlineStatuses=?, ()): variables => {
-    count,
-    cursor,
-    groupId,
-    onlineStatuses,
-  };
+  [@bs.obj]
+  external makeVariables:
+    (
+      ~count: int=?,
+      ~cursor: string=?,
+      ~groupId: string,
+      ~onlineStatuses: array(enum_OnlineStatus)=?,
+      unit
+    ) =>
+    variables =
+    "";
 };
 
 type relayOperationNode;

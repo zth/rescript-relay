@@ -253,8 +253,7 @@ let make =
                           ~moduleName=queryName,
                           ["Internal", "convertVariables"],
                         )
-                      ]
-                    ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                      ],
                     InternalRefetch.internal_makeRefetchableFnOpts(
                       ~fetchPolicy?,
                       ~renderPolicy?,
@@ -398,8 +397,7 @@ let make =
                         ~moduleName=queryName,
                         ["Internal", "convertVariables"],
                       )
-                    ]
-                  ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                    ],
                   InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,
@@ -471,8 +469,7 @@ let make =
                         ~moduleName=queryName,
                         ["Internal", "convertVariables"],
                       )
-                    ]
-                  ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                    ],
                   InternalRefetch.internal_makeRefetchableFnOpts(
                     ~onComplete?,
                     ~fetchPolicy?,

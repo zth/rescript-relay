@@ -78,7 +78,7 @@ module Test = {
       | _ => [||]
       };
 
-    let query = Query.use(~variables={status: status}, ());
+    let query = Query.use(~variables=Query.makeVariables(~status?, ()), ());
     let users = collectUsers(query);
 
     <div>
@@ -113,7 +113,7 @@ module Test = {
             Some(
               TestQuery_graphql.load(
                 ~environment,
-                ~variables={status: Some(`Idle)},
+                ~variables=Query.makeVariables(~status=`Idle, ()),
                 (),
               ),
             )
@@ -126,7 +126,7 @@ module Test = {
           let queryRef =
             TestQuery_graphql.load(
               ~environment,
-              ~variables={status: Some(`Idle)},
+              ~variables=Query.makeVariables(~status=`Idle, ()),
               (),
             );
 
@@ -147,7 +147,7 @@ module Test = {
         onClick={_ =>
           Query.fetch(
             ~environment,
-            ~variables={status: Some(`Online)},
+            ~variables=Query.makeVariables(~status=`Online, ()),
             ~onResult=
               fun
               | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
@@ -158,7 +158,9 @@ module Test = {
         {React.string("Test fetch")}
       </button>
       <button
-        onClick={_ => loadQuery(~variables={status: Some(`Idle)}, ())}>
+        onClick={_ =>
+          loadQuery(~variables=Query.makeVariables(~status=`Idle, ()), ())
+        }>
         {React.string("Test query loader")}
       </button>
       {hasWaitedForPreload

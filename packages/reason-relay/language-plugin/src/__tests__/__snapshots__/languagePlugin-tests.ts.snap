@@ -38,7 +38,7 @@ module Types = {
 
   type response = {mutationWithReservedName: bool};
   type rawResponse = response;
-  type variables = {input: mutationWithReservedNameInput};
+  type variables;
 };
 
 module Internal = {
@@ -96,7 +96,9 @@ module Utils = {
     nested,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: mutationWithReservedNameInput) => variables =
+    \\"\\";
 
   let makeOptimisticResponse = (~mutationWithReservedName): rawResponse => {
     mutationWithReservedName: mutationWithReservedName,
@@ -266,7 +268,7 @@ module Types = {
 
   type response = {setUserLocation: response_setUserLocation};
   type rawResponse = response;
-  type variables = {input: setUserLocationInput};
+  type variables;
 };
 
 module Internal = {
@@ -331,7 +333,8 @@ module Utils = {
     location,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: setUserLocationInput) => variables = \\"\\";
 
   let make_response_setUserLocation_changedUser =
       (~id, ~firstName, ~role): response_setUserLocation_changedUser => {
@@ -379,7 +382,7 @@ module Types = {
 
   type response = {setUserLocation: response_setUserLocation};
   type rawResponse = response;
-  type variables = {input: setUserLocationInput};
+  type variables;
 };
 
 module Internal = {
@@ -443,7 +446,8 @@ module Utils = {
     location,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: setUserLocationInput) => variables = \\"\\";
 
   let make_response_setUserLocation_changedUser = () =>
     [@ocaml.warning \\"-27\\"] {};
@@ -534,7 +538,7 @@ module Types = {
 
   type response = {setUserLocation: response_setUserLocation};
   type rawResponse = response;
-  type variables = {input: setUserLocationInput};
+  type variables;
 };
 
 module Internal = {
@@ -598,7 +602,8 @@ module Utils = {
     location,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: setUserLocationInput) => variables = \\"\\";
 
   let make_response_setUserLocation_changedUser =
       (~id, ~firstName): response_setUserLocation_changedUser => {
@@ -978,11 +983,11 @@ module Types = {
 
   type response = {user: option(response_user)};
   type rawResponse = response;
-  type refetchVariables = {userId: option(string)};
-  let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
-    userId: userId,
-  };
-  type variables = {userId: string};
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables: (~userId: string=?, unit) => refetchVariables =
+    \\"\\";
+  type variables;
 };
 
 module Internal = {
@@ -1035,7 +1040,7 @@ type queryRef;
 
 module Utils = {
   open Types;
-  let makeVariables = (~userId): variables => {userId: userId};
+  [@bs.obj] external makeVariables: (~userId: string) => variables = \\"\\";
 };
 
 type relayOperationNode;
@@ -1062,7 +1067,7 @@ module Types = {
 
   type response = {userChanged: response_userChanged};
   type rawResponse = response;
-  type variables = {input: userChangedInput};
+  type variables;
 };
 
 module Internal = {
@@ -1103,7 +1108,8 @@ module Utils = {
     userId,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: userChangedInput) => variables = \\"\\";
 };
 
 type relayOperationNode;

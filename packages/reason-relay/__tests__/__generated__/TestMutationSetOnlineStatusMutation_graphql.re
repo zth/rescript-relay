@@ -23,7 +23,7 @@ module Types = {
 
   type response = {setOnlineStatus: option(response_setOnlineStatus)};
   type rawResponse = {setOnlineStatus: option(rawResponse_setOnlineStatus)};
-  type variables = {onlineStatus: enum_OnlineStatus};
+  type variables;
 };
 
 module Internal = {
@@ -96,9 +96,8 @@ module Utils = {
   external onlineStatus_toString: Types.enum_OnlineStatus => string =
     "%identity";
   open Types;
-  let makeVariables = (~onlineStatus): variables => {
-    onlineStatus: onlineStatus,
-  };
+  [@bs.obj]
+  external makeVariables: (~onlineStatus: enum_OnlineStatus) => variables = "";
 
   let make_rawResponse_setOnlineStatus_user =
       (~id, ~onlineStatus=?, ~firstName, ~lastName, ())

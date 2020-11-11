@@ -68,8 +68,7 @@ module UserDisplayer = {
 module UserNodeDisplayer = {
   [@react.component]
   let make = (~queryRef) => {
-    let (startTransition, _) =
-      ReactExperimental.unstable_useTransition();
+    let (startTransition, _) = ReactExperimental.unstable_useTransition();
 
     let {data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(queryRef);
@@ -126,7 +125,7 @@ module Test = {
   [@react.component]
   let make = () => {
     let userId = "123";
-    let query = Query.use(~variables={userId: userId}, ());
+    let query = Query.use(~variables=Query.makeVariables(~userId), ());
     switch (query.node) {
     | Some(node) => <UserNodeDisplayer queryRef={node.fragmentRefs} />
     | None => React.string("-")

@@ -23,7 +23,11 @@ module Test = {
   let make = () => {
     let query =
       Query.use(
-        ~variables={beforeDate: Some(Js.Date.fromFloat(1514764800000.))},
+        ~variables=
+          Query.makeVariables(
+            ~beforeDate=Js.Date.fromFloat(1514764800000.),
+            (),
+          ),
         (),
       );
 

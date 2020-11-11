@@ -10,11 +10,11 @@ module Types = {
 
   type response = {node: option(response_node)};
   type rawResponse = response;
-  type refetchVariables = {userId: option(string)};
-  let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
-    userId: userId,
-  };
-  type variables = {userId: string};
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables: (~userId: string=?, unit) => refetchVariables =
+    "";
+  type variables;
 };
 
 module Internal = {
@@ -67,7 +67,7 @@ type queryRef;
 
 module Utils = {
   open Types;
-  let makeVariables = (~userId): variables => {userId: userId};
+  [@bs.obj] external makeVariables: (~userId: string) => variables = "";
 };
 
 type relayOperationNode;

@@ -17,7 +17,7 @@ module Types = {
     setOnlineStatusComplex: option(response_setOnlineStatusComplex),
   };
   type rawResponse = response;
-  type variables = {input: setOnlineStatusInput};
+  type variables;
 };
 
 module Internal = {
@@ -74,7 +74,8 @@ module Utils = {
     onlineStatus: onlineStatus,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  [@bs.obj]
+  external makeVariables: (~input: setOnlineStatusInput) => variables = "";
 
   let make_response_setOnlineStatusComplex_user =
       (~id, ~onlineStatus=?, ()): response_setOnlineStatusComplex_user => {

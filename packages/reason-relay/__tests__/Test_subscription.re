@@ -44,7 +44,7 @@ module Test = {
       let disposable =
         UserUpdatedSubscription.subscribe(
           ~environment,
-          ~variables={userId: "user-1"},
+          ~variables=UserUpdatedSubscription.makeVariables(~userId="user-1"),
           ~updater=
             (store, response) => {
               switch (

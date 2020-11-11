@@ -14,6 +14,7 @@
 - _BREAKING CHANGE_ Replace `ReactDOMRe.Experimental.createRoot` with `ReactDOMExperimental.unstable_createRoot` [#121](https://github.com/zth/reason-relay/pull/121) ([@sorenhoyer](https://github.com/sorenhoyer))
 - _BREAKING CHANGE_ Remove `Query.fetchPromised`. Users can convert the fetch to a promise themselves if needed. ([@zth](https://github.com/zth))
 - _BREAKING CHANGE_ Remove `Mutation.commitMutationPromised`. Users can convert the mutation to a promise themselves if needed. ([@zth](https://github.com/zth))
+- _BREAKING CHANGE_ Use @bs.obj for (refetch)variables instead of records [#124](https://github.com/zth/reason-relay/pull/124) ([@tsnobip](https://github.com/tsnobip))
 
 ## New bindings
 
@@ -27,6 +28,7 @@
 - Add support for parsing ReScript (.res) files [#115](https://github.com/zth/reason-relay/pull/115) ([@sorenhoyer](https://github.com/sorenhoyer))
 - Move a bunch of things from the bindings to the PPX. This will simplify a lot of things, improve the type safety some, and pave the way for some pretty interesting upcoming editor tooling. ([@zth](https://github.com/zth))
 - Remove `internal_cleanVariablesRaw`, since `bs-platform` since `7.3` does what that did by default. ([@zth](https://github.com/zth))
+- Remove `ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw` since variables are made with @bs.obj where undefined fields are absent [#124](https://github.com/zth/reason-relay/pull/124) ([@tsnobip](https://github.com/tsnobip))
 
 # 0.11.0
 

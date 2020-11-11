@@ -10,25 +10,19 @@ module Types = {
 
   type response = {node: option(response_node)};
   type rawResponse = response;
-  type refetchVariables = {
-    count: option(int),
-    cursor: option(string),
-    onlineStatuses: option(array(enum_OnlineStatus)),
-    id: option(string),
-  };
-  let makeRefetchVariables =
-      (~count=?, ~cursor=?, ~onlineStatuses=?, ~id=?, ()): refetchVariables => {
-    count,
-    cursor,
-    onlineStatuses,
-    id,
-  };
-  type variables = {
-    count: option(int),
-    cursor: option(string),
-    onlineStatuses: option(array(enum_OnlineStatus)),
-    id: string,
-  };
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables:
+    (
+      ~count: int=?,
+      ~cursor: string=?,
+      ~onlineStatuses: array(enum_OnlineStatus)=?,
+      ~id: string=?,
+      unit
+    ) =>
+    refetchVariables =
+    "";
+  type variables;
 };
 
 module Internal = {
@@ -83,13 +77,17 @@ module Utils = {
   external onlineStatus_toString: Types.enum_OnlineStatus => string =
     "%identity";
   open Types;
-  let makeVariables =
-      (~count=?, ~cursor=?, ~onlineStatuses=?, ~id, ()): variables => {
-    count,
-    cursor,
-    onlineStatuses,
-    id,
-  };
+  [@bs.obj]
+  external makeVariables:
+    (
+      ~count: int=?,
+      ~cursor: string=?,
+      ~onlineStatuses: array(enum_OnlineStatus)=?,
+      ~id: string,
+      unit
+    ) =>
+    variables =
+    "";
 };
 
 type relayOperationNode;

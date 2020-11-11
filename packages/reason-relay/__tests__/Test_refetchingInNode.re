@@ -33,8 +33,7 @@ module UserDisplayer = {
   let make = (~queryRef) => {
     let (data, refetch) = Fragment.useRefetchable(queryRef);
 
-    let (startTransition, _) =
-      ReactExperimental.unstable_useTransition();
+    let (startTransition, _) = ReactExperimental.unstable_useTransition();
 
     <div>
       {React.string(
@@ -73,7 +72,8 @@ module UserDisplayer = {
 module Test = {
   [@react.component]
   let make = () => {
-    let query = Query.use(~variables={userId: "user-1"}, ());
+    let query =
+      Query.use(~variables=Query.makeVariables(~userId="user-1"), ());
 
     switch (query.node) {
     | Some(user) => <UserDisplayer queryRef={user.fragmentRefs} />

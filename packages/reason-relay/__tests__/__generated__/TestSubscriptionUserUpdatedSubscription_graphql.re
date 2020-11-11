@@ -13,7 +13,7 @@ module Types = {
 
   type response = {userUpdated: option(response_userUpdated)};
   type rawResponse = response;
-  type variables = {userId: string};
+  type variables;
 };
 
 module Internal = {
@@ -50,7 +50,7 @@ module Utils = {
   external onlineStatus_toString: Types.enum_OnlineStatus => string =
     "%identity";
   open Types;
-  let makeVariables = (~userId): variables => {userId: userId};
+  [@bs.obj] external makeVariables: (~userId: string) => variables = "";
 };
 
 type relayOperationNode;

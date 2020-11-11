@@ -110,8 +110,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             Internal.internal_useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
-              ->[%e valFromGeneratedModule(["Internal", "convertVariables"])]
-              ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+              ->[%e valFromGeneratedModule(["Internal", "convertVariables"])],
               {
                 fetchKey,
                 fetchPolicy: fetchPolicy->ReasonRelay.mapFetchPolicy,

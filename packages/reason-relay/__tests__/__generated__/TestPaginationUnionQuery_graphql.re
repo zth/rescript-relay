@@ -7,11 +7,11 @@ module Types = {
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestPaginationUnion_query]),
   };
   type rawResponse = response;
-  type refetchVariables = {groupId: option(string)};
-  let makeRefetchVariables = (~groupId=?, ()): refetchVariables => {
-    groupId: groupId,
-  };
-  type variables = {groupId: string};
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables: (~groupId: string=?, unit) => refetchVariables =
+    "";
+  type variables;
 };
 
 module Internal = {
@@ -64,7 +64,7 @@ type queryRef;
 
 module Utils = {
   open Types;
-  let makeVariables = (~groupId): variables => {groupId: groupId};
+  [@bs.obj] external makeVariables: (~groupId: string) => variables = "";
 };
 
 type relayOperationNode;

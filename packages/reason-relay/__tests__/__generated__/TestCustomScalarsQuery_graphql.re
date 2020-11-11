@@ -21,11 +21,12 @@ module Types = {
       ),
   };
   type rawResponse = response;
-  type refetchVariables = {beforeDate: option(TestsUtils.Datetime.t)};
-  let makeRefetchVariables = (~beforeDate=?, ()): refetchVariables => {
-    beforeDate: beforeDate,
-  };
-  type variables = {beforeDate: option(TestsUtils.Datetime.t)};
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables:
+    (~beforeDate: TestsUtils.Datetime.t=?, unit) => refetchVariables =
+    "";
+  type variables;
 };
 
 let unwrap_response_member:
@@ -102,9 +103,10 @@ type queryRef;
 
 module Utils = {
   open Types;
-  let makeVariables = (~beforeDate=?, ()): variables => {
-    beforeDate: beforeDate,
-  };
+  [@bs.obj]
+  external makeVariables:
+    (~beforeDate: TestsUtils.Datetime.t=?, unit) => variables =
+    "";
 };
 
 type relayOperationNode;

@@ -298,13 +298,87 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
          )
        });
 
-    addToStr("}");
+    addToStr("};");
   } else {
-    addToStr(") => [@ocaml.warning \"-27\"] {}");
+    addToStr(") => [@ocaml.warning \"-27\"] {};");
   };
   str^;
 }
-and printRefetchVariablesMaker = (obj: object_, ~state) => {
+and printUnionTypeDefinition =
+    (union, ~includeSemi, ~prefixWithTypesModule): string => {
+  let futureAddedValueName =
+    switch (
+      union.members
+      ->Tablecloth.List.find(~f=m => m.name === "UnselectedUnionMember")
+    ) {
+    | Some(_) => "UnselectedUnionMember_"
+    | None => "UnselectedUnionMember"
+    };
+
+  "["
+  ++ (
+    union.members
+    ->Belt.List.map(({name, shape: {atPath}}) =>
+        " | `"
+        ++ name
+        ++ "("
+        ++ (prefixWithTypesModule ? "Types." : "")
+        ++ Utils.makeRecordName(atPath)
+        ++ ")"
+      )
+    |> Tablecloth.String.join(~sep="\n")
+  )
+  ++ " | `"
+  ++ futureAddedValueName
+  ++ "(string) "
+  ++ "]"
+  ++ (includeSemi ? ";" : "");
+};
+
+let printInputObjectMaker = (obj: object_, ~state, ~targetType, ~name) => {
+  let hasContents = obj->objHasPrintableContents;
+
+  let str = ref("");
+  let addToStr = s => str := str^ ++ s;
+
+  if (hasContents) {
+    addToStr("[@bs.obj] external " ++ name ++ ": (");
+    obj.values
+    |> Array.iteri((index, p) => {
+         addToStr(
+           switch (p) {
+           | Prop(name, {nullable, propType}) =>
+             (index > 0 ? "," : "")
+             ++ "~"
+             ++ printSafeName(name)
+             ++ ": "
+             ++ printPropType(~propType, ~state)
+             ++ (nullable ? "=?" : "")
+           | FragmentRef(_) => ""
+           },
+         )
+       });
+
+    let shouldAddUnit =
+      obj.values
+      ->Belt.Array.some(
+          fun
+          | Prop(_, {nullable}) => nullable
+          | _ => false,
+        );
+
+    addToStr(
+      (shouldAddUnit ? ", unit" : "") ++ ") => " ++ targetType ++ " = \"\"",
+    );
+  } else {
+    addToStr(
+      "[@bs.obj] external " ++ name ++ ": unit => " ++ targetType ++ " = \"\"",
+    );
+  };
+  str^;
+};
+
+let printRefetchVariablesMaker = (obj: object_, ~state) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
@@ -321,20 +395,20 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
          ),
   };
 
-  addToStr("type refetchVariables = ");
-  addToStr(printObject(~state, ~obj=optionalObj, ()));
-  addToStr(";");
+  addToStr("type refetchVariables;");
 
   addToStr(
-    optionalObj->printObjectMaker(
+    optionalObj->printInputObjectMaker(
+      ~state,
       ~targetType="refetchVariables",
       ~name="makeRefetchVariables",
     ),
   );
 
   str^;
-}
-and printRootType =
+};
+
+let printRootType =
     (~recursiveMode=None, ~state: fullState, ~ignoreFragmentRefs, rootType) => {
   switch (rootType) {
   | Operation(Object(obj)) =>
@@ -349,14 +423,15 @@ and printRootType =
   | RawResponse(Some(Union(_)))
   | Operation(Union(_)) => raise(Invalid_top_level_shape)
   | Variables(Object(obj)) =>
-    "type variables = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";"
+    switch (obj.values |> Array.length) {
+    | 0 => "type variables = unit;"
+    | _ => "type variables;"
+    }
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
     switch (obj.values |> Array.length) {
     | 0 => ""
-    | _ => printRefetchVariablesMaker(~state, obj) ++ ";"
+    | _ => printRefetchVariablesMaker(obj, ~state) ++ ";"
     }
 
   | Fragment(Object(obj)) =>
@@ -405,36 +480,6 @@ and printRootType =
     ++ ";\n"
     ++ "type fragment = array(fragment_t);"
   };
-}
-and printUnionTypeDefinition =
-    (union, ~includeSemi, ~prefixWithTypesModule): string => {
-  let futureAddedValueName =
-    switch (
-      union.members
-      ->Tablecloth.List.find(~f=m => m.name === "UnselectedUnionMember")
-    ) {
-    | Some(_) => "UnselectedUnionMember_"
-    | None => "UnselectedUnionMember"
-    };
-
-  "["
-  ++ (
-    union.members
-    ->Belt.List.map(({name, shape: {atPath}}) =>
-        " | `"
-        ++ name
-        ++ "("
-        ++ (prefixWithTypesModule ? "Types." : "")
-        ++ Utils.makeRecordName(atPath)
-        ++ ")"
-      )
-    |> Tablecloth.String.join(~sep="\n")
-  )
-  ++ " | `"
-  ++ futureAddedValueName
-  ++ "(string) "
-  ++ "]"
-  ++ (includeSemi ? ";" : "");
 };
 
 let printUnionConverters = (union: union) => {

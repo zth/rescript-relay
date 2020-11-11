@@ -16,11 +16,12 @@ module Types = {
 
   type response = {users: option(response_users)};
   type rawResponse = response;
-  type refetchVariables = {status: option(enum_OnlineStatus)};
-  let makeRefetchVariables = (~status=?, ()): refetchVariables => {
-    status: status,
-  };
-  type variables = {status: option(enum_OnlineStatus)};
+  type refetchVariables;
+  [@bs.obj]
+  external makeRefetchVariables:
+    (~status: enum_OnlineStatus=?, unit) => refetchVariables =
+    "";
+  type variables;
 };
 
 module Internal = {
@@ -75,7 +76,9 @@ module Utils = {
   external onlineStatus_toString: Types.enum_OnlineStatus => string =
     "%identity";
   open Types;
-  let makeVariables = (~status=?, ()): variables => {status: status};
+  [@bs.obj]
+  external makeVariables: (~status: enum_OnlineStatus=?, unit) => variables =
+    "";
 };
 
 type relayOperationNode;

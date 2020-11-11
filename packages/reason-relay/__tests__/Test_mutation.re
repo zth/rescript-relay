@@ -188,7 +188,7 @@ module Test = {
           let _ =
             Mutation.commitMutation(
               ~environment,
-              ~variables={onlineStatus: `Idle},
+              ~variables=Mutation.makeVariables(~onlineStatus=`Idle),
               ~updater=
                 (store, response) =>
                   switch (

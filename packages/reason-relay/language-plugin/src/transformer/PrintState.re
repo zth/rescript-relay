@@ -384,7 +384,8 @@ let getPrintedFullState =
     variables->Printer.objHasPrintableContents
       ? {
         variables
-        ->Printer.printObjectMaker(
+        ->Printer.printInputObjectMaker(
+            ~state,
             ~targetType="variables",
             ~name="makeVariables",
           )
