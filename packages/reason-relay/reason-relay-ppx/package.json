@@ -64,12 +64,11 @@
     "@opam/ppx_tools_versioned": "5.2.3",
     "@opam/ppxlib": "*",
     "@reason-native/rely": "*",
-    "ocaml": "~4.6.1",
+    "ocaml": "4.6.1002",
     "refmterr": "*"
   },
   "devDependencies": {
     "@opam/merlin": "*",
-    "ocaml": "~4.6.1",
     "@opam/odoc": "*"
   }
 }
