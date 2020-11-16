@@ -4,7 +4,10 @@
 
 - `react` to `0.0.0-experimental-4ead6b530`
 - `react-dom` to `0.0.0-experimental-4ead6b530`
-- `react-relay` to `0.0.0-experimental-183bdd28`
+- `react-relay` to `0.0.0-experimental-c818bac3`
+- `relay-compiler` to `10.1.0`
+- `relay-config` to `10.1.0`
+- `relay-runtime` to `10.1.0`
 
 ## Breaking changes
 
@@ -22,6 +25,7 @@
 
 ## Fixes & misc
 
+- Relay upgraded to `10.1.0` ([@zth](https://github.com/zth))
 - Generate a `commitLocalPayload` for any query annotated with `@raw_response_type`, to allow comitting local only payloads in a type safe way. [#118](https://github.com/zth/reason-relay/pull/118) ([@zth](https://github.com/zth))
 - Use abstract records instead of Js.t objects for a more robust type-check and to avoid undefined fields [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
 - Add support for parsing ReScript (.res) files [#115](https://github.com/zth/reason-relay/pull/115) ([@sorenhoyer](https://github.com/sorenhoyer))
