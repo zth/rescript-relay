@@ -85,7 +85,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          cd _release && npm publish --dry-run --tag ${{ github.event.inputs.tag_name }}
+          cd _release && npm publish --tag ${{ github.event.inputs.tag_name }}
       - name: Publish to NPM (master)
         if: ${{ !github.event.inputs.tag_name }}
         env:
