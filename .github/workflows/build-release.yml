@@ -23,6 +23,7 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: 12.19.0
+          registry-url: "https://registry.npmjs.org"
         env:
           CI: true
       - name: Install esy
@@ -84,11 +85,13 @@ jobs:
         if: ${{ github.event.inputs.tag_name }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd _release && npm publish --tag ${{ github.event.inputs.tag_name }}
       - name: Publish to NPM (master)
         if: ${{ !github.event.inputs.tag_name }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd _release && npm publish --dry-run
