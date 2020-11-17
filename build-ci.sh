@@ -33,6 +33,7 @@ cp -f scripts/release-postinstall.js ../../_release/postinstall.js
 
 # copy language plugin
 echo "Copying language plugin..."
+mkdir -p ../../_release/language-plugin/dist;
 cp -r ./language-plugin/dist ../../_release/language-plugin;
 
 # copy compiler
