@@ -20,6 +20,7 @@
 
 ## New bindings
 
+- Bind `Store.publish()`, which allows you to publish a `RecordSource` to your current store. Useful for various SSR cases (think Next.js and similar). ([@zth](https://github.com/zth))
 - Bind `readInlineData` for fragments annotated with `@inline` [#117](https://github.com/zth/reason-relay/pull/117) ([@zth](https://github.com/zth))
 - Clean bindings, renamed internal raw types and functions with names ending with `Raw` [#105](https://github.com/zth/reason-relay/pull/105) ([@tsnobip](https://github.com/tsnobip))
 

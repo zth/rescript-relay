@@ -491,6 +491,7 @@ module Store = {
     make(source, {gcReleaseBufferSize, queryCacheExpirationTime});
 
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
+  [@bs.send] external publish: (t, RecordSource.t) => unit = "publish";
 };
 
 type renderPolicy =

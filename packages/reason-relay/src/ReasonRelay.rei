@@ -513,6 +513,7 @@ module Store: {
     ) =>
     t;
   [@bs.send] external getSource: t => RecordSource.t = "getSource";
+  [@bs.send] external publish: (t, RecordSource.t) => unit = "publish";
 };
 
 /**
