@@ -29,11 +29,13 @@ jobs:
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test
+      - name: Make built PPX export dir
+        run: mkdir ppx
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ./ppx/${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
       - name: Upload built PPX
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ matrix.platform }}
-          path: ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          path: ./ppx
