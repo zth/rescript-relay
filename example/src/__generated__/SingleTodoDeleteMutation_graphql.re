@@ -2,29 +2,30 @@
 
 module Types = {
   [@ocaml.warning "-30"];
-  type response_deleteTodoItem = {
-    deletedTodoItemId: option(string),
-    clientMutationId: option(string),
-  }
+  type response_deleteTodoItem = {deletedTodoItemId: option(string)}
+  and rawResponse_deleteTodoItem = {deletedTodoItemId: option(string)}
   and deleteTodoItemInput = {
     id: string,
     clientMutationId: option(string),
   };
 
   type response = {deleteTodoItem: option(response_deleteTodoItem)};
-  type rawResponse = response;
-  type variables = {input: deleteTodoItemInput};
+  type rawResponse = {deleteTodoItem: option(rawResponse_deleteTodoItem)};
+  type variables = {
+    input: deleteTodoItemInput,
+    connections: array(string),
+  };
 };
 
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |json}
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         wrapResponseConverter,
         wrapResponseConverterMap,
         Js.null,
@@ -32,22 +33,42 @@ module Internal = {
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""},"deleteTodoItem_clientMutationId":{"n":""}}} |json}
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         responseConverter,
         responseConverterMap,
         Js.undefined,
       );
 
-  type wrapRawResponseRaw = wrapResponseRaw;
-  let convertWrapRawResponse = convertWrapResponse;
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}}} |json}
+  ];
+  let wrapRawResponseConverterMap = ();
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
+      );
 
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {"__root":{"deleteTodoItem":{"n":""},"deleteTodoItem_deletedTodoItemId":{"n":""}}} |json}
+  ];
+  let rawResponseConverterMap = ();
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
+        Js.undefined,
+      );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"DeleteTodoItemInput"}},"DeleteTodoItemInput":{"clientMutationId":{"n":""}}} |json}
@@ -55,7 +76,7 @@ module Internal = {
   let variablesConverterMap = ();
   let convertVariables = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         variablesConverter,
         variablesConverterMap,
         Js.undefined,
@@ -70,12 +91,19 @@ module Utils = {
     clientMutationId,
   };
 
-  let makeVariables = (~input): variables => {input: input};
+  let makeVariables = (~input, ~connections): variables => {
+    input,
+    connections,
+  };
+
+  let make_rawResponse_deleteTodoItem =
+      (~deletedTodoItemId=?, ()): rawResponse_deleteTodoItem => {
+    deletedTodoItemId: deletedTodoItemId,
+  };
 
   let make_response_deleteTodoItem =
-      (~deletedTodoItemId=?, ~clientMutationId=?, ()): response_deleteTodoItem => {
-    deletedTodoItemId,
-    clientMutationId,
+      (~deletedTodoItemId=?, ()): response_deleteTodoItem => {
+    deletedTodoItemId: deletedTodoItemId,
   };
 
   let makeOptimisticResponse = (~deleteTodoItem=?, ()): rawResponse => {
@@ -83,74 +111,108 @@ module Utils = {
   };
 };
 
-type operationType = ReasonRelay.mutationNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "input"
+    "kind": "Variable",
+    "name": "input",
+    "variableName": "input"
   }
 ],
-v1 = [
-  {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
-      }
-    ],
-    "concreteType": "DeleteTodoItemPayload",
-    "kind": "LinkedField",
-    "name": "deleteTodoItem",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "deletedTodoItemId",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "clientMutationId",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
-  }
-];
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "deletedTodoItemId",
+  "storageKey": null
+};
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "SingleTodoDeleteMutation",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "DeleteTodoItemPayload",
+        "kind": "LinkedField",
+        "name": "deleteTodoItem",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "SingleTodoDeleteMutation",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "DeleteTodoItemPayload",
+        "kind": "LinkedField",
+        "name": "deleteTodoItem",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "deleteEdge",
+            "key": "",
+            "kind": "ScalarHandle",
+            "name": "deletedTodoItemId",
+            "handleArgs": [
+              {
+                "kind": "Variable",
+                "name": "connections",
+                "variableName": "connections"
+              }
+            ]
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "6c0c28a190aca7b12ad8ab91424c3d36",
+    "cacheID": "d28fb164d230e5110a2b960f2fedd98f",
     "id": null,
     "metadata": {},
     "name": "SingleTodoDeleteMutation",
     "operationKind": "mutation",
-    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n    clientMutationId\n  }\n}\n"
+    "text": "mutation SingleTodoDeleteMutation(\n  $input: DeleteTodoItemInput!\n) {\n  deleteTodoItem(input: $input) {\n    deletedTodoItemId\n  }\n}\n"
   }
 };
 })() |json}

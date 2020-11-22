@@ -23,7 +23,7 @@ module WorkingGroupFragment = [%relay.fragment
 let make = (~workingGroup as wgRef) => {
   let (workingGroup, refetch) = WorkingGroupFragment.useRefetchable(wgRef);
   let (startTransition, isPending) =
-    React.useTransition(~config={timeoutMs: 5000}, ());
+    ReactExperimental.unstable_useTransition();
 
   <div>
     <strong> {React.string(workingGroup.name)} </strong>

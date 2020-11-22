@@ -10,10 +10,12 @@ module TodoFragment = [%relay.fragment
 
 module DeleteMutation = [%relay.mutation
   {|
-  mutation SingleTodoDeleteMutation($input: DeleteTodoItemInput!) {
+  mutation SingleTodoDeleteMutation(
+    $input: DeleteTodoItemInput!
+    $connections: [ID!]!
+  ) @raw_response_type {
     deleteTodoItem(input: $input) {
-      deletedTodoItemId
-      clientMutationId
+      deletedTodoItemId @deleteEdge(connections: $connections)
     }
   }
 |}
@@ -34,7 +36,7 @@ module UpdateMutation = [%relay.mutation
 ];
 
 [@react.component]
-let make = (~checked, ~todoItem as todoItemRef) => {
+let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
   let todoItem = TodoFragment.use(todoItemRef);
 
   <li
@@ -92,30 +94,11 @@ let make = (~checked, ~todoItem as todoItemRef) => {
               clientMutationId: None,
               id: todoItem.id,
             },
+            connections: [|todosConnectionId->ReasonRelay.dataIdToString|],
           },
-          ~updater=
-            (store, _response) =>
-              switch (
-                store->ReasonRelay.RecordSourceSelectorProxy.get(
-                  ~dataId=todoItem.id->ReasonRelay.makeDataId,
-                )
-              ) {
-              | Some(node) =>
-                ReasonRelayUtils.(
-                  removeNodeFromConnections(
-                    ~store,
-                    ~node,
-                    ~connections=[
-                      {
-                        parentID: ReasonRelay.storeRootId,
-                        key: "TodoList_query_todosConnection",
-                        filters: None,
-                      },
-                    ],
-                  )
-                )
-              | None => ()
-              },
+          ~optimisticResponse={
+            deleteTodoItem: Some({deletedTodoItemId: Some(todoItem.id)}),
+          },
           (),
         )
         |> ignore

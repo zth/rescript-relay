@@ -18,19 +18,19 @@
     "bs-fetch": "^0.5.0",
     "concurrently": "^5.0.0",
     "graphql": "^14.5.8",
-    "react": "0.0.0-experimental-d28bd2994",
-    "react-dom": "0.0.0-experimental-d28bd2994",
-    "react-relay": "0.0.0-experimental-8058ef82",
+    "react": "0.0.0-experimental-4ead6b530",
+    "react-dom": "0.0.0-experimental-4ead6b530",
+    "react-relay": "0.0.0-experimental-c818bac3",
     "reason-promise": "^1.1.1",
     "reason-react": "^0.9.1",
-    "reason-relay": "0.11.0",
-    "relay-compiler": "10.0.1",
-    "relay-config": "10.0.1",
-    "relay-runtime": "10.0.1",
+    "reason-relay": "0.12.0",
+    "relay-compiler": "10.1.0",
+    "relay-config": "10.1.0",
+    "relay-runtime": "10.1.0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
-    "bs-platform": "8.2.0",
+    "bs-platform": "8.3.3",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
@@ -41,7 +41,7 @@
   "copyright": "",
   "license": "",
   "resolutions": {
-    "react": "0.0.0-experimental-d28bd2994",
-    "react-dom": "0.0.0-experimental-d28bd2994"
+    "react": "0.0.0-experimental-4ead6b530",
+    "react-dom": "0.0.0-experimental-4ead6b530"
   }
 }

@@ -23,7 +23,7 @@ module AddTodoMutation = [%relay.mutation
   {|
   mutation TodoListAddTodoMutation(
     $input: AddTodoItemInput!
-    $connections: [String!]!
+    $connections: [ID!]!
   ) @raw_response_type {
     addTodoItem(input: $input) {
       addedTodoItemEdge @appendEdge(connections: $connections) {
@@ -120,6 +120,7 @@ let make = (~query as queryRef) => {
                  key={todoItem.id}
                  todoItem={todoItem.fragmentRefs}
                  checked=true
+                 todosConnectionId=todoListData.todosConnection.__id
                />
              )
            ->React.array}

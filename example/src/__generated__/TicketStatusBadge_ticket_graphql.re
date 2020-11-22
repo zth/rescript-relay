@@ -1,8 +1,8 @@
 /* @generated */
 
-type enum_TicketStatus = pri [> | `Done | `OnHold | `Progress | `Rejected];
-
 module Types = {
+  type enum_TicketStatus = pri [> | `Done | `OnHold | `Progress | `Rejected];
+
   [@ocaml.warning "-30"];
 
   type fragment = {
@@ -19,7 +19,7 @@ module Internal = {
   let fragmentConverterMap = ();
   let convertFragment = v =>
     v
-    ->ReasonRelay._convertObj(
+    ->ReasonRelay.convertObj(
         fragmentConverter,
         fragmentConverterMap,
         Js.undefined,
@@ -33,10 +33,13 @@ external getFragmentRef:
   "%identity";
 
 module Utils = {
-  external ticketStatus_toString: enum_TicketStatus => string = "%identity";
+  external ticketStatus_toString: Types.enum_TicketStatus => string =
+    "%identity";
 };
 
-type operationType = ReasonRelay.fragmentNode;
+type relayOperationNode;
+
+type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 let node: operationType = [%raw
   {json| {
