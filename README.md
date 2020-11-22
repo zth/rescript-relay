@@ -1,6 +1,8 @@
 # reason-relay
 
-Use Relay with ReasonML.
+Use Relay with ReasonML/ReScript.
+
+[**Join our Discord**](https://discord.gg/wzj4EN8XDc)
 
 ## Getting started
 

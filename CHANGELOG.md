@@ -1,5 +1,20 @@
 # master
 
+_Nothing yet_
+
+# 0.12.0
+
+This release packs a bunch of new, cool things! Full list of details below, but some highlights:
+
+- Support for using ReasonRelay with ReScript ([@sorenhoyer](https://github.com/sorenhoyer))
+- Relay `10.1.0`
+
+[Check out this](https://github.com/zth/reason-relay/commit/f95bbf9d9eb35297e9b48dec2c098e48c391f8d6) for an example diff of upgrading a project.
+
+This version also reverts back to shipping our own bindings for `ReactExperimental`. It's likely that React will remain in experimental for a while longer with concurrent mode, and we don't want to be tied to the bindings in `ReasonReact`, since they usually take a while to update. Hence this change.
+
+A _big_ thanks to all contributors who's helped pack this release with great changes. It contains a bit of churn (and the coming releases probably will too), but hopefully nothing that isn't easily handled.
+
 ## Upgrade versions
 
 - `react` to `0.0.0-experimental-4ead6b530`
@@ -8,6 +23,11 @@
 - `relay-compiler` to `10.1.0`
 - `relay-config` to `10.1.0`
 - `relay-runtime` to `10.1.0`
+- `bs-platform` to `8.3.3` (recommended, but not required)
+
+## FAQ
+
+- If you get an error with `bs-platform` > `8.3.0` for code looking like this `let ReasonRelay.{data, hasNext} = ...`, just remove `ReasonRelay.` from that code and the error should be gone. Later versions of `bs-platform` now properly infer record destruction, which prior versions did not do.
 
 ## Breaking changes
 

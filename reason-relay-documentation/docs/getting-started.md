@@ -9,6 +9,8 @@ sidebar_label: Getting Started
 - [Getting started with ReasonReact](https://reasonml.github.io/reason-react/docs/en/installation) - _Note that ReasonRelay requires `bs-platform@7`_
 - [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
 
+[**Join our Discord**](https://discord.gg/wzj4EN8XDc)
+
 #### Want to follow along with code?
 
 You're encouraged to follow along this walkthrough and play with the concepts through actual code if you can. The easiest way to get started is to use the example that's available in the ReasonRelay repository. Do the following:
