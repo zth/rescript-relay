@@ -34,6 +34,7 @@ type User implements Node {
     before: String
     last: Int
   ): UserConnection!
+  memberOf: [Member]
 }
 
 type Group implements Node {

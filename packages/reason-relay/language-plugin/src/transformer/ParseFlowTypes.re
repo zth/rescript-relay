@@ -292,8 +292,12 @@ and makeObjShape =
   };
 }
 and makeUnionMember =
-    (~state, ~path, props: list(Flow_ast.Type.Object.property('a, 'b)))
-    : Types.unionMember => {
+    (
+      ~state: Types.intermediateState,
+      ~path,
+      props: list(Flow_ast.Type.Object.property('a, 'b)),
+    )
+    : option(Types.unionMember) => {
   let name = ref(None);
   let filteredProps = ref([]);
 
@@ -313,27 +317,45 @@ and makeUnionMember =
      );
 
   switch (name^) {
-  | Some(name) => {
+  | Some(name) =>
+    Some({
       name,
       shape: filteredProps^ |> makeObjShape(~state, ~path=[name, ...path]),
+    })
+  | None =>
+    switch (path->Belt.List.reverse) {
+    /***
+     * We ignore missing typenames on unions and simply don't return that
+     * union member. */
+    | ["rawResponse", ..._rest] => None
+    | _ => raise(Missing_typename_field_on_union)
     }
-  | None => raise(Missing_typename_field_on_union)
   };
 }
 and makeUnionDefinition =
     (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~state): Types.union => {
   let unionMembers =
-    ref([
-      firstProps |> makeUnionMember(~state, ~path),
-      secondProps |> makeUnionMember(~state, ~path),
-    ]);
+    ref(
+      [
+        firstProps |> makeUnionMember(~state, ~path),
+        secondProps |> makeUnionMember(~state, ~path),
+      ]
+      ->Belt.List.keepMap(x => x),
+    );
 
   maybeMoreMembers
   |> Tablecloth.List.iter(~f=(prop: Flow_ast.Type.t('a, 'b)) =>
        switch (prop) {
        | (_, Object({properties})) =>
          unionMembers :=
-           [properties |> makeUnionMember(~state, ~path), ...unionMembers^]
+           Belt.List.concat(
+             switch (properties |> makeUnionMember(~state, ~path)) {
+             | Some(member) => [member]
+             | None => []
+             },
+             unionMembers^,
+           )
+
        | _ => ()
        }
      );

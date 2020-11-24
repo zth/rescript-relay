@@ -1699,6 +1699,178 @@ type operationType = ReasonRelay.queryNode(relayOperationNode);
 "
 `;
 
+exports[`Language plugin tests raw_response_type handles unions in @raw_response_type 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+
+module Types = {
+  [@ocaml.warning \\"-30\\"];
+  type rawResponse_participantById_User = {
+    firstName: string,
+    id: string,
+  };
+  type rawResponse_participantById = [
+    | \`User(rawResponse_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ];
+  type response_participantById_User = {
+    firstName: string,
+    id: string,
+  };
+  type response_participantById = [
+    | \`User(response_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ];
+
+  type response = {
+    participantById:
+      option(
+        [
+          | \`User(response_participantById_User)
+          | \`UnselectedUnionMember(string)
+        ],
+      ),
+  };
+  type rawResponse = {
+    participantById:
+      option(
+        [
+          | \`User(rawResponse_participantById_User)
+          | \`UnselectedUnionMember(string)
+        ],
+      ),
+  };
+  type variables = unit;
+};
+
+let unwrap_rawResponse_participantById:
+  {. \\"__typename\\": string} =>
+  [
+    | \`User(Types.rawResponse_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | \\"User\\" => \`User(u->Obj.magic)
+    | v => \`UnselectedUnionMember(v)
+    };
+
+let wrap_rawResponse_participantById:
+  [
+    | \`User(Types.rawResponse_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ] =>
+  {. \\"__typename\\": string} =
+  fun
+  | \`User(v) => v->Obj.magic
+  | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
+
+let unwrap_response_participantById:
+  {. \\"__typename\\": string} =>
+  [
+    | \`User(Types.response_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ] =
+  u =>
+    switch (u##__typename) {
+    | \\"User\\" => \`User(u->Obj.magic)
+    | v => \`UnselectedUnionMember(v)
+    };
+
+let wrap_response_participantById:
+  [
+    | \`User(Types.response_participantById_User)
+    | \`UnselectedUnionMember(string)
+  ] =>
+  {. \\"__typename\\": string} =
+  fun
+  | \`User(v) => v->Obj.magic
+  | \`UnselectedUnionMember(v) => {\\"__typename\\": v};
+
+module Internal = {
+  type wrapResponseRaw;
+  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |json}
+  ];
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  };
+  let convertWrapResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapResponseConverter,
+        wrapResponseConverterMap,
+        Js.null,
+      );
+
+  type responseRaw;
+  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}} |json}
+  ];
+  let responseConverterMap = {
+    \\"response_participantById\\": unwrap_response_participantById,
+  };
+  let convertResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        responseConverter,
+        responseConverterMap,
+        Js.undefined,
+      );
+
+  type wrapRawResponseRaw;
+  let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"rawResponse_participantById\\"}}} |json}
+  ];
+  let wrapRawResponseConverterMap = {
+    \\"rawResponse_participantById\\": wrap_rawResponse_participantById,
+  };
+  let convertWrapRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        wrapRawResponseConverter,
+        wrapRawResponseConverterMap,
+        Js.null,
+      );
+
+  type rawResponseRaw;
+  let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"rawResponse_participantById\\"}}} |json}
+  ];
+  let rawResponseConverterMap = {
+    \\"rawResponse_participantById\\": unwrap_rawResponse_participantById,
+  };
+  let convertRawResponse = v =>
+    v
+    ->ReasonRelay.convertObj(
+        rawResponseConverter,
+        rawResponseConverterMap,
+        Js.undefined,
+      );
+
+  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
+    {json| {} |json}
+  ];
+  let variablesConverterMap = ();
+  let convertVariables = v =>
+    v
+    ->ReasonRelay.convertObj(
+        variablesConverter,
+        variablesConverterMap,
+        Js.undefined,
+      );
+};
+
+type queryRef;
+
+module Utils = {};
+
+type relayOperationNode;
+
+type operationType = ReasonRelay.queryNode(relayOperationNode);
+"
+`;
+
 exports[`Language plugin tests raw_response_type outputs code for handling @raw_response_type 1`] = `
 "// SomeQuery.graphql
 /* @generated */

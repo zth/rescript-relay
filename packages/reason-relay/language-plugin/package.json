@@ -21,6 +21,7 @@
     "@types/node": "^12.7.11",
     "@types/relay-compiler": "^8.0.0",
     "@types/relay-runtime": "^8.0.6",
+    "@types/testing-library__dom": "^7.5.0",
     "@webpack-cli/init": "^0.2.2",
     "gentype": "^3.8.1",
     "jest": "^24.9.0",

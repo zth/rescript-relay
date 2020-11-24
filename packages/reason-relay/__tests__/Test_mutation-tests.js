@@ -5,6 +5,8 @@ const queryMock = require("./queryMock");
 
 const { test_mutation } = require("./Test_mutation.bs");
 
+const memberOf = [{ __typename: "User", id: "user-2", firstName: "Some" }];
+
 describe("Mutation", () => {
   test("basic mutations work via commitMutation", async () => {
     queryMock.mockQuery({
@@ -15,6 +17,7 @@ describe("Mutation", () => {
           firstName: "First",
           lastName: "Name",
           onlineStatus: "Online",
+          memberOf,
         },
       },
     });
@@ -53,6 +56,7 @@ describe("Mutation", () => {
           firstName: "First",
           lastName: "Name",
           onlineStatus: "Online",
+          memberOf,
         },
       },
     });
@@ -97,6 +101,7 @@ describe("Mutation", () => {
           firstName: "First",
           lastName: "Name",
           onlineStatus: "Online",
+          memberOf,
         },
       },
     });
@@ -135,6 +140,7 @@ describe("Mutation", () => {
           firstName: "First",
           lastName: "Name",
           onlineStatus: "Online",
+          memberOf,
         },
       },
     });
@@ -177,6 +183,7 @@ describe("Mutation", () => {
           firstName: "First",
           lastName: "Name",
           onlineStatus: "Online",
+          memberOf,
         },
       },
     });

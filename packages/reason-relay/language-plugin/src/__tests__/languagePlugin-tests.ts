@@ -789,5 +789,22 @@ describe("Language plugin tests", () => {
 
       expect(generated).toMatchSnapshot();
     });
+
+    it("handles unions in @raw_response_type", () => {
+      let generated = generate(
+        `query SomeQuery @raw_response_type {
+            participantById(id: "123") {
+              __typename
+              ... on User {
+                id
+                firstName
+              }
+            }
+          }          
+          `
+      );
+
+      expect(generated).toMatchSnapshot();
+    });
   });
 });

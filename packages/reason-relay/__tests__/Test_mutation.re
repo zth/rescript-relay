@@ -54,6 +54,15 @@ module Fragment = [%relay.fragment
       firstName
       lastName
       onlineStatus
+      memberOf {
+        __typename
+        ... on User {
+          firstName
+        }
+        ... on Group {
+          name
+        }
+      }
     }
 |}
 ];
@@ -109,6 +118,15 @@ module Test = {
                             ~id=data.id,
                             ~firstName=data.firstName,
                             ~lastName=data.lastName,
+                            ~memberOf=[|
+                              Some(
+                                `User({
+                                  firstName: "test",
+                                  id: "123",
+                                  __isNode: `User,
+                                }),
+                              ),
+                            |],
                             ~onlineStatus=`Idle,
                             (),
                           ),

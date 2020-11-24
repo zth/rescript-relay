@@ -1,6 +1,16 @@
 # master
 
-_Nothing yet_
+## Breaking changes
+
+-
+
+## New bindings
+
+-
+
+## Fixes & misc
+
+- Fix a bug where `@raw_response_type` together with unions would crash the type generation.
 
 # 0.12.0
 
