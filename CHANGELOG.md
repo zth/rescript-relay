@@ -1,12 +1,10 @@
 # master
 
-## Breaking changes
-
 -
 
-## New bindings
+# 0.12.1
 
--
+A quick patch with a bug fix.
 
 ## Fixes & misc
 
