@@ -141,10 +141,11 @@ let rec mapObjProp =
           Property((
             _,
             {
-              value: Init((_, StringLiteral({value: {|%other|}}))),
+              value: Init((_, StringLiteral({value: {|%other|}}) | String)),
               key: Identifier((_, "__typename")),
             },
           )),
+          ..._r,
         ],
       ) => {
         nullable: true,

@@ -9,6 +9,20 @@ module Query = [%relay.query
 |}
 ];
 
+module ViaNodeInterface = [%relay.query
+  {|
+    query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
+      node(id: $id) {
+        __typename
+        ... on User {
+          firstName
+          avatarUrl
+        }
+      }
+    }
+|}
+];
+
 /**
  * Don't mind this fragment, it's mostly here to check that
  * it's actually getting inlined into the types for the query
@@ -58,6 +72,24 @@ module Test = {
           )
         }}>
         {React.string("Update locally")}
+      </button>
+      <button
+        onClick={_ => {
+          ViaNodeInterface.commitLocalPayload(
+            ~environment,
+            ~variables={id: data.loggedInUser.id},
+            ~payload={
+              node:
+                Some({
+                  id: data.loggedInUser.id,
+                  firstName: "AnotherFirst",
+                  avatarUrl: None,
+                  __typename: `User,
+                }),
+            },
+          )
+        }}>
+        {React.string("Update locally via Node interface")}
       </button>
     </div>;
   };
