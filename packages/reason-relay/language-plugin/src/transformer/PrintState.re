@@ -81,10 +81,10 @@ let getPrintedFullState =
 
   // Print enums
   state.enums
-  ->Belt.List.forEach(enum => {
-      addToStr(enum->Printer.printEnum);
-      addSpacing();
-    });
+  |> List.iter(enum => {
+       addToStr(enum->Printer.printEnum);
+       addSpacing();
+     });
 
   // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
   addToStr("[@ocaml.warning \"-30\"];\n");
@@ -96,9 +96,9 @@ let getPrintedFullState =
     };
 
   state.unions
-  ->Belt.List.forEach(({union, printName}) => {
-      union->Printer.printUnionTypes(~state, ~printName)->addToStr
-    });
+  |> List.iter(({union, printName}: Types.unionInState) => {
+       union->Printer.printUnionTypes(~state, ~printName)->addToStr
+     });
 
   // Split declarations so we can print object declarations first and as mutuals
   let (otherDeclarations, objectDeclarations) =
@@ -164,11 +164,11 @@ let getPrintedFullState =
   addToStr("};");
   addSpacing();
 
-  if (state.unions->Belt.List.length > 0) {
+  if (state.unions |> List.length > 0) {
     state.unions
-    ->Belt.List.forEach(({union}) =>
-        union->Printer.printUnionConverters->addToStr
-      );
+    |> List.iter(({union}: Types.unionInState) =>
+         union->Printer.printUnionConverters->addToStr
+       );
   };
 
   // This emits extra assets for the generated modules,
@@ -314,8 +314,7 @@ let getPrintedFullState =
   let addSpacingToUtils = () => addToUtils("\n\n\n");
 
   // Enum toString functions
-  state.enums
-  ->Belt.List.forEach(enum => enum->Printer.printEnumToStringFn->addToStr);
+  state.enums |> List.iter(enum => enum->Printer.printEnumToStringFn->addToStr);
 
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
@@ -404,12 +403,12 @@ let getPrintedFullState =
           Some((name, definition))
         | _ => None,
       )
-    ->Belt.List.forEach(((name, obj)) => {
-        obj
-        ->Printer.printObjectMaker(~targetType=name, ~name="make_" ++ name)
-        ->addToUtils;
-        addSpacingToUtils();
-      });
+    |> List.iter(((name, obj)) => {
+         obj
+         ->Printer.printObjectMaker(~targetType=name, ~name="make_" ++ name)
+         ->addToUtils;
+         addSpacingToUtils();
+       });
 
     response
     ->Printer.printObjectMaker(

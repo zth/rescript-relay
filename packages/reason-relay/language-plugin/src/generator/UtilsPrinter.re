@@ -216,7 +216,7 @@ type objectAssets = {
 };
 
 let printConvertersMap = (map: Js.Dict.t(string)): string =>
-  if (map->Js.Dict.keys->Belt.Array.length == 0) {
+  if (map->Js.Dict.keys |> Array.length == 0) {
     "()";
   } else {
     let str = ref("{");
@@ -326,18 +326,19 @@ let definitionToAssets =
         instruction: ConvertUnion(Printer.makeUnionName(atPath)),
       });
 
-      members->Belt.List.forEach(member => {
-        member.shape.values
-        |> traverseProps(
-             ~converters,
-             ~inRootObject,
-             ~addInstruction,
-             ~currentPath=[
-               member.name |> Tablecloth.String.toLower,
-               ...currentPath,
-             ],
-           )
-      });
+      members
+      |> List.iter(member => {
+           member.shape.values
+           |> traverseProps(
+                ~converters,
+                ~inRootObject,
+                ~addInstruction,
+                ~currentPath=[
+                  member.name |> Tablecloth.String.toLower,
+                  ...currentPath,
+                ],
+              )
+         });
     | Array({nullable, propType}) =>
       if (nullable) {
         addInstruction({
@@ -485,15 +486,15 @@ let definitionToAssets =
       instruction: ConvertUnion(Printer.makeUnionName(union.atPath)),
     });
     union.members
-    ->Belt.List.forEach(obj =>
-        obj.shape.values
-        |> traverseProps(
-             ~converters,
-             ~inRootObject=None,
-             ~addInstruction,
-             ~currentPath=[],
-           )
-      );
+    |> List.iter(obj =>
+         obj.shape.values
+         |> traverseProps(
+              ~converters,
+              ~inRootObject=None,
+              ~addInstruction,
+              ~currentPath=[],
+            )
+       );
   };
 
   let rootInstructions = makeConverterInstructions(instructions);

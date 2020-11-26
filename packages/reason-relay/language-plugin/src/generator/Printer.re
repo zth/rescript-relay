@@ -5,7 +5,7 @@ exception Invalid_top_level_shape;
 
 let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
-  path |> Tablecloth.List.reverse |> Tablecloth.String.join(~sep="_");
+  path |> List.rev |> Tablecloth.String.join(~sep="_");
 
 let makeEnumName = enumName => "enum_" ++ enumName;
 let makeUnwrapEnumFnName = enumName => "unwrap_" ++ makeEnumName(enumName);
@@ -418,14 +418,14 @@ and printUnionTypeDefinition =
   "["
   ++ (
     union.members
-    ->Belt.List.map(({name, shape: {atPath}}) =>
-        " | `"
-        ++ name
-        ++ "("
-        ++ (prefixWithTypesModule ? "Types." : "")
-        ++ Utils.makeRecordName(atPath)
-        ++ ")"
-      )
+    |> List.map(({name, shape: {atPath}}) =>
+         " | `"
+         ++ name
+         ++ "("
+         ++ (prefixWithTypesModule ? "Types." : "")
+         ++ Utils.makeRecordName(atPath)
+         ++ ")"
+       )
     |> Tablecloth.String.join(~sep="\n")
   )
   ++ " | `"
@@ -462,15 +462,15 @@ let printUnionConverters = (union: union) => {
     ++ " = u => switch(u##__typename) {",
   );
   union.members
-  ->Belt.List.forEach(member => {
-      addToStr(
-        "\n | \""
-        ++ member.name
-        ++ "\" => `"
-        ++ member.name
-        ++ "(u->Obj.magic) ",
-      )
-    });
+  |> List.iter((member: Types.unionMember) => {
+       addToStr(
+         "\n | \""
+         ++ member.name
+         ++ "\" => `"
+         ++ member.name
+         ++ "(u->Obj.magic) ",
+       )
+     });
   addToStr("\n | v => `" ++ futureAddedValueName ++ "(v)");
   addToStr("};\n\n");
 
@@ -486,9 +486,9 @@ let printUnionConverters = (union: union) => {
     ++ " => {. \"__typename\": string } = fun",
   );
   union.members
-  ->Belt.List.forEach(member => {
-      addToStr("\n | `" ++ member.name ++ "(v) => v->Obj.magic ")
-    });
+  |> List.iter((member: Types.unionMember) => {
+       addToStr("\n | `" ++ member.name ++ "(v) => v->Obj.magic ")
+     });
   addToStr("\n | `" ++ futureAddedValueName ++ "(v) => {\"__typename\": v} ");
   addToStr(";\n\n");
   str^;

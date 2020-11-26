@@ -321,7 +321,7 @@ and makeUnionMember =
       shape: filteredProps^ |> makeObjShape(~state, ~path=[name, ...path]),
     })
   | None =>
-    switch (path->Belt.List.reverse) {
+    switch (path |> List.rev) {
     /***
      * We ignore missing typenames on unions and simply don't return that
      * union member. */
@@ -346,13 +346,13 @@ and makeUnionDefinition =
        switch (prop) {
        | (_, Object({properties})) =>
          unionMembers :=
-           Belt.List.concat(
+           List.concat([
              switch (properties |> makeUnionMember(~state, ~path)) {
              | Some(member) => [member]
              | None => []
              },
              unionMembers^,
-           )
+           ])
 
        | _ => ()
        }

@@ -24,12 +24,18 @@ let makeObjName = (next, current) => current ++ "_" ++ next;
 let makeRecordName = (path: list(string)) =>
   path->Tablecloth.List.reverse->Tablecloth.String.join(~sep="_");
 
+let getWithDefault = (def, value) =>
+  switch (value) {
+  | Some(v) => v
+  | None => def
+  };
+
 let isModuleName = name =>
   name
-  ->Tablecloth.String.split(~on=".")
-  ->Tablecloth.List.last
-  ->Belt.Option.getWithDefault("")
-  ->Tablecloth.String.isCapitalized;
+  |> Tablecloth.String.split(~on=".")
+  |> Tablecloth.List.last
+  |> getWithDefault("")
+  |> Tablecloth.String.isCapitalized;
 
 let extractNestedObjects = (obj: object_): list(object_) => {
   let objects = ref([]);

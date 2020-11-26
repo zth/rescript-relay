@@ -64,13 +64,13 @@ let intermediateToFull =
         addUnion({union, printName: true});
 
         union.members
-        ->Belt.List.forEach(member => {
-            member.shape
-            |> traverseDefinition(
-                 ~inUnion=true,
-                 ~atPath=[member.name, ...newAtPath],
-               )
-          });
+        |> List.iter((member: Types.unionMember) => {
+             member.shape
+             |> traverseDefinition(
+                  ~inUnion=true,
+                  ~atPath=[member.name, ...newAtPath],
+                )
+           });
       | Array({propType: Object(definition)})
       | TopLevelNodeField(_, definition)
       | Object(definition) =>
@@ -113,9 +113,9 @@ let intermediateToFull =
   | Some({definition: Union(union)}) =>
     addUnion({union, printName: false});
     union.members
-    ->Belt.List.forEach(member => {
-        member.shape |> traverseDefinition(~inUnion=true, ~atPath=[])
-      });
+    |> List.iter((member: Types.unionMember) => {
+         member.shape |> traverseDefinition(~inUnion=true, ~atPath=[])
+       });
   | None => ()
   };
 
