@@ -61,7 +61,7 @@ let printStringLiteral = literal => "[ | `" ++ literal ++ "]";
 let printDataIdType = () => "ReasonRelay.dataId";
 
 let getEnumFutureAddedValueName = (enum: fullEnum) =>
-  switch (enum.values->Tablecloth.Array.find(~f=e => e === "FutureAddedValue")) {
+  switch (enum.values |> List.find_opt(e => e === "FutureAddedValue")) {
   | Some(_) => "FutureAddedValue_"
   | None => "FutureAddedValue"
   };
@@ -73,8 +73,7 @@ let printEnumDefinition = (enum: fullEnum): string => {
 
   let addToStr = s => str := str^ ++ s;
 
-  enum.values
-  ->Belt.Array.forEach(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
+  enum.values |> List.iter(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
 
   addToStr("];\n\n");
 
@@ -83,11 +82,11 @@ let printEnumDefinition = (enum: fullEnum): string => {
 
 let objHasPrintableContents = (obj: object_) =>
   obj.values
-  ->Belt.Array.some(
-      fun
-      | Prop(_) => true
-      | _ => false,
-    );
+  |> List.exists(
+       fun
+       | Prop(_) => true
+       | _ => false,
+     );
 
 let rec printTypeReference = (~state: option(fullState), typeName: string) =>
   switch (state) {
@@ -144,7 +143,7 @@ and printPropValue = (~propValue, ~state) => {
   str^;
 }
 and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
-  switch (obj.values |> Array.length) {
+  switch (obj.values |> List.length) {
   | 0 => "unit"
   | _ =>
     let str = ref("");
@@ -152,19 +151,19 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
 
     let hasFragments =
       obj.values
-      ->Belt.Array.some(
-          fun
-          | FragmentRef(_) => true
-          | Prop(_) => false,
-        );
+      |> List.exists(
+           fun
+           | FragmentRef(_) => true
+           | Prop(_) => false,
+         );
 
     let hasProps =
       obj.values
-      ->Belt.Array.some(
-          fun
-          | FragmentRef(_) => false
-          | Prop(_) => true,
-        );
+      |> List.exists(
+           fun
+           | FragmentRef(_) => false
+           | Prop(_) => true,
+         );
 
     // Return an empty JS object if we are ignoring fragment refs and have no props
     switch (ignoreFragmentRefs, hasProps) {
@@ -173,13 +172,12 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
       addToStr("{");
 
       obj.values
-      |> Tablecloth.Array.filter(
-           ~f=
-             fun
-             | FragmentRef(_) => false
-             | Prop(_) => true,
+      |> List.filter(
+           fun
+           | FragmentRef(_) => false
+           | Prop(_) => true,
          )
-      |> Array.iter(p => {
+      |> List.iter(p => {
            addToStr(
              switch (p) {
              | Prop(name, propValue) =>
@@ -211,13 +209,13 @@ and printFragmentRefs = (obj: object_) => {
   let addToStr = s => str := str^ ++ s;
 
   obj.values
-  |> Tablecloth.Array.filter(~f=v =>
+  |> List.filter(v =>
        switch (v) {
        | FragmentRef(_) => true
        | Prop(_) => false
        }
      )
-  |> Array.iteri((index, p) => {
+  |> List.iteri((index, p) => {
        index == 0 ? addToStr("[") : ();
 
        addToStr(
@@ -261,7 +259,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
   if (hasContents) {
     obj.values
-    |> Array.iteri((index, p) => {
+    |> List.iteri((index, p) => {
          addToStr(
            switch (p) {
            | Prop(name, {nullable}) =>
@@ -276,16 +274,16 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
     let shouldAddUnit =
       obj.values
-      ->Belt.Array.some(
-          fun
-          | Prop(_, {nullable}) => nullable
-          | _ => false,
-        );
+      |> List.exists(
+           fun
+           | Prop(_, {nullable}) => nullable
+           | _ => false,
+         );
 
     addToStr((shouldAddUnit ? ", ()" : "") ++ "): " ++ targetType ++ " => {");
 
     obj.values
-    |> Array.iteri((index, p) => {
+    |> List.iteri((index, p) => {
          addToStr(
            switch (p) {
            | Prop(name, _) =>
@@ -312,7 +310,7 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
     atPath: [],
     values:
       obj.values
-      |> Array.map(value =>
+      |> List.map(value =>
            switch (value) {
            | Prop(name, {nullable: false} as propValue) =>
              Prop(name, {...propValue, nullable: true})
@@ -354,7 +352,7 @@ and printRootType =
     ++ ";"
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
-    switch (obj.values |> Array.length) {
+    switch (obj.values |> List.length) {
     | 0 => ""
     | _ => printRefetchVariablesMaker(~state, obj) ++ ";"
     }
@@ -374,7 +372,7 @@ and printRootType =
     let typeDef =
       Tablecloth.String.uncapitalize(name)
       ++ (
-        switch (definition.values |> Tablecloth.Array.length) {
+        switch (definition.values |> List.length) {
         | 0 => ""
         | _ =>
           " = "

@@ -45,7 +45,7 @@ let extractNestedObjects = (obj: object_): list(object_) => {
     }
   and findObj = (o: Types.object_) => {
     o.values
-    |> Tablecloth.Array.forEach(~f=v =>
+    |> List.iter(v =>
          switch (v) {
          | FragmentRef(_) => ()
          | Prop(_, {propType}) => propType |> traverseProp
@@ -72,18 +72,18 @@ and adjustObjectPath = (~path: list(string), obj: object_): object_ => {
     atPath: path,
     values:
       obj.values
-      ->Belt.Array.map(v =>
-          switch (v) {
-          | Prop(name, {propType} as pv) =>
-            Prop(
-              name,
-              {
-                ...pv,
-                propType: mapPropType(~path=[name, ...path], propType),
-              },
-            )
-          | v => v
-          }
-        ),
+      |> List.map(v =>
+           switch (v) {
+           | Prop(name, {propType} as pv) =>
+             Prop(
+               name,
+               {
+                 ...pv,
+                 propType: mapPropType(~path=[name, ...path], propType),
+               },
+             )
+           | v => v
+           }
+         ),
   };
 };

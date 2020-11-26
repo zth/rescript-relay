@@ -48,7 +48,7 @@ let intermediateToFull =
 
   let rec traverseDefinition =
           (~inUnion, ~atPath: list(string), definition: Types.object_) =>
-    definition.values |> Array.iter(traversePropValue(~inUnion, ~atPath))
+    definition.values |> List.iter(traversePropValue(~inUnion, ~atPath))
   and traversePropValue =
       (~inUnion, ~atPath: list(string), propValue: Types.propValues) =>
     switch (propValue) {

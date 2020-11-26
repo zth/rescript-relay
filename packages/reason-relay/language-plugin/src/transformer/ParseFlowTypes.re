@@ -287,10 +287,7 @@ and makeObjShape =
        }
      );
 
-  {
-    atPath: path,
-    values: values^ |> Tablecloth.List.reverse |> Tablecloth.Array.fromList,
-  };
+  {atPath: path, values: values^ |> List.rev};
 }
 and makeUnionMember =
     (
@@ -515,12 +512,10 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  }),
                )),
            }) =>
-           let enum: Types.fullEnum = {
-             name: typeName,
-             values: [|firstMember|],
-           };
+           let enum = ref({Types.name: typeName, values: [firstMember]});
 
-           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+           let addValue = v =>
+             enum := {...enum^, values: List.concat([enum^.values, [v]])};
 
            [maybeSecondMember, ...maybeMore]
            ->Belt.List.forEach(
@@ -531,7 +526,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                | _ => (),
              );
 
-           setState(state => {...state, enums: [enum, ...state.enums]});
+           setState(state => {...state, enums: [enum^, ...state.enums]});
          | _ => ()
          }
        )
@@ -679,12 +674,10 @@ let flowTypesToFullState = (~content, ~operationType) => {
                  }),
                )),
            }) =>
-           let enum: Types.fullEnum = {
-             name: typeName,
-             values: [|firstMember|],
-           };
+           let enum = ref({Types.name: typeName, values: [firstMember]});
 
-           let addValue = v => enum.values |> Js.Array.push(v) |> ignore;
+           let addValue = v =>
+             enum := {...enum^, values: List.concat([enum^.values, [v]])};
 
            [maybeSecondMember, ...maybeMore]
            ->Belt.List.forEach(
@@ -695,7 +688,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                | _ => (),
              );
 
-           setState(state => {...state, enums: [enum, ...state.enums]});
+           setState(state => {...state, enums: [enum^, ...state.enums]});
          | _ => ()
          }
        )

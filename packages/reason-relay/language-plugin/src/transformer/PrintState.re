@@ -322,7 +322,7 @@ let getPrintedFullState =
   | Some(connection) =>
     let connPath =
       connection.atObjectPath
-      |> Tablecloth.Array.toList
+      |> Tablecloth.Array.to_list
       |> Tablecloth.List.reverse;
 
     switch (

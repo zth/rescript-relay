@@ -50,7 +50,7 @@ and propValues =
   | FragmentRef(string)
   | Prop(string, propValue)
 and object_ = {
-  values: array(propValues),
+  values: list(propValues),
   atPath: list(string),
 }
 and rootType =
@@ -67,7 +67,7 @@ and rootType =
   | PluralFragment(rootStructure)
 and fullEnum = {
   name: string,
-  values: array(string),
+  values: list(string),
 }
 and rootStructure =
   | Union(union)

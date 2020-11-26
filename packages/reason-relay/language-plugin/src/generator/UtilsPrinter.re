@@ -89,7 +89,7 @@ let printGetConnectionNodesFunction =
   let addToStr = s => str := str^ ++ s;
 
   obj.values
-  |> Tablecloth.Array.forEach(~f=v =>
+  |> List.iter(v =>
        switch (v) {
        | Prop(
            name,
@@ -99,7 +99,7 @@ let printGetConnectionNodesFunction =
          let connectionPropNullable = nullable;
 
          values
-         |> Tablecloth.Array.forEach(~f=v =>
+         |> List.iter(v =>
               switch (v) {
               | Prop(
                   "edges",
@@ -116,7 +116,7 @@ let printGetConnectionNodesFunction =
                 let edgesNullable = arrayNullable;
 
                 values
-                |> Tablecloth.Array.forEach(~f=v =>
+                |> List.iter(v =>
                      switch (v) {
                      | Prop(
                          "node",
@@ -387,7 +387,7 @@ let definitionToAssets =
     let hasFragments = ref(false);
 
     propValues
-    |> Tablecloth.Array.forEach(~f=p =>
+    |> List.iter(p =>
          switch (p) {
          | FragmentRef(_) => hasFragments := true
          | Prop(name, {nullable, propType}) =>
