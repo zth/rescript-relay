@@ -431,6 +431,11 @@ module Network = {
   type t;
 
   type operation = {
+    /** This will be available only when using persisted queries. 
+     * And id field will be of presisted query Id. 
+     * In other cases, it will be null */
+    id: string,
+    /** When using persisted queries, text field will be null. */
     text: string,
     name: string,
     operationKind: string,
