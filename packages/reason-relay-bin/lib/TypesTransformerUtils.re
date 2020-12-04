@@ -4,18 +4,6 @@ type nullableType =
   | Null
   | Undefined;
 
-/**
-  {
-    "__root":{
-      "onlineStatus":{
-        "n":""
-      },
-    "":{
-      "f":""
-    }
-    }
-  } */
-
 let printConverterAssets =
     (
       ~rootObjects: list(finalizedObj),
