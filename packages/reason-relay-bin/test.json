@@ -1,0 +1,10 @@
+{
+  "content": "import type { FragmentReference } from \"relay-runtime\";\n      declare export opaque type TestPagination_query$ref: FragmentReference;\n      declare export opaque type TestPagination_query$fragmentType: TestPagination_query$ref;\n      export type TestPagination_query = {|\n        +participantsConnection: ?{|\n          +edges: ?$ReadOnlyArray<?{|\n            +node: ?({|\n              +__typename: \"User\",\n              +id: string,\n              +firstName: string,\n            |} | {|\n              +__typename: \"Observer\",\n              +id: string,\n              +name: string,\n            |} | {|\n              // This will never be '%other', but we need some\n              // value in case none of the concrete values match.\n              +__typename: \"%other\"\n            |})\n          |}>\n        |},\n        +$refType: TestPagination_query$ref,\n      |};\n      export type TestPagination_query$data = TestPagination_query;\n      export type TestPagination_query$key = {\n        +$data?: TestPagination_query$data,\n        +$fragmentRefs: TestPagination_query$ref,\n        ...\n      };",
+  "operation_type": {
+    "operation": "Fragment",
+    "fragment_value": ["TestPagination_query", false]
+  },
+  "print_config": {
+    "connection": null
+  }
+}

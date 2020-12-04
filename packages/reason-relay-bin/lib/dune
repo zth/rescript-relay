@@ -1,0 +1,7 @@
+(library
+ (name lib)
+ (flags
+  (-w -40 -w +26))
+ (public_name ReasonRelayBin.lib)
+ (libraries flow_parser reason tablecloth-native pastel.lib graphql
+   console.lib re))
