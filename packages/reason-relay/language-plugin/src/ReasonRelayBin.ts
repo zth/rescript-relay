@@ -1,4 +1,5 @@
 import { spawnSync } from "child_process";
+import * as path from "path";
 
 interface GenerateFromFlowConfig {
   content: string;
@@ -31,12 +32,16 @@ interface GenerateFromFlowConfig {
 export const generateFromFlowTypes = (
   config: GenerateFromFlowConfig
 ): string => {
-  return spawnSync("./ReasonRelayBin.exe", ["generate-from-flow"], {
-    cwd: __dirname,
-    stdio: "pipe",
-    encoding: "utf-8",
-    input: JSON.stringify(config),
-  })
+  return spawnSync(
+    path.resolve(path.join(__dirname, "./ReasonRelayBin.exe")),
+    ["generate-from-flow"],
+    {
+      cwd: __dirname,
+      stdio: "pipe",
+      encoding: "utf-8",
+      input: JSON.stringify(config),
+    }
+  )
     .output.filter(Boolean)
     .join("");
 };

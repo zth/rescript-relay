@@ -582,7 +582,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                      ),
                    ) =>
                 switch (member) {
-                | StringLiteral({value: v}) when v != "%%future added value" =>
+                | StringLiteral({value: v}) when v != {|%future added value|} =>
                   addValue(v)
                 | _ => ()
                 }
@@ -766,7 +766,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
                      ),
                    ) =>
                 switch (member) {
-                | StringLiteral({value: v}) when v != "%%future added value" =>
+                | StringLiteral({value: v}) when v != {|%future added value|} =>
                   addValue(v)
                 | _ => ()
                 }

@@ -1,5 +1,4 @@
 import { CompilerContext, Schema } from "relay-compiler";
-import { printCode } from "../generator/Printer.gen";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
 import generateRelaySchema from "./generateRelaySchema";
 import parseGraphQLText from "./parseGraphQLText";

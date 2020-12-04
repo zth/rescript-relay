@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -65,12 +66,11 @@ module Internal = {
   ];
   let fragmentConverterMap = {"fragment_memberOf": unwrap_fragment_memberOf};
   let convertFragment = v =>
-    v
-    ->ReasonRelay.convertObj(
-        fragmentConverter,
-        fragmentConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      fragmentConverter,
+      fragmentConverterMap,
+      Js.undefined,
+    );
 };
 
 type t;
@@ -88,8 +88,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -169,5 +170,6 @@ return {
   "type": "User",
   "abstractKey": null
 };
-})() |json}
-];
+})() |json}];
+
+

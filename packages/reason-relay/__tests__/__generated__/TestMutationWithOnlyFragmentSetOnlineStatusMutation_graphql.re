@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -79,71 +80,66 @@ let wrap_rawResponse_setOnlineStatus_user_memberOf:
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":"","f":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":"","f":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw;
   let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user_memberOf":{"n":"","na":"","u":"rawResponse_setOnlineStatus_user_memberOf"}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_memberOf":{"n":"","na":"","u":"rawResponse_setOnlineStatus_user_memberOf"},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}} |json}
   ];
   let wrapRawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
   };
   let convertWrapRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapRawResponseConverter,
-        wrapRawResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapRawResponseConverter,
+      wrapRawResponseConverterMap,
+      Js.null,
+    );
 
   type rawResponseRaw;
   let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user_memberOf":{"n":"","na":"","u":"rawResponse_setOnlineStatus_user_memberOf"}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_memberOf":{"n":"","na":"","u":"rawResponse_setOnlineStatus_user_memberOf"},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}} |json}
   ];
   let rawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
   };
   let convertRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        rawResponseConverter,
-        rawResponseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      rawResponseConverter,
+      rawResponseConverterMap,
+      Js.undefined,
+    );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {
@@ -184,8 +180,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -355,5 +352,6 @@ return {
     "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
+
+

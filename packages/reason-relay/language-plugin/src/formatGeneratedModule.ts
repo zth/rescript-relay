@@ -1,4 +1,3 @@
-import { printCode } from "./generator/Printer.gen";
 import { FormatModule } from "relay-compiler";
 import { processConcreteText } from "./utils/processConcreteText";
 

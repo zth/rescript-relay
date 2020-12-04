@@ -1,5 +1,17 @@
 import { Node, Fragment, Argument, IRVisitor } from "relay-compiler";
-import { operationType, printConfig } from "../generator/Types.gen";
+
+type operationType = {
+  tag: "Mutation" | "Subscription" | "Fragment" | "Query";
+  value: string | [string, boolean];
+};
+
+type printConfig = {
+  connection?: null | {
+    key: string;
+    atObjectPath: string[];
+    fieldName: string;
+  };
+};
 
 /**
  * Use this to extract info needed for Reason type generation, like info
