@@ -33,7 +33,7 @@ export const generateFromFlowTypes = (
   config: GenerateFromFlowConfig
 ): string => {
   return spawnSync(
-    path.resolve(path.join(__dirname, "./ReasonRelayBin.exe")),
+    path.resolve(path.join(__dirname, "../ReasonRelayBin.exe")),
     ["generate-from-flow"],
     {
       cwd: __dirname,

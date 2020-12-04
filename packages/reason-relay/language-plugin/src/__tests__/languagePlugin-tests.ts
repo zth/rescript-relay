@@ -148,7 +148,7 @@ describe("Language plugin tests", () => {
     });
 
     describe("connections", () => {
-      it.only("generates helpers for connections with unions", () => {
+      it("generates helpers for connections with unions", () => {
         const generated = generate(`
         fragment TestPagination_query on Query
           @argumentDefinitions(

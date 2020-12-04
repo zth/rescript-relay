@@ -13,23 +13,21 @@
   },
   "devDependencies": {
     "@types/graphql": "14.5.0",
-    "@types/jest": "^24.0.19",
+    "@types/jest": "^26.0.16",
     "@types/node": "^12.7.11",
     "@types/relay-compiler": "^8.0.0",
     "@types/relay-runtime": "^8.0.6",
     "@types/testing-library__dom": "^7.5.0",
-    "@webpack-cli/init": "^0.2.2",
-    "gentype": "^3.8.1",
-    "jest": "^24.9.0",
+    "jest": "^26.6.3",
     "relay-compiler": "10.1.0",
     "relay-runtime": "10.1.0",
     "relay-test-utils": "10.1.0",
     "relay-test-utils-internal": "9.0.0",
-    "ts-jest": "^24.1.0"
+    "ts-jest": "^26.4.4"
   },
   "dependencies": {
     "graphql": "14.5.0",
-    "typescript": "^3.7.4"
+    "typescript": "^4.1.2"
   },
   "resolutions": {
     "graphql": "14.5.0"
