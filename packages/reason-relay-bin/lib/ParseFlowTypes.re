@@ -776,7 +776,7 @@ let flowTypesToFullState = (~content, ~operationType) => {
          | _ => ()
          }
        )
-  | (_, _errors) => Console.log("Parse error.")
+  | (_, _errors) => exit(1)
   };
 
   state^ |> StateTransformer.intermediateToFull;

@@ -4,9 +4,8 @@
   "description": "Native helper for ReasonRelay",
   "license": "MIT",
   "esy": {
-    "build": "dune build -p #{self.name}",
-    "buildDev":
-      "refmterr dune build --promote-install-files --root . --only-package ReasonRelayBin"
+    "build": "dune build --only-package ReasonRelayBin",
+    "buildDev": "refmterr dune build --promote-install-files --root . --only-package ReasonRelayBin"
   },
   "scripts": {
     "go": "esy x ReasonRelayBin",
@@ -15,11 +14,8 @@
   },
   "dependencies": {
     "@esy-ocaml/reason": ">= 3.6.0 < 4.0.0",
-    "@opam/dune": ">=2.6",
     "@opam/easy-format": "1.3.2",
     "@opam/flow_parser": "giltho/flow#5f4a473",
-    "@opam/graphql": "0.13.0",
-    "@opam/ocaml-lsp-server": "1.1.0",
     "@opam/ppx_deriving_yojson": "3.6.1",
     "@opam/re": "1.9.0",
     "@opam/shexp": "v0.14.0",
@@ -32,6 +28,8 @@
   "devDependencies": {
     "@opam/merlin": "*",
     "@reason-native/rely": "*",
-    "refmterr": "*"
+    "refmterr": "*",
+    "@opam/ocaml-lsp-server": "1.1.0",
+    "@opam/dune": ">=2.6"
   }
 }

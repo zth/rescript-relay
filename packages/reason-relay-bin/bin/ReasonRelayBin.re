@@ -34,7 +34,7 @@ module GenerateFromFlow = {
 let () = {
   switch (Sys.argv[1]) {
   | exception (Invalid_argument(_)) =>
-    Console.error("Invalid command.");
+    print_endline("Invalid command.");
     exit(1);
   | "generate-from-flow" =>
     switch (
@@ -43,7 +43,7 @@ let () = {
       |> GenerateFromFlow.config_of_yojson
     ) {
     | Error(_) =>
-      Console.error("Error parsing JSON");
+      print_endline("Error parsing JSON");
       exit(1);
     | Ok(config) =>
       TypesTransformer.printFromFlowTypes(
@@ -67,7 +67,7 @@ let () = {
             } =>
             Fragment(fragmentName, plural)
           | _ =>
-            Console.error("No valid operation found");
+            print_endline("No valid operation found");
             exit(1);
           },
         ~config={
