@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "bsb -clean-world -make-world",
-    "build:test": "compiler/compiler-cli.js && relay-compiler",
+    "build:test": "compiler/compiler-cli.js",
     "postinstall": "node postinstall.js",
     "test": "jest",
     "test:ci": "jest --ci --runInBand"
@@ -60,8 +60,7 @@
     "relay-runtime": "10.1.0"
   },
   "dependencies": {
-    "mkdirp-sync": "^0.0.3",
-    "reason": "^3.3.4"
+    "mkdirp-sync": "^0.0.3"
   },
   "resolutions": {
     "react": "0.0.0-experimental-4ead6b530",
