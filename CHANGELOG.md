@@ -1,5 +1,9 @@
 # master
 
+## New bindings
+
+- Bind `id` in `operation` to allow using persisted queries. ([@hariroshan](https://github.com/hariroshan))
+
 ## Fixes & misc
 
 - Almost the entire Reason codegen has moved from being JS based to Reason native. As a user you shouldn't really notice anything other than the builds being a bit quicker. This is mainly a preparation for the upcoming Relay Rust compiler.
