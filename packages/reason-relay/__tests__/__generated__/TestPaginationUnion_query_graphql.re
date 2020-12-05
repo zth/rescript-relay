@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -78,18 +79,17 @@ let wrap_fragment_members_edges_node:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"members":{"n":""},"members_edges":{"n":"","na":""},"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""}}} |json}
+    {json| {"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}} |json}
   ];
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
   };
   let convertFragment = v =>
-    v
-    ->ReasonRelay.convertObj(
-        fragmentConverter,
-        fragmentConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      fragmentConverter,
+      fragmentConverterMap,
+      Js.undefined,
+    );
 };
 
 type t;
@@ -109,17 +109,16 @@ module Utils = {
         switch (connection.edges) {
         | None => [||]
         | Some(edges) =>
-          edges
-          ->Belt.Array.keepMap(edge =>
-              switch (edge) {
+          edges->Belt.Array.keepMap(edge =>
+            switch (edge) {
+            | None => None
+            | Some(edge) =>
+              switch (edge.node) {
               | None => None
-              | Some(edge) =>
-                switch (edge.node) {
-                | None => None
-                | Some(node) => Some(node)
-                }
+              | Some(node) => Some(node)
               }
-            )
+            }
+          )
         }
       };
 };
@@ -128,8 +127,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   "members"
 ],
@@ -350,5 +350,6 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})() |json}
-];
+})() |json}];
+
+

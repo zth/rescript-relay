@@ -1,6 +1,5 @@
 import { GraphQLTag } from "relay-compiler/lib/language/RelayLanguagePluginInterface";
-
-const invariant = require("invariant");
+import invariant = require("invariant");
 
 function parseFile(text: string, file: string) {
   if (!text.includes("%relay")) {
@@ -25,10 +24,10 @@ function parseFile(text: string, file: string) {
 
   if (matchedReason) {
     // Removes {||} used in multiline Reason strings
-    return matchedReason.map(text => ({
+    return matchedReason.map((text) => ({
       template: text.replace(/({\||\|})/g, ""),
       keyName: null,
-      sourceLocationOffset: { line: 1, column: 1 }
+      sourceLocationOffset: { line: 1, column: 1 },
     }));
   }
 
@@ -38,10 +37,10 @@ function parseFile(text: string, file: string) {
 
   if (matchedReScript) {
     // Removes `` used in multiline ReScript strings
-    return matchedReScript.map(text => ({
+    return matchedReScript.map((text) => ({
       template: text.replace(/`/g, ""),
       keyName: null,
-      sourceLocationOffset: { line: 1, column: 1 }
+      sourceLocationOffset: { line: 1, column: 1 },
     }));
   }
 

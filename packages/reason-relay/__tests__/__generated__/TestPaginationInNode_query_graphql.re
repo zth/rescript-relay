@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -22,16 +23,15 @@ module Types = {
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"n":"","f":""}}} |json}
+    {json| {"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"f":"","n":""}}} |json}
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
-    v
-    ->ReasonRelay.convertObj(
-        fragmentConverter,
-        fragmentConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      fragmentConverter,
+      fragmentConverterMap,
+      Js.undefined,
+    );
 };
 
 type t;
@@ -48,17 +48,16 @@ module Utils = {
       switch (connection.edges) {
       | None => [||]
       | Some(edges) =>
-        edges
-        ->Belt.Array.keepMap(edge =>
-            switch (edge) {
+        edges->Belt.Array.keepMap(edge =>
+          switch (edge) {
+          | None => None
+          | Some(edge) =>
+            switch (edge.node) {
             | None => None
-            | Some(edge) =>
-              switch (edge.node) {
-              | None => None
-              | Some(node) => Some(node)
-              }
+            | Some(node) => Some(node)
             }
-          )
+          }
+        )
       };
 };
 
@@ -66,8 +65,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   "friendsConnection"
 ],
@@ -213,5 +213,6 @@ return {
   "type": "User",
   "abstractKey": null
 };
-})() |json}
-];
+})() |json}];
+
+
