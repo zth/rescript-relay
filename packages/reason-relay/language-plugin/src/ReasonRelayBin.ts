@@ -32,7 +32,7 @@ interface GenerateFromFlowConfig {
 export const generateFromFlowTypes = (
   config: GenerateFromFlowConfig
 ): string => {
-  return spawnSync(
+  const res = spawnSync(
     path.resolve(path.join(__dirname, "../ReasonRelayBin.exe")),
     ["generate-from-flow"],
     {
@@ -41,7 +41,11 @@ export const generateFromFlowTypes = (
       encoding: "utf-8",
       input: JSON.stringify(config),
     }
-  )
-    .output.filter(Boolean)
-    .join("");
+  );
+
+  if (res.status !== 0) {
+    throw res.error ?? new Error("Error generating types");
+  }
+
+  return res.output.filter(Boolean).join("");
 };
