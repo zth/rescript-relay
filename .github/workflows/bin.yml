@@ -29,6 +29,9 @@ jobs:
           working-directory: packages/reason-relay-bin
       - name: Test ReasonRelayBin
         run: esy test
+      - name: Strip bin
+        run: |
+          strip ./_esy/default/build/default/bin/ReasonRelayBin.exe
       - name: Copy built ReasonRelayBin file
         run: |
           mv ./_esy/default/build/default/bin/ReasonRelayBin.exe ${{ fromJson('{ "ubuntu-latest": "bin-linux", "macos-latest": "bin-darwin" }')[matrix.platform] }}

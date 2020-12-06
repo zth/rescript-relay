@@ -29,6 +29,9 @@ jobs:
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test
+      - name: Strip bin
+        run: |
+          strip ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe
       - name: Copy built PPX file
         run: |
           mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
