@@ -21,14 +21,14 @@ jobs:
         env:
           CI: true
       - name: Install esy
-        run: npm install -g esy
+        run: npm install -g @esy-nightly/esy
       - name: Build ReasonRelayBin
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay-bin
       - name: Test ReasonRelayBin
-        run: esy test -vvv
+        run: esy test
       - name: Upload ReasonRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
