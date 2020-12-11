@@ -28,7 +28,7 @@ jobs:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay-bin
       - name: Test ReasonRelayBin
-        run: esy test
+        run: esy test -vvv
       - name: Upload ReasonRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
