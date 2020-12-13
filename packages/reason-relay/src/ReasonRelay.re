@@ -441,10 +441,10 @@ module Network = {
     (operation, Js.Json.t, cacheConfig) => Observable.t(Js.Json.t);
 
   type fetchFunctionPromise =
-    (operation, Js.Json.t, cacheConfig, option(uploadables)) => Js.Promise.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig, Js.Nullable.t(uploadables)) => Js.Promise.t(Js.Json.t);
 
   type fetchFunctionObservable =
-    (operation, Js.Json.t, cacheConfig, option(uploadables)) => Observable.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig, Js.Nullable.t(uploadables)) => Observable.t(Js.Json.t);
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
   external makePromiseBased:
