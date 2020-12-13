@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -47,35 +48,37 @@ let wrap_response_member:
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
+    {json| {"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
   ];
   let wrapResponseConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "response_member": wrap_response_member,
   };
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
+    {json| {"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}} |json}
   ];
   let responseConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
+    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "response_member": unwrap_response_member,
   };
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw = wrapResponseRaw;
   let convertWrapRawResponse = convertWrapResponse;
@@ -84,18 +87,17 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"beforeDate":{"n":"","c":"TestsUtils.Datetime"}}} |json}
+    {json| {"__root":{"beforeDate":{"c":"TestsUtils.Datetime","n":""}}} |json}
   ];
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
   };
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 type queryRef;
@@ -111,8 +113,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.queryNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -274,14 +277,13 @@ return {
     "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
 
 include ReasonRelay.MakeLoadQuery({
-  type variables = Types.variables;
-  type loadedQueryRef = queryRef;
-  type response = Types.response;
-  type node = relayOperationNode;
-  let query = node;
-  let convertVariables = Internal.convertVariables;
-});
+    type variables = Types.variables;
+    type loadedQueryRef = queryRef;
+    type response = Types.response;
+    type node = relayOperationNode;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });

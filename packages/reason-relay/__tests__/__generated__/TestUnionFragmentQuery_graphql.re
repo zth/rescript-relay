@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -18,29 +19,27 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"member":{"n":"","f":""}}} |json}
+    {json| {"__root":{"member":{"f":"","n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"member":{"n":"","f":""}}} |json}
+    {json| {"__root":{"member":{"f":"","n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw = wrapResponseRaw;
   let convertWrapRawResponse = convertWrapResponse;
@@ -53,12 +52,11 @@ module Internal = {
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 type queryRef;
@@ -69,8 +67,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.queryNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "kind": "Literal",
@@ -200,14 +199,13 @@ return {
     "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __isMember: __typename\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __isMember: __typename\n  __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
 
 include ReasonRelay.MakeLoadQuery({
-  type variables = Types.variables;
-  type loadedQueryRef = queryRef;
-  type response = Types.response;
-  type node = relayOperationNode;
-  let query = node;
-  let convertVariables = Internal.convertVariables;
-});
+    type variables = Types.variables;
+    type loadedQueryRef = queryRef;
+    type response = Types.response;
+    type node = relayOperationNode;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });

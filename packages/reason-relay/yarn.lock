@@ -3479,11 +3479,6 @@ reason-react@^0.9.1:
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
   integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
 
-reason@^3.3.4:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/reason/-/reason-3.3.4.tgz#a294ef8aa14fa85c6fd8a7db5dcab053f2382f68"
-  integrity sha512-WwXkrcwbUUazf0pEn7Vrd0R7wKOMEPmn4ZBb0ffKCxKiqoUh13E8hnSEhytNM81vl3O3A0ENyZa+Ys0fMnJgnw==
-
 redent@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/redent/-/redent-3.0.0.tgz#e557b7998316bb53c9f1f56fa626352c6963059f"

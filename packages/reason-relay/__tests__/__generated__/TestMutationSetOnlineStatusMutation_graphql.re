@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -29,67 +30,62 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":"","f":""},"setOnlineStatus_user_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":"","f":""},"setOnlineStatus_user_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw;
   let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}} |json}
   ];
   let wrapRawResponseConverterMap = ();
   let convertWrapRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapRawResponseConverter,
-        wrapRawResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapRawResponseConverter,
+      wrapRawResponseConverterMap,
+      Js.null,
+    );
 
   type rawResponseRaw;
   let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}} |json}
   ];
   let rawResponseConverterMap = ();
   let convertRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        rawResponseConverter,
-        rawResponseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      rawResponseConverter,
+      rawResponseConverterMap,
+      Js.undefined,
+    );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {
@@ -133,8 +129,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -258,5 +255,6 @@ return {
     "text": "mutation TestMutationSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      id\n      onlineStatus\n      ...TestFragment_user\n    }\n  }\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
+
+

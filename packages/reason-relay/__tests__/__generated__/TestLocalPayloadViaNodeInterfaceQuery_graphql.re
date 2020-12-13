@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -24,67 +25,62 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","tnf":"User"},"node_avatarUrl":{"n":""}}} |json}
+    {json| {"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","tnf":"User"},"node_avatarUrl":{"n":""}}} |json}
+    {json| {"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw;
   let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","tnf":"User"},"node_avatarUrl":{"n":""}}} |json}
+    {json| {"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}} |json}
   ];
   let wrapRawResponseConverterMap = ();
   let convertWrapRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapRawResponseConverter,
-        wrapRawResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapRawResponseConverter,
+      wrapRawResponseConverterMap,
+      Js.null,
+    );
 
   type rawResponseRaw;
   let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"node":{"n":"","tnf":"User"},"node_avatarUrl":{"n":""}}} |json}
+    {json| {"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}} |json}
   ];
   let rawResponseConverterMap = ();
   let convertRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        rawResponseConverter,
-        rawResponseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      rawResponseConverter,
+      rawResponseConverterMap,
+      Js.undefined,
+    );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 type queryRef;
@@ -98,8 +94,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.queryNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -203,14 +200,13 @@ return {
     "text": "query TestLocalPayloadViaNodeInterfaceQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on User {\n      firstName\n      avatarUrl\n    }\n    id\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
 
 include ReasonRelay.MakeLoadQuery({
-  type variables = Types.variables;
-  type loadedQueryRef = queryRef;
-  type response = Types.response;
-  type node = relayOperationNode;
-  let query = node;
-  let convertVariables = Internal.convertVariables;
-});
+    type variables = Types.variables;
+    type loadedQueryRef = queryRef;
+    type response = Types.response;
+    type node = relayOperationNode;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });

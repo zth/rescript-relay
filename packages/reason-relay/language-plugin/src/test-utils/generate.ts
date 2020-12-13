@@ -1,5 +1,4 @@
 import { CompilerContext, Schema } from "relay-compiler";
-import { printCode } from "../generator/Printer.gen";
 import * as RelayReasonGenerator from "../RelayReasonGenerator";
 import generateRelaySchema from "./generateRelaySchema";
 import parseGraphQLText from "./parseGraphQLText";
@@ -22,12 +21,14 @@ const generate = (testSchema: Schema) => (
     .documents()
     .map(
       (doc: any) =>
-        `// ${doc.name}.graphql\n${printCode(
-          RelayReasonGenerator.generate(extendedSchema, doc, {
+        `// ${doc.name}.graphql\n${RelayReasonGenerator.generate(
+          extendedSchema,
+          doc,
+          {
             normalizationIR: ctx.get(doc.name),
             optionalInputFields: [],
             ...options,
-          })
+          }
         )}`
     )
     .join("\n\n");

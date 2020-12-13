@@ -1,4 +1,3 @@
-import { printCode } from "./generator/Printer.gen";
 import { FormatModule } from "relay-compiler";
 import { processConcreteText } from "./utils/processConcreteText";
 
@@ -26,7 +25,7 @@ const formatGeneratedModule: FormatModule = ({
   });`
       : "";
 
-  return printCode(`
+  return `
 ${typeText || ""}
 
 let node: operationType = [%raw {json| ${processConcreteText(
@@ -34,7 +33,7 @@ let node: operationType = [%raw {json| ${processConcreteText(
   )} |json}];
 
 ${preloadText}
-`);
+`;
 };
 
 module.exports = formatGeneratedModule;

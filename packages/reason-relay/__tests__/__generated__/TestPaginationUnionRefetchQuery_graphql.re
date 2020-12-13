@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -38,12 +39,11 @@ module Internal = {
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
@@ -51,12 +51,11 @@ module Internal = {
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw = wrapResponseRaw;
   let convertWrapRawResponse = convertWrapResponse;
@@ -65,16 +64,15 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"count":{"n":""},"cursor":{"n":""},"onlineStatuses":{"n":""}}} |json}
+    {json| {"__root":{"cursor":{"n":""},"count":{"n":""},"onlineStatuses":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 type queryRef;
@@ -96,8 +94,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.queryNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": 2,
@@ -380,14 +379,13 @@ return {
     "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
 
 include ReasonRelay.MakeLoadQuery({
-  type variables = Types.variables;
-  type loadedQueryRef = queryRef;
-  type response = Types.response;
-  type node = relayOperationNode;
-  let query = node;
-  let convertVariables = Internal.convertVariables;
-});
+    type variables = Types.variables;
+    type loadedQueryRef = queryRef;
+    type response = Types.response;
+    type node = relayOperationNode;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });
