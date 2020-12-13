@@ -72,12 +72,28 @@ function arch() {
   return "x86";
 }
 
-function copyPlatformBinary(platform) {
+function copyPlatformBinaries(platform) {
   fs.copyFileSync(
     path.join(__dirname, "ppx-" + platform),
     path.join(__dirname, "ppx")
   );
   fs.chmodSync(path.join(__dirname, "ppx"), 0777);
+
+  fs.copyFileSync(
+    path.join(__dirname, "bin-" + platform),
+    path.join(__dirname, "language-plugin", "ReasonRelayBin.exe")
+  );
+  fs.chmodSync(
+    path.join(__dirname, "language-plugin", "ReasonRelayBin.exe"),
+    0777
+  );
+}
+
+function removeInitialBinaries() {
+  fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
+  fs.unlinkSync(path.join(__dirname, "ppx-linux"));
+  fs.unlinkSync(path.join(__dirname, "bin-darwin"));
+  fs.unlinkSync(path.join(__dirname, "bin-linux"));
 }
 
 switch (platform) {
@@ -93,9 +109,11 @@ switch (platform) {
   }
   case "linux":
   case "darwin":
-    copyPlatformBinary(platform);
+    copyPlatformBinaries(platform);
     break;
   default:
     console.warn("error: no release built for the " + platform + " platform");
     process.exit(1);
 }
+
+removeInitialBinaries();

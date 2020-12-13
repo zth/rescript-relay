@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -27,12 +28,11 @@ module Internal = {
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
@@ -40,12 +40,11 @@ module Internal = {
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw = wrapResponseRaw;
   let convertWrapRawResponse = convertWrapResponse;
@@ -54,16 +53,15 @@ module Internal = {
   let convertRawResponse = convertResponse;
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"input":{"r":"SetOnlineStatusInput"}},"SetOnlineStatusInput":{}} |json}
+    {json| {"__root":{"input":{"r":"SetOnlineStatusInput"}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {
@@ -96,8 +94,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -175,5 +174,6 @@ return {
     "text": "mutation TestMutationSetOnlineStatusComplexMutation(\n  $input: SetOnlineStatusInput!\n) {\n  setOnlineStatusComplex(input: $input) {\n    user {\n      id\n      onlineStatus\n    }\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
+
+

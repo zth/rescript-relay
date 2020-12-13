@@ -1,6 +1,77 @@
 const IRTransformer = require("relay-compiler/lib/core/IRTransformer");
 const { createUserError } = require("relay-compiler/lib/core/CompilerError");
-const { reservedKeywords } = require("../generator/ReservedKeywords.gen");
+
+const reservedKeywords = [
+  "and",
+  "as",
+  "asr",
+  "assert",
+  "begin",
+  "class",
+  "constraint",
+  "do",
+  "while",
+  "for",
+  "done",
+  "while",
+  "for",
+  "downto",
+  "else",
+  "end",
+  "exception",
+  "external",
+  "false",
+  "for",
+  "fun",
+  "function",
+  "functor",
+  "if",
+  "in",
+  "include",
+  "inherit",
+  "initializer",
+  "land",
+  "lazy",
+  "let",
+  "lor",
+  "lsl",
+  "lsr",
+  "lxor",
+  "match",
+  "method",
+  "mod",
+  "module",
+  "open",
+  "mutable",
+  "new",
+  "nonrec",
+  "object",
+  "of",
+  "open",
+  "open!",
+  "or",
+  "private",
+  "rec",
+  "let",
+  "module",
+  "sig",
+  "struct",
+  "then",
+  "to",
+  "true",
+  "try",
+  "type",
+  "val",
+  "virtual",
+  "val",
+  "method",
+  "class",
+  "when",
+  "while",
+  "with",
+  // Reason specific words
+  "switch",
+];
 
 type DisallowedResult = {
   disallowed: boolean;
@@ -19,7 +90,7 @@ let reservedKeywordsInReasonRelay = [
   "fragmentRef",
   "fragmentRefs",
   "fragmentRefSelector",
-  "operationType"
+  "operationType",
 ];
 
 function isDisallowedName(name: string): DisallowedResult {
@@ -28,21 +99,21 @@ function isDisallowedName(name: string): DisallowedResult {
   if (/[A-Z]/.test(firstChar)) {
     return {
       disallowed: true,
-      message: `Field names may not start with an uppercase letter. Please alias the '${name}' field to something starting with a lowercase letter.`
+      message: `Field names may not start with an uppercase letter. Please alias the '${name}' field to something starting with a lowercase letter.`,
     };
   }
 
   if (reservedKeywords.includes(name)) {
     return {
       disallowed: true,
-      message: `'${name}' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.`
+      message: `'${name}' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.`,
     };
   }
 
   if (reservedKeywordsInReasonRelay.includes(name)) {
     return {
       disallowed: true,
-      message: `'${name}' is a reserved keyword in ReasonRelay and therefore cannot be used as a field name. Please alias your field to something else.`
+      message: `'${name}' is a reserved keyword in ReasonRelay and therefore cannot be used as a field name. Please alias your field to something else.`,
     };
   }
 
@@ -55,7 +126,7 @@ function checkDisallowed(field: any) {
 
     if (disallowed) {
       throw createUserError("Found an invalid field name: " + message, [
-        field.loc
+        field.loc,
       ]);
     }
   }
@@ -73,6 +144,6 @@ function visitField(field: any) {
 export function transform(context: any) {
   return IRTransformer.transform(context, {
     ScalarField: visitField,
-    LinkedField: visitField
+    LinkedField: visitField,
   });
 }

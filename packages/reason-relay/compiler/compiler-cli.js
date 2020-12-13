@@ -21,10 +21,10 @@ if (!relayConfig.artifactDirectory) {
 
 function runRelayCompiler(args) {
   spawn("relay-compiler", args, {
-    stdio: "inherit"
+    stdio: "inherit",
   })
     // Propagate the relay compiler's exit code.
-    .on('close', process.exit.bind(process));
+    .on("close", process.exit.bind(process));
 }
 
 function findArg(name) {
@@ -38,10 +38,8 @@ async function runCompiler() {
     runRelayCompiler(
       [
         "--language",
-        path.resolve(
-          __dirname + "/../language-plugin/dist/reason-relay-language-plugin.js"
-        ),
-        process.argv.find(a => a === "--watch")
+        path.resolve(__dirname + "/../language-plugin/dist/index.js"),
+        process.argv.find((a) => a === "--watch"),
       ].filter(Boolean)
     );
   } else {

@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -26,29 +27,27 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":""},"users_edges_node_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"users":{"n":""},"users_edges":{"n":"","na":""},"users_edges_node":{"n":""},"users_edges_node_onlineStatus":{"n":""}}} |json}
+    {json| {"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw = wrapResponseRaw;
   let convertWrapRawResponse = convertWrapResponse;
@@ -61,12 +60,11 @@ module Internal = {
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 type queryRef;
@@ -82,8 +80,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.queryNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -179,14 +178,13 @@ return {
     "text": "query TestQuery(\n  $status: OnlineStatus\n) {\n  users(status: $status) {\n    edges {\n      node {\n        id\n        firstName\n        onlineStatus\n      }\n    }\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
 
 include ReasonRelay.MakeLoadQuery({
-  type variables = Types.variables;
-  type loadedQueryRef = queryRef;
-  type response = Types.response;
-  type node = relayOperationNode;
-  let query = node;
-  let convertVariables = Internal.convertVariables;
-});
+    type variables = Types.variables;
+    type loadedQueryRef = queryRef;
+    type response = Types.response;
+    type node = relayOperationNode;
+    let query = node;
+    let convertVariables = Internal.convertVariables;
+  });

@@ -24,6 +24,15 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/reason-relay/reason-relay-ppx
+      - name: Build ReasonRelayBin
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay-bin
+      - name: Copy built ReasonRelayBin file
+        working-directory: packages/reason-relay-bin
+        run: |
+          ./copyIntoPlace.sh
       - name: Install - language plugin
         working-directory: packages/reason-relay/language-plugin
         run: |

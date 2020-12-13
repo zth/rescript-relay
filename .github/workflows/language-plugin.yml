@@ -22,6 +22,17 @@ jobs:
       - name: Build
         run: |
           yarn build
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build ReasonRelayBin
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay-bin
+      - name: Copy built ReasonRelayBin file
+        working-directory: packages/reason-relay-bin
+        run: |
+          ./copyIntoPlace.sh
       - name: Test
         run: |
           yarn test:ci

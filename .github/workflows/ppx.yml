@@ -6,7 +6,7 @@ jobs:
   ppx:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
 
     name: PPX
     runs-on: ${{ matrix.platform }}
@@ -29,12 +29,9 @@ jobs:
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test
-      - name: Copy built PPX file
-        run: |
-          mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ matrix.platform }}
-          path: packages/reason-relay/reason-relay-ppx/ppx-*
+          path: packages/reason-relay/reason-relay-ppx/_esy/default/build/default/bin/ReasonRelayPpxApp.exe
           if-no-files-found: error

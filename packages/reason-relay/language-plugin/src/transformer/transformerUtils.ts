@@ -1,6 +1,17 @@
-import { Node, Fragment, Selection, Argument, IRVisitor } from "relay-compiler";
-import { operationType, printConfig } from "../generator/Types.gen";
-import { GraphQLObjectType } from "graphql";
+import { Node, Fragment, Argument, IRVisitor } from "relay-compiler";
+
+type operationType = {
+  tag: "Mutation" | "Subscription" | "Fragment" | "Query";
+  value: string | [string, boolean];
+};
+
+type printConfig = {
+  connection?: null | {
+    key: string;
+    atObjectPath: string[];
+    fieldName: string;
+  };
+};
 
 /**
  * Use this to extract info needed for Reason type generation, like info
@@ -15,7 +26,7 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
         /**
          * Extract connection directive info
          */
-        const connDirective = n.directives.find(d => d.name === "connection");
+        const connDirective = n.directives.find((d) => d.name === "connection");
 
         if (connDirective && !opInfo.connection) {
           let key = null;
@@ -31,8 +42,8 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
               connection: {
                 key,
                 atObjectPath: [...path],
-                fieldName: n.name
-              }
+                fieldName: n.name,
+              },
             };
           }
         }
@@ -41,11 +52,11 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
       },
       InlineFragment(n) {
         if (n.typeCondition.name) {
-          n.selections.forEach(s => {
+          n.selections.forEach((s) => {
             visitWithPath([...path, n.typeCondition.name.toLowerCase()], s);
           });
         }
-      }
+      },
     });
   }
 
@@ -66,23 +77,23 @@ export function makeOperationDescriptor(node: Node | Fragment): operationType {
       case "mutation":
         return {
           tag: "Mutation",
-          value: node.name
+          value: node.name,
         };
       case "query":
         return {
           tag: "Query",
-          value: node.name
+          value: node.name,
         };
       case "subscription":
         return {
           tag: "Subscription",
-          value: node.name
+          value: node.name,
         };
     }
   } else if (node.kind == "Fragment") {
     return {
       tag: "Fragment",
-      value: [node.name, Boolean(node.metadata && node.metadata.plural)]
+      value: [node.name, Boolean(node.metadata && node.metadata.plural)],
     };
   }
 

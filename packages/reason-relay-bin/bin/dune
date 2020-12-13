@@ -1,0 +1,6 @@
+(executable
+ (name ReasonRelayBin)
+ (public_name ReasonRelayBin)
+ (libraries lib shexp.process yojson ppx_deriving_yojson.runtime)
+ (preprocess
+  (pps ppx_deriving_yojson)))

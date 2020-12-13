@@ -1,6 +1,4 @@
 const path = require("path");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
@@ -9,38 +7,24 @@ module.exports = {
   target: "node",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "reason-relay-language-plugin.js",
-    library: "reason-relay-language-plugin",
-    libraryTarget: "commonjs2"
+    filename: "index.js",
+    libraryTarget: "commonjs2",
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
+        loader: "ts-loader",
+      },
+    ],
   },
-  externals: [
-    nodeExternals({
-      whitelist: [
-        /bs-flow-parser/,
-        /tablecloth-bucklescript/,
-        /bs-sedlex/,
-        /ppx-sedlex/,
-        /bs-platform/,
-        /bs-gen/,
-        /invariant/
-      ]
-    })
-  ],
+  externals: [nodeExternals({ allowlist: [/invariant/] })],
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js"],
   },
-  optimization: {
-    // minimize: false
+  node: {
+    global: false,
+    __filename: false,
+    __dirname: false,
   },
-  plugins: [
-    // new BundleAnalyzerPlugin()
-  ]
 };
