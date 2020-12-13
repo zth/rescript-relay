@@ -1,5 +1,9 @@
 # master
 
+## Breaking changes
+
+- _BREAKING CHANGE_ Add binding for passing `uploadables` to network fetch functions. This is breaking because it changes the signature of `fetchFunctionPromise` and `fetchFunctionObservable` to include another argument `uploadables`. Migration path: What was previously something like `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig) => {...}` should now be `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {...}`. ([@hariroshan](https://github.com/hariroshan))
+
 ## New bindings
 
 - Bind `id` in `operation` to allow using persisted queries. ([@hariroshan](https://github.com/hariroshan))
