@@ -11,13 +11,13 @@ type subscriptionNode('node);
 type fragmentRefs('fragments);
 
 type dataId;
-
 type recordSourceRecords;
+type uploadables;
 
 external dataIdToString: dataId => string = "%identity";
 external makeDataId: string => dataId = "%identity";
-
 external makeArguments: Js.t({..}) => arguments = "%identity";
+external makeUploadable: Js.t({..}) => uploadables = "%identity";
 
 [@bs.module "relay-runtime"]
 external generateClientID:
@@ -445,10 +445,10 @@ module Network = {
     (operation, Js.Json.t, cacheConfig) => Observable.t(Js.Json.t);
 
   type fetchFunctionPromise =
-    (operation, Js.Json.t, cacheConfig) => Js.Promise.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig, option(uploadables)) => Js.Promise.t(Js.Json.t);
 
   type fetchFunctionObservable =
-    (operation, Js.Json.t, cacheConfig) => Observable.t(Js.Json.t);
+    (operation, Js.Json.t, cacheConfig, option(uploadables)) => Observable.t(Js.Json.t);
 
   [@bs.module "relay-runtime"] [@bs.scope "Network"]
   external makePromiseBased:

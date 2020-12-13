@@ -40,6 +40,7 @@ let make = (~loc, ~moduleName) => {
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+            uploadables: option(ReasonRelay.uploadables)
           };
 
           type useMutationConfigRaw = {
@@ -58,6 +59,7 @@ let make = (~loc, ~moduleName) => {
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+            uploadables: option(ReasonRelay.uploadables)
           };
 
           type commitMutationConfigRaw = {
@@ -80,6 +82,7 @@ let make = (~loc, ~moduleName) => {
               option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
+            uploadables: option(ReasonRelay.uploadables)
           };
 
           [@bs.module "relay-runtime"]
@@ -125,6 +128,7 @@ let make = (~loc, ~moduleName) => {
                           unit
                             =?,
             ~onError: option(ReasonRelay.mutationError) => unit=?,
+            ~uploadables: ReasonRelay.uploadables=?,
             unit
           ) =>
           ReasonRelay.Disposable.t =
@@ -134,6 +138,7 @@ let make = (~loc, ~moduleName) => {
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
+            ~uploadables=?,
             ~onCompleted=?,
             ~onError=?,
             (),
@@ -148,7 +153,7 @@ let make = (~loc, ~moduleName) => {
                                  "convertVariables",
                                ])
                              ],
-
+                uploadables,
                 mutation: [%e valFromGeneratedModule(["node"])],
                 onCompleted:
                   Some(
@@ -240,6 +245,7 @@ let make = (~loc, ~moduleName) => {
                         unit
                           =?,
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+              ~uploadables: ReasonRelay.uploadables=?,
               unit
             ) =>
             ReasonRelay.Disposable.t,
@@ -258,6 +264,7 @@ let make = (~loc, ~moduleName) => {
                 ~optimisticResponse=?,
                 ~optimisticUpdater=?,
                 ~updater=?,
+                ~uploadables=?,
                 ~variables,
                 (),
               ) =>
@@ -304,6 +311,7 @@ let make = (~loc, ~moduleName) => {
                                ],
 
                   optimisticUpdater,
+                  uploadables,
                   updater:
                     switch (updater) {
                     | None => None
