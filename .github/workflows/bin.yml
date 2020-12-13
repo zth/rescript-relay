@@ -6,7 +6,7 @@ jobs:
   ppx:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-latest]
 
     name: Bin
     runs-on: ${{ matrix.platform }}
@@ -21,7 +21,7 @@ jobs:
         env:
           CI: true
       - name: Install esy
-        run: npm install -g @esy-nightly/esy
+        run: npm install -g esy
       - name: Build ReasonRelayBin
         uses: esy/github-action@v1
         with:
@@ -29,9 +29,12 @@ jobs:
           working-directory: packages/reason-relay-bin
       - name: Test ReasonRelayBin
         run: esy test
+      - name: Copy built ReasonRelayBin file
+        run: |
+          mv ./_esy/default/build/default/bin/ReasonRelayBin.exe ${{ fromJson('{ "ubuntu-latest": "bin-linux", "macos-latest": "bin-darwin" }')[matrix.platform] }}
       - name: Upload ReasonRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
           name: bin-${{ matrix.platform }}
-          path: packages/reason-relay-bin/_esy/default/build/default/bin/ReasonRelayBin.exe
+          path: packages/reason-relay-bin/bin-*
           if-no-files-found: error
