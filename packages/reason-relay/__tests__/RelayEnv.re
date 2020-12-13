@@ -1,7 +1,7 @@
 exception Graphql_error(string);
 
 let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
-  (operation, variables, _cacheConfig) => {
+  (operation, variables, _cacheConfig, _uploadables) => {
     Fetch.(
       fetchWithInit(
         "http://graphql/",
