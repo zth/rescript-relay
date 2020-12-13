@@ -138,9 +138,9 @@ let make = (~loc, ~moduleName) => {
             ~optimisticUpdater=?,
             ~optimisticResponse=?,
             ~updater=?,
-            ~uploadables=?,
             ~onCompleted=?,
             ~onError=?,
+            ~uploadables=?,
             (),
           ) => (
             Internal.internal_commitMutation(
@@ -153,7 +153,6 @@ let make = (~loc, ~moduleName) => {
                                  "convertVariables",
                                ])
                              ],
-                uploadables,
                 mutation: [%e valFromGeneratedModule(["node"])],
                 onCompleted:
                   Some(
@@ -180,6 +179,8 @@ let make = (~loc, ~moduleName) => {
                       | None => ()
                       },
                   ),
+                uploadables,
+                
                 optimisticResponse:
                   switch (optimisticResponse) {
                   | None => None
@@ -264,8 +265,8 @@ let make = (~loc, ~moduleName) => {
                 ~optimisticResponse=?,
                 ~optimisticUpdater=?,
                 ~updater=?,
-                ~uploadables=?,
                 ~variables,
+                ~uploadables=?,
                 (),
               ) =>
                 mutate({
