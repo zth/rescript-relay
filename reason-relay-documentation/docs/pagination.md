@@ -22,7 +22,7 @@ Relay has some great built-in tools to make pagination very simple if you use [c
 Pagination is always done using a [fragment](using-fragments). Here's a definition of a Relay [fragment](using-fragments) that'll allow you to paginate over the connection `ticketsConnection`:
 
 ```reason
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
   fragment RecentTickets_query on Query
     @refetchable(queryName: "RecentTicketsRefetchQuery")
@@ -117,7 +117,7 @@ You're encouraged to read more in the [official Relay documentation on paginatio
 
 ## API Reference
 
-A `[%relay.fragment]` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
+A `[%relay]` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
 
 ### `usePagination`
 

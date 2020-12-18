@@ -73,7 +73,7 @@ let store =
 let environment = ReasonRelay.Environment.make(~network, ~store, ());
 ```
 
-Subscriptions in ReasonRelay are defined using the `[%relay.subscription]` extension node. The following example shows how to define and start a subscription with ReasonRelay.
+Subscriptions in ReasonRelay are defined using the `[%relay]` extension node. The following example shows how to define and start a subscription with ReasonRelay.
 
 Lets imagine we have the following schema:
 
@@ -94,14 +94,14 @@ Then in your `Ticket.re` module we can subscribe to changes to the ticket status
 
 ```reason
 /* Ticket.re */
-module TicketStatusFragment = [%relay.fragment
+module TicketStatusFragment = [%relay
   {|
   fragment TicketStatus on Ticket {
     status
   }
 |}];
 
-module TicketStatusSubscription = [%relay.subscription
+module TicketStatusSubscription = [%relay
   {|
   subscription TicketStatusSubscription($id: ID!) {
      ticket(id: $id) {
@@ -128,7 +128,7 @@ See the [examples](https://github.com/zth/reason-relay/tree/master/example) fold
 
 ## API Reference
 
-`[%relay.subscription]` is expanded to a module containing the following functions:
+`[%relay]` with a subscription in it is expanded to a module containing the following functions:
 
 ## `subscribe`
 

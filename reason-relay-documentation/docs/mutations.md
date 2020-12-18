@@ -13,11 +13,11 @@ sidebar_label: Mutations
 
 Fetching and displaying data is only half the fun, right? We want to change stuff as well! Making mutations in Relay is pretty straight-forward, and we'll introduce exactly how you do it in ReasonRelay here.
 
-Mutations in ReasonRelay are defined using the `[%relay.mutation]` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
+Mutations in ReasonRelay are defined using the `[%relay]` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
 
 ```reason
 /* SingleTodo.re */
-module UpdateMutation = [%relay.mutation
+module UpdateMutation = [%relay
   {|
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {
@@ -55,7 +55,7 @@ let make = () => {
 
 Let's break it down:
 
-1. `[%relay.mutation]` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.
+1. `[%relay]` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.
 2. We call `mutate` with input for the mutation through `variables`. This will run the mutation, which is now indicated by the second parameter of the tuple, `isMutating`.
 3. Since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component using that.
    Neat!
@@ -197,7 +197,7 @@ Now would be a good time to have a look at how to [refetch and load more data](r
 
 ## API Reference
 
-`[%relay.mutation]` is expanded to a module containing the following functions:
+`[%relay]` is expanded to a module containing the following functions:
 
 ### `use`
 

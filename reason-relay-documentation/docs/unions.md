@@ -37,7 +37,7 @@ Here we have a union `Owner` that's either a `User` or a `Group`. There's also a
 
 ```reason
 /* RoomOwner.re */
-module Query = [%relay.query {|
+module Query = [%relay {|
   query RoomOwnerQuery($roomId: ID!) {
     roomOwner(roomId: $roomId) {
       __typename

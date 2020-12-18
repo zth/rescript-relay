@@ -22,7 +22,7 @@ You can make a fragment refetchable by adding the `@refetchable(queryName: "")` 
 
 ```reason
 /* UserProfileHeader.re */
-module UserFragment = [%relay.fragment {|
+module UserFragment = [%relay {|
   fragment UserProfileHeader_user on User
     @refetchable(queryName: "UserProfileHeaderRefetchQuery")
     @argumentDefinitions(includeFullBio: {type: "Boolean!", defaultValue: false}) {
