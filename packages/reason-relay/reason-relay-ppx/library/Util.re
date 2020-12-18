@@ -1,11 +1,8 @@
-/**
- * This PPX defines the [%relay.<operation> {| ... |}] extension points.
- */
 // Ppxlib provides a number of helpers for writing and registering PPXs that life is very difficult without.
 open Ppxlib;
 
 /**
- * This function takes a GraphQL document as a string (typically extracted from the [%relay.<operation>] nodes),
+ * This function takes a GraphQL document as a string (typically extracted from the [%relay] nodes),
  * uses Graphql_parser to parse the string into a list of GraphQL definitions, and then extracts the _first_ operation
  * of the document only. This is because Relay disallows multiple operations in the same definition.
  */
@@ -40,7 +37,7 @@ let extractTheQueryName = (~loc, op) =>
   | _ =>
     Location.raise_errorf(
       ~loc,
-      "[%%relay.query] must contain a query definition, and nothing else.",
+      "%%relay must contain a query definition, and nothing else.",
     )
   };
 
@@ -56,7 +53,7 @@ let extractTheMutationName = (~loc, op) =>
   | _ =>
     Location.raise_errorf(
       ~loc,
-      "[%%relay.mutation] must contain a mutation definition, and nothing else.",
+      "%%relay must contain a mutation definition, and nothing else.",
     )
   };
 
@@ -70,7 +67,7 @@ let extractTheFragmentName = (~loc, op) =>
   | _ =>
     Location.raise_errorf(
       ~loc,
-      "[%%relay.fragment] must contain a fragment definition with a name, and nothing else.",
+      "%%relay must contain a fragment definition with a name, and nothing else.",
     )
   };
 
@@ -87,7 +84,7 @@ let extractTheSubscriptionName = (~loc, op) =>
   | _ =>
     Location.raise_errorf(
       ~loc,
-      "[%%relay.subscription] must contain a subscription definition, and nothing else.",
+      "%%relay must contain a subscription definition, and nothing else.",
     )
   };
 
@@ -238,7 +235,7 @@ let makeModuleIdent = (~loc, ~moduleName, path) => {
 };
 
 /**
- * This is some AST voodoo to extract the provided string from [%relay.<operation> {| ...string here... |}].
+ * This is some AST voodoo to extract the provided string from [%relay {| ...string here... |}].
  * It basically just matches on the correct AST structure for having an extension node with a string, and
  * returns that string.
  *
