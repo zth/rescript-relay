@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestRefetchingInNodeQuery($userId: ID!) {
       node(id: $userId) {
@@ -11,7 +11,7 @@ module Query = [%relay.query
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestRefetchingInNode_user on User
       @refetchable(queryName: "TestRefetchingInNodeRefetchQuery")
@@ -33,8 +33,7 @@ module UserDisplayer = {
   let make = (~queryRef) => {
     let (data, refetch) = Fragment.useRefetchable(queryRef);
 
-    let (startTransition, _) =
-      ReactExperimental.unstable_useTransition();
+    let (startTransition, _) = ReactExperimental.unstable_useTransition();
 
     <div>
       {React.string(

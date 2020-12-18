@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestNodeInterfaceQuery {
       node(id: "123") {

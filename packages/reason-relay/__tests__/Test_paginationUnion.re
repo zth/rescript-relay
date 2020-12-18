@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestPaginationUnionQuery($groupId: ID!) {
       ...TestPaginationUnion_query @arguments(groupId: $groupId)
@@ -7,7 +7,7 @@ module Query = [%relay.query
 ];
 
 // This is just to ensure that fragments on unions work
-module UserFragment = [%relay.fragment
+module UserFragment = [%relay
   {|
   fragment TestPaginationUnion_user on User {
     firstName
@@ -18,7 +18,7 @@ module UserFragment = [%relay.fragment
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestPaginationUnion_query on Query
       @refetchable(queryName: "TestPaginationUnionRefetchQuery")
@@ -82,8 +82,7 @@ module Test = {
     let groupId = "123";
     let query = Query.use(~variables={groupId: groupId}, ());
 
-    let (startTransition, _) =
-      ReactExperimental.unstable_useTransition();
+    let (startTransition, _) = ReactExperimental.unstable_useTransition();
 
     let {data, hasNext, loadNext, isLoadingNext, refetch} =
       Fragment.usePagination(query.fragmentRefs);

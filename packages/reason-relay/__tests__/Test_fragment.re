@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestFragmentQuery {
       loggedInUser {
@@ -18,7 +18,7 @@ module Query = [%relay.query
 |}
 ];
 
-module SubFragment = [%relay.fragment
+module SubFragment = [%relay
   {|
     fragment TestFragment_sub_user on User {
       lastName
@@ -26,7 +26,7 @@ module SubFragment = [%relay.fragment
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestFragment_user on User {
       firstName
@@ -36,7 +36,7 @@ module Fragment = [%relay.fragment
 |}
 ];
 
-module InlineFragment = [%relay.fragment
+module InlineFragment = [%relay
   {|
     fragment TestFragment_inline on User @inline {
       firstName
@@ -45,7 +45,7 @@ module InlineFragment = [%relay.fragment
 |}
 ];
 
-module PluralFragment = [%relay.fragment
+module PluralFragment = [%relay
   {|
     fragment TestFragment_plural_user on User @relay(plural: true) {
       id

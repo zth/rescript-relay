@@ -19,7 +19,7 @@ function getFileFilter(baseDir: string) {
       );
       return false;
     }
-    return text.indexOf("[%relay.") >= 0 || text.indexOf("%relay.") >= 0;
+    return text.indexOf("%relay") >= 0;
   };
 }
 
@@ -34,5 +34,5 @@ module.exports = () => ({
     fileName.endsWith("_graphql.re") || fileName.endsWith(".bs.js"),
   keepExtraFile: (fileName: string) => fileName.endsWith(".bs.js"),
   getFileFilter,
-  getModuleName: (operationName: string) => `${operationName}_graphql`
+  getModuleName: (operationName: string) => `${operationName}_graphql`,
 });

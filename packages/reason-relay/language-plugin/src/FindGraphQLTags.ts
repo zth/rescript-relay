@@ -1,26 +1,17 @@
 import { GraphQLTag } from "relay-compiler/lib/language/RelayLanguagePluginInterface";
 import invariant = require("invariant");
 
-function parseFile(text: string, file: string) {
+function parseFile(text: string, _file: string) {
   if (!text.includes("%relay")) {
     return [];
   }
-
-  invariant(
-    text.indexOf("%relay") >= 0,
-    "RelayFileIRParser: Files should be filtered before passed to the " +
-      "parser, got unfiltered file `%s`.",
-    file
-  );
 
   /**
    * This should eventually be done in a native Reason program and not through a (horrible)
    * regexp, but this will do just to get things working.
    */
 
-  const matchedReason = text.match(
-    /(?<=\[%relay\.(query|fragment|mutation|subscription))([\s\S]*?)(?=];)/g
-  );
+  const matchedReason = text.match(/(?<=\[%relay)([\s\S]*?)(?=];)/g);
 
   if (matchedReason) {
     // Removes {||} used in multiline Reason strings
@@ -32,7 +23,7 @@ function parseFile(text: string, file: string) {
   }
 
   const matchedReScript = text.match(
-    /(?<=%relay\.(query|fragment|mutation|subscription)\()([\s\S]*?)(?=(\`\s*)\))(\`)/g
+    /(?<=%relay\()([\s\S]*?)(?=(\`\s*)\))(\`)/g
   );
 
   if (matchedReScript) {

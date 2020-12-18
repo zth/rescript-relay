@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestLocalPayloadQuery @raw_response_type {
       loggedInUser {
@@ -9,7 +9,7 @@ module Query = [%relay.query
 |}
 ];
 
-module ViaNodeInterface = [%relay.query
+module ViaNodeInterface = [%relay
   {|
     query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
       node(id: $id) {
@@ -28,7 +28,7 @@ module ViaNodeInterface = [%relay.query
  * it's actually getting inlined into the types for the query
  * payload we're committing locally below.
  */
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
   fragment TestLocalPayload_user on User {
     firstName
