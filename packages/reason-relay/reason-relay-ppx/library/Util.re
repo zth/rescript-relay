@@ -17,13 +17,13 @@ let extractGraphQLOperation = (~loc, str) =>
     | _ =>
       Location.raise_errorf(
         ~loc,
-        "Only one GraphQL operation per [%%relay]-node is allowed.",
+        "Only one GraphQL operation per %%relay-node is allowed.",
       )
     }
   | Error(err) =>
     Location.raise_errorf(
       ~loc,
-      "[%%relay]-nodes must define a single, valid GraphQL operation. GraphQL error message: %s",
+      "%%relay-nodes must define a single, valid GraphQL operation. GraphQL error message: %s",
       err,
     )
   };
@@ -32,9 +32,9 @@ let extractGraphQLOperation = (~loc, str) =>
  * Takes a raw GraphQL document as a string and extracts the query name. Raises an error if it's not a query
  * or the query has no name.
  */
-let extractTheQueryName = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Operation({optype: Query, name: Some(name)}) => name
+let extractTheQueryName = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Operation({optype: Query, name: Some(name)}) => name
   | Operation({optype: Query, name: None}) =>
     Location.raise_errorf(~loc, "GraphQL query must be named.")
   | _ =>
@@ -48,9 +48,9 @@ let extractTheQueryName = (~loc, str) =>
  * Takes a raw GraphQL document as a string and extracts the mutation name. Raises an error if it's not a mutation
  * or the mutation has no name.
  */
-let extractTheMutationName = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Operation({optype: Mutation, name: Some(name)}) => name
+let extractTheMutationName = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Operation({optype: Mutation, name: Some(name)}) => name
   | Operation({optype: Mutation, name: None}) =>
     Location.raise_errorf(~loc, "GraphQL mutation must be named.")
   | _ =>
@@ -64,9 +64,9 @@ let extractTheMutationName = (~loc, str) =>
  * Takes a raw GraphQL document as a string and extracts the fragment name. Raises an error if it's not a fragment
  * or the fragment has no name.
  */
-let extractTheFragmentName = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Fragment({name}) => name
+let extractTheFragmentName = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Fragment({name}) => name
   | _ =>
     Location.raise_errorf(
       ~loc,
@@ -78,9 +78,9 @@ let extractTheFragmentName = (~loc, str) =>
  * Takes a raw GraphQL document as a string and extracts the subscription name. Raises an error if it's not a subscription
  * or the subscription has no name.
  */
-let extractTheSubscriptionName = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Operation({optype: Subscription, name: Some(name)}) => name
+let extractTheSubscriptionName = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Operation({optype: Subscription, name: Some(name)}) => name
   | Operation({optype: Subscription, name: None}) =>
     Location.raise_errorf(~loc, "GraphQL subscription must be named.")
 
@@ -102,9 +102,9 @@ let extractTheSubscriptionName = (~loc, str) =>
  * So, this functions makes sure that @refetchable is defined and the queryName arg exists, and if so, extracts and
  * returns "SomeFragmentRefetchQuery" as an option string.
  */
-let extractFragmentRefetchableQueryName = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Fragment({name: _, directives}) =>
+let extractFragmentRefetchableQueryName = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Fragment({name: _, directives}) =>
     let refetchableQueryName = ref(None);
 
     directives
@@ -153,9 +153,9 @@ let rec selectionSetHasConnection = selections =>
   };
 
 // Returns whether a query has a @raw_response_type
-let queryHasRawResponseTypeDirective = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Operation({optype: Query, name: Some(_), directives}) =>
+let queryHasRawResponseTypeDirective = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Operation({optype: Query, name: Some(_), directives}) =>
     directives
     |> List.exists((directive: Graphql_parser.directive) =>
          directive.name == "raw_response_type"
@@ -164,17 +164,17 @@ let queryHasRawResponseTypeDirective = (~loc, str) =>
   };
 
 // Returns whether a fragment has a @connection annotation or not
-let fragmentHasConnectionNotation = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Fragment({name: _, selection_set}) =>
+let fragmentHasConnectionNotation = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Fragment({name: _, selection_set}) =>
     selectionSetHasConnection(selection_set)
   | _ => false
   };
 
 // Returns whether a fragment has an @inline directive defined or not
-let fragmentHasInlineDirective = (~loc, str) =>
-  switch (extractGraphQLOperation(~loc, str)) {
-  | Fragment({name: _, directives}) =>
+let fragmentHasInlineDirective = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Fragment({name: _, directives}) =>
     directives
     |> List.exists((directive: Graphql_parser.directive) =>
          directive.name == "inline"
@@ -271,6 +271,6 @@ let extractOperationStr = (~loc, ~expr) =>
   | _ =>
     Location.raise_errorf(
       ~loc,
-      "All [%%relay] operations must be provided a string, like [%%relay.query {| { query SomeQuery { id } |}]",
+      "All %%relay operations must be provided a string.",
     )
   };

@@ -14,12 +14,12 @@ let queryExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+      let op = extractGraphQLOperation(~loc, operationStr);
 
       Query.make(
-        ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
+        ~moduleName=op |> extractTheQueryName(~loc=operationStrLoc),
         ~hasRawResponseType=
-          operationStr
-          |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
+          op |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },
@@ -33,26 +33,24 @@ let fragmentExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+      let op = extractGraphQLOperation(~loc, operationStr);
 
       let refetchableQueryName =
-        operationStr
-        |> extractFragmentRefetchableQueryName(~loc=operationStrLoc);
+        op |> extractFragmentRefetchableQueryName(~loc=operationStrLoc);
 
       Fragment.make(
-        ~moduleName=
-          operationStr |> extractTheFragmentName(~loc=operationStrLoc),
+        ~moduleName=op |> extractTheFragmentName(~loc=operationStrLoc),
         ~refetchableQueryName,
         ~hasConnection=
           switch (
             refetchableQueryName,
-            operationStr
-            |> fragmentHasConnectionNotation(~loc=operationStrLoc),
+            op |> fragmentHasConnectionNotation(~loc=operationStrLoc),
           ) {
           | (Some(_), true) => true
           | _ => false
           },
         ~hasInlineDirective=
-          operationStr |> fragmentHasInlineDirective(~loc=operationStrLoc),
+          op |> fragmentHasInlineDirective(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },
@@ -66,10 +64,10 @@ let mutationExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+      let op = extractGraphQLOperation(~loc, operationStr);
 
       Mutation.make(
-        ~moduleName=
-          operationStr |> extractTheMutationName(~loc=operationStrLoc),
+        ~moduleName=op |> extractTheMutationName(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },
@@ -83,10 +81,10 @@ let subscriptionExtension =
     Ast_pattern.__,
     (~loc, ~path as _, expr) => {
       let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+      let op = extractGraphQLOperation(~loc, operationStr);
 
       Subscription.make(
-        ~moduleName=
-          operationStr |> extractTheSubscriptionName(~loc=operationStrLoc),
+        ~moduleName=op |> extractTheSubscriptionName(~loc=operationStrLoc),
         ~loc=operationStrLoc,
       );
     },
