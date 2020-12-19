@@ -7,47 +7,41 @@ let commonExtension =
   Extension.declare(
     "relay",
     Extension.Context.module_expr,
-    Ast_pattern.__,
-    (~loc, ~path as _, expr) => {
-      let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+    Ast_pattern.(single_expr_payload(estring(__))),
+    (~loc, ~path as _, operationStr) => {
       let op = extractGraphQLOperation(~loc, operationStr);
 
       switch (op) {
       | Graphql_parser.Fragment({name: _, selection_set}) =>
         let refetchableQueryName =
-          op |> extractFragmentRefetchableQueryName(~loc=operationStrLoc);
+          op |> extractFragmentRefetchableQueryName(~loc);
 
         Fragment.make(
-          ~moduleName=op |> extractTheFragmentName(~loc=operationStrLoc),
+          ~moduleName=op |> extractTheFragmentName(~loc),
           ~refetchableQueryName,
           ~hasConnection=
             switch (
               refetchableQueryName,
-              op |> fragmentHasConnectionNotation(~loc=operationStrLoc),
+              op |> fragmentHasConnectionNotation(~loc),
             ) {
             | (Some(_), true) => true
             | _ => false
             },
-          ~hasInlineDirective=
-            op |> fragmentHasInlineDirective(~loc=operationStrLoc),
-          ~loc=operationStrLoc,
+          ~hasInlineDirective=op |> fragmentHasInlineDirective(~loc),
+          ~loc,
         );
       | Operation({optype: Query}) =>
         Query.make(
-          ~moduleName=op |> extractTheQueryName(~loc=operationStrLoc),
-          ~hasRawResponseType=
-            op |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
-          ~loc=operationStrLoc,
+          ~moduleName=op |> extractTheQueryName(~loc),
+          ~hasRawResponseType=op |> queryHasRawResponseTypeDirective(~loc),
+          ~loc,
         )
       | Operation({optype: Mutation}) =>
-        Mutation.make(
-          ~moduleName=op |> extractTheMutationName(~loc=operationStrLoc),
-          ~loc=operationStrLoc,
-        )
+        Mutation.make(~moduleName=op |> extractTheMutationName(~loc), ~loc)
       | Operation({optype: Subscription}) =>
         Subscription.make(
-          ~moduleName=op |> extractTheSubscriptionName(~loc=operationStrLoc),
-          ~loc=operationStrLoc,
+          ~moduleName=op |> extractTheSubscriptionName(~loc),
+          ~loc,
         )
       };
     },
