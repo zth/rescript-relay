@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestUnionFragmentQuery {
       member(id: "123") {
@@ -10,7 +10,7 @@ module Query = [%relay.query
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestUnionFragment_member on Member {
       __typename
@@ -25,7 +25,7 @@ module Fragment = [%relay.fragment
 |}
 ];
 
-module PluralFragment = [%relay.fragment
+module PluralFragment = [%relay
   {|
     fragment TestUnionFragment_plural_member on Member @relay(plural: true) {
       __typename

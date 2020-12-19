@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestMissingFieldHandlersQuery {
       node(id: "123") {
@@ -11,7 +11,7 @@ module Query = [%relay.query
 |}
 ];
 
-module MeQuery = [%relay.query
+module MeQuery = [%relay
   {|
     query TestMissingFieldHandlersMeQuery {
       loggedInUser {

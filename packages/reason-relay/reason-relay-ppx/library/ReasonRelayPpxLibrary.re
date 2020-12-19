@@ -3,103 +3,53 @@ open Util;
 
 module Util = Util;
 
-/**
- * This is what defines [%relay.query] as an extension point and provides the PPX
- * with how to transform the extension point when it finds one.
- */
-let queryExtension =
+let commonExtension =
   Extension.declare(
-    "relay.query",
+    "relay",
     Extension.Context.module_expr,
-    Ast_pattern.__,
-    (~loc, ~path as _, expr) => {
-      let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
+    Ast_pattern.(single_expr_payload(estring(__))),
+    (~loc, ~path as _, operationStr) => {
+      let op = extractGraphQLOperation(~loc, operationStr);
 
-      Query.make(
-        ~moduleName=operationStr |> extractTheQueryName(~loc=operationStrLoc),
-        ~hasRawResponseType=
-          operationStr
-          |> queryHasRawResponseTypeDirective(~loc=operationStrLoc),
-        ~loc=operationStrLoc,
-      );
-    },
-  );
+      switch (op) {
+      | Graphql_parser.Fragment({name: _, selection_set}) =>
+        let refetchableQueryName =
+          op |> extractFragmentRefetchableQueryName(~loc);
 
-// Same as queryExtension but for [%relay.fragment]
-let fragmentExtension =
-  Extension.declare(
-    "relay.fragment",
-    Extension.Context.module_expr,
-    Ast_pattern.__,
-    (~loc, ~path as _, expr) => {
-      let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
-
-      let refetchableQueryName =
-        operationStr
-        |> extractFragmentRefetchableQueryName(~loc=operationStrLoc);
-
-      Fragment.make(
-        ~moduleName=
-          operationStr |> extractTheFragmentName(~loc=operationStrLoc),
-        ~refetchableQueryName,
-        ~hasConnection=
-          switch (
-            refetchableQueryName,
-            operationStr
-            |> fragmentHasConnectionNotation(~loc=operationStrLoc),
-          ) {
-          | (Some(_), true) => true
-          | _ => false
-          },
-        ~hasInlineDirective=
-          operationStr |> fragmentHasInlineDirective(~loc=operationStrLoc),
-        ~loc=operationStrLoc,
-      );
-    },
-  );
-
-// Same as queryExtension but for [%relay.mutation]
-let mutationExtension =
-  Extension.declare(
-    "relay.mutation",
-    Extension.Context.module_expr,
-    Ast_pattern.__,
-    (~loc, ~path as _, expr) => {
-      let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
-
-      Mutation.make(
-        ~moduleName=
-          operationStr |> extractTheMutationName(~loc=operationStrLoc),
-        ~loc=operationStrLoc,
-      );
-    },
-  );
-
-// Same as queryExtension but for [%relay.subscription]
-let subscriptionExtension =
-  Extension.declare(
-    "relay.subscription",
-    Extension.Context.module_expr,
-    Ast_pattern.__,
-    (~loc, ~path as _, expr) => {
-      let (operationStr, operationStrLoc) = extractOperationStr(~loc, ~expr);
-
-      Subscription.make(
-        ~moduleName=
-          operationStr |> extractTheSubscriptionName(~loc=operationStrLoc),
-        ~loc=operationStrLoc,
-      );
+        Fragment.make(
+          ~moduleName=op |> extractTheFragmentName(~loc),
+          ~refetchableQueryName,
+          ~hasConnection=
+            switch (
+              refetchableQueryName,
+              op |> fragmentHasConnectionNotation(~loc),
+            ) {
+            | (Some(_), true) => true
+            | _ => false
+            },
+          ~hasInlineDirective=op |> fragmentHasInlineDirective(~loc),
+          ~loc,
+        );
+      | Operation({optype: Query}) =>
+        Query.make(
+          ~moduleName=op |> extractTheQueryName(~loc),
+          ~hasRawResponseType=op |> queryHasRawResponseTypeDirective(~loc),
+          ~loc,
+        )
+      | Operation({optype: Mutation}) =>
+        Mutation.make(~moduleName=op |> extractTheMutationName(~loc), ~loc)
+      | Operation({optype: Subscription}) =>
+        Subscription.make(
+          ~moduleName=op |> extractTheSubscriptionName(~loc),
+          ~loc,
+        )
+      };
     },
   );
 
 // This registers all defined extension points to the "reason-relay" ppx.
 let () =
   Driver.register_transformation(
-    ~extensions=[
-      queryExtension,
-      fragmentExtension,
-      mutationExtension,
-      subscriptionExtension,
-    ],
+    ~extensions=[commonExtension],
     "reason-relay",
   );

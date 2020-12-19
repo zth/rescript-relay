@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
   query TestQuery($status: OnlineStatus) {
     users(status: $status) {

@@ -2,6 +2,10 @@
 
 ## Breaking changes
 
+- _BREAKING CHANGE_ Operations are now defined through a single extension node rather than multiple per operation type. `relay.fragment`, `relay.query` etc are now gone. What was previously `[%relay.fragment {| fragment Blabla on Blabla {....|}]` should now instead be: `[%relay {| fragment Blabla on Blabla {....|}]`.
+
+Migration path: Install [`comby`](https://comby.dev/docs/get-started), and run this command in your root: `comby '%relay.:[~(fragment|subscription|mutation|query)]' '%relay' -i .re -exclude-dir node_modules`. That will take care of migrating all of your extension points. Using ReScript syntax? Just adapt the script above to your needs.
+
 - _BREAKING CHANGE_ Add binding for passing `uploadables` to network fetch functions. This is breaking because it changes the signature of `fetchFunctionPromise` and `fetchFunctionObservable` to include another argument `uploadables`. Migration path: What was previously something like `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig) => {...}` should now be `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {...}`. ([@hariroshan](https://github.com/hariroshan))
 
 ## New bindings

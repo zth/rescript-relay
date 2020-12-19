@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
   query TestUnionsQuery {
     members(groupId: "123") {

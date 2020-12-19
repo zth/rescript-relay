@@ -35,7 +35,10 @@ describe("extractTheQueryName", ({test, _}) =>
     expect.string(
       Util.extractTheQueryName(
         ~loc=makeMockLocObj(),
-        "query SomeQuery { viewer { id } }",
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          "query SomeQuery { viewer { id } }",
+        ),
       ),
     ).
       toEqual(
@@ -49,7 +52,10 @@ describe("extractTheMutationName", ({test, _}) =>
     expect.string(
       Util.extractTheMutationName(
         ~loc=makeMockLocObj(),
-        "mutation SomeMutation($input: SomeMutationInput!) { someMutation(input: $input) { addedStuff { id } } }",
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          "mutation SomeMutation($input: SomeMutationInput!) { someMutation(input: $input) { addedStuff { id } } }",
+        ),
       ),
     ).
       toEqual(
@@ -63,7 +69,10 @@ describe("extractTheFragmentName", ({test, _}) =>
     expect.string(
       Util.extractTheFragmentName(
         ~loc=makeMockLocObj(),
-        "fragment SomeFragment_someProp on SomeEntity { id }",
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          "fragment SomeFragment_someProp on SomeEntity { id }",
+        ),
       ),
     ).
       toEqual(
@@ -77,7 +86,10 @@ describe("extractTheSubscriptionName", ({test, _}) =>
     expect.string(
       Util.extractTheSubscriptionName(
         ~loc=makeMockLocObj(),
-        "subscription SomeSub { viewer { id } }",
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          "subscription SomeSub { viewer { id } }",
+        ),
       ),
     ).
       toEqual(
@@ -93,7 +105,10 @@ describe("extractFragmentRefetchableQueryName", ({test, _}) => {
       expect.option(
         Util.extractFragmentRefetchableQueryName(
           ~loc=makeMockLocObj(),
-          "fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
+          Util.extractGraphQLOperation(
+            ~loc=makeMockLocObj(),
+            "fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
+          ),
         ),
       ).
         toBe(
@@ -103,13 +118,16 @@ describe("extractFragmentRefetchableQueryName", ({test, _}) => {
       expect.option(
         Util.extractFragmentRefetchableQueryName(
           ~loc=makeMockLocObj(),
-          {|
+          Util.extractGraphQLOperation(
+            ~loc=makeMockLocObj(),
+            {|
         fragment GroupEntrySingleDimensionEntry_dimension on Dimension
           @argumentDefinitions(isRefetch: {type:"Boolean!"})
           @refetchable(queryName: "GroupEntrySingleDimensionEntryRefetchQuery") {
           identifier
         }
         |},
+          ),
         ),
       ).
         toBe(
@@ -124,7 +142,10 @@ describe("extractFragmentRefetchableQueryName", ({test, _}) => {
     expect.option(
       Util.extractFragmentRefetchableQueryName(
         ~loc=makeMockLocObj(),
-        "fragment SomeFragment_someProp on SomeEntity @argumentDefinitions(id: {type: \"ID!\"}) @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          "fragment SomeFragment_someProp on SomeEntity @argumentDefinitions(id: {type: \"ID!\"}) @refetchable(queryName: \"SomeFragmentRefetchQuery\") { id }",
+        ),
       ),
     ).
       toBe(
@@ -140,7 +161,9 @@ describe("fragmentHasConnectionNotation", ({test, _}) => {
     expect.bool(
       Util.fragmentHasConnectionNotation(
         ~loc=makeMockLocObj(),
-        {|
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          {|
         fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: "SomeFragmentRefetchQuery") {
           id
           someConnectionField @connection(key: "SomeFragment_someProp_someConnectionField") {
@@ -152,6 +175,7 @@ describe("fragmentHasConnectionNotation", ({test, _}) => {
           }
         }
         |},
+        ),
       ),
     ).
       toBeTrue()
@@ -163,7 +187,9 @@ describe("fragmentHasConnectionNotation", ({test, _}) => {
     expect.bool(
       Util.fragmentHasConnectionNotation(
         ~loc=makeMockLocObj(),
-        {|
+        Util.extractGraphQLOperation(
+          ~loc=makeMockLocObj(),
+          {|
         fragment SomeFragment_someProp on SomeEntity @refetchable(queryName: "SomeFragmentRefetchQuery") {
           id
           someConnectionField {
@@ -175,6 +201,7 @@ describe("fragmentHasConnectionNotation", ({test, _}) => {
           }
         }
         |},
+        ),
       ),
     ).
       toBeFalse()

@@ -33,7 +33,7 @@ Now, imagine we're writing a component that wants to show whether a particular t
 
 ```reason
 /* TicketRejectedStatusDisplayer.re */
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
   fragment TicketRejectedStatusDisplayer_ticket on Ticket {
     status

@@ -32,16 +32,16 @@ query appQuery($userId: ID!) {
 describe("Language plugin tests", () => {
   describe("RelayFindGraphQLTags", () => {
     describe("ReScript Syntax", () => {
-      it("parses graphql templates", () => {
+      it("parses graphql templates with the single, common extension point", () => {
         const graphqlTags = find(
           `
-            module Fragment = %relay.fragment(
+            module Fragment = %relay(
               \`
                 ${fragment}
               \`
             )
 
-            module Query = %relay.query(
+            module Query = %relay(
               \`
                 ${query}
               \`
@@ -68,7 +68,44 @@ describe("Language plugin tests", () => {
           stripIgnoredCharacters(query),
         ]);
       });
-      // describe("ReScript Syntax", () => {});
+    });
+    describe("ReasonML Syntax", () => {
+      it("parses graphql templates with the single, common extension point", () => {
+        const graphqlTags = find(
+          `
+            module Fragment = [%relay 
+              {|
+                ${fragment}
+              |}
+            ];
+
+            module Query = [%relay 
+              {|
+                ${query}
+              |}
+            ];
+          `,
+          "test"
+        );
+
+        const parsedBodies = graphqlTags.map((tag) => {
+          const { definitions, schema } = parseGraphQLText(
+            relaySchema,
+            tag.template
+          );
+
+          return definitions && definitions.length && schema
+            ? stripIgnoredCharacters(
+                ((definitions[0] as any).loc as SourceLocation).source.body
+              )
+            : undefined;
+        });
+
+        expect(parsedBodies).toEqual([
+          stripIgnoredCharacters(fragment),
+          stripIgnoredCharacters(query),
+        ]);
+      });
     });
   });
 });

@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestSubscriptionQuery {
       loggedInUser {
@@ -8,7 +8,7 @@ module Query = [%relay.query
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestSubscription_user on User {
       id
@@ -19,7 +19,7 @@ module Fragment = [%relay.fragment
 |}
 ];
 
-module UserUpdatedSubscription = [%relay.subscription
+module UserUpdatedSubscription = [%relay
   {|
   subscription TestSubscriptionUserUpdatedSubscription($userId: ID!) {
     userUpdated(id: $userId) {

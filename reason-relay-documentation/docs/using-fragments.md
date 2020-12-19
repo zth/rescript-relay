@@ -63,11 +63,11 @@ If you want to dive deeper into GraphQL fragments you're encouraged to read thro
 
 ### Fragments in ReasonRelay
 
-Fragments are defined in ReasonRelay by using the `[%relay.fragment]` extension node. Here's an example of a fragment and a component that renders the fragment data:
+Fragments are defined in ReasonRelay by using the `[%relay]` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
 ```reason
 /* UserProfileHeader.re */
-module UserFragment = [%relay.fragment {|
+module UserFragment = [%relay {|
   fragment UserProfileHeader_user on User {
     firstName
     lastName
@@ -84,9 +84,9 @@ let make = (~user) => {
 
 Let's break down what's happening here:
 
-1. We define a fragment on the GraphQL type `User` through `[%relay.fragment]`.
+1. We define a fragment on the GraphQL type `User` through `[%relay]`.
 2. We define a React component that takes a `user` prop.
-3. `[%relay.fragment]` will autogenerate a React hook called `use`, which takes any object containing a fragment reference for that particular fragment, and returns the data.
+3. `[%relay]` with a fragment defined in it will autogenerate a React hook called `use`, which takes any object containing a fragment reference for that particular fragment, and returns the data.
 4. Just as with queries, `use` for fragments is integrated with [React suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), meaning that `use` will suspend if the data's not already there.
 
 ### Fragment references and how Relay transports fragment data
@@ -95,7 +95,7 @@ A fragment _always has to end up in a query_ at some point for it to be able to 
 
 ```reason
 /* UserProfile.re */
-module Query = [%relay.query {|
+module Query = [%relay {|
   query UserProfileQuery($userId: ID!) {
     userById(id: $userId) {
       ...UserProfileHeader_user
@@ -135,7 +135,7 @@ Let's expand our example fragment component to use another component `<Avatar />
 
 ```reason
 /* UserProfileHeader.re */
-module UserFragment = [%relay.fragment {|
+module UserFragment = [%relay {|
   fragment UserProfileHeader_user on User {
     firstName
     lastName
@@ -173,7 +173,7 @@ Great for logging and similar activities. Example:
 
 ```reason
 /* SomeCoolLogger.re */
-module UserFragment = [%relay.fragment {|
+module UserFragment = [%relay {|
   fragment SomeCoolLogger_user on User @inline {
     customerId
     someOtherMetaDataProp
@@ -220,7 +220,7 @@ With that in mind, Let's jump in to [mutations](mutations).
 
 ## API Reference
 
-`[%relay.fragment]` is expanded to a module containing the following functions:
+`[%relay]` is expanded to a module containing the following functions:
 
 ### `use`
 

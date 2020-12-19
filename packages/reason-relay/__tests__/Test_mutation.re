@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestMutationQuery {
       loggedInUser {
@@ -8,7 +8,7 @@ module Query = [%relay.query
 |}
 ];
 
-module Mutation = [%relay.mutation
+module Mutation = [%relay
   {|
     mutation TestMutationSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
@@ -22,7 +22,7 @@ module Mutation = [%relay.mutation
 |}
 ];
 
-module ComplexMutation = [%relay.mutation
+module ComplexMutation = [%relay
   {|
     mutation TestMutationSetOnlineStatusComplexMutation($input: SetOnlineStatusInput!) {
       setOnlineStatusComplex(input: $input) {
@@ -35,7 +35,7 @@ module ComplexMutation = [%relay.mutation
 |}
 ];
 
-module MutationWithOnlyFragment = [%relay.mutation
+module MutationWithOnlyFragment = [%relay
   {|
     mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
@@ -47,7 +47,7 @@ module MutationWithOnlyFragment = [%relay.mutation
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestMutation_user on User {
       id

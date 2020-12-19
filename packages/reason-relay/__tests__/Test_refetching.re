@@ -1,4 +1,4 @@
-module Query = [%relay.query
+module Query = [%relay
   {|
     query TestRefetchingQuery {
       loggedInUser {
@@ -8,7 +8,7 @@ module Query = [%relay.query
 |}
 ];
 
-module Fragment = [%relay.fragment
+module Fragment = [%relay
   {|
     fragment TestRefetching_user on User
       @refetchable(queryName: "TestRefetchingRefetchQuery")
@@ -33,8 +33,7 @@ module Test = {
     let (data, refetch) =
       Fragment.useRefetchable(query.loggedInUser.fragmentRefs);
 
-    let (startTransition, _) =
-      ReactExperimental.unstable_useTransition();
+    let (startTransition, _) = ReactExperimental.unstable_useTransition();
 
     <div>
       {React.string(
