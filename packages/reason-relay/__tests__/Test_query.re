@@ -158,6 +158,20 @@ module Test = {
         {React.string("Test fetch")}
       </button>
       <button
+        onClick={_ => {
+          Query.fetchPromised(
+            ~environment,
+            ~variables={status: Some(`Online)},
+            (),
+          )
+          ->Promise.get(res =>
+              setFetchedResult(_ => Some(collectUsers(res)))
+            );
+          ();
+        }}>
+        {React.string("Test fetch promised")}
+      </button>
+      <button
         onClick={_ => loadQuery(~variables={status: Some(`Idle)}, ())}>
         {React.string("Test query loader")}
       </button>

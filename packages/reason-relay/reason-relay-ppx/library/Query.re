@@ -231,6 +231,40 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        let fetchPromised =
+            (
+              ~environment: ReasonRelay.Environment.t,
+              ~variables: [%t
+                 typeFromGeneratedModule(["Types", "variables"])
+               ],
+              ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
+              ~fetchPolicy: option(ReasonRelay.fetchQueryFetchPolicy)=?,
+              (),
+            )
+            : Promise.t([%t typeFromGeneratedModule(["Types", "response"])]) => {
+          Internal.internal_fetchQuery(
+            environment,
+            [%e valFromGeneratedModule(["node"])],
+            variables->[%e
+                         valFromGeneratedModule([
+                           "Internal",
+                           "convertVariables",
+                         ])
+                       ],
+            Some({
+              networkCacheConfig,
+              fetchPolicy: fetchPolicy->ReasonRelay.mapFetchQueryFetchPolicy,
+            }),
+          )
+          ->ReasonRelay.Observable.toPromise
+          ->Promise.map(res =>
+              res->[%e
+                     valFromGeneratedModule(["Internal", "convertResponse"])
+                   ]
+            );
+        }
+      ],
+      [%stri
         let usePreloaded =
             (
               ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],

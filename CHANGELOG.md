@@ -10,6 +10,7 @@ Migration path: Install [`comby`](https://comby.dev/docs/get-started), and run t
 
 ## New bindings
 
+- Add back `Query.fetchPromised` to simplify working with SSR.
 - Bind `id` in `operation` to allow using persisted queries. ([@hariroshan](https://github.com/hariroshan))
 
 ## Fixes & misc
