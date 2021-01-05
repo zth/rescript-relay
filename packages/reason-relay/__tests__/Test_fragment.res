@@ -81,8 +81,6 @@ module Test = {
     let query = Query.use(~variables=(), ())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
 
-    let _ = ReasonRelay.RecordProxy.copyFieldsFrom
-
     let (useOpt, setUseOpt) = React.useState(() => false)
     let (dataViaInline, setDataViaInline) = React.useState(() => None)
 
