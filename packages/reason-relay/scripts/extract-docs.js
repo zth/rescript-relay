@@ -269,6 +269,11 @@ const makeHeadlineFromLevel = (level) =>
     .map((_) => "#")
     .join("");
 
+const makeTokenLink = (token) => {
+  const cleanToken = token.replace("ReasonRelay.", "");
+  return "[" + cleanToken + "](#" + slugify(cleanToken) + ")";
+};
+
 const transformDoc = (doc, level) => {
   const baseHeadline = makeHeadlineFromLevel(3) + " ";
   const baseSubHeadline = makeHeadlineFromLevel(4) + " ";
@@ -293,8 +298,7 @@ const transformDoc = (doc, level) => {
         const token = tokens.find((t) => t === s);
 
         if (token) {
-          const cleanToken = token.replace("ReasonRelay.", "");
-          return "[" + cleanToken + "](#" + slugify(cleanToken) + ") `REMOVE__";
+          return makeTokenLink(token) + " `REMOVE__";
         }
       }
 
@@ -307,7 +311,19 @@ const transformDoc = (doc, level) => {
   return res;
 };
 
-const printInReScriptTag = (c) => "```reason\n" + c + "\n```";
+const printInReScriptTag = (c, name = "") => {
+  let res = "```reason\n" + c + "\n```";
+
+  const tokensInCode = tokens.filter((t) => c.includes(t) && t !== name);
+
+  if (tokensInCode.length > 0) {
+    res += `\n> Read more about: ${tokensInCode
+      .map((t) => makeTokenLink(t))
+      .join(", ")}`;
+  }
+
+  return res;
+};
 
 const makeSection = (title, content, level = 2, currentPath) =>
   `${Array.from({ length: level })
@@ -321,7 +337,10 @@ const printContents = (r, currentPath, level = 2) => {
     .map((t) =>
       makeSection(
         t.name,
-        `${printInReScriptTag(printType(t))}\n\n${transformDoc(t.doc, level)}`,
+        `${printInReScriptTag(printType(t), t.name)}\n\n${transformDoc(
+          t.doc,
+          level
+        )}`,
         level,
         currentPath
       )
@@ -332,7 +351,7 @@ ${Object.values(r.abstractTypes)
   .map((t) =>
     makeSection(
       t.name,
-      `${printInReScriptTag(printAbstractType(t))}\n\n${transformDoc(
+      `${printInReScriptTag(printAbstractType(t), t.name)}\n\n${transformDoc(
         t.doc,
         level
       )}`,
@@ -346,7 +365,10 @@ ${[...Object.values(r.values), ...Object.values(r.externals)]
   .map((t) =>
     makeSection(
       t.name,
-      `${printInReScriptTag(printValue(t))}\n\n${transformDoc(t.doc, level)}`,
+      `${printInReScriptTag(printValue(t), t.name)}\n\n${transformDoc(
+        t.doc,
+        level
+      )}`,
       level,
       currentPath
     )

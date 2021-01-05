@@ -228,7 +228,7 @@ module RecordProxy: {
   )
   type t
 
-  @ocaml.doc("Copies all fields from one RecordProxy to another.") @bs.send
+  @ocaml.doc("Copies all fields from one `RecordProxy` to another.") @bs.send
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom"
 
   @ocaml.doc("Gets the \`dataId\` for a particular record.") @bs.send

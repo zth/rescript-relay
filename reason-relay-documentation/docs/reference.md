@@ -255,6 +255,7 @@ An error from a mutation.
 ```reason
 let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId
 ```
+> Read more about: [dataId](#dataid)
 
 This generates a [dataId](#dataid)  for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is `generateUniqueClientID` that'll let you generate a new, unique [dataId](#dataid)  that you can use for client side only records (like when doing optimistic updates).
 
@@ -262,6 +263,7 @@ This generates a [dataId](#dataid)  for use on the _client_ side. However, this 
 ```reason
 let isClientID: dataId => bool
 ```
+> Read more about: [dataId](#dataid)
 
 Checks whether the provided [dataId](#dataid)  is guaranteed to be a client side only id.
 
@@ -269,6 +271,7 @@ Checks whether the provided [dataId](#dataid)  is guaranteed to be a client side
 ```reason
 let relayFeatureFlags: featureFlags
 ```
+> Read more about: [featureFlags](#featureflags)
 
 Relay feature flags. Mutate this record as soon as your application boots to enable/disable features.
 
@@ -283,6 +286,7 @@ ReasonRelay.featureFlags.enablePrecisTypeRefinement = true
 ```reason
 let storeRootId: dataId
 ```
+> Read more about: [dataId](#dataid)
 
 The [dataId](#dataid)  for the Relay store's root. Useful when for example referencing the `parentID` of a connection that's on the store root.
 
@@ -290,6 +294,7 @@ The [dataId](#dataid)  for the Relay store's root. Useful when for example refer
 ```reason
 let dataIdToString: dataId => string
 ```
+> Read more about: [dataId](#dataid)
 
 Turns a [dataId](#dataid)  into a `string`.
 
@@ -297,6 +302,7 @@ Turns a [dataId](#dataid)  into a `string`.
 ```reason
 let makeDataId: string => dataId
 ```
+> Read more about: [dataId](#dataid)
 
 Turns a `string` into a [dataId](#dataid) .
 
@@ -321,6 +327,7 @@ let make = (~user) => {
 ```reason
 let makeArguments: {..} => arguments
 ```
+> Read more about: [arguments](#arguments)
 
 Construct an [arguments](#arguments)  object for use with certain Relay store APIs.
 
@@ -331,6 +338,7 @@ Use it like this: `makeArguments({ "someArgument": someValue, "anotherArgument":
 ```reason
 let makeUploadable: {..} => uploadables
 ```
+> Read more about: [uploadables](#uploadables)
 
 Construct an [uploadables](#uploadables)  object that you can use for uploads via Relay.
 
@@ -354,7 +362,7 @@ Read the following section on working with the Relay store: https://relay.dev/do
 let copyFieldsFrom: (t, ~sourceRecord: t) => unit
 ```
 
-Copies all fields from one RecordProxy to another.
+Copies all fields from one [RecordProxy](#recordproxy)  to another.
 
 ### [RecordProxy.getType](#recordproxygettype)
 ```reason
@@ -367,6 +375,7 @@ Returns the `__typename` of this particular record.
 ```reason
 let getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int>
 ```
+> Read more about: [arguments](#arguments)
 
 Returns a field value, expecting it to be an int.
 
@@ -374,6 +383,7 @@ Returns a field value, expecting it to be an int.
 ```reason
 let getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float>
 ```
+> Read more about: [arguments](#arguments)
 
 Returns a field value, expecting it to be a float.
 
@@ -381,6 +391,7 @@ Returns a field value, expecting it to be a float.
 ```reason
 let getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool>
 ```
+> Read more about: [arguments](#arguments)
 
 Returns a field value, expecting it to be a boolean.
 
@@ -388,6 +399,7 @@ Returns a field value, expecting it to be a boolean.
 ```reason
 let setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t
 ```
+> Read more about: [arguments](#arguments)
 
 Sets a [RecordProxy.t](#recordproxyt)  as the linked record for a particular field.
 
@@ -395,6 +407,7 @@ Sets a [RecordProxy.t](#recordproxyt)  as the linked record for a particular fie
 ```reason
 let setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t
 ```
+> Read more about: [arguments](#arguments)
 
 Sets a string as field value.
 
@@ -402,6 +415,7 @@ Sets a string as field value.
 ```reason
 let setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t
 ```
+> Read more about: [arguments](#arguments)
 
 Sets an int as field value.
 
@@ -409,6 +423,7 @@ Sets an int as field value.
 ```reason
 let setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t
 ```
+> Read more about: [arguments](#arguments)
 
 Sets a float as field value.
 
@@ -416,6 +431,7 @@ Sets a float as field value.
 ```reason
 let setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t
 ```
+> Read more about: [arguments](#arguments)
 
 Sets a boolean as field value.
 
@@ -444,6 +460,7 @@ Plural version of `RecordSourceSelectorProxy.getRootField`.
 ```reason
 let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t
 ```
+> Read more about: [dataId](#dataid), [RecordProxy](#recordproxy), [RecordProxy.t](#recordproxyt)
 
 Creates a new [RecordProxy](#recordproxy) .
 
@@ -451,6 +468,7 @@ Creates a new [RecordProxy](#recordproxy) .
 ```reason
 let getRoot: t => RecordProxy.t
 ```
+> Read more about: [RecordProxy](#recordproxy), [RecordProxy.t](#recordproxyt)
 
 Returns the _root_ [RecordProxy](#recordproxy) , meaning the [RecordProxy](#recordproxy)  holding your top level fields.
 
@@ -516,6 +534,7 @@ Represents the network layer.
 ```reason
 type subscribeFn = (operation, Js.Json.t, cacheConfig)
 ```
+> Read more about: [cacheConfig](#cacheconfig)
 
 The shape of the function Relay expects for creating a subscription.
     
@@ -551,6 +570,7 @@ The shape of the function responsible for fetching data if you want to return a 
 ```reason
 type fetchFunctionObservable
 ```
+> Read more about: [Observable](#observable)
 
 The shape of the function responsible for fetching data if you want to return an [Observable](#observable) .
     
@@ -590,6 +610,7 @@ The type representing an instantiated [Store](#store) .
 ```reason
 let getSource: t => RecordSource.t
 ```
+> Read more about: [RecordSource](#recordsource), [RecordSource.t](#recordsourcet)
 
 Gets the [RecordSource](#recordsource)  for this [Store](#store) .
 
@@ -611,6 +632,7 @@ The type representing an instantiated [Environment](#environment) .
 ```reason
 let getStore: t => Store.t
 ```
+> Read more about: [Store](#store), [Store.t](#storet)
 
 Get the [Store](#store)  for this [Environment](#environment) .
 
