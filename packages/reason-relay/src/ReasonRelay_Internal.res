@@ -1,8 +1,5 @@
-@ocaml.doc("
- * Various helpers.
- ")
-let // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-internal_cleanObjectFromUndefinedRaw = %raw(
+// We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
+let internal_cleanObjectFromUndefinedRaw = %raw(
   `
   function (obj) {
     if (!obj) {

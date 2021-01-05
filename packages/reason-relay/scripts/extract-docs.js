@@ -311,7 +311,7 @@ const transformDoc = (doc, level) => {
   return res;
 };
 
-const printInReScriptTag = (c, name = "") => {
+const printInReScriptTag = (c, name, prefix) => {
   let res = "```reason\n" + c + "\n```";
 
   const tokensInCode = tokens.filter((t) => c.includes(t) && t !== name);
@@ -337,10 +337,11 @@ const printContents = (r, currentPath, level = 2) => {
     .map((t) =>
       makeSection(
         t.name,
-        `${printInReScriptTag(printType(t), t.name)}\n\n${transformDoc(
-          t.doc,
-          level
-        )}`,
+        `${printInReScriptTag(
+          printType(t),
+          t.name,
+          currentPath.join(".")
+        )}\n\n${transformDoc(t.doc, level)}`,
         level,
         currentPath
       )
@@ -351,10 +352,11 @@ ${Object.values(r.abstractTypes)
   .map((t) =>
     makeSection(
       t.name,
-      `${printInReScriptTag(printAbstractType(t), t.name)}\n\n${transformDoc(
-        t.doc,
-        level
-      )}`,
+      `${printInReScriptTag(
+        printAbstractType(t),
+        t.name,
+        currentPath.join(".")
+      )}\n\n${transformDoc(t.doc, level)}`,
       level,
       currentPath
     )
@@ -365,10 +367,11 @@ ${[...Object.values(r.values), ...Object.values(r.externals)]
   .map((t) =>
     makeSection(
       t.name,
-      `${printInReScriptTag(printValue(t), t.name)}\n\n${transformDoc(
-        t.doc,
-        level
-      )}`,
+      `${printInReScriptTag(
+        printValue(t),
+        t.name,
+        currentPath.join(".")
+      )}\n\n${transformDoc(t.doc, level)}`,
       level,
       currentPath
     )
