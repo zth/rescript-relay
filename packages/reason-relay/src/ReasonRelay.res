@@ -304,22 +304,6 @@ module RecordSourceSelectorProxy = {
   @bs.send external invalidateStore: t => unit = "invalidateStore"
 }
 
-module RecordSourceProxy = {
-  type t
-
-  @bs.send
-  external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
-
-  @bs.send external delete: (t, ~dataId: dataId) => unit = "delete"
-
-  @bs.send @bs.return(nullable)
-  external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
-
-  @bs.send external getRoot: t => RecordProxy.t = "getRoot"
-
-  @bs.send external invalidateStore: t => unit = "invalidateStore"
-}
-
 module ConnectionHandler = {
   @bs.module("relay-runtime") @bs.scope("ConnectionHandler") @bs.return(nullable)
   external getConnection: (
