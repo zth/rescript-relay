@@ -10,25 +10,6 @@ type subscriptionNode<'node>
 
 type fragmentRefs<'fragments>
 
-@ocaml.text(
-  `The type of the id Relay uses to identify records in its store.
-
-## Getting \`dataId\`'s
-You can get the dataId of anything by selecting \`__id\` in your query/fragment/mutation/subscription, like this:
-\`\`\`graphql
-fragment Avatar_user on User {
-  __id # This is the data id
-  firstName
-  lastName
-}
-\`\`\`
-
-If you have globally unique IDs in your graph, \`__id\` will always be the same as the regular \`id\`. However, as \`id\` is commonly modelled as a \`string\`,
-
-## Converting between \`string\` and \`dataId\`
-You'll often want to convert between \`string\` and \`dataId\`. You can do this by using \`ReasonRelay.makeDataId(yourStringHere)\` and \`ReasonRelay.dataIdToString(yourDataIdHere)\`.
-`
-)
 type dataId
 type recordSourceRecords
 type uploadables
@@ -341,9 +322,6 @@ module ConnectionHandler = {
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
 }
 
-@ocaml.doc("
- * QUERY
- ")
 type operationDescriptor
 
 module Disposable = {
@@ -359,9 +337,6 @@ type cacheConfig = {
   transactionId: option<string>,
 }
 
-@ocaml.doc("
- * Misc
- ")
 module Observable = {
   type t<'response>
 
@@ -679,9 +654,6 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   }
 }
 
-@ocaml.doc("
- * MUTATION
- ")
 type mutationError = {message: string}
 
 exception Mutation_failed(array<mutationError>)
