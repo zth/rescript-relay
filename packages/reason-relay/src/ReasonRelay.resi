@@ -65,8 +65,8 @@ type subscriptionNode<'node>
 ### Using fragments
 Any time you spread a fragment in your GraphQL definition, a _fragment reference_ is created. To get the data for that fragment, you then pass `fragmentRefs` to that particlar component's `Fragment.use` hook. Example:
 
-```reason
-// SomeModule.res
+```rescript
+/* SomeModule.res */
 module Fragment = %relay(
   fragment SomeModule_user on User {
     id
@@ -76,7 +76,7 @@ module Fragment = %relay(
 
 @react.component
 let make = (~user) => {
-  let user = Fragment.use(user) // This now has the data for the `SomeModule_user` fragment above.
+  let user = Fragment.use(user) /Ä This now has the data for the `SomeModule_user` fragment above. */
 
   /**
    * The line below passes `fragmentRefs` on `user` (this components fragment) to the Avatar component, 
@@ -115,7 +115,7 @@ external dataIdToString: dataId => string = "%identity"
   "Turns a `string` into a `dataId`.
 
 ### Example
-```reason
+```rescript
 module User = %relay(`
   fragment SomeModule_user on User {
     id
@@ -171,7 +171,7 @@ external isClientID: dataId => bool = "isClientID"
   
 ### Example
 ```rescript
-// Make sure this runs before Relay is setup.
+/* Make sure this runs before Relay is setup. */
 
 ReasonRelay.featureFlags.enablePrecisTypeRefinement = true
 ```"
@@ -192,7 +192,7 @@ type featureFlags = {
 
 ### Example
 ```rescript
-// Make sure this runs before Relay is setup.
+/* Make sure this runs before Relay is setup. */
 
 ReasonRelay.featureFlags.enablePrecisTypeRefinement = true
 ```"
@@ -733,16 +733,16 @@ module Store: {
     "Publishes _new_ records to this store. This is useful in particular with frameworks like Next.js where routes could preload data needed and then serialize that (using `RecordSource.toJSON`) and send it over the wire, but you already have a store instantiated client side. This will then allow you to publish those records into your existing store.
 
 ### Pseudo-example
-```reason
-// A Next.js route component
+```rescript
+/* A Next.js route component */
 
 @react.component
 let make = (~serializedRecords: ReasonRelay.recordSourceRecords) => {
   let environment = ReasonRelay.useEnvironmentFromContext()
 
-  // Make sure we only run this once
+  /* Make sure we only run this once */
   React.useEffect2(() => {
-    // This will publish the records to the existing store
+    /* This will publish the records to the existing store */
     environment->ReasonRelay.Store.publish(serializedRecords)
     None
   }, (environment, serializedRecords))
@@ -815,10 +815,10 @@ module Disposable: {
 
 @ocaml.doc("fetchPolicy controls how you want Relay to resolve your data.")
 type fetchPolicy =
-  | StoreOnly // Resolve only from the store
-  | StoreOrNetwork // Resolve from the store if all data is there, otherwise make a network request
-  | StoreAndNetwork // Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not
-  | NetworkOnly // Always make a request, discard what's in the store
+  | StoreOnly /* Resolve only from the store */
+  | StoreOrNetwork /* Resolve from the store if all data is there, otherwise make a network request */
+  | StoreAndNetwork /* Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not */
+  | NetworkOnly /* Always make a request, regardless of what's in the store */
 
 @ocaml.doc("Internal, do not use.")
 let mapFetchPolicy: option<fetchPolicy> => option<string>
@@ -880,7 +880,7 @@ exception Mutation_failed(array<mutationError>)
 ### Example
 Say you have fetched a user, and you want to (only locally) update that user's first name. You could use `commitLocalUpdate` to achieve that, roughly in the following way (beware that this is pseudo code):
 
-```reason
+```rescript
 module User =  %relay(`
   fragment SomeModule_user on User {
     __id # This will return the `dataId` for this user, that we can use to update the store
@@ -922,7 +922,7 @@ external commitLocalUpdate: (
   "Allows you to subscribe to when a record, connection, or even the store itself is invalidated, and then react to that.
 
 ### Example
-```reason
+```rescript
 
 module Fragment = %relay(`
   fragment SomeComponent_user on User {

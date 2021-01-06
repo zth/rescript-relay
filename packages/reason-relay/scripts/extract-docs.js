@@ -34,6 +34,7 @@ const runComby = (content, command, extract = true) => {
       "-stdin",
       "-match-only",
       "-json-lines",
+      "-match-newline-at-toplevel",
       "-matcher",
       ".re",
     ],
@@ -56,25 +57,34 @@ const runComby = (content, command, extract = true) => {
   return extract ? extractParts(matched) : matched;
 };
 
-const matchTypes = (content) =>
-  runComby(content, "@ocaml.doc(:[doc]) type :[name] = :[signature] \n\n");
-
 const matchExternals = (content) => [
   ...runComby(
     content,
-    "@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = :[__other] @ocaml:[__other2]"
+    '@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = ":[__ext]"'
   ),
   ...runComby(
     content,
-    "@ocaml.doc(:[doc]) external :[name]: :[signature] = :[__other] \n\n"
+    '@ocaml.doc(:[doc]) external :[name]: :[signature] = ":[__ext]"'
   ),
 ];
 
 const matchValues = (content) =>
-  runComby(content, "@ocaml.doc(:[doc]) let :[name]: :[signature] \n\n");
+  runComby(
+    content,
+    "@ocaml.doc(:[doc]) let :[name]: :[signature] :[~(@ocaml|@@ocaml)]"
+  );
+
+const matchTypes = (content) =>
+  runComby(
+    content,
+    "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*]:[~ =] :[signature] :[~@ocaml|@@ocaml]"
+  );
 
 const matchAbstractTypes = (content) =>
-  runComby(content, "@ocaml.doc(:[doc]) type :[name] \n\n");
+  runComby(
+    content,
+    "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*\n] :[~@ocaml|@@ocaml]"
+  );
 
 const matchModules = (content, extract) =>
   runComby(content, "@ocaml.doc(:[doc]) module :[name]: {:[content]}", extract);
@@ -100,11 +110,11 @@ const getSrcWithoutModules = (src) => {
   let lastIndex = 0;
 
   modules.matches.forEach((m) => {
-    srcWithoutModules += srcFile.slice(lastIndex, m.range.start.offset);
+    srcWithoutModules += src.slice(lastIndex, m.range.start.offset);
     lastIndex = m.range.end.offset;
   });
 
-  return srcWithoutModules;
+  return srcWithoutModules + '\n\n@@ocaml.doc("")';
 };
 
 const trimDoc = (t) => {
@@ -113,6 +123,16 @@ const trimDoc = (t) => {
       delete t.doc;
     } else {
       t.doc = t.doc.trim().replace(/^\"|\"$/gm, "");
+    }
+  }
+
+  if (t.signature) {
+    t.signature = t.signature.trim().replace(/@\n/g, "");
+    if (t.signature.endsWith("@")) {
+      t.signature = t.signature.slice(0, t.signature.length - 2);
+    }
+    if (t.signature.startsWith("|")) {
+      t.isVariant = true;
     }
   }
 
@@ -131,6 +151,7 @@ const extractFromSource = (src, target) => {
 
   abstractTypes.forEach((t) => {
     if (!t.name.includes("=")) {
+      t.name = t.name.split("\n")[0];
       trimDoc(t);
       if (!t.doc.startsWith("Internal, do not use")) {
         target.abstractTypes[t.name] = t;
@@ -140,6 +161,8 @@ const extractFromSource = (src, target) => {
 
   types.forEach((t) => {
     trimDoc(t);
+    t.name = t.name.split("\n")[0];
+
     if (!t.doc.startsWith("Internal, do not use")) {
       target.types[t.name] = t;
     }
@@ -261,7 +284,8 @@ const makeSlugify = () => {
 
 const rawSlugify = makeSlugify();
 const slugify = (c) => rawSlugify(c, { strict: true, lower: true });
-const printType = (t) => `type ${t.name} = ${t.signature}`;
+const printType = (t) =>
+  `type ${t.name} = ${t.isVariant ? "\n  " : ""}${t.signature}`;
 const printAbstractType = (t) => `type ${t.name}`;
 const printValue = (t) => `let ${t.name}: ${t.signature}`;
 const makeHeadlineFromLevel = (level) =>
@@ -292,6 +316,7 @@ const transformDoc = (doc, level) => {
   res = res
     .split("`")
     .map((s, i) => {
+      // Is this a token?
       const leadingText = /^[a-zA-Z_.]*/g.exec(s)[0];
 
       if (leadingText === s) {
@@ -312,12 +337,32 @@ const transformDoc = (doc, level) => {
 };
 
 const printInReScriptTag = (c, name, prefix) => {
-  let res = "```reason\n" + c + "\n```";
+  let content = c.replace(/(@bs)([\s\S]*?)((,|\n)[\n\t\r ]*)/g, "");
+  let res = "```reason\n" + content + "\n```";
 
-  const tokensInCode = tokens.filter((t) => c.includes(t) && t !== name);
+  const tokensInCode = tokens.filter(
+    (t) =>
+      (content.includes(`: ${t}`) || content.includes(`=> ${t}`)) && t !== name
+  );
+
+  if (
+    (prefix && content.includes("(t,")) ||
+    content.includes(": t,") ||
+    content.includes(" t)") ||
+    content.includes(" t =>") ||
+    content.includes(" t,\n")
+  ) {
+    tokensInCode.unshift(`${prefix}.t`);
+  }
 
   if (tokensInCode.length > 0) {
     res += `\n> Read more about: ${tokensInCode
+      .reduce((acc, curr) => {
+        if (!acc.includes(curr)) {
+          acc.push(curr);
+        }
+        return acc;
+      }, [])
       .map((t) => makeTokenLink(t))
       .join(", ")}`;
   }
@@ -399,7 +444,7 @@ const resToMd = (r) => {
 # Types, values and functions
 ${printContents(r, [])}`;
 
-  return str;
+  return str.replace(/```rescript/g, "```reason");
 };
 
 fs.writeFileSync(
