@@ -60,31 +60,25 @@ const runComby = (content, command, extract = true) => {
 const matchExternals = (content) => [
   ...runComby(
     content,
-    '@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = ":[__ext]"'
+    '@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = ":[__ext]" // DOCEND'
   ),
   ...runComby(
     content,
-    '@ocaml.doc(:[doc]) external :[name]: :[signature] = ":[__ext]"'
+    '@ocaml.doc(:[doc]) external :[name]: :[signature] = ":[__ext]" // DOCEND'
   ),
 ];
 
 const matchValues = (content) =>
-  runComby(
-    content,
-    "@ocaml.doc(:[doc]) let :[name]: :[signature] :[~(@ocaml|@@ocaml)]"
-  );
+  runComby(content, "@ocaml.doc(:[doc]) let :[name]: :[signature] // DOCEND");
 
 const matchTypes = (content) =>
   runComby(
     content,
-    "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*]:[~ =] :[signature] :[~@ocaml|@@ocaml]"
+    "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*]:[~ =] :[signature] // DOCEND"
   );
 
 const matchAbstractTypes = (content) =>
-  runComby(
-    content,
-    "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*\n] :[~@ocaml|@@ocaml]"
-  );
+  runComby(content, "@ocaml.doc(:[doc]) type :[name~[a-zA-Z0-9]*] // DOCEND");
 
 const matchModules = (content, extract) =>
   runComby(content, "@ocaml.doc(:[doc]) module :[name]: {:[content]}", extract);
@@ -340,10 +334,20 @@ const printInReScriptTag = (c, name, prefix) => {
   let content = c.replace(/(@bs)([\s\S]*?)((,|\n)[\n\t\r ]*)/g, "");
   let res = "```reason\n" + content + "\n```";
 
-  const tokensInCode = tokens.filter(
-    (t) =>
-      (content.includes(`: ${t}`) || content.includes(`=> ${t}`)) && t !== name
-  );
+  const tokensInCode = [
+    ...tokens.filter(
+      (t) =>
+        (content.includes(`: ${t}`) || content.includes(`=> ${t}`)) &&
+        t !== name
+    ),
+    ...(prefix
+      ? tokens.filter(
+          (t) =>
+            content.includes(`: ${t.replace(prefix + ".", "")}`) ||
+            content.includes(`=> ${t.replace(prefix + ".", "")}`)
+        )
+      : []),
+  ];
 
   if (
     (prefix && content.includes("(t,")) ||

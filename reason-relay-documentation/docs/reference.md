@@ -51,10 +51,21 @@ type cacheConfig = {
   liveConfigId: option<string>,
   transactionId: option<string>,
 }
-
 ```
 
 The cache config provided to the network layer. Relay won't do anything in particular with these, it's up to you to use them if you want inside of your `NetworkLayer`.
+
+## [renderPolicy](#renderpolicy)
+```reason
+type renderPolicy = 
+  | Full
+  /* Allow rendering any fragments that already have the data needed */
+  | Partial
+```
+
+renderPolicy controls if Relay is allowed to render partially available data or not. 
+
+Relay rendering partial data means it will suspend at the _fragment level_ rather than at the _query level_ if a query does not exist in the cache. This has the implication that if a fragment can be reached because the data for that fragment already exists, Relay can allow that to render while waiting for new data.
 
 ## [fetchPolicy](#fetchpolicy)
 ```reason
@@ -79,7 +90,6 @@ The fetch policies allowed for fetching a query outside of React's render (as in
 ## [mutationError](#mutationerror)
 ```reason
 type mutationError = {message: string}
-
 ```
 
 An error from a mutation.
@@ -94,6 +104,18 @@ Abstract type for arguments, used when selecting fields on [RecordProxy](#record
 ### Using [arguments](#arguments)  to access fields on [RecordProxy](#recordproxy) 
 _(note that this example is for [RecordProxy](#recordproxy) , but it applies to any primitive in the store that takes arguments for fields)_
 
+
+## [uploadables](#uploadables)
+```reason
+type uploadables
+```
+
+Abstract type for uploadables.
+
+### Constructing an [uploadables](#uploadables) 
+Use [makeUploadable](#makeuploadable) : `makeUploadable({ "someFile": theFileYouWantToUpload })` to construct an [uploadables](#uploadables) , and then pass it to your mutation via the [uploadables](#uploadables)  prop.
+
+Please note that you'll need to handle _sending_ the uploadables to your server yourself in the network layer. [Here's an example](https://github.com/facebook/relay/issues/1844#issuecomment-316893590) in regular JS that you can adapt to ReScript as you need/want.
 
 ## [any](#any)
 ```reason
@@ -132,6 +154,13 @@ type recordSourceRecords
 An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
 
 See [RecordSource.toJSON](#recordsourcetojson)  for how to produce it.
+
+## [operationDescriptor](#operationdescriptor)
+```reason
+type operationDescriptor
+```
+
+Handle creating and using operation descriptors.
     
 ## [dataIdToString](#dataidtostring)
 ```reason
@@ -158,7 +187,7 @@ let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit
 ```
 > Read more about: [dataId](#dataid)
 
-Construct an `uploadables` object that you can use for uploads via Relay.
+Construct an [uploadables](#uploadables)  object that you can use for uploads via Relay.
 
 ### Usage
 Use it like this: `makeUploadable({ "someFile": someFile, "anotherFile": anotherFile })`. Notice the "" surrounding the property names - these are important and tells ReScript that we want this to be a JS object.
@@ -240,8 +269,9 @@ let make = (~user) => {
 ```reason
 let makeUploadable: {..} => uploadables
 ```
+> Read more about: [uploadables](#uploadables)
 
-Construct an `uploadables` object that you can use for uploads via Relay.
+Construct an [uploadables](#uploadables)  object that you can use for uploads via Relay.
 
 ### Usage
 Use it like this: `makeUploadable({ "someFile": someFile, "anotherFile": anotherFile })`. Notice the "" surrounding the property names - these are important and tells ReScript that we want this to be a JS object.
@@ -768,6 +798,7 @@ let makeObserver: (
     unit,
   ) => observer<'response>
 ```
+> Read more about: [Observable.subscription](#observablesubscription)
 
 The type representing the observable.
 
@@ -782,6 +813,7 @@ Create a new observable, getting fed an `Observable.sink` for interacting with t
 ```reason
 let subscribe: (t<'t>, observer<'t>) => subscription
 ```
+> Read more about: [Observable.subscription](#observablesubscription)
 
 Subscribe to the `Observable.t` using an observer.
 
@@ -809,6 +841,14 @@ type operation = {
 
 The operation fed to the `NetworkLayer` when Relay wants to make a request. Please note that if you're using persisted queries, `id` will exist but `text` won't, and vice versa when not using persisted queries.
 
+### [Network.subscribeFn](#networksubscribefn)
+```reason
+type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
+```
+> Read more about: [Observable](#observable)
+
+The shape of the function Relay expects for creating a subscription.
+
 ### [Network.fetchFunctionPromise](#networkfetchfunctionpromise)
 ```reason
 type fetchFunctionPromise = (
@@ -820,6 +860,19 @@ type fetchFunctionPromise = (
 ```
 
 The shape of the function responsible for fetching data if you want to return a promise rather than an [Observable](#observable) .
+
+### [Network.fetchFunctionObservable](#networkfetchfunctionobservable)
+```reason
+type fetchFunctionObservable = (
+    operation,
+    Js.Json.t,
+    cacheConfig,
+    Js.Nullable.t<uploadables>,
+  ) => Observable.t<Js.Json.t>
+```
+> Read more about: [Observable](#observable)
+
+The shape of the function responsible for fetching data if you want to return an [Observable](#observable) .
     
 ### [Network.t](#networkt)
 ```reason
@@ -836,6 +889,7 @@ let makePromiseBased: (
     unit,
   ) => t
 ```
+> Read more about: [Network.subscribeFn](#networksubscribefn), [Network.fetchFunctionPromise](#networkfetchfunctionpromise), [Network.t](#networkt)
 
 The type representing an instantiated `NetworkLayer`.
 
@@ -847,6 +901,7 @@ let makeObservableBased: (
     unit,
   ) => t
 ```
+> Read more about: [Network.subscribeFn](#networksubscribefn), [Network.fetchFunctionObservable](#networkfetchfunctionobservable), [Network.t](#networkt)
 
 Create a new `NetworkLayer` using a fetch function that returns an [Observable](#observable) .
 
@@ -868,7 +923,7 @@ The type representing an instantiated [RecordSource](#recordsource) .
 ```reason
 let make: (~records: recordSourceRecords=?, unit) => t
 ```
-> Read more about: [recordSourceRecords](#recordsourcerecords)
+> Read more about: [recordSourceRecords](#recordsourcerecords), [RecordSource.t](#recordsourcet)
 
 The type representing an instantiated [RecordSource](#recordsource) .
 
@@ -904,7 +959,7 @@ let make: (
     unit,
   ) => t
 ```
-> Read more about: [RecordSource](#recordsource), [RecordSource.t](#recordsourcet)
+> Read more about: [RecordSource](#recordsource), [RecordSource.t](#recordsourcet), [Store.t](#storet)
 
 Creates a new [Store](#store) .
 
@@ -969,7 +1024,7 @@ let make: (
     unit,
   ) => t
 ```
-> Read more about: [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet)
+> Read more about: [renderPolicy](#renderpolicy), [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet), [Environment.t](#environmentt)
 
 Create a new [Environment](#environment) .
 
@@ -987,7 +1042,7 @@ let commitPayload: (t, operationDescriptor, 'payload) => unit
 ```
 > Read more about: [Environment.t](#environmentt)
 
-Given an `operationDescriptor`, commits the corresponding payload.
+Given an [operationDescriptor](#operationdescriptor) , commits the corresponding payload.
 
 
 ## Disposable
