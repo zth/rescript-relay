@@ -60,11 +60,11 @@ const runComby = (content, command, extract = true) => {
 const matchExternals = (content) => [
   ...runComby(
     content,
-    '@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = ":[__ext]" // DOCEND'
+    '@ocaml.doc(:[doc]) :[__annotations] external :[name]: :[signature] = ":[]" // DOCEND'
   ),
   ...runComby(
     content,
-    '@ocaml.doc(:[doc]) external :[name]: :[signature] = ":[__ext]" // DOCEND'
+    '@ocaml.doc(:[doc]) external :[name]: :[signature] = ":[]" // DOCEND'
   ),
 ];
 

@@ -154,13 +154,6 @@ type recordSourceRecords
 An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
 
 See [RecordSource.toJSON](#recordsourcetojson)  for how to produce it.
-
-## [operationDescriptor](#operationdescriptor)
-```reason
-type operationDescriptor
-```
-
-Handle creating and using operation descriptors.
     
 ## [dataIdToString](#dataidtostring)
 ```reason
@@ -1042,7 +1035,7 @@ let commitPayload: (t, operationDescriptor, 'payload) => unit
 ```
 > Read more about: [Environment.t](#environmentt)
 
-Given an [operationDescriptor](#operationdescriptor) , commits the corresponding payload.
+Given an `operationDescriptor`, commits the corresponding payload.
 
 
 ## Disposable

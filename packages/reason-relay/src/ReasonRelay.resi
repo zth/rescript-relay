@@ -848,7 +848,7 @@ type renderPolicy =
 let mapRenderPolicy: option<renderPolicy> => option<string>
 // DOCEND
 
-@ocaml.doc("Handle creating and using operation descriptors.")
+@ocaml.doc("Internal, do not use.")
 type operationDescriptor
 // DOCEND
 
