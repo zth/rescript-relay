@@ -1,4 +1,4 @@
-module TodoListFragment = %relay.fragment(
+module TodoListFragment = %relay(
   `
   fragment TodoList_query on Query
     @argumentDefinitions(
@@ -19,7 +19,7 @@ module TodoListFragment = %relay.fragment(
 `
 )
 
-module AddTodoMutation = %relay.mutation(
+module AddTodoMutation = %relay(
   `
   mutation TodoListAddTodoMutation(
     $input: AddTodoItemInput!

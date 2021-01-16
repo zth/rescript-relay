@@ -21,7 +21,7 @@
  * Whew, lots of information... But the only thing you really need to think about is that
  * you _pass along fragment refs by passing the full object the fragment was spread on_.
  */
-module Query = %relay.query(
+module Query = %relay(
   `
   query MainQuery {
     siteStatistics {

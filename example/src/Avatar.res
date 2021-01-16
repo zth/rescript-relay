@@ -1,4 +1,4 @@
-module Fragment = %relay.fragment(
+module Fragment = %relay(
   `
   fragment Avatar_user on User {
     avatarUrl

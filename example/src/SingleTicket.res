@@ -1,4 +1,4 @@
-module TicketFragment = %relay.fragment(
+module TicketFragment = %relay(
   `
   fragment SingleTicket_ticket on Ticket {
     assignee {

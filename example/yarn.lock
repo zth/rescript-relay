@@ -3955,18 +3955,12 @@ reason-react@^0.9.1:
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
   integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
 
-reason-relay@0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.12.1.tgz#e6241b938ccb55897c6db40bbbc9c00513b59e04"
-  integrity sha512-0fheU0xz0L9+08XGKlAJ/amRO9R/4b0D0HWfVdIzyBr4wzsJWrjsz/SQXpSlEKVH6F12k0E4oW581JYNS80+AA==
+reason-relay@0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.13.0.tgz#d9eaed80fdf7bc41f8367682afba029048b14a1d"
+  integrity sha512-399ED5S6kcp/AOQSD/8h5CGky/jIFzbEMJ4yCEQCiAmbu8t8I7SSkR/w00la+XBUERdrWmDwIC6u3ckA0/IqDg==
   dependencies:
     mkdirp-sync "^0.0.3"
-    reason "^3.3.4"
-
-reason@^3.3.4:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/reason/-/reason-3.3.4.tgz#a294ef8aa14fa85c6fd8a7db5dcab053f2382f68"
-  integrity sha512-WwXkrcwbUUazf0pEn7Vrd0R7wKOMEPmn4ZBb0ffKCxKiqoUh13E8hnSEhytNM81vl3O3A0ENyZa+Ys0fMnJgnw==
 
 regenerator-runtime@^0.13.4:
   version "0.13.7"

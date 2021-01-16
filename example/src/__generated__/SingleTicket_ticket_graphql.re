@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -61,16 +62,15 @@ let wrap_fragment_assignee:
 module Internal = {
   type fragmentRaw;
   let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"assignee":{"n":"","u":"fragment_assignee"},"assignee_user":{"f":""},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""},"":{"f":""}}} |json}
+    {json| {"__root":{"":{"f":""},"assignee_user":{"f":""},"assignee":{"n":"","u":"fragment_assignee"},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""}}} |json}
   ];
   let fragmentConverterMap = {"fragment_assignee": unwrap_fragment_assignee};
   let convertFragment = v =>
-    v
-    ->ReasonRelay.convertObj(
-        fragmentConverter,
-        fragmentConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      fragmentConverter,
+      fragmentConverterMap,
+      Js.undefined,
+    );
 };
 
 type t;
@@ -85,8 +85,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| {
+
+
+let node: operationType = [%raw {json| {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -170,5 +171,6 @@ let node: operationType = [%raw
   ],
   "type": "Ticket",
   "abstractKey": null
-} |json}
-];
+} |json}];
+
+

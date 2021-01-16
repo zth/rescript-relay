@@ -1,4 +1,4 @@
-module WorkingGroupFragment = %relay.fragment(
+module WorkingGroupFragment = %relay(
   `
   fragment SingleTicketWorkingGroup_workingGroup on WorkingGroup
     @argumentDefinitions(

@@ -1,4 +1,4 @@
-module Fragment = %relay.fragment(
+module Fragment = %relay(
   `
   fragment TicketStatusBadge_ticket on Ticket  {
     status

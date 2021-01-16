@@ -1,4 +1,4 @@
-module Fragment = %relay.fragment(
+module Fragment = %relay(
   `
   fragment RecentTickets_query on Query
     @refetchable(queryName: "RecentTicketsRefetchQuery")

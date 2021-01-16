@@ -1,4 +1,4 @@
-module TodoFragment = %relay.fragment(
+module TodoFragment = %relay(
   `
   fragment SingleTodo_todoItem on TodoItem {
     id
@@ -8,7 +8,7 @@ module TodoFragment = %relay.fragment(
 `
 )
 
-module DeleteMutation = %relay.mutation(
+module DeleteMutation = %relay(
   `
   mutation SingleTodoDeleteMutation(
     $input: DeleteTodoItemInput!
@@ -21,7 +21,7 @@ module DeleteMutation = %relay.mutation(
 `
 )
 
-module UpdateMutation = %relay.mutation(
+module UpdateMutation = %relay(
   `
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {

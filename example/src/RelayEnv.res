@@ -11,7 +11,12 @@ Graphql_error(string)
  * A standard fetch that sends our operation and variables to the
  * GraphQL server, and then decodes and returns the response.
  */
-let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig) => {
+let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (
+  operation,
+  variables,
+  _cacheConfig,
+  _uploadables,
+) => {
   open Fetch
   fetchWithInit(
     "http://localhost:4000/graphql",

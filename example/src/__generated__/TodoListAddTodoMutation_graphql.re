@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -40,67 +41,62 @@ module Types = {
 module Internal = {
   type wrapResponseRaw;
   let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}} |json}
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapResponseConverter,
-        wrapResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapResponseConverter,
+      wrapResponseConverterMap,
+      Js.null,
+    );
 
   type responseRaw;
   let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}} |json}
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type wrapRawResponseRaw;
   let wrapRawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}} |json}
   ];
   let wrapRawResponseConverterMap = ();
   let convertWrapRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        wrapRawResponseConverter,
-        wrapRawResponseConverterMap,
-        Js.null,
-      );
+    v->ReasonRelay.convertObj(
+      wrapRawResponseConverter,
+      wrapRawResponseConverterMap,
+      Js.null,
+    );
 
   type rawResponseRaw;
   let rawResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem_addedTodoItemEdge_node_completed":{"n":""}}} |json}
+    {json| {"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}} |json}
   ];
   let rawResponseConverterMap = ();
   let convertRawResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        rawResponseConverter,
-        rawResponseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      rawResponseConverter,
+      rawResponseConverterMap,
+      Js.undefined,
+    );
 
   let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
     {json| {"__root":{"input":{"r":"AddTodoItemInput"}},"AddTodoItemInput":{"clientMutationId":{"n":""}}} |json}
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {
@@ -161,8 +157,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.mutationNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
@@ -297,5 +294,6 @@ return {
     "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItemEdge {\n      node {\n        id\n        text\n        completed\n      }\n    }\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
+
+

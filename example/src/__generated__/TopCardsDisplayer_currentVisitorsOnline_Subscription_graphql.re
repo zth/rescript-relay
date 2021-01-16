@@ -1,3 +1,4 @@
+
 /* @generated */
 
 module Types = {
@@ -18,12 +19,11 @@ module Internal = {
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v
-    ->ReasonRelay.convertObj(
-        responseConverter,
-        responseConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      responseConverter,
+      responseConverterMap,
+      Js.undefined,
+    );
 
   type rawResponseRaw = responseRaw;
   let convertRawResponse = convertResponse;
@@ -33,12 +33,11 @@ module Internal = {
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v
-    ->ReasonRelay.convertObj(
-        variablesConverter,
-        variablesConverterMap,
-        Js.undefined,
-      );
+    v->ReasonRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined,
+    );
 };
 
 module Utils = {};
@@ -47,8 +46,9 @@ type relayOperationNode;
 
 type operationType = ReasonRelay.subscriptionNode(relayOperationNode);
 
-let node: operationType = [%raw
-  {json| (function(){
+
+
+let node: operationType = [%raw {json| (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -115,5 +115,6 @@ return {
     "text": "subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {\n  siteStatisticsUpdated {\n    currentVisitorsOnline\n    id\n  }\n}\n"
   }
 };
-})() |json}
-];
+})() |json}];
+
+

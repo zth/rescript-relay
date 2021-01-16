@@ -5,7 +5,7 @@
  * This is a pretty basic fragment, there are more complex ones you can have
  * a look at in other components.
  */
-module SiteStatisticsFragment = %relay.fragment(
+module SiteStatisticsFragment = %relay(
   `
   fragment TopCardsDisplayer_siteStatistics on SiteStatistics {
     weeklySales
@@ -15,7 +15,7 @@ module SiteStatisticsFragment = %relay.fragment(
 `
 )
 
-module CurrentVisitorsSubscription = %relay.subscription(
+module CurrentVisitorsSubscription = %relay(
   `
   subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {
     siteStatisticsUpdated {
