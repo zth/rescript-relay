@@ -111,7 +111,7 @@ You're encouraged to read more in the [official Relay documentation on paginatio
 
 ## API Reference
 
-A `[%relay]` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
+A `%relay()` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
 
 ### `usePagination`
 

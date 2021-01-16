@@ -31,7 +31,7 @@ module CurrentVisitorsSubscription = %relay(
  *   feel it's more evident what it is (and that I want to use siteStatistics
  *   as name for the data I extract via the fragment) and is in no way
  *   required.
- * - [%relay.fragment] autogenerates a `use` hook, which takes the object holding
+ * - %relay() autogenerates a `use` hook, which takes the object holding
  *   the fragment ref and extracts the data. Thanks to the superpowers of inference,
  *   we don't really need to annotate anything here for it to be 100% type safe.
  *

@@ -63,7 +63,7 @@ If you want to dive deeper into GraphQL fragments you're encouraged to read thro
 
 ### Fragments in ReasonRelay
 
-Fragments are defined in ReasonRelay by using the `[%relay]` extension node. Here's an example of a fragment and a component that renders the fragment data:
+Fragments are defined in ReasonRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
 ```rescript
 /* UserProfileHeader.res */
@@ -234,7 +234,7 @@ With that in mind, Let's jump in to [mutations](mutations).
 
 ## API Reference
 
-`[%relay]` is expanded to a module containing the following functions:
+`%relay()` is expanded to a module containing the following functions:
 
 ### `use`
 

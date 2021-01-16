@@ -14,7 +14,7 @@ sidebar_label: Making Queries
 
 Let's make our first query!
 
-Queries in ReasonRelay are defined using the `[%relay]` extension node. Let's set up our first query and a component to display the data:
+Queries in ReasonRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
 
 ```rescript
 /* UserProfile.res */
@@ -63,7 +63,7 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `[%relay]` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
+In ReasonRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
 1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaed`, like `let queryData = Query.usePreloaded(~queryRef=queryRef, ())`, to get the data for the query as soon as it's available.
 2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
@@ -115,7 +115,7 @@ A very useful pattern that's encouraged over using the lazy approach. In short, 
 
 ## API Reference
 
-`[%relay]` is expanded to a module containing the following functions:
+`%relay()` is expanded to a module containing the following functions:
 
 ### `use`
 

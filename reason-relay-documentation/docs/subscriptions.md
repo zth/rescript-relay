@@ -71,7 +71,7 @@ let environment = ReasonRelay.Environment.make(~network, ~store, ())
 
 ```
 
-Subscriptions in ReasonRelay are defined using the `[%relay]` extension node. The following example shows how to define and start a subscription with ReasonRelay.
+Subscriptions in ReasonRelay are defined using the `%relay()` extension node. The following example shows how to define and start a subscription with ReasonRelay.
 
 Lets imagine we have the following schema:
 
@@ -130,7 +130,7 @@ See the [examples](https://github.com/zth/reason-relay/tree/master/example) fold
 
 ## API Reference
 
-`[%relay]` with a subscription in it is expanded to a module containing the following functions:
+`%relay()` with a subscription in it is expanded to a module containing the following functions:
 
 ## `subscribe`
 
