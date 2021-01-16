@@ -6,7 +6,7 @@
   "author": "Gabriel Nordeborn",
   "sideEffects": false,
   "repository": "https://github.com/zth/reason-relay",
-  "description": "Use Relay with ReasonML.",
+  "description": "Use Relay with ReScript.",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

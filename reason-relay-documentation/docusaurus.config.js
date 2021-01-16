@@ -7,7 +7,7 @@
 
 module.exports = {
   title: "Reason Relay",
-  tagline: "Use Relay with ReasonML",
+  tagline: "Use Relay with ReScript",
   url: "https://your-docusaurus-test-site.com",
   baseUrl: "/",
   favicon: "img/favicon.png",
@@ -16,15 +16,15 @@ module.exports = {
   themeConfig: {
     navbar: {
       title: "Reason Relay",
-      links: [
+      items: [
         { to: "docs/start-here", label: "Docs", position: "left" },
         { to: "blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/zth/reason-relay",
           label: "GitHub",
-          position: "right"
-        }
-      ]
+          position: "right",
+        },
+      ],
     },
     footer: {
       style: "dark",
@@ -34,43 +34,43 @@ module.exports = {
           items: [
             {
               label: "Docs",
-              to: "docs/introduction"
-            }
-          ]
+              to: "docs/introduction",
+            },
+          ],
         },
         {
           title: "Community",
           items: [
             {
               label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus"
-            }
-          ]
+              href: "https://discordapp.com/invite/docusaurus",
+            },
+          ],
         },
         {
           title: "Social",
           items: [
             {
               label: "Blog",
-              to: "blog"
-            }
-          ]
-        }
+              to: "blog",
+            },
+          ],
+        },
       ],
-      copyright: `Built with Docusaurus.`
-    }
+      copyright: `Built with Docusaurus.`,
+    },
   },
   presets: [
     [
       "@docusaurus/preset-classic",
       {
         docs: {
-          sidebarPath: require.resolve("./sidebars.js")
+          sidebarPath: require.resolve("./sidebars.js"),
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css")
-        }
-      }
-    ]
-  ]
+          customCss: require.resolve("./src/css/custom.css"),
+        },
+      },
+    ],
+  ],
 };

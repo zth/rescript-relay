@@ -4,14 +4,14 @@ title: Start Here
 sidebar_label: Start Here
 ---
 
-ReasonRelay is a way to use [Relay](https://relay.dev), a JavaScript client-side framework for building data-driven applications using GraphQL, together with [ReasonML](https://reasonml.github.io/). This page will briefly introduce the documentation, how it's structured and what to expect.
+ReasonRelay is a way to use [Relay](https://relay.dev), a JavaScript client-side framework for building data-driven applications using GraphQL, together with [ReScript](https://rescript-lang.org/). This page will briefly introduce the documentation, how it's structured and what to expect.
 
 ### A starting pointer
 
 The following is worth keeping in mind:
 ReasonRelay is to be seen as experimental software until React and Relay release the experimental APIs we rely on as stable. And since we're early in the life of ReasonRelay, breaking changes in some of the APIs may occur as we iterate on them.
 
-With that said, the _goal is to make ReasonRelay a viable and attractive alternative for doing GraphQL with ReasonML in production_. That means that we'll do what we can to improve the bindings in a sane way without breaking things.
+With that said, the _goal is to make ReasonRelay a viable and attractive alternative for doing GraphQL with ReScript in production_. That means that we'll do what we can to improve the bindings in a sane way without breaking things.
 
 ## Structure
 

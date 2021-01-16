@@ -13,12 +13,12 @@ sidebar_label: Mutations
 
 Fetching and displaying data is only half the fun, right? We want to change stuff as well! Making mutations in Relay is pretty straight-forward, and we'll introduce exactly how you do it in ReasonRelay here.
 
-Mutations in ReasonRelay are defined using the `[%relay]` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
+Mutations in ReasonRelay are defined using the `%relay()` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
 
 ```reason
-/* SingleTodo.re */
-module UpdateMutation = [%relay
-  {|
+/* SingleTodo.res */
+module UpdateMutation = %relay(
+  `
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {
       updatedTodoItem {
@@ -27,12 +27,12 @@ module UpdateMutation = [%relay
       }
     }
   }
-|}
-];
+`
+)
 
-[@react.component]
+@react.component
 let make = () => {
-  let (mutate, isMutating) = UpdateMutation.use();
+  let (mutate, isMutating) = UpdateMutation.use()
 
   <button
     onClick={_ =>
@@ -45,17 +45,21 @@ let make = () => {
           },
         },
         (),
-      )
-    }>
+      )}>
     {React.string(isMutating ? "Updating..." : "Update")}
-  </button>;
-};
+  </button>
+}
+
 
 ```
 
+> A note on naming: Due to the rules of Relay, a mutation must be named `<ModuleName><optionally_anything_here>Mutation`, where module name here means _file name_, not ReScript module name. So for a file `SingleTodo.res`, all mutations in that file must start with `SingleTodo` regardless of whether they're defined in nested modules or not. All mutation names must also end with `Mutation`.
+
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new mutations effortlessly via the command `> Add mutation`, including boilerplate for the component.
+
 Let's break it down:
 
-1. `[%relay]` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.
+1. `%relay()` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.
 2. We call `mutate` with input for the mutation through `variables`. This will run the mutation, which is now indicated by the second parameter of the tuple, `isMutating`.
 3. Since we ask for the updated todo item's `text` in the mutation result, Relay will automatically update any component using that.
    Neat!
@@ -76,22 +80,21 @@ Optimistically updating your UI can do wonders for UX, and Relay provides all th
 
 ```reason
 mutate(
-    ~variables={
-        input: {
-            clientMutationId: None,
-            id: todoItem.id,
-            text: newText,
-        },
+  ~variables={
+    input: {
+      clientMutationId: None,
+      id: todoItem.id,
+      text: newText,
     },
-    ~optimisticResponse={
-        updateTodoItem:
-        Some({
-            updatedTodoItem:
-            Some({"id": todoItem.id, "text": todoItem.text}),
-        }),
-    },
-    (),
+  },
+  ~optimisticResponse={
+    updateTodoItem: Some({
+      updatedTodoItem: Some({"id": todoItem.id, "text": todoItem.text}),
+    }),
+  },
+  (),
 )
+
 ```
 
 So, what's going on here?
@@ -153,8 +156,8 @@ So, there's a mutation, and that mutation includes a fragment. No big deal. Exce
 
 Well, there's a solution for this. Adding `@raw_response_type` to this mutation flattens this for us! The resulting type would look something like this in pseudo-reason:
 
-```
-// You can't construct records like this, but hey, who cares in docs
+```reason
+/* You can't construct records like this, but hey, who cares in docs */
 type rawResponse = {
   addedBlogPost: option({
     id: string,
@@ -197,7 +200,7 @@ Now would be a good time to have a look at how to [refetch and load more data](r
 
 ## API Reference
 
-`[%relay]` is expanded to a module containing the following functions:
+`%relay()` is expanded to a module containing the following functions:
 
 ### `use`
 

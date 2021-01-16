@@ -63,30 +63,37 @@ If you want to dive deeper into GraphQL fragments you're encouraged to read thro
 
 ### Fragments in ReasonRelay
 
-Fragments are defined in ReasonRelay by using the `[%relay]` extension node. Here's an example of a fragment and a component that renders the fragment data:
+Fragments are defined in ReasonRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
 ```reason
-/* UserProfileHeader.re */
-module UserFragment = [%relay {|
+/* UserProfileHeader.res */
+module UserFragment = %relay(
+  `
   fragment UserProfileHeader_user on User {
     firstName
     lastName
   }
-|}];
+`
+)
 
-[@react.component]
+@react.component
 let make = (~user) => {
-  let user = UserFragment.use(user);
+  let user = UserFragment.use(user)
 
-  <div>{React.string(user.firstName ++ " " ++ user.lastName)}</div>
+  <div> {React.string(user.firstName ++ (" " ++ user.lastName))} </div>
 }
+
 ```
+
+> A note on naming: Due to the rules of Relay, a fragment must be named `<ModuleName><optionally_anything_here>_<identifier>`, where module name here means _file name_, not ReScript module name. So for a file `UserProfile.res`, all fragments in that file must start with `UserProfile` regardless of whether they're defined in nested modules or not. _Identifier_ can be anything, but it's common to name that after the GraphQL type the fragment targets, lowercased. So a fragment in `UserProfile.res` that targets the `User`, would commonly be called `UserProfile_user`.
+
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new fragments (and optionally boilerplate for a component) via the command `> Add fragment`.
 
 Let's break down what's happening here:
 
-1. We define a fragment on the GraphQL type `User` through `[%relay]`.
+1. We define a fragment on the GraphQL type `User` through `%relay()`.
 2. We define a React component that takes a `user` prop.
-3. `[%relay]` with a fragment defined in it will autogenerate a React hook called `use`, which takes any object containing a fragment reference for that particular fragment, and returns the data.
+3. `%relay()` with a fragment defined in it will autogenerate a React hook called `use`, which takes any object containing a fragment reference for that particular fragment, and returns the data.
 4. Just as with queries, `use` for fragments is integrated with [React suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), meaning that `use` will suspend if the data's not already there.
 
 ### Fragment references and how Relay transports fragment data
@@ -94,26 +101,32 @@ Let's break down what's happening here:
 A fragment _always has to end up in a query_ at some point for it to be able to render. This is quite simply because a fragment is a _specification of what data is needed_, and somebody (I'm looking at you query) needs to take this specification and get the actual data from the server. Let's tie together the sample fragment code from above with the sample code from [making queries](making-queries) in order to demonstrate how components with fragments are used with other components, and how the fragment ends up in a query:
 
 ```reason
-/* UserProfile.re */
-module Query = [%relay {|
+/* UserProfile.res */
+module Query = %relay(
+  `
   query UserProfileQuery($userId: ID!) {
     userById(id: $userId) {
       ...UserProfileHeader_user
     }
   }
-|}];
+`
+)
 
-[@react.component]
+@react.component
 let make = (~userId) => {
-  let queryData = Query.use(~variables={
-    userId: userId
-  }, ());
+  let queryData = Query.use(
+    ~variables={
+      userId: userId,
+    },
+    (),
+  )
 
-  switch(queryData.userById) {
-    | Some(user) => <UserProfileHeader user={user.fragmentRefs} />
-    | None => React.null
-  };
+  switch queryData.userById {
+  | Some(user) => <UserProfileHeader user=user.fragmentRefs />
+  | None => React.null
+  }
 }
+
 ```
 
 Let's break down what has changed:
@@ -134,24 +147,26 @@ Yup, you read that right, you can _spread fragments on other fragments_. Remembe
 Let's expand our example fragment component to use another component `<Avatar />` that is responsible for showing a an avatar for a user:
 
 ```reason
-/* UserProfileHeader.re */
-module UserFragment = [%relay {|
+/* UserProfileHeader.res */
+module UserFragment = %relay(
+  `
   fragment UserProfileHeader_user on User {
     firstName
     lastName
     ...Avatar_user
   }
-|}];
+`
+)
 
-[@react.component]
+@react.component
 let make = (~user) => {
-  let user = UserFragment.use(user);
+  let user = UserFragment.use(user)
 
   <div>
-    <Avatar user={user.fragmentRefs} />
-    {React.string(user.firstName ++ " " ++ user.lastName)}
+    <Avatar user=user.fragmentRefs /> {React.string(user.firstName ++ (" " ++ user.lastName))}
   </div>
 }
+
 ```
 
 See the difference? Let's break it down:
@@ -172,37 +187,40 @@ This works the same way as `Fragment.use` as in you feed it an object with a fra
 Great for logging and similar activities. Example:
 
 ```reason
-/* SomeCoolLogger.re */
-module UserFragment = [%relay {|
+/* SomeCoolLogger.res */
+module UserFragment = %relay(
+  `
   fragment SomeCoolLogger_user on User @inline {
     customerId
     someOtherMetaDataProp
   }
-|}];
+`
+)
 
-let logPurchase = (user) => {
-  // We read the fragment data from the store here, without needing to use a hook
-  let userData = UserFragment.readInline(user);
+let logPurchase = user => {
+  /* We read the fragment data from the store here, without needing to use a hook */
+  let userData = UserFragment.readInline(user)
 
   SomeLoggingService.log(
     ~customerId=userId.customerId,
     ~someOtherMetaDataProp=userId.someOtherMetaDataProp,
-    ()
-  );
+    (),
+  )
 }
+
 ```
 
 ```reason
-/* BuyButton.re */
-[@react.component]
-let make = (~user) => {
-  <button onClick={_ => {
-    // user here contains the fragment reference for SomeCoolLogger_user defined above
-    SomeCoolLogger.logPurchase(user);
-  }}>
+/* BuyButton.res */
+@react.component
+let make = (~user) =>
+  <button
+    onClick={_ =>
+      /* user here contains the fragment reference for SomeCoolLogger_user defined above */
+      SomeCoolLogger.logPurchase(user)}>
     {React.string("Buy stuff!")}
   </button>
-}
+
 ```
 
 ## On to the next thing
@@ -220,7 +238,7 @@ With that in mind, Let's jump in to [mutations](mutations).
 
 ## API Reference
 
-`[%relay]` is expanded to a module containing the following functions:
+`%relay()` is expanded to a module containing the following functions:
 
 ### `use`
 

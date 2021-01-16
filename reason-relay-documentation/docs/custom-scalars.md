@@ -59,9 +59,9 @@ Expanding on the `Datetime` example above, whenever you want ReasonRelay to auto
 
 ```reason
 module YourCustomScalarModuleName: {
-  type t; /* This can be anything */
-  let parse: Js.Json.t => t; /* Going from a raw JSON value to your type t */
-  let serialize: t => Js.Json.t; /* Going from type t to a raw JSON value */
+  type t /* This can be anything */
+  let parse: Js.Json.t => t /* Going from a raw JSON value to your type t */
+  let serialize: t => Js.Json.t /* Going from type t to a raw JSON value */
 }
 ```
 
@@ -85,8 +85,9 @@ If no definition for the custom scalars `Datetime` or `Color` were defined in `r
 ```reason
 type response = {
   currentTime: ReasonRelay.any,
-  favoriteColor: ReasonRelay.any
+  favoriteColor: ReasonRelay.any,
 }
+
 ```
 
 But, if we were to add the following definitions for the custom scalars:
@@ -107,8 +108,9 @@ The response would instead look like this:
 ```reason
 type response = {
   currentTime: Utils.Datetime.t,
-  favoriteColor: string
+  favoriteColor: string,
 }
+
 ```
 
 _...and_ `currentTime` would _always_ be automatically converted using `Utils.Datetime.parse`, and serialized using `Utils.Datetime.serialize` if it ever needs to be sent back to the server in a mutation, variables etc. But you don't need to think about that, it all happens automatically.

@@ -14,34 +14,45 @@ sidebar_label: Making Queries
 
 Let's make our first query!
 
-Queries in ReasonRelay are defined using the `[%relay]` extension node. Let's set up our first query and a component to display the data:
+Queries in ReasonRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
 
 ```reason
-/* UserProfile.re */
-module Query = [%relay {|
+/* UserProfile.res */
+module Query = %relay(
+  `
   query UserProfileQuery($userId: ID!) {
     userById(id: $userId) {
       firstName
       lastName
     }
   }
-|}];
+`
+)
+
 ```
+
+> A note on naming: Due to the rules of Relay, a query must be named `<ModuleName><optionally_anything_here>Query`, where module name here means _file name_, not ReScript module name. So for a file `UserProfile.res`, all queries in that file must start with `UserProfile` regardless of whether they're defined in nested modules or not. All query names must also end with `Query`.
+
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen a new query (and optionally a component) via the command `> Add query`.
 
 This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
 ```reason
-[@react.component]
+@react.component
 let make = (~userId) => {
-  let queryData = Query.use(~variables={
-    userId: userId
-  }, ());
+  let queryData = Query.use(
+    ~variables={
+      userId: userId,
+    },
+    (),
+  )
 
-  switch(queryData.userById) {
-    | Some(user) => <div>{React.string(user.firstName ++ " " ++ user.lastName)}</div>
-    | None => React.null
-  };
-};
+  switch queryData.userById {
+  | Some(user) => <div> {React.string(user.firstName ++ (" " ++ user.lastName))} </div>
+  | None => React.null
+  }
+}
+
 ```
 
 Nothing that fancy here. We call `Query.use` to with a variable `userId`, just as defined in our GraphQL query. `use` is a React hook that will _dispatch the query to the server and then deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will be re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
@@ -56,7 +67,7 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `[%relay]` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
+In ReasonRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
 1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaed`, like `let queryData = Query.usePreloaded(~queryRef=queryRef, ())`, to get the data for the query as soon as it's available.
 2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
@@ -65,38 +76,38 @@ In ReasonRelay, every `[%relay]` node containing a query automatically generates
 So, the typical way to preload a query would be like this:
 
 ```reason
-// SomeComponent.re
-module Query = [%relay
-  {|
+/* SomeComponent.res */
+module Query = %relay(
+  `
   query SomeComponentQuery($userId: ID!) {
     user(id: $userId) {
       ...SomeUserComponent_user
     }
   }
-  |}
-];
+  `
+)
 
-[@react.component]
+@react.component
 let make = (~queryRef) => {
-  let queryData = Query.usePreloaded(~queryRef, ());
+  let queryData = Query.usePreloaded(~queryRef, ())
 
-  // Use the data for the query here
-};
+  /* Use the data for the query here */
+}
 
-// SomeOtherComponent.re
-[@react.component]
+/* SomeOtherComponent.res */
+@react.component
 let make = (~userId) => {
-  let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader();
+  let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader()
 
-  switch (queryRef) {
+  switch queryRef {
   | Some(queryRef) => <SomeComponent queryRef />
   | None =>
-    <button onClick={_ => {loadQuery(~variables={id: userId}, ())}}>
+    <button onClick={_ => loadQuery(~variables={id: userId}, ())}>
       {React.string("See full user")}
     </button>
-  };
-};
+  }
 }
+
 ```
 
 Let's break down what's going on:
@@ -108,7 +119,7 @@ A very useful pattern that's encouraged over using the lazy approach. In short, 
 
 ## API Reference
 
-`[%relay]` is expanded to a module containing the following functions:
+`%relay()` is expanded to a module containing the following functions:
 
 ### `use`
 
@@ -135,13 +146,13 @@ Sometimes you just need the query data outside of React. `fetch` lets you make t
 Using it looks something like this:
 
 ```reason
-Query.fetch(
-  ~environment,
-  ~variables={...},
-  ~onResult=res => switch (res) {
+Query.fetch(~environment, ~variables={...}, ~onResult=res =>
+  switch res {
   | Ok(res) => Js.log(res)
   | Error(_) => Js.log("Error")
-});
+  }
+)
+
 ```
 
 Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching and loading more data](refetching-and-loading-more-data).
@@ -183,8 +194,6 @@ A function that manually disposes the query, turning `queryRef` into `None`. Sig
 `let disposeQuery: unit => unit;`
 
 > `useLoader` uses Relay's `useQueryLoader` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usequeryloader).
-
-           |
 
 ### `usePreloaded`
 

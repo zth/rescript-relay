@@ -19,9 +19,11 @@ In the Hasura console, toggle the Relay API on. Note the API endpoint generated.
 ### Generating the schema file
 
 Run the following command to generate the schema.graphql file.
+
 ```bash
   npx graphqurl "http://localhost:8080/hasura-relay-endpoint" -H "X-Hasura-Admin-Secret: hasura-admin-secret" --introspect > schema.graphql
 ```
+
 For more information, check out the [Hasura docs](https://hasura.io/docs/1.0/graphql/manual/schema/export-graphql-schema.html).
 
 ### Configuring the Relay environment
@@ -29,43 +31,37 @@ For more information, check out the [Hasura docs](https://hasura.io/docs/1.0/gra
 In a [previous section](getting-started), we'd set up the Relay environment. Continuing on that, in the code below, the lines with comments indicate the changes to be made to connect to Hasura.
 
 ```reason
-let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
-  (operation, variables, _cacheConfig) =>
-    Fetch.(
-      fetchWithInit(
-        "http://localhost:8080/hasura-relay-endpoint", // Update the Relay API endpoint
-        RequestInit.make(
-          ~method_=Post,
-          ~body=
-            Js.Dict.fromList([
-              ("query", Js.Json.string(operation.text)),
-              ("variables", variables),
-            ])
-            |> Js.Json.object_
-            |> Js.Json.stringify
-            |> BodyInit.make,
-          ~headers=
-            HeadersInit.make({
-              "content-type": "application/json",
-              "accept": "application/json",
-              "x-hasura-admin-secret": "hasura-admin-secret", // Add necessary headers
-            }),
-          (),
-        ),
-      )
-      |> Js.Promise.then_(resp =>
-           if (Response.ok(resp)) {
-             Response.json(resp);
-           } else {
-             Js.Promise.reject(
-               Graphql_error(
-                 "Request failed: " ++ Response.statusText(resp),
-               ),
-             );
-           }
-         )
-    );
+let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {
+  open Fetch
+  fetchWithInit(
+    "http://localhost:8080/hasura-relay-endpoint", /* Update the Relay API endpoint */
+    RequestInit.make(
+      ~method_=Post,
+      ~body=Js.Dict.fromList(list{
+        ("query", Js.Json.string(operation.text)),
+        ("variables", variables),
+      })
+      |> Js.Json.object_
+      |> Js.Json.stringify
+      |> BodyInit.make,
+      ~headers=HeadersInit.make({
+        "content-type": "application/json",
+        "accept": "application/json",
+        "x-hasura-admin-secret": "hasura-admin-secret", /* Add necessary headers */
+      }),
+      (),
+    ),
+  ) |> Js.Promise.then_(resp =>
+    if Response.ok(resp) {
+      Response.json(resp)
+    } else {
+      Js.Promise.reject(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+    }
+  )
+}
+
 ```
 
 ### Conclusion
+
 That's all. Hasura is now set up. You can use the Hasura console to test your queries and [integrate them](making-queries) into your app.
