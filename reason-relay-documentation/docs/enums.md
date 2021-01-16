@@ -31,7 +31,7 @@ type Ticket {
 
 Now, imagine we're writing a component that wants to show whether a particular ticket is rejected or not:
 
-```rescript
+```reason
 /* TicketRejectedStatusDisplayer.res */
 module Fragment = %relay(
   `

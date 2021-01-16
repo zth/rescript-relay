@@ -12,7 +12,7 @@ sidebar_label: Subscriptions
 
 Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws). Those are the minimal required bindings for our example to work, but they are tied to reason-relay itself, and would need to be adjusted in order to be used for other purposes.
 
-```rescript
+```reason
 /* SubscriptionsTransportWs.res */
 type operationOptions = {
   query: string,
@@ -35,7 +35,7 @@ let createSubscriptionClient = createSubscriptionClient
 
 The following code is a Reason version of the example from the official Relay [documentation](https://relay.dev/docs/en/subscriptions#configure-network):
 
-```rescript
+```reason
 /* RelayEnv.res */
 let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
   "ws://localhost:4000/graphql",
@@ -121,7 +121,7 @@ let make = (~ticketId) => {
     Some(() => ReasonRelay.Disposable.dispose(subscription))
   }, (ticketId, environment))
 
-  // The rest of the code here...
+  /* The rest of the code here... */
 }
 
 ```

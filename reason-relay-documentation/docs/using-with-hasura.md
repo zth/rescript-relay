@@ -30,11 +30,11 @@ For more information, check out the [Hasura docs](https://hasura.io/docs/1.0/gra
 
 In a [previous section](getting-started), we'd set up the Relay environment. Continuing on that, in the code below, the lines with comments indicate the changes to be made to connect to Hasura.
 
-```rescript
+```reason
 let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {
   open Fetch
   fetchWithInit(
-    "http://localhost:8080/hasura-relay-endpoint", // Update the Relay API endpoint
+    "http://localhost:8080/hasura-relay-endpoint", /* Update the Relay API endpoint */
     RequestInit.make(
       ~method_=Post,
       ~body=Js.Dict.fromList(list{
@@ -47,7 +47,7 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables
       ~headers=HeadersInit.make({
         "content-type": "application/json",
         "accept": "application/json",
-        "x-hasura-admin-secret": "hasura-admin-secret", // Add necessary headers
+        "x-hasura-admin-secret": "hasura-admin-secret", /* Add necessary headers */
       }),
       (),
     ),

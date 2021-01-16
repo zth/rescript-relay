@@ -16,7 +16,7 @@ Let's make our first query!
 
 Queries in ReasonRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
 
-```rescript
+```reason
 /* UserProfile.res */
 module Query = %relay(
   `
@@ -33,7 +33,7 @@ module Query = %relay(
 
 This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
-```rescript
+```reason
 @react.component
 let make = (~userId) => {
   let queryData = Query.use(
@@ -71,8 +71,8 @@ In ReasonRelay, every `%relay()` node containing a query automatically generates
 
 So, the typical way to preload a query would be like this:
 
-```rescript
-// SomeComponent.res
+```reason
+/* SomeComponent.res */
 module Query = %relay(
   `
   query SomeComponentQuery($userId: ID!) {
@@ -87,10 +87,10 @@ module Query = %relay(
 let make = (~queryRef) => {
   let queryData = Query.usePreloaded(~queryRef, ())
 
-  // Use the data for the query here
+  /* Use the data for the query here */
 }
 
-// SomeOtherComponent.res
+/* SomeOtherComponent.res */
 @react.component
 let make = (~userId) => {
   let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader()
@@ -141,7 +141,7 @@ Sometimes you just need the query data outside of React. `fetch` lets you make t
 
 Using it looks something like this:
 
-```rescript
+```reason
 Query.fetch(~environment, ~variables={...}, ~onResult=res =>
   switch res {
   | Ok(res) => Js.log(res)
@@ -190,8 +190,6 @@ A function that manually disposes the query, turning `queryRef` into `None`. Sig
 `let disposeQuery: unit => unit;`
 
 > `useLoader` uses Relay's `useQueryLoader` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usequeryloader).
-
-           |
 
 ### `usePreloaded`
 

@@ -35,7 +35,7 @@ type Query {
 
 Here we have a union `Owner` that's either a `User` or a `Group`. There's also a root field called `roomOwner` which returns the `Owner` of a room. Let's look at how using that union looks in ReasonRelay:
 
-```rescript
+```reason
 /* RoomOwner.res */
 module Query = %relay(
   `

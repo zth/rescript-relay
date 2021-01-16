@@ -146,7 +146,7 @@ Finally time for some actual code. Next thing is setting up the Relay environmen
 
 You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `bs-fetch` for fetching, which you can find [installation instructions for here](https://github.com/reasonml-community/bs-fetch)):
 
-```rescript
+```reason
 /* RelayEnv.res */
 
 /* This is just a custom exception to indicate that something went wrong. */
@@ -195,7 +195,7 @@ let environment = ReasonRelay.Environment.make(
   ~network,
   ~store=ReasonRelay.Store.make(
     ~source=ReasonRelay.RecordSource.make(),
-    ~gcReleaseBufferSize=10, // This sets the query cache size to 10
+    ~gcReleaseBufferSize=10, /* This sets the query cache size to 10 */
     (),
   ),
   (),
@@ -210,7 +210,7 @@ There, we now have a Relay environment! We only have two more things to fix befo
 
 Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<ReasonRelay.Context.Provider />`:
 
-```rescript
+```reason
 /* Index.res */
 ReactExperimental.renderConcurrentRootAtElementWithId(
   <ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>

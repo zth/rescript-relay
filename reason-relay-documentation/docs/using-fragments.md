@@ -65,7 +65,7 @@ If you want to dive deeper into GraphQL fragments you're encouraged to read thro
 
 Fragments are defined in ReasonRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
-```rescript
+```reason
 /* UserProfileHeader.res */
 module UserFragment = %relay(
   `
@@ -96,7 +96,7 @@ Let's break down what's happening here:
 
 A fragment _always has to end up in a query_ at some point for it to be able to render. This is quite simply because a fragment is a _specification of what data is needed_, and somebody (I'm looking at you query) needs to take this specification and get the actual data from the server. Let's tie together the sample fragment code from above with the sample code from [making queries](making-queries) in order to demonstrate how components with fragments are used with other components, and how the fragment ends up in a query:
 
-```rescript
+```reason
 /* UserProfile.res */
 module Query = %relay(
   `
@@ -142,7 +142,7 @@ Yup, you read that right, you can _spread fragments on other fragments_. Remembe
 
 Let's expand our example fragment component to use another component `<Avatar />` that is responsible for showing a an avatar for a user:
 
-```rescript
+```reason
 /* UserProfileHeader.res */
 module UserFragment = %relay(
   `
@@ -182,7 +182,7 @@ This works the same way as `Fragment.use` as in you feed it an object with a fra
 
 Great for logging and similar activities. Example:
 
-```rescript
+```reason
 /* SomeCoolLogger.res */
 module UserFragment = %relay(
   `
@@ -194,7 +194,7 @@ module UserFragment = %relay(
 )
 
 let logPurchase = user => {
-  // We read the fragment data from the store here, without needing to use a hook
+  /* We read the fragment data from the store here, without needing to use a hook */
   let userData = UserFragment.readInline(user)
 
   SomeLoggingService.log(
@@ -206,13 +206,13 @@ let logPurchase = user => {
 
 ```
 
-```rescript
+```reason
 /* BuyButton.res */
 @react.component
 let make = (~user) =>
   <button
     onClick={_ =>
-      // user here contains the fragment reference for SomeCoolLogger_user defined above
+      /* user here contains the fragment reference for SomeCoolLogger_user defined above */
       SomeCoolLogger.logPurchase(user)}>
     {React.string("Buy stuff!")}
   </button>
