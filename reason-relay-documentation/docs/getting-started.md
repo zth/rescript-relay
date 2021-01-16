@@ -72,6 +72,8 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 ...
 ```
 
+> Are you using VSCode? Make sure you install and use our [dedicated VSCode extension](vscode-extension). It'll make your life using ReasonRelay _much_ smoother.
+
 #### Using experimental React versions
 
 You may need to tell `yarn` to prefer the experimental versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `reason-react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
@@ -137,6 +139,8 @@ We'll also add a script to our `package.json` to run the Relay compiler:
 Now you have two scripts set up; one for running the compiler once, and one for running it in watch-mode.
 
 You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a separate terminal. _Please note that you'll need to be aware of the output from the compiler_ as it will tell you when there are issues you'll need to fix.
+
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) will run the Relay compiler for you automatically. Check it out!
 
 The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how ReasonRelay uses it [here](the-compiler).
 

@@ -87,6 +87,8 @@ let make = (~user) => {
 
 > A note on naming: Due to the rules of Relay, a fragment must be named `<ModuleName><optionally_anything_here>_<identifier>`, where module name here means _file name_, not ReScript module name. So for a file `UserProfile.res`, all fragments in that file must start with `UserProfile` regardless of whether they're defined in nested modules or not. _Identifier_ can be anything, but it's common to name that after the GraphQL type the fragment targets, lowercased. So a fragment in `UserProfile.res` that targets the `User`, would commonly be called `UserProfile_user`.
 
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new fragments (and optionally boilerplate for a component) via the command `> Add fragment`.
+
 Let's break down what's happening here:
 
 1. We define a fragment on the GraphQL type `User` through `%relay()`.

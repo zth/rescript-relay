@@ -33,6 +33,8 @@ module Query = %relay(
 
 > A note on naming: Due to the rules of Relay, a query must be named `<ModuleName><optionally_anything_here>Query`, where module name here means _file name_, not ReScript module name. So for a file `UserProfile.res`, all queries in that file must start with `UserProfile` regardless of whether they're defined in nested modules or not. All query names must also end with `Query`.
 
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen a new query (and optionally a component) via the command `> Add query`.
+
 This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
 ```reason

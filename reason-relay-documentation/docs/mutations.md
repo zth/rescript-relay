@@ -55,6 +55,8 @@ let make = () => {
 
 > A note on naming: Due to the rules of Relay, a mutation must be named `<ModuleName><optionally_anything_here>Mutation`, where module name here means _file name_, not ReScript module name. So for a file `SingleTodo.res`, all mutations in that file must start with `SingleTodo` regardless of whether they're defined in nested modules or not. All mutation names must also end with `Mutation`.
 
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new mutations effortlessly via the command `> Add mutation`, including boilerplate for the component.
+
 Let's break it down:
 
 1. `%relay()` autogenerates a `use` hook that takes `variables` as required arguments. It has a bunch of other options as well that are covered in the [API reference](#api-reference). It returns a tuple with the mutation function, and a flag that indicates whether the mutation is running right now.

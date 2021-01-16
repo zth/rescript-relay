@@ -128,6 +128,8 @@ let make = (~ticketId) => {
 
 > A note on naming: Due to the rules of Relay, a subscription must be named `<ModuleName><optionally_anything_here>Subscription`, where module name here means _file name_, not ReScript module name. So for a file `Ticket.res`, all subscriptions in that file must start with `Ticket` regardless of whether they're defined in nested modules or not. All subscription names must also end with `Subscription`.
 
+> Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new subscriptions easily, including boilerplate for components, via the command `> Add subscription`.
+
 See the [examples](https://github.com/zth/reason-relay/tree/master/example) folder for a working subscription sample.
 
 ## API Reference
