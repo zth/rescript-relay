@@ -4,6 +4,10 @@
 
 # 0.13.0
 
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/reason-relay/commit/4c8fb3d36dfa84267cb28ffb081a30a9f55c6554)_
+
+> Make sure you read the breaking changes below!
+
 This release marks the start of ReasonRelay's journey towards two things:
 
 1. Supporting the new Relay Rust compiler. While this release still uses the JS based compiler, it takes steps needed to support the Rust based compiler in the future.
@@ -19,11 +23,13 @@ Point 1 is something that you as a user will hopefully notice a minimal amount o
 
 The reason for all of this is simply that I believe ReScript is where the future is at, and I don't have the resources to focus my efforts on tooling etc for two syntaxes. I love ReasonML and its syntax, but I've still come to the conclusion that ReScript syntax is what will the most powerful alternative in the future.
 
+Keep your eye out for the new VSCode extension that'll be released "officially" in a short while!
+
 ## Breaking changes
 
 - _BREAKING CHANGE_ Operations are now defined through a single extension node rather than multiple per operation type. `relay.fragment`, `relay.query` etc are now gone. What was previously `[%relay.fragment {| fragment Blabla on Blabla {....|}]` should now instead be: `[%relay {| fragment Blabla on Blabla {....|}]`.
 
-Migration path: Install [`comby`](https://comby.dev/docs/get-started), and run this command in your root: `comby '%relay.:[~(fragment|subscription|mutation|query)]' '%relay' -i .re -exclude-dir node_modules`. That will take care of migrating all of your extension points. Using ReScript syntax? Just adapt the script above to your needs.
+Migration path: Install [`comby`](https://comby.dev/docs/get-started), and run this command in your root (for `.re` files): `comby '%relay.:[~(fragment|subscription|mutation|query)]' '%relay' -i .re -exclude-dir node_modules`, or this command for `.res` files: `comby '%relay.:[~(fragment|subscription|mutation|query)]' '%relay' -i .res -matcher .re -exclude-dir node_modules`. That will take care of migrating all of your extension points.
 
 - _BREAKING CHANGE_ Add binding for passing `uploadables` to network fetch functions. This is breaking because it changes the signature of `fetchFunctionPromise` and `fetchFunctionObservable` to include another argument `uploadables`. Migration path: What was previously something like `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig) => {...}` should now be `let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {...}`. Read more in the API reference section of the docs. ([@hariroshan](https://github.com/hariroshan))
 
