@@ -1,10 +1,6 @@
-/**
- * Various helpers.
- */
-
 // We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let internal_cleanObjectFromUndefinedRaw = [%raw
-  {|
+let internal_cleanObjectFromUndefinedRaw = %raw(
+  `
   function (obj) {
     if (!obj) {
       return obj;
@@ -20,14 +16,13 @@ let internal_cleanObjectFromUndefinedRaw = [%raw
 
     return newObj;
   }
-|}
-];
+`
+)
 
-let internal_useConvertedValue = (convert, v) =>
-  React.useMemo1(() => convert(v), [|v|]);
+let internal_useConvertedValue = (convert, v) => React.useMemo1(() => convert(v), [v])
 
-let internal_nullableToOptionalExnHandler =
-  fun
+let internal_nullableToOptionalExnHandler = x =>
+  switch x {
   | None => None
-  | Some(handler) =>
-    Some(maybeExn => maybeExn->Js.Nullable.toOption->handler);
+  | Some(handler) => Some(maybeExn => maybeExn->Js.Nullable.toOption->handler)
+  }

@@ -185,6 +185,7 @@ module Test = {
                         ~user=
                           make_rawResponse_setOnlineStatus_user(
                             ~id=data.id,
+                            ~__id=data.id->ReasonRelay.makeDataId,
                             ~onlineStatus=`Idle,
                             ~firstName=data.firstName,
                             ~lastName=data.lastName,

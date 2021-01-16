@@ -23,13 +23,12 @@ function parseFile(text: string, _file: string) {
   }
 
   const matchedReScript = text.match(
-    /(?<=%relay\()([\s\S]*?)(?=(\`\s*)\))(\`)/g
+    /(?<=\%relay\([\s]*`)[\s\S.]+?(?=`[\s]*\))/g
   );
 
   if (matchedReScript) {
-    // Removes `` used in multiline ReScript strings
     return matchedReScript.map((text) => ({
-      template: text.replace(/`/g, ""),
+      template: text,
       keyName: null,
       sourceLocationOffset: { line: 1, column: 1 },
     }));

@@ -7,6 +7,7 @@ module Types = {
   [@ocaml.warning "-30"];
 
   type fragment = {
+    __id: ReasonRelay.dataId,
     firstName: string,
     onlineStatus: option(enum_OnlineStatus),
     fragmentRefs: ReasonRelay.fragmentRefs([ | `TestFragment_sub_user]),
@@ -68,6 +69,18 @@ let node: operationType = [%raw {json| {
       "args": null,
       "kind": "FragmentSpread",
       "name": "TestFragment_sub_user"
+    },
+    {
+      "kind": "ClientExtension",
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__id",
+          "storageKey": null
+        }
+      ]
     }
   ],
   "type": "User",

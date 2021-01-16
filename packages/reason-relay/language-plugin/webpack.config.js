@@ -18,7 +18,7 @@ module.exports = {
       },
     ],
   },
-  externals: [nodeExternals({ allowlist: [/invariant/] })],
+  externals: [nodeExternals()],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },

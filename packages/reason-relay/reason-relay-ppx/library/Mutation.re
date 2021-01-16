@@ -40,7 +40,7 @@ let make = (~loc, ~moduleName) => {
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            uploadables: option(ReasonRelay.uploadables)
+            uploadables: option(ReasonRelay.uploadables),
           };
 
           type useMutationConfigRaw = {
@@ -59,7 +59,7 @@ let make = (~loc, ~moduleName) => {
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            uploadables: option(ReasonRelay.uploadables)
+            uploadables: option(ReasonRelay.uploadables),
           };
 
           type commitMutationConfigRaw = {
@@ -82,7 +82,7 @@ let make = (~loc, ~moduleName) => {
               option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
             optimisticUpdater: option(optimisticUpdaterFn),
             updater: option(updaterFn),
-            uploadables: option(ReasonRelay.uploadables)
+            uploadables: option(ReasonRelay.uploadables),
           };
 
           [@bs.module "relay-runtime"]
@@ -101,6 +101,11 @@ let make = (~loc, ~moduleName) => {
         }
       ],
       [%stri
+        /**Commits the current mutation. Use this outside of React's render. If you're inside render, you should use `Mutation.use` instead, which is more convenient.
+
+## Optimistic updates
+Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
+
         let commitMutation:
           (
             ~environment: ReasonRelay.Environment.t,
@@ -180,7 +185,7 @@ let make = (~loc, ~moduleName) => {
                       },
                   ),
                 uploadables,
-                
+
                 optimisticResponse:
                   switch (optimisticResponse) {
                   | None => None
@@ -217,6 +222,10 @@ let make = (~loc, ~moduleName) => {
           )
       ],
       [%stri
+        /**React hook for commiting this mutation.
+
+## Optimistic updates
+Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
         let use:
           unit =>
           (

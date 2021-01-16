@@ -20,6 +20,7 @@ module Types = {
     onlineStatus: option(enum_OnlineStatus),
     firstName: string,
     lastName: string,
+    __id: ReasonRelay.dataId,
   };
 
   type response = {setOnlineStatus: option(response_setOnlineStatus)};
@@ -97,12 +98,13 @@ module Utils = {
   };
 
   let make_rawResponse_setOnlineStatus_user =
-      (~id, ~onlineStatus=?, ~firstName, ~lastName, ())
+      (~id, ~onlineStatus=?, ~firstName, ~lastName, ~__id, ())
       : rawResponse_setOnlineStatus_user => {
     id,
     onlineStatus,
     firstName,
     lastName,
+    __id,
   };
 
   let make_rawResponse_setOnlineStatus =
@@ -237,6 +239,18 @@ return {
                 "kind": "ScalarField",
                 "name": "lastName",
                 "storageKey": null
+              },
+              {
+                "kind": "ClientExtension",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "__id",
+                    "storageKey": null
+                  }
+                ]
               }
             ],
             "storageKey": null
