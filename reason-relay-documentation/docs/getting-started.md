@@ -51,7 +51,7 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 8.2 or above_. It will _not_ work with `bs-platform < 8.2.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 8.2 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
@@ -157,7 +157,7 @@ exception Graphql_error(string);
  * GraphQL server, and then decodes and returns the response.
  */
 let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
-  (operation, variables, _cacheConfig) =>
+  (operation, variables, _cacheConfig, _uploadables) =>
     Fetch.(
       fetchWithInit(
         "http://localhost:4000/graphql",
