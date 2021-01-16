@@ -91,7 +91,7 @@ type Ticket implements Node {
 Then in your `Ticket.re` module we can subscribe to changes to the ticket status. Fragments in relay automatically subscribe to updates for the fragment data, see [Relay docs](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#fragments). So when we receive an event that the ticket status updated the fragments referencing the data will receive an update and re-render the new state.
 
 ```reason
-/* Ticket.re */
+/* Ticket.res */
 module TicketStatusFragment = %relay(`
   fragment TicketStatus on Ticket {
     status
@@ -125,6 +125,8 @@ let make = (~ticketId) => {
 }
 
 ```
+
+> A note on naming: Due to the rules of Relay, a subscription must be named `<ModuleName><optionally_anything_here>Subscription`, where module name here means _file name_, not ReScript module name. So for a file `Ticket.res`, all subscriptions in that file must start with `Ticket` regardless of whether they're defined in nested modules or not. All subscription names must also end with `Subscription`.
 
 See the [examples](https://github.com/zth/reason-relay/tree/master/example) folder for a working subscription sample.
 
