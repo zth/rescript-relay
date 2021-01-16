@@ -1,14 +1,33 @@
+
+"""
+Input for adding a todo.
+"""
 input AddTodoItemInput {
+  """
+  The text for the todo.
+  """
   text: String!
   clientMutationId: String
 }
 
+"""
+Payload returned when adding a todo item.
+"""
 type AddTodoItemPayload {
+  """
+  The added todo item.
+  """
   addedTodoItem: TodoItem
+  """
+  The added todo item, as an edge.
+  """
   addedTodoItemEdge: TodoItemEdge
   clientMutationId: String
 }
 
+"""
+The entity assigned.
+"""
 union AssigneeType = User | WorkingGroup
 
 """
@@ -41,44 +60,75 @@ type Mutation {
   deleteTodoSimple(id: ID!): DeleteTodoSimple
 }
 
-"""An object with an ID"""
+"""
+An object with an ID
+"""
 interface Node {
-  """The id of the object."""
+  """
+  The id of the object.
+  """
   id: ID!
 }
 
-"""Information about pagination in a connection."""
+"""
+Information about pagination in a connection.
+"""
 type PageInfo {
-  """When paginating forwards, are there more items?"""
+  """
+  When paginating forwards, are there more items?
+  """
   hasNextPage: Boolean!
 
-  """When paginating backwards, are there more items?"""
+  """
+  When paginating backwards, are there more items?
+  """
   hasPreviousPage: Boolean!
 
-  """When paginating backwards, the cursor to continue."""
+  """
+  When paginating backwards, the cursor to continue.
+  """
   startCursor: String
 
-  """When paginating forwards, the cursor to continue."""
+  """
+  When paginating forwards, the cursor to continue.
+  """
   endCursor: String
 }
 
 type Query {
-  """Fetches an object given its ID"""
+  """
+  Fetches an object given its ID
+  """
   node(
-    """The ID of an object"""
+    """
+    The ID of an object
+    """
     id: ID!
   ): Node
   userById(id: ID!): User
   siteStatistics: SiteStatistics!
-  ticketsConnection(status: TicketStatus, after: String, first: Int, before: String, last: Int): TicketConnection!
+  ticketsConnection(
+    status: TicketStatus
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): TicketConnection!
   tickets(status: TicketStatus, limit: Int!, offset: Int!): TicketsPaginated!
-  todosConnection(after: String, first: Int, before: String, last: Int): TodoItemConnection!
+  todosConnection(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): TodoItemConnection!
   todos(limit: Int!, offset: Int!): TodosPaginated!
   allTodos: [TodoItem!]!
 }
 
 type SiteStatistics implements Node {
-  """The ID of an object"""
+  """
+  The ID of an object
+  """
   id: ID!
   weeklySales: Float!
   weeklyOrders: Int!
@@ -90,7 +140,9 @@ type Subscription {
 }
 
 type Ticket implements Node {
-  """The ID of an object"""
+  """
+  The ID of an object
+  """
   id: ID!
   dbId: ID!
   assignee: AssigneeType
@@ -100,21 +152,33 @@ type Ticket implements Node {
   trackingId: String!
 }
 
-"""A connection to a list of items."""
+"""
+A connection to a list of items.
+"""
 type TicketConnection {
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """A list of edges."""
+  """
+  A list of edges.
+  """
   edges: [TicketEdge]
 }
 
-"""An edge in a connection."""
+"""
+An edge in a connection.
+"""
 type TicketEdge {
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: Ticket
 
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
 }
 
@@ -131,29 +195,55 @@ enum TicketStatus {
   Rejected
 }
 
+"""
+A todo item.
+"""
 type TodoItem implements Node {
-  """The ID of an object"""
+  """
+  The ID of an object
+  """
   id: ID!
+  """
+  The database id of this todo item.
+  """
   dbId: ID!
+  """
+  Whether this todo item is completed or not.
+  """
   completed: Boolean
+  """
+  The text of the todo item.
+  """
   text: String!
 }
 
-"""A connection to a list of items."""
+"""
+A connection to a list of items.
+"""
 type TodoItemConnection {
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """A list of edges."""
+  """
+  A list of edges.
+  """
   edges: [TodoItemEdge]
 }
 
-"""An edge in a connection."""
+"""
+An edge in a connection.
+"""
 type TodoItemEdge {
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: TodoItem
 
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
 }
 
@@ -176,37 +266,52 @@ type UpdateTodoItemPayload {
 }
 
 type User implements Node {
-  """The ID of an object"""
+  """
+  The ID of an object
+  """
   id: ID!
   dbId: ID!
   avatarUrl: String
   fullName: String!
 }
 
-"""A connection to a list of items."""
+"""
+A connection to a list of items.
+"""
 type UserConnection {
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """A list of edges."""
+  """
+  A list of edges.
+  """
   edges: [UserEdge]
 }
 
-"""An edge in a connection."""
+"""
+An edge in a connection.
+"""
 type UserEdge {
-  """The item at the end of the edge"""
+  """
+  The item at the end of the edge
+  """
   node: User
 
-  """A cursor for use in pagination"""
+  """
+  A cursor for use in pagination
+  """
   cursor: String!
 }
 
 type WorkingGroup implements Node {
-  """The ID of an object"""
+  """
+  The ID of an object
+  """
   id: ID!
   dbId: ID!
   name: String!
   membersConnection: UserConnection
   members(limit: Int!, offset: Int!): [User]
 }
-
