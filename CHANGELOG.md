@@ -1,5 +1,24 @@
 # master
 
+-
+
+# 0.13.0
+
+This release marks the start of ReasonRelay's journey towards two things:
+
+1. Supporting the new Relay Rust compiler. While this release still uses the JS based compiler, it takes steps needed to support the Rust based compiler in the future.
+2. Fully embracing ReScript.
+
+Point 1 is something that you as a user will hopefully notice a minimal amount of churn from. But point 2 is important to address. In sum, the following will happen in the coming months:
+
+- ReasonRelay will be renamed, probably to ReScriptRelay.
+- ReasonML and ReScript syntax will continue to be supported for the foreseeable future, but I will focus my tooling and documentation efforts on ReScript.
+- Docs will be converted to ReScript
+- A dedicated VSCode extension I'm working on will be released, _only_ supporting ReScript syntax.
+- Source files emitted by the compiler will eventually be converted to `.res` files rather than `.re` files.
+
+The reason for all of this is simply that I believe ReScript is where the future is at, and I don't have the resources to focus my efforts on tooling etc for two syntaxes. I love ReasonML and its syntax, but I've still come to the conclusion that ReScript syntax is what will the most powerful alternative in the future.
+
 ## Breaking changes
 
 - _BREAKING CHANGE_ Operations are now defined through a single extension node rather than multiple per operation type. `relay.fragment`, `relay.query` etc are now gone. What was previously `[%relay.fragment {| fragment Blabla on Blabla {....|}]` should now instead be: `[%relay {| fragment Blabla on Blabla {....|}]`.
