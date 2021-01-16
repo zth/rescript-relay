@@ -25,7 +25,7 @@ jobs:
       - name: Build PPX
         uses: esy/github-action@v1
         with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v1
           working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test

@@ -25,7 +25,7 @@ jobs:
       - name: Build ReasonRelayBin
         uses: esy/github-action@v1
         with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v1
           working-directory: packages/reason-relay-bin
       - name: Test ReasonRelayBin
         run: esy test
