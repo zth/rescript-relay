@@ -64,12 +64,14 @@ Use it like this: `makeArguments({ \"someArgument\": someValue, \"anotherArgumen
 external makeArguments: {..} => arguments = "%identity"
 
 @ocaml.doc(
-  "Construct an `uploadables` object that you can use for uploads via Relay.
-
-### Usage
-Use it like this: `makeUploadable({ \"someFile\": someFile, \"anotherFile\": anotherFile })`. Notice the \"\" surrounding the property names - these are important and tells ReScript that we want this to be a JS object."
+  "Construct an `uploadables` object from a `Js.Dict` with your desired file format, that you can use for uploads via Relay."
 )
-external makeUploadable: {..} => uploadables = "%identity"
+external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
+
+@ocaml.doc(
+  "Unwraps `uploadables` into a Js.Dict.t with your expected file type, so you can use that dict to attach the provided files to your request."
+)
+external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
 @ocaml.doc(
   "This generates a `dataId` for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is `generateUniqueClientID` that'll let you generate a new, unique `dataId` that you can use for client side only records (like when doing optimistic updates)."

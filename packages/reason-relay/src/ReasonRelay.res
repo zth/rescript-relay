@@ -17,7 +17,8 @@ type uploadables
 external dataIdToString: dataId => string = "%identity"
 external makeDataId: string => dataId = "%identity"
 external makeArguments: {..} => arguments = "%identity"
-external makeUploadable: {..} => uploadables = "%identity"
+external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
+external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
 @bs.module("relay-runtime")
 external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =

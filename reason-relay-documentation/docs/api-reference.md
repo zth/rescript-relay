@@ -123,7 +123,7 @@ Abstract type for uploadables.
 
 #### Constructing an [uploadables](#uploadables)
 
-Use [makeUploadable](#makeuploadable) : `makeUploadable({ "someFile": theFileYouWantToUpload })` to construct an [uploadables](#uploadables) , and then pass it to your mutation via the [uploadables](#uploadables) prop.
+Use [makeUploadables](#makeuploadables) : `makeUploadables(aJsDictContainingYourFilesHere)` to construct an [uploadables](#uploadables) , and then pass it to your mutation via the [uploadables](#uploadables) prop. Then, in your network layer, use [unwrapUploadables](#unwrapuploadables) to get the dict with your files again. You can then iterate through that and add the files to your request for upload.
 
 Please note that you'll need to handle _sending_ the uploadables to your server yourself in the network layer. [Here's an example](https://github.com/facebook/relay/issues/1844#issuecomment-316893590) in regular JS that you can adapt to ReScript as you need/want.
 
@@ -204,10 +204,6 @@ let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit
 > Read more about: [dataId](#dataid)
 
 This generates a `dataId` for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is [generateUniqueClientID](#generateuniqueclientid) that'll let you generate a new, unique `dataId` that you can use for client side only records (like when doing optimistic updates).
-
-### Usage
-
-Use it like this: `makeUploadable({ "someFile": someFile, "anotherFile": anotherFile })`. Notice the "" surrounding the property names - these are important and tells ReScript that we want this to be a JS object.
 
 ## [generateUniqueClientID](#generateuniqueclientid)
 
@@ -295,10 +291,10 @@ let make = (~user) => {
 }
 ```
 
-## [makeUploadable](#makeuploadable)
+## [makeUploadables](#makeuploadables)
 
 ```reason
-let makeUploadable: {..} => uploadables
+let makeUploadables: Js.Dict.t<'file> => uploadables
 ```
 
 > Read more about: [uploadables](#uploadables)
@@ -307,7 +303,17 @@ Construct an [uploadables](#uploadables) object that you can use for uploads via
 
 #### Usage
 
-Use it like this: `makeUploadable({ "someFile": someFile, "anotherFile": anotherFile })`. Notice the "" surrounding the property names - these are important and tells ReScript that we want this to be a JS object.
+Use it like this: `makeUploadables(myJsDictWithMyFiles)`.
+
+## [unwrapUploadables](#unwrapuploadables)
+
+```reason
+let unwrapUploadables: uploadables => Js.Dict.t<'file>
+```
+
+> Read more about: [uploadables](#uploadables)
+
+Unwraps an `uploadables` into a `Js.Dict.t`, letting you set the file format you expect. You can then loop through that dict to add all the files you want to upload to your request in the network layer.
 
 ## RecordProxy
 
