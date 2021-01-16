@@ -9,4 +9,4 @@ ReactExperimental.renderConcurrentRootAtElementWithId(
     <App />
   </ReasonRelay.Context.Provider>,
   "app",
-);
+)

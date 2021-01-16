@@ -1,5 +1,5 @@
-module Fragment = [%relay.fragment
-  {|
+module Fragment = %relay.fragment(
+  `
   fragment RecentTickets_query on Query
     @refetchable(queryName: "RecentTicketsRefetchQuery")
     @argumentDefinitions(
@@ -21,13 +21,12 @@ module Fragment = [%relay.fragment
       }
     }
   }
-|}
-];
+`
+)
 
-[@react.component]
+@react.component
 let make = (~query as queryRef) => {
-  let {data, hasNext, isLoadingNext, loadNext} =
-    Fragment.usePagination(queryRef);
+  let {data, hasNext, isLoadingNext, loadNext} = Fragment.usePagination(queryRef)
 
   <div className="card">
     <div className="card-body">
@@ -45,23 +44,21 @@ let make = (~query as queryRef) => {
           </thead>
           <tbody>
             {data.ticketsConnection
-             ->Fragment.getConnectionNodes
-             ->Belt.Array.map(ticket =>
-                 <SingleTicket key={ticket.id} ticket={ticket.fragmentRefs} />
-               )
-             ->React.array}
+            ->Fragment.getConnectionNodes
+            ->Belt.Array.map(ticket => <SingleTicket key=ticket.id ticket=ticket.fragmentRefs />)
+            ->React.array}
           </tbody>
         </table>
         {hasNext
-           ? <button
-               className="btn btn-gradient-primary font-weight-bold"
-               id="add-task"
-               onClick={_ => loadNext(~count=2, ()) |> ignore}
-               disabled=isLoadingNext>
-               {React.string("More")}
-             </button>
-           : React.null}
+          ? <button
+              className="btn btn-gradient-primary font-weight-bold"
+              id="add-task"
+              onClick={_ => loadNext(~count=2, ()) |> ignore}
+              disabled=isLoadingNext>
+              {React.string("More")}
+            </button>
+          : React.null}
       </div>
     </div>
-  </div>;
-};
+  </div>
+}
