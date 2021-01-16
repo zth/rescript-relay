@@ -16,32 +16,39 @@ Let's make our first query!
 
 Queries in ReasonRelay are defined using the `[%relay]` extension node. Let's set up our first query and a component to display the data:
 
-```reason
-/* UserProfile.re */
-module Query = [%relay {|
+```rescript
+/* UserProfile.res */
+module Query = %relay(
+  `
   query UserProfileQuery($userId: ID!) {
     userById(id: $userId) {
       firstName
       lastName
     }
   }
-|}];
+`
+)
+
 ```
 
 This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
-```reason
-[@react.component]
+```rescript
+@react.component
 let make = (~userId) => {
-  let queryData = Query.use(~variables={
-    userId: userId
-  }, ());
+  let queryData = Query.use(
+    ~variables={
+      userId: userId,
+    },
+    (),
+  )
 
-  switch(queryData.userById) {
-    | Some(user) => <div>{React.string(user.firstName ++ " " ++ user.lastName)}</div>
-    | None => React.null
-  };
-};
+  switch queryData.userById {
+  | Some(user) => <div> {React.string(user.firstName ++ (" " ++ user.lastName))} </div>
+  | None => React.null
+  }
+}
+
 ```
 
 Nothing that fancy here. We call `Query.use` to with a variable `userId`, just as defined in our GraphQL query. `use` is a React hook that will _dispatch the query to the server and then deliver the data to the component_. It's integrated with [suspense](https://reactjs.org/docs/concurrent-mode-suspense.html), which means that it'll suspend your component if the data's not already there. The query will be re-issued if you change your variables, and there's a bunch of things you can configure for your query. Check out the full reference of what can be passed to `Query.use` [here](#use).
@@ -64,39 +71,39 @@ In ReasonRelay, every `[%relay]` node containing a query automatically generates
 
 So, the typical way to preload a query would be like this:
 
-```reason
-// SomeComponent.re
-module Query = [%relay
-  {|
+```rescript
+// SomeComponent.res
+module Query = %relay(
+  `
   query SomeComponentQuery($userId: ID!) {
     user(id: $userId) {
       ...SomeUserComponent_user
     }
   }
-  |}
-];
+  `
+)
 
-[@react.component]
+@react.component
 let make = (~queryRef) => {
-  let queryData = Query.usePreloaded(~queryRef, ());
+  let queryData = Query.usePreloaded(~queryRef, ())
 
   // Use the data for the query here
-};
+}
 
-// SomeOtherComponent.re
-[@react.component]
+// SomeOtherComponent.res
+@react.component
 let make = (~userId) => {
-  let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader();
+  let (queryRef, loadQuery, _disposeQuery) = SomeComponent.Query.useLoader()
 
-  switch (queryRef) {
+  switch queryRef {
   | Some(queryRef) => <SomeComponent queryRef />
   | None =>
-    <button onClick={_ => {loadQuery(~variables={id: userId}, ())}}>
+    <button onClick={_ => loadQuery(~variables={id: userId}, ())}>
       {React.string("See full user")}
     </button>
-  };
-};
+  }
 }
+
 ```
 
 Let's break down what's going on:
@@ -134,14 +141,14 @@ Sometimes you just need the query data outside of React. `fetch` lets you make t
 
 Using it looks something like this:
 
-```reason
-Query.fetch(
-  ~environment,
-  ~variables={...},
-  ~onResult=res => switch (res) {
+```rescript
+Query.fetch(~environment, ~variables={...}, ~onResult=res =>
+  switch res {
   | Ok(res) => Js.log(res)
   | Error(_) => Js.log("Error")
-});
+  }
+)
+
 ```
 
 Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching and loading more data](refetching-and-loading-more-data).

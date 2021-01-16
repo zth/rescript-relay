@@ -146,66 +146,60 @@ Finally time for some actual code. Next thing is setting up the Relay environmen
 
 You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `bs-fetch` for fetching, which you can find [installation instructions for here](https://github.com/reasonml-community/bs-fetch)):
 
-```reason
-/* RelayEnv.re */
+```rescript
+/* RelayEnv.res */
 
 /* This is just a custom exception to indicate that something went wrong. */
-exception Graphql_error(string);
+exception Graphql_error(string)
 
 /**
  * A standard fetch that sends our operation and variables to the
  * GraphQL server, and then decodes and returns the response.
  */
-let fetchQuery: ReasonRelay.Network.fetchFunctionPromise =
-  (operation, variables, _cacheConfig, _uploadables) =>
-    Fetch.(
-      fetchWithInit(
-        "http://localhost:4000/graphql",
-        RequestInit.make(
-          ~method_=Post,
-          ~body=
-            Js.Dict.fromList([
-              ("query", Js.Json.string(operation.text)),
-              ("variables", variables),
-            ])
-            |> Js.Json.object_
-            |> Js.Json.stringify
-            |> BodyInit.make,
-          ~headers=
-            HeadersInit.make({
-              "content-type": "application/json",
-              "accept": "application/json",
-            }),
-          (),
-        ),
-      )
-      |> Js.Promise.then_(resp =>
-           if (Response.ok(resp)) {
-             Response.json(resp);
-           } else {
-             Js.Promise.reject(
-               Graphql_error(
-                 "Request failed: " ++ Response.statusText(resp),
-               ),
-             );
-           }
-         )
-    );
+let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (
+  operation,
+  variables,
+  _cacheConfig,
+  _uploadables,
+) => {
+  open Fetch
+  fetchWithInit(
+    "http://localhost:4000/graphql",
+    RequestInit.make(
+      ~method_=Post,
+      ~body=Js.Dict.fromList(list{
+        ("query", Js.Json.string(operation.text)),
+        ("variables", variables),
+      })
+      |> Js.Json.object_
+      |> Js.Json.stringify
+      |> BodyInit.make,
+      ~headers=HeadersInit.make({
+        "content-type": "application/json",
+        "accept": "application/json",
+      }),
+      (),
+    ),
+  ) |> Js.Promise.then_(resp =>
+    if Response.ok(resp) {
+      Response.json(resp)
+    } else {
+      Js.Promise.reject(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+    }
+  )
+}
 
-let network =
-  ReasonRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ());
+let network = ReasonRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ())
 
-let environment =
-  ReasonRelay.Environment.make(
-    ~network,
-    ~store=
-      ReasonRelay.Store.make(
-        ~source=ReasonRelay.RecordSource.make(),
-        ~gcReleaseBufferSize=10, // This sets the query cache size to 10
-        ()
-      ),
+let environment = ReasonRelay.Environment.make(
+  ~network,
+  ~store=ReasonRelay.Store.make(
+    ~source=ReasonRelay.RecordSource.make(),
+    ~gcReleaseBufferSize=10, // This sets the query cache size to 10
     (),
-  );
+  ),
+  (),
+)
 ```
 
 ## Almost ready to make our first query
@@ -216,14 +210,15 @@ There, we now have a Relay environment! We only have two more things to fix befo
 
 Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<ReasonRelay.Context.Provider />`:
 
-```reason
-/* Index.re */
+```rescript
+/* Index.res */
 ReactExperimental.renderConcurrentRootAtElementWithId(
   <ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />
   </ReasonRelay.Context.Provider>,
   "app",
-);
+)
+
 ```
 
 ##### 2. Rendering your app in Concurrent Mode

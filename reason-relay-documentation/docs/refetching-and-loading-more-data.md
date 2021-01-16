@@ -20,9 +20,10 @@ Sometimes you'll want to refresh or refetch data in specific parts of your views
 
 You can make a fragment refetchable by adding the `@refetchable(queryName: "")` directive to it. Let's look at an example of making a fragment refetchable and refetching it with. Here's a component showing some information about a user, and then rendering a "Show bio"-button to refetch the fragment it uses, but include more information about the user:
 
-```reason
-/* UserProfileHeader.re */
-module UserFragment = [%relay {|
+```rescript
+/* UserProfileHeader.res */
+module UserFragment = %relay(
+  `
   fragment UserProfileHeader_user on User
     @refetchable(queryName: "UserProfileHeaderRefetchQuery")
     @argumentDefinitions(includeFullBio: {type: "Boolean!", defaultValue: false}) {
@@ -33,35 +34,31 @@ module UserFragment = [%relay {|
       age
     }
   }
-|}];
+`
+)
 
-[@react.component]
-let make = (~user as userRef) => {
-  let (user, refetch) = UserFragment.useRefetchable(userRef);
+@react.component
+let make = (~user) => {
+  let (user, refetch) = UserFragment.useRefetchable(user)
 
   <>
-    <div> {React.string(user.firstName ++ " " ++ user.lastName)} </div>
-    {switch (user.bio) {
-     | Some(bio) =>
-       <>
-         <div> {React.string(bio.presentationText)} </div>
-         <div> {React.string("Age: " ++ string_of_int(bio.age))} </div>
-       </>
-     | None =>
-       <button
-         type_="button"
-         onClick={_ =>
-           refetch(
-             ~variables=
-               UserFragment.makeRefetchVariables(~includeFullBio=true, ()),
-             (),
-           )
-         }>
-         {React.string("Show bio")}
-       </button>
-     }}
-  </>;
-};
+    <div> {React.string(user.firstName ++ (" " ++ user.lastName))} </div>
+    {switch user.bio {
+    | Some(bio) => <>
+        <div> {React.string(bio.presentationText)} </div>
+        <div> {React.string("Age: " ++ string_of_int(bio.age))} </div>
+      </>
+    | None =>
+      <button
+        type_="button"
+        onClick={_ =>
+          refetch(~variables=UserFragment.makeRefetchVariables(~includeFullBio=true, ()), ())}>
+        {React.string("Show bio")}
+      </button>
+    }}
+  </>
+}
+
 ```
 
 Whew, new stuff to break down. Let's start from the top:

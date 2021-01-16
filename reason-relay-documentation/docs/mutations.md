@@ -15,10 +15,10 @@ Fetching and displaying data is only half the fun, right? We want to change stuf
 
 Mutations in ReasonRelay are defined using the `[%relay]` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
 
-```reason
-/* SingleTodo.re */
-module UpdateMutation = [%relay
-  {|
+```rescript
+/* SingleTodo.res */
+module UpdateMutation = %relay(
+  `
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {
       updatedTodoItem {
@@ -27,12 +27,12 @@ module UpdateMutation = [%relay
       }
     }
   }
-|}
-];
+`
+)
 
-[@react.component]
+@react.component
 let make = () => {
-  let (mutate, isMutating) = UpdateMutation.use();
+  let (mutate, isMutating) = UpdateMutation.use()
 
   <button
     onClick={_ =>
@@ -45,11 +45,11 @@ let make = () => {
           },
         },
         (),
-      )
-    }>
+      )}>
     {React.string(isMutating ? "Updating..." : "Update")}
-  </button>;
-};
+  </button>
+}
+
 
 ```
 
@@ -74,24 +74,23 @@ _This section is a work in progress_.
 
 Optimistically updating your UI can do wonders for UX, and Relay provides all the primitives you need to do both simple and more advanced optimistic updates. Let's add a simple optimistic update to this mutation by giving Relay the response that we expect the server to return right away:
 
-```reason
+```rescript
 mutate(
-    ~variables={
-        input: {
-            clientMutationId: None,
-            id: todoItem.id,
-            text: newText,
-        },
+  ~variables={
+    input: {
+      clientMutationId: None,
+      id: todoItem.id,
+      text: newText,
     },
-    ~optimisticResponse={
-        updateTodoItem:
-        Some({
-            updatedTodoItem:
-            Some({"id": todoItem.id, "text": todoItem.text}),
-        }),
-    },
-    (),
+  },
+  ~optimisticResponse={
+    updateTodoItem: Some({
+      updatedTodoItem: Some({"id": todoItem.id, "text": todoItem.text}),
+    }),
+  },
+  (),
 )
+
 ```
 
 So, what's going on here?
@@ -176,7 +175,7 @@ Now, the type for the optimistic response above contains a bunch of `id` fields.
 
 You use it like this:
 
-```reason
+```rescript
 ~optimisticResponse={
   addedBlogPost: Some({
     id: ReasonRelay.(generateUniqueClientID->dataIdToString),

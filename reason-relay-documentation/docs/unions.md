@@ -35,9 +35,10 @@ type Query {
 
 Here we have a union `Owner` that's either a `User` or a `Group`. There's also a root field called `roomOwner` which returns the `Owner` of a room. Let's look at how using that union looks in ReasonRelay:
 
-```reason
-/* RoomOwner.re */
-module Query = [%relay {|
+```rescript
+/* RoomOwner.res */
+module Query = %relay(
+  `
   query RoomOwnerQuery($roomId: ID!) {
     roomOwner(roomId: $roomId) {
       __typename
@@ -52,25 +53,26 @@ module Query = [%relay {|
       }
     }
   }
-|}]
+`
+)
 
-[@react.component]
+@react.component
 let make = (~roomId) => {
-  let queryData = Query.use(~variables={roomId: roomId}, ());
+  let queryData = Query.use(~variables={roomId: roomId}, ())
 
-  switch (queryData.roomOwner) {
+  switch queryData.roomOwner {
   | Some(roomOwner) =>
     <div>
       {React.string("Room is owned by ")}
-      {switch (roomOwner) {
-       | `User(user) =>
-         React.string("user " ++ user.firstName ++ " " ++ user.lastName)
-       | `Group(group) => React.string("group " ++ group.name)
-       | `UnselectedUnionMember(typename) => React.string("Unselected member type: " ++ typename)
-       }}
+      {switch roomOwner {
+      | #User(user) => React.string("user " ++ (user.firstName ++ (" " ++ user.lastName)))
+      | #Group(group) => React.string("group " ++ group.name)
+      | #UnselectedUnionMember(typename) => React.string("Unselected member type: " ++ typename)
+      }}
     </div>
-  };
-};
+  }
+}
+
 ```
 
 Let's break down what's going on here:
