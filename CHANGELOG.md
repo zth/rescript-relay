@@ -17,13 +17,13 @@ Point 1 is something that you as a user will hopefully notice a minimal amount o
 
 - ReasonRelay will be renamed, probably to ReScriptRelay.
 - ReasonML and ReScript syntax will continue to be supported for the foreseeable future, but I will focus my tooling and documentation efforts on ReScript.
-- Docs will be converted to ReScript
-- A dedicated VSCode extension I'm working on will be released, _only_ supporting ReScript syntax.
+- Docs will be converted to ReScript (this is 90% done).
+- A dedicated VSCode extension I'm working on will be released, _only_ supporting ReScript syntax (sneak peak already released).
 - Source files emitted by the compiler will eventually be converted to `.res` files rather than `.re` files.
 
 The reason for all of this is simply that I believe ReScript is where the future is at, and I don't have the resources to focus my efforts on tooling etc for two syntaxes. I love ReasonML and its syntax, but I've still come to the conclusion that ReScript syntax is what will the most powerful alternative in the future.
 
-Keep your eye out for the new VSCode extension that'll be released "officially" in a short while!
+[Check out the sneak peak release](https://reason-relay-documentation.zth.now.sh/docs/vscode-extension) of the dedicated VSCode extension.
 
 ## Breaking changes
 
