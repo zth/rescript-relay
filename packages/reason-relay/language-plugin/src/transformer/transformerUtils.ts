@@ -6,6 +6,7 @@ type operationType = {
 };
 
 type printConfig = {
+  variablesHoldingConnectionIds?: null | string[];
   connection?: null | {
     key: string;
     atObjectPath: string[];
@@ -45,6 +46,45 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
                 fieldName: n.name,
               },
             };
+          }
+        }
+
+        if (
+          node.kind === "Root" &&
+          ["mutation", "subscription"].includes(node.operation)
+        ) {
+          /**
+           * Extract store updater directives
+           */
+          const storeUpdaterDirectivesWithConnectionsArg = n.directives.filter(
+            (d) =>
+              [
+                "appendNode",
+                "prependNode",
+                "appendEdge",
+                "prependEdge",
+                "deleteEdge",
+              ].includes(d.name)
+          );
+
+          if (storeUpdaterDirectivesWithConnectionsArg.length > 0) {
+            storeUpdaterDirectivesWithConnectionsArg.forEach((d) => {
+              const arg = d.args.find((a) => a.name === "connections");
+
+              const argValue = arg?.value;
+
+              if (argValue && argValue.kind === "Variable") {
+                if (opInfo.variablesHoldingConnectionIds) {
+                  opInfo.variablesHoldingConnectionIds.push(
+                    argValue.variableName
+                  );
+                } else {
+                  opInfo.variablesHoldingConnectionIds = [
+                    argValue.variableName,
+                  ];
+                }
+              }
+            });
           }
         }
 

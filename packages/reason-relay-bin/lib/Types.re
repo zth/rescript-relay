@@ -110,4 +110,7 @@ type fullState = {
   fragment: option(fragment),
 };
 
-type printConfig = {connection: option(connectionInfo)};
+type printConfig = {
+  variables_holding_connection_ids: option(list(string)),
+  connection: option(connectionInfo),
+};

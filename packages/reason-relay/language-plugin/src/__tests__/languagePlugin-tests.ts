@@ -229,6 +229,36 @@ describe("Language plugin tests", () => {
         expect(generated).toMatchSnapshot();
       });
     });
+
+    it("types ID as dataId for variables piped into the `connections` arg of the store updater directives", () => {
+      const generated = generate(`
+        mutation SetUserLocationMutation($input: SetUserLocationInput!, $connections: [ID!]!) {
+          setUserLocation(input: $input) {
+            changedUser @appendNode(connections: $connections) {
+              id
+              firstName
+            }
+          }
+        }
+      `);
+
+      expect(generated).toContain("connections: array(ReasonRelay.dataId),");
+    });
+
+    it("types ID as dataId for variables piped into the `connections` arg of the store updater directives, regardless of what the variable is named", () => {
+      const generated = generate(`
+        mutation SetUserLocationMutation($input: SetUserLocationInput!, $targetConns: [ID!]!) {
+          setUserLocation(input: $input) {
+            changedUser @prependNode(connections: $targetConns) {
+              id
+              firstName
+            }
+          }
+        }
+      `);
+
+      expect(generated).toContain("targetConns: array(ReasonRelay.dataId),");
+    });
   });
 
   describe("Mutation", () => {
