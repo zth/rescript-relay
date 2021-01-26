@@ -1,5 +1,31 @@
 exception No_extractable_operations_found;
 
+let transformVariables =
+    (~variables: Types.object_, ~config: Types.printConfig) => {
+  switch (config.variables_holding_connection_ids) {
+  | None => variables
+  | Some(variable_names) => {
+      ...variables,
+      values:
+        variables.values
+        |> List.map(v =>
+             switch (v) {
+             | Types.Prop(variable_name, prop_value)
+                 when List.exists(v => v == variable_name, variable_names) =>
+               Types.Prop(
+                 variable_name,
+                 {
+                   ...prop_value,
+                   propType: Array({nullable: false, propType: DataId}),
+                 },
+               )
+             | v => v
+             }
+           ),
+    }
+  };
+};
+
 /**
  * Print the full state, and whatever utils/types etc are needed.
  */
@@ -43,7 +69,10 @@ let getPrintedFullState =
 
   // We check and add all definitions we've found to a list that'll later be printed as types.
   switch (state.variables) {
-  | Some(variables) => addDefinition(Types.(Variables(Object(variables))))
+  | Some(variables) =>
+    addDefinition(
+      Types.(Variables(Object(transformVariables(~variables, ~config)))),
+    )
   | None => ()
   };
 

@@ -11,6 +11,8 @@ module GenerateFromFlow = {
   [@deriving yojson]
   type print_config = {
     [@default None]
+    variables_holding_connection_ids: option(list(string)),
+    [@default None]
     connection: option(connection_info),
   };
 
@@ -71,6 +73,8 @@ let () = {
             exit(1);
           },
         ~config={
+          variables_holding_connection_ids:
+            config.print_config.variables_holding_connection_ids,
           connection:
             switch (config.print_config.connection) {
             | None => None

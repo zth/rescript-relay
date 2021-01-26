@@ -21,6 +21,7 @@ interface GenerateFromFlowConfig {
         fragment_value: [string, boolean];
       };
   print_config: {
+    variables_holding_connection_ids: null | string[];
     connection: null | {
       key: string;
       at_object_path: string[];

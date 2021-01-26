@@ -53,6 +53,8 @@ export function generate(
           fragment_value: operationDescriptor.value,
         },
     print_config: {
+      variables_holding_connection_ids:
+        opInfo.variablesHoldingConnectionIds ?? null,
       connection: opInfo.connection
         ? {
             at_object_path: opInfo.connection.atObjectPath,
