@@ -16,7 +16,12 @@ let transformVariables =
                  variable_name,
                  {
                    ...prop_value,
-                   propType: Array({nullable: false, propType: DataId}),
+                   propType:
+                     Array({
+                       comment: None,
+                       nullable: false,
+                       propType: DataId,
+                     }),
                  },
                )
              | v => v
@@ -350,10 +355,7 @@ let getPrintedFullState =
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
   | Some(connection) =>
-    let connPath =
-      connection.atObjectPath
-      |> Tablecloth.Array.to_list
-      |> Tablecloth.List.reverse;
+    let connPath = connection.atObjectPath |> List.rev;
 
     switch (
       state.objects

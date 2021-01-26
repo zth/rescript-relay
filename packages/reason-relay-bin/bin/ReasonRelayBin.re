@@ -4,7 +4,7 @@ module GenerateFromFlow = {
   [@deriving yojson]
   type connection_info = {
     key: string,
-    at_object_path: array(string),
+    at_object_path: list(string),
     field_name: string,
   };
 
