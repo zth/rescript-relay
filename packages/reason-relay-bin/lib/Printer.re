@@ -13,7 +13,7 @@ let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
 
 let printComment = (comment: option(string)) =>
   switch (comment) {
-  | Some(comment) => "/* " ++ comment ++ " */\n"
+  | Some(comment) => "[@ocaml.doc \"" ++ comment ++ "\"] "
   | None => ""
   };
 
@@ -407,7 +407,7 @@ and printRootType =
       | Some(`Tail) => (" and ", "; ")
       };
 
-    prefix ++ typeDef ++ suffix;
+    printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())

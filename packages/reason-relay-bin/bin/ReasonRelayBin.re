@@ -81,7 +81,7 @@ let () = {
             | Some(conn) =>
               Some({
                 key: conn.key,
-                atObjectPath: conn.at_object_path,
+                atObjectPath: List.rev(conn.at_object_path),
                 fieldName: conn.field_name,
               })
             },

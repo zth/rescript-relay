@@ -64,7 +64,17 @@ let getPrintedFullState =
              Types.(
                ObjectTypeDeclaration({
                  name,
-                 definition: obj.definition,
+                 definition:
+                   switch (config.connection) {
+                   | Some({atObjectPath}) when atObjectPath == obj.atPath => {
+                       ...obj.definition,
+                       comment:
+                         Some(
+                           "Hint: You can extract all nodes from this connection to an array of non-nullable nodes using the `FragmentModule.getConnectionNodes` helper, like `let nodes = FragmentModule.getConnectionNodes(connectionGoesHere)`. `FragmentModule` is whatever you've named the module where you have defined your fragment.",
+                         ),
+                     }
+                   | _ => obj.definition
+                   },
                  atPath: obj.atPath,
                })
              ),
@@ -355,7 +365,7 @@ let getPrintedFullState =
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
   | Some(connection) =>
-    let connPath = connection.atObjectPath |> List.rev;
+    let connPath = connection.atObjectPath;
 
     switch (
       state.objects
