@@ -1,6 +1,12 @@
 # master
 
--
+## Breaking changes
+
+- _BREAKING CHANGE_ Lists of connection ids passed into the store updater directives (@appendEdge, @appendNode, etc) are now properly typed a `array<ReasonRelay.dataId>` rather than `array<string>`.
+
+## Fixes & misc
+
+- Added comment to generated connection record types, giving a hint to use the generated `getConnectionNodes` helper for turning a connection into a list of non-nullable nodes.
 
 # 0.13.0
 
