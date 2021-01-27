@@ -42,49 +42,73 @@ let rec mapObjProp =
         )
         : Types.propValue =>
   switch (prop) {
-  | String(_) => {nullable: optional, propType: Scalar(String)}
+  | String(_) => {
+      comment: None,
+      nullable: optional,
+      propType: Scalar(String),
+    }
 
   | StringLiteral({value}) => {
+      comment: None,
       nullable: optional,
       propType: value |> makeStringLiteralOrString,
     }
 
   | Nullable({argument: (_, String(_))}) => {
+      comment: None,
       nullable: true,
       propType: Scalar(String),
     }
   | Nullable({argument: (_, StringLiteral({value}))}) => {
+      comment: None,
       nullable: true,
       propType: value |> makeStringLiteralOrString,
     }
 
   // Our compiler fork already emits int/float as generic Flow types instead of number, so these are probably not needed, but leaving them in there anyway just in case.
   | Number(_)
-  | NumberLiteral(_) => {nullable: optional, propType: Scalar(Float)}
+  | NumberLiteral(_) => {
+      comment: None,
+      nullable: optional,
+      propType: Scalar(Float),
+    }
   | Nullable({argument: (_, Number(_))})
   | Nullable({argument: (_, NumberLiteral(_))}) => {
+      comment: None,
       nullable: true,
       propType: Scalar(Float),
     }
 
   // Booleans
-  | Boolean(_) => {nullable: optional, propType: Scalar(Boolean)}
-  | BooleanLiteral(_) => {nullable: optional, propType: Scalar(Boolean)}
+  | Boolean(_) => {
+      comment: None,
+      nullable: optional,
+      propType: Scalar(Boolean),
+    }
+  | BooleanLiteral(_) => {
+      comment: None,
+      nullable: optional,
+      propType: Scalar(Boolean),
+    }
   | Nullable({argument: (_, Boolean(_))}) => {
+      comment: None,
       nullable: true,
       propType: Scalar(Boolean),
     }
   | Nullable({argument: (_, BooleanLiteral(_))}) => {
+      comment: None,
       nullable: true,
       propType: Scalar(Boolean),
     }
 
   // Arrays
   | Array({argument: typ}) => {
+      comment: None,
       nullable: optional,
       propType: Array(typ |> mapObjProp(~path, ~state, ~optional=false)),
     }
   | Nullable({argument: (_, Array({argument: typ}))}) => {
+      comment: None,
       nullable: true,
       propType: Array(typ |> mapObjProp(~path, ~state, ~optional=false)),
     }
@@ -92,6 +116,7 @@ let rec mapObjProp =
       id: Unqualified((_, {name: "$ReadOnlyArray"})),
       targs: Some((_, {arguments: [typ]})),
     }) => {
+      comment: None,
       nullable: optional,
       propType: Array(typ |> mapObjProp(~path, ~state, ~optional=false)),
     }
@@ -104,16 +129,19 @@ let rec mapObjProp =
         }),
       ),
     }) => {
+      comment: None,
       nullable: true,
       propType: Array(typ |> mapObjProp(~path, ~state, ~optional=false)),
     }
 
   // Objects
   | Object({properties}) => {
+      comment: None,
       nullable: optional,
       propType: Object(makeObjShape(~path, ~state, properties)),
     }
   | Nullable({argument: (_, Object({properties}))}) => {
+      comment: None,
       nullable: true,
       propType: Object(makeObjShape(~path, ~state, properties)),
     }
@@ -163,6 +191,7 @@ let rec mapObjProp =
           ..._r,
         ],
       ) => {
+        comment: None,
         nullable: true,
         propType:
           TopLevelNodeField(
@@ -199,6 +228,7 @@ let rec mapObjProp =
 
   // This handles generic type references, extracting it if it's an enum
   | Generic({id: Unqualified((_, {name: typeName}))}) => {
+      comment: None,
       nullable: optional,
       propType:
         switch (
@@ -214,6 +244,7 @@ let rec mapObjProp =
   | Nullable({
       argument: (_, Generic({id: Unqualified((_, {name: typeName}))})),
     }) => {
+      comment: None,
       nullable: true,
       propType:
         switch (
@@ -228,7 +259,7 @@ let rec mapObjProp =
     }
 
   // Handle anything we haven't matched above, including any which needs no explicit match as it's handled here
-  | _ => {nullable: optional, propType: Scalar(Any)}
+  | _ => {comment: None, nullable: optional, propType: Scalar(Any)}
   }
 
 /**
@@ -263,7 +294,11 @@ and makeObjShape =
            _,
            {value: Init(_), key: Identifier((_, {name: "__id" as id}))},
          )) =>
-         addValue(Types.(Prop(id, {nullable: false, propType: DataId})))
+         addValue(
+           Types.(
+             Prop(id, {comment: None, nullable: false, propType: DataId})
+           ),
+         )
        // Map all $fragmentRefs. These are either a single type (+$fragmentRefs: SomeFragment_someType$ref), or an intersection of types (+$fragmentRefs: SomeFragment_someType$ref & SomeOtherFragment_someType$ref)
        | Property((
            _,
@@ -324,7 +359,7 @@ and makeObjShape =
        }
      );
 
-  {atPath: path, values: values^ |> List.rev};
+  {comment: None, atPath: path, values: values^ |> List.rev};
 }
 and makeUnionMember =
     (
@@ -396,6 +431,7 @@ and makeUnionDefinition =
      );
 
   {
+    comment: None,
     members:
       unionMembers^
       |> Tablecloth.List.filter(~f=(member: Types.unionMember) =>
@@ -408,6 +444,7 @@ and makeUnion =
     (~firstProps, ~secondProps, ~maybeMoreMembers, ~path, ~optional, ~state) => {
   {
     Types.nullable: optional,
+    comment: None,
     propType:
       Union(
         makeUnionDefinition(

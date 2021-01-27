@@ -4,7 +4,7 @@ module GenerateFromFlow = {
   [@deriving yojson]
   type connection_info = {
     key: string,
-    at_object_path: array(string),
+    at_object_path: list(string),
     field_name: string,
   };
 
@@ -81,7 +81,7 @@ let () = {
             | Some(conn) =>
               Some({
                 key: conn.key,
-                atObjectPath: conn.at_object_path,
+                atObjectPath: List.rev(conn.at_object_path),
                 fieldName: conn.field_name,
               })
             },

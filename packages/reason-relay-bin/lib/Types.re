@@ -6,7 +6,7 @@ type operationType =
 
 type connectionInfo = {
   key: string,
-  atObjectPath: array(string),
+  atObjectPath: list(string),
   fieldName: string,
 };
 
@@ -15,6 +15,7 @@ type unionMember = {
   shape: object_,
 }
 and union = {
+  comment: option(string),
   members: list(unionMember),
   atPath: list(string),
 }
@@ -37,6 +38,7 @@ and propType =
   | Union(union)
   | TopLevelNodeField(string, object_)
 and propValue = {
+  comment: option(string),
   nullable: bool,
   propType,
 }
@@ -44,6 +46,7 @@ and propValues =
   | FragmentRef(string)
   | Prop(string, propValue)
 and object_ = {
+  comment: option(string),
   values: list(propValues),
   atPath: list(string),
 }

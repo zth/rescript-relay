@@ -11,6 +11,17 @@ let makeEnumName = enumName => "enum_" ++ enumName;
 let makeUnwrapEnumFnName = enumName => "unwrap_" ++ makeEnumName(enumName);
 let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
 
+let printComment = (comment: option(string)) =>
+  switch (comment) {
+  | Some(comment) => "[@ocaml.doc \"" ++ comment ++ "\"] "
+  | None => ""
+  };
+
+let printRecordPropComment = (propValue: Types.propValue) =>
+  printComment(propValue.comment);
+
+let printRecordComment = (obj: Types.object_) => printComment(obj.comment);
+
 let printRecordPropName = propName =>
   switch (
     ReservedKeywords.reservedKeywords
@@ -180,7 +191,8 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
            addToStr(
              switch (p) {
              | Prop(name, propValue) =>
-               printRecordPropName(name)
+               printRecordPropComment(propValue)
+               ++ printRecordPropName(name)
                ++ ": "
                ++ printPropValue(~propValue, ~state)
                ++ ","
@@ -306,6 +318,7 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
   let addToStr = s => str := str^ ++ s;
 
   let optionalObj = {
+    comment: None,
     atPath: [],
     values:
       obj.values
@@ -336,18 +349,21 @@ and printRootType =
     (~recursiveMode=None, ~state: fullState, ~ignoreFragmentRefs, rootType) => {
   switch (rootType) {
   | Operation(Object(obj)) =>
-    "type response = "
+    printRecordComment(obj)
+    ++ "type response = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
   | RawResponse(Some(Object(obj))) =>
-    "type rawResponse = "
+    printRecordComment(obj)
+    ++ "type rawResponse = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
   | RawResponse(None) => "type rawResponse = response;"
   | RawResponse(Some(Union(_)))
   | Operation(Union(_)) => raise(Invalid_top_level_shape)
   | Variables(Object(obj)) =>
-    "type variables = "
+    printRecordComment(obj)
+    ++ "type variables = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
@@ -358,11 +374,13 @@ and printRootType =
     }
 
   | Fragment(Object(obj)) =>
-    "type fragment = "
+    printRecordComment(obj)
+    ++ "type fragment = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";"
   | Fragment(Union(union)) =>
-    "type fragment = "
+    printComment(union.comment)
+    ++ "type fragment = "
     ++ printUnionTypeDefinition(
          union,
          ~includeSemi=false,
@@ -389,11 +407,12 @@ and printRootType =
       | Some(`Tail) => (" and ", "; ")
       };
 
-    prefix ++ typeDef ++ suffix;
+    printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
     ++ ";\n"
+    ++ printRecordComment(obj)
     ++ "type fragment = array(fragment_t);"
   | PluralFragment(Union(union)) =>
     "type fragment_t = "
@@ -403,6 +422,7 @@ and printRootType =
          ~prefixWithTypesModule=false,
        )
     ++ ";\n"
+    ++ printComment(union.comment)
     ++ "type fragment = array(fragment_t);"
   };
 }

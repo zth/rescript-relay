@@ -809,6 +809,7 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
+  /**Hint: You can extract all nodes from this connection to an array of non-nullable nodes using the \`FragmentModule.getConnectionNodes\` helper, like \`let nodes = FragmentModule.getConnectionNodes(connectionGoesHere)\`. \`FragmentModule\` is whatever you've named the module where you have defined your fragment.*/
   type fragment_me = {
     friendsConnection: option(fragment_me_friendsConnection),
   }

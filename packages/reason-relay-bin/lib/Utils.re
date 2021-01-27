@@ -75,6 +75,7 @@ let rec mapPropType = (~path, propType: propType): propType =>
   }
 and adjustObjectPath = (~path: list(string), obj: object_): object_ => {
   {
+    ...obj,
     atPath: path,
     values:
       obj.values
