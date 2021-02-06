@@ -3749,10 +3749,10 @@ regex-not@^1.0.0, regex-not@^1.0.2:
     extend-shallow "^3.0.2"
     safe-regex "^1.1.0"
 
-relay-compiler@10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/relay-compiler/-/relay-compiler-10.1.0.tgz#fb4672cdbe9b54869a3a79759edd8c2d91609cbe"
-  integrity sha512-HPqc3N3tNgEgUH5+lTr5lnLbgnsZMt+MRiyS0uAVNhuPY2It0X1ZJG+9qdA3L9IqKFUNwVn6zTO7RArjMZbARQ==
+relay-compiler@10.1.3:
+  version "10.1.3"
+  resolved "https://registry.yarnpkg.com/relay-compiler/-/relay-compiler-10.1.3.tgz#76ec4fd5d16f5b6aae61183f64b5caaef27f2525"
+  integrity sha512-AJoET3U8PrLXiA1/jmcr5beR/928+8c8qf46nOuumaNXhTfJC2RvN2fpD0APF0Fti+oKBxwKcQJ93R5BK6A2xw==
   dependencies:
     "@babel/core" "^7.0.0"
     "@babel/generator" "^7.5.0"
@@ -3767,36 +3767,36 @@ relay-compiler@10.1.0:
     glob "^7.1.1"
     immutable "~3.7.6"
     nullthrows "^1.1.1"
-    relay-runtime "10.1.0"
+    relay-runtime "10.1.3"
     signedsource "^1.0.0"
     yargs "^15.3.1"
 
-relay-runtime@10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-10.1.0.tgz#4753bf36e95e8d862cef33608e3d98b4ed730d16"
-  integrity sha512-bxznLnQ1ST6APN/cFi7l0FpjbZVchWQjjhj9mAuJBuUqNNCh9uV+UTRhpQF7Q8ycsPp19LHTpVyGhYb0ustuRQ==
+relay-runtime@10.1.3:
+  version "10.1.3"
+  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-10.1.3.tgz#1d7bfe590b50cd7f18f6d1c0f20df71fe5bb451a"
+  integrity sha512-NSh4CaRRpUaziK72h4T5uKw6rvHovmS/xD9+czqUYg6yKv22ajwBE6SWmjwTSKnt2NBzIfDjh2C3heo9pLbvtg==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^3.0.0"
 
-relay-test-utils-internal@10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/relay-test-utils-internal/-/relay-test-utils-internal-10.1.0.tgz#22dded7f87fa844e95fb5f646954fb74fa1db647"
-  integrity sha512-SElLlpCPXdHh0/j0xoq0V+rHQfYriSQbBlTubFpX8fNLVJ3Z4+9JYdyT60AaWtYc2NMTp3XCMG6qaz7X59RN4A==
+relay-test-utils-internal@10.1.3:
+  version "10.1.3"
+  resolved "https://registry.yarnpkg.com/relay-test-utils-internal/-/relay-test-utils-internal-10.1.3.tgz#6e3f09f168b780753506b35503fb32e8a71e7c25"
+  integrity sha512-XdvGvsQc6+1TQUuu0oe5OYSHujZpfZauyeR3QnTeexCMYy4gqWysF+d39qm5+oPBU6P8BUckFwCLKG48EVi0nQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^3.0.0"
-    relay-compiler "10.1.0"
-    relay-runtime "10.1.0"
+    relay-compiler "10.1.3"
+    relay-runtime "10.1.3"
 
-relay-test-utils@10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/relay-test-utils/-/relay-test-utils-10.1.0.tgz#9375585017779016ba6c5396599f657c650d18a0"
-  integrity sha512-2EDrssIx4UEHoktgIhgTcJtavP0mhh4V2r4r60WIDk4kvNwzvsbV9kdGHanYg/1tniVoA6wJT3MyaV6C12c92w==
+relay-test-utils@10.1.3:
+  version "10.1.3"
+  resolved "https://registry.yarnpkg.com/relay-test-utils/-/relay-test-utils-10.1.3.tgz#bec211b49c048a561ac1faad229a3d58e79c5103"
+  integrity sha512-aG0ghuSPX6vmVb89vHLZELumxv7YtKTdpUqgolYRYCpbvhpMex2ACaeFmlEVUQ3JLiWYhoe7VgVVgmm3uHJD1Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^3.0.0"
-    relay-runtime "10.1.0"
+    relay-runtime "10.1.3"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

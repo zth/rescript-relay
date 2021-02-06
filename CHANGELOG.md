@@ -1,5 +1,14 @@
 # master
 
+## Upgrade versions
+
+- `react` to `0.0.0-experimental-4e08fb10c`
+- `react-dom` to `0.0.0-experimental-4e08fb10c`
+- `react-relay` to `0.0.0-experimental-4c4107dd`
+- `relay-compiler` to `10.1.3`
+- `relay-config` to `10.1.3`
+- `relay-runtime` to `10.1.3`
+
 ## Breaking changes
 
 - _BREAKING CHANGE_ Lists of connection ids passed into the store updater directives (@appendEdge, @appendNode, etc) are now properly typed a `array<ReasonRelay.dataId>` rather than `array<string>`.

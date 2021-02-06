@@ -591,7 +591,7 @@ type loadQueryConfig = {
   networkCacheConfig: option<cacheConfig>,
 }
 
-@bs.module("react-relay/hooks") @bs.scope("loadQuery")
+@bs.module("react-relay/hooks")
 external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
   "loadQuery"
 

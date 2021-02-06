@@ -51,16 +51,16 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 8.2 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-4ead6b530 react-dom@0.0.0-experimental-4ead6b530
+yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb10c
 
 # Add reason-relay and dependencies to the project
-# We currently depend on Relay version 10.1.0, so install that exact version
+# We currently depend on Relay version 10.1.3, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@10.1.0 relay-compiler@10.1.0 react-relay@0.0.0-experimental-c818bac3 relay-config@10.1.0 reason-promise
+yarn add reason-relay graphql relay-runtime@10.1.3 relay-compiler@10.1.3 react-relay@0.0.0-experimental-4c4107dd relay-config@10.1.3 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -80,14 +80,14 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-4ead6b530` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-4e08fb10c` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-4ead6b530",
-    "react-dom": "0.0.0-experimental-4ead6b530"
+    "react": "0.0.0-experimental-4e08fb10c",
+    "react-dom": "0.0.0-experimental-4e08fb10c"
   }
 }
 ```

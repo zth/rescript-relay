@@ -1,30 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Language plugin tests Explicit __typename selection throws when selecting a union without an explicit __typename selection 1`] = `
-[GraphQLError: Unions and interfaces must have the field __typename explicitly selected. Please add __typename to the fields selected by "participantById" in your operation.
-
-Source: GraphQL request (2:13)
-1: query SomeQuery {
-2:             participantById(id: "123") {
-               ^
-3:               ... on User {
-]
+[GraphQLError: - Unions and interfaces must have the field __typename explicitly selected. Please add __typename to the fields selected by "participantById" in your operation.
+  
+  Source: GraphQL request (2:13)
+  1: query SomeQuery {
+  2:             participantById(id: "123") {
+                 ^
+  3:               ... on User {
+  ]
 `;
 
 exports[`Language plugin tests Field names Cannot start with uppercase letter throws when trying to use a field name starting with an uppercase 1`] = `
-[GraphQLError: Found an invalid field name: Field names may not start with an uppercase letter. Please alias the 'Observer' field to something starting with a lowercase letter.
-
-Source: GraphQL request (2:13)
-1: query SomeQuery {
-2:             Observer(id: "123") {
-               ^
-3:               id
-]
+[GraphQLError: - Found an invalid field name: Field names may not start with an uppercase letter. Please alias the 'Observer' field to something starting with a lowercase letter.
+  
+  Source: GraphQL request (2:13)
+  1: query SomeQuery {
+  2:             Observer(id: "123") {
+                 ^
+  3:               id
+  ]
 `;
 
 exports[`Language plugin tests Field names Reserved keywords renames reserved keywords as field names in types when encountered 1`] = `
 "// SomeMutation.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -108,19 +111,22 @@ type operationType = ReasonRelay.mutationNode(relayOperationNode);
 `;
 
 exports[`Language plugin tests Field names Reserved keywords throws when trying to use a field name that's a reserved keyword 1`] = `
-[GraphQLError: Found an invalid field name: 'new' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.
-
-Source: GraphQL request (3:17)
-2:               user(id: "123") {
-3:                 new
-                   ^
-4:               }
-]
+[GraphQLError: - Found an invalid field name: 'new' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.
+  
+  Source: GraphQL request (3:17)
+  2:               user(id: "123") {
+  3:                 new
+                     ^
+  4:               }
+  ]
 `;
 
 exports[`Language plugin tests Fragment prints indications of existing fragment refs in generated types 1`] = `
 "// SomeComponent_user.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -158,6 +164,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 // SomeOtherComponent_user.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -200,6 +209,9 @@ exports[`Language plugin tests Fragment prints the correct fragment ref extracto
 "// SomeComponent_user.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
 
@@ -238,6 +250,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 exports[`Language plugin tests Mutation generates the correct converter for complex variables 1`] = `
 "// SetUserLocationMutation.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   type enum_UserRole = pri [> | \`Admin | \`User];
@@ -356,6 +371,9 @@ exports[`Language plugin tests Mutation generates the correct type structure whe
 "// SetUserLocationMutation.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type response_setUserLocation = {
@@ -460,6 +478,9 @@ type operationType = ReasonRelay.mutationNode(relayOperationNode);
 // SomeFragment_user.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   type enum_UserRole = pri [> | \`Admin | \`User];
 
@@ -505,6 +526,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 exports[`Language plugin tests Mutation prints the correct basic structure for mutations 1`] = `
 "// SetUserLocationMutation.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -618,6 +642,9 @@ exports[`Language plugin tests Node interface collapses single selections on the
 "// SomeQuery.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type response_node = {
@@ -687,6 +714,9 @@ type operationType = ReasonRelay.queryNode(relayOperationNode);
 exports[`Language plugin tests Query connections generates helpers for connections with unions 1`] = `
 "// TestPagination_query.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -807,6 +837,9 @@ exports[`Language plugin tests Query connections generates helpers for nested co
 "// TestPagination_query.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   /**Hint: You can extract all nodes from this connection to an array of non-nullable nodes using the \`FragmentModule.getConnectionNodes\` helper, like \`let nodes = FragmentModule.getConnectionNodes(connectionGoesHere)\`. \`FragmentModule\` is whatever you've named the module where you have defined your fragment.*/
@@ -884,6 +917,9 @@ exports[`Language plugin tests Query connections generates helpers for root leve
 "// TestPagination_query.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type fragment_usersConnection = {
@@ -956,6 +992,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 exports[`Language plugin tests Query prints simple responses and variables 1`] = `
 "// appQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -1034,6 +1073,9 @@ exports[`Language plugin tests Subscription prints the correct basic structure f
 "// SomeSubscription.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type response_userChanged = {user: option(response_userChanged_user)}
@@ -1101,6 +1143,9 @@ exports[`Language plugin tests Unions generates code to unwrap fragments on unio
 "// app_user.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
 
@@ -1141,6 +1186,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 // app_observer.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
 
@@ -1180,6 +1228,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 
 // appQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -1298,6 +1349,9 @@ type operationType = ReasonRelay.queryNode(relayOperationNode);
 exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
 "// appQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -1423,6 +1477,9 @@ exports[`Language plugin tests Unions handles fragments on unions 1`] = `
 "// Participant_participant.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type fragment_User_location = {
@@ -1506,6 +1563,9 @@ type operationType = ReasonRelay.fragmentNode(relayOperationNode);
 exports[`Language plugin tests Unions handles nested unions 1`] = `
 "// appQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   type enum_ObserverStatus = pri [> | \`Active | \`Inactive];
@@ -1682,6 +1742,9 @@ exports[`Language plugin tests raw_response_type handles the Node interface in @
 "// SomeQuery.graphql
 /* @generated */
 
+%bs.raw
+\\"/* @generated */\\";
+
 module Types = {
   [@ocaml.warning \\"-30\\"];
   type response_node = {
@@ -1775,6 +1838,9 @@ type operationType = ReasonRelay.queryNode(relayOperationNode);
 exports[`Language plugin tests raw_response_type handles unions in @raw_response_type 1`] = `
 "// SomeQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
@@ -1943,6 +2009,9 @@ type operationType = ReasonRelay.queryNode(relayOperationNode);
 exports[`Language plugin tests raw_response_type outputs code for handling @raw_response_type 1`] = `
 "// SomeQuery.graphql
 /* @generated */
+
+%bs.raw
+\\"/* @generated */\\";
 
 module Types = {
   [@ocaml.warning \\"-30\\"];
