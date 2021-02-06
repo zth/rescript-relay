@@ -96,7 +96,6 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
-        /** This _uses_ the [query](https://google.se).*/
         let use =
             (
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
