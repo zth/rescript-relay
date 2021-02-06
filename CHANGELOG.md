@@ -6,6 +6,7 @@
 
 ## Fixes & misc
 
+- Prebuilt JS files are now shipped with the package to simplify building a project without needing to build your ReScript project again. _Warning_: This is not "officially" supported in the sense that if you use this, you're on your own. We still recommend you to always build your ReScript project before delivering it, and not relying on prebuilt files.
 - Added comment to generated connection record types, giving a hint to use the generated `getConnectionNodes` helper for turning a connection into a list of non-nullable nodes.
 
 # 0.13.0
