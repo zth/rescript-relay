@@ -1,6 +1,9 @@
 
 /* @generated */
 
+%bs.raw
+"/* @generated */";
+
 module Types = {
   type enum_OnlineStatus = pri [> | `Idle | `Offline | `Online];
 

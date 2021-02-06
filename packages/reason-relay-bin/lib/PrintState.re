@@ -40,6 +40,8 @@ let getPrintedFullState =
   let finalStr = ref("/* @generated */\n\n");
   let addToStr = Utils.makeAddToStr(finalStr);
 
+  addToStr({|[%%bs.raw "/* @generated */"]|});
+
   let addSpacing = () => addToStr("\n\n\n");
 
   let definitions: ref(list(Types.rootType)) = ref([]);

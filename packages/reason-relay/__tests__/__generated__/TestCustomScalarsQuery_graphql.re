@@ -1,6 +1,9 @@
 
 /* @generated */
 
+%bs.raw
+"/* @generated */";
+
 module Types = {
   [@ocaml.warning "-30"];
   type response_member_User = {createdAt: TestsUtils.Datetime.t};

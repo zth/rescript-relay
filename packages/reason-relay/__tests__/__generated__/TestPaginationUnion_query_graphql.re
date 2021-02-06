@@ -1,6 +1,9 @@
 
 /* @generated */
 
+%bs.raw
+"/* @generated */";
+
 module Types = {
   [@ocaml.warning "-30"];
   type fragment_members_edges_node_User = {
