@@ -1,6 +1,9 @@
 
 /* @generated */
 
+%bs.raw
+"/* @generated */";
+
 module Types = {
   [@ocaml.warning "-30"];
   type response_addTodoItem = {
@@ -34,7 +37,7 @@ module Types = {
   type rawResponse = {addTodoItem: option(rawResponse_addTodoItem)};
   type variables = {
     input: addTodoItemInput,
-    connections: array(string),
+    connections: array(ReasonRelay.dataId),
   };
 };
 

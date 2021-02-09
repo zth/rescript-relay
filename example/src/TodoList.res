@@ -56,7 +56,7 @@ let make = (~query as queryRef) => {
             open AddTodoMutation
             addTodo(
               ~variables=makeVariables(
-                ~connections=[todoListData.todosConnection.__id->ReasonRelay.dataIdToString],
+                ~connections=[todoListData.todosConnection.__id],
                 ~input=make_addTodoItemInput(~text=newTodoText, ()),
               ),
               ~onCompleted=(_, _) => setNewTodoText(_ => ""),

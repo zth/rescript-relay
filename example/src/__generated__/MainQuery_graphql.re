@@ -1,6 +1,9 @@
 
 /* @generated */
 
+%bs.raw
+"/* @generated */";
+
 module Types = {
   [@ocaml.warning "-30"];
   type response_siteStatistics = {
