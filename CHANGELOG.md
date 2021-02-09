@@ -1,5 +1,13 @@
 # master
 
+_Nothing yet_.
+
+# 0.14.0
+
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/reason-relay/commit/bf0599b7b5078ff73a4b91cfb30a6c742037852e)_
+
+This release brings new versions of Relay and React, and a few other minor changes.
+
 ## Upgrade versions
 
 - `react` to `0.0.0-experimental-4e08fb10c`
