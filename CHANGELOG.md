@@ -1,6 +1,8 @@
 # master
 
-_Nothing yet_.
+## Fixes & misc
+
+- Fix a bug where store updater directives on scalars (like `deletedUserId`) would not have their connection array arg type transformed from `string` to `dataId`.
 
 # 0.14.0
 

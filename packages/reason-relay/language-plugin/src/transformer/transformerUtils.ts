@@ -1,4 +1,4 @@
-import { Node, Fragment, Argument, IRVisitor } from "relay-compiler";
+import { Node, Fragment, Argument, IRVisitor, Directive } from "relay-compiler";
 
 type operationType = {
   tag: "Mutation" | "Subscription" | "Fragment" | "Query";
@@ -14,6 +14,46 @@ type printConfig = {
   };
 };
 
+function maybeAddStoreUpdaterTransforms(
+  node: Node | Fragment,
+  n: { directives: readonly Directive[] },
+  opInfo: printConfig
+) {
+  if (
+    node.kind === "Root" &&
+    ["mutation", "subscription"].includes(node.operation)
+  ) {
+    /**
+     * Extract store updater directives
+     */
+    const storeUpdaterDirectivesWithConnectionsArg = n.directives.filter((d) =>
+      [
+        "appendNode",
+        "prependNode",
+        "appendEdge",
+        "prependEdge",
+        "deleteEdge",
+      ].includes(d.name)
+    );
+
+    if (storeUpdaterDirectivesWithConnectionsArg.length > 0) {
+      storeUpdaterDirectivesWithConnectionsArg.forEach((d) => {
+        const arg = d.args.find((a) => a.name === "connections");
+
+        const argValue = arg?.value;
+
+        if (argValue && argValue.kind === "Variable") {
+          if (opInfo.variablesHoldingConnectionIds) {
+            opInfo.variablesHoldingConnectionIds.push(argValue.variableName);
+          } else {
+            opInfo.variablesHoldingConnectionIds = [argValue.variableName];
+          }
+        }
+      });
+    }
+  }
+}
+
 /**
  * Use this to extract info needed for Reason type generation, like info
  * about connections and other directives.
@@ -23,6 +63,9 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
 
   function visitWithPath(path: Array<string>, node: any) {
     IRVisitor.visit(node, {
+      ScalarField(n) {
+        maybeAddStoreUpdaterTransforms(node, n, opInfo);
+      },
       LinkedField(n) {
         /**
          * Extract connection directive info
@@ -49,44 +92,7 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
           }
         }
 
-        if (
-          node.kind === "Root" &&
-          ["mutation", "subscription"].includes(node.operation)
-        ) {
-          /**
-           * Extract store updater directives
-           */
-          const storeUpdaterDirectivesWithConnectionsArg = n.directives.filter(
-            (d) =>
-              [
-                "appendNode",
-                "prependNode",
-                "appendEdge",
-                "prependEdge",
-                "deleteEdge",
-              ].includes(d.name)
-          );
-
-          if (storeUpdaterDirectivesWithConnectionsArg.length > 0) {
-            storeUpdaterDirectivesWithConnectionsArg.forEach((d) => {
-              const arg = d.args.find((a) => a.name === "connections");
-
-              const argValue = arg?.value;
-
-              if (argValue && argValue.kind === "Variable") {
-                if (opInfo.variablesHoldingConnectionIds) {
-                  opInfo.variablesHoldingConnectionIds.push(
-                    argValue.variableName
-                  );
-                } else {
-                  opInfo.variablesHoldingConnectionIds = [
-                    argValue.variableName,
-                  ];
-                }
-              }
-            });
-          }
-        }
+        maybeAddStoreUpdaterTransforms(node, n, opInfo);
 
         path.push(n.name);
       },
