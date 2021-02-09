@@ -259,6 +259,18 @@ describe("Language plugin tests", () => {
 
       expect(generated).toContain("targetConns: array(ReasonRelay.dataId),");
     });
+
+    it("types ID as dataId for variables targeting single IDs, like @deleteEdge", () => {
+      const generated = generate(`
+        mutation DeleteUserMutation($userId: ID!, $connections: [ID!]!) {
+          deleteUser(userId: $userId) {
+            deletedUserId @deleteEdge(connections: $connections)
+          }
+        }
+      `);
+
+      expect(generated).toContain("connections: array(ReasonRelay.dataId),");
+    });
   });
 
   describe("Mutation", () => {

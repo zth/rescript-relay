@@ -51,6 +51,7 @@ input MutationWithReservedNameInput {
 type Mutation {
   setUserLocation(input: SetUserLocationInput!): SetUserLocationPayload!
   setUserRole(input: SetUserRoleInput!): SetUserRolePayload!
+  deleteUser(userId: ID!): DeleteUserPayload!
   mutationWithReservedName(input: MutationWithReservedNameInput!): Boolean!
 }
 
@@ -80,6 +81,10 @@ input SetUserRoleInput {
 
 type SetUserRolePayload {
   user: User
+}
+
+type DeleteUserPayload {
+  deletedUserId: ID!
 }
 
 type SetUserLocationPayload {
