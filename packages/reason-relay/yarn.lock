@@ -627,6 +627,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@rescript/react@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.10.1.tgz#ddce66ba664a104354d559c350ca4ebf17ab5a26"
+  integrity sha512-5eIfGnV1yhjv03ktK6fQ6iEfsZKXKXXrq5hx4+ngEY4R/RU8o/oH9ne375m9RJMugV/jsE8hMoEeSSg2YQy3Ag==
+
 "@sheerun/mutationobserver-shim@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"
@@ -3474,11 +3479,6 @@ reason-promise@^1.0.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/reason-promise/-/reason-promise-1.1.2.tgz#00ddb71c4034bdbdadd24f7c95273d32870f6d50"
   integrity sha512-HmZqSjvKJgU/ARpz9cK5mHGELF/j7shY3Jgz/45kGSgK5DXcBqu5Z2q9iw6GVCNGVu5o4yT4bsj7e3sxLjo1jQ==
-
-reason-react@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
-  integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
 
 redent@^3.0.0:
   version "3.0.0"
