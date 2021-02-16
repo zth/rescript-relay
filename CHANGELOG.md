@@ -1,5 +1,9 @@
 # master
 
+## Upgrade versions
+
+- _Remove_ `reason-react` and add `@rescript/react@0.10.0`.
+
 ## Fixes & misc
 
 - Fix a bug where store updater directives on scalars (like `deletedUserId`) would not have their connection array arg type transformed from `string` to `dataId`.
