@@ -13,15 +13,15 @@ let printConnectionTraverser =
   let addToStrEnd = s => strEnd := s ++ strEnd^;
 
   if (connectionPropNullable) {
-    addToStr("switch(connection) { ");
-    addToStr("| None => [||] ");
-    addToStr("| Some(connection) => ");
+    addToStr("switch connection { \n");
+    addToStr("  | None => [] \n");
+    addToStr("  | Some(connection) => ");
     addToStrEnd("}");
   };
 
   if (edgesPropNullable) {
-    addToStr("switch(connection.edges) { ");
-    addToStr("| None => [||] ");
+    addToStr("switch connection.edges { \n");
+    addToStr("| None => [] \n");
     addToStr("| Some(edges) => edges");
     addToStrEnd("}");
   } else {
@@ -29,8 +29,8 @@ let printConnectionTraverser =
   };
 
   if (edgesNullable) {
-    addToStr("->Belt.Array.keepMap(edge => switch(edge) { ");
-    addToStr("| None => None ");
+    addToStr("->Belt.Array.keepMap(edge => switch edge { \n");
+    addToStr("| None => None \n");
     addToStr("| Some(edge) => ");
     addToStrEnd("})");
   } else {
@@ -39,9 +39,9 @@ let printConnectionTraverser =
   };
 
   if (nodeNullable) {
-    addToStr("switch(edge.node) { ");
-    addToStr("| None => None ");
-    addToStr("| Some(node) => Some(node)");
+    addToStr("switch edge.node { \n");
+    addToStr("| None => None \n");
+    addToStr("| Some(node) => Some(node)\n");
     addToStrEnd("}");
   } else {
     addToStr("Some(edge.node)");
@@ -63,19 +63,18 @@ let printFullGetConnectionNodesFnDefinition =
   "let "
   ++ functionName
   ++ ": "
-  ++ (connectionPropNullable ? "option(" : "")
+  ++ (connectionPropNullable ? "option<" : "")
   ++ connectionTypeName
-  ++ (connectionPropNullable ? ")" : "")
-  ++ " => array("
+  ++ (connectionPropNullable ? ">" : "")
+  ++ " => array<"
   ++ nodeTypeName
-  ++ ") = connection => "
+  ++ "> = connection => "
   ++ printConnectionTraverser(
        ~connectionPropNullable,
        ~edgesPropNullable,
        ~edgesNullable,
        ~nodeNullable,
-     )
-  ++ ";";
+     );
 
 let printGetConnectionNodesFunction =
     (
@@ -227,7 +226,7 @@ let printConvertersMap = (map: Hashtbl.t(string, string)): string =>
          addToStr("\"" ++ key ++ "\": " ++ value ++ ",")
        );
 
-    addToStr("};");
+    addToStr("}");
     str^;
   };
 
@@ -268,6 +267,7 @@ let definitionToAssets =
     | Scalar(_)
     | Enum(_)
     | StringLiteral(_)
+    | StringLiteralNeedsEscaping(_)
     | FragmentRefValue(_) => ()
     | TypeReference(name) =>
       switch (

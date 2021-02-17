@@ -30,7 +30,7 @@ let makeStringLiteralOrString = (value: string): Types.propType =>
     |> Tablecloth.Array.find(~f=word => word === value),
   ) {
   | (true, None) => StringLiteral(value)
-  | _ => Scalar(String)
+  | _ => StringLiteralNeedsEscaping(value)
   };
 
 let rec mapObjProp =

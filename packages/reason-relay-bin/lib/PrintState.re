@@ -40,7 +40,7 @@ let getPrintedFullState =
   let finalStr = ref("/* @generated */\n\n");
   let addToStr = Utils.makeAddToStr(finalStr);
 
-  addToStr({|[%%bs.raw "/* @generated */"]|});
+  addToStr({|%%raw("/* @generated */")|});
 
   let addSpacing = () => addToStr("\n\n\n");
 
@@ -133,7 +133,7 @@ let getPrintedFullState =
      });
 
   // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
-  addToStr("[@ocaml.warning \"-30\"];\n");
+  addToStr("@ocaml.warning(\"-30\")\n");
 
   let shouldIgnoreFragmentRefs =
     switch (operationType) {
@@ -207,7 +207,7 @@ let getPrintedFullState =
 
   addSpacing();
 
-  addToStr("};");
+  addToStr("}");
   addSpacing();
 
   if (state.unions |> List.length > 0) {
@@ -306,16 +306,16 @@ let getPrintedFullState =
     | Query(_)
     | Mutation(_) =>
       addToStr(
-        "type wrapRawResponseRaw = wrapResponseRaw;"
-        ++ "let convertWrapRawResponse = convertWrapResponse;",
+        "type wrapRawResponseRaw = wrapResponseRaw\n"
+        ++ "let convertWrapRawResponse = convertWrapResponse\n",
       );
       addSpacing();
     | _ => ()
     };
 
     addToStr(
-      "type rawResponseRaw = responseRaw;"
-      ++ "let convertRawResponse = convertResponse;",
+      "type rawResponseRaw = responseRaw\n"
+      ++ "let convertRawResponse = convertResponse\n",
     );
     addSpacing();
   | (None, _) => ()
@@ -335,7 +335,7 @@ let getPrintedFullState =
     addSpacing();
   | None => ()
   };
-  addToStr("};");
+  addToStr("}");
   addSpacing();
 
   // Print fragment assets
@@ -349,7 +349,7 @@ let getPrintedFullState =
   // Print query assets
   switch (operationType) {
   | Query(_) =>
-    addToStr("type queryRef;");
+    addToStr("type queryRef");
     addSpacing();
   | _ => ()
   };
@@ -475,10 +475,10 @@ let getPrintedFullState =
 
   // Open Types locally here if we have any content to print
   if (utilsContent^ != "") {
-    addToStr("open Types;");
+    addToStr("open Types\n");
   };
 
-  addToStr(utilsContent^ ++ "};");
+  addToStr(utilsContent^ ++ "}");
   addSpacing();
 
   // This adds operationType, which is referenced in the raw output of the Relay

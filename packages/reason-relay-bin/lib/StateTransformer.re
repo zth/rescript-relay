@@ -86,6 +86,7 @@ let intermediateToFull =
       | Array(_)
       | Scalar(_)
       | StringLiteral(_)
+      | StringLiteralNeedsEscaping(_)
       | FragmentRefValue(_)
       | TypeReference(_) => ()
       };
