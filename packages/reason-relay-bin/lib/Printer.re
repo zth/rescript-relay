@@ -602,10 +602,9 @@ let operationType = (operationType: Types.operationType) => {
 
   "type relayOperationNode\n\ntype operationType = ReasonRelay."
   ++ opType
-  ++ "Node(relayOperationNode)";
+  ++ "Node<relayOperationNode>";
 };
 
 let printType = typeText => {j|type $typeText;|j};
 
-let printCode: string => string =
-  str => str |> ReasonPrettyPrinter.format_implementation;
+let printCode: string => string = str => str;
