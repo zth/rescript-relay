@@ -35,8 +35,8 @@ let printConnectionTraverser =
   };
 
   if (edgesPropNullable) {
-    "switch connection.edges { \n" |> printAtIndent |> addToStr;
-    "}\n" |> printAtIndent |> addToStrEnd;
+    "switch connection.edges { \n" |> addToStr;
+    "\n" ++ printAtIndent("}") |> addToStrEnd;
 
     addIndentLevel();
 
@@ -47,22 +47,22 @@ let printConnectionTraverser =
   };
 
   if (edgesNullable) {
-    addToStr("->Belt.Array.keepMap(edge => switch edge { \n");
-    addToStr("| None => None \n");
-    addToStr("| Some(edge) => ");
-    addToStrEnd("})");
+    "->Belt.Array.keepMap(edge => switch edge { \n" |> addToStr;
+    "\n" ++ printAtIndent("})") |> addToStrEnd;
+
+    addIndentLevel();
+
+    "| None => None \n" |> printAtIndent |> addToStr;
+    "| Some(edge) => " |> printAtIndent |> addToStr;
   } else {
-    addToStr("->Belt.Array.keepMap(edge => ");
-    addToStrEnd(")");
+    "->Belt.Array.keepMap(edge => " |> addToStr;
+    "\n" ++ printAtIndent(")") |> addToStrEnd;
   };
 
   if (nodeNullable) {
-    addToStr("switch edge.node { \n");
-    addToStr("| None => None \n");
-    addToStr("| Some(node) => Some(node)\n");
-    addToStrEnd("}");
+    "edge.node\n" |> addToStr;
   } else {
-    addToStr("Some(edge.node)");
+    "Some(edge.node)" |> printAtIndent |> addToStr;
   };
 
   str^ ++ strEnd^;
@@ -80,13 +80,13 @@ let printFullGetConnectionNodesFnDefinition =
     ) =>
   "let "
   ++ functionName
-  ++ ": "
+  ++ ":\n  "
   ++ (connectionPropNullable ? "option<" : "")
   ++ connectionTypeName
   ++ (connectionPropNullable ? ">" : "")
   ++ " => array<"
   ++ nodeTypeName
-  ++ "> = connection => "
+  ++ "> =\n  connection => "
   ++ printConnectionTraverser(
        ~connectionPropNullable,
        ~edgesPropNullable,

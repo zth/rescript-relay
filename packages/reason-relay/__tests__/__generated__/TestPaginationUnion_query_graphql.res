@@ -100,17 +100,18 @@ external getFragmentRef:
 
 module Utils = {
 open Types
-let getConnectionNodes: option<fragment_members> => array<fragment_members_edges_node> = connection => switch connection {
+let getConnectionNodes:
+  option<fragment_members> => array<fragment_members_edges_node> =
+  connection => switch connection {
   | None => []
-  | Some(connection) =>   switch connection.edges { 
+  | Some(connection) => switch connection.edges { 
    | None => []
    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-| None => None 
-| Some(edge) => switch edge.node { 
-| None => None 
-| Some(node) => Some(node)
-}})  }
-}}
+    | None => None 
+    | Some(edge) => edge.node
+
+   })
+  }}}
 
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>

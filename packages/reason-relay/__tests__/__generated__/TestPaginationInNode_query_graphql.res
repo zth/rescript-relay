@@ -44,15 +44,16 @@ external getFragmentRef:
 
 module Utils = {
 open Types
-let getConnectionNodes: fragment_friendsConnection => array<fragment_friendsConnection_edges_node> = connection =>  switch connection.edges { 
+let getConnectionNodes:
+  fragment_friendsConnection => array<fragment_friendsConnection_edges_node> =
+  connection => switch connection.edges { 
   | None => []
   | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-| None => None 
-| Some(edge) => switch edge.node { 
-| None => None 
-| Some(node) => Some(node)
-}}) }
-}
+   | None => None 
+   | Some(edge) => edge.node
+
+  })
+ }}
 
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
