@@ -14,7 +14,7 @@
     "module": "commonjs",
     "in-source": true
   },
-  "bs-dependencies": ["reason-react", "reason-promise"],
+  "bs-dependencies": ["@rescript/react", "reason-promise"],
   "suffix": ".bs.js",
   "warnings": {
     "error": "+101"

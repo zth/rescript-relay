@@ -6,7 +6,7 @@ sidebar_label: Getting Started
 
 #### Recommended background reading
 
-- [Getting started with ReasonReact](https://reasonml.github.io/reason-react/docs/en/installation) - _Note that ReasonRelay requires `bs-platform > 8.3.0`_
+- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction) - _Note that ReasonRelay requires `bs-platform > 8.3.0`_
 - [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
@@ -30,7 +30,7 @@ You will have the absolute best experience using ReasonRelay in concurrent mode,
 
 ##### Extra bindings for experimental APIs with no official bindings yet
 
-Not all experimental APIs from React are currently bound in the official `reason-react` bindings. ReasonRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
+Not all experimental APIs from React are currently bound in the official `@rescript/react` bindings. ReasonRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
 This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
@@ -51,7 +51,7 @@ You really don't need to care about the generated artifacts though, ReasonRelay 
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `reason-react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - ReasonRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
@@ -68,7 +68,7 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 ```json
 ...
 "ppx-flags": ["reason-relay/ppx"],
-"bs-dependencies": ["reason-react", "reason-relay", "reason-promise"],
+"bs-dependencies": ["@rescript/react", "reason-relay", "reason-promise"],
 ...
 ```
 
@@ -76,7 +76,7 @@ After you've installed the packages above, setup BuckleScript through your `bsco
 
 #### Using experimental React versions
 
-You may need to tell `yarn` to prefer the experimental versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `reason-react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
+You may need to tell `yarn` to prefer the experimental versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `@rescript/react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
 
 Ensure that only the experimental versions are used by doing the following:
 
