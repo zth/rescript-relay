@@ -6,7 +6,7 @@ sidebar_label: Getting Started
 
 #### Recommended background reading
 
-- [Getting started with RescriptReact](https://reasonml.github.io/reason-react/docs/en/installation) - _Note that ReasonRelay requires `bs-platform > 8.3.0`_
+- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction) - _Note that ReasonRelay requires `bs-platform > 8.3.0`_
 - [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
