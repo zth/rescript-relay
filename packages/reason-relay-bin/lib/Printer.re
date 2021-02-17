@@ -66,7 +66,9 @@ let printScalar = scalarValue =>
   };
 
 let printStringLiteral = (~literal, ~needsEscaping) =>
-  "[ | #" ++ (needsEscaping ? "\"" ++ literal ++ "\"" : literal) ++ "]";
+  "[ | #"
+  ++ (needsEscaping ? Format.sprintf("\"%s\"", literal) : literal)
+  ++ "]";
 
 let printDataIdType = () => "ReasonRelay.dataId";
 
@@ -79,13 +81,13 @@ let getEnumFutureAddedValueName = (enum: fullEnum) =>
 let printEnumDefinition = (enum: fullEnum): string => {
   let enumName = makeEnumName(enum.name);
 
-  let str = ref("type " ++ enumName ++ " = pri [>");
+  let str = ref("type " ++ enumName ++ " = private [>");
 
   let addToStr = s => str := str^ ++ s;
 
-  enum.values |> List.iter(v => addToStr(" | #" ++ printSafeName(v) ++ " "));
+  enum.values |> List.iter(v => addToStr("\n  | #" ++ printSafeName(v)));
 
-  addToStr("]\n\n");
+  addToStr("\n]\n");
 
   str^;
 };
@@ -132,7 +134,11 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | Array(propValue) => printArray(~propValue, ~state)
   | Enum(enum) => printEnumName(enum.name)
   | Union(union) =>
-    printUnionTypeDefinition(union, ~prefixWithTypesModule=false)
+    printUnionTypeDefinition(
+      union,
+      ~prefixWithTypesModule=false,
+      ~extraIndent=true,
+    )
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
   }
@@ -191,7 +197,8 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
            addToStr(
              switch (p) {
              | Prop(name, propValue) =>
-               printRecordPropComment(propValue)
+               "\n  "
+               ++ printRecordPropComment(propValue)
                ++ printRecordPropName(name)
                ++ ": "
                ++ printPropValue(~propValue, ~state)
@@ -209,7 +216,7 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
         );
       };
 
-      addToStr("}");
+      addToStr("\n}");
     };
 
     str^;
@@ -275,7 +282,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            switch (p) {
            | Prop(name, {nullable}) =>
              (index > 0 ? "," : "")
-             ++ "~"
+             ++ "\n  ~"
              ++ printSafeName(name)
              ++ (nullable ? "=?" : "")
            | FragmentRef(_) => ""
@@ -291,7 +298,9 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            | _ => false,
          );
 
-    addToStr((shouldAddUnit ? ", ()" : "") ++ "): " ++ targetType ++ " => {");
+    addToStr(
+      (shouldAddUnit ? ",\n  ()" : "") ++ "\n): " ++ targetType ++ " => {",
+    );
 
     obj.values
     |> List.iteri((index, p) => {
@@ -299,6 +308,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            switch (p) {
            | Prop(name, _) =>
              (index > 0 ? "," : "")
+             ++ "\n  "
              ++ printSafeName(name)
              ++ ": "
              ++ printSafeName(name)
@@ -307,9 +317,9 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
          )
        });
 
-    addToStr("}");
+    addToStr("\n}");
   } else {
-    addToStr(") => @ocaml.warning(\"-27\") {}");
+    addToStr("\n) => @ocaml.warning(\"-27\") {}");
   };
   str^;
 }
@@ -381,7 +391,11 @@ and printRootType =
   | Fragment(Union(union)) =>
     printComment(union.comment)
     ++ "type fragment = "
-    ++ printUnionTypeDefinition(union, ~prefixWithTypesModule=false)
+    ++ printUnionTypeDefinition(
+         union,
+         ~prefixWithTypesModule=false,
+         ~extraIndent=false,
+       )
     ++ "\n"
   | ObjectTypeDeclaration({name, definition}) =>
     let typeDef =
@@ -397,10 +411,10 @@ and printRootType =
 
     let (prefix, suffix) =
       switch (recursiveMode) {
-      | None => (" type ", "; ")
-      | Some(`Head) => (" type ", " ")
-      | Some(`Member) => (" and ", " ")
-      | Some(`Tail) => (" and ", "\n ")
+      | None => ("type ", "\n")
+      | Some(`Head) => ("type rec ", "")
+      | Some(`Member) => (" and ", "")
+      | Some(`Tail) => (" and ", "\n\n")
       };
 
     printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
@@ -412,13 +426,18 @@ and printRootType =
     ++ "type fragment = array<fragment_t>\n"
   | PluralFragment(Union(union)) =>
     "type fragment_t = "
-    ++ printUnionTypeDefinition(union, ~prefixWithTypesModule=false)
+    ++ printUnionTypeDefinition(
+         union,
+         ~prefixWithTypesModule=false,
+         ~extraIndent=false,
+       )
     ++ "\n"
     ++ printComment(union.comment)
     ++ "type fragment = array<fragment_t;"
   };
 }
-and printUnionTypeDefinition = (union, ~prefixWithTypesModule): string => {
+and printUnionTypeDefinition =
+    (union, ~prefixWithTypesModule, ~extraIndent): string => {
   let futureAddedValueName =
     switch (
       union.members
@@ -434,7 +453,9 @@ and printUnionTypeDefinition = (union, ~prefixWithTypesModule): string => {
   ++ (
     union.members
     |> List.map(({name, shape: {atPath}}) =>
-         " | #"
+         "\n  "
+         ++ (extraIndent ? "  " : "")
+         ++ "| #"
          ++ name
          ++ "("
          ++ (prefixWithTypesModule ? "Types." : "")
@@ -443,9 +464,12 @@ and printUnionTypeDefinition = (union, ~prefixWithTypesModule): string => {
        )
     |> Tablecloth.String.join(~sep="\n")
   )
-  ++ " | #"
+  ++ "\n  "
+  ++ (extraIndent ? "  " : "")
+  ++ "| #"
   ++ futureAddedValueName
-  ++ "(string) "
+  ++ "(string)"
+  ++ (extraIndent ? "\n  " : "\n")
   ++ "]";
 };
 
@@ -471,7 +495,11 @@ let printUnionConverters = (union: union) => {
     "let unwrap_"
     ++ unionName
     ++ ": {. \"__typename\": string } => "
-    ++ printUnionTypeDefinition(union, ~prefixWithTypesModule=true)
+    ++ printUnionTypeDefinition(
+         union,
+         ~prefixWithTypesModule=true,
+         ~extraIndent=false,
+       )
     ++ " = u => switch u[\"__typename\"] {",
   );
   union.members
@@ -485,14 +513,18 @@ let printUnionConverters = (union: union) => {
        )
      });
   addToStr("\n | v => #" ++ futureAddedValueName ++ "(v)");
-  addToStr("}\n\n");
+  addToStr("\n}\n\n");
 
   // Wrap
   addToStr(
     "let wrap_"
     ++ unionName
     ++ ": "
-    ++ printUnionTypeDefinition(union, ~prefixWithTypesModule=true)
+    ++ printUnionTypeDefinition(
+         union,
+         ~prefixWithTypesModule=true,
+         ~extraIndent=false,
+       )
     ++ " => {. \"__typename\": string } = v => switch v {",
   );
   union.members
@@ -500,7 +532,7 @@ let printUnionConverters = (union: union) => {
        addToStr("\n | #" ++ member.name ++ "(v) => v->Obj.magic ")
      });
   addToStr("\n | #" ++ futureAddedValueName ++ "(v) => {\"__typename\": v} ");
-  addToStr("}\n\n");
+  addToStr("\n}\n\n");
   str^;
 };
 
@@ -557,7 +589,12 @@ let printUnionTypes = (~state, ~printName, union: union) => {
     "type "
     ++ Utils.makeRecordName(union.atPath)
     ++ " = "
-    ++ printUnionTypeDefinition(union, ~prefixWithTypesModule=false);
+    ++ printUnionTypeDefinition(
+         union,
+         ~prefixWithTypesModule=false,
+         ~extraIndent=false,
+       )
+    ++ "\n";
 
   typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
@@ -565,7 +602,7 @@ let printUnionTypes = (~state, ~printName, union: union) => {
 let printEnumToStringFn = (enum: fullEnum): string =>
   "external "
   ++ Tablecloth.String.uncapitalize(enum.name)
-  ++ "_toString: Types."
+  ++ "_toString:\n  Types."
   ++ printEnumName(enum.name)
   ++ " => string = \"%identity\"";
 
@@ -579,11 +616,11 @@ let fragmentRefAssets = (~plural=false, fragmentName) => {
   addToStr("type fragmentRef\n");
 
   addToStr(
-    "external getFragmentRef: "
+    "external getFragmentRef:\n  "
     ++ (plural ? "array<" : "")
-    ++ " ReasonRelay.fragmentRefs([> | #"
+    ++ "ReasonRelay.fragmentRefs<[> | #"
     ++ fragmentName
-    ++ "])"
+    ++ "]>"
     ++ (plural ? ">" : "")
     ++ " => fragmentRef = \"%identity\"",
   );
@@ -600,9 +637,9 @@ let operationType = (operationType: Types.operationType) => {
     | Subscription(_) => "subscription"
     };
 
-  "type relayOperationNode\n\ntype operationType = ReasonRelay."
+  "type relayOperationNode\ntype operationType = ReasonRelay."
   ++ opType
-  ++ "Node<relayOperationNode>";
+  ++ "Node<relayOperationNode>\n";
 };
 
 let printType = typeText => {j|type $typeText;|j};

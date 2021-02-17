@@ -25,9 +25,7 @@ const formatGeneratedModule: FormatModule = ({
   });`
       : "";
 
-  return `
-${typeText || ""}
-
+  return `${typeText || ""}
 let node: operationType = %raw(json\` ${processConcreteText(concreteText)} \`)
 
 ${preloadText}

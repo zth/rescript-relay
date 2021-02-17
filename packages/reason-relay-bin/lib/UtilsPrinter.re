@@ -8,24 +8,42 @@ let printConnectionTraverser =
       ~nodeNullable,
     ) => {
   let str = ref("");
-  let addToStr = s => str := str^ ++ s;
   let strEnd = ref("");
+
+  let addToStr = s => str := str^ ++ s;
   let addToStrEnd = s => strEnd := s ++ strEnd^;
 
+  let atIndent = ref(0);
+  let addIndentLevel = () => atIndent := atIndent^ + 1;
+
+  let printAtIndent = str => {
+    let s = ref("");
+    for (x in 0 to atIndent^) {
+      s := s^ ++ " ";
+    };
+
+    s^ ++ str;
+  };
+
   if (connectionPropNullable) {
-    addToStr("switch connection { \n");
-    addToStr("  | None => [] \n");
-    addToStr("  | Some(connection) => ");
+    addToStr("switch connection {\n");
     addToStrEnd("}");
+    addIndentLevel();
+
+    "| None => []\n" |> printAtIndent |> addToStr;
+    "| Some(connection) => " |> printAtIndent |> addToStr;
   };
 
   if (edgesPropNullable) {
-    addToStr("switch connection.edges { \n");
-    addToStr("| None => [] \n");
-    addToStr("| Some(edges) => edges");
-    addToStrEnd("}");
+    "switch connection.edges { \n" |> printAtIndent |> addToStr;
+    "}\n" |> printAtIndent |> addToStrEnd;
+
+    addIndentLevel();
+
+    "| None => []\n" |> printAtIndent |> addToStr;
+    "| Some(edges) => edges" |> printAtIndent |> addToStr;
   } else {
-    addToStr("connection.edges");
+    "connection.edges" |> printAtIndent |> addToStr;
   };
 
   if (edgesNullable) {
@@ -223,10 +241,10 @@ let printConvertersMap = (map: Hashtbl.t(string, string)): string =>
 
     map
     |> Hashtbl.iter((key, value) =>
-         addToStr("\"" ++ key ++ "\": " ++ value ++ ",")
+         addToStr("\n  \"" ++ key ++ "\": " ++ value ++ ",")
        );
 
-    addToStr("}");
+    addToStr("\n}\n");
     str^;
   };
 

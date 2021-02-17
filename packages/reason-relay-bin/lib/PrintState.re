@@ -37,12 +37,10 @@ let transformVariables =
 let getPrintedFullState =
     (~operationType, ~config: Types.printConfig, state: Types.fullState)
     : string => {
-  let finalStr = ref("/* @generated */\n\n");
+  let finalStr = ref("/* @generated */\n");
   let addToStr = Utils.makeAddToStr(finalStr);
 
   addToStr({|%%raw("/* @generated */")|});
-
-  let addSpacing = () => addToStr("\n\n\n");
 
   let definitions: ref(list(Types.rootType)) = ref([]);
   let addDefinition = Utils.makeAddToList(definitions);
@@ -120,20 +118,14 @@ let getPrintedFullState =
   | None => ()
   };
 
-  addSpacing();
-
   // Print definitions and declarations
-  addToStr("module Types = {\n");
+  addToStr("\nmodule Types = {\n");
+  // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
+  addToStr("@@ocaml.warning(\"-30\")\n\n");
 
   // Print enums
   state.enums
-  |> List.iter(enum => {
-       addToStr(Printer.printEnum(enum));
-       addSpacing();
-     });
-
-  // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
-  addToStr("@ocaml.warning(\"-30\")\n");
+  |> List.iter(enum => {addToStr(Printer.printEnum(enum) ++ "\n")});
 
   let shouldIgnoreFragmentRefs =
     switch (operationType) {
@@ -191,8 +183,6 @@ let getPrintedFullState =
        )
   );
 
-  addSpacing();
-
   Printer.(
     definitions^
     |> List.iter(def => {
@@ -205,10 +195,7 @@ let getPrintedFullState =
        })
   );
 
-  addSpacing();
-
-  addToStr("}");
-  addSpacing();
+  addToStr("}\n\n");
 
   if (state.unions |> List.length > 0) {
     state.unions
@@ -220,8 +207,7 @@ let getPrintedFullState =
   // This emits extra assets for the generated modules,
   // like code for converting nullable fields, enums and unions,
   // and code for extracting fragment refs.
-  addSpacing();
-  addToStr("module Internal = {");
+  addToStr("module Internal = {\n");
 
   let rootObjects =
     state.objects
@@ -240,9 +226,9 @@ let getPrintedFullState =
         ~rootObjects,
         ~definition,
         "fragment",
-      ),
-    );
-    addSpacing();
+      )
+      ++ "\n",
+    )
   | None => ()
   };
 
@@ -258,9 +244,9 @@ let getPrintedFullState =
           ~nullableType=Null,
           ~definition=Object(definition),
           "wrapResponse",
-        ),
-      );
-      addSpacing();
+        )
+        ++ "\n",
+      )
     | _ => ()
     };
 
@@ -269,9 +255,9 @@ let getPrintedFullState =
         ~rootObjects,
         ~definition=Object(definition),
         "response",
-      ),
+      )
+      ++ "\n",
     );
-    addSpacing();
   | None => ()
   };
 
@@ -287,9 +273,9 @@ let getPrintedFullState =
           ~nullableType=Null,
           ~definition=Object(definition),
           "wrapRawResponse",
-        ),
-      );
-      addSpacing();
+        )
+        ++ "\n",
+      )
     | _ => ()
     };
 
@@ -298,9 +284,9 @@ let getPrintedFullState =
         ~rootObjects,
         ~definition=Object(definition),
         "rawResponse",
-      ),
+      )
+      ++ "\n",
     );
-    addSpacing();
   | (Some(_), None) =>
     switch (operationType) {
     | Query(_)
@@ -308,8 +294,7 @@ let getPrintedFullState =
       addToStr(
         "type wrapRawResponseRaw = wrapResponseRaw\n"
         ++ "let convertWrapRawResponse = convertWrapResponse\n",
-      );
-      addSpacing();
+      )
     | _ => ()
     };
 
@@ -317,7 +302,6 @@ let getPrintedFullState =
       "type rawResponseRaw = responseRaw\n"
       ++ "let convertRawResponse = convertResponse\n",
     );
-    addSpacing();
   | (None, _) => ()
   };
 
@@ -330,39 +314,37 @@ let getPrintedFullState =
         ~direction=Wrap,
         ~definition=Object(definition),
         "variables",
-      ),
-    );
-    addSpacing();
+      )
+      ++ "\n",
+    )
   | None => ()
   };
-  addToStr("}");
-  addSpacing();
+  addToStr("}\n");
 
   // Print fragment assets
   switch (state.fragment) {
   | Some({name, plural}) =>
-    addToStr(Printer.fragmentRefAssets(~plural, name));
-    addSpacing();
+    addToStr(Printer.fragmentRefAssets(~plural, name) ++ "\n")
   | None => ()
   };
 
   // Print query assets
   switch (operationType) {
-  | Query(_) =>
-    addToStr("type queryRef");
-    addSpacing();
+  | Query(_) => addToStr("\ntype queryRef")
   | _ => ()
   };
 
   // Utils that'll be included and accessible at the top level of the generated module
-  addToStr("module Utils = {");
+  addToStr("\n\nmodule Utils = {\n");
   let utilsContent = ref("");
   let addToUtils = str => utilsContent := utilsContent^ ++ str;
-  let addSpacingToUtils = () => addToUtils("\n\n\n");
 
   // Enum toString functions
   state.enums
-  |> List.iter(enum => enum |> Printer.printEnumToStringFn |> addToStr);
+  |> List.iter(enum => {
+       enum |> Printer.printEnumToStringFn |> addToStr;
+       addToStr("\n");
+     });
 
   // We print a helper for extracting connection nodes whenever there's a connection present.
   switch (config.connection) {
@@ -383,9 +365,7 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToUtils;
-
-      addSpacingToUtils();
+      |> addToUtils
     | (None, Some({definition: Object(definition)}))
         when connPath == ["fragment"] =>
       definition
@@ -394,9 +374,7 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToUtils;
-
-      addSpacingToUtils();
+      |> addToUtils
     | (None, Some({definition: Union(_)}))
     | (None, Some(_))
     | (None, None) => ()
@@ -416,7 +394,6 @@ let getPrintedFullState =
                   ~name="make_" ++ Tablecloth.String.uncapitalize(typeName),
                 )
              |> addToUtils;
-             addSpacingToUtils();
            }
          | _ => (),
      );
@@ -433,7 +410,6 @@ let getPrintedFullState =
           ~name="makeVariables",
         )
         |> addToUtils;
-        addSpacingToUtils();
       }
       : ()
   };
@@ -459,8 +435,7 @@ let getPrintedFullState =
            ~targetType=name,
            ~name="make_" ++ name,
          )
-         |> addToUtils;
-         addSpacingToUtils();
+         |> addToUtils
        });
 
     Printer.printObjectMaker(
@@ -469,7 +444,6 @@ let getPrintedFullState =
       ~name="makeOptimisticResponse",
     )
     |> addToUtils;
-    addSpacingToUtils();
   | _ => ()
   };
 
@@ -478,13 +452,11 @@ let getPrintedFullState =
     addToStr("open Types\n");
   };
 
-  addToStr(utilsContent^ ++ "}");
-  addSpacing();
+  addToStr(utilsContent^ ++ "}\n\n");
 
   // This adds operationType, which is referenced in the raw output of the Relay
   // runtime representation.
   addToStr(Printer.operationType(operationType));
-  addSpacing();
 
   switch (state) {
   | {fragment: None, response: None, variables: None} =>
