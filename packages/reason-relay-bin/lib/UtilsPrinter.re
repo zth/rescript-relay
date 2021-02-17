@@ -239,9 +239,15 @@ let printConvertersMap = (map: Hashtbl.t(string, string)): string =>
     let str = ref("{");
     let addToStr = s => str := str^ ++ s;
 
+    let has_printed = ref([]);
+
     map
     |> Hashtbl.iter((key, value) =>
-         addToStr("\n  \"" ++ key ++ "\": " ++ value ++ ",")
+         if (!List.exists(k => k == key, has_printed^)) {
+           addToStr("\n  \"" ++ key ++ "\": " ++ value ++ ",");
+         } else {
+           has_printed := [key, ...has_printed^];
+         }
        );
 
     addToStr("\n}\n");

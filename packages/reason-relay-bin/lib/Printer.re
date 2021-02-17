@@ -210,7 +210,7 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
 
       if (hasFragments && !ignoreFragmentRefs) {
         addToStr(
-          printRecordPropName("fragmentRefs")
+          printRecordPropName("\n  fragmentRefs")
           ++ ": "
           ++ (obj |> printFragmentRefs),
         );
@@ -319,8 +319,10 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
 
     addToStr("\n}");
   } else {
-    addToStr("\n) => @ocaml.warning(\"-27\") {}");
+    addToStr("\n) => Js.Obj.empty()");
   };
+
+  addToStr("\n");
   str^;
 }
 and printRefetchVariablesMaker = (obj: object_, ~state) => {
@@ -406,6 +408,7 @@ and printRootType =
         | _ =>
           " = "
           ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
+          ++ "\n"
         }
       );
 
@@ -433,7 +436,7 @@ and printRootType =
        )
     ++ "\n"
     ++ printComment(union.comment)
-    ++ "type fragment = array<fragment_t;"
+    ++ "type fragment = array<fragment_t>\n"
   };
 }
 and printUnionTypeDefinition =

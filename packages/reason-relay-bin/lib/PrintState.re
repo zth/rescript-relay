@@ -394,6 +394,7 @@ let getPrintedFullState =
                   ~name="make_" ++ Tablecloth.String.uncapitalize(typeName),
                 )
              |> addToUtils;
+             addToUtils("\n");
            }
          | _ => (),
      );
