@@ -25,7 +25,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "type operationType = ReasonRelay.queryNode(relayOperationNode);"
+          "type operationType = ReasonRelay.queryNode<relayOperationNode>"
         )
       ).toBe(true);
     });
@@ -53,7 +53,7 @@ describe("Language plugin tests", () => {
           }`
       );
 
-      expect(generated.includes("type variables = unit;")).toBe(true);
+      expect(generated.includes("type variables = unit")).toBe(true);
     });
 
     it("prints single fragment references", () => {
@@ -73,7 +73,7 @@ describe("Language plugin tests", () => {
       );
 
       expect(
-        generated.includes("ReasonRelay.fragmentRefs([ | `SomeComponent_user])")
+        generated.includes("ReasonRelay.fragmentRefs<[ | #SomeComponent_user]>")
       ).toBe(true);
     });
 
@@ -102,7 +102,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user], )"
+          "ReasonRelay.fragmentRefs<[ | #SomeComponent_user | #OtherComponent_user]>"
         )
       ).toBe(true);
     });
@@ -142,7 +142,7 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          "ReasonRelay.fragmentRefs( [ | `SomeComponent_user | `OtherComponent_user | `AnotherComponent_user | `LastComponent_user ], )"
+          "ReasonRelay.fragmentRefs<[ | #SomeComponent_user | #OtherComponent_user | #AnotherComponent_user | #LastComponent_user]>"
         )
       ).toBe(true);
     });
@@ -242,7 +242,7 @@ describe("Language plugin tests", () => {
         }
       `);
 
-      expect(generated).toContain("connections: array(ReasonRelay.dataId),");
+      expect(generated).toContain("connections: array<ReasonRelay.dataId>,");
     });
 
     it("types ID as dataId for variables piped into the `connections` arg of the store updater directives, regardless of what the variable is named", () => {
@@ -257,7 +257,7 @@ describe("Language plugin tests", () => {
         }
       `);
 
-      expect(generated).toContain("targetConns: array(ReasonRelay.dataId),");
+      expect(generated).toContain("targetConns: array<ReasonRelay.dataId>,");
     });
 
     it("types ID as dataId for variables targeting single IDs, like @deleteEdge", () => {
@@ -269,7 +269,7 @@ describe("Language plugin tests", () => {
         }
       `);
 
-      expect(generated).toContain("connections: array(ReasonRelay.dataId),");
+      expect(generated).toContain("connections: array<ReasonRelay.dataId>,");
     });
   });
 
@@ -286,7 +286,7 @@ describe("Language plugin tests", () => {
             }
           }`
         ).includes(
-          "type operationType = ReasonRelay.mutationNode(relayOperationNode);"
+          "type operationType = ReasonRelay.mutationNode<relayOperationNode>"
         )
       ).toBe(true);
     });
@@ -355,7 +355,7 @@ describe("Language plugin tests", () => {
             }
           }`
         ).includes(
-          "type operationType = ReasonRelay.subscriptionNode(relayOperationNode);"
+          "type operationType = ReasonRelay.subscriptionNode<relayOperationNode>"
         )
       ).toBe(true);
     });
@@ -385,7 +385,7 @@ describe("Language plugin tests", () => {
             firstName
           }`
         ).includes(
-          "type operationType = ReasonRelay.fragmentNode(relayOperationNode);"
+          "type operationType = ReasonRelay.fragmentNode<relayOperationNode>"
         )
       ).toBe(true);
     });
@@ -402,12 +402,12 @@ describe("Language plugin tests", () => {
 
       expect(
         generated.includes(
-          `type fragment_t = { id: string, firstName: string, }; type fragment = array(fragment_t);`
+          `type fragment_t = { id: string, firstName: string,}type fragment = array<fragment_t>`
         )
       ).toBe(true);
       expect(
         generated.includes(
-          "array(ReasonRelay.fragmentRefs([> | `SomeComponent_user]))"
+          "array<ReasonRelay.fragmentRefs<[> | #SomeComponent_user]>>"
         )
       ).toBe(true);
     });
@@ -448,7 +448,9 @@ describe("Language plugin tests", () => {
       );
 
       expect(
-        generated.includes("type enum_UserRole = pri [> | `Admin | `User];")
+        collapseString(generated).includes(
+          "type enum_UserRole = private [> | #Admin | #User]"
+        )
       ).toBe(true);
 
       expect(generated.includes("role: enum_UserRole")).toBe(true);
@@ -652,11 +654,11 @@ describe("Language plugin tests", () => {
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response_users = {firstName: string};`
+        `type rec response_users = { firstName: string,}`
       );
 
       expect(collapseString(generated)).toMatch(
-        `type response = {users: array(response_users)};`
+        `type response = { users: array<response_users>,}`
       );
     });
 
@@ -679,24 +681,24 @@ describe("Language plugin tests", () => {
         }`
       );
 
-      expect(collapseString(generated)).toMatch(
-        `response = { __id: ReasonRelay.dataId, users: array(response_users), }`
+      expect(collapseString(generated)).toContain(
+        `response = { __id: ReasonRelay.dataId, users: array<response_users>,}`
       );
 
-      expect(collapseString(generated)).toMatch(
-        `response_users = { __id: ReasonRelay.dataId, friendsConnection: option(response_users_friendsConnection), }`
+      expect(collapseString(generated)).toContain(
+        `response_users = { __id: ReasonRelay.dataId, friendsConnection: option<response_users_friendsConnection>,}`
       );
 
-      expect(collapseString(generated)).toMatch(
-        `response_users_friendsConnection = { __id: ReasonRelay.dataId, edges: option(array(option(response_users_friendsConnection_edges))), }`
+      expect(collapseString(generated)).toContain(
+        `response_users_friendsConnection = { __id: ReasonRelay.dataId, edges: option<array<option<response_users_friendsConnection_edges>>>,}`
       );
 
-      expect(collapseString(generated)).toMatch(
-        `response_users_friendsConnection_edges = { __id: ReasonRelay.dataId, node: option(response_users_friendsConnection_edges_node), }`
+      expect(collapseString(generated)).toContain(
+        `response_users_friendsConnection_edges = { __id: ReasonRelay.dataId, node: option<response_users_friendsConnection_edges_node>,}`
       );
 
-      expect(collapseString(generated)).toMatch(
-        `response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId, }`
+      expect(collapseString(generated)).toContain(
+        `response_users_friendsConnection_edges_node = { __id: ReasonRelay.dataId,}`
       );
     });
   });
