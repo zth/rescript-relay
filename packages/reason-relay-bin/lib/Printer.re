@@ -237,7 +237,7 @@ and printFragmentRefs = (obj: object_) => {
        );
      });
 
-  addToStr("])");
+  addToStr("]>");
 
   str^;
 }

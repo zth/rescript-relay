@@ -17,12 +17,12 @@ let printConverterAssets =
   let assets =
     definition |> UtilsPrinter.definitionToAssets(~rootObjects, ~direction);
 
-  (includeRaw ? "type " ++ name ++ "Raw;" : "")
+  (includeRaw ? "type " ++ name ++ "Raw\n" : "")
   ++ "let "
   ++ name
-  ++ "Converter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw {json| "
+  ++ "Converter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`"
   ++ UtilsPrinter.converterInstructionsToJson(assets.converterInstructions)
-  ++ " |json}];"
+  ++ "`)"
   ++ "let "
   ++ name
   ++ "ConverterMap = "
@@ -40,5 +40,5 @@ let printConverterAssets =
     | Undefined => "Js.undefined"
     }
   )
-  ++ ");";
+  ++ ")";
 };
