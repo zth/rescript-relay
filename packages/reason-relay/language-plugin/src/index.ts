@@ -1,4 +1,4 @@
-const RelayReasonGenerator = require("./RelayReasonGenerator");
+const RescriptRelayGenerator = require("./RescriptRelayGenerator");
 
 const formatGeneratedModule = require("./formatGeneratedModule");
 
@@ -25,13 +25,13 @@ function getFileFilter(baseDir: string) {
 
 module.exports = () => ({
   inputExtensions: ["re", "res"],
-  outputExtension: "re",
+  outputExtension: "res",
   schemaExtensions: [],
-  typeGenerator: RelayReasonGenerator,
+  typeGenerator: RescriptRelayGenerator,
   formatModule: formatGeneratedModule,
   findGraphQLTags: find,
   isGeneratedFile: (fileName: string) =>
-    fileName.endsWith("_graphql.re") || fileName.endsWith(".bs.js"),
+    fileName.endsWith("_graphql.res") || fileName.endsWith(".bs.js"),
   keepExtraFile: (fileName: string) => fileName.endsWith(".bs.js"),
   getFileFilter,
   getModuleName: (operationName: string) => `${operationName}_graphql`,
