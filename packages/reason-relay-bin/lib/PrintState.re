@@ -120,12 +120,14 @@ let getPrintedFullState =
 
   // Print definitions and declarations
   addToStr("\nmodule Types = {\n");
+  let insideTypes = ref("");
+  let addToTypesModule = Utils.makeAddToStr(insideTypes);
   // We turn off warning 30 because it's quite likely that record field labels will overlap in GraphQL
-  addToStr("@@ocaml.warning(\"-30\")\n\n");
+  addToTypesModule("@@ocaml.warning(\"-30\")\n\n");
 
   // Print enums
   state.enums
-  |> List.iter(enum => {addToStr(Printer.printEnum(enum) ++ "\n")});
+  |> List.iter(enum => {addToTypesModule(Printer.printEnum(enum) ++ "\n")});
 
   let shouldIgnoreFragmentRefs =
     switch (operationType) {
@@ -135,7 +137,7 @@ let getPrintedFullState =
 
   state.unions
   |> List.iter(({union, printName}: Types.unionInState) => {
-       Printer.printUnionTypes(union, ~state, ~printName) |> addToStr
+       Printer.printUnionTypes(union, ~state, ~printName) |> addToTypesModule
      });
 
   // Split declarations so we can print object declarations first and as mutuals
@@ -166,7 +168,7 @@ let getPrintedFullState =
               ~state,
               ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
-         |> addToStr
+         |> addToTypesModule
        })
   );
 
@@ -179,7 +181,7 @@ let getPrintedFullState =
               ~state,
               ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
-         |> addToStr
+         |> addToTypesModule
        )
   );
 
@@ -191,11 +193,12 @@ let getPrintedFullState =
               ~state,
               ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
-         |> addToStr
+         |> addToTypesModule
        })
   );
 
-  addToStr("}\n\n");
+  addToStr(Utils.print_indented(2, insideTypes^));
+  addToStr("\n}\n\n");
 
   if (state.unions |> List.length > 0) {
     state.unions
@@ -208,6 +211,8 @@ let getPrintedFullState =
   // like code for converting nullable fields, enums and unions,
   // and code for extracting fragment refs.
   addToStr("module Internal = {\n");
+  let in_internal = ref("");
+  let add_to_internal = Utils.makeAddToStr(in_internal);
 
   let rootObjects =
     state.objects
@@ -221,7 +226,7 @@ let getPrintedFullState =
 
   switch (state.fragment) {
   | Some({definition}) =>
-    addToStr(
+    add_to_internal(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
         ~definition,
@@ -237,7 +242,7 @@ let getPrintedFullState =
     switch (operationType) {
     | Query(_)
     | Mutation(_) =>
-      addToStr(
+      add_to_internal(
         TypesTransformerUtils.printConverterAssets(
           ~rootObjects,
           ~direction=Wrap,
@@ -250,7 +255,7 @@ let getPrintedFullState =
     | _ => ()
     };
 
-    addToStr(
+    add_to_internal(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
         ~definition=Object(definition),
@@ -266,7 +271,7 @@ let getPrintedFullState =
     switch (operationType) {
     | Query(_)
     | Mutation(_) =>
-      addToStr(
+      add_to_internal(
         TypesTransformerUtils.printConverterAssets(
           ~rootObjects,
           ~direction=Wrap,
@@ -279,7 +284,7 @@ let getPrintedFullState =
     | _ => ()
     };
 
-    addToStr(
+    add_to_internal(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
         ~definition=Object(definition),
@@ -291,14 +296,14 @@ let getPrintedFullState =
     switch (operationType) {
     | Query(_)
     | Mutation(_) =>
-      addToStr(
+      add_to_internal(
         "type wrapRawResponseRaw = wrapResponseRaw\n"
         ++ "let convertWrapRawResponse = convertWrapResponse\n",
       )
     | _ => ()
     };
 
-    addToStr(
+    add_to_internal(
       "type rawResponseRaw = responseRaw\n"
       ++ "let convertRawResponse = convertResponse\n",
     );
@@ -307,7 +312,7 @@ let getPrintedFullState =
 
   switch (state.variables) {
   | Some(definition) =>
-    addToStr(
+    add_to_internal(
       TypesTransformerUtils.printConverterAssets(
         ~rootObjects,
         ~includeRaw=false,
@@ -319,7 +324,8 @@ let getPrintedFullState =
     )
   | None => ()
   };
-  addToStr("}\n");
+  addToStr(Utils.print_indented(2, in_internal^));
+  addToStr("\n}\n");
 
   // Print fragment assets
   switch (state.fragment) {
@@ -336,14 +342,14 @@ let getPrintedFullState =
 
   // Utils that'll be included and accessible at the top level of the generated module
   addToStr("\n\nmodule Utils = {\n");
-  let utilsContent = ref("");
-  let addToUtils = str => utilsContent := utilsContent^ ++ str;
+  let utils_content = ref("");
+  let add_to_utils = Utils.makeAddToStr(utils_content);
 
   // Enum toString functions
   state.enums
   |> List.iter(enum => {
-       enum |> Printer.printEnumToStringFn |> addToStr;
-       addToStr("\n");
+       enum |> Printer.printEnumToStringFn |> add_to_utils;
+       add_to_utils("\n");
      });
 
   // We print a helper for extracting connection nodes whenever there's a connection present.
@@ -365,7 +371,7 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToUtils
+      |> add_to_utils
     | (None, Some({definition: Object(definition)}))
         when connPath == ["fragment"] =>
       definition
@@ -374,7 +380,7 @@ let getPrintedFullState =
            ~state,
            ~connectionLocation=connection.fieldName,
          )
-      |> addToUtils
+      |> add_to_utils
     | (None, Some({definition: Union(_)}))
     | (None, Some(_))
     | (None, None) => ()
@@ -393,8 +399,8 @@ let getPrintedFullState =
                   ~targetType=Tablecloth.String.uncapitalize(typeName),
                   ~name="make_" ++ Tablecloth.String.uncapitalize(typeName),
                 )
-             |> addToUtils;
-             addToUtils("\n");
+             |> add_to_utils;
+             add_to_utils("\n");
            }
          | _ => (),
      );
@@ -410,7 +416,7 @@ let getPrintedFullState =
           ~targetType="variables",
           ~name="makeVariables",
         )
-        |> addToUtils;
+        |> add_to_utils;
       }
       : ()
   };
@@ -436,7 +442,7 @@ let getPrintedFullState =
            ~targetType=name,
            ~name="make_" ++ name,
          )
-         |> addToUtils
+         |> add_to_utils
        });
 
     Printer.printObjectMaker(
@@ -444,16 +450,16 @@ let getPrintedFullState =
       ~targetType="rawResponse",
       ~name="makeOptimisticResponse",
     )
-    |> addToUtils;
+    |> add_to_utils;
   | _ => ()
   };
 
   // Open Types locally here if we have any content to print
-  if (utilsContent^ != "") {
-    addToStr("open Types\n");
+  if (utils_content^ != "") {
+    add_to_utils("open Types\n");
   };
 
-  addToStr(utilsContent^ ++ "}\n\n");
+  addToStr(Utils.print_indented(2, utils_content^) ++ "\n}\n");
 
   // This adds operationType, which is referenced in the raw output of the Relay
   // runtime representation.

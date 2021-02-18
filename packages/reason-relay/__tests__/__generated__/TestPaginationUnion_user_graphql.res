@@ -1,31 +1,31 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type rec fragment_friendsConnection = {
-  totalCount: int,
-}
-type fragment = {
-  firstName: string,
-  friendsConnection: fragment_friendsConnection,
-}
+  @@ocaml.warning("-30")
+  
+  type rec fragment_friendsConnection = {
+    totalCount: int,
+  }
+  type fragment = {
+    firstName: string,
+    friendsConnection: fragment_friendsConnection,
+  }
 }
 
 module Internal = {
-type fragmentRaw
-let fragmentConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
   )
-
-let fragmentConverterMap = ()
-let convertFragment = v => v->ReasonRelay.convertObj(
-  fragmentConverter, 
-  fragmentConverterMap, 
-  Js.undefined
-)
 }
 type t
 type fragmentRef
@@ -34,8 +34,8 @@ external getFragmentRef:
 
 
 module Utils = {
-}
 
+}
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 

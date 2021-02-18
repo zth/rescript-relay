@@ -1,105 +1,104 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type rec response_users = {
-  edges: option<array<option<response_users_edges>>>,
-}
- and response_users_edges = {
-  node: option<response_users_edges_node>,
-}
- and response_users_edges_node = {
-  id: string,
-  firstName: string,
-  onlineStatus: option<enum_OnlineStatus>,
-}
-
-
-type response = {
-  users: option<response_users>,
-}
-type rawResponse = response
-type refetchVariables = {
-  status: option<enum_OnlineStatus>,
-}
-let makeRefetchVariables = (
-  ~status=?,
-  ()
-): refetchVariables => {
-  status: status
-}
-
-type variables = {
-  status: option<enum_OnlineStatus>,
-}
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_users = {
+    edges: option<array<option<response_users_edges>>>,
+  }
+   and response_users_edges = {
+    node: option<response_users_edges_node>,
+  }
+   and response_users_edges_node = {
+    id: string,
+    firstName: string,
+    onlineStatus: option<enum_OnlineStatus>,
+  }
+  
+  
+  type response = {
+    users: option<response_users>,
+  }
+  type rawResponse = response
+  type refetchVariables = {
+    status: option<enum_OnlineStatus>,
+  }
+  let makeRefetchVariables = (
+    ~status=?,
+    ()
+  ): refetchVariables => {
+    status: status
+  }
+  
+  type variables = {
+    status: option<enum_OnlineStatus>,
+  }
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = ()
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":""},"users_edges":{"n":"","na":""},"users":{"n":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw = wrapResponseRaw
-let convertWrapRawResponse = convertWrapResponse
-type rawResponseRaw = responseRaw
-let convertRawResponse = convertResponse
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"status":{"n":""}}}`
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"status":{"n":""}}}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 type queryRef
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
-open Types
-let makeVariables = (
-  ~status=?,
-  ()
-): variables => {
-  status: status
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  let makeVariables = (
+    ~status=?,
+    ()
+  ): variables => {
+    status: status
+  }
+  open Types
 }
-}
-
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>
 

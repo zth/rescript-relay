@@ -1,34 +1,34 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type fragment = {
-  firstName: string,
-  onlineStatus: option<enum_OnlineStatus>,
-}
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type fragment = {
+    firstName: string,
+    onlineStatus: option<enum_OnlineStatus>,
+  }
 }
 
 module Internal = {
-type fragmentRaw
-let fragmentConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"onlineStatus":{"n":""}}}`
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"onlineStatus":{"n":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
   )
-
-let fragmentConverterMap = ()
-let convertFragment = v => v->ReasonRelay.convertObj(
-  fragmentConverter, 
-  fragmentConverterMap, 
-  Js.undefined
-)
 }
 type t
 type fragmentRef
@@ -37,10 +37,10 @@ external getFragmentRef:
 
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  open Types
 }
-
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 

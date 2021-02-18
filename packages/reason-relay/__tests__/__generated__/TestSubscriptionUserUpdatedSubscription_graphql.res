@@ -1,75 +1,74 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type rec response_userUpdated = {
-  user: option<response_userUpdated_user>,
-}
- and response_userUpdated_user = {
-  id: string,
-  onlineStatus: option<enum_OnlineStatus>,
-  fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestSubscription_user]>
-}
-
-
-type response = {
-  userUpdated: option<response_userUpdated>,
-}
-type rawResponse = response
-type variables = {
-  userId: string,
-}
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_userUpdated = {
+    user: option<response_userUpdated_user>,
+  }
+   and response_userUpdated_user = {
+    id: string,
+    onlineStatus: option<enum_OnlineStatus>,
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestSubscription_user]>
+  }
+  
+  
+  type response = {
+    userUpdated: option<response_userUpdated>,
+  }
+  type rawResponse = response
+  type variables = {
+    userId: string,
+  }
 }
 
 module Internal = {
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"userUpdated_user_onlineStatus":{"n":""},"userUpdated":{"n":""},"userUpdated_user":{"f":"","n":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"userUpdated_user_onlineStatus":{"n":""},"userUpdated":{"n":""},"userUpdated_user":{"f":"","n":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type rawResponseRaw = responseRaw
-let convertRawResponse = convertResponse
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
-open Types
-let makeVariables = (
-  ~userId
-): variables => {
-  userId: userId
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  let makeVariables = (
+    ~userId
+  ): variables => {
+    userId: userId
+  }
+  open Types
 }
-}
-
 type relayOperationNode
 type operationType = ReasonRelay.subscriptionNode<relayOperationNode>
 

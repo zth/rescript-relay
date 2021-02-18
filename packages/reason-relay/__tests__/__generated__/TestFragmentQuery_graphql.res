@@ -1,90 +1,90 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type rec response_loggedInUser = {
-  fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestFragment_user | #TestFragment_inline]>
-}
- and response_users = {
-  edges: option<array<option<response_users_edges>>>,
-}
- and response_users_edges = {
-  node: option<response_users_edges_node>,
-}
- and response_users_edges_node = {
-  id: string,
-  onlineStatus: option<enum_OnlineStatus>,
-  fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestFragment_plural_user]>
-}
-
-
-type response = {
-  loggedInUser: response_loggedInUser,
-  users: option<response_users>,
-}
-type rawResponse = response
-type variables = unit
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_loggedInUser = {
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestFragment_user | #TestFragment_inline]>
+  }
+   and response_users = {
+    edges: option<array<option<response_users_edges>>>,
+  }
+   and response_users_edges = {
+    node: option<response_users_edges_node>,
+  }
+   and response_users_edges_node = {
+    id: string,
+    onlineStatus: option<enum_OnlineStatus>,
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestFragment_plural_user]>
+  }
+  
+  
+  type response = {
+    loggedInUser: response_loggedInUser,
+    users: option<response_users>,
+  }
+  type rawResponse = response
+  type variables = unit
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"f":"","n":""},"users_edges":{"n":"","na":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"f":"","n":""},"users_edges":{"n":"","na":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = ()
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"f":"","n":""},"users_edges":{"n":"","na":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"f":"","n":""},"users_edges":{"n":"","na":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw = wrapResponseRaw
-let convertWrapRawResponse = convertWrapResponse
-type rawResponseRaw = responseRaw
-let convertRawResponse = convertResponse
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 type queryRef
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  open Types
 }
-
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>
 

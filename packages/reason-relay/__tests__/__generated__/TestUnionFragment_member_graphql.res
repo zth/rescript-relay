@@ -1,30 +1,30 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type fragment_User = {
-  onlineStatus: option<enum_OnlineStatus>,
-  firstName: string,
-}
-
-type fragment_Group = {
-  name: string,
-}
-
-
-type fragment = [
-  | #User(fragment_User)
-
-  | #Group(fragment_Group)
-  | #UnselectedUnionMember(string)
-]
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type fragment_User = {
+    onlineStatus: option<enum_OnlineStatus>,
+    firstName: string,
+  }
+  
+  type fragment_Group = {
+    name: string,
+  }
+  
+  
+  type fragment = [
+    | #User(fragment_User)
+  
+    | #Group(fragment_Group)
+    | #UnselectedUnionMember(string)
+  ]
 }
 
 let unwrap_fragment: {. "__typename": string } => [
@@ -50,22 +50,22 @@ let wrap_fragment: [
 }
 
 module Internal = {
-type fragmentRaw
-let fragmentConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"":{"u":"fragment"},"onlineStatus":{"n":""}}}`
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"":{"u":"fragment"},"onlineStatus":{"n":""}}}`
+    )
+  
+  let fragmentConverterMap = {
+    "fragment": unwrap_fragment,
+  }
+  
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
   )
-
-let fragmentConverterMap = {
-  "fragment": unwrap_fragment,
-}
-
-let convertFragment = v => v->ReasonRelay.convertObj(
-  fragmentConverter, 
-  fragmentConverterMap, 
-  Js.undefined
-)
 }
 type t
 type fragmentRef
@@ -74,10 +74,10 @@ external getFragmentRef:
 
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  open Types
 }
-
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 

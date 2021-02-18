@@ -1,120 +1,119 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type rec response_node = {
-  __typename: [ | #User],
-  firstName: string,
-  avatarUrl: option<string>,
-}
- and rawResponse_node = {
-  __typename: [ | #User],
-  id: string,
-  firstName: string,
-  avatarUrl: option<string>,
-}
-
-
-type response = {
-  node: option<response_node>,
-}
-type rawResponse = {
-  node: option<rawResponse_node>,
-}
-type refetchVariables = {
-  id: option<string>,
-}
-let makeRefetchVariables = (
-  ~id=?,
-  ()
-): refetchVariables => {
-  id: id
-}
-
-type variables = {
-  id: string,
-}
+  @@ocaml.warning("-30")
+  
+  type rec response_node = {
+    __typename: [ | #User],
+    firstName: string,
+    avatarUrl: option<string>,
+  }
+   and rawResponse_node = {
+    __typename: [ | #User],
+    id: string,
+    firstName: string,
+    avatarUrl: option<string>,
+  }
+  
+  
+  type response = {
+    node: option<response_node>,
+  }
+  type rawResponse = {
+    node: option<rawResponse_node>,
+  }
+  type refetchVariables = {
+    id: option<string>,
+  }
+  let makeRefetchVariables = (
+    ~id=?,
+    ()
+  ): refetchVariables => {
+    id: id
+  }
+  
+  type variables = {
+    id: string,
+  }
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = ()
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw
-let wrapRawResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+  type wrapRawResponseRaw
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+    )
+  
+  let wrapRawResponseConverterMap = ()
+  let convertWrapRawResponse = v => v->ReasonRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
   )
-
-let wrapRawResponseConverterMap = ()
-let convertWrapRawResponse = v => v->ReasonRelay.convertObj(
-  wrapRawResponseConverter, 
-  wrapRawResponseConverterMap, 
-  Js.null
-)
-type rawResponseRaw
-let rawResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
+    )
+  
+  let rawResponseConverterMap = ()
+  let convertRawResponse = v => v->ReasonRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
   )
-
-let rawResponseConverterMap = ()
-let convertRawResponse = v => v->ReasonRelay.convertObj(
-  rawResponseConverter, 
-  rawResponseConverterMap, 
-  Js.undefined
-)
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 type queryRef
 
 module Utils = {
-open Types
-let makeVariables = (
-  ~id
-): variables => {
-  id: id
+  let makeVariables = (
+    ~id
+  ): variables => {
+    id: id
+  }
+  open Types
 }
-}
-
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>
 

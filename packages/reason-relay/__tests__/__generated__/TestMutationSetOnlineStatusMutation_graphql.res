@@ -1,163 +1,162 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type rec response_setOnlineStatus = {
-  user: option<response_setOnlineStatus_user>,
-}
- and response_setOnlineStatus_user = {
-  id: string,
-  onlineStatus: option<enum_OnlineStatus>,
-}
- and rawResponse_setOnlineStatus = {
-  user: option<rawResponse_setOnlineStatus_user>,
-}
- and rawResponse_setOnlineStatus_user = {
-  id: string,
-  onlineStatus: option<enum_OnlineStatus>,
-  firstName: string,
-  lastName: string,
-  __id: ReasonRelay.dataId,
-}
-
-
-type response = {
-  setOnlineStatus: option<response_setOnlineStatus>,
-}
-type rawResponse = {
-  setOnlineStatus: option<rawResponse_setOnlineStatus>,
-}
-type variables = {
-  onlineStatus: enum_OnlineStatus,
-}
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_setOnlineStatus = {
+    user: option<response_setOnlineStatus_user>,
+  }
+   and response_setOnlineStatus_user = {
+    id: string,
+    onlineStatus: option<enum_OnlineStatus>,
+  }
+   and rawResponse_setOnlineStatus = {
+    user: option<rawResponse_setOnlineStatus_user>,
+  }
+   and rawResponse_setOnlineStatus_user = {
+    id: string,
+    onlineStatus: option<enum_OnlineStatus>,
+    firstName: string,
+    lastName: string,
+    __id: ReasonRelay.dataId,
+  }
+  
+  
+  type response = {
+    setOnlineStatus: option<response_setOnlineStatus>,
+  }
+  type rawResponse = {
+    setOnlineStatus: option<rawResponse_setOnlineStatus>,
+  }
+  type variables = {
+    onlineStatus: enum_OnlineStatus,
+  }
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = ()
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw
-let wrapRawResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}}`
+  type wrapRawResponseRaw
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}}`
+    )
+  
+  let wrapRawResponseConverterMap = ()
+  let convertWrapRawResponse = v => v->ReasonRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
   )
-
-let wrapRawResponseConverterMap = ()
-let convertWrapRawResponse = v => v->ReasonRelay.convertObj(
-  wrapRawResponseConverter, 
-  wrapRawResponseConverterMap, 
-  Js.null
-)
-type rawResponseRaw
-let rawResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}}`
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""}}}`
+    )
+  
+  let rawResponseConverterMap = ()
+  let convertRawResponse = v => v->ReasonRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
   )
-
-let rawResponseConverterMap = ()
-let convertRawResponse = v => v->ReasonRelay.convertObj(
-  rawResponseConverter, 
-  rawResponseConverterMap, 
-  Js.undefined
-)
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
-open Types
-let makeVariables = (
-  ~onlineStatus
-): variables => {
-  onlineStatus: onlineStatus
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  let makeVariables = (
+    ~onlineStatus
+  ): variables => {
+    onlineStatus: onlineStatus
+  }
+  let make_rawResponse_setOnlineStatus_user = (
+    ~id,
+    ~onlineStatus=?,
+    ~firstName,
+    ~lastName,
+    ~__id,
+    ()
+  ): rawResponse_setOnlineStatus_user => {
+    id: id,
+    onlineStatus: onlineStatus,
+    firstName: firstName,
+    lastName: lastName,
+    __id: __id
+  }
+  let make_rawResponse_setOnlineStatus = (
+    ~user=?,
+    ()
+  ): rawResponse_setOnlineStatus => {
+    user: user
+  }
+  let make_response_setOnlineStatus_user = (
+    ~id,
+    ~onlineStatus=?,
+    ()
+  ): response_setOnlineStatus_user => {
+    id: id,
+    onlineStatus: onlineStatus
+  }
+  let make_response_setOnlineStatus = (
+    ~user=?,
+    ()
+  ): response_setOnlineStatus => {
+    user: user
+  }
+  let makeOptimisticResponse = (
+    ~setOnlineStatus=?,
+    ()
+  ): rawResponse => {
+    setOnlineStatus: setOnlineStatus
+  }
+  open Types
 }
-let make_rawResponse_setOnlineStatus_user = (
-  ~id,
-  ~onlineStatus=?,
-  ~firstName,
-  ~lastName,
-  ~__id,
-  ()
-): rawResponse_setOnlineStatus_user => {
-  id: id,
-  onlineStatus: onlineStatus,
-  firstName: firstName,
-  lastName: lastName,
-  __id: __id
-}
-let make_rawResponse_setOnlineStatus = (
-  ~user=?,
-  ()
-): rawResponse_setOnlineStatus => {
-  user: user
-}
-let make_response_setOnlineStatus_user = (
-  ~id,
-  ~onlineStatus=?,
-  ()
-): response_setOnlineStatus_user => {
-  id: id,
-  onlineStatus: onlineStatus
-}
-let make_response_setOnlineStatus = (
-  ~user=?,
-  ()
-): response_setOnlineStatus => {
-  user: user
-}
-let makeOptimisticResponse = (
-  ~setOnlineStatus=?,
-  ()
-): rawResponse => {
-  setOnlineStatus: setOnlineStatus
-}
-}
-
 type relayOperationNode
 type operationType = ReasonRelay.mutationNode<relayOperationNode>
 

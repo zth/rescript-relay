@@ -94,3 +94,16 @@ and adjustObjectPath = (~path: list(string), obj: object_): object_ => {
          ),
   };
 };
+
+let print_indented = (indent, str) => {
+  let indent_str = ref("");
+
+  for (i in 1 to indent) {
+    indent_str := indent_str^ ++ " ";
+  };
+
+  str
+  |> Tablecloth.String.split(~on="\n")
+  |> Tablecloth.List.map(~f=str => indent_str^ ++ str)
+  |> Tablecloth.String.join(~sep="\n");
+};

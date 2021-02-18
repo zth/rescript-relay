@@ -1,76 +1,76 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type response_members_edges_node_Group_members_User = {
-  onlineStatus: option<enum_OnlineStatus>,
-  firstName: string,
-  id: string,
-}
-
-type response_members_edges_node_Group_members_Group = {
-  avatarUrl: option<string>,
-  name: string,
-  id: string,
-}
-
-
-type response_members_edges_node_Group_members = [
-  | #User(response_members_edges_node_Group_members_User)
-
-  | #Group(response_members_edges_node_Group_members_Group)
-  | #UnselectedUnionMember(string)
-]
-type response_members_edges_node_User = {
-  onlineStatus: option<enum_OnlineStatus>,
-  firstName: string,
-  id: string,
-}
-
-type response_members_edges_node_Group = {
-  members: option<array<option<[
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type response_members_edges_node_Group_members_User = {
+    onlineStatus: option<enum_OnlineStatus>,
+    firstName: string,
+    id: string,
+  }
+  
+  type response_members_edges_node_Group_members_Group = {
+    avatarUrl: option<string>,
+    name: string,
+    id: string,
+  }
+  
+  
+  type response_members_edges_node_Group_members = [
     | #User(response_members_edges_node_Group_members_User)
-
+  
     | #Group(response_members_edges_node_Group_members_Group)
     | #UnselectedUnionMember(string)
-  ]>>>,
-  avatarUrl: option<string>,
-  name: string,
-  id: string,
-}
-
-
-type response_members_edges_node = [
-  | #User(response_members_edges_node_User)
-
-  | #Group(response_members_edges_node_Group)
-  | #UnselectedUnionMember(string)
-]
-type rec response_members = {
-  edges: option<array<option<response_members_edges>>>,
-}
- and response_members_edges = {
-  node: option<[
+  ]
+  type response_members_edges_node_User = {
+    onlineStatus: option<enum_OnlineStatus>,
+    firstName: string,
+    id: string,
+  }
+  
+  type response_members_edges_node_Group = {
+    members: option<array<option<[
+      | #User(response_members_edges_node_Group_members_User)
+  
+      | #Group(response_members_edges_node_Group_members_Group)
+      | #UnselectedUnionMember(string)
+    ]>>>,
+    avatarUrl: option<string>,
+    name: string,
+    id: string,
+  }
+  
+  
+  type response_members_edges_node = [
     | #User(response_members_edges_node_User)
-
+  
     | #Group(response_members_edges_node_Group)
     | #UnselectedUnionMember(string)
-  ]>,
-}
-
-
-type response = {
-  members: option<response_members>,
-}
-type rawResponse = response
-type variables = unit
+  ]
+  type rec response_members = {
+    edges: option<array<option<response_members_edges>>>,
+  }
+   and response_members_edges = {
+    node: option<[
+      | #User(response_members_edges_node_User)
+  
+      | #Group(response_members_edges_node_Group)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  
+  
+  type response = {
+    members: option<response_members>,
+  }
+  type rawResponse = response
+  type variables = unit
 }
 
 let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
@@ -118,65 +118,65 @@ let wrap_response_members_edges_node: [
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+    )
+  
+  let wrapResponseConverterMap = {
+    "response_members_edges_node_Group_members": wrap_response_members_edges_node_Group_members,
+    "response_members_edges_node": wrap_response_members_edges_node,
+  }
+  
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = {
-  "response_members_edges_node_Group_members": wrap_response_members_edges_node_Group_members,
-  "response_members_edges_node": wrap_response_members_edges_node,
-}
-
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+    )
+  
+  let responseConverterMap = {
+    "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
+    "response_members_edges_node": unwrap_response_members_edges_node,
+  }
+  
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = {
-  "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
-  "response_members_edges_node": unwrap_response_members_edges_node,
-}
-
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw = wrapResponseRaw
-let convertWrapRawResponse = convertWrapResponse
-type rawResponseRaw = responseRaw
-let convertRawResponse = convertResponse
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{}`
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 type queryRef
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  open Types
 }
-
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>
 

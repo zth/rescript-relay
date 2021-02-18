@@ -1,55 +1,55 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type fragment_members_edges_node_User = {
-  id: string,
-  fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestPaginationUnion_user]>
-}
-
-type fragment_members_edges_node_Group_adminsConnection_edges_node = {
-  id: string,
-  firstName: string,
-}
-
-type fragment_members_edges_node_Group_adminsConnection_edges = {
-  node: option<fragment_members_edges_node_Group_adminsConnection_edges_node>,
-}
-
-type fragment_members_edges_node_Group_adminsConnection = {
-  edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
-}
-
-type fragment_members_edges_node_Group = {
-  adminsConnection: fragment_members_edges_node_Group_adminsConnection,
-  name: string,
-  id: string,
-}
-
-
-type fragment_members_edges_node = [
-  | #User(fragment_members_edges_node_User)
-
-  | #Group(fragment_members_edges_node_Group)
-  | #UnselectedUnionMember(string)
-]
-type rec fragment_members = {
-  edges: option<array<option<fragment_members_edges>>>,
-}
- and fragment_members_edges = {
-  node: option<[
+  @@ocaml.warning("-30")
+  
+  type fragment_members_edges_node_User = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestPaginationUnion_user]>
+  }
+  
+  type fragment_members_edges_node_Group_adminsConnection_edges_node = {
+    id: string,
+    firstName: string,
+  }
+  
+  type fragment_members_edges_node_Group_adminsConnection_edges = {
+    node: option<fragment_members_edges_node_Group_adminsConnection_edges_node>,
+  }
+  
+  type fragment_members_edges_node_Group_adminsConnection = {
+    edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
+  }
+  
+  type fragment_members_edges_node_Group = {
+    adminsConnection: fragment_members_edges_node_Group_adminsConnection,
+    name: string,
+    id: string,
+  }
+  
+  
+  type fragment_members_edges_node = [
     | #User(fragment_members_edges_node_User)
-
+  
     | #Group(fragment_members_edges_node_Group)
     | #UnselectedUnionMember(string)
-  ]>,
-}
-
-
-type fragment = {
-  members: option<fragment_members>,
-}
+  ]
+  type rec fragment_members = {
+    edges: option<array<option<fragment_members_edges>>>,
+  }
+   and fragment_members_edges = {
+    node: option<[
+      | #User(fragment_members_edges_node_User)
+  
+      | #Group(fragment_members_edges_node_Group)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  
+  
+  type fragment = {
+    members: option<fragment_members>,
+  }
 }
 
 let unwrap_fragment_members_edges_node: {. "__typename": string } => [
@@ -75,22 +75,22 @@ let wrap_fragment_members_edges_node: [
 }
 
 module Internal = {
-type fragmentRaw
-let fragmentConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}}`
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}}`
+    )
+  
+  let fragmentConverterMap = {
+    "fragment_members_edges_node": unwrap_fragment_members_edges_node,
+  }
+  
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
   )
-
-let fragmentConverterMap = {
-  "fragment_members_edges_node": unwrap_fragment_members_edges_node,
-}
-
-let convertFragment = v => v->ReasonRelay.convertObj(
-  fragmentConverter, 
-  fragmentConverterMap, 
-  Js.undefined
-)
 }
 type t
 type fragmentRef
@@ -99,20 +99,19 @@ external getFragmentRef:
 
 
 module Utils = {
-open Types
-let getConnectionNodes:
-  option<fragment_members> => array<fragment_members_edges_node> =
-  connection => switch connection {
-  | None => []
-  | Some(connection) => switch connection.edges { 
-   | None => []
-   | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-    | None => None 
-    | Some(edge) => edge.node
-
-   })
-  }}}
-
+  let getConnectionNodes:
+    option<fragment_members> => array<fragment_members_edges_node> =
+    connection => switch connection {
+    | None => []
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}open Types
+}
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 

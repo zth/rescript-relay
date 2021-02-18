@@ -1,118 +1,117 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type enum_OnlineStatus = private [>
-  | #Idle
-  | #Offline
-  | #Online
-]
-
-type rec response_setOnlineStatusComplex = {
-  user: option<response_setOnlineStatusComplex_user>,
-}
- and response_setOnlineStatusComplex_user = {
-  id: string,
-  onlineStatus: option<enum_OnlineStatus>,
-}
- and setOnlineStatusInput = {
-  onlineStatus: enum_OnlineStatus,
-}
-
-
-type response = {
-  setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
-}
-type rawResponse = response
-type variables = {
-  input: setOnlineStatusInput,
-}
+  @@ocaml.warning("-30")
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_setOnlineStatusComplex = {
+    user: option<response_setOnlineStatusComplex_user>,
+  }
+   and response_setOnlineStatusComplex_user = {
+    id: string,
+    onlineStatus: option<enum_OnlineStatus>,
+  }
+   and setOnlineStatusInput = {
+    onlineStatus: enum_OnlineStatus,
+  }
+  
+  
+  type response = {
+    setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
+  }
+  type rawResponse = response
+  type variables = {
+    input: setOnlineStatusInput,
+  }
 }
 
 module Internal = {
-type wrapResponseRaw
-let wrapResponseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}}`
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
-let wrapResponseConverterMap = ()
-let convertWrapResponse = v => v->ReasonRelay.convertObj(
-  wrapResponseConverter, 
-  wrapResponseConverterMap, 
-  Js.null
-)
-type responseRaw
-let responseConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}}`
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"setOnlineStatusComplex":{"n":""},"setOnlineStatusComplex_user":{"n":""},"setOnlineStatusComplex_user_onlineStatus":{"n":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
   )
-
-let responseConverterMap = ()
-let convertResponse = v => v->ReasonRelay.convertObj(
-  responseConverter, 
-  responseConverterMap, 
-  Js.undefined
-)
-type wrapRawResponseRaw = wrapResponseRaw
-let convertWrapRawResponse = convertWrapResponse
-type rawResponseRaw = responseRaw
-let convertRawResponse = convertResponse
-let variablesConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"input":{"r":"SetOnlineStatusInput"}}}`
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"input":{"r":"SetOnlineStatusInput"}}}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
   )
-
-let variablesConverterMap = ()
-let convertVariables = v => v->ReasonRelay.convertObj(
-  variablesConverter, 
-  variablesConverterMap, 
-  Js.undefined
-)
 }
 
 
 module Utils = {
-external onlineStatus_toString:
-  Types.enum_OnlineStatus => string = "%identity"
-open Types
-let make_setOnlineStatusInput = (
-  ~onlineStatus
-): setOnlineStatusInput => {
-  onlineStatus: onlineStatus
+  external onlineStatus_toString:
+    Types.enum_OnlineStatus => string = "%identity"
+  let make_setOnlineStatusInput = (
+    ~onlineStatus
+  ): setOnlineStatusInput => {
+    onlineStatus: onlineStatus
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+  let make_response_setOnlineStatusComplex_user = (
+    ~id,
+    ~onlineStatus=?,
+    ()
+  ): response_setOnlineStatusComplex_user => {
+    id: id,
+    onlineStatus: onlineStatus
+  }
+  let make_response_setOnlineStatusComplex = (
+    ~user=?,
+    ()
+  ): response_setOnlineStatusComplex => {
+    user: user
+  }
+  let makeOptimisticResponse = (
+    ~setOnlineStatusComplex=?,
+    ()
+  ): rawResponse => {
+    setOnlineStatusComplex: setOnlineStatusComplex
+  }
+  open Types
 }
-
-let makeVariables = (
-  ~input
-): variables => {
-  input: input
-}
-let make_response_setOnlineStatusComplex_user = (
-  ~id,
-  ~onlineStatus=?,
-  ()
-): response_setOnlineStatusComplex_user => {
-  id: id,
-  onlineStatus: onlineStatus
-}
-let make_response_setOnlineStatusComplex = (
-  ~user=?,
-  ()
-): response_setOnlineStatusComplex => {
-  user: user
-}
-let makeOptimisticResponse = (
-  ~setOnlineStatusComplex=?,
-  ()
-): rawResponse => {
-  setOnlineStatusComplex: setOnlineStatusComplex
-}
-}
-
 type relayOperationNode
 type operationType = ReasonRelay.mutationNode<relayOperationNode>
 

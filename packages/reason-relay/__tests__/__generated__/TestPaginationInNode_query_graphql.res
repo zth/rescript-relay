@@ -1,40 +1,40 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-@@ocaml.warning("-30")
-
-type rec fragment_friendsConnection = {
-  edges: option<array<option<fragment_friendsConnection_edges>>>,
-}
- and fragment_friendsConnection_edges = {
-  node: option<fragment_friendsConnection_edges_node>,
-}
- and fragment_friendsConnection_edges_node = {
-  id: string,
-  fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestPaginationInNode_user]>
-}
-
-
-type fragment = {
-  friendsConnection: fragment_friendsConnection,
-  id: string,
-}
+  @@ocaml.warning("-30")
+  
+  type rec fragment_friendsConnection = {
+    edges: option<array<option<fragment_friendsConnection_edges>>>,
+  }
+   and fragment_friendsConnection_edges = {
+    node: option<fragment_friendsConnection_edges_node>,
+  }
+   and fragment_friendsConnection_edges_node = {
+    id: string,
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestPaginationInNode_user]>
+  }
+  
+  
+  type fragment = {
+    friendsConnection: fragment_friendsConnection,
+    id: string,
+  }
 }
 
 module Internal = {
-type fragmentRaw
-let fragmentConverter: 
-  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-  %raw(
-    json`{"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"f":"","n":""}}}`
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"f":"","n":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
   )
-
-let fragmentConverterMap = ()
-let convertFragment = v => v->ReasonRelay.convertObj(
-  fragmentConverter, 
-  fragmentConverterMap, 
-  Js.undefined
-)
 }
 type t
 type fragmentRef
@@ -43,18 +43,17 @@ external getFragmentRef:
 
 
 module Utils = {
-open Types
-let getConnectionNodes:
-  fragment_friendsConnection => array<fragment_friendsConnection_edges_node> =
-  connection => switch connection.edges { 
-  | None => []
-  | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-   | None => None 
-   | Some(edge) => edge.node
-
-  })
- }}
-
+  let getConnectionNodes:
+    fragment_friendsConnection => array<fragment_friendsConnection_edges_node> =
+    connection => switch connection.edges { 
+    | None => []
+    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+     | None => None 
+     | Some(edge) => edge.node
+  
+    })
+   }open Types
+}
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 
