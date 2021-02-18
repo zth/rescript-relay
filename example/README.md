@@ -1,6 +1,6 @@
-# ReasonRelay example
+# RescriptRelay example
 
-This is an example of how most concepts in ReasonRelay work. You can run it by doing the following:
+This is an example of how most concepts in RescriptRelay work. You can run it by doing the following:
 
 ### Run server
 

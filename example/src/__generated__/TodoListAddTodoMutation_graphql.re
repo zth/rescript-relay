@@ -37,7 +37,7 @@ module Types = {
   type rawResponse = {addTodoItem: option(rawResponse_addTodoItem)};
   type variables = {
     input: addTodoItemInput,
-    connections: array(ReasonRelay.dataId),
+    connections: array(RescriptRelay.dataId),
   };
 };
 
@@ -48,7 +48,7 @@ module Internal = {
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       wrapResponseConverter,
       wrapResponseConverterMap,
       Js.null,
@@ -60,7 +60,7 @@ module Internal = {
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       responseConverter,
       responseConverterMap,
       Js.undefined,
@@ -72,7 +72,7 @@ module Internal = {
   ];
   let wrapRawResponseConverterMap = ();
   let convertWrapRawResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       wrapRawResponseConverter,
       wrapRawResponseConverterMap,
       Js.null,
@@ -84,7 +84,7 @@ module Internal = {
   ];
   let rawResponseConverterMap = ();
   let convertRawResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       rawResponseConverter,
       rawResponseConverterMap,
       Js.undefined,
@@ -95,7 +95,7 @@ module Internal = {
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       variablesConverter,
       variablesConverterMap,
       Js.undefined,
@@ -158,7 +158,7 @@ module Utils = {
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.mutationNode(relayOperationNode);
+type operationType = RescriptRelay.mutationNode(relayOperationNode);
 
 
 

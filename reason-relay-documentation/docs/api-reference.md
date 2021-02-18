@@ -46,7 +46,7 @@ Relay feature flags. Mutate this record as soon as your application boots to ena
 ```reason
 /* Make sure this runs before Relay is setup. */
 
-ReasonRelay.featureFlags.enablePrecisTypeRefinement = true
+RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
 ```
 
 ## [cacheConfig](#cacheconfig)
@@ -159,7 +159,7 @@ If you have globally unique IDs in your graph, `__id` will always be the same as
 
 #### Converting between `string` and [dataId](#dataid)
 
-You'll often want to convert between `string` and [dataId](#dataid) . You can do this by using [makeDataId](#makedataid) (`ReasonRelay.makeDataId(yourStringHere`) and [dataIdToString](#dataidtostring) (`ReasonRelay.dataIdToString(yourDataIdHere)`).
+You'll often want to convert between `string` and [dataId](#dataid) . You can do this by using [makeDataId](#makedataid) (`RescriptRelay.makeDataId(yourStringHere`) and [dataIdToString](#dataidtostring) (`RescriptRelay.dataIdToString(yourDataIdHere)`).
 
 ## [recordSourceRecords](#recordsourcerecords)
 
@@ -240,7 +240,7 @@ Relay feature flags. Mutate this record as soon as your application boots to ena
 ```reason
 /* Make sure this runs before Relay is setup. */
 
-ReasonRelay.featureFlags.enablePrecisTypeRefinement = true
+RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
 ```
 
 ## [storeRootId](#storerootid)
@@ -287,7 +287,7 @@ let make = (~user) => {
   let user = Fragment.use(user)
 
   /* This converts `user.id` to a [dataId](#dataid) , letting you use it to interact with the store. */
-  let idAsDataId = ReasonRelay.makeDataId(user.id)
+  let idAsDataId = RescriptRelay.makeDataId(user.id)
 }
 ```
 
@@ -1123,13 +1123,13 @@ Publishes _new_ records to this store. This is useful in particular with framewo
 /* A Next.js route component */
 
 @react.component
-let make = (~serializedRecords: ReasonRelay.recordSourceRecords) => {
-  let environment = ReasonRelay.useEnvironmentFromContext()
+let make = (~serializedRecords: RescriptRelay.recordSourceRecords) => {
+  let environment = RescriptRelay.useEnvironmentFromContext()
 
   /* Make sure we only run this once */
   React.useEffect2(() => {
     /* This will publish the records to the existing store */
-    environment->ReasonRelay.Store.publish(serializedRecords)
+    environment->RescriptRelay.Store.publish(serializedRecords)
     None
   }, (environment, serializedRecords))
 }

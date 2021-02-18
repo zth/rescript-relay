@@ -61,9 +61,9 @@ See the difference? We've split our data demands on `me` into fragments responsi
 
 If you want to dive deeper into GraphQL fragments you're encouraged to read through [the official documentation on fragments in GraphQL](https://graphql.org/learn/queries/#fragments).
 
-### Fragments in ReasonRelay
+### Fragments in RescriptRelay
 
-Fragments are defined in ReasonRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
+Fragments are defined in RescriptRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
 ```reason
 /* UserProfileHeader.res */

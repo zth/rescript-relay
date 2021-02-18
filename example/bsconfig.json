@@ -15,11 +15,11 @@
     }
   ],
   "suffix": ".bs.js",
-  "ppx-flags": ["reason-relay/ppx"],
+  "ppx-flags": ["rescript-relay/ppx"],
   "namespace": true,
   "bs-dependencies": [
     "reason-react",
-    "reason-relay",
+    "rescript-relay",
     "bs-fetch",
     "reason-promise"
   ],

@@ -3956,9 +3956,9 @@ reason-react@^0.9.1:
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
   integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
 
-reason-relay@0.14.0:
+rescript-relay@0.14.0:
   version "0.14.0"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.14.0.tgz#37442b9172787a456a15848663643a19c2afb2d8"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.14.0.tgz#37442b9172787a456a15848663643a19c2afb2d8"
   integrity sha512-1reKXzcV0kjZ0F2NPQstC2Rt5Clhaw8AGsSOuemUxarXT+7vIPRhdtIQ9+4ZSW/D5mdmvaJ7EEabqnoMw4CGEg==
   dependencies:
     mkdirp-sync "^0.0.3"

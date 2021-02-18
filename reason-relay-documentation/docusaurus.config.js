@@ -12,7 +12,7 @@ module.exports = {
   baseUrl: "/",
   favicon: "img/favicon.png",
   organizationName: "zth", // Usually your GitHub org/user name.
-  projectName: "reason-relay", // Usually your repo name.
+  projectName: "rescript-relay", // Usually your repo name.
   themeConfig: {
     navbar: {
       title: "Reason Relay",
@@ -20,7 +20,7 @@ module.exports = {
         { to: "docs/start-here", label: "Docs", position: "left" },
         { to: "blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/zth/reason-relay",
+          href: "https://github.com/zth/rescript-relay",
           label: "GitHub",
           position: "right",
         },

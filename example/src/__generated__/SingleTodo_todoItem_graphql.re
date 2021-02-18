@@ -21,7 +21,7 @@ module Internal = {
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       fragmentConverter,
       fragmentConverterMap,
       Js.undefined,
@@ -31,14 +31,14 @@ module Internal = {
 type t;
 type fragmentRef;
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `SingleTodo_todoItem]) => fragmentRef =
+  RescriptRelay.fragmentRefs([> | `SingleTodo_todoItem]) => fragmentRef =
   "%identity";
 
 module Utils = {};
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+type operationType = RescriptRelay.fragmentNode(relayOperationNode);
 
 
 

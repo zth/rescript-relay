@@ -15,7 +15,7 @@ module Types = {
   and fragment_membersConnection_edges_node = {
     id: string,
     fullName: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
+    fragmentRefs: RescriptRelay.fragmentRefs([ | `Avatar_user]),
   };
 
   type fragment = {
@@ -32,7 +32,7 @@ module Internal = {
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       fragmentConverter,
       fragmentConverterMap,
       Js.undefined,
@@ -42,7 +42,7 @@ module Internal = {
 type t;
 type fragmentRef;
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `SingleTicketWorkingGroup_workingGroup]) =>
+  RescriptRelay.fragmentRefs([> | `SingleTicketWorkingGroup_workingGroup]) =>
   fragmentRef =
   "%identity";
 
@@ -50,7 +50,7 @@ module Utils = {};
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+type operationType = RescriptRelay.fragmentNode(relayOperationNode);
 
 
 

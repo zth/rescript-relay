@@ -8,7 +8,7 @@ module Types = {
   [@ocaml.warning "-30"];
   type response_node = {
     fragmentRefs:
-      ReasonRelay.fragmentRefs([ | `SingleTicketWorkingGroup_workingGroup]),
+      RescriptRelay.fragmentRefs([ | `SingleTicketWorkingGroup_workingGroup]),
   };
 
   type response = {node: option(response_node)};
@@ -34,7 +34,7 @@ module Internal = {
   ];
   let wrapResponseConverterMap = ();
   let convertWrapResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       wrapResponseConverter,
       wrapResponseConverterMap,
       Js.null,
@@ -46,7 +46,7 @@ module Internal = {
   ];
   let responseConverterMap = ();
   let convertResponse = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       responseConverter,
       responseConverterMap,
       Js.undefined,
@@ -63,7 +63,7 @@ module Internal = {
   ];
   let variablesConverterMap = ();
   let convertVariables = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       variablesConverter,
       variablesConverterMap,
       Js.undefined,
@@ -82,7 +82,7 @@ module Utils = {
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.queryNode(relayOperationNode);
+type operationType = RescriptRelay.queryNode(relayOperationNode);
 
 
 
@@ -257,7 +257,7 @@ return {
 };
 })() |json}];
 
-include ReasonRelay.MakeLoadQuery({
+include RescriptRelay.MakeLoadQuery({
     type variables = Types.variables;
     type loadedQueryRef = queryRef;
     type response = Types.response;

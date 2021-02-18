@@ -5,25 +5,21 @@
  * This is a pretty basic fragment, there are more complex ones you can have
  * a look at in other components.
  */
-module SiteStatisticsFragment = %relay(
-  `
+module SiteStatisticsFragment = %relay(`
   fragment TopCardsDisplayer_siteStatistics on SiteStatistics {
     weeklySales
     weeklyOrders
     currentVisitorsOnline
   }
-`
-)
+`)
 
-module CurrentVisitorsSubscription = %relay(
-  `
+module CurrentVisitorsSubscription = %relay(`
   subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {
     siteStatisticsUpdated {
       currentVisitorsOnline
     }
   }
-`
-)
+`)
 
 /**
  * A few things to note about the following component:
@@ -40,7 +36,7 @@ module CurrentVisitorsSubscription = %relay(
 let make = (~siteStatistics as siteStatisticsRef) => {
   let siteStatistics = SiteStatisticsFragment.use(siteStatisticsRef)
 
-  let environment = ReasonRelay.useEnvironmentFromContext()
+  let environment = RescriptRelay.useEnvironmentFromContext()
   React.useEffect0(() => {
     let subscription = CurrentVisitorsSubscription.subscribe(
       ~environment,
@@ -59,7 +55,7 @@ let make = (~siteStatistics as siteStatisticsRef) => {
       (),
     )
 
-    Some(() => ReasonRelay.Disposable.dispose(subscription))
+    Some(() => RescriptRelay.Disposable.dispose(subscription))
   })
 
   <div className="row">

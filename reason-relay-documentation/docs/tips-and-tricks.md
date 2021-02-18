@@ -4,7 +4,7 @@ title: Tips and Tricks
 sidebar_label: Tips and Tricks
 ---
 
-Here's a collection of continously updated tips and tricks that'll simplify your life using ReasonRelay.
+Here's a collection of continously updated tips and tricks that'll simplify your life using RescriptRelay.
 
 ## Use the dedicated VSCode extension
 

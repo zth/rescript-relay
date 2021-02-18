@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     defaults:
       run:
-        working-directory: packages/reason-relay/reason-relay-ppx
+        working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -32,17 +32,17 @@ jobs:
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay/reason-relay-ppx
+          working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Test PPX
         run: esy test
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ matrix.platform }}
-          path: packages/reason-relay/reason-relay-ppx/ppx-*
+          path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
   build-release:
     name: Build release package
@@ -61,10 +61,10 @@ jobs:
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay/reason-relay-ppx
+          working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Clean up before building
         run: |
-          rm -rf packages/reason-relay/__tests__/*
+          rm -rf packages/rescript-relay/__tests__/*
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}

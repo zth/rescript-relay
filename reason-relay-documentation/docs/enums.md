@@ -8,9 +8,9 @@ sidebar_label: Enums
 
 - [Enums in GraphQL](https://graphql.org/learn/schema/#enumeration-types)
 
-## Enums in ReasonRelay
+## Enums in RescriptRelay
 
-Just like with [unions](unions), enums cannot be modelled the same way they are in Flow/TypeScript in ReasonML, because ReasonML does not have _string literal unions_. So, when working with enums in ReasonRelay, we _automatically unwrap them_ to polymorphic variants.
+Just like with [unions](unions), enums cannot be modelled the same way they are in Flow/TypeScript in ReasonML, because ReasonML does not have _string literal unions_. So, when working with enums in RescriptRelay, we _automatically unwrap them_ to polymorphic variants.
 
 Here's an example. Imagine the following GraphQL schema:
 
@@ -60,7 +60,7 @@ Notice the catch all case `_ => React.null` - the way the enum type is shaped in
 
 ## Under the hood
 
-ReasonRelay will take care of converting between strings (as received from the server) and Reason's polymorphic variants for you. If you ever find you need to convert from/to a string by hand, the module where you have an enum selected will automatically expose code for doing that type of conversion.
+RescriptRelay will take care of converting between strings (as received from the server) and Reason's polymorphic variants for you. If you ever find you need to convert from/to a string by hand, the module where you have an enum selected will automatically expose code for doing that type of conversion.
 
 Adding to the code sample above, the `Fragment` module would expose that like this:
 
@@ -69,4 +69,4 @@ Adding to the code sample above, the `Fragment` module would expose that like th
 
 ## Wrapping up
 
-Now you know all about enums in ReasonRelay!
+Now you know all about enums in RescriptRelay!

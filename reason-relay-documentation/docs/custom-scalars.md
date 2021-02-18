@@ -8,13 +8,13 @@ sidebar_label: Custom Scalars
 
 - [Scalars in GraphQL](https://graphql.org/learn/schema/#scalar-types)
 
-## Custom Scalars in ReasonRelay
+## Custom Scalars in RescriptRelay
 
-GraphQL allow you to define custom scalars that can be used throughout your schema. In ReasonRelay, you can handle custom scalars in 3 different ways:
+GraphQL allow you to define custom scalars that can be used throughout your schema. In RescriptRelay, you can handle custom scalars in 3 different ways:
 
 1. Map custom scalars to an existing type. This is useful if you have something that doesn't need decoding, like a `Color` scalar that's really just a `string`.
 2. Map custom scalars to an _abstract_ type. This is useful when you have a custom scalar like a `Cursor` that you shouldn't touch on the client, but just pass on as-is.
-3. Have ReasonRelay _automatically_ convert your custom scalar values for you at runtime. This is useful when you have a custom scalar like `Datetime` which you know you'll always want to convert to a `Js.Date.t` at runtime, and want to avoid the hassle of doing that manually.
+3. Have RescriptRelay _automatically_ convert your custom scalar values for you at runtime. This is useful when you have a custom scalar like `Datetime` which you know you'll always want to convert to a `Js.Date.t` at runtime, and want to avoid the hassle of doing that manually.
 
 ### Defining Custom Scalars
 
@@ -43,7 +43,7 @@ module.exports = {
 
     // By instead setting a _module name_ (denoted by the fact that
     // Datetime in Utils.Datetime is capitalized, meaning it's a module
-    // and not a type), ReasonRelay will automatically convert your
+    // and not a type), RescriptRelay will automatically convert your
     // value for you at runtime. We'll expand on this below.
     Datetime: "Utils.Datetime",
   },
@@ -52,7 +52,7 @@ module.exports = {
 
 #### Automatic decoding and encoding of values
 
-Expanding on the `Datetime` example above, whenever you want ReasonRelay to automatically convert a custom scalar for you at runtime, do this:
+Expanding on the `Datetime` example above, whenever you want RescriptRelay to automatically convert a custom scalar for you at runtime, do this:
 
 1. As in the example above, define the custom scalar mapping as a _module_. This is decided by that what the mapping points to is a capitalized name, which in Reason means it's a module.
 2. Make sure the module you're pointing to exists in your project, and implements this signature:
@@ -84,8 +84,8 @@ If no definition for the custom scalars `Datetime` or `Color` were defined in `r
 
 ```reason
 type response = {
-  currentTime: ReasonRelay.any,
-  favoriteColor: ReasonRelay.any,
+  currentTime: RescriptRelay.any,
+  favoriteColor: RescriptRelay.any,
 }
 
 ```

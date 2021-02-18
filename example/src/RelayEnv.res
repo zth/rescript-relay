@@ -11,7 +11,7 @@ Graphql_error(string)
  * A standard fetch that sends our operation and variables to the
  * GraphQL server, and then decodes and returns the response.
  */
-let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (
+let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
   operation,
   variables,
   _cacheConfig,
@@ -54,14 +54,14 @@ let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
   {"reconnect": true},
 )
 
-let subscriptionFunction: ReasonRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
+let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
   let query = config.text
   let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
     query: query,
     variables: variables,
   }
 
-  ReasonRelay.Observable.make(sink => {
+  RescriptRelay.Observable.make(sink => {
     let observable = subscriptionClient["request"](subscriptionQuery)
     let subscription = observable["subscribe"](sink)
     Some(subscription)
@@ -73,7 +73,7 @@ let subscriptionFunction: ReasonRelay.Network.subscribeFn = (config, variables, 
  * layer here, but Relay also has own observables that you could set up
  * your network layer to use instead of promises.
  */
-let network = ReasonRelay.Network.makePromiseBased(
+let network = RescriptRelay.Network.makePromiseBased(
   ~fetchFunction=fetchQuery,
   ~subscriptionFunction,
   (),
@@ -89,8 +89,8 @@ let network = ReasonRelay.Network.makePromiseBased(
  * when you have a GraphQL server where ids are not globally unique for
  * example.
  */
-let environment = ReasonRelay.Environment.make(
+let environment = RescriptRelay.Environment.make(
   ~network,
-  ~store=ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
+  ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
   (),
 )

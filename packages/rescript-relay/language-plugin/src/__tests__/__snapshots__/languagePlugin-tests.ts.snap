@@ -1,0 +1,2172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Language plugin tests Explicit __typename selection throws when selecting a union without an explicit __typename selection 1`] = `
+[GraphQLError: - Unions and interfaces must have the field __typename explicitly selected. Please add __typename to the fields selected by "participantById" in your operation.
+  
+  Source: GraphQL request (2:13)
+  1: query SomeQuery {
+  2:             participantById(id: "123") {
+                 ^
+  3:               ... on User {
+  ]
+`;
+
+exports[`Language plugin tests Field names Cannot start with uppercase letter throws when trying to use a field name starting with an uppercase 1`] = `
+[GraphQLError: - Found an invalid field name: Field names may not start with an uppercase letter. Please alias the 'Observer' field to something starting with a lowercase letter.
+  
+  Source: GraphQL request (2:13)
+  1: query SomeQuery {
+  2:             Observer(id: "123") {
+                 ^
+  3:               id
+  ]
+`;
+
+exports[`Language plugin tests Field names Reserved keywords renames reserved keywords as field names in types when encountered 1`] = `
+"// SomeMutation.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec mutationWithReservedNameInput = {
+    @as(\\"or\\") or_: bool,
+    @as(\\"and\\") and_: string,
+    nested: option<mutationWithReservedNameInput>,
+  }
+  type response = {
+    mutationWithReservedName: bool,
+  }
+  type rawResponse = response
+  type variables = {
+    input: mutationWithReservedNameInput,
+  }
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"MutationWithReservedNameInput\\":{\\"nested\\":{\\"n\\":\\"\\",\\"r\\":\\"MutationWithReservedNameInput\\"}},\\"__root\\":{\\"input\\":{\\"r\\":\\"MutationWithReservedNameInput\\"}}}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+
+module Utils = {
+  open Types
+  let make_mutationWithReservedNameInput = (
+    ~or_,
+    ~and_,
+    ~nested=?,
+    ()
+  ): mutationWithReservedNameInput => {
+    or_: or_,
+    and_: and_,
+    nested: nested
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+  let makeOptimisticResponse = (
+    ~mutationWithReservedName
+  ): rawResponse => {
+    mutationWithReservedName: mutationWithReservedName
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.mutationNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Field names Reserved keywords throws when trying to use a field name that's a reserved keyword 1`] = `
+[GraphQLError: - Found an invalid field name: 'new' is a reserved keyword in ReasonML and therefore cannot be used as a field name. Please alias your field to something else.
+  
+  Source: GraphQL request (3:17)
+  2:               user(id: "123") {
+  3:                 new
+                     ^
+  4:               }
+  ]
+`;
+
+exports[`Language plugin tests Fragment prints indications of existing fragment refs in generated types 1`] = `
+"// SomeComponent_user.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment = {
+    id: string,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #SomeComponent_user]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+
+
+// SomeOtherComponent_user.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment = {
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SomeComponent_user]>
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"\\":{\\"f\\":\\"\\"}}}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #SomeOtherComponent_user]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Fragment prints the correct fragment ref extractor helpers and base types 1`] = `
+"// SomeComponent_user.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment = {
+    id: string,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #SomeComponent_user]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Mutation generates the correct converter for complex variables 1`] = `
+"// SetUserLocationMutation.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type enum_UserRole = private [>
+    | #Admin
+    | #User
+  ]
+  
+  type rec response_setUserLocation = {
+    changedUser: option<response_setUserLocation_changedUser>,
+  }
+   and response_setUserLocation_changedUser = {
+    id: string,
+    firstName: string,
+    role: enum_UserRole,
+  }
+   and setUserLocationInput = {
+    clientMutationId: option<string>,
+    userId: string,
+    location: option<locationBounds>,
+  }
+   and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option<locationBounds>,
+  }
+  
+  
+  type response = {
+    setUserLocation: response_setUserLocation,
+  }
+  type rawResponse = response
+  type variables = {
+    input: setUserLocationInput,
+  }
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"SetUserLocationInput\\":{\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"},\\"clientMutationId\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+
+module Utils = {
+  open Types
+  external userRole_toString:
+  enum_UserRole => string = \\"%identity\\"
+  let make_locationBounds = (
+    ~lat,
+    ~lng,
+    ~child=?,
+    ()
+  ): locationBounds => {
+    lat: lat,
+    lng: lng,
+    child: child
+  }
+  
+  let make_setUserLocationInput = (
+    ~clientMutationId=?,
+    ~userId,
+    ~location=?,
+    ()
+  ): setUserLocationInput => {
+    clientMutationId: clientMutationId,
+    userId: userId,
+    location: location
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+  let make_response_setUserLocation_changedUser = (
+    ~id,
+    ~firstName,
+    ~role
+  ): response_setUserLocation_changedUser => {
+    id: id,
+    firstName: firstName,
+    role: role
+  }
+  let make_response_setUserLocation = (
+    ~changedUser=?,
+    ()
+  ): response_setUserLocation => {
+    changedUser: changedUser
+  }
+  let makeOptimisticResponse = (
+    ~setUserLocation
+  ): rawResponse => {
+    setUserLocation: setUserLocation
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.mutationNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Mutation generates the correct type structure when fragments are included 1`] = `
+"// SetUserLocationMutation.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_setUserLocation = {
+    changedUser: option<response_setUserLocation_changedUser>,
+  }
+   and response_setUserLocation_changedUser = RescriptRelay.allFieldsMasked
+   and setUserLocationInput = {
+    clientMutationId: option<string>,
+    userId: string,
+    location: option<locationBounds>,
+  }
+   and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option<locationBounds>,
+  }
+  
+  
+  type response = {
+    setUserLocation: response_setUserLocation,
+  }
+  type rawResponse = response
+  type variables = {
+    input: setUserLocationInput,
+  }
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"f\\":\\"\\",\\"n\\":\\"\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"f\\":\\"\\",\\"n\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"SetUserLocationInput\\":{\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"},\\"clientMutationId\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+
+module Utils = {
+  open Types
+  let make_locationBounds = (
+    ~lat,
+    ~lng,
+    ~child=?,
+    ()
+  ): locationBounds => {
+    lat: lat,
+    lng: lng,
+    child: child
+  }
+  
+  let make_setUserLocationInput = (
+    ~clientMutationId=?,
+    ~userId,
+    ~location=?,
+    ()
+  ): setUserLocationInput => {
+    clientMutationId: clientMutationId,
+    userId: userId,
+    location: location
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+  let make_response_setUserLocation_changedUser = (
+  ) => Js.Obj.empty()
+  let make_response_setUserLocation = (
+    ~changedUser=?,
+    ()
+  ): response_setUserLocation => {
+    changedUser: changedUser
+  }
+  let makeOptimisticResponse = (
+    ~setUserLocation
+  ): rawResponse => {
+    setUserLocation: setUserLocation
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.mutationNode<relayOperationNode>
+
+
+
+// SomeFragment_user.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type enum_UserRole = private [>
+    | #Admin
+    | #User
+  ]
+  
+  type fragment = {
+    firstName: string,
+    role: enum_UserRole,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #SomeFragment_user]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+  open Types
+  external userRole_toString:
+  enum_UserRole => string = \\"%identity\\"
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Mutation prints the correct basic structure for mutations 1`] = `
+"// SetUserLocationMutation.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_setUserLocation = {
+    changedUser: option<response_setUserLocation_changedUser>,
+  }
+   and response_setUserLocation_changedUser = {
+    id: string,
+    firstName: string,
+  }
+   and setUserLocationInput = {
+    clientMutationId: option<string>,
+    userId: string,
+    location: option<locationBounds>,
+  }
+   and locationBounds = {
+    lat: float,
+    lng: float,
+    child: option<locationBounds>,
+  }
+  
+  
+  type response = {
+    setUserLocation: response_setUserLocation,
+  }
+  type rawResponse = response
+  type variables = {
+    input: setUserLocationInput,
+  }
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"setUserLocation_changedUser\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"LocationBounds\\":{\\"child\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"}},\\"__root\\":{\\"input\\":{\\"r\\":\\"SetUserLocationInput\\"}},\\"SetUserLocationInput\\":{\\"location\\":{\\"n\\":\\"\\",\\"r\\":\\"LocationBounds\\"},\\"clientMutationId\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+
+module Utils = {
+  open Types
+  let make_locationBounds = (
+    ~lat,
+    ~lng,
+    ~child=?,
+    ()
+  ): locationBounds => {
+    lat: lat,
+    lng: lng,
+    child: child
+  }
+  
+  let make_setUserLocationInput = (
+    ~clientMutationId=?,
+    ~userId,
+    ~location=?,
+    ()
+  ): setUserLocationInput => {
+    clientMutationId: clientMutationId,
+    userId: userId,
+    location: location
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+  let make_response_setUserLocation_changedUser = (
+    ~id,
+    ~firstName
+  ): response_setUserLocation_changedUser => {
+    id: id,
+    firstName: firstName
+  }
+  let make_response_setUserLocation = (
+    ~changedUser=?,
+    ()
+  ): response_setUserLocation => {
+    changedUser: changedUser
+  }
+  let makeOptimisticResponse = (
+    ~setUserLocation
+  ): rawResponse => {
+    setUserLocation: setUserLocation
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.mutationNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Node interface collapses single selections on the node interface 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_node = {
+    __typename: [ | #User],
+    firstName: string,
+  }
+  type response = {
+    node: option<response_node>,
+  }
+  type rawResponse = response
+  type variables = unit
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for connections with unions 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment_participantsConnection_edges_node_User = {
+    firstName: string,
+    id: string,
+  }
+  
+  type fragment_participantsConnection_edges_node_Observer = {
+    name: string,
+    id: string,
+  }
+  
+  
+  type fragment_participantsConnection_edges_node = [
+    | #User(fragment_participantsConnection_edges_node_User)
+  
+    | #Observer(fragment_participantsConnection_edges_node_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+  type rec fragment_participantsConnection = {
+    edges: option<array<option<fragment_participantsConnection_edges>>>,
+  }
+   and fragment_participantsConnection_edges = {
+    node: option<[
+      | #User(fragment_participantsConnection_edges_node_User)
+  
+      | #Observer(fragment_participantsConnection_edges_node_Observer)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  
+  
+  type fragment = {
+    participantsConnection: option<fragment_participantsConnection>,
+  }
+}
+
+let unwrap_fragment_participantsConnection_edges_node: {. \\"__typename\\": string } => [
+  | #User(Types.fragment_participantsConnection_edges_node_User)
+
+  | #Observer(Types.fragment_participantsConnection_edges_node_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_fragment_participantsConnection_edges_node: [
+  | #User(Types.fragment_participantsConnection_edges_node_User)
+
+  | #Observer(Types.fragment_participantsConnection_edges_node_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"participantsConnection_edges_node\\":{\\"n\\":\\"\\",\\"u\\":\\"fragment_participantsConnection_edges_node\\"},\\"participantsConnection\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let fragmentConverterMap = {
+    \\"fragment_participantsConnection_edges_node\\": unwrap_fragment_participantsConnection_edges_node,
+  }
+  
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPagination_query]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+  open Types
+  let getConnectionNodes:
+    option<fragment_participantsConnection> => array<fragment_participantsConnection_edges_node> =
+    connection => switch connection {
+    | None => []
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for nested connection 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  @ocaml.doc(\\"Hint: You can extract all nodes from this connection to an array of non-nullable nodes using the \`FragmentModule.getConnectionNodes\` helper, like \`let nodes = FragmentModule.getConnectionNodes(connectionGoesHere)\`. \`FragmentModule\` is whatever you've named the module where you have defined your fragment.\\")
+  type rec fragment_me = {
+    friendsConnection: option<fragment_me_friendsConnection>,
+  }
+   and fragment_me_friendsConnection = {
+    edges: option<array<option<fragment_me_friendsConnection_edges>>>,
+  }
+   and fragment_me_friendsConnection_edges = {
+    node: option<fragment_me_friendsConnection_edges_node>,
+  }
+   and fragment_me_friendsConnection_edges_node = {
+    id: string,
+    firstName: string,
+  }
+  
+  
+  type fragment = {
+    me: fragment_me,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"me_friendsConnection\\":{\\"n\\":\\"\\"},\\"me_friendsConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"},\\"me_friendsConnection_edges_node\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPagination_query]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+  open Types
+  let getConnectionNodes:
+    option<fragment_me_friendsConnection> => array<fragment_me_friendsConnection_edges_node> =
+    connection => switch connection {
+    | None => []
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Query connections generates helpers for root level connection 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec fragment_usersConnection = {
+    edges: option<array<option<fragment_usersConnection_edges>>>,
+  }
+   and fragment_usersConnection_edges = {
+    node: option<fragment_usersConnection_edges_node>,
+  }
+   and fragment_usersConnection_edges_node = {
+    id: string,
+    firstName: string,
+  }
+  
+  
+  type fragment = {
+    usersConnection: option<fragment_usersConnection>,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"usersConnection\\":{\\"n\\":\\"\\"},\\"usersConnection_edges_node\\":{\\"n\\":\\"\\"},\\"usersConnection_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"}}}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPagination_query]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+  open Types
+  let getConnectionNodes:
+    option<fragment_usersConnection> => array<fragment_usersConnection_edges_node> =
+    connection => switch connection {
+    | None => []
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Query prints simple responses and variables 1`] = `
+"// appQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_user = {
+    id: string,
+    firstName: string,
+  }
+  type response = {
+    user: option<response_user>,
+  }
+  type rawResponse = response
+  type refetchVariables = {
+    userId: option<string>,
+  }
+  let makeRefetchVariables = (
+    ~userId=?,
+    ()
+  ): refetchVariables => {
+    userId: userId
+  }
+  
+  type variables = {
+    userId: string,
+  }
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"user\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+  open Types
+  let makeVariables = (
+    ~userId
+  ): variables => {
+    userId: userId
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Subscription prints the correct basic structure for subscriptions 1`] = `
+"// SomeSubscription.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_userChanged = {
+    user: option<response_userChanged_user>,
+  }
+   and response_userChanged_user = {
+    id: string,
+    firstName: string,
+  }
+   and userChangedInput = {
+    clientMutationId: option<string>,
+    userId: string,
+  }
+  
+  
+  type response = {
+    userChanged: response_userChanged,
+  }
+  type rawResponse = response
+  type variables = {
+    input: userChangedInput,
+  }
+}
+
+module Internal = {
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"userChanged_user\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"input\\":{\\"r\\":\\"UserChangedInput\\"}},\\"UserChangedInput\\":{\\"clientMutationId\\":{\\"n\\":\\"\\"}}}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+
+module Utils = {
+  open Types
+  let make_userChangedInput = (
+    ~clientMutationId=?,
+    ~userId,
+    ()
+  ): userChangedInput => {
+    clientMutationId: clientMutationId,
+    userId: userId
+  }
+  
+  let makeVariables = (
+    ~input
+  ): variables => {
+    input: input
+  }
+}
+type relayOperationNode
+type operationType = RescriptRelay.subscriptionNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Unions generates code to unwrap fragments on unions 1`] = `
+"// app_user.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment = {
+    id: string,
+    firstName: string,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #app_user]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+
+
+// app_observer.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment = {
+    id: string,
+    name: string,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #app_observer]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+
+
+// appQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type response_participantById_User = {
+    id: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #app_user]>
+  }
+  
+  type response_participantById_Observer = {
+    id: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #app_observer]>
+  }
+  
+  
+  type response_participantById = [
+    | #User(response_participantById_User)
+  
+    | #Observer(response_participantById_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+  type response = {
+    participantById: option<[
+      | #User(response_participantById_User)
+  
+      | #Observer(response_participantById_Observer)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  type rawResponse = response
+  type variables = unit
+}
+
+let unwrap_response_participantById: {. \\"__typename\\": string } => [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_response_participantById: [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById_observer\\":{\\"f\\":\\"\\"},\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  }
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById_observer\\":{\\"f\\":\\"\\"},\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_user\\":{\\"f\\":\\"\\"}}}\`
+    )
+  
+  let responseConverterMap = {
+    \\"response_participantById\\": unwrap_response_participantById,
+  }
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Unions generates code to unwrap unions 1`] = `
+"// appQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type response_participantById_User_location = {
+    lat: float,
+    lng: float,
+  }
+  
+  type response_participantById_User = {
+    location: response_participantById_User_location,
+    lastName: string,
+    firstName: string,
+    id: string,
+  }
+  
+  type response_participantById_Observer = {
+    name: string,
+    id: string,
+  }
+  
+  
+  type response_participantById = [
+    | #User(response_participantById_User)
+  
+    | #Observer(response_participantById_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+  type response = {
+    participantById: option<[
+      | #User(response_participantById_User)
+  
+      | #Observer(response_participantById_Observer)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  type rawResponse = response
+  type variables = unit
+}
+
+let unwrap_response_participantById: {. \\"__typename\\": string } => [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_response_participantById: [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  }
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}}\`
+    )
+  
+  let responseConverterMap = {
+    \\"response_participantById\\": unwrap_response_participantById,
+  }
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Unions handles fragments on unions 1`] = `
+"// Participant_participant.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type fragment_User_location = {
+    id: string,
+    lat: float,
+    lng: float,
+  }
+  
+  type fragment_User = {
+    location: fragment_User_location,
+    lastName: string,
+    firstName: string,
+    id: string,
+  }
+  
+  type fragment_Observer = {
+    name: string,
+    id: string,
+  }
+  
+  
+  type fragment = [
+    | #User(fragment_User)
+  
+    | #Observer(fragment_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+}
+
+let unwrap_fragment: {. \\"__typename\\": string } => [
+  | #User(Types.fragment_User)
+
+  | #Observer(Types.fragment_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_fragment: [
+  | #User(Types.fragment_User)
+
+  | #Observer(Types.fragment_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"\\":{\\"u\\":\\"fragment\\"}}}\`
+    )
+  
+  let fragmentConverterMap = {
+    \\"fragment\\": unwrap_fragment,
+  }
+  
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #Participant_participant]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests Unions handles nested unions 1`] = `
+"// appQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type enum_ObserverStatus = private [>
+    | #Active
+    | #Inactive
+  ]
+  
+  type response_participantById_Observer_manager_User = {
+    lastName: string,
+    firstName: string,
+    id: string,
+  }
+  
+  type response_participantById_Observer_manager_Observer = {
+    status: enum_ObserverStatus,
+    isOnline: option<bool>,
+    id: string,
+  }
+  
+  
+  type response_participantById_Observer_manager = [
+    | #User(response_participantById_Observer_manager_User)
+  
+    | #Observer(response_participantById_Observer_manager_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+  type response_participantById_User = {
+    lastName: string,
+    firstName: string,
+    id: string,
+  }
+  
+  type response_participantById_Observer = {
+    manager: option<[
+      | #User(response_participantById_Observer_manager_User)
+  
+      | #Observer(response_participantById_Observer_manager_Observer)
+      | #UnselectedUnionMember(string)
+    ]>,
+    name: string,
+    id: string,
+  }
+  
+  
+  type response_participantById = [
+    | #User(response_participantById_User)
+  
+    | #Observer(response_participantById_Observer)
+    | #UnselectedUnionMember(string)
+  ]
+  type response = {
+    participantById: option<[
+      | #User(response_participantById_User)
+  
+      | #Observer(response_participantById_Observer)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  type rawResponse = response
+  type variables = unit
+}
+
+let unwrap_response_participantById_Observer_manager: {. \\"__typename\\": string } => [
+  | #User(Types.response_participantById_Observer_manager_User)
+
+  | #Observer(Types.response_participantById_Observer_manager_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_response_participantById_Observer_manager: [
+  | #User(Types.response_participantById_Observer_manager_User)
+
+  | #Observer(Types.response_participantById_Observer_manager_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+let unwrap_response_participantById: {. \\"__typename\\": string } => [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | \\"Observer\\" => #Observer(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_response_participantById: [
+  | #User(Types.response_participantById_User)
+
+  | #Observer(Types.response_participantById_Observer)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Observer(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"},\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+    \\"response_participantById_Observer_manager\\": wrap_response_participantById_Observer_manager,
+  }
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById_observer_manager_observer_isOnline\\":{\\"n\\":\\"\\"},\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"},\\"participantById_observer_manager\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById_Observer_manager\\"}}}\`
+    )
+  
+  let responseConverterMap = {
+    \\"response_participantById\\": unwrap_response_participantById,
+    \\"response_participantById_Observer_manager\\": unwrap_response_participantById_Observer_manager,
+  }
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+  open Types
+  external observerStatus_toString:
+  enum_ObserverStatus => string = \\"%identity\\"
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests raw_response_type handles the Node interface in @raw_response_type 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_node = {
+    __typename: [ | #User],
+    id: string,
+    firstName: string,
+  }
+   and rawResponse_node = {
+    __typename: [ | #User],
+    id: string,
+    firstName: string,
+  }
+  
+  
+  type response = {
+    node: option<response_node>,
+  }
+  type rawResponse = {
+    node: option<rawResponse_node>,
+  }
+  type variables = unit
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let wrapRawResponseConverterMap = ()
+  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
+  )
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"node\\":{\\"n\\":\\"\\",\\"tnf\\":\\"User\\"}}}\`
+    )
+  
+  let rawResponseConverterMap = ()
+  let convertRawResponse = v => v->RescriptRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
+  )
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests raw_response_type handles unions in @raw_response_type 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rawResponse_participantById_User = {
+    firstName: string,
+    id: string,
+  }
+  
+  
+  type rawResponse_participantById = [
+    | #User(rawResponse_participantById_User)
+    | #UnselectedUnionMember(string)
+  ]
+  type response_participantById_User = {
+    firstName: string,
+    id: string,
+  }
+  
+  
+  type response_participantById = [
+    | #User(response_participantById_User)
+    | #UnselectedUnionMember(string)
+  ]
+  type response = {
+    participantById: option<[
+      | #User(response_participantById_User)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  type rawResponse = {
+    participantById: option<[
+      | #User(rawResponse_participantById_User)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  type variables = unit
+}
+
+let unwrap_rawResponse_participantById: {. \\"__typename\\": string } => [
+  | #User(Types.rawResponse_participantById_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_rawResponse_participantById: [
+  | #User(Types.rawResponse_participantById_User)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+let unwrap_response_participantById: {. \\"__typename\\": string } => [
+  | #User(Types.response_participantById_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u[\\"__typename\\"] {
+ | \\"User\\" => #User(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_response_participantById: [
+  | #User(Types.response_participantById_User)
+  | #UnselectedUnionMember(string)
+] => {. \\"__typename\\": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {\\"__typename\\": v} 
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}}\`
+    )
+  
+  let wrapResponseConverterMap = {
+    \\"response_participantById\\": wrap_response_participantById,
+  }
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"response_participantById\\"}}}\`
+    )
+  
+  let responseConverterMap = {
+    \\"response_participantById\\": unwrap_response_participantById,
+  }
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"rawResponse_participantById\\"}}}\`
+    )
+  
+  let wrapRawResponseConverterMap = {
+    \\"rawResponse_participantById\\": wrap_rawResponse_participantById,
+  }
+  
+  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
+  )
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"participantById\\":{\\"n\\":\\"\\",\\"u\\":\\"rawResponse_participantById\\"}}}\`
+    )
+  
+  let rawResponseConverterMap = {
+    \\"rawResponse_participantById\\": unwrap_rawResponse_participantById,
+  }
+  
+  let convertRawResponse = v => v->RescriptRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
+  )
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;
+
+exports[`Language plugin tests raw_response_type outputs code for handling @raw_response_type 1`] = `
+"// SomeQuery.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  type rec response_me = {
+    firstName: string,
+    lastName: string,
+  }
+   and rawResponse_me = {
+    firstName: string,
+    lastName: string,
+  }
+  
+  
+  type response = {
+    me: response_me,
+  }
+  type rawResponse = {
+    me: rawResponse_me,
+  }
+  type variables = unit
+}
+
+module Internal = {
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let wrapRawResponseConverterMap = ()
+  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
+  )
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let rawResponseConverterMap = ()
+  let convertRawResponse = v => v->RescriptRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
+  )
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{}\`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
+
+type queryRef
+
+module Utils = {
+
+}
+type relayOperationNode
+type operationType = RescriptRelay.queryNode<relayOperationNode>
+
+"
+`;

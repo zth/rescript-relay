@@ -1,5 +1,4 @@
-module TodoListFragment = %relay(
-  `
+module TodoListFragment = %relay(`
   fragment TodoList_query on Query
     @argumentDefinitions(
       first: { type: "Int!", defaultValue: 10 }
@@ -16,11 +15,9 @@ module TodoListFragment = %relay(
       }
     }
   }
-`
-)
+`)
 
-module AddTodoMutation = %relay(
-  `
+module AddTodoMutation = %relay(`
   mutation TodoListAddTodoMutation(
     $input: AddTodoItemInput!
     $connections: [ID!]!
@@ -35,8 +32,7 @@ module AddTodoMutation = %relay(
       }
     }
   }
-`
-)
+`)
 
 @react.component
 let make = (~query as queryRef) => {
@@ -65,7 +61,7 @@ let make = (~query as queryRef) => {
                   addedTodoItemEdge: Some({
                     node: Some({
                       id: {
-                        open ReasonRelay
+                        open RescriptRelay
                         generateUniqueClientID()->dataIdToString
                       },
                       text: newTodoText,

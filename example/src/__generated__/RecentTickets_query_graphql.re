@@ -19,7 +19,7 @@ module Types = {
   }
   and fragment_ticketsConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTicket_ticket]),
+    fragmentRefs: RescriptRelay.fragmentRefs([ | `SingleTicket_ticket]),
   };
 
   type fragment = {ticketsConnection: fragment_ticketsConnection};
@@ -32,7 +32,7 @@ module Internal = {
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       fragmentConverter,
       fragmentConverterMap,
       Js.undefined,
@@ -42,7 +42,7 @@ module Internal = {
 type t;
 type fragmentRef;
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `RecentTickets_query]) => fragmentRef =
+  RescriptRelay.fragmentRefs([> | `RecentTickets_query]) => fragmentRef =
   "%identity";
 
 module Utils = {
@@ -68,7 +68,7 @@ module Utils = {
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+type operationType = RescriptRelay.fragmentNode(relayOperationNode);
 
 
 

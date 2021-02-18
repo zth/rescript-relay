@@ -1,5 +1,5 @@
 ---
-id: introducing-reason-relay
+id: introducing-rescript-relay
 title: Introducing Reason Relay
 author: Gabriel Nordeborn
 authorTitle: Maintainer of Reason Relay

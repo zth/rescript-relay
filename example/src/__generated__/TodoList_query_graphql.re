@@ -7,7 +7,7 @@
 module Types = {
   [@ocaml.warning "-30"];
   type fragment_todosConnection = {
-    __id: ReasonRelay.dataId,
+    __id: RescriptRelay.dataId,
     edges: option(array(option(fragment_todosConnection_edges))),
   }
   and fragment_todosConnection_edges = {
@@ -15,7 +15,7 @@ module Types = {
   }
   and fragment_todosConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTodo_todoItem]),
+    fragmentRefs: RescriptRelay.fragmentRefs([ | `SingleTodo_todoItem]),
   };
 
   type fragment = {todosConnection: fragment_todosConnection};
@@ -28,7 +28,7 @@ module Internal = {
   ];
   let fragmentConverterMap = ();
   let convertFragment = v =>
-    v->ReasonRelay.convertObj(
+    v->RescriptRelay.convertObj(
       fragmentConverter,
       fragmentConverterMap,
       Js.undefined,
@@ -38,7 +38,7 @@ module Internal = {
 type t;
 type fragmentRef;
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `TodoList_query]) => fragmentRef =
+  RescriptRelay.fragmentRefs([> | `TodoList_query]) => fragmentRef =
   "%identity";
 
 module Utils = {
@@ -64,7 +64,7 @@ module Utils = {
 
 type relayOperationNode;
 
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+type operationType = RescriptRelay.fragmentNode(relayOperationNode);
 
 
 
