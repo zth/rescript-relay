@@ -1,16 +1,16 @@
-module Query = [%relay
-  {|
+module Query = %relay(
+  `
     query TestLocalPayloadQuery @raw_response_type {
       loggedInUser {
         id
         ...TestLocalPayload_user
       }
     }
-|}
-];
+`
+)
 
-module ViaNodeInterface = [%relay
-  {|
+module ViaNodeInterface = %relay(
+  `
     query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
       node(id: $id) {
         __typename
@@ -20,45 +20,43 @@ module ViaNodeInterface = [%relay
         }
       }
     }
-|}
-];
+`
+)
 
-/**
+/*
  * Don't mind this fragment, it's mostly here to check that
  * it's actually getting inlined into the types for the query
  * payload we're committing locally below.
  */
-module Fragment = [%relay
-  {|
+module Fragment = %relay(
+  `
   fragment TestLocalPayload_user on User {
     firstName
     avatarUrl
   }
-|}
-];
+`
+)
 
 module Test = {
-  [@react.component]
+  @react.component
   let make = () => {
-    let environment = ReasonRelay.useEnvironmentFromContext();
-    let data = Query.use(~variables=(), ());
-    let user = Fragment.use(data.loggedInUser.fragmentRefs);
+    let environment = ReasonRelay.useEnvironmentFromContext()
+    let data = Query.use(~variables=(), ())
+    let user = Fragment.use(data.loggedInUser.fragmentRefs)
 
     <div>
       <div> {React.string("Firstname: " ++ user.firstName)} </div>
       <div>
         {React.string(
-           "Avatar: "
-           ++ (
-             switch (user.avatarUrl) {
-             | Some(avatarUrl) => avatarUrl
-             | None => "-"
-             }
-           ),
-         )}
+          "Avatar: " ++
+          switch user.avatarUrl {
+          | Some(avatarUrl) => avatarUrl
+          | None => "-"
+          },
+        )}
       </div>
       <button
-        onClick={_ => {
+        onClick={_ =>
           Query.commitLocalPayload(
             ~environment,
             ~variables=(),
@@ -69,47 +67,38 @@ module Test = {
                 avatarUrl: None,
               },
             },
-          )
-        }}>
+          )}>
         {React.string("Update locally")}
       </button>
       <button
-        onClick={_ => {
+        onClick={_ =>
           ViaNodeInterface.commitLocalPayload(
             ~environment,
             ~variables={id: data.loggedInUser.id},
             ~payload={
-              node:
-                Some({
-                  id: data.loggedInUser.id,
-                  firstName: "AnotherFirst",
-                  avatarUrl: None,
-                  __typename: `User,
-                }),
+              node: Some({
+                id: data.loggedInUser.id,
+                firstName: "AnotherFirst",
+                avatarUrl: None,
+                __typename: #User,
+              }),
             },
-          )
-        }}>
+          )}>
         {React.string("Update locally via Node interface")}
       </button>
-    </div>;
-  };
-};
+    </div>
+  }
+}
 
 let test_query = () => {
-  let network =
-    ReasonRelay.Network.makePromiseBased(
-      ~fetchFunction=RelayEnv.fetchQuery,
-      (),
-    );
+  let network = ReasonRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 
-  let environment =
-    ReasonRelay.Environment.make(
-      ~network,
-      ~store=
-        ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
-      (),
-    );
-  ();
+  let environment = ReasonRelay.Environment.make(
+    ~network,
+    ~store=ReasonRelay.Store.make(~source=ReasonRelay.RecordSource.make(), ()),
+    (),
+  )
+  ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>;
-};
+  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+}
