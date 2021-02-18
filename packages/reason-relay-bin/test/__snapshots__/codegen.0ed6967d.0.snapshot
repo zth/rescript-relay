@@ -1,0 +1,6 @@
+codegen › prints record structure
+{
+  someProp: option<ReasonRelay.dataId>,
+  anotherProp: int,
+  aThirdProp: option<array<option<some_type>>>,
+}

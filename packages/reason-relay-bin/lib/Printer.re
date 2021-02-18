@@ -13,7 +13,7 @@ let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
 
 let printComment = (comment: option(string)) =>
   switch (comment) {
-  | Some(comment) => "[@ocaml.doc \"" ++ comment ++ "\"] "
+  | Some(comment) => "@ocaml.doc(\"" ++ comment ++ "\")\n"
   | None => ""
   };
 
@@ -27,7 +27,7 @@ let printRecordPropName = propName =>
     ReservedKeywords.reservedKeywords
     |> Tablecloth.Array.find(~f=w => w == propName)
   ) {
-  | Some(_) => "[@bs.as \"" ++ propName ++ "\"] " ++ propName ++ "_"
+  | Some(_) => "@as(\"" ++ propName ++ "\") " ++ propName ++ "_"
   | None => propName
   };
 
@@ -65,7 +65,10 @@ let printScalar = scalarValue =>
   | Any => printAnyType()
   };
 
-let printStringLiteral = literal => "[ | `" ++ literal ++ "]";
+let printStringLiteral = (~literal, ~needsEscaping) =>
+  "[ | #"
+  ++ (needsEscaping ? Format.sprintf("\"%s\"", literal) : literal)
+  ++ "]";
 
 let printDataIdType = () => "ReasonRelay.dataId";
 
@@ -78,13 +81,13 @@ let getEnumFutureAddedValueName = (enum: fullEnum) =>
 let printEnumDefinition = (enum: fullEnum): string => {
   let enumName = makeEnumName(enum.name);
 
-  let str = ref("type " ++ enumName ++ " = pri [>");
+  let str = ref("type " ++ enumName ++ " = private [>");
 
   let addToStr = s => str := str^ ++ s;
 
-  enum.values |> List.iter(v => addToStr(" | `" ++ printSafeName(v) ++ " "));
+  enum.values |> List.iter(v => addToStr("\n  | #" ++ printSafeName(v)));
 
-  addToStr("];\n\n");
+  addToStr("\n]\n");
 
   str^;
 };
@@ -122,7 +125,10 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   switch (propType) {
   | DataId => printDataIdType()
   | Scalar(scalar) => printScalar(scalar)
-  | StringLiteral(literal) => printStringLiteral(literal)
+  | StringLiteral(literal) =>
+    printStringLiteral(~literal, ~needsEscaping=false)
+  | StringLiteralNeedsEscaping(literal) =>
+    printStringLiteral(~literal, ~needsEscaping=true)
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~propValue, ~state)
@@ -130,8 +136,8 @@ and printPropType = (~propType, ~state: Types.fullState) =>
   | Union(union) =>
     printUnionTypeDefinition(
       union,
-      ~includeSemi=false,
       ~prefixWithTypesModule=false,
+      ~extraIndent=true,
     )
   | FragmentRefValue(name) => printFragmentRef(name)
   | TypeReference(name) => printTypeReference(~state=Some(state), name)
@@ -141,13 +147,13 @@ and printPropValue = (~propValue, ~state) => {
   let addToStr = s => str := str^ ++ s;
 
   if (propValue.nullable) {
-    addToStr("option(");
+    addToStr("option<");
   };
 
   printPropType(~propType=propValue.propType, ~state) |> addToStr;
 
   if (propValue.nullable) {
-    addToStr(")");
+    addToStr(">");
   };
 
   str^;
@@ -191,7 +197,8 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
            addToStr(
              switch (p) {
              | Prop(name, propValue) =>
-               printRecordPropComment(propValue)
+               "\n  "
+               ++ printRecordPropComment(propValue)
                ++ printRecordPropName(name)
                ++ ": "
                ++ printPropValue(~propValue, ~state)
@@ -203,20 +210,20 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
 
       if (hasFragments && !ignoreFragmentRefs) {
         addToStr(
-          printRecordPropName("fragmentRefs")
+          printRecordPropName("\n  fragmentRefs")
           ++ ": "
           ++ (obj |> printFragmentRefs),
         );
       };
 
-      addToStr("}");
+      addToStr("\n}");
     };
 
     str^;
   };
 }
 and printFragmentRefs = (obj: object_) => {
-  let str = ref("ReasonRelay.fragmentRefs(");
+  let str = ref("ReasonRelay.fragmentRefs<");
   let addToStr = s => str := str^ ++ s;
 
   obj.values
@@ -231,18 +238,18 @@ and printFragmentRefs = (obj: object_) => {
 
        addToStr(
          switch (p) {
-         | FragmentRef(name) => " | `" ++ name
+         | FragmentRef(name) => " | #" ++ name
          | Prop(_) => ""
          },
        );
      });
 
-  addToStr("])");
+  addToStr("]>");
 
   str^;
 }
 and printArray = (~propValue, ~state) =>
-  "array(" ++ printPropValue(~propValue, ~state) ++ ")"
+  "array<" ++ printPropValue(~propValue, ~state) ++ ">"
 and printRecordReference = (~state: fullState, ~obj: object_) => {
   switch (
     state.objects |> Tablecloth.List.find(~f=o => {o.atPath == obj.atPath})
@@ -275,7 +282,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            switch (p) {
            | Prop(name, {nullable}) =>
              (index > 0 ? "," : "")
-             ++ "~"
+             ++ "\n  ~"
              ++ printSafeName(name)
              ++ (nullable ? "=?" : "")
            | FragmentRef(_) => ""
@@ -291,7 +298,9 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            | _ => false,
          );
 
-    addToStr((shouldAddUnit ? ", ()" : "") ++ "): " ++ targetType ++ " => {");
+    addToStr(
+      (shouldAddUnit ? ",\n  ()" : "") ++ "\n): " ++ targetType ++ " => {",
+    );
 
     obj.values
     |> List.iteri((index, p) => {
@@ -299,6 +308,7 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
            switch (p) {
            | Prop(name, _) =>
              (index > 0 ? "," : "")
+             ++ "\n  "
              ++ printSafeName(name)
              ++ ": "
              ++ printSafeName(name)
@@ -307,10 +317,12 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
          )
        });
 
-    addToStr("}");
+    addToStr("\n}");
   } else {
-    addToStr(") => [@ocaml.warning \"-27\"] {}");
+    addToStr("\n) => Js.Obj.empty()");
   };
+
+  addToStr("\n");
   str^;
 }
 and printRefetchVariablesMaker = (obj: object_, ~state) => {
@@ -333,7 +345,7 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
 
   addToStr("type refetchVariables = ");
   addToStr(printObject(~state, ~obj=optionalObj, ()));
-  addToStr(";");
+  addToStr("\n");
 
   addToStr(
     printObjectMaker(
@@ -352,41 +364,41 @@ and printRootType =
     printRecordComment(obj)
     ++ "type response = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";"
+    ++ "\n"
   | RawResponse(Some(Object(obj))) =>
     printRecordComment(obj)
     ++ "type rawResponse = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";"
-  | RawResponse(None) => "type rawResponse = response;"
+    ++ "\n"
+  | RawResponse(None) => "type rawResponse = response\n"
   | RawResponse(Some(Union(_)))
   | Operation(Union(_)) => raise(Invalid_top_level_shape)
   | Variables(Object(obj)) =>
     printRecordComment(obj)
     ++ "type variables = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";"
+    ++ "\n"
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
     switch (obj.values |> List.length) {
     | 0 => ""
-    | _ => printRefetchVariablesMaker(~state, obj) ++ ";"
+    | _ => printRefetchVariablesMaker(~state, obj) ++ "\n"
     }
 
   | Fragment(Object(obj)) =>
     printRecordComment(obj)
     ++ "type fragment = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";"
+    ++ "\n"
   | Fragment(Union(union)) =>
     printComment(union.comment)
     ++ "type fragment = "
     ++ printUnionTypeDefinition(
          union,
-         ~includeSemi=false,
          ~prefixWithTypesModule=false,
+         ~extraIndent=false,
        )
-    ++ ";"
+    ++ "\n"
   | ObjectTypeDeclaration({name, definition}) =>
     let typeDef =
       Tablecloth.String.uncapitalize(name)
@@ -396,38 +408,39 @@ and printRootType =
         | _ =>
           " = "
           ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
+          ++ "\n"
         }
       );
 
     let (prefix, suffix) =
       switch (recursiveMode) {
-      | None => (" type ", "; ")
-      | Some(`Head) => (" type ", " ")
-      | Some(`Member) => (" and ", " ")
-      | Some(`Tail) => (" and ", "; ")
+      | None => ("type ", "\n")
+      | Some(`Head) => ("type rec ", "")
+      | Some(`Member) => (" and ", "")
+      | Some(`Tail) => (" and ", "\n\n")
       };
 
     printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
     ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
-    ++ ";\n"
+    ++ "\n"
     ++ printRecordComment(obj)
-    ++ "type fragment = array(fragment_t);"
+    ++ "type fragment = array<fragment_t>\n"
   | PluralFragment(Union(union)) =>
     "type fragment_t = "
     ++ printUnionTypeDefinition(
          union,
-         ~includeSemi=false,
          ~prefixWithTypesModule=false,
+         ~extraIndent=false,
        )
-    ++ ";\n"
+    ++ "\n"
     ++ printComment(union.comment)
-    ++ "type fragment = array(fragment_t);"
+    ++ "type fragment = array<fragment_t>\n"
   };
 }
 and printUnionTypeDefinition =
-    (union, ~includeSemi, ~prefixWithTypesModule): string => {
+    (union, ~prefixWithTypesModule, ~extraIndent): string => {
   let futureAddedValueName =
     switch (
       union.members
@@ -443,7 +456,9 @@ and printUnionTypeDefinition =
   ++ (
     union.members
     |> List.map(({name, shape: {atPath}}) =>
-         " | `"
+         "\n  "
+         ++ (extraIndent ? "  " : "")
+         ++ "| #"
          ++ name
          ++ "("
          ++ (prefixWithTypesModule ? "Types." : "")
@@ -452,11 +467,13 @@ and printUnionTypeDefinition =
        )
     |> Tablecloth.String.join(~sep="\n")
   )
-  ++ " | `"
+  ++ "\n  "
+  ++ (extraIndent ? "  " : "")
+  ++ "| #"
   ++ futureAddedValueName
-  ++ "(string) "
-  ++ "]"
-  ++ (includeSemi ? ";" : "");
+  ++ "(string)"
+  ++ (extraIndent ? "\n  " : "\n")
+  ++ "]";
 };
 
 let printUnionConverters = (union: union) => {
@@ -483,23 +500,23 @@ let printUnionConverters = (union: union) => {
     ++ ": {. \"__typename\": string } => "
     ++ printUnionTypeDefinition(
          union,
-         ~includeSemi=false,
          ~prefixWithTypesModule=true,
+         ~extraIndent=false,
        )
-    ++ " = u => switch(u##__typename) {",
+    ++ " = u => switch u[\"__typename\"] {",
   );
   union.members
   |> List.iter((member: Types.unionMember) => {
        addToStr(
          "\n | \""
          ++ member.name
-         ++ "\" => `"
+         ++ "\" => #"
          ++ member.name
          ++ "(u->Obj.magic) ",
        )
      });
-  addToStr("\n | v => `" ++ futureAddedValueName ++ "(v)");
-  addToStr("};\n\n");
+  addToStr("\n | v => #" ++ futureAddedValueName ++ "(v)");
+  addToStr("\n}\n\n");
 
   // Wrap
   addToStr(
@@ -508,17 +525,17 @@ let printUnionConverters = (union: union) => {
     ++ ": "
     ++ printUnionTypeDefinition(
          union,
-         ~includeSemi=false,
          ~prefixWithTypesModule=true,
+         ~extraIndent=false,
        )
-    ++ " => {. \"__typename\": string } = fun",
+    ++ " => {. \"__typename\": string } = v => switch v {",
   );
   union.members
   |> List.iter((member: Types.unionMember) => {
-       addToStr("\n | `" ++ member.name ++ "(v) => v->Obj.magic ")
+       addToStr("\n | #" ++ member.name ++ "(v) => v->Obj.magic ")
      });
-  addToStr("\n | `" ++ futureAddedValueName ++ "(v) => {\"__typename\": v} ");
-  addToStr(";\n\n");
+  addToStr("\n | #" ++ futureAddedValueName ++ "(v) => {\"__typename\": v} ");
+  addToStr("\n}\n\n");
   str^;
 };
 
@@ -577,9 +594,10 @@ let printUnionTypes = (~state, ~printName, union: union) => {
     ++ " = "
     ++ printUnionTypeDefinition(
          union,
-         ~includeSemi=true,
          ~prefixWithTypesModule=false,
-       );
+         ~extraIndent=false,
+       )
+    ++ "\n";
 
   typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
@@ -587,9 +605,9 @@ let printUnionTypes = (~state, ~printName, union: union) => {
 let printEnumToStringFn = (enum: fullEnum): string =>
   "external "
   ++ Tablecloth.String.uncapitalize(enum.name)
-  ++ "_toString: Types."
+  ++ "_toString:\n"
   ++ printEnumName(enum.name)
-  ++ " => string = \"%identity\";";
+  ++ " => string = \"%identity\"";
 
 let printEnum = (enum: fullEnum): string => printEnumDefinition(enum);
 
@@ -597,17 +615,17 @@ let fragmentRefAssets = (~plural=false, fragmentName) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
-  addToStr("type t;");
-  addToStr("type fragmentRef;");
+  addToStr("type t\n");
+  addToStr("type fragmentRef\n");
 
   addToStr(
-    "external getFragmentRef: "
-    ++ (plural ? "array(" : "")
-    ++ " ReasonRelay.fragmentRefs([> | `"
+    "external getFragmentRef:\n  "
+    ++ (plural ? "array<" : "")
+    ++ "ReasonRelay.fragmentRefs<[> | #"
     ++ fragmentName
-    ++ "])"
-    ++ (plural ? ")" : "")
-    ++ " => fragmentRef = \"%identity\";",
+    ++ "]>"
+    ++ (plural ? ">" : "")
+    ++ " => fragmentRef = \"%identity\"",
   );
 
   str^;
@@ -622,12 +640,11 @@ let operationType = (operationType: Types.operationType) => {
     | Subscription(_) => "subscription"
     };
 
-  "type relayOperationNode; \n\ntype operationType = ReasonRelay."
+  "type relayOperationNode\ntype operationType = ReasonRelay."
   ++ opType
-  ++ "Node(relayOperationNode);";
+  ++ "Node<relayOperationNode>\n";
 };
 
 let printType = typeText => {j|type $typeText;|j};
 
-let printCode: string => string =
-  str => str |> ReasonPrettyPrinter.format_implementation;
+let printCode: string => string = str => str;

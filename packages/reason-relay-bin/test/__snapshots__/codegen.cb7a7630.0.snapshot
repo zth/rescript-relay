@@ -1,0 +1,2 @@
+codegen › prints string literal, unescaped
+[ | #some_valid_literal]

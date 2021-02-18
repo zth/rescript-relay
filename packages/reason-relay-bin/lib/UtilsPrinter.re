@@ -8,43 +8,61 @@ let printConnectionTraverser =
       ~nodeNullable,
     ) => {
   let str = ref("");
-  let addToStr = s => str := str^ ++ s;
   let strEnd = ref("");
+
+  let addToStr = s => str := str^ ++ s;
   let addToStrEnd = s => strEnd := s ++ strEnd^;
 
+  let atIndent = ref(0);
+  let addIndentLevel = () => atIndent := atIndent^ + 1;
+
+  let printAtIndent = str => {
+    let s = ref("");
+    for (x in 0 to atIndent^) {
+      s := s^ ++ " ";
+    };
+
+    s^ ++ str;
+  };
+
   if (connectionPropNullable) {
-    addToStr("switch(connection) { ");
-    addToStr("| None => [||] ");
-    addToStr("| Some(connection) => ");
+    addToStr("switch connection {\n");
     addToStrEnd("}");
+    addIndentLevel();
+
+    "| None => []\n" |> printAtIndent |> addToStr;
+    "| Some(connection) => " |> printAtIndent |> addToStr;
   };
 
   if (edgesPropNullable) {
-    addToStr("switch(connection.edges) { ");
-    addToStr("| None => [||] ");
-    addToStr("| Some(edges) => edges");
-    addToStrEnd("}");
+    "switch connection.edges { \n" |> addToStr;
+    "\n" ++ printAtIndent("}") |> addToStrEnd;
+
+    addIndentLevel();
+
+    "| None => []\n" |> printAtIndent |> addToStr;
+    "| Some(edges) => edges" |> printAtIndent |> addToStr;
   } else {
-    addToStr("connection.edges");
+    "connection.edges" |> printAtIndent |> addToStr;
   };
 
   if (edgesNullable) {
-    addToStr("->Belt.Array.keepMap(edge => switch(edge) { ");
-    addToStr("| None => None ");
-    addToStr("| Some(edge) => ");
-    addToStrEnd("})");
+    "->Belt.Array.keepMap(edge => switch edge { \n" |> addToStr;
+    "\n" ++ printAtIndent("})") |> addToStrEnd;
+
+    addIndentLevel();
+
+    "| None => None \n" |> printAtIndent |> addToStr;
+    "| Some(edge) => " |> printAtIndent |> addToStr;
   } else {
-    addToStr("->Belt.Array.keepMap(edge => ");
-    addToStrEnd(")");
+    "->Belt.Array.keepMap(edge => " |> addToStr;
+    "\n" ++ printAtIndent(")") |> addToStrEnd;
   };
 
   if (nodeNullable) {
-    addToStr("switch(edge.node) { ");
-    addToStr("| None => None ");
-    addToStr("| Some(node) => Some(node)");
-    addToStrEnd("}");
+    "edge.node\n" |> addToStr;
   } else {
-    addToStr("Some(edge.node)");
+    "Some(edge.node)" |> printAtIndent |> addToStr;
   };
 
   str^ ++ strEnd^;
@@ -62,20 +80,19 @@ let printFullGetConnectionNodesFnDefinition =
     ) =>
   "let "
   ++ functionName
-  ++ ": "
-  ++ (connectionPropNullable ? "option(" : "")
+  ++ ":\n  "
+  ++ (connectionPropNullable ? "option<" : "")
   ++ connectionTypeName
-  ++ (connectionPropNullable ? ")" : "")
-  ++ " => array("
+  ++ (connectionPropNullable ? ">" : "")
+  ++ " => array<"
   ++ nodeTypeName
-  ++ ") = connection => "
+  ++ "> =\n  connection => "
   ++ printConnectionTraverser(
        ~connectionPropNullable,
        ~edgesPropNullable,
        ~edgesNullable,
        ~nodeNullable,
-     )
-  ++ ";";
+     );
 
 let printGetConnectionNodesFunction =
     (
@@ -222,12 +239,18 @@ let printConvertersMap = (map: Hashtbl.t(string, string)): string =>
     let str = ref("{");
     let addToStr = s => str := str^ ++ s;
 
+    let has_printed = ref([]);
+
     map
     |> Hashtbl.iter((key, value) =>
-         addToStr("\"" ++ key ++ "\": " ++ value ++ ",")
+         if (!List.exists(k => k == key, has_printed^)) {
+           addToStr("\n  \"" ++ key ++ "\": " ++ value ++ ",");
+         } else {
+           has_printed := [key, ...has_printed^];
+         }
        );
 
-    addToStr("};");
+    addToStr("\n}\n");
     str^;
   };
 
@@ -268,6 +291,7 @@ let definitionToAssets =
     | Scalar(_)
     | Enum(_)
     | StringLiteral(_)
+    | StringLiteralNeedsEscaping(_)
     | FragmentRefValue(_) => ()
     | TypeReference(name) =>
       switch (

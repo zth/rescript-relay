@@ -30,6 +30,7 @@ and propType =
   | DataId
   | Scalar(scalarValues)
   | StringLiteral(string)
+  | StringLiteralNeedsEscaping(string)
   | Enum(fullEnum)
   | Object(object_)
   | Array(propValue)

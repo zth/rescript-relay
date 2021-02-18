@@ -16,21 +16,17 @@ const formatGeneratedModule: FormatModule = ({
     documentType === "ConcreteRequest" &&
     moduleName.toLowerCase().endsWith("query_graphql")
       ? `include ReasonRelay.MakeLoadQuery({
-    type variables = Types.variables;
-    type loadedQueryRef = queryRef;
-    type response = Types.response;
-    type node = relayOperationNode;
-    let query = node;
-    let convertVariables = Internal.convertVariables;
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
   });`
       : "";
 
-  return `
-${typeText || ""}
-
-let node: operationType = [%raw {json| ${processConcreteText(
-    concreteText
-  )} |json}];
+  return `${typeText || ""}
+let node: operationType = %raw(json\` ${processConcreteText(concreteText)} \`)
 
 ${preloadText}
 `;

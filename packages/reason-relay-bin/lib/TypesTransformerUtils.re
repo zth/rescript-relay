@@ -17,28 +17,28 @@ let printConverterAssets =
   let assets =
     definition |> UtilsPrinter.definitionToAssets(~rootObjects, ~direction);
 
-  (includeRaw ? "type " ++ name ++ "Raw;" : "")
+  (includeRaw ? "type " ++ name ++ "Raw\n" : "")
   ++ "let "
   ++ name
-  ++ "Converter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw {json| "
+  ++ "Converter: \n  Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = \n  %raw(\n    json`"
   ++ UtilsPrinter.converterInstructionsToJson(assets.converterInstructions)
-  ++ " |json}];"
+  ++ "`\n  )\n\n"
   ++ "let "
   ++ name
   ++ "ConverterMap = "
   ++ assets.convertersDefinition
-  ++ "let convert"
+  ++ "\nlet convert"
   ++ Tablecloth.String.capitalize(name)
-  ++ " = v => v->ReasonRelay.convertObj("
+  ++ " = v => v->ReasonRelay.convertObj(\n  "
   ++ name
-  ++ "Converter, "
+  ++ "Converter, \n  "
   ++ name
-  ++ "ConverterMap, "
+  ++ "ConverterMap, \n  "
   ++ (
     switch (nullableType) {
     | Null => "Js.null"
     | Undefined => "Js.undefined"
     }
   )
-  ++ ");";
+  ++ "\n)";
 };

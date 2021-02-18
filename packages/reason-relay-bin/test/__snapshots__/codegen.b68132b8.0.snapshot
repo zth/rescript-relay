@@ -1,0 +1,7 @@
+codegen › print enums formatted
+type enum_someEnum = private [>
+  | #First
+  | #Second
+  | #Third
+]
+
