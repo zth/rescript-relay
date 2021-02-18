@@ -2,60 +2,92 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
+  
   type rec response_loggedInUser = {
     id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[#TestLocalPayload_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>
   }
-  and rawResponse_loggedInUser = {
+   and rawResponse_loggedInUser = {
     id: string,
     firstName: string,
     avatarUrl: option<string>,
   }
-
-  type response = {loggedInUser: response_loggedInUser}
-  type rawResponse = {loggedInUser: rawResponse_loggedInUser}
+  
+  
+  type response = {
+    loggedInUser: response_loggedInUser,
+  }
+  type rawResponse = {
+    loggedInUser: rawResponse_loggedInUser,
+  }
   type variables = unit
 }
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser":{"f":""}}}`
+    )
+  
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
   type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
-  )
-
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser":{"f":""}}}`
+    )
+  
   let responseConverterMap = ()
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw
-  let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_avatarUrl":{"n":""}}}`
-  )
-
+  let wrapRawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser_avatarUrl":{"n":""}}}`
+    )
+  
   let wrapRawResponseConverterMap = ()
-  let convertWrapRawResponse = v =>
-    v->RescriptRelay.convertObj(wrapRawResponseConverter, wrapRawResponseConverterMap, Js.null)
-  type rawResponseRaw
-  let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_avatarUrl":{"n":""}}}`
+  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+    wrapRawResponseConverter, 
+    wrapRawResponseConverterMap, 
+    Js.null
   )
-
+  type rawResponseRaw
+  let rawResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser_avatarUrl":{"n":""}}}`
+    )
+  
   let rawResponseConverterMap = ()
-  let convertRawResponse = v =>
-    v->RescriptRelay.convertObj(rawResponseConverter, rawResponseConverterMap, Js.undefined)
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let convertRawResponse = v => v->RescriptRelay.convertObj(
+    rawResponseConverter, 
+    rawResponseConverterMap, 
+    Js.undefined
+  )
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
@@ -66,8 +98,8 @@ module Utils = {
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -146,14 +178,13 @@ return {
     "text": "query TestLocalPayloadQuery {\n  loggedInUser {\n    id\n    ...TestLocalPayload_user\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

@@ -2,114 +2,122 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
+  
   type fragment_members_edges_node_User = {
     id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[#TestPaginationUnion_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>
   }
-
+  
   type fragment_members_edges_node_Group_adminsConnection_edges_node = {
     id: string,
     firstName: string,
   }
-
+  
   type fragment_members_edges_node_Group_adminsConnection_edges = {
     node: option<fragment_members_edges_node_Group_adminsConnection_edges_node>,
   }
-
+  
   type fragment_members_edges_node_Group_adminsConnection = {
     edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
   }
-
+  
   type fragment_members_edges_node_Group = {
     adminsConnection: fragment_members_edges_node_Group_adminsConnection,
     name: string,
     id: string,
   }
-
+  
+  
   type fragment_members_edges_node = [
     | #User(fragment_members_edges_node_User)
+  
     | #Group(fragment_members_edges_node_Group)
     | #UnselectedUnionMember(string)
   ]
-  type rec fragment_members = {edges: option<array<option<fragment_members_edges>>>}
-  and fragment_members_edges = {
-    node: option<
-      [
-        | #User(fragment_members_edges_node_User)
-        | #Group(fragment_members_edges_node_Group)
-        | #UnselectedUnionMember(string)
-      ],
-    >,
+  type rec fragment_members = {
+    edges: option<array<option<fragment_members_edges>>>,
   }
-
-  type fragment = {members: option<fragment_members>}
+   and fragment_members_edges = {
+    node: option<[
+      | #User(fragment_members_edges_node_User)
+  
+      | #Group(fragment_members_edges_node_Group)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  
+  
+  type fragment = {
+    members: option<fragment_members>,
+  }
 }
 
-let unwrap_fragment_members_edges_node: {"__typename": string} => [
+let unwrap_fragment_members_edges_node: {. "__typename": string } => [
   | #User(Types.fragment_members_edges_node_User)
+
   | #Group(Types.fragment_members_edges_node_Group)
   | #UnselectedUnionMember(string)
-] = u =>
-  switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | "Group" => #Group(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-  }
+] = u => switch u["__typename"] {
+ | "User" => #User(u->Obj.magic) 
+ | "Group" => #Group(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
 
 let wrap_fragment_members_edges_node: [
   | #User(Types.fragment_members_edges_node_User)
+
   | #Group(Types.fragment_members_edges_node_Group)
   | #UnselectedUnionMember(string)
-] => {"__typename": string} = v =>
-  switch v {
-  | #User(v) => v->Obj.magic
-  | #Group(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-  }
+] => {. "__typename": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Group(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {"__typename": v} 
+}
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}}`
-  )
-
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}}`
+    )
+  
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
   }
-
-  let convertFragment = v =>
-    v->RescriptRelay.convertObj(fragmentConverter, fragmentConverterMap, Js.undefined)
+  
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
 }
 type t
 type fragmentRef
-external getFragmentRef: RescriptRelay.fragmentRefs<[> #TestPaginationUnion_query]> => fragmentRef =
-  "%identity"
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPaginationUnion_query]> => fragmentRef = "%identity"
+
 
 module Utils = {
   open Types
-  let getConnectionNodes: option<fragment_members> => array<
-    fragment_members_edges_node,
-  > = connection =>
-    switch connection {
+  let getConnectionNodes:
+    option<fragment_members> => array<fragment_members_edges_node> =
+    connection => switch connection {
     | None => []
-    | Some(connection) =>
-      switch connection.edges {
-      | None => []
-      | Some(edges) => edges->Belt.Array.keepMap(edge =>
-          switch edge {
-          | None => None
-          | Some(edge) => edge.node
-          }
-        )
-      }
-    }
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}
 }
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   "members"
 ],
@@ -330,5 +338,6 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})() `
-)
+})() `)
+
+

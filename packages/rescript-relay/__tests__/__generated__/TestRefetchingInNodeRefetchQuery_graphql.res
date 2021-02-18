@@ -2,11 +2,19 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
-  type enum_OnlineStatus = private [> #Idle | #Offline | #Online]
-
-  type rec response_node = {fragmentRefs: RescriptRelay.fragmentRefs<[#TestRefetchingInNode_user]>}
-  type response = {node: option<response_node>}
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_node = {
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>
+  }
+  type response = {
+    node: option<response_node>,
+  }
   type rawResponse = response
   type refetchVariables = {
     friendsOnlineStatuses: option<array<enum_OnlineStatus>>,
@@ -17,13 +25,13 @@ module Types = {
     ~friendsOnlineStatuses=?,
     ~showOnlineStatus=?,
     ~id=?,
-    (),
+    ()
   ): refetchVariables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
     showOnlineStatus: showOnlineStatus,
-    id: id,
+    id: id
   }
-
+  
   type variables = {
     friendsOnlineStatuses: array<enum_OnlineStatus>,
     showOnlineStatus: bool,
@@ -33,48 +41,70 @@ module Types = {
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let responseConverterMap = ()
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
-  let makeVariables = (~friendsOnlineStatuses, ~showOnlineStatus, ~id): variables => {
+  external onlineStatus_toString:
+  enum_OnlineStatus => string = "%identity"
+  let makeVariables = (
+    ~friendsOnlineStatuses,
+    ~showOnlineStatus,
+    ~id
+  ): variables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
     showOnlineStatus: showOnlineStatus,
-    id: id,
+    id: id
   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "defaultValue": [
     "Online",
@@ -240,14 +270,13 @@ return {
     "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $showOnlineStatus: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

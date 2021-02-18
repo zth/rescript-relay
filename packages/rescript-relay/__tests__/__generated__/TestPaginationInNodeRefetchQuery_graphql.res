@@ -2,11 +2,19 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
-  type enum_OnlineStatus = private [> #Idle | #Offline | #Online]
-
-  type rec response_node = {fragmentRefs: RescriptRelay.fragmentRefs<[#TestPaginationInNode_query]>}
-  type response = {node: option<response_node>}
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
+  type rec response_node = {
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>
+  }
+  type response = {
+    node: option<response_node>,
+  }
   type rawResponse = response
   type refetchVariables = {
     count: option<int>,
@@ -19,14 +27,14 @@ module Types = {
     ~cursor=?,
     ~onlineStatuses=?,
     ~id=?,
-    (),
+    ()
   ): refetchVariables => {
     count: count,
     cursor: cursor,
     onlineStatuses: onlineStatuses,
-    id: id,
+    id: id
   }
-
+  
   type variables = {
     count: option<int>,
     cursor: option<string>,
@@ -37,51 +45,73 @@ module Types = {
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let responseConverterMap = ()
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"cursor":{"n":""},"count":{"n":""},"onlineStatuses":{"n":""}}}`
-  )
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"cursor":{"n":""},"count":{"n":""},"onlineStatuses":{"n":""}}}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
-  let makeVariables = (~count=?, ~cursor=?, ~onlineStatuses=?, ~id, ()): variables => {
+  external onlineStatus_toString:
+  enum_OnlineStatus => string = "%identity"
+  let makeVariables = (
+    ~count=?,
+    ~cursor=?,
+    ~onlineStatuses=?,
+    ~id,
+    ()
+  ): variables => {
     count: count,
     cursor: cursor,
     onlineStatuses: onlineStatuses,
-    id: id,
+    id: id
   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "defaultValue": 2,
   "kind": "LocalArgument",
@@ -339,14 +369,13 @@ return {
     "text": "query TestPaginationInNodeRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $onlineStatuses: [OnlineStatus!]\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestPaginationInNode_query_MDTzn\n    id\n  }\n}\n\nfragment TestPaginationInNode_query_MDTzn on User {\n  friendsConnection(statuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...TestPaginationInNode_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPaginationInNode_user on User {\n  id\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

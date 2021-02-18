@@ -2,8 +2,10 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
-  type rec fragment_friendsConnection = {totalCount: int}
+  
+  type rec fragment_friendsConnection = {
+    totalCount: int,
+  }
   type fragment = {
     id: string,
     firstName: string,
@@ -13,16 +15,24 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let fragmentConverterMap = ()
-  let convertFragment = v =>
-    v->RescriptRelay.convertObj(fragmentConverter, fragmentConverterMap, Js.undefined)
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
 }
 type t
 type fragmentRef
-external getFragmentRef: RescriptRelay.fragmentRefs<[> #TestPaginationInNode_user]> => fragmentRef =
-  "%identity"
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPaginationInNode_user]> => fragmentRef = "%identity"
+
 
 module Utils = {
 
@@ -30,8 +40,8 @@ module Utils = {
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` {
+
+let node: operationType = %raw(json` {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -78,5 +88,6 @@ let node: operationType = %raw(
   ],
   "type": "User",
   "abstractKey": null
-} `
-)
+} `)
+
+

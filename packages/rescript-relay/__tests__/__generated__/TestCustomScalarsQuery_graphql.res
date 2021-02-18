@@ -2,104 +2,140 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
-  type response_member_User = {createdAt: TestsUtils.Datetime.t}
-
-  type response_member = [#User(response_member_User) | #UnselectedUnionMember(string)]
+  
+  type response_member_User = {
+    createdAt: TestsUtils.Datetime.t,
+  }
+  
+  
+  type response_member = [
+    | #User(response_member_User)
+    | #UnselectedUnionMember(string)
+  ]
   type rec response_loggedInUser = {
     createdAt: TestsUtils.Datetime.t,
     friends: array<response_loggedInUser_friends>,
   }
-  and response_loggedInUser_friends = {createdAt: TestsUtils.Datetime.t}
-
+   and response_loggedInUser_friends = {
+    createdAt: TestsUtils.Datetime.t,
+  }
+  
+  
   type response = {
     loggedInUser: response_loggedInUser,
-    member: option<[#User(response_member_User) | #UnselectedUnionMember(string)]>,
+    member: option<[
+      | #User(response_member_User)
+      | #UnselectedUnionMember(string)
+    ]>,
   }
   type rawResponse = response
-  type refetchVariables = {beforeDate: option<TestsUtils.Datetime.t>}
-  let makeRefetchVariables = (~beforeDate=?, ()): refetchVariables => {
-    beforeDate: beforeDate,
+  type refetchVariables = {
+    beforeDate: option<TestsUtils.Datetime.t>,
   }
-
-  type variables = {beforeDate: option<TestsUtils.Datetime.t>}
+  let makeRefetchVariables = (
+    ~beforeDate=?,
+    ()
+  ): refetchVariables => {
+    beforeDate: beforeDate
+  }
+  
+  type variables = {
+    beforeDate: option<TestsUtils.Datetime.t>,
+  }
 }
 
-let unwrap_response_member: {"__typename": string} => [
+let unwrap_response_member: {. "__typename": string } => [
   | #User(Types.response_member_User)
   | #UnselectedUnionMember(string)
-] = u =>
-  switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-  }
+] = u => switch u["__typename"] {
+ | "User" => #User(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
 
-let wrap_response_member: [#User(Types.response_member_User) | #UnselectedUnionMember(string)] => {
-  "__typename": string,
-} = v =>
-  switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-  }
+let wrap_response_member: [
+  | #User(Types.response_member_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {"__typename": v} 
+}
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
+    )
+  
   let wrapResponseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "response_member": wrap_response_member,
   }
-
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"member":{"n":"","u":"response_member"},"member_user_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
+    )
+  
   let responseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "response_member": unwrap_response_member,
   }
-
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime","n":""}}}`
-  )
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime","n":""}}}`
+    )
+  
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
   }
-
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  let makeVariables = (~beforeDate=?, ()): variables => {
-    beforeDate: beforeDate,
+  let makeVariables = (
+    ~beforeDate=?,
+    ()
+  ): variables => {
+    beforeDate: beforeDate
   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -261,14 +297,13 @@ return {
     "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

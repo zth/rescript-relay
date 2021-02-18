@@ -2,63 +2,91 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
+  
   type rec response_node = {
     id: string,
     __typename: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[#TestPaginationInNode_query]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>
   }
-  type response = {node: option<response_node>}
+  type response = {
+    node: option<response_node>,
+  }
   type rawResponse = response
-  type refetchVariables = {userId: option<string>}
-  let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
-    userId: userId,
+  type refetchVariables = {
+    userId: option<string>,
   }
-
-  type variables = {userId: string}
+  let makeRefetchVariables = (
+    ~userId=?,
+    ()
+  ): refetchVariables => {
+    userId: userId
+  }
+  
+  type variables = {
+    userId: string,
+  }
 }
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":""}}}`
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":""}}}`
+    )
+  
   let responseConverterMap = ()
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  let makeVariables = (~userId): variables => {
-    userId: userId,
+  let makeVariables = (
+    ~userId
+  ): variables => {
+    userId: userId
   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -281,14 +309,13 @@ return {
     "text": "query TestPaginationInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    id\n    __typename\n    ... on User {\n      ...TestPaginationInNode_query\n    }\n  }\n}\n\nfragment TestPaginationInNode_query on User {\n  friendsConnection(first: 2, after: \"\") {\n    edges {\n      node {\n        id\n        ...TestPaginationInNode_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPaginationInNode_user on User {\n  id\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

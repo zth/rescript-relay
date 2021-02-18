@@ -2,23 +2,29 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
-  type enum_OnlineStatus = private [> #Idle | #Offline | #Online]
-
+  
+  type enum_OnlineStatus = private [>
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option<enum_OnlineStatus>,
     firstName: string,
     id: string,
   }
-
+  
   type response_members_edges_node_Group_members_Group = {
     avatarUrl: option<string>,
     name: string,
     id: string,
   }
-
+  
+  
   type response_members_edges_node_Group_members = [
     | #User(response_members_edges_node_Group_members_User)
+  
     | #Group(response_members_edges_node_Group_members_Group)
     | #UnselectedUnionMember(string)
   ]
@@ -27,136 +33,155 @@ module Types = {
     firstName: string,
     id: string,
   }
-
+  
   type response_members_edges_node_Group = {
-    members: option<
-      array<
-        option<
-          [
-            | #User(response_members_edges_node_Group_members_User)
-            | #Group(response_members_edges_node_Group_members_Group)
-            | #UnselectedUnionMember(string)
-          ],
-        >,
-      >,
-    >,
+    members: option<array<option<[
+      | #User(response_members_edges_node_Group_members_User)
+  
+      | #Group(response_members_edges_node_Group_members_Group)
+      | #UnselectedUnionMember(string)
+    ]>>>,
     avatarUrl: option<string>,
     name: string,
     id: string,
   }
-
+  
+  
   type response_members_edges_node = [
     | #User(response_members_edges_node_User)
+  
     | #Group(response_members_edges_node_Group)
     | #UnselectedUnionMember(string)
   ]
-  type rec response_members = {edges: option<array<option<response_members_edges>>>}
-  and response_members_edges = {
-    node: option<
-      [
-        | #User(response_members_edges_node_User)
-        | #Group(response_members_edges_node_Group)
-        | #UnselectedUnionMember(string)
-      ],
-    >,
+  type rec response_members = {
+    edges: option<array<option<response_members_edges>>>,
   }
-
-  type response = {members: option<response_members>}
+   and response_members_edges = {
+    node: option<[
+      | #User(response_members_edges_node_User)
+  
+      | #Group(response_members_edges_node_Group)
+      | #UnselectedUnionMember(string)
+    ]>,
+  }
+  
+  
+  type response = {
+    members: option<response_members>,
+  }
   type rawResponse = response
   type variables = unit
 }
 
-let unwrap_response_members_edges_node_Group_members: {"__typename": string} => [
+let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
   | #User(Types.response_members_edges_node_Group_members_User)
+
   | #Group(Types.response_members_edges_node_Group_members_Group)
   | #UnselectedUnionMember(string)
-] = u =>
-  switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | "Group" => #Group(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-  }
+] = u => switch u["__typename"] {
+ | "User" => #User(u->Obj.magic) 
+ | "Group" => #Group(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
 
 let wrap_response_members_edges_node_Group_members: [
   | #User(Types.response_members_edges_node_Group_members_User)
+
   | #Group(Types.response_members_edges_node_Group_members_Group)
   | #UnselectedUnionMember(string)
-] => {"__typename": string} = v =>
-  switch v {
-  | #User(v) => v->Obj.magic
-  | #Group(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-  }
+] => {. "__typename": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Group(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {"__typename": v} 
+}
 
-let unwrap_response_members_edges_node: {"__typename": string} => [
+let unwrap_response_members_edges_node: {. "__typename": string } => [
   | #User(Types.response_members_edges_node_User)
+
   | #Group(Types.response_members_edges_node_Group)
   | #UnselectedUnionMember(string)
-] = u =>
-  switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | "Group" => #Group(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-  }
+] = u => switch u["__typename"] {
+ | "User" => #User(u->Obj.magic) 
+ | "Group" => #Group(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
 
 let wrap_response_members_edges_node: [
   | #User(Types.response_members_edges_node_User)
+
   | #Group(Types.response_members_edges_node_Group)
   | #UnselectedUnionMember(string)
-] => {"__typename": string} = v =>
-  switch v {
-  | #User(v) => v->Obj.magic
-  | #Group(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-  }
+] => {. "__typename": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #Group(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {"__typename": v} 
+}
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+    )
+  
   let wrapResponseConverterMap = {
     "response_members_edges_node_Group_members": wrap_response_members_edges_node_Group_members,
     "response_members_edges_node": wrap_response_members_edges_node,
   }
-
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+  
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"members_edges_node_group_members_user_onlineStatus":{"n":""},"members_edges_node_user_onlineStatus":{"n":""},"members_edges_node":{"n":"","u":"response_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_avatarUrl":{"n":""},"members_edges_node_group_members":{"n":"","na":"","u":"response_members_edges_node_Group_members"},"members":{"n":""},"members_edges_node_group_members_group_avatarUrl":{"n":""}}}`
+    )
+  
   let responseConverterMap = {
     "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
     "response_members_edges_node": unwrap_response_members_edges_node,
   }
-
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString:
+  enum_OnlineStatus => string = "%identity"
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   {
     "kind": "Literal",
@@ -380,14 +405,13 @@ return {
     "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

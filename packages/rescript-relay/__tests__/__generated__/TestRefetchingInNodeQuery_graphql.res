@@ -2,62 +2,90 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
+  
   type rec response_node = {
-    __typename: [#User],
-    fragmentRefs: RescriptRelay.fragmentRefs<[#TestRefetchingInNode_user]>,
+    __typename: [ | #User],
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>
   }
-  type response = {node: option<response_node>}
+  type response = {
+    node: option<response_node>,
+  }
   type rawResponse = response
-  type refetchVariables = {userId: option<string>}
-  let makeRefetchVariables = (~userId=?, ()): refetchVariables => {
-    userId: userId,
+  type refetchVariables = {
+    userId: option<string>,
   }
-
-  type variables = {userId: string}
+  let makeRefetchVariables = (
+    ~userId=?,
+    ()
+  ): refetchVariables => {
+    userId: userId
+  }
+  
+  type variables = {
+    userId: string,
+  }
 }
 
 module Internal = {
   type wrapResponseRaw
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":"","tnf":"User"}}}`
-  )
-
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":"","tnf":"User"}}}`
+    )
+  
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v =>
-    v->RescriptRelay.convertObj(wrapResponseConverter, wrapResponseConverterMap, Js.null)
-  type responseRaw
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":"","n":"","tnf":"User"}}}`
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
   )
-
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"node":{"f":"","n":"","tnf":"User"}}}`
+    )
+  
   let responseConverterMap = ()
-  let convertResponse = v =>
-    v->RescriptRelay.convertObj(responseConverter, responseConverterMap, Js.undefined)
+  let convertResponse = v => v->RescriptRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(json`{}`)
-
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
   let variablesConverterMap = ()
-  let convertVariables = v =>
-    v->RescriptRelay.convertObj(variablesConverter, variablesConverterMap, Js.undefined)
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
 }
 
 type queryRef
 
 module Utils = {
   open Types
-  let makeVariables = (~userId): variables => {
-    userId: userId,
+  let makeVariables = (
+    ~userId
+  ): variables => {
+    userId: userId
   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   {
     "defaultValue": null,
@@ -191,14 +219,13 @@ return {
     "text": "query TestRefetchingInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    __typename\n    ... on User {\n      ...TestRefetchingInNode_user\n    }\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user on User {\n  firstName\n  friendsConnection(statuses: [Online, Offline]) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
-})() `
-)
+})() `)
 
 include RescriptRelay.MakeLoadQuery({
-  type variables = Types.variables
-  type loadedQueryRef = queryRef
-  type response = Types.response
-  type node = relayOperationNode
-  let query = node
-  let convertVariables = Internal.convertVariables
-})
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
+  });

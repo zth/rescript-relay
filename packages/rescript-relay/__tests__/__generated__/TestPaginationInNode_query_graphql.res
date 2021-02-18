@@ -2,16 +2,19 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-
+  
   type rec fragment_friendsConnection = {
     edges: option<array<option<fragment_friendsConnection_edges>>>,
   }
-  and fragment_friendsConnection_edges = {node: option<fragment_friendsConnection_edges_node>}
-  and fragment_friendsConnection_edges_node = {
-    id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[#TestPaginationInNode_user]>,
+   and fragment_friendsConnection_edges = {
+    node: option<fragment_friendsConnection_edges_node>,
   }
-
+   and fragment_friendsConnection_edges_node = {
+    id: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_user]>
+  }
+  
+  
   type fragment = {
     friendsConnection: fragment_friendsConnection,
     id: string,
@@ -20,40 +23,43 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"f":"","n":""}}}`
-  )
-
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"friendsConnection_edges":{"n":"","na":""},"friendsConnection_edges_node":{"f":"","n":""}}}`
+    )
+  
   let fragmentConverterMap = ()
-  let convertFragment = v =>
-    v->RescriptRelay.convertObj(fragmentConverter, fragmentConverterMap, Js.undefined)
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
 }
 type t
 type fragmentRef
-external getFragmentRef: RescriptRelay.fragmentRefs<
-  [> #TestPaginationInNode_query],
-> => fragmentRef = "%identity"
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPaginationInNode_query]> => fragmentRef = "%identity"
+
 
 module Utils = {
   open Types
-  let getConnectionNodes: fragment_friendsConnection => array<
-    fragment_friendsConnection_edges_node,
-  > = connection =>
-    switch connection.edges {
+  let getConnectionNodes:
+    fragment_friendsConnection => array<fragment_friendsConnection_edges_node> =
+    connection => switch connection.edges { 
     | None => []
-    | Some(edges) => edges->Belt.Array.keepMap(edge =>
-        switch edge {
-        | None => None
-        | Some(edge) => edge.node
-        }
-      )
-    }
+    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+     | None => None 
+     | Some(edge) => edge.node
+  
+    })
+   }
 }
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
-let node: operationType = %raw(
-  json` (function(){
+
+let node: operationType = %raw(json` (function(){
 var v0 = [
   "friendsConnection"
 ],
@@ -199,5 +205,6 @@ return {
   "type": "User",
   "abstractKey": null
 };
-})() `
-)
+})() `)
+
+
