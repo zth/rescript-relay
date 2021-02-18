@@ -77,8 +77,9 @@ module Internal = {
 
 
 module Utils = {
+  open Types
   external onlineStatus_toString:
-    Types.enum_OnlineStatus => string = "%identity"
+  enum_OnlineStatus => string = "%identity"
   let make_setOnlineStatusInput = (
     ~onlineStatus
   ): setOnlineStatusInput => {
@@ -110,7 +111,6 @@ module Utils = {
   ): rawResponse => {
     setOnlineStatusComplex: setOnlineStatusComplex
   }
-  open Types
 }
 type relayOperationNode
 type operationType = ReasonRelay.mutationNode<relayOperationNode>

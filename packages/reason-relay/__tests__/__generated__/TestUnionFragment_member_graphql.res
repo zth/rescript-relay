@@ -74,9 +74,9 @@ external getFragmentRef:
 
 
 module Utils = {
-  external onlineStatus_toString:
-    Types.enum_OnlineStatus => string = "%identity"
   open Types
+  external onlineStatus_toString:
+  enum_OnlineStatus => string = "%identity"
 }
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>

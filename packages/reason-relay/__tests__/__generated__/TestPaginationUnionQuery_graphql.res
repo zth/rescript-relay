@@ -70,12 +70,12 @@ module Internal = {
 type queryRef
 
 module Utils = {
+  open Types
   let makeVariables = (
     ~groupId
   ): variables => {
     groupId: groupId
   }
-  open Types
 }
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>

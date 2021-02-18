@@ -99,6 +99,7 @@ external getFragmentRef:
 
 
 module Utils = {
+  open Types
   let getConnectionNodes:
     option<fragment_members> => array<fragment_members_edges_node> =
     connection => switch connection {
@@ -110,7 +111,7 @@ module Utils = {
       | Some(edge) => edge.node
   
      })
-    }}open Types
+    }}
 }
 type relayOperationNode
 type operationType = ReasonRelay.fragmentNode<relayOperationNode>

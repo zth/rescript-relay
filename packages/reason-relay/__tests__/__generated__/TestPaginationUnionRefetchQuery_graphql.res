@@ -88,8 +88,9 @@ module Internal = {
 type queryRef
 
 module Utils = {
+  open Types
   external onlineStatus_toString:
-    Types.enum_OnlineStatus => string = "%identity"
+  enum_OnlineStatus => string = "%identity"
   let makeVariables = (
     ~count=?,
     ~cursor=?,
@@ -102,7 +103,6 @@ module Utils = {
     groupId: groupId,
     onlineStatuses: onlineStatuses
   }
-  open Types
 }
 type relayOperationNode
 type operationType = ReasonRelay.queryNode<relayOperationNode>

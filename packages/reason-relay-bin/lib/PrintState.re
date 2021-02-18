@@ -454,12 +454,13 @@ let getPrintedFullState =
   | _ => ()
   };
 
-  // Open Types locally here if we have any content to print
   if (utils_content^ != "") {
-    add_to_utils("open Types\n");
+    addToStr("  open Types\n");
   };
 
   addToStr(Utils.print_indented(2, utils_content^) ++ "\n}\n");
+
+  // Open Types locally here if we have any content to print
 
   // This adds operationType, which is referenced in the raw output of the Relay
   // runtime representation.

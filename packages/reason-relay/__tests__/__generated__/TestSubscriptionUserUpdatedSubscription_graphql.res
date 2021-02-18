@@ -60,14 +60,14 @@ module Internal = {
 
 
 module Utils = {
+  open Types
   external onlineStatus_toString:
-    Types.enum_OnlineStatus => string = "%identity"
+  enum_OnlineStatus => string = "%identity"
   let makeVariables = (
     ~userId
   ): variables => {
     userId: userId
   }
-  open Types
 }
 type relayOperationNode
 type operationType = ReasonRelay.subscriptionNode<relayOperationNode>
