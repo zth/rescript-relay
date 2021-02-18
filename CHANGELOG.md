@@ -6,6 +6,7 @@
 
 ## Fixes & misc
 
+- The compiler now outputs `res` files and syntax instead of `re` syntax. In order to make this work smoothly, make sure you remove all contents of your `__generated__` folder before you re-run the Relay compiler after upgrading.
 - Fix a bug where store updater directives on scalars (like `deletedUserId`) would not have their connection array arg type transformed from `string` to `dataId`.
 
 # 0.14.0

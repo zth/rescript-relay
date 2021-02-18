@@ -13,7 +13,7 @@ let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
 
 let printComment = (comment: option(string)) =>
   switch (comment) {
-  | Some(comment) => "@ocaml.doc(\"" ++ comment ++ "\") "
+  | Some(comment) => "@ocaml.doc(\"" ++ comment ++ "\")\n"
   | None => ""
   };
 
