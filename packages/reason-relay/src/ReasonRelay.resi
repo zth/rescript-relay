@@ -672,6 +672,11 @@ module Environment: {
 
   @ocaml.doc("Given an `operationDescriptor`, commits the corresponding payload.") @bs.send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
+
+  @ocaml.doc(
+    "Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected."
+  )
+  @bs.send external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
 
 @ocaml.doc(
