@@ -2,7 +2,7 @@
     (modules (:standard \ ReasonRelayPpxBinPesyModules))
     (public_name ReasonRelayPpxApp.exe)
     (libraries reason-relay-ppx.bin.pesy-modules)
-    (flags (:standard -ccopt -static -ccopt -Wl,--no-export-dynamic -open ReasonRelayPpxBinPesyModules)))
+    (flags -open ReasonRelayPpxBinPesyModules))
 (library (public_name reason-relay-ppx.bin.pesy-modules)
     (name ReasonRelayPpxBinPesyModules)
     (modules ReasonRelayPpxBinPesyModules)
