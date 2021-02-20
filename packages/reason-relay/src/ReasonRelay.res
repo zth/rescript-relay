@@ -522,6 +522,7 @@ module Environment = {
   @bs.send external getStore: t => Store.t = "getStore"
   @bs.send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
+  @bs.send external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
 
 module Context = {
