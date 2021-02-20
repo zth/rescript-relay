@@ -4,6 +4,10 @@
 
 - _Remove_ `reason-react` and add `@rescript/react@0.10.0`.
 
+## New bindings
+
+- Bind `Environment.retain` (a way to ensure a specific query is not garbage collected). [@webican](https://github.com/webican)
+
 ## Fixes & misc
 
 - The compiler now outputs `res` files and syntax instead of `re` syntax. In order to make this work smoothly, make sure you remove all contents of your `__generated__` folder before you re-run the Relay compiler after upgrading.
