@@ -648,6 +648,16 @@ let mapRenderPolicy: option<renderPolicy> => option<string>
 type operationDescriptor
 
 @ocaml.doc(
+  "A disposable is something you can use to dispose of something when you don't use/need it anymore."
+)
+module Disposable: {
+  @ocaml.doc("The type representing a `Disposable`.")
+  type t
+
+  @ocaml.doc("Dispose the `Disposable`.") @bs.send external dispose: t => unit = "dispose"
+}
+
+@ocaml.doc(
   "Module representing the environment, which you'll need to use and pass to various functions. Takes a few configuration options like store and network layer."
 )
 module Environment: {
@@ -674,19 +684,11 @@ module Environment: {
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
 
   @ocaml.doc(
-    "Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected."
+    "Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected.
+You should use the generated `Query.retain` function on your queries instead of using this directly."
   )
-  @bs.send external retain: (t, operationDescriptor) => Disposable.t = "retain"
-}
-
-@ocaml.doc(
-  "A disposable is something you can use to dispose of something when you don't use/need it anymore."
-)
-module Disposable: {
-  @ocaml.doc("The type representing a `Disposable`.")
-  type t
-
-  @ocaml.doc("Dispose the `Disposable`.") @bs.send external dispose: t => unit = "dispose"
+  @bs.send
+  external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
 
 @ocaml.doc("fetchPolicy controls how you want Relay to resolve your data.")

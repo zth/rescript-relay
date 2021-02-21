@@ -290,6 +290,28 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           );
         }
       ],
+      [%stri
+        let retain =
+            (
+              ~environment: ReasonRelay.Environment.t,
+              ~variables: [%t
+                 typeFromGeneratedModule(["Types", "variables"])
+               ],
+            ) => {
+          let operationDescriptor =
+            Internal.internal_createOperationDescriptor(
+              [%e valFromGeneratedModule(["node"])],
+              variables->[%e
+                           valFromGeneratedModule([
+                             "Internal",
+                             "convertVariables",
+                           ])
+                         ],
+            );
+
+          environment->ReasonRelay.Environment.retain(operationDescriptor);
+        }
+      ],
       hasRawResponseType
         ? [%stri
           let commitLocalPayload =

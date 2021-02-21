@@ -7,6 +7,7 @@
 ## New bindings
 
 - Bind `Environment.retain` (a way to ensure a specific query is not garbage collected). [@webican](https://github.com/webican)
+- Add `Query.retain(~environment, ~variables)` as a way of retaining a query so it's not garbade collected. More info [in the Relay docs here](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#retaining-queries) on what that means.
 
 ## Fixes & misc
 
