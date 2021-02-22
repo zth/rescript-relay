@@ -20,31 +20,31 @@ external makeArguments: {..} => arguments = "%identity"
 external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
 external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
   "generateClientID"
 
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external isClientID: dataId => bool = "isClientID"
 
 type featureFlags = {
-  @bs.as("ENABLE_VARIABLE_CONNECTION_KEY")
+  @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,
-  @bs.as("ENABLE_PARTIAL_RENDERING_DEFAULT")
+  @as("ENABLE_PARTIAL_RENDERING_DEFAULT")
   mutable enablePartialRenderingDefault: bool,
-  @bs.as("ENABLE_RELAY_CONTAINERS_SUSPENSE")
+  @as("ENABLE_RELAY_CONTAINERS_SUSPENSE")
   mutable enableRelayContainersSuspense: bool,
-  @bs.as("ENABLE_PRECISE_TYPE_REFINEMENT")
+  @as("ENABLE_PRECISE_TYPE_REFINEMENT")
   mutable enablePrecisTypeRefinement: bool,
 }
 
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
-@bs.module("./utils")
+@module("./utils")
 external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
 
 let optArrayOfNullableToOptArrayOfOpt: option<array<Js.Nullable.t<'a>>> => option<
@@ -55,29 +55,29 @@ let optArrayOfNullableToOptArrayOfOpt: option<array<Js.Nullable.t<'a>>> => optio
   | Some(arr) => Some(arr->Belt.Array.map(Js.Nullable.toOption))
   }
 
-@bs.module("relay-runtime") external storeRootId: dataId = "ROOT_ID"
-@bs.module("relay-runtime") external storeRootType: string = "ROOT_TYPE"
+@module("relay-runtime") external storeRootId: dataId = "ROOT_ID"
+@module("relay-runtime") external storeRootType: string = "ROOT_TYPE"
 
 module RecordProxy = {
   type t
 
-  @bs.send
+  @send
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom"
 
-  @bs.send external getDataId: t => dataId = "getDataID"
+  @send external getDataId: t => dataId = "getDataID"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t> =
     "getLinkedRecord"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getLinkedRecords: (t, string, option<arguments>) => option<array<Js.Nullable.t<t>>> =
     "getLinkedRecords"
 
   let getLinkedRecords = (t, ~name, ~arguments=?, ()): option<array<option<t>>> =>
-    getLinkedRecords(t, name, arguments) |> optArrayOfNullableToOptArrayOfOpt
+    getLinkedRecords(t, name, arguments)->optArrayOfNullableToOptArrayOfOpt
 
-  @bs.send
+  @send
   external getOrCreateLinkedRecord: (
     t,
     ~name: string,
@@ -86,13 +86,13 @@ module RecordProxy = {
     unit,
   ) => t = "getOrCreateLinkedRecord"
 
-  @bs.send external getType: t => string = "getType"
+  @send external getType: t => string = "getType"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string> =
     "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueStringArray: (
     t,
     ~name: string,
@@ -100,11 +100,11 @@ module RecordProxy = {
     unit,
   ) => option<array<option<string>>> = "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int> =
     "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueIntArray: (
     t,
     ~name: string,
@@ -112,11 +112,11 @@ module RecordProxy = {
     unit,
   ) => option<array<option<int>>> = "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float> =
     "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueFloatArray: (
     t,
     ~name: string,
@@ -124,11 +124,11 @@ module RecordProxy = {
     unit,
   ) => option<array<option<float>>> = "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool> =
     "getValue"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getValueBoolArray: (
     t,
     ~name: string,
@@ -136,29 +136,29 @@ module RecordProxy = {
     unit,
   ) => option<array<option<bool>>> = "getValue"
 
-  @bs.send
+  @send
   external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
     "setLinkedRecord"
 
-  @bs.send
+  @send
   external setLinkedRecordToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecord"
 
-  @bs.send
+  @send
   external setLinkedRecordToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecord"
 
-  @bs.send
+  @send
   external setLinkedRecords: (
     t,
     ~records: array<option<t>>,
@@ -167,47 +167,47 @@ module RecordProxy = {
     unit,
   ) => t = "setLinkedRecords"
 
-  @bs.send
+  @send
   external setLinkedRecordsToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecords"
 
-  @bs.send
+  @send
   external setLinkedRecordsToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecords"
 
-  @bs.send
+  @send
   external setValueToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setValue"
 
-  @bs.send
+  @send
   external setValueToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setValue"
 
-  @bs.send
+  @send
   external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @bs.send
+  @send
   external setValueStringArray: (
     t,
     ~value: array<string>,
@@ -216,11 +216,11 @@ module RecordProxy = {
     unit,
   ) => t = "setValue"
 
-  @bs.send
+  @send
   external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @bs.send
+  @send
   external setValueIntArray: (
     t,
     ~value: array<int>,
@@ -229,11 +229,11 @@ module RecordProxy = {
     unit,
   ) => t = "setValue"
 
-  @bs.send
+  @send
   external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @bs.send
+  @send
   external setValueFloatArray: (
     t,
     ~value: array<float>,
@@ -242,11 +242,11 @@ module RecordProxy = {
     unit,
   ) => t = "setValue"
 
-  @bs.send
+  @send
   external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @bs.send
+  @send
   external setValueBoolArray: (
     t,
     ~value: array<bool>,
@@ -255,39 +255,39 @@ module RecordProxy = {
     unit,
   ) => t = "setValue"
 
-  @bs.send external invalidateRecord: t => unit = "invalidateRecord"
+  @send external invalidateRecord: t => unit = "invalidateRecord"
 }
 
 module RecordSourceSelectorProxy = {
   type t
 
-  @bs.send
+  @send
   external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
 
-  @bs.send external delete: (t, ~dataId: dataId) => unit = "delete"
+  @send external delete: (t, ~dataId: dataId) => unit = "delete"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
 
-  @bs.send external getRoot: t => RecordProxy.t = "getRoot"
+  @send external getRoot: t => RecordProxy.t = "getRoot"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getRootField: (t, ~fieldName: string) => option<RecordProxy.t> = "getRootField"
 
-  @bs.send @bs.return(nullable)
+  @send @return(nullable)
   external getPluralRootField: (
     t,
     ~fieldName: string,
   ) => option<array<Js.Nullable.t<RecordProxy.t>>> = "getPluralRootField"
 
   let getPluralRootField = (t, ~fieldName): option<array<option<RecordProxy.t>>> =>
-    getPluralRootField(t, ~fieldName) |> optArrayOfNullableToOptArrayOfOpt
+    getPluralRootField(t, ~fieldName)->optArrayOfNullableToOptArrayOfOpt
 
-  @bs.send external invalidateStore: t => unit = "invalidateStore"
+  @send external invalidateStore: t => unit = "invalidateStore"
 }
 
 module ConnectionHandler = {
-  @bs.module("relay-runtime") @bs.scope("ConnectionHandler") @bs.return(nullable)
+  @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (
     ~record: RecordProxy.t,
     ~key: string,
@@ -295,7 +295,7 @@ module ConnectionHandler = {
     unit,
   ) => option<RecordProxy.t> = "getConnection"
 
-  @bs.module("relay-runtime") @bs.scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external createEdge: (
     ~store: RecordSourceSelectorProxy.t,
     ~connection: RecordProxy.t,
@@ -303,7 +303,7 @@ module ConnectionHandler = {
     ~edgeType: string,
   ) => RecordProxy.t = "createEdge"
 
-  @bs.module("relay-runtime") @bs.scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external insertEdgeBefore: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -311,7 +311,7 @@ module ConnectionHandler = {
     unit,
   ) => unit = "insertEdgeBefore"
 
-  @bs.module("relay-runtime") @bs.scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external insertEdgeAfter: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -319,7 +319,7 @@ module ConnectionHandler = {
     unit,
   ) => unit = "insertEdgeAfter"
 
-  @bs.module("relay-runtime") @bs.scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
 }
 
@@ -328,7 +328,7 @@ type operationDescriptor
 module Disposable = {
   type t
 
-  @bs.send external dispose: t => unit = "dispose"
+  @send external dispose: t => unit = "dispose"
 }
 
 type cacheConfig = {
@@ -355,7 +355,7 @@ module Observable = {
 
   type observer<'response>
 
-  @bs.obj
+  @obj
   external makeObserver: (
     ~start: subscription => unit=?,
     ~next: 'response => unit=?,
@@ -365,13 +365,13 @@ module Observable = {
     unit,
   ) => observer<'response> = ""
 
-  @bs.module("relay-runtime") @bs.scope("Observable")
+  @module("relay-runtime") @scope("Observable")
   external make: (sink<'response> => option<subscription>) => t<'response> = "create"
 
-  @bs.send
+  @send
   external subscribe: (t<'response>, observer<'response>) => subscription = "subscribe"
 
-  @bs.send external toPromise: t<'t> => Promise.t<'t> = "toPromise"
+  @send external toPromise: t<'t> => Promise.t<'t> = "toPromise"
 }
 
 module Network = {
@@ -400,14 +400,14 @@ module Network = {
     Js.Nullable.t<uploadables>,
   ) => Observable.t<Js.Json.t>
 
-  @bs.module("relay-runtime") @bs.scope("Network")
+  @module("relay-runtime") @scope("Network")
   external makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
     unit,
   ) => t = "create"
 
-  @bs.module("relay-runtime") @bs.scope("Network")
+  @module("relay-runtime") @scope("Network")
   external makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
@@ -418,10 +418,10 @@ module Network = {
 module RecordSource = {
   type t
 
-  @bs.module("relay-runtime") @bs.new
+  @module("relay-runtime") @new
   external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource"
 
-  @bs.send external toJSON: t => recordSourceRecords = "toJSON"
+  @send external toJSON: t => recordSourceRecords = "toJSON"
 }
 
 module Store = {
@@ -432,7 +432,7 @@ module Store = {
     queryCacheExpirationTime: option<int>,
   }
 
-  @bs.module("relay-runtime") @bs.new
+  @module("relay-runtime") @new
   external make: (RecordSource.t, storeConfig) => t = "Store"
 
   let make = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?, ()) =>
@@ -444,8 +444,8 @@ module Store = {
       },
     )
 
-  @bs.send external getSource: t => RecordSource.t = "getSource"
-  @bs.send external publish: (t, RecordSource.t) => unit = "publish"
+  @send external getSource: t => RecordSource.t = "getSource"
+  @send external publish: (t, RecordSource.t) => unit = "publish"
 }
 
 type renderPolicy =
@@ -464,20 +464,20 @@ module Environment = {
 
   type missingFieldHandlers
 
-  @bs.deriving(abstract)
+  @deriving(abstract)
   type environmentConfig<'a> = {
     network: Network.t,
     store: Store.t,
-    @bs.optional @bs.as("UNSTABLE_DO_NOT_USE_getDataID")
+    @optional @as("UNSTABLE_DO_NOT_USE_getDataID")
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
-    @bs.optional @bs.as("UNSTABLE_defaultRenderPolicy")
+    @optional @as("UNSTABLE_defaultRenderPolicy")
     defaultRenderPolicy: string,
-    @bs.optional
+    @optional
     treatMissingFieldsAsNull: bool,
     missingFieldHandlers: missingFieldHandlers,
   }
 
-  @bs.module("relay-runtime") @bs.new
+  @module("relay-runtime") @new
   external make: environmentConfig<'a> => t = "Environment"
 
   let make = (
@@ -519,10 +519,10 @@ module Environment = {
       ),
     )
 
-  @bs.send external getStore: t => Store.t = "getStore"
-  @bs.send
+  @send external getStore: t => Store.t = "getStore"
+  @send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
-  @bs.send external retain: (t, operationDescriptor) => Disposable.t = "retain"
+  @send external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
 
 module Context = {
@@ -530,7 +530,7 @@ module Context = {
 
   type contextShape = {"environment": Environment.t}
 
-  @bs.module("react-relay")
+  @module("react-relay")
   external context: React.Context.t<option<contextShape>> = "ReactRelayContext"
   let provider = React.Context.provider(context)
 
@@ -592,7 +592,7 @@ type loadQueryConfig = {
   networkCacheConfig: option<cacheConfig>,
 }
 
-@bs.module("react-relay/hooks")
+@module("react-relay/hooks")
 external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
   "loadQuery"
 
@@ -660,12 +660,12 @@ type mutationError = {message: string}
 
 exception Mutation_failed(array<mutationError>)
 
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external commitLocalUpdate: (
   ~environment: Environment.t,
   ~updater: RecordSourceSelectorProxy.t => unit,
 ) => unit = "commitLocalUpdate"
 
-@bs.module("react-relay/hooks")
+@module("react-relay/hooks")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"

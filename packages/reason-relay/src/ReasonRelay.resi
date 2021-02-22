@@ -76,38 +76,38 @@ external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 @ocaml.doc(
   "This generates a `dataId` for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is `generateUniqueClientID` that'll let you generate a new, unique `dataId` that you can use for client side only records (like when doing optimistic updates)."
 )
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
   "generateClientID"
 
 @ocaml.doc(
   "This generates a unique `dataId` that's safe to use on the _client_ side. Useful when doing optimistic updates and you need to create IDs that the optimistic update can use."
 )
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 
 @ocaml.doc("Checks whether the provided `dataId` is guaranteed to be a client side only id.")
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external isClientID: dataId => bool = "isClientID"
 
 @ocaml.doc(
   "Relay feature flags. Mutate this record as soon as your application boots to enable/disable features."
 )
 type featureFlags = {
-  @bs.as("ENABLE_VARIABLE_CONNECTION_KEY")
+  @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,
-  @bs.as("ENABLE_PARTIAL_RENDERING_DEFAULT")
+  @as("ENABLE_PARTIAL_RENDERING_DEFAULT")
   mutable enablePartialRenderingDefault: bool,
-  @bs.as("ENABLE_RELAY_CONTAINERS_SUSPENSE")
+  @as("ENABLE_RELAY_CONTAINERS_SUSPENSE")
   mutable enableRelayContainersSuspense: bool,
-  @bs.as("ENABLE_PRECISE_TYPE_REFINEMENT")
+  @as("ENABLE_PRECISE_TYPE_REFINEMENT")
   mutable enablePrecisTypeRefinement: bool,
 }
 
 @ocaml.doc(
   "Relay feature flags. Mutate this record as soon as your application boots to enable/disable features."
 )
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
 @ocaml.doc(
@@ -120,13 +120,13 @@ type recordSourceRecords
 @ocaml.doc(
   "The `dataId` for the Relay store's root. Useful when for example referencing the `parentID` of a connection that's on the store root."
 )
-@bs.module("relay-runtime")
+@module("relay-runtime")
 external storeRootId: dataId = "ROOT_ID"
 
-@ocaml.doc("The `type` for the Relay store's root `RecordProxy`.") @bs.module("relay-runtime")
+@ocaml.doc("The `type` for the Relay store's root `RecordProxy`.") @module("relay-runtime")
 external storeRootType: string = "ROOT_TYPE"
 
-@ocaml.doc("Internal, do not use.") @bs.module("./utils")
+@ocaml.doc("Internal, do not use.") @module("./utils")
 external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
 
 @ocaml.doc(
@@ -138,17 +138,17 @@ module RecordProxy: {
   )
   type t
 
-  @ocaml.doc("Copies all fields from one `RecordProxy` to another.") @bs.send
+  @ocaml.doc("Copies all fields from one `RecordProxy` to another.") @send
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom"
 
-  @ocaml.doc("Gets the \`dataId\` for a particular record.") @bs.send
+  @ocaml.doc("Gets the \`dataId\` for a particular record.") @send
   external getDataId: t => dataId = "getDataID"
 
   @ocaml.doc(
     "Gets a single linked record. A linked record is another object in the store, and not a scalar field like an int or float."
   )
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t> =
     "getLinkedRecord"
 
@@ -165,7 +165,7 @@ module RecordProxy: {
   @ocaml.doc(
     "This returns an existing linked record, or creates one at the configured place if one does not already exist."
   )
-  @bs.send
+  @send
   external getOrCreateLinkedRecord: (
     t,
     ~name: string,
@@ -174,16 +174,16 @@ module RecordProxy: {
     unit,
   ) => t = "getOrCreateLinkedRecord"
 
-  @ocaml.doc("Returns the `__typename` of this particular record.") @bs.send
+  @ocaml.doc("Returns the `__typename` of this particular record.") @send
   external getType: t => string = "getType"
 
-  @ocaml.doc("Returns a field value, expecting it to be a string.") @bs.send @bs.return(nullable)
+  @ocaml.doc("Returns a field value, expecting it to be a string.") @send @return(nullable)
   external getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string> =
     "getValue"
 
   @ocaml.doc("Returns a field value, expecting it to be an array of strings.")
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external getValueStringArray: (
     t,
     ~name: string,
@@ -191,13 +191,11 @@ module RecordProxy: {
     unit,
   ) => option<array<option<string>>> = "getValue"
 
-  @ocaml.doc("Returns a field value, expecting it to be an int.") @bs.send @bs.return(nullable)
+  @ocaml.doc("Returns a field value, expecting it to be an int.") @send @return(nullable)
   external getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int> =
     "getValue"
 
-  @ocaml.doc("Returns a field value, expecting it to be an array of ints.")
-  @bs.send
-  @bs.return(nullable)
+  @ocaml.doc("Returns a field value, expecting it to be an array of ints.") @send @return(nullable)
   external getValueIntArray: (
     t,
     ~name: string,
@@ -205,13 +203,13 @@ module RecordProxy: {
     unit,
   ) => option<array<option<int>>> = "getValue"
 
-  @ocaml.doc("Returns a field value, expecting it to be a float.") @bs.send @bs.return(nullable)
+  @ocaml.doc("Returns a field value, expecting it to be a float.") @send @return(nullable)
   external getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float> =
     "getValue"
 
   @ocaml.doc("Returns a field value, expecting it to be an array of floats.")
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external getValueFloatArray: (
     t,
     ~name: string,
@@ -219,13 +217,13 @@ module RecordProxy: {
     unit,
   ) => option<array<option<float>>> = "getValue"
 
-  @ocaml.doc("Returns a field value, expecting it to be a boolean.") @bs.send @bs.return(nullable)
+  @ocaml.doc("Returns a field value, expecting it to be a boolean.") @send @return(nullable)
   external getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool> =
     "getValue"
 
   @ocaml.doc("Returns a field value, expecting it to be an array of booleans.")
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external getValueBoolArray: (
     t,
     ~name: string,
@@ -233,12 +231,11 @@ module RecordProxy: {
     unit,
   ) => option<array<option<bool>>> = "getValue"
 
-  @ocaml.doc("Sets a `RecordProxy.t` as the linked record for a particular field.") @bs.send
+  @ocaml.doc("Sets a `RecordProxy.t` as the linked record for a particular field.") @send
   external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
     "setLinkedRecord"
 
-  @ocaml.doc("Sets an array of `RecordProxy.t` as the linked records for a particular field.")
-  @bs.send
+  @ocaml.doc("Sets an array of `RecordProxy.t` as the linked records for a particular field.") @send
   external setLinkedRecords: (
     t,
     ~records: array<option<t>>,
@@ -247,11 +244,11 @@ module RecordProxy: {
     unit,
   ) => t = "setLinkedRecords"
 
-  @ocaml.doc("Sets a string as field value.") @bs.send
+  @ocaml.doc("Sets a string as field value.") @send
   external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @ocaml.doc("Sets an array of strings as field value.") @bs.send
+  @ocaml.doc("Sets an array of strings as field value.") @send
   external setValueStringArray: (
     t,
     ~value: array<string>,
@@ -260,11 +257,11 @@ module RecordProxy: {
     unit,
   ) => t = "setValue"
 
-  @ocaml.doc("Sets an int as field value.") @bs.send
+  @ocaml.doc("Sets an int as field value.") @send
   external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @ocaml.doc("Sets an array of ints as field value.") @bs.send
+  @ocaml.doc("Sets an array of ints as field value.") @send
   external setValueIntArray: (
     t,
     ~value: array<int>,
@@ -273,11 +270,11 @@ module RecordProxy: {
     unit,
   ) => t = "setValue"
 
-  @ocaml.doc("Sets a float as field value.") @bs.send
+  @ocaml.doc("Sets a float as field value.") @send
   external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @ocaml.doc("Sets an array of floats as field value.") @bs.send
+  @ocaml.doc("Sets an array of floats as field value.") @send
   external setValueFloatArray: (
     t,
     ~value: array<float>,
@@ -286,11 +283,11 @@ module RecordProxy: {
     unit,
   ) => t = "setValue"
 
-  @ocaml.doc("Sets a boolean as field value.") @bs.send
+  @ocaml.doc("Sets a boolean as field value.") @send
   external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
     "setValue"
 
-  @ocaml.doc("Sets an array of booleans as field value.") @bs.send
+  @ocaml.doc("Sets an array of booleans as field value.") @send
   external setValueBoolArray: (
     t,
     ~value: array<bool>,
@@ -300,19 +297,19 @@ module RecordProxy: {
   ) => t = "setValue"
 
   @ocaml.doc("Sets the field value to `undefined` (meaning Relay will treat it as missing data).")
-  @bs.send
+  @send
   external setValueToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setValue"
 
-  @ocaml.doc("Sets the field value to `null`.") @bs.send
+  @ocaml.doc("Sets the field value to `null`.") @send
   external setValueToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
@@ -321,19 +318,19 @@ module RecordProxy: {
   @ocaml.doc(
     "Sets this linked record to `undefined` (meaning Relay will treat it as missing data)."
   )
-  @bs.send
+  @send
   external setLinkedRecordToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecord"
 
-  @ocaml.doc("Sets this linked record to `null`.") @bs.send
+  @ocaml.doc("Sets this linked record to `null`.") @send
   external setLinkedRecordToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
@@ -342,19 +339,19 @@ module RecordProxy: {
   @ocaml.doc(
     "Sets the field holding these linked records to `undefined` (meaning Relay will treat it as missing data)."
   )
-  @bs.send
+  @send
   external setLinkedRecordsToUndefined: (
     t,
-    @bs.as(json`undefined`) _,
+    @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
   ) => t = "setLinkedRecords"
 
-  @ocaml.doc("Sets the field holding these linked records to `null`.") @bs.send
+  @ocaml.doc("Sets the field holding these linked records to `null`.") @send
   external setLinkedRecordsToNull: (
     t,
-    @bs.as(json`null`) _,
+    @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
     unit,
@@ -367,7 +364,7 @@ Invalidating a record means that the _next_ time Relay evaluates this record, it
 
 _Beware_ that this doesn't mean that queries using this record will refetch immediately. Rather, it'll happen the next time the query _renders_. Have a look at `useSubscribeToInvalidationState`, that'll allow you to subscribe to whenever records are invalidated, if you're looking for a way to refetch immediately as something invalidates."
   )
-  @bs.send
+  @send
   external invalidateRecord: t => unit = "invalidateRecord"
 }
 
@@ -378,28 +375,28 @@ module RecordSourceSelectorProxy: {
   @ocaml.doc("Type type representing a `RecordSourceSelectorProxy`.")
   type t
 
-  @ocaml.doc("Creates a new `RecordProxy`.") @bs.send
+  @ocaml.doc("Creates a new `RecordProxy`.") @send
   external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
 
-  @ocaml.doc("Deletes the `RecordProxy` with the provided `dataId`.") @bs.send
+  @ocaml.doc("Deletes the `RecordProxy` with the provided `dataId`.") @send
   external delete: (t, ~dataId: dataId) => unit = "delete"
 
   @ocaml.doc("Returns the `RecordProxy` with the provided `dataId`, if it exists.")
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
 
   @ocaml.doc(
     "Returns the _root_ `RecordProxy`, meaning the `RecordProxy` holding your top level fields."
   )
-  @bs.send
+  @send
   external getRoot: t => RecordProxy.t = "getRoot"
 
   @ocaml.doc(
     "Returns the `RecordProxy` for the `fieldName` at root. You should prefer using `RecordSourceSelectorProxy.getRoot()` and traverse from there if you need access to root fields rather than use this."
   )
-  @bs.send
-  @bs.return(nullable)
+  @send
+  @return(nullable)
   external getRootField: (t, ~fieldName: string) => option<RecordProxy.t> = "getRootField"
 
   @ocaml.doc("Plural version of `RecordSourceSelectorProxy.getRootField`.")
@@ -408,7 +405,7 @@ module RecordSourceSelectorProxy: {
   @ocaml.doc(
     "Invalidates the entire store. This means that _at the next render_, the entire store will be treated as empty, meaning Relay will refetch everything it needs to show the view it's to show."
   )
-  @bs.send
+  @send
   external invalidateStore: t => unit = "invalidateStore"
 }
 
@@ -419,9 +416,9 @@ module ConnectionHandler: {
   @ocaml.doc(
     "For a `RecordProxy`, returns the `RecordProxy` that is at the connection config provided."
   )
-  @bs.module("relay-runtime")
-  @bs.scope("ConnectionHandler")
-  @bs.return(nullable)
+  @module("relay-runtime")
+  @scope("ConnectionHandler")
+  @return(nullable)
   external getConnection: (
     ~record: RecordProxy.t,
     ~key: string,
@@ -430,8 +427,8 @@ module ConnectionHandler: {
   ) => option<RecordProxy.t> = "getConnection"
 
   @ocaml.doc("Creates an edge for a particular connection.")
-  @bs.module("relay-runtime")
-  @bs.scope("ConnectionHandler")
+  @module("relay-runtime")
+  @scope("ConnectionHandler")
   external createEdge: (
     ~store: RecordSourceSelectorProxy.t,
     ~connection: RecordProxy.t,
@@ -442,8 +439,8 @@ module ConnectionHandler: {
   @ocaml.doc(
     "Inserts an edge into a connection _before_ the provided cursor. If no cursor is provided, it inserts the edge at the start of the connection list."
   )
-  @bs.module("relay-runtime")
-  @bs.scope("ConnectionHandler")
+  @module("relay-runtime")
+  @scope("ConnectionHandler")
   external insertEdgeBefore: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -454,8 +451,8 @@ module ConnectionHandler: {
   @ocaml.doc(
     "Inserts an edge into a connection _after_ the provided cursor. If no cursor is provided, it inserts the edge at the end of the connection list."
   )
-  @bs.module("relay-runtime")
-  @bs.scope("ConnectionHandler")
+  @module("relay-runtime")
+  @scope("ConnectionHandler")
   external insertEdgeAfter: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -466,8 +463,8 @@ module ConnectionHandler: {
   @ocaml.doc(
     "Deletes any edge from the connection where the node of the edge has the provided `dataId`. Please not that this _will not_ remove the actual node from the store. Use `RecordSourceSelectorProxy.delete` for that."
   )
-  @bs.module("relay-runtime")
-  @bs.scope("ConnectionHandler")
+  @module("relay-runtime")
+  @scope("ConnectionHandler")
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
 }
 
@@ -505,7 +502,7 @@ module Observable: {
   @ocaml.doc("An observer of the observable.")
   type observer<'response>
 
-  @ocaml.doc("Create an observer.") @bs.obj
+  @ocaml.doc("Create an observer.") @obj
   external makeObserver: (
     ~start: subscription => unit=?,
     ~next: 'response => unit=?,
@@ -518,17 +515,17 @@ module Observable: {
   @ocaml.doc(
     "Create a new observable, getting fed an `Observable.sink` for interacting with the observable, and optionally returning a `Observable.subscription` if you have things you want to unsubscribe from as the observable closes."
   )
-  @bs.module("relay-runtime")
-  @bs.scope("Observable")
+  @module("relay-runtime")
+  @scope("Observable")
   external make: (sink<'t> => option<subscription>) => t<'t> = "create"
 
-  @ocaml.doc("Subscribe to the `Observable.t` using an observer.") @bs.send
+  @ocaml.doc("Subscribe to the `Observable.t` using an observer.") @send
   external subscribe: (t<'t>, observer<'t>) => subscription = "subscribe"
 
   @ocaml.doc(
     "Turns an `Observable` into a promise. _Beware_ that reading the response in the resulting promise is currently _not safe_ due to some internals of how ReScript Relay works. This will be resolved in the future."
   )
-  @bs.send
+  @send
   external toPromise: t<'t> => Promise.t<'t> = "toPromise"
 }
 
@@ -571,8 +568,8 @@ module Network: {
   ) => Observable.t<Js.Json.t>
 
   @ocaml.doc("Create a new `NetworkLayer` using a fetch function that returns a promise.")
-  @bs.module("relay-runtime")
-  @bs.scope("Network")
+  @module("relay-runtime")
+  @scope("Network")
   external makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
@@ -580,8 +577,8 @@ module Network: {
   ) => t = "create"
 
   @ocaml.doc("Create a new `NetworkLayer` using a fetch function that returns an `Observable`.")
-  @bs.module("relay-runtime")
-  @bs.scope("Network")
+  @module("relay-runtime")
+  @scope("Network")
   external makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
@@ -599,14 +596,14 @@ module RecordSource: {
   @ocaml.doc(
     "Create a new `RecordSource`. Here's where you pass an existing `recordSourceRecords` if you have existing records you want to hydrate the store with, when doing SSR or similar."
   )
-  @bs.module("relay-runtime")
-  @bs.new
+  @module("relay-runtime")
+  @new
   external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource"
 
   @ocaml.doc(
     "Serializes the `RecordSource` into `recordSourceRecords` that you can use to rehydrate another store. Typically used for SSR."
   )
-  @bs.send
+  @send
   external toJSON: t => recordSourceRecords = "toJSON"
 }
 
@@ -624,13 +621,13 @@ module Store: {
     unit,
   ) => t
 
-  @ocaml.doc("Gets the `RecordSource` for this `Store`.") @bs.send
+  @ocaml.doc("Gets the `RecordSource` for this `Store`.") @send
   external getSource: t => RecordSource.t = "getSource"
 
   @ocaml.doc(
     "Publishes _new_ records to this store. This is useful in particular with frameworks like Next.js where routes could preload data needed and then serialize that (using `RecordSource.toJSON`) and send it over the wire, but you already have a store instantiated client side. This will then allow you to publish those records into your existing store."
   )
-  @bs.send
+  @send
   external publish: (t, RecordSource.t) => unit = "publish"
 }
 
@@ -654,7 +651,7 @@ module Disposable: {
   @ocaml.doc("The type representing a `Disposable`.")
   type t
 
-  @ocaml.doc("Dispose the `Disposable`.") @bs.send external dispose: t => unit = "dispose"
+  @ocaml.doc("Dispose the `Disposable`.") @send external dispose: t => unit = "dispose"
 }
 
 @ocaml.doc(
@@ -677,17 +674,17 @@ module Environment: {
     unit,
   ) => t
 
-  @ocaml.doc("Get the `Store` for this `Environment`.") @bs.send
+  @ocaml.doc("Get the `Store` for this `Environment`.") @send
   external getStore: t => Store.t = "getStore"
 
-  @ocaml.doc("Given an `operationDescriptor`, commits the corresponding payload.") @bs.send
+  @ocaml.doc("Given an `operationDescriptor`, commits the corresponding payload.") @send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
 
   @ocaml.doc(
     "Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected.
 You should use the generated `Query.retain` function on your queries instead of using this directly."
   )
-  @bs.send
+  @send
   external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
 
@@ -722,7 +719,7 @@ module Context: {
   @ocaml.doc("The expected shape of the context.")
   type contextShape = {"environment": Environment.t}
 
-  @ocaml.doc("The actual React context coming from Relay.") @bs.module("react-relay")
+  @ocaml.doc("The actual React context coming from Relay.") @module("react-relay")
   external context: React.Context.t<option<contextShape>> = "ReactRelayContext"
 
   @ocaml.doc(
@@ -748,7 +745,7 @@ let useEnvironmentFromContext: unit => Environment.t
 @ocaml.doc("An exception detailing that a mutation failed.")
 exception Mutation_failed(array<mutationError>)
 
-@ocaml.doc("A way of committing a local update to the store.") @bs.module("relay-runtime")
+@ocaml.doc("A way of committing a local update to the store.") @module("relay-runtime")
 external commitLocalUpdate: (
   ~environment: Environment.t,
   ~updater: RecordSourceSelectorProxy.t => unit,
@@ -757,7 +754,7 @@ external commitLocalUpdate: (
 @ocaml.doc(
   "Allows you to subscribe to when a record, connection, or even the store itself is invalidated, and then react to that."
 )
-@bs.module("react-relay/hooks")
+@module("react-relay/hooks")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"
 
