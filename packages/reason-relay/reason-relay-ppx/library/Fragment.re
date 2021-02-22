@@ -24,7 +24,7 @@ let make =
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         module Internal = {
-          [@bs.module "react-relay"]
+          [@module "react-relay"]
           external internal_readInlineData:
             (
               ReasonRelay.fragmentNode(
@@ -35,7 +35,7 @@ let make =
             [%t typeFromGeneratedModule(["Types", "fragment"])] =
             "readInlineData";
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_useFragment:
             (
               ReasonRelay.fragmentNode(
@@ -46,7 +46,7 @@ let make =
             [%t typeFromGeneratedModule(["Types", "fragment"])] =
             "useFragment";
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_useFragmentOpt:
             (
               ReasonRelay.fragmentNode(
@@ -67,13 +67,13 @@ let make =
         ()
       | Some(queryName) => [%stri
           module InternalRefetch = {
-            [@bs.deriving abstract]
+            [@deriving abstract]
             type refetchableFnOpts = {
-              [@bs.optional]
+              [@optional]
               fetchPolicy: string,
-              [@bs.optional] [@bs.as "UNSTABLE_renderPolicy"]
+              [@optional] [@as "UNSTABLE_renderPolicy"]
               renderPolicy: string,
-              [@bs.optional]
+              [@optional]
               onComplete: Js.Nullable.t(Js.Exn.t) => unit,
             };
 
@@ -167,7 +167,7 @@ let make =
                 ReasonRelay.Disposable.t,
             };
 
-            [@bs.module "react-relay/hooks"]
+            [@module "react-relay/hooks"]
             external internal_usePaginationFragment:
               (
                 ReasonRelay.fragmentNode(
@@ -178,7 +178,7 @@ let make =
               paginationFragmentReturnRaw =
               "usePaginationFragment";
 
-            [@bs.module "react-relay/hooks"]
+            [@module "react-relay/hooks"]
             external internal_useBlockingPaginationFragment:
               (
                 ReasonRelay.fragmentNode(
@@ -189,7 +189,7 @@ let make =
               paginationFragmentReturnRaw =
               "useBlockingPaginationFragment";
 
-            [@bs.module "react-relay/hooks"]
+            [@module "react-relay/hooks"]
             external internal_useRefetchableFragment:
               (
                 ReasonRelay.fragmentNode(

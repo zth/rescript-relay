@@ -22,25 +22,25 @@ let make = (~loc, ~moduleName) => {
             ) =>
             unit;
 
-          [@bs.deriving abstract]
+          [@deriving abstract]
           type subscriptionConfig = {
             subscription:
               ReasonRelay.subscriptionNode(
                 [%t typeFromGeneratedModule(["relayOperationNode"])],
               ),
             variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            [@bs.optional]
+            [@optional]
             onCompleted: unit => unit,
-            [@bs.optional]
+            [@optional]
             onError: Js.Exn.t => unit,
-            [@bs.optional]
+            [@optional]
             onNext:
               [%t typeFromGeneratedModule(["Types", "response"])] => unit,
-            [@bs.optional]
+            [@optional]
             updater: updaterFn,
           };
 
-          [@bs.module "relay-runtime"]
+          [@module "relay-runtime"]
           external internal_requestSubscription:
             (ReasonRelay.Environment.t, subscriptionConfig) =>
             ReasonRelay.Disposable.t =

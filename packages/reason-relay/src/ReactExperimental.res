@@ -1,15 +1,15 @@
 type callback<'input, 'output> = 'input => 'output
 
-@bs.module("react")
+@module("react")
 external _unstable_useDeferredValue: 'value => 'value = "unstable_useDeferredValue"
 
-@bs.module("react")
+@module("react")
 external _unstable_useTransition: unit => (callback<callback<unit, unit>, unit>, bool) =
   "unstable_useTransition"
 
 let unstable_useTransition = () => _unstable_useTransition()
 
-@bs.val @bs.return(nullable)
+@val @return(nullable)
 external getElementById: string => option<Dom.element> = "document.getElementById"
 
 let renderConcurrentRootAtElementWithId: (React.element, string) => unit = (content, id) =>

@@ -15,7 +15,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         module Internal = {
-          [@bs.module "relay-runtime"]
+          [@module "relay-runtime"]
           external internal_createOperationDescriptor:
             (
               ReasonRelay.queryNode(
@@ -29,12 +29,12 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           type useQueryConfig = {
             fetchKey: option(string),
             fetchPolicy: option(string),
-            [@bs.as "UNSTABLE_renderPolicy"]
+            [@as "UNSTABLE_renderPolicy"]
             renderPolicy: option(string),
             networkCacheConfig: option(ReasonRelay.cacheConfig),
           };
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_useQuery:
             (
               ReasonRelay.queryNode(
@@ -46,7 +46,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             [%t typeFromGeneratedModule(["Types", "response"])] =
             "useLazyLoadQuery";
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_usePreloadedQuery:
             (
               ReasonRelay.queryNode(
@@ -63,7 +63,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             networkCacheConfig: option(ReasonRelay.cacheConfig),
           };
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_useQueryLoader:
             ReasonRelay.queryNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
@@ -79,7 +79,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             ) =
             "useQueryLoader";
 
-          [@bs.module "react-relay/hooks"]
+          [@module "react-relay/hooks"]
           external internal_fetchQuery:
             (
               ReasonRelay.Environment.t,

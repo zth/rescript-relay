@@ -20,13 +20,13 @@ type operationOptions = {
 }
 
 type observable<'a> = {
-  @bs.meth
+  @meth
   "subscribe": ReasonRelay.Observable.sink<'a> => ReasonRelay.Observable.subscription,
 }
 
-type t<'a> = {@bs.meth "request": operationOptions => observable<'a>}
+type t<'a> = {@meth "request": operationOptions => observable<'a>}
 
-@bs.new @bs.module("subscriptions-transport-ws")
+@new @module("subscriptions-transport-ws")
 external createSubscriptionClient: (string, 'a) => t<'b> = "SubscriptionClient"
 
 let createSubscriptionClient = createSubscriptionClient

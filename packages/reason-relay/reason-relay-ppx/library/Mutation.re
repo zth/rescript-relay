@@ -85,13 +85,13 @@ let make = (~loc, ~moduleName) => {
             uploadables: option(ReasonRelay.uploadables),
           };
 
-          [@bs.module "relay-runtime"]
+          [@module "relay-runtime"]
           external internal_commitMutation:
             (ReasonRelay.Environment.t, commitMutationConfigRaw) =>
             ReasonRelay.Disposable.t =
             "commitMutation";
 
-          [@bs.module "react-relay/lib/relay-experimental"]
+          [@module "react-relay/lib/relay-experimental"]
           external internal_useMutation:
             ReasonRelay.mutationNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
