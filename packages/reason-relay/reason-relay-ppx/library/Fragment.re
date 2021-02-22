@@ -20,45 +20,47 @@ let make =
   Ast_helper.Mod.mk(
     Pmod_structure([
       // The %stri PPX comes from Ppxlib and means "make a structure item AST out of this raw string"
+      [%stri [@ocaml.warning "-32"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        module Internal = {
-          [@module "react-relay"]
-          external internal_readInlineData:
-            (
-              ReasonRelay.fragmentNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["fragmentRef"])]
-            ) =>
-            [%t typeFromGeneratedModule(["Types", "fragment"])] =
-            "readInlineData";
-
-          [@module "react-relay/hooks"]
-          external internal_useFragment:
-            (
-              ReasonRelay.fragmentNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["fragmentRef"])]
-            ) =>
-            [%t typeFromGeneratedModule(["Types", "fragment"])] =
-            "useFragment";
-
-          [@module "react-relay/hooks"]
-          external internal_useFragmentOpt:
-            (
-              ReasonRelay.fragmentNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              Js.Nullable.t([%t typeFromGeneratedModule(["fragmentRef"])])
-            ) =>
-            Js.Nullable.t(
-              [%t typeFromGeneratedModule(["Types", "fragment"])],
-            ) =
-            "useFragment";
-        }
+        %private
+        [@module "react-relay"]
+        external internal_readInlineData:
+          (
+            ReasonRelay.fragmentNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            [%t typeFromGeneratedModule(["fragmentRef"])]
+          ) =>
+          [%t typeFromGeneratedModule(["Types", "fragment"])] =
+          "readInlineData"
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_useFragment:
+          (
+            ReasonRelay.fragmentNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            [%t typeFromGeneratedModule(["fragmentRef"])]
+          ) =>
+          [%t typeFromGeneratedModule(["Types", "fragment"])] =
+          "useFragment"
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_useFragmentOpt:
+          (
+            ReasonRelay.fragmentNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            Js.Nullable.t([%t typeFromGeneratedModule(["fragmentRef"])])
+          ) =>
+          Js.Nullable.t([%t typeFromGeneratedModule(["Types", "fragment"])]) =
+          "useFragment"
       ],
       // Internal refetch module
       switch (refetchableQueryName) {
@@ -274,7 +276,7 @@ let make =
       [%stri
         let use = (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
           let data =
-            Internal.internal_useFragment(
+            internal_useFragment(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             );
@@ -300,7 +302,7 @@ let make =
             Js.Nullable.t(
               [%t typeFromGeneratedModule(["Types", "fragment"])],
             ) =
-            Internal.internal_useFragmentOpt(
+            internal_useFragmentOpt(
               [%e valFromGeneratedModule(["node"])],
               switch (fr) {
               | Some(fr) => Some(fr)->Js.Nullable.fromOption
@@ -332,7 +334,7 @@ let make =
         ? [%stri
           let readInline =
               (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
-            Internal.internal_readInlineData(
+            internal_readInlineData(
               [%e valFromGeneratedModule(["node"])],
               fRef->[%e valFromGeneratedModule(["getFragmentRef"])],
             )
