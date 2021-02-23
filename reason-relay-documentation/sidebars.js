@@ -26,6 +26,7 @@ module.exports = {
       "using-with-hasura",
       "using-with-schemas-that-dont-conform-to-the-relay-spec",
       "coming-from-reason-apollo",
+      "migrating-from-javascript-typescript-incrementally",
     ],
     Misc: ["the-compiler", "quirks-of-reason-relay", "examples"],
   },
