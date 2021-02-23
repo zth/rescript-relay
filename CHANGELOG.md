@@ -1,8 +1,17 @@
 # master
 
+# 0.15.0
+
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/reason-relay/commit/5aea01a511f9c084a23a8db09c30bbecca59ca32)_
+
+This is the final release before ReasonRelay will rename to RescriptRelay! Do this to upgrade:
+
+1. We now depend on `@rescript/react` instead of `reason-react`. _Remove_ `reason-react` and add `@rescript/react@0.10.0`.
+2. The compiler now outputs `res` instead of `re`. For this to work smoothly, you should _delete your entire `__generated__` directory_ and re-run the ReasonRelay compiler.
+
 ## Upgrade versions
 
-- _Remove_ `reason-react` and add `@rescript/react@0.10.0`.
+_Remove_ `reason-react` and add `@rescript/react@0.10.0`.
 
 ## Breaking changes
 
@@ -15,6 +24,7 @@
 
 ## Fixes & misc
 
+- Binaries are now statically linked on Linux, which means that build issues on things like Vercel and Netlify should now be gone. [@fakenickels](https://github.com/webican) (and honorary mention [bdj](https://github.com/bdj))
 - The compiler now outputs `res` files and syntax instead of `re` syntax. In order to make this work smoothly, make sure you remove all contents of your `__generated__` folder before you re-run the Relay compiler after upgrading.
 - Fix a bug where store updater directives on scalars (like `deletedUserId`) would not have their connection array arg type transformed from `string` to `dataId`.
 
