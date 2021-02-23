@@ -28,6 +28,8 @@ jobs:
           registry-url: "https://registry.npmjs.org"
         env:
           CI: true
+      - name: Esy install
+        run: esy install
       - name: Build PPX
         run: esy linux:release-script
         working-directory: packages/reason-relay/reason-relay-ppx
