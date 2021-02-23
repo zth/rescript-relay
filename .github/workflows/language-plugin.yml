@@ -9,8 +9,6 @@ jobs:
     defaults:
       run:
         working-directory: packages/reason-relay/language-plugin
-    container:
-      image: cichocinski/docker-esy:alpine3.8
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -18,18 +16,19 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
-      - name: Set up yarn
-        run: apk add --no-cache yarn
       - name: Install
         run: |
           yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build
-      - name: Esy install
-        run: esy install
-      - name: Build PPX
-        run: esy linux-release-static
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build ReasonRelayBin
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay-bin
       - name: Copy built ReasonRelayBin file
         working-directory: packages/reason-relay-bin
         run: |

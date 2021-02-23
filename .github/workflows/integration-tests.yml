@@ -6,8 +6,6 @@ jobs:
   build:
     name: Integration tests
     runs-on: ubuntu-latest
-    container:
-      image: cichocinski/docker-esy:alpine3.8
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -15,21 +13,22 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
-      - name: Set up yarn
-        run: apk add --no-cache yarn
-      - name: Esy install reason-relay-ppx
-        run: esy install
-        working-directory: packages/reason-relay/reason-relay-ppx
-      - name: Build reason-relay-ppx
-        run: esy linux-release-static
-        working-directory: packages/reason-relay/reason-relay-ppx
-      - name: Esy install reason-relay-bin
-        run: esy install
-        working-directory: packages/reason-relay-bin
-      - name: Build reason-relay-bin
-        run: esy linux-release-static
-        working-directory: packages/reason-relay-bin
-
+      - name: Install esy
+        run: npm install -g esy
+      - uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
+      - name: Build PPX
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay/reason-relay-ppx
+      - name: Build ReasonRelayBin
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          working-directory: packages/reason-relay-bin
       - name: Copy built ReasonRelayBin file
         working-directory: packages/reason-relay-bin
         run: |
