@@ -1,74 +1,65 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-  type fragment_todosConnection = {
+  @@ocaml.warning("-30")
+  
+  type rec fragment_todosConnection = {
     __id: ReasonRelay.dataId,
-    edges: option(array(option(fragment_todosConnection_edges))),
+    edges: option<array<option<fragment_todosConnection_edges>>>,
   }
-  and fragment_todosConnection_edges = {
-    node: option(fragment_todosConnection_edges_node),
+   and fragment_todosConnection_edges = {
+    node: option<fragment_todosConnection_edges_node>,
   }
-  and fragment_todosConnection_edges_node = {
+   and fragment_todosConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTodo_todoItem]),
-  };
-
-  type fragment = {todosConnection: fragment_todosConnection};
-};
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SingleTodo_todoItem]>
+  }
+  
+  
+  type fragment = {
+    todosConnection: fragment_todosConnection,
+  }
+}
 
 module Internal = {
-  type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"todosConnection_edges_node":{"f":"","n":""},"todosConnection_edges":{"n":"","na":""}}} |json}
-  ];
-  let fragmentConverterMap = ();
-  let convertFragment = v =>
-    v->ReasonRelay.convertObj(
-      fragmentConverter,
-      fragmentConverterMap,
-      Js.undefined,
-    );
-};
-
-type t;
-type fragmentRef;
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"todosConnection_edges_node":{"f":"","n":""},"todosConnection_edges":{"n":"","na":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `TodoList_query]) => fragmentRef =
-  "%identity";
+  ReasonRelay.fragmentRefs<[> | #TodoList_query]> => fragmentRef = "%identity"
+
 
 module Utils = {
-  open Types;
+  open Types
   let getConnectionNodes:
-    fragment_todosConnection => array(fragment_todosConnection_edges_node) =
-    connection =>
-      switch (connection.edges) {
-      | None => [||]
-      | Some(edges) =>
-        edges->Belt.Array.keepMap(edge =>
-          switch (edge) {
-          | None => None
-          | Some(edge) =>
-            switch (edge.node) {
-            | None => None
-            | Some(node) => Some(node)
-            }
-          }
-        )
-      };
-};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+    fragment_todosConnection => array<fragment_todosConnection_edges_node> =
+    connection => switch connection.edges { 
+    | None => []
+    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+     | None => None 
+     | Some(edge) => edge.node
+  
+    })
+   }
+}
+type relayOperationNode
+type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 
 
-
-let node: operationType = [%raw {json| {
+let node: operationType = %raw(json` {
   "argumentDefinitions": [
     {
       "defaultValue": "",
@@ -195,6 +186,6 @@ let node: operationType = [%raw {json| {
   ],
   "type": "Query",
   "abstractKey": null
-} |json}];
+} `)
 
 

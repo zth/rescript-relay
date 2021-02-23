@@ -1,78 +1,69 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-  type fragment_ticketsConnection = {
+  @@ocaml.warning("-30")
+  
+  type rec fragment_ticketsConnection = {
     pageInfo: fragment_ticketsConnection_pageInfo,
-    edges: option(array(option(fragment_ticketsConnection_edges))),
+    edges: option<array<option<fragment_ticketsConnection_edges>>>,
   }
-  and fragment_ticketsConnection_pageInfo = {
-    endCursor: option(string),
+   and fragment_ticketsConnection_pageInfo = {
+    endCursor: option<string>,
     hasNextPage: bool,
   }
-  and fragment_ticketsConnection_edges = {
-    node: option(fragment_ticketsConnection_edges_node),
+   and fragment_ticketsConnection_edges = {
+    node: option<fragment_ticketsConnection_edges_node>,
   }
-  and fragment_ticketsConnection_edges_node = {
+   and fragment_ticketsConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `SingleTicket_ticket]),
-  };
-
-  type fragment = {ticketsConnection: fragment_ticketsConnection};
-};
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SingleTicket_ticket]>
+  }
+  
+  
+  type fragment = {
+    ticketsConnection: fragment_ticketsConnection,
+  }
+}
 
 module Internal = {
-  type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges_node":{"f":"","n":""}}} |json}
-  ];
-  let fragmentConverterMap = ();
-  let convertFragment = v =>
-    v->ReasonRelay.convertObj(
-      fragmentConverter,
-      fragmentConverterMap,
-      Js.undefined,
-    );
-};
-
-type t;
-type fragmentRef;
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges_node":{"f":"","n":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `RecentTickets_query]) => fragmentRef =
-  "%identity";
+  ReasonRelay.fragmentRefs<[> | #RecentTickets_query]> => fragmentRef = "%identity"
+
 
 module Utils = {
-  open Types;
+  open Types
   let getConnectionNodes:
-    fragment_ticketsConnection => array(fragment_ticketsConnection_edges_node) =
-    connection =>
-      switch (connection.edges) {
-      | None => [||]
-      | Some(edges) =>
-        edges->Belt.Array.keepMap(edge =>
-          switch (edge) {
-          | None => None
-          | Some(edge) =>
-            switch (edge.node) {
-            | None => None
-            | Some(node) => Some(node)
-            }
-          }
-        )
-      };
-};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+    fragment_ticketsConnection => array<fragment_ticketsConnection_edges_node> =
+    connection => switch connection.edges { 
+    | None => []
+    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+     | None => None 
+     | Some(edge) => edge.node
+  
+    })
+   }
+}
+type relayOperationNode
+type operationType = ReasonRelay.fragmentNode<relayOperationNode>
 
 
-
-let node: operationType = [%raw {json| (function(){
+let node: operationType = %raw(json` (function(){
 var v0 = [
   "ticketsConnection"
 ];
@@ -202,6 +193,6 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})() |json}];
+})() `)
 
 

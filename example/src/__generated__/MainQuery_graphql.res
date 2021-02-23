@@ -1,79 +1,74 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-  type response_siteStatistics = {
-    fragmentRefs:
-      ReasonRelay.fragmentRefs([ | `TopCardsDisplayer_siteStatistics]),
-  };
-
+  @@ocaml.warning("-30")
+  
+  type rec response_siteStatistics = {
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TopCardsDisplayer_siteStatistics]>
+  }
   type response = {
     siteStatistics: response_siteStatistics,
-    fragmentRefs:
-      ReasonRelay.fragmentRefs([ | `RecentTickets_query | `TodoList_query]),
-  };
-  type rawResponse = response;
-  type variables = unit;
-};
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>
+  }
+  type rawResponse = response
+  type variables = unit
+}
 
 module Internal = {
-  type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":""},"siteStatistics":{"f":""}}} |json}
-  ];
-  let wrapResponseConverterMap = ();
-  let convertWrapResponse = v =>
-    v->ReasonRelay.convertObj(
-      wrapResponseConverter,
-      wrapResponseConverterMap,
-      Js.null,
-    );
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"":{"f":""},"siteStatistics":{"f":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"":{"f":""},"siteStatistics":{"f":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
 
-  type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":""},"siteStatistics":{"f":""}}} |json}
-  ];
-  let responseConverterMap = ();
-  let convertResponse = v =>
-    v->ReasonRelay.convertObj(
-      responseConverter,
-      responseConverterMap,
-      Js.undefined,
-    );
+type queryRef
 
-  type wrapRawResponseRaw = wrapResponseRaw;
-  let convertWrapRawResponse = convertWrapResponse;
+module Utils = {
 
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
-
-  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {} |json}
-  ];
-  let variablesConverterMap = ();
-  let convertVariables = v =>
-    v->ReasonRelay.convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined,
-    );
-};
-
-type queryRef;
-
-module Utils = {};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.queryNode(relayOperationNode);
+}
+type relayOperationNode
+type operationType = ReasonRelay.queryNode<relayOperationNode>
 
 
-
-let node: operationType = [%raw {json| (function(){
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -437,13 +432,13 @@ return {
     "text": "query MainQuery {\n  siteStatistics {\n    ...TopCardsDisplayer_siteStatistics\n    id\n  }\n  ...RecentTickets_query\n  ...TodoList_query\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query on Query {\n  ticketsConnection(first: 2, after: \"\") {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment SingleTodo_todoItem on TodoItem {\n  id\n  text\n  completed\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n  dbId\n}\n\nfragment TodoList_query on Query {\n  todosConnection(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTodo_todoItem\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TopCardsDisplayer_siteStatistics on SiteStatistics {\n  weeklySales\n  weeklyOrders\n  currentVisitorsOnline\n}\n"
   }
 };
-})() |json}];
+})() `)
 
 include ReasonRelay.MakeLoadQuery({
-    type variables = Types.variables;
-    type loadedQueryRef = queryRef;
-    type response = Types.response;
-    type node = relayOperationNode;
-    let query = node;
-    let convertVariables = Internal.convertVariables;
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
   });

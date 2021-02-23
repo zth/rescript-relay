@@ -1,60 +1,57 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-  type fragment_membersConnection = {
-    edges: option(array(option(fragment_membersConnection_edges))),
+  @@ocaml.warning("-30")
+  
+  type rec fragment_membersConnection = {
+    edges: option<array<option<fragment_membersConnection_edges>>>,
   }
-  and fragment_membersConnection_edges = {
-    node: option(fragment_membersConnection_edges_node),
+   and fragment_membersConnection_edges = {
+    node: option<fragment_membersConnection_edges_node>,
   }
-  and fragment_membersConnection_edges_node = {
+   and fragment_membersConnection_edges_node = {
     id: string,
     fullName: string,
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `Avatar_user]),
-  };
-
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #Avatar_user]>
+  }
+  
+  
   type fragment = {
     name: string,
-    membersConnection: option(fragment_membersConnection),
+    membersConnection: option<fragment_membersConnection>,
     id: string,
-  };
-};
+  }
+}
 
 module Internal = {
-  type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"membersConnection_edges":{"n":"","na":""},"membersConnection":{"n":""},"membersConnection_edges_node":{"f":"","n":""}}} |json}
-  ];
-  let fragmentConverterMap = ();
-  let convertFragment = v =>
-    v->ReasonRelay.convertObj(
-      fragmentConverter,
-      fragmentConverterMap,
-      Js.undefined,
-    );
-};
-
-type t;
-type fragmentRef;
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"membersConnection_edges":{"n":"","na":""},"membersConnection":{"n":""},"membersConnection_edges_node":{"f":"","n":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `SingleTicketWorkingGroup_workingGroup]) =>
-  fragmentRef =
-  "%identity";
-
-module Utils = {};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+  ReasonRelay.fragmentRefs<[> | #SingleTicketWorkingGroup_workingGroup]> => fragmentRef = "%identity"
 
 
+module Utils = {
 
-let node: operationType = [%raw {json| (function(){
+}
+type relayOperationNode
+type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+
+
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -148,6 +145,6 @@ return {
   "type": "WorkingGroup",
   "abstractKey": null
 };
-})() |json}];
+})() `)
 
 
