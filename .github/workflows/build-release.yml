@@ -31,7 +31,7 @@ jobs:
       - name: Esy install
         run: esy install
       - name: Build PPX
-        run: esy linux:release-script
+        run: esy linux-release-static
         working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test

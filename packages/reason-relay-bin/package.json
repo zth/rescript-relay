@@ -5,12 +5,12 @@
   "license": "MIT",
   "esy": {
     "build": "dune build --only-package ReasonRelayBin",
-    "buildDev": "refmterr dune build --promote-install-files --root . --only-package ReasonRelayBin",
-    "linux:release-script": "dune build --root . --only-packages '#{self.name}' --ignore-promoted-rules --no-config --profile release-static"
+    "buildDev": "refmterr dune build --promote-install-files --root . --only-package ReasonRelayBin"
   },
   "scripts": {
     "go": "esy x ReasonRelayBin",
     "test": "esy x RunTests.exe",
+    "linux-release-static": "dune build --root . --only-packages '#{self.name}' --ignore-promoted-rules --no-config --profile release-static",
     "format": "esy dune build @fmt --auto-promote"
   },
   "dependencies": {

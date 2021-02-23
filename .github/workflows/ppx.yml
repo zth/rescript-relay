@@ -25,7 +25,7 @@ jobs:
       - name: Esy install
         run: esy install
       - name: Build PPX
-        run: esy linux:release-script
+        run: esy linux-release-static
       - name: Test PPX
         run: esy test
       - name: Copy built PPX file

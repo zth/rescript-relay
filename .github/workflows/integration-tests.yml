@@ -21,14 +21,15 @@ jobs:
         run: esy install
         working-directory: packages/reason-relay/reason-relay-ppx
       - name: Build reason-relay-ppx
-        run: esy linux:release-script
+        run: esy linux-release-static
         working-directory: packages/reason-relay/reason-relay-ppx
       - name: Esy install reason-relay-bin
         run: esy install
         working-directory: packages/reason-relay-bin
       - name: Build reason-relay-bin
-        run: esy linux:release-script
+        run: esy linux-release-static
         working-directory: packages/reason-relay-bin
+
       - name: Copy built ReasonRelayBin file
         working-directory: packages/reason-relay-bin
         run: |
