@@ -1,48 +1,44 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-
+  @@ocaml.warning("-30")
+  
   type fragment = {
     id: string,
     text: string,
-    completed: option(bool),
-  };
-};
+    completed: option<bool>,
+  }
+}
 
 module Internal = {
-  type fragmentRaw;
-  let fragmentConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"completed":{"n":""}}} |json}
-  ];
-  let fragmentConverterMap = ();
-  let convertFragment = v =>
-    v->ReasonRelay.convertObj(
-      fragmentConverter,
-      fragmentConverterMap,
-      Js.undefined,
-    );
-};
-
-type t;
-type fragmentRef;
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"completed":{"n":""}}}`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->ReasonRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs([> | `SingleTodo_todoItem]) => fragmentRef =
-  "%identity";
-
-module Utils = {};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.fragmentNode(relayOperationNode);
+  ReasonRelay.fragmentRefs<[> | #SingleTodo_todoItem]> => fragmentRef = "%identity"
 
 
+module Utils = {
 
-let node: operationType = [%raw {json| {
+}
+type relayOperationNode
+type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+
+
+let node: operationType = %raw(json` {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -72,6 +68,6 @@ let node: operationType = [%raw {json| {
   ],
   "type": "TodoItem",
   "abstractKey": null
-} |json}];
+} `)
 
 

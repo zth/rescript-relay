@@ -1,15 +1,12 @@
-module TodoFragment = %relay(
-  `
+module TodoFragment = %relay(`
   fragment SingleTodo_todoItem on TodoItem {
     id
     text
     completed
   }
-`
-)
+`)
 
-module DeleteMutation = %relay(
-  `
+module DeleteMutation = %relay(`
   mutation SingleTodoDeleteMutation(
     $input: DeleteTodoItemInput!
     $connections: [ID!]!
@@ -18,11 +15,9 @@ module DeleteMutation = %relay(
       deletedTodoItemId @deleteEdge(connections: $connections)
     }
   }
-`
-)
+`)
 
-module UpdateMutation = %relay(
-  `
+module UpdateMutation = %relay(`
   mutation SingleTodoUpdateMutation($input: UpdateTodoItemInput!) {
     updateTodoItem(input: $input) {
       updatedTodoItem {
@@ -32,8 +27,7 @@ module UpdateMutation = %relay(
       }
     }
   }
-`
-)
+`)
 
 @react.component
 let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
@@ -88,7 +82,7 @@ let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
               clientMutationId: None,
               id: todoItem.id,
             },
-            connections: [todosConnectionId->ReasonRelay.dataIdToString],
+            connections: [todosConnectionId],
           },
           ~optimisticResponse={
             deleteTodoItem: Some({deletedTodoItemId: Some(todoItem.id)}),

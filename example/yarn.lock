@@ -441,6 +441,11 @@
   resolved "https://registry.yarnpkg.com/@mdi/font/-/font-3.7.95.tgz#86f783bdef3d985e14ce1345433477cade15fd6d"
   integrity sha512-JFQSv1GwhilTN6mj2SHu+YH+jZAIPn6sir/gGYoMSgyEM94nzlLGc7Ew21mnDEr0+W3LhFaInu8dqZFvNUx1bA==
 
+"@rescript/react@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.10.1.tgz#ddce66ba664a104354d559c350ca4ebf17ab5a26"
+  integrity sha512-5eIfGnV1yhjv03ktK6fQ6iEfsZKXKXXrq5hx4+ngEY4R/RU8o/oH9ne375m9RJMugV/jsE8hMoEeSSg2YQy3Ag==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -3951,15 +3956,10 @@ reason-promise@^1.1.1:
   resolved "https://registry.yarnpkg.com/reason-promise/-/reason-promise-1.1.1.tgz#966133fed21e748a50ffb8839a1da04912bcf380"
   integrity sha512-xMXDiyzTjn7t9pq9aQrkgu8CLB5DILU70oWQ+LI20YecshypUwsw37TKOvCxgoFR3vo30ucF0/iWe2BZ181/jw==
 
-reason-react@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.9.1.tgz#30a887158200b659aa03e2d75ff4cc54dc462bb0"
-  integrity sha512-nlH0O2TDy9KzOLOW+vlEQk4ExHOeciyzFdoLcsmmiit6hx6H5+CVDrwJ+8aiaLT/kqK5xFOjy4PS7PftWz4plA==
-
-reason-relay@0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.14.0.tgz#37442b9172787a456a15848663643a19c2afb2d8"
-  integrity sha512-1reKXzcV0kjZ0F2NPQstC2Rt5Clhaw8AGsSOuemUxarXT+7vIPRhdtIQ9+4ZSW/D5mdmvaJ7EEabqnoMw4CGEg==
+reason-relay@0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/reason-relay/-/reason-relay-0.15.0.tgz#5b9566419aa58e89cf49a4c252e8078c2513f9bb"
+  integrity sha512-mKRQr7uoIJsSk76Nj/Mtlr+WrCW8TanMfsZeZYN7X43gxOPfq/C/Iaii++qgFOnpv7PIsNvUZOAim/VNKFMuRQ==
   dependencies:
     mkdirp-sync "^0.0.3"
 

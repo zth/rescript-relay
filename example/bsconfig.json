@@ -18,7 +18,7 @@
   "ppx-flags": ["reason-relay/ppx"],
   "namespace": true,
   "bs-dependencies": [
-    "reason-react",
+    "@rescript/react",
     "reason-relay",
     "bs-fetch",
     "reason-promise"

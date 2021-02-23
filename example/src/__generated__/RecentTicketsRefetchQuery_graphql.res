@@ -1,87 +1,93 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-
+  @@ocaml.warning("-30")
+  
   type response = {
-    fragmentRefs: ReasonRelay.fragmentRefs([ | `RecentTickets_query]),
-  };
-  type rawResponse = response;
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #RecentTickets_query]>
+  }
+  type rawResponse = response
   type refetchVariables = {
-    after: option(string),
-    first: option(int),
-  };
-  let makeRefetchVariables = (~after=?, ~first=?, ()): refetchVariables => {
-    after,
-    first,
-  };
+    after: option<string>,
+    first: option<int>,
+  }
+  let makeRefetchVariables = (
+    ~after=?,
+    ~first=?,
+    ()
+  ): refetchVariables => {
+    after: after,
+    first: first
+  }
+  
   type variables = {
     after: string,
     first: int,
-  };
-};
+  }
+}
 
 module Internal = {
-  type wrapResponseRaw;
-  let wrapResponseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":""}}} |json}
-  ];
-  let wrapResponseConverterMap = ();
-  let convertWrapResponse = v =>
-    v->ReasonRelay.convertObj(
-      wrapResponseConverter,
-      wrapResponseConverterMap,
-      Js.null,
-    );
+  type wrapResponseRaw
+  let wrapResponseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"":{"f":""}}}`
+    )
+  
+  let wrapResponseConverterMap = ()
+  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+    wrapResponseConverter, 
+    wrapResponseConverterMap, 
+    Js.null
+  )
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"":{"f":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type wrapRawResponseRaw = wrapResponseRaw
+  let convertWrapRawResponse = convertWrapResponse
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
 
-  type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"":{"f":""}}} |json}
-  ];
-  let responseConverterMap = ();
-  let convertResponse = v =>
-    v->ReasonRelay.convertObj(
-      responseConverter,
-      responseConverterMap,
-      Js.undefined,
-    );
-
-  type wrapRawResponseRaw = wrapResponseRaw;
-  let convertWrapRawResponse = convertWrapResponse;
-
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
-
-  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {} |json}
-  ];
-  let variablesConverterMap = ();
-  let convertVariables = v =>
-    v->ReasonRelay.convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined,
-    );
-};
-
-type queryRef;
+type queryRef
 
 module Utils = {
-  open Types;
-  let makeVariables = (~after, ~first): variables => {after, first};
-};
+  open Types
+  let makeVariables = (
+    ~after,
+    ~first
+  ): variables => {
+    after: after,
+    first: first
+  }
+}
+type relayOperationNode
+type operationType = ReasonRelay.queryNode<relayOperationNode>
 
-type relayOperationNode;
 
-type operationType = ReasonRelay.queryNode(relayOperationNode);
-
-
-
-let node: operationType = [%raw {json| (function(){
+let node: operationType = %raw(json` (function(){
 var v0 = [
   {
     "defaultValue": "",
@@ -320,13 +326,13 @@ return {
     "text": "query RecentTicketsRefetchQuery(\n  $after: String! = \"\"\n  $first: Int! = 2\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  ticketsConnection(first: $first, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n  dbId\n}\n"
   }
 };
-})() |json}];
+})() `)
 
 include ReasonRelay.MakeLoadQuery({
-    type variables = Types.variables;
-    type loadedQueryRef = queryRef;
-    type response = Types.response;
-    type node = relayOperationNode;
-    let query = node;
-    let convertVariables = Internal.convertVariables;
+    type variables = Types.variables
+    type loadedQueryRef = queryRef
+    type response = Types.response
+    type node = relayOperationNode
+    let query = node
+    let convertVariables = Internal.convertVariables
   });

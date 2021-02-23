@@ -1,57 +1,57 @@
-
 /* @generated */
-
-%bs.raw
-"/* @generated */";
-
+%%raw("/* @generated */")
 module Types = {
-  [@ocaml.warning "-30"];
-  type response_siteStatisticsUpdated = {currentVisitorsOnline: int};
-
+  @@ocaml.warning("-30")
+  
+  type rec response_siteStatisticsUpdated = {
+    currentVisitorsOnline: int,
+  }
   type response = {
-    siteStatisticsUpdated: option(response_siteStatisticsUpdated),
-  };
-  type rawResponse = response;
-  type variables = unit;
-};
+    siteStatisticsUpdated: option<response_siteStatisticsUpdated>,
+  }
+  type rawResponse = response
+  type variables = unit
+}
 
 module Internal = {
-  type responseRaw;
-  let responseConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {"__root":{"siteStatisticsUpdated":{"n":""}}} |json}
-  ];
-  let responseConverterMap = ();
-  let convertResponse = v =>
-    v->ReasonRelay.convertObj(
-      responseConverter,
-      responseConverterMap,
-      Js.undefined,
-    );
-
-  type rawResponseRaw = responseRaw;
-  let convertRawResponse = convertResponse;
-
-  let variablesConverter: Js.Dict.t(Js.Dict.t(Js.Dict.t(string))) = [%raw
-    {json| {} |json}
-  ];
-  let variablesConverterMap = ();
-  let convertVariables = v =>
-    v->ReasonRelay.convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined,
-    );
-};
-
-module Utils = {};
-
-type relayOperationNode;
-
-type operationType = ReasonRelay.subscriptionNode(relayOperationNode);
+  type responseRaw
+  let responseConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{"__root":{"siteStatisticsUpdated":{"n":""}}}`
+    )
+  
+  let responseConverterMap = ()
+  let convertResponse = v => v->ReasonRelay.convertObj(
+    responseConverter, 
+    responseConverterMap, 
+    Js.undefined
+  )
+  type rawResponseRaw = responseRaw
+  let convertRawResponse = convertResponse
+  let variablesConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json`{}`
+    )
+  
+  let variablesConverterMap = ()
+  let convertVariables = v => v->ReasonRelay.convertObj(
+    variablesConverter, 
+    variablesConverterMap, 
+    Js.undefined
+  )
+}
 
 
+module Utils = {
 
-let node: operationType = [%raw {json| (function(){
+}
+type relayOperationNode
+type operationType = ReasonRelay.subscriptionNode<relayOperationNode>
+
+
+let node: operationType = %raw(json` (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -118,6 +118,6 @@ return {
     "text": "subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {\n  siteStatisticsUpdated {\n    currentVisitorsOnline\n    id\n  }\n}\n"
   }
 };
-})() |json}];
+})() `)
 
 
