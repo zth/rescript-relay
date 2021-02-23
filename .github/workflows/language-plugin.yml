@@ -18,6 +18,8 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
+      - name: Set up yarn
+        run: apk add --no-cache yarn
       - name: Install
         run: |
           yarn --frozen-lockfile
