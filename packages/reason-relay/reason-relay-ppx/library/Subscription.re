@@ -11,41 +11,42 @@ let make = (~loc, ~moduleName) => {
 
   Ast_helper.Mod.mk(
     Pmod_structure([
+      [%stri [@ocaml.warning "-32"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        module Internal = {
-          type updaterFn =
-            (
-              ReasonRelay.RecordSourceSelectorProxy.t,
-              [%t typeFromGeneratedModule(["Types", "response"])]
-            ) =>
-            unit;
-
-          [@deriving abstract]
-          type subscriptionConfig = {
-            subscription:
-              ReasonRelay.subscriptionNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-            variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            [@optional]
-            onCompleted: unit => unit,
-            [@optional]
-            onError: Js.Exn.t => unit,
-            [@optional]
-            onNext:
-              [%t typeFromGeneratedModule(["Types", "response"])] => unit,
-            [@optional]
-            updater: updaterFn,
-          };
-
-          [@module "relay-runtime"]
-          external internal_requestSubscription:
-            (ReasonRelay.Environment.t, subscriptionConfig) =>
-            ReasonRelay.Disposable.t =
-            "requestSubscription";
+        type updaterFn =
+          (
+            ReasonRelay.RecordSourceSelectorProxy.t,
+            [%t typeFromGeneratedModule(["Types", "response"])]
+          ) =>
+          unit
+      ],
+      [%stri
+        [@deriving abstract]
+        type subscriptionConfig = {
+          subscription:
+            ReasonRelay.subscriptionNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+          variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+          [@optional]
+          onCompleted: unit => unit,
+          [@optional]
+          onError: Js.Exn.t => unit,
+          [@optional]
+          onNext: [%t typeFromGeneratedModule(["Types", "response"])] => unit,
+          [@optional]
+          updater: updaterFn,
         }
+      ],
+      [%stri
+        %private
+        [@module "relay-runtime"]
+        external internal_requestSubscription:
+          (ReasonRelay.Environment.t, subscriptionConfig) =>
+          ReasonRelay.Disposable.t =
+          "requestSubscription"
       ],
       [%stri
         let subscribe:
@@ -57,7 +58,7 @@ let make = (~loc, ~moduleName) => {
             ~onNext: [%t typeFromGeneratedModule(["Types", "response"])] =>
                      unit
                        =?,
-            ~updater: Internal.updaterFn=?,
+            ~updater: updaterFn=?,
             unit
           ) =>
           ReasonRelay.Disposable.t =
@@ -70,9 +71,9 @@ let make = (~loc, ~moduleName) => {
             ~updater=?,
             (),
           ) =>
-            Internal.internal_requestSubscription(
+            internal_requestSubscription(
               environment,
-              Internal.subscriptionConfig(
+              subscriptionConfig(
                 ~subscription=[%e valFromGeneratedModule(["node"])],
                 ~variables=
                   variables->[%e

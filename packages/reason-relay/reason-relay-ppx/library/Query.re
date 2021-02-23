@@ -11,89 +11,99 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
 
   Ast_helper.Mod.mk(
     Pmod_structure([
+      [%stri [@ocaml.warning "-32"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        module Internal = {
-          [@module "relay-runtime"]
-          external internal_createOperationDescriptor:
-            (
-              ReasonRelay.queryNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["Types", "variables"])]
-            ) =>
-            ReasonRelay.operationDescriptor =
-            "createOperationDescriptor";
-
-          type useQueryConfig = {
-            fetchKey: option(string),
-            fetchPolicy: option(string),
-            [@as "UNSTABLE_renderPolicy"]
-            renderPolicy: option(string),
-            networkCacheConfig: option(ReasonRelay.cacheConfig),
-          };
-
-          [@module "react-relay/hooks"]
-          external internal_useQuery:
-            (
-              ReasonRelay.queryNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["Types", "variables"])],
-              useQueryConfig
-            ) =>
-            [%t typeFromGeneratedModule(["Types", "response"])] =
-            "useLazyLoadQuery";
-
-          [@module "react-relay/hooks"]
-          external internal_usePreloadedQuery:
-            (
-              ReasonRelay.queryNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["queryRef"])],
-              option({. "UNSTABLE_renderPolicy": option(string)})
-            ) =>
-            [%t typeFromGeneratedModule(["Types", "response"])] =
-            "usePreloadedQuery";
-
-          type useQueryLoaderOptions = {
-            fetchPolicy: option(ReasonRelay.fetchPolicy),
-            networkCacheConfig: option(ReasonRelay.cacheConfig),
-          };
-
-          [@module "react-relay/hooks"]
-          external internal_useQueryLoader:
+        %private
+        [@module "relay-runtime"]
+        external internal_createOperationDescriptor:
+          (
             ReasonRelay.queryNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
-            ) =>
-            (
-              Js.nullable([%t typeFromGeneratedModule(["queryRef"])]),
-              (
-                [%t typeFromGeneratedModule(["Types", "variables"])],
-                useQueryLoaderOptions
-              ) =>
-              unit,
-              unit => unit,
-            ) =
-            "useQueryLoader";
-
-          [@module "react-relay/hooks"]
-          external internal_fetchQuery:
-            (
-              ReasonRelay.Environment.t,
-              ReasonRelay.queryNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-              [%t typeFromGeneratedModule(["Types", "variables"])],
-              option(ReasonRelay.fetchQueryOptions)
-            ) =>
-            ReasonRelay.Observable.t(
-              [%t typeFromGeneratedModule(["Types", "response"])],
-            ) =
-            "fetchQuery";
+            ),
+            [%t typeFromGeneratedModule(["Types", "variables"])]
+          ) =>
+          ReasonRelay.operationDescriptor =
+          "createOperationDescriptor"
+      ],
+      [%stri
+        type useQueryConfig = {
+          fetchKey: option(string),
+          fetchPolicy: option(string),
+          [@as "UNSTABLE_renderPolicy"]
+          renderPolicy: option(string),
+          networkCacheConfig: option(ReasonRelay.cacheConfig),
         }
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_useQuery:
+          (
+            ReasonRelay.queryNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            [%t typeFromGeneratedModule(["Types", "variables"])],
+            useQueryConfig
+          ) =>
+          [%t typeFromGeneratedModule(["Types", "response"])] =
+          "useLazyLoadQuery"
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_usePreloadedQuery:
+          (
+            ReasonRelay.queryNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            [%t typeFromGeneratedModule(["queryRef"])],
+            option({. "UNSTABLE_renderPolicy": option(string)})
+          ) =>
+          [%t typeFromGeneratedModule(["Types", "response"])] =
+          "usePreloadedQuery"
+      ],
+      [%stri
+        type useQueryLoaderOptions = {
+          fetchPolicy: option(ReasonRelay.fetchPolicy),
+          networkCacheConfig: option(ReasonRelay.cacheConfig),
+        }
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_useQueryLoader:
+          ReasonRelay.queryNode(
+            [%t typeFromGeneratedModule(["relayOperationNode"])],
+          ) =>
+          (
+            Js.nullable([%t typeFromGeneratedModule(["queryRef"])]),
+            (
+              [%t typeFromGeneratedModule(["Types", "variables"])],
+              useQueryLoaderOptions
+            ) =>
+            unit,
+            unit => unit,
+          ) =
+          "useQueryLoader"
+      ],
+      [%stri
+        %private
+        [@module "react-relay/hooks"]
+        external internal_fetchQuery:
+          (
+            ReasonRelay.Environment.t,
+            ReasonRelay.queryNode(
+              [%t typeFromGeneratedModule(["relayOperationNode"])],
+            ),
+            [%t typeFromGeneratedModule(["Types", "variables"])],
+            option(ReasonRelay.fetchQueryOptions)
+          ) =>
+          ReasonRelay.Observable.t(
+            [%t typeFromGeneratedModule(["Types", "response"])],
+          ) =
+          "fetchQuery"
       ],
       [%stri
         let use =
@@ -107,7 +117,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            Internal.internal_useQuery(
+            internal_useQuery(
               [%e valFromGeneratedModule(["node"])],
               variables
               ->[%e valFromGeneratedModule(["Internal", "convertVariables"])]
@@ -146,9 +156,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                 unit => unit,
               ) => {
           let (nullableQueryRef, loadQueryFn, disposableFn) =
-            Internal.internal_useQueryLoader(
-              [%e valFromGeneratedModule(["node"])],
-            );
+            internal_useQueryLoader([%e valFromGeneratedModule(["node"])]);
 
           // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
           let loadQuery =
@@ -192,7 +200,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : unit => {
           let _ =
-            Internal.internal_fetchQuery(
+            internal_fetchQuery(
               environment,
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
@@ -241,7 +249,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
               (),
             )
             : Promise.t([%t typeFromGeneratedModule(["Types", "response"])]) => {
-          Internal.internal_fetchQuery(
+          internal_fetchQuery(
             environment,
             [%e valFromGeneratedModule(["node"])],
             variables->[%e
@@ -272,7 +280,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
           let data: [%t typeFromGeneratedModule(["Types", "response"])] =
-            Internal.internal_usePreloadedQuery(
+            internal_usePreloadedQuery(
               [%e valFromGeneratedModule(["node"])],
               queryRef,
               switch (renderPolicy) {
@@ -299,7 +307,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                ],
             ) => {
           let operationDescriptor =
-            Internal.internal_createOperationDescriptor(
+            internal_createOperationDescriptor(
               [%e valFromGeneratedModule(["node"])],
               variables->[%e
                            valFromGeneratedModule([
@@ -325,7 +333,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
                  ],
               ) => {
             let operationDescriptor =
-              Internal.internal_createOperationDescriptor(
+              internal_createOperationDescriptor(
                 [%e valFromGeneratedModule(["node"])],
                 variables->[%e
                              valFromGeneratedModule([

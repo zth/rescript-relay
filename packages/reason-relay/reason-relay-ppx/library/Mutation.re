@@ -11,94 +11,101 @@ let make = (~loc, ~moduleName) => {
 
   Ast_helper.Mod.mk(
     Pmod_structure([
+      [%stri [@ocaml.warning "-32"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        module Internal = {
-          type updaterFn =
-            (
-              ReasonRelay.RecordSourceSelectorProxy.t,
-              [%t typeFromGeneratedModule(["Types", "response"])]
-            ) =>
-            unit;
-          type optimisticUpdaterFn =
-            ReasonRelay.RecordSourceSelectorProxy.t => unit;
-
-          type useMutationConfig = {
-            onError: option(ReasonRelay.mutationError => unit),
-            onCompleted:
-              option(
-                (
-                  [%t typeFromGeneratedModule(["Types", "response"])],
-                  option(array(ReasonRelay.mutationError))
-                ) =>
-                unit,
-              ),
-            onUnsubscribe: option(unit => unit),
-            optimisticResponse:
-              option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
-            optimisticUpdater: option(optimisticUpdaterFn),
-            updater: option(updaterFn),
-            variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            uploadables: option(ReasonRelay.uploadables),
-          };
-
-          type useMutationConfigRaw = {
-            onError: option(ReasonRelay.mutationError => unit),
-            onCompleted:
-              option(
-                (
-                  [%t typeFromGeneratedModule(["Types", "response"])],
-                  Js.Nullable.t(array(ReasonRelay.mutationError))
-                ) =>
-                unit,
-              ),
-            onUnsubscribe: option(unit => unit),
-            optimisticResponse:
-              option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
-            optimisticUpdater: option(optimisticUpdaterFn),
-            updater: option(updaterFn),
-            variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            uploadables: option(ReasonRelay.uploadables),
-          };
-
-          type commitMutationConfigRaw = {
-            mutation:
-              ReasonRelay.mutationNode(
-                [%t typeFromGeneratedModule(["relayOperationNode"])],
-              ),
-            variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            onCompleted:
-              option(
-                (
-                  [%t typeFromGeneratedModule(["Types", "response"])],
-                  Js.Nullable.t(array(ReasonRelay.mutationError))
-                ) =>
-                unit,
-              ),
-            onError:
-              option(Js.Nullable.t(ReasonRelay.mutationError) => unit),
-            optimisticResponse:
-              option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
-            optimisticUpdater: option(optimisticUpdaterFn),
-            updater: option(updaterFn),
-            uploadables: option(ReasonRelay.uploadables),
-          };
-
-          [@module "relay-runtime"]
-          external internal_commitMutation:
-            (ReasonRelay.Environment.t, commitMutationConfigRaw) =>
-            ReasonRelay.Disposable.t =
-            "commitMutation";
-
-          [@module "react-relay/lib/relay-experimental"]
-          external internal_useMutation:
+        type updaterFn =
+          (
+            ReasonRelay.RecordSourceSelectorProxy.t,
+            [%t typeFromGeneratedModule(["Types", "response"])]
+          ) =>
+          unit
+      ],
+      [%stri
+        type optimisticUpdaterFn =
+          ReasonRelay.RecordSourceSelectorProxy.t => unit
+      ],
+      [%stri
+        type useMutationConfig = {
+          onError: option(ReasonRelay.mutationError => unit),
+          onCompleted:
+            option(
+              (
+                [%t typeFromGeneratedModule(["Types", "response"])],
+                option(array(ReasonRelay.mutationError))
+              ) =>
+              unit,
+            ),
+          onUnsubscribe: option(unit => unit),
+          optimisticResponse:
+            option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
+          optimisticUpdater: option(optimisticUpdaterFn),
+          updater: option(updaterFn),
+          variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+          uploadables: option(ReasonRelay.uploadables),
+        }
+      ],
+      [%stri
+        type useMutationConfigRaw = {
+          onError: option(ReasonRelay.mutationError => unit),
+          onCompleted:
+            option(
+              (
+                [%t typeFromGeneratedModule(["Types", "response"])],
+                Js.Nullable.t(array(ReasonRelay.mutationError))
+              ) =>
+              unit,
+            ),
+          onUnsubscribe: option(unit => unit),
+          optimisticResponse:
+            option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
+          optimisticUpdater: option(optimisticUpdaterFn),
+          updater: option(updaterFn),
+          variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+          uploadables: option(ReasonRelay.uploadables),
+        }
+      ],
+      [%stri
+        type commitMutationConfigRaw = {
+          mutation:
             ReasonRelay.mutationNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
-            ) =>
-            (useMutationConfigRaw => ReasonRelay.Disposable.t, bool) =
-            "useMutation";
+            ),
+          variables: [%t typeFromGeneratedModule(["Types", "variables"])],
+          onCompleted:
+            option(
+              (
+                [%t typeFromGeneratedModule(["Types", "response"])],
+                Js.Nullable.t(array(ReasonRelay.mutationError))
+              ) =>
+              unit,
+            ),
+          onError: option(Js.Nullable.t(ReasonRelay.mutationError) => unit),
+          optimisticResponse:
+            option([%t typeFromGeneratedModule(["Types", "rawResponse"])]),
+          optimisticUpdater: option(optimisticUpdaterFn),
+          updater: option(updaterFn),
+          uploadables: option(ReasonRelay.uploadables),
         }
+      ],
+      [%stri
+        %private
+        [@module "relay-runtime"]
+        external internal_commitMutation:
+          (ReasonRelay.Environment.t, commitMutationConfigRaw) =>
+          ReasonRelay.Disposable.t =
+          "commitMutation"
+      ],
+      [%stri
+        %private
+        [@module "react-relay/lib/relay-experimental"]
+        external internal_useMutation:
+          ReasonRelay.mutationNode(
+            [%t typeFromGeneratedModule(["relayOperationNode"])],
+          ) =>
+          (useMutationConfigRaw => ReasonRelay.Disposable.t, bool) =
+          "useMutation"
       ],
       [%stri
         /**Commits the current mutation. Use this outside of React's render. If you're inside render, you should use `Mutation.use` instead, which is more convenient.
@@ -110,7 +117,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
           (
             ~environment: ReasonRelay.Environment.t,
             ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
-            ~optimisticUpdater: Internal.optimisticUpdaterFn=?,
+            ~optimisticUpdater: optimisticUpdaterFn=?,
             ~optimisticResponse: [%t
                                    typeFromGeneratedModule([
                                      "Types",
@@ -148,7 +155,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
             ~uploadables=?,
             (),
           ) => (
-            Internal.internal_commitMutation(
+            internal_commitMutation(
               environment,
               {
                 variables:
@@ -247,7 +254,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
                                      ])
                                    ]
                                      =?,
-              ~optimisticUpdater: Internal.optimisticUpdaterFn=?,
+              ~optimisticUpdater: optimisticUpdaterFn=?,
               ~updater: (
                           ReasonRelay.RecordSourceSelectorProxy.t,
                           [%t typeFromGeneratedModule(["Types", "response"])]
@@ -263,9 +270,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
           ) =
           () => {
             let (mutate, mutating) =
-              Internal.internal_useMutation(
-                [%e valFromGeneratedModule(["node"])],
-              );
+              internal_useMutation([%e valFromGeneratedModule(["node"])]);
             (
               (
                 ~onError=?,
