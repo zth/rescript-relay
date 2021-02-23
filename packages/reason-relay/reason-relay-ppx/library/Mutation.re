@@ -110,7 +110,7 @@ let make = (~loc, ~moduleName) => {
       [%stri
         /**Commits the current mutation. Use this outside of React's render. If you're inside render, you should use `Mutation.use` instead, which is more convenient.
 
-## Optimistic updates
+### Optimistic updates
 Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
 
         let commitMutation:
@@ -231,7 +231,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
       [%stri
         /**React hook for commiting this mutation.
 
-## Optimistic updates
+### Optimistic updates
 Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
         let use:
           unit =>

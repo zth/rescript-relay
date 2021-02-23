@@ -49,6 +49,7 @@ let make = (~loc, ~moduleName) => {
           "requestSubscription"
       ],
       [%stri
+        /**This sets up the subscription itself. You typically want to run this in a React.useEffect.*/
         let subscribe:
           (
             ~environment: ReasonRelay.Environment.t,

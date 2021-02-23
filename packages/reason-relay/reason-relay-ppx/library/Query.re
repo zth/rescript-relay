@@ -106,6 +106,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           "fetchQuery"
       ],
       [%stri
+        /**React hook for using this query.
+
+Prefer using `Query.useLoader()` or `YourQueryName_graphql.load()` in combination with `Query.usePreloaded()` to this whenever you can, as that will allow you to start loading data before your code actually renders.*/
         let use =
             (
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
@@ -137,6 +140,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        /**React hook for preloading this query. Returns a tuple of `(loadedQueryRef, loadQueryFn, dispose)`.
+
+Use this together with `Query.usePreloaded`.*/
         let useLoader =
             ()
             : (
@@ -182,6 +188,10 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        /**
+This fetches the query in a one-off fashion, and returns a `Belt.Result.t` in a callback for convenience. Use `Query.fetchPromised` if you need this but with promises.
+
+Please *avoid* using `Query.fetch` unless you really need it, since the data you fetch here isn't guaranteed to stick around in the store/cache unless you explicitly use it somewhere in your views.*/
         let fetch =
             (
               ~environment: ReasonRelay.Environment.t,
@@ -238,6 +248,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        /** Promise variant of `Query.fetch`.*/
         let fetchPromised =
             (
               ~environment: ReasonRelay.Environment.t,
@@ -272,6 +283,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        /**Combine this with `Query.useLoader` or `YourQueryName_graphql.load()` to use a query you've started preloading before rendering.*/
         let usePreloaded =
             (
               ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],
@@ -299,6 +311,9 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         }
       ],
       [%stri
+        /**Calling with a set of variables will make Relay _disable garbage collection_ of this query (+ variables) until you explicitly dispose the `Disposable.t` you get back from this call.
+
+Useful for queries and data you know you want to keep in the store regardless of what happens (like it not being used by any view and therefore potentially garbage collected).*/
         let retain =
             (
               ~environment: ReasonRelay.Environment.t,
@@ -322,6 +337,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       hasRawResponseType
         ? [%stri
+          /**This commits a payload into the store _locally only_. Useful for driving client-only state via Relay for example, or priming the cache with data you don't necessarily want to hit the server for.*/
           let commitLocalPayload =
               (
                 ~environment: ReasonRelay.Environment.t,

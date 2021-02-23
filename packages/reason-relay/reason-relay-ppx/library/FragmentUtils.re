@@ -220,6 +220,13 @@ let makeRefetchableAssets =
           "useRefetchableFragment"
       ],
       [%stri
+        /**React hook for using a fragment that you want to refetch. Returns a tuple of `(fragmentData, refetchFn)`.
+
+### Refetching and variables
+You supply a _diff_ of your variables to Relay when refetching. Diffed variables here means that any new value you supply when refetching will be merged with the variables you last used when fetching data for this fragment.
+
+### `Fragment.makeRefetchVariables` - helper for making the refetch variables
+There's a helper generated for you to create those diffed variables more easily at `Fragment.makeRefetchVariables`.*/
         let useRefetchable = fRef => {
           let (fragmentData, refetchFn) =
             internal_useRefetchableFragment(
