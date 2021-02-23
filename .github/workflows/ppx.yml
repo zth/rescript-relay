@@ -26,7 +26,6 @@ jobs:
         run: esy install
       - name: Build PPX
         run: esy linux:release-script
-        working-directory: packages/reason-relay/reason-relay-ppx
       - name: Test PPX
         run: esy test
       - name: Copy built PPX file
