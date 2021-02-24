@@ -35,10 +35,10 @@ jobs:
           key: ${{ matrix.platform }}---${{ hashFiles('**/index.json') }}
           restore-keys: |
             ${{ matrix.platform }}---
-      - name: Build PPX
-        run: esy linux-release-static
       - name: Test PPX
         run: esy test
+      - name: Build PPX
+        run: esy linux-release-static
       - name: Copy built PPX file
         run: |
           mv ./_esy/default/build/default/bin/ReasonRelayPpxApp.exe ppx-linux
