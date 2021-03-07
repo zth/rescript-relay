@@ -13,6 +13,10 @@
 
 - `defaultRenderPolicy` on `Environment` is gone. It defaults to `Partial` and will be removed in Relay centrally.
 
+## New bindings
+
+- Any fragment with a `@connection` directive now also exposes a `Fragment.getConnectionID(parentDataId, maybeFilters)` function for making it very simple to construct a connection `dataId` for that particular fragment that can be used with things like `@appendNode` and friends.
+
 # 0.15.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/reason-relay/commit/5aea01a511f9c084a23a8db09c30bbecca59ca32)_

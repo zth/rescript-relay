@@ -10,12 +10,18 @@ let make =
       ~loc,
       ~moduleName,
       ~refetchableQueryName,
-      ~hasConnection,
+      ~extractedConnectionInfo,
       ~hasInlineDirective,
     ) => {
   let typeFromGeneratedModule = makeTypeAccessor(~loc, ~moduleName);
   let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
   let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
+
+  let hasConnection =
+    switch (extractedConnectionInfo) {
+    | Some(_) => true
+    | None => false
+    };
 
   Ast_helper.Mod.mk(
     Pmod_structure(
@@ -33,6 +39,7 @@ let make =
           ~makeExprAccessor,
           ~valFromGeneratedModule,
         ),
+        FragmentUtils.makeConnectionAssets(~loc, ~extractedConnectionInfo),
         [
           [%stri
             /**React hook for getting the data of this fragment. Pass the `fragmentRefs` of any object where you've spread your fragment into this and get the fragment data back.

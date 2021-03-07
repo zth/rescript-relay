@@ -19,14 +19,7 @@ let commonExtension =
         Fragment.make(
           ~moduleName=op |> extractTheFragmentName(~loc),
           ~refetchableQueryName,
-          ~hasConnection=
-            switch (
-              refetchableQueryName,
-              op |> fragmentHasConnectionNotation(~loc),
-            ) {
-            | (Some(_), true) => true
-            | _ => false
-            },
+          ~extractedConnectionInfo=op |> extractFragmentConnectionInfo(~loc),
           ~hasInlineDirective=op |> fragmentHasInlineDirective(~loc),
           ~loc,
         );

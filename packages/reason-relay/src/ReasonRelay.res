@@ -617,7 +617,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       variables->C.convertVariables,
       {
         fetchKey: fetchKey,
-        fetchPolicy: fetchPolicy |> mapFetchPolicy,
+        fetchPolicy: fetchPolicy->mapFetchPolicy,
         networkCacheConfig: networkCacheConfig,
       },
     )
