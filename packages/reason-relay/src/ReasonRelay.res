@@ -468,7 +468,7 @@ module Environment = {
   type environmentConfig<'a> = {
     network: Network.t,
     store: Store.t,
-    @optional @as("UNSTABLE_DO_NOT_USE_getDataID")
+    @optional
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
     @optional @as("UNSTABLE_defaultRenderPolicy")
     defaultRenderPolicy: string,
