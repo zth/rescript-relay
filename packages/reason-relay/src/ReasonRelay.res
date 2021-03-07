@@ -30,6 +30,9 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 @module("relay-runtime")
 external isClientID: dataId => bool = "isClientID"
 
+@module("relay-runtime")
+external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
+
 type featureFlags = {
   @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,

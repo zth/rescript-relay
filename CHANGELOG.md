@@ -16,6 +16,7 @@
 ## New bindings
 
 - Any fragment with a `@connection` directive now also exposes a `Fragment.getConnectionID(parentDataId, maybeFilters)` function for making it very simple to construct a connection `dataId` for that particular fragment that can be used with things like `@appendNode` and friends.
+- A `ReasonRelay.getConnectionID(parentDataId, connectionKey, 'filters)` is also exposed for the same reason as above, but should be avoided in any situation where the generated function from the fragment can be used.
 
 # 0.15.0
 
