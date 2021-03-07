@@ -470,8 +470,6 @@ module Environment = {
     store: Store.t,
     @optional
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
-    @optional @as("UNSTABLE_defaultRenderPolicy")
-    defaultRenderPolicy: string,
     @optional
     treatMissingFieldsAsNull: bool,
     missingFieldHandlers: missingFieldHandlers,
@@ -480,20 +478,12 @@ module Environment = {
   @module("relay-runtime") @new
   external make: environmentConfig<'a> => t = "Environment"
 
-  let make = (
-    ~network,
-    ~store,
-    ~getDataID=?,
-    ~defaultRenderPolicy=?,
-    ~treatMissingFieldsAsNull=?,
-    (),
-  ) =>
+  let make = (~network, ~store, ~getDataID=?, ~treatMissingFieldsAsNull=?, ()) =>
     make(
       environmentConfig(
         ~network,
         ~store,
         ~getDataID?,
-        ~defaultRenderPolicy=?defaultRenderPolicy->mapRenderPolicy,
         ~treatMissingFieldsAsNull?,
         // This handler below enables automatic resolution of all cached items through the Node interface
         ~missingFieldHandlers=%raw(

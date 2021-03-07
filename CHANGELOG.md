@@ -1,5 +1,18 @@
 # master
 
+## Upgrade versions
+
+- `react` to `0.0.0-experimental-4e08fb10c`
+- `react-dom` to `0.0.0-experimental-4e08fb10c`
+- `react-relay` to `11.0.0-rc.0`
+- `relay-compiler` to `11.0.0-rc.0`
+- `relay-config` to `11.0.0-rc.0`
+- `relay-runtime` to `11.0.0-rc.0`
+
+## Breaking changes
+
+- `defaultRenderPolicy` on `Environment` is gone. It defaults to `Partial` and will be removed in Relay centrally.
+
 # 0.15.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/reason-relay/commit/5aea01a511f9c084a23a8db09c30bbecca59ca32)_

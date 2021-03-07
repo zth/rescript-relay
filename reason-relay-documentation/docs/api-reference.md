@@ -1157,7 +1157,6 @@ let make: (
       ~nodeObj: {.."__typename": string, "id": string} as 'a,
       ~typeName: string,
     ) => string=?,
-    ~defaultRenderPolicy: renderPolicy=?,
     ~treatMissingFieldsAsNull: bool=?,
     unit,
   ) => t
