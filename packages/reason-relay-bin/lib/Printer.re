@@ -625,7 +625,7 @@ let fragmentRefAssets = (~plural=false, fragmentName) => {
   str^;
 };
 
-let operationType = (operationType: Types.operationType) => {
+let printOperationType = (operationType: Types.operationType) => {
   let opType =
     switch (operationType) {
     | Fragment(_) => "fragment"

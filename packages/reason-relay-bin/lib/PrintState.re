@@ -455,7 +455,7 @@ let getPrintedFullState =
 
   // This adds operationType, which is referenced in the raw output of the Relay
   // runtime representation.
-  addToStr(Printer.operationType(operationType));
+  addToStr(Printer.printOperationType(operationType));
 
   switch (state) {
   | {fragment: None, response: None, variables: None} =>
