@@ -129,12 +129,6 @@ let getPrintedFullState =
   state.enums
   |> List.iter(enum => {addToTypesModule(Printer.printEnum(enum) ++ "\n")});
 
-  let shouldIgnoreFragmentRefs =
-    switch (operationType) {
-    | Mutation(_) => true
-    | _ => false
-    };
-
   state.unions
   |> List.iter(({union, printName}: Types.unionInState) => {
        Printer.printUnionTypes(union, ~state, ~printName) |> addToTypesModule
@@ -166,7 +160,6 @@ let getPrintedFullState =
                 | _ => Some(`Member)
                 },
               ~state,
-              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
          |> addToTypesModule
        })
@@ -179,7 +172,6 @@ let getPrintedFullState =
          |> printRootType(
               ~recursiveMode=None,
               ~state,
-              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
          |> addToTypesModule
        )
@@ -191,7 +183,6 @@ let getPrintedFullState =
          def
          |> printRootType(
               ~state,
-              ~ignoreFragmentRefs=shouldIgnoreFragmentRefs,
             )
          |> addToTypesModule
        })

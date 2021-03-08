@@ -31,7 +31,9 @@ module Types = {
   type rec response_setOnlineStatus = {
     user: option<response_setOnlineStatus_user>,
   }
-   and response_setOnlineStatus_user = ReasonRelay.allFieldsMasked
+   and response_setOnlineStatus_user = {
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestMutation_user]>
+  }
    and rawResponse_setOnlineStatus = {
     user: option<rawResponse_setOnlineStatus_user>,
   }

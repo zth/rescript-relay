@@ -158,7 +158,7 @@ and printPropValue = (~propValue, ~state) => {
 
   str^;
 }
-and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
+and printObject = (~obj: object_, ~state, ()) => {
   switch (obj.values |> List.length) {
   | 0 => "unit"
   | _ =>
@@ -173,51 +173,38 @@ and printObject = (~obj: object_, ~state, ~ignoreFragmentRefs=false, ()) => {
            | Prop(_) => false,
          );
 
-    let hasProps =
-      obj.values
-      |> List.exists(
-           fun
-           | FragmentRef(_) => false
-           | Prop(_) => true,
-         );
+    addToStr("{");
 
-    // Return an empty JS object if we are ignoring fragment refs and have no props
-    switch (ignoreFragmentRefs, hasProps) {
-    | (true, false) => addToStr("ReasonRelay.allFieldsMasked")
-    | _ =>
-      addToStr("{");
-
-      obj.values
-      |> List.filter(
-           fun
-           | FragmentRef(_) => false
-           | Prop(_) => true,
-         )
-      |> List.iter(p => {
-           addToStr(
-             switch (p) {
-             | Prop(name, propValue) =>
-               "\n  "
-               ++ printRecordPropComment(propValue)
-               ++ printRecordPropName(name)
-               ++ ": "
-               ++ printPropValue(~propValue, ~state)
-               ++ ","
-             | FragmentRef(_) => ""
-             },
-           )
-         });
-
-      if (hasFragments && !ignoreFragmentRefs) {
-        addToStr(
-          printRecordPropName("\n  fragmentRefs")
+    obj.values
+    |> List.filter(
+      fun
+      | FragmentRef(_) => false
+      | Prop(_) => true,
+    )
+    |> List.iter(p => {
+      addToStr(
+        switch (p) {
+        | Prop(name, propValue) =>
+          "\n  "
+          ++ printRecordPropComment(propValue)
+          ++ printRecordPropName(name)
           ++ ": "
-          ++ (obj |> printFragmentRefs),
-        );
-      };
+          ++ printPropValue(~propValue, ~state)
+          ++ ","
+        | FragmentRef(_) => ""
+        },
+      )
+    });
 
-      addToStr("\n}");
+    if (hasFragments) {
+      addToStr(
+        printRecordPropName("\n  fragmentRefs")
+        ++ ": "
+        ++ (obj |> printFragmentRefs),
+      );
     };
+
+    addToStr("\n}");
 
     str^;
   };
@@ -285,7 +272,10 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
              ++ "\n  ~"
              ++ printSafeName(name)
              ++ (nullable ? "=?" : "")
-           | FragmentRef(_) => ""
+           | FragmentRef(_) =>
+             (index > 0 ? "," : "")
+             ++ "\n  ~"
+             ++ "fragmentRefs"
            },
          )
        });
@@ -312,7 +302,12 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
              ++ printSafeName(name)
              ++ ": "
              ++ printSafeName(name)
-           | FragmentRef(_) => ""
+           | FragmentRef(_) =>  
+             (index > 0 ? "," : "")
+             ++ "\n  "
+             ++ "fragmentRefs"
+             ++ ": "
+             ++ "fragmentRefs"
            },
          )
        });
@@ -358,17 +353,17 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
   str^;
 }
 and printRootType =
-    (~recursiveMode=None, ~state: fullState, ~ignoreFragmentRefs, rootType) => {
+    (~recursiveMode=None, ~state: fullState, rootType) => {
   switch (rootType) {
   | Operation(Object(obj)) =>
     printRecordComment(obj)
     ++ "type response = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ printObject(~obj, ~state, ())
     ++ "\n"
   | RawResponse(Some(Object(obj))) =>
     printRecordComment(obj)
     ++ "type rawResponse = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ printObject(~obj, ~state, ())
     ++ "\n"
   | RawResponse(None) => "type rawResponse = response\n"
   | RawResponse(Some(Union(_)))
@@ -376,7 +371,7 @@ and printRootType =
   | Variables(Object(obj)) =>
     printRecordComment(obj)
     ++ "type variables = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ printObject(~obj, ~state, ())
     ++ "\n"
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
@@ -388,7 +383,7 @@ and printRootType =
   | Fragment(Object(obj)) =>
     printRecordComment(obj)
     ++ "type fragment = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ printObject(~obj, ~state, ())
     ++ "\n"
   | Fragment(Union(union)) =>
     printComment(union.comment)
@@ -407,7 +402,7 @@ and printRootType =
         | 0 => ""
         | _ =>
           " = "
-          ++ printObject(~obj=definition, ~state, ~ignoreFragmentRefs, ())
+          ++ printObject(~obj=definition, ~state, ())
           ++ "\n"
         }
       );
@@ -423,7 +418,7 @@ and printRootType =
     printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
-    ++ printObject(~obj, ~state, ~ignoreFragmentRefs, ())
+    ++ printObject(~obj, ~state, ())
     ++ "\n"
     ++ printRecordComment(obj)
     ++ "type fragment = array<fragment_t>\n"
@@ -582,7 +577,6 @@ let printUnionTypes = (~state, ~printName, union: union) => {
             definition
             |> printRootType(
                  ~state=stateWithUnionDefinitions,
-                 ~ignoreFragmentRefs=false,
                )
             |> addToTypeDefs
           });

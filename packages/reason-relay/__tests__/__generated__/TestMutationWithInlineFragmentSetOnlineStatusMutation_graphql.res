@@ -13,19 +13,16 @@ module Types = {
     user: option<response_setOnlineStatus_user>,
   }
    and response_setOnlineStatus_user = {
-    id: string,
-    onlineStatus: option<enum_OnlineStatus>,
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestFragment_user]>
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TestMutationInline_user]>
   }
    and rawResponse_setOnlineStatus = {
     user: option<rawResponse_setOnlineStatus_user>,
   }
    and rawResponse_setOnlineStatus_user = {
     id: string,
-    onlineStatus: option<enum_OnlineStatus>,
     firstName: string,
     lastName: string,
-    __id: ReasonRelay.dataId,
+    onlineStatus: option<enum_OnlineStatus>,
   }
   
   
@@ -45,7 +42,7 @@ module Internal = {
   let wrapResponseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
     )
   
   let wrapResponseConverterMap = ()
@@ -58,7 +55,7 @@ module Internal = {
   let responseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
+      json`{"__root":{"setOnlineStatus":{"n":""},"setOnlineStatus_user":{"f":"","n":""}}}`
     )
   
   let responseConverterMap = ()
@@ -119,17 +116,15 @@ module Utils = {
   }
   let make_rawResponse_setOnlineStatus_user = (
     ~id,
-    ~onlineStatus=?,
     ~firstName,
     ~lastName,
-    ~__id,
+    ~onlineStatus=?,
     ()
   ): rawResponse_setOnlineStatus_user => {
     id: id,
-    onlineStatus: onlineStatus,
     firstName: firstName,
     lastName: lastName,
-    __id: __id
+    onlineStatus: onlineStatus
   }
   let make_rawResponse_setOnlineStatus = (
     ~user=?,
@@ -138,15 +133,7 @@ module Utils = {
     user: user
   }
   let make_response_setOnlineStatus_user = (
-    ~id,
-    ~onlineStatus=?,
-    ~fragmentRefs,
-    ()
-  ): response_setOnlineStatus_user => {
-    id: id,
-    onlineStatus: onlineStatus,
-    fragmentRefs: fragmentRefs
-  }
+  ) => Js.Obj.empty()
   let make_response_setOnlineStatus = (
     ~user=?,
     ()
@@ -179,26 +166,42 @@ v1 = [
     "variableName": "onlineStatus"
   }
 ],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "onlineStatus",
-  "storageKey": null
-};
+v2 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "id",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "firstName",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "lastName",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "onlineStatus",
+    "storageKey": null
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestMutationSetOnlineStatusMutation",
+    "name": "TestMutationWithInlineFragmentSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
@@ -216,12 +219,10 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "TestFragment_user"
+                "kind": "InlineDataFragmentSpread",
+                "name": "TestMutationInline_user",
+                "selections": (v2/*: any*/)
               }
             ],
             "storageKey": null
@@ -237,7 +238,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "TestMutationSetOnlineStatusMutation",
+    "name": "TestMutationWithInlineFragmentSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
@@ -254,36 +255,7 @@ return {
             "kind": "LinkedField",
             "name": "user",
             "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "firstName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "lastName",
-                "storageKey": null
-              },
-              {
-                "kind": "ClientExtension",
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__id",
-                    "storageKey": null
-                  }
-                ]
-              }
-            ],
+            "selections": (v2/*: any*/),
             "storageKey": null
           }
         ],
@@ -292,12 +264,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4268475f132103f907cf195a54f2934d",
+    "cacheID": "d3e7e63af6c86488c422148cf408a848",
     "id": null,
     "metadata": {},
-    "name": "TestMutationSetOnlineStatusMutation",
+    "name": "TestMutationWithInlineFragmentSetOnlineStatusMutation",
     "operationKind": "mutation",
-    "text": "mutation TestMutationSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      id\n      onlineStatus\n      ...TestFragment_user\n    }\n  }\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "mutation TestMutationWithInlineFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutationInline_user\n      id\n    }\n  }\n}\n\nfragment TestMutationInline_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n}\n"
   }
 };
 })() `)
