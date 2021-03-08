@@ -67,6 +67,29 @@ module Fragment = %relay(
 `
 )
 
+module MutationWithInlineFragment = %relay(
+  `
+    mutation TestMutationWithInlineFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
+      setOnlineStatus(onlineStatus: $onlineStatus) {
+        user {
+          ...TestMutationInline_user
+        }
+      }
+    }
+`
+)
+
+module InlineFragment = %relay(
+  `
+    fragment TestMutationInline_user on User @inline {
+      id
+      firstName
+      lastName
+      onlineStatus
+    }
+`
+)
+
 module Test = {
   @react.component
   let make = () => {
@@ -74,6 +97,7 @@ module Test = {
     let query = Query.use(~variables=(), ())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (mutate, isMutating) = Mutation.use()
+    let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
 
     <div>
       {React.string(
@@ -86,6 +110,7 @@ module Test = {
         | _ => "-"
         }),
       )}
+      <div> {React.string("Inline status: " ++ inlineStatus)} </div>
       <button
         onClick={_ => {
           let _ = {
@@ -129,6 +154,35 @@ module Test = {
           }
         }}>
         {React.string("Change online status with only fragment")}
+      </button>
+      <button
+        onClick={_ => {
+          let _: ReasonRelay.Disposable.t = {
+            open MutationWithInlineFragment
+            commitMutation(
+              ~environment,
+              ~variables=makeVariables(~onlineStatus=#Idle),
+              ~onCompleted=(response, _) => {
+                setInlineStatus(_ => "completed")
+                switch response {
+                | {setOnlineStatus: Some({user: Some(user)})} =>
+                  let inlineData = InlineFragment.readInline(user.fragmentRefs)
+                  setInlineStatus(_ =>
+                    switch inlineData.onlineStatus {
+                    | Some(#Online) => "online"
+                    | Some(#Idle) => "idle"
+                    | Some(#Offline) => "offline"
+                    | _ => "unknown"
+                    }
+                  )
+                | _ => ignore()
+                }
+              },
+              (),
+            )
+          }
+        }}>
+        {React.string("Change online status with inline fragment")}
       </button>
       <button
         onClick={_ => {

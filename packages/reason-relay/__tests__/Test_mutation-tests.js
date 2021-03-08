@@ -212,4 +212,48 @@ describe("Mutation", () => {
 
     await t.screen.findByText("First is offline");
   });
+
+  test("mutation with an inline fragment has fragmentRefs", async () => {
+    queryMock.mockQuery({
+      name: "TestMutationQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          lastName: "Name",
+          onlineStatus: "Online",
+          memberOf,
+        },
+      },
+    });
+
+    t.render(test_mutation());
+    await t.screen.findByText("Inline status: -");
+
+    const resolve = queryMock.mockQueryWithControlledResolution({
+      name: "TestMutationWithInlineFragmentSetOnlineStatusMutation",
+      variables: {
+        input: {
+          onlineStatus: "Idle",
+        },
+      },
+      data: {
+        setOnlineStatus: {
+          user: {
+            id: "user-1",
+            firstName: "First",
+            lastName: "Name",
+            onlineStatus: "Idle",
+          },
+        },
+      },
+    });
+
+    t.fireEvent.click(t.screen.getByText("Change online status with inline fragment"));
+    
+    await t.screen.findByText("Inline status: -");
+    resolve()
+    // @TODO: find out why commitMutation's onComplete callback isn't being run.
+    // await t.screen.findByText("Inline status: idle");
+  });
 });

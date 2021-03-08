@@ -96,7 +96,6 @@ describe("codegen", ({test, _}) => {
             ],
             atPath: [],
           },
-          ~ignoreFragmentRefs=false,
           ~state=make_mock_full_state(),
           (),
         ),
