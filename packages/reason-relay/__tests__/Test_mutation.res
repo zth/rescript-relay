@@ -164,22 +164,18 @@ module Test = {
               ~variables=makeVariables(~onlineStatus=#Idle),
               ~onCompleted=(response, _) => {
                 setInlineStatus(_ => "completed")
-                switch response.setOnlineStatus {
-                | Some(setOnlineStatus) =>
-                  switch setOnlineStatus.user {
-                  | Some(user) =>
-                    let inlineData = InlineFragment.readInline(user.fragmentRefs)
-                    setInlineStatus(_ =>
-                      switch inlineData.onlineStatus {
-                      | Some(#Online) => "online"
-                      | Some(#Idle) => "idle"
-                      | Some(#Offline) => "offline"
-                      | _ => "unknown"
-                      }
-                    )
-                  | None => ignore()
-                  }
-                | None => ignore()
+                switch response {
+                | {setOnlineStatus: Some({user: Some(user)})} =>
+                  let inlineData = InlineFragment.readInline(user.fragmentRefs)
+                  setInlineStatus(_ =>
+                    switch inlineData.onlineStatus {
+                    | Some(#Online) => "online"
+                    | Some(#Idle) => "idle"
+                    | Some(#Offline) => "offline"
+                    | _ => "unknown"
+                    }
+                  )
+                | _ => ignore()
                 }
               },
               (),
