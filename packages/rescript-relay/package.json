@@ -38,7 +38,7 @@
     "jest": "^24.9.0",
     "nock": "^11.7.0",
     "node-fetch": "^2.6.0",
-    "react": "0.0.0-experimental-4e08fb10c",
+    "react": "0.14.0",
     "react-dom": "0.0.0-experimental-4e08fb10c",
     "react-relay": "11.0.0",
     "reason-promise": "^1.0.2",
@@ -50,7 +50,7 @@
   "peerDependencies": {
     "bs-platform": "9.0.1",
     "graphql": "^14.4.2",
-    "react": "0.0.0-experimental-4e08fb10c",
+    "react": "0.14.0",
     "react-dom": "0.0.0-experimental-4e08fb10c",
     "react-relay": "11.0.0",
     "reason-promise": "^1.0.2",
@@ -63,7 +63,7 @@
     "mkdirp-sync": "^0.0.3"
   },
   "resolutions": {
-    "react": "0.0.0-experimental-4e08fb10c",
+    "react": "0.14.0",
     "react-dom": "0.0.0-experimental-4e08fb10c"
   }
 }
