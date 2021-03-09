@@ -1,13 +1,19 @@
 type callback<'input, 'output> = 'input => 'output
 
 @module("react")
-external _unstable_useDeferredValue: 'value => 'value = "unstable_useDeferredValue"
+external unstable_useDeferredValue: 'value => 'value = "unstable_useDeferredValue"
 
 @module("react")
-external _unstable_useTransition: unit => (callback<callback<unit, unit>, unit>, bool) =
+external unstable_useTransition: unit => (callback<callback<unit, unit>, unit>, bool) =
   "unstable_useTransition"
 
-let unstable_useTransition = () => _unstable_useTransition()
+module SuspenseList = {
+  @module("react") @react.component
+  external make: (
+    ~children: React.element,
+    ~revealOrder: [#forwards | #backwards | #together]=?,
+  ) => React.element = "unstable_SuspenseList"
+}
 
 @val @return(nullable)
 external getElementById: string => option<Dom.element> = "document.getElementById"
