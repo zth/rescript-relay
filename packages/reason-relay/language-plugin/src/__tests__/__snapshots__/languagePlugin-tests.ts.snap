@@ -409,7 +409,9 @@ module Types = {
   type rec response_setUserLocation = {
     changedUser: option<response_setUserLocation_changedUser>,
   }
-   and response_setUserLocation_changedUser = ReasonRelay.allFieldsMasked
+   and response_setUserLocation_changedUser = {
+    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SomeFragment_user]>
+  }
    and setUserLocationInput = {
     clientMutationId: option<string>,
     userId: string,
@@ -873,6 +875,9 @@ external getFragmentRef:
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = \\"TestPagination_query_usersConnection\\"
+  
   let getConnectionNodes:
     option<fragment_participantsConnection> => array<fragment_participantsConnection_edges_node> =
     connection => switch connection {
@@ -943,6 +948,9 @@ external getFragmentRef:
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = \\"TestPagination_query_usersConnection\\"
+  
   let getConnectionNodes:
     option<fragment_me_friendsConnection> => array<fragment_me_friendsConnection_edges_node> =
     connection => switch connection {
@@ -1009,6 +1017,9 @@ external getFragmentRef:
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = \\"TestPagination_query_usersConnection\\"
+  
   let getConnectionNodes:
     option<fragment_usersConnection> => array<fragment_usersConnection_edges_node> =
     connection => switch connection {
