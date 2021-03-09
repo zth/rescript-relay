@@ -48,6 +48,36 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
 ];
 
+let makeConnectionAssets = (~loc, ~extractedConnectionInfo) =>
+  switch (extractedConnectionInfo) {
+  | None => []
+  | Some({Util.key, applicableFilterKeys}) => [
+      switch (applicableFilterKeys) {
+      | [] => [%stri
+          [@module "relay-runtime"]
+          external getConnectionID:
+            (
+              ReasonRelay.dataId,
+              [@as [%e Util.makeStringExpr(~loc, key)]] _
+            ) =>
+            ReasonRelay.dataId =
+            "getConnectionID"
+        ]
+      | _filterKeys => [%stri
+          [@module "relay-runtime"]
+          external getConnectionID:
+            (
+              ReasonRelay.dataId,
+              [@as [%e Util.makeStringExpr(~loc, key)]] _,
+              'filters
+            ) =>
+            ReasonRelay.dataId =
+            "getConnectionID"
+        ]
+      },
+    ]
+  };
+
 let makeRefetchableAssets =
     (
       ~loc,
@@ -65,18 +95,15 @@ let makeRefetchableAssets =
         type refetchableFnOpts = {
           [@optional]
           fetchPolicy: string,
-          [@optional] [@as "UNSTABLE_renderPolicy"]
-          renderPolicy: string,
           [@optional]
           onComplete: Js.Nullable.t(Js.Exn.t) => unit,
         }
       ],
       [%stri
         let internal_makeRefetchableFnOpts =
-            (~fetchPolicy=?, ~renderPolicy=?, ~onComplete=?, ()) =>
+            (~fetchPolicy=?, ~onComplete=?, ()) =>
           refetchableFnOpts(
             ~fetchPolicy=?fetchPolicy->ReasonRelay.mapFetchPolicy,
-            ~renderPolicy=?renderPolicy->ReasonRelay.mapRenderPolicy,
             ~onComplete=?
               onComplete->ReasonRelay_Internal.internal_nullableToOptionalExnHandler,
             (),
@@ -134,7 +161,6 @@ let makeRefetchableAssets =
                             )
                           ],
               ~fetchPolicy: ReasonRelay.fetchPolicy=?,
-              ~renderPolicy: ReasonRelay.renderPolicy=?,
               ~onComplete: option(Js.Exn.t) => unit=?,
               unit
             ) =>
@@ -160,7 +186,6 @@ let makeRefetchableAssets =
                             )
                           ],
               ~fetchPolicy: ReasonRelay.fetchPolicy=?,
-              ~renderPolicy: ReasonRelay.renderPolicy=?,
               ~onComplete: option(Js.Exn.t) => unit=?,
               unit
             ) =>
@@ -251,7 +276,6 @@ There's a helper generated for you to create those diffed variables more easily 
                    )
                  ],
                 ~fetchPolicy: option(ReasonRelay.fetchPolicy)=?,
-                ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
                 ~onComplete: option(option(Js.Exn.t) => unit)=?,
                 (),
               ) => (
@@ -267,7 +291,6 @@ There's a helper generated for you to create those diffed variables more easily 
                   ->ReasonRelay_Internal.internal_cleanObjectFromUndefinedRaw,
                   internal_makeRefetchableFnOpts(
                     ~fetchPolicy?,
-                    ~renderPolicy?,
                     ~onComplete?,
                     (),
                   ),

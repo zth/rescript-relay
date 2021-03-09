@@ -149,6 +149,34 @@ let rec selectionSetHasConnection = selections =>
   | None => false
   };
 
+let rec extractFieldWithConnectionDirective =
+        (selections): option(Graphql_parser.field) =>
+  switch (
+    selections
+    |> List.find_opt(sel =>
+         switch (sel) {
+         | Graphql_parser.Field({directives, selection_set}) =>
+           switch (
+             directives
+             |> List.find_opt((dir: Graphql_parser.directive) =>
+                  switch (dir) {
+                  | {name: "connection"} => true
+                  | _ => false
+                  }
+                )
+           ) {
+           | Some(_) => true
+           | None => selectionSetHasConnection(selection_set)
+           }
+         | _ => false
+         }
+       )
+  ) {
+  | Some(Field(v)) => Some(v)
+  | Some(FragmentSpread(_) | InlineFragment(_))
+  | None => None
+  };
+
 // Returns whether a query has a @raw_response_type
 let queryHasRawResponseTypeDirective = (~loc, op) =>
   switch (op) {
@@ -166,6 +194,117 @@ let fragmentHasConnectionNotation = (~loc, op) =>
   | Graphql_parser.Fragment({name: _, selection_set}) =>
     selectionSetHasConnection(selection_set)
   | _ => false
+  };
+
+type connectionConfig = {
+  key: string,
+  applicableFilterKeys: list(string),
+};
+
+let extractFragmentConnectionInfo = (~loc, op) =>
+  switch (op) {
+  | Graphql_parser.Fragment({name: _, selection_set}) =>
+    let fieldWithConnection =
+      extractFieldWithConnectionDirective(selection_set);
+
+    switch (fieldWithConnection) {
+    | None => None
+    | Some(field) =>
+      let connectionDirective =
+        field.directives
+        |> List.find_opt((d: Graphql_parser.directive) =>
+             switch (d) {
+             | {Graphql_parser.name: "connection"} => true
+             | _ => false
+             }
+           );
+      switch (connectionDirective) {
+      | None => None
+      | Some(directive) =>
+        let filters =
+          directive.arguments
+          |> List.find_opt(
+               fun
+               | ("filters", `List(filters)) => true
+               | _ => false,
+             );
+
+        let filtersConfig =
+          switch (filters) {
+          | Some((_, `List(filters))) =>
+            switch (
+              filters
+              |> List.map(
+                   fun
+                   | `String(s) => Some(s)
+                   | _ => None,
+                 )
+              |> List.filter(
+                   fun
+                   | Some("before" | "after" | "first" | "last") => false
+                   | None => false
+                   | Some(_) => true,
+                 )
+            ) {
+            | [] => Some([])
+            | notEmpty => Some(notEmpty)
+            }
+          | _ => None
+          };
+
+        let keys =
+          field.arguments
+          |> List.filter(((key, _value)) =>
+               switch (key) {
+               | "before"
+               | "after"
+               | "first"
+               | "last" => false
+               | _ => true
+               }
+             )
+          |> List.map(((key, _value)) => key);
+
+        let key =
+          directive.arguments
+          |> List.find_opt(((key, _)) =>
+               switch (key) {
+               | "key" => true
+               | _ => false
+               }
+             );
+
+        switch (key) {
+        | Some(("key", `String(key))) =>
+          Some({
+            key,
+            applicableFilterKeys:
+              switch (filtersConfig) {
+              | None => keys
+              | Some([]) => []
+              | Some(filtersList) =>
+                keys
+                |> List.filter(key =>
+                     switch (
+                       filtersList
+                       |> List.find_opt(filterKeyName =>
+                            switch (filterKeyName) {
+                            | Some(k) when k == key => true
+                            | _ => false
+                            }
+                          )
+                     ) {
+                     | Some(_) => true
+                     | None => false
+                     }
+                   )
+              },
+          })
+        | _ => None
+        };
+      };
+    };
+  | _ => None
   };
 
 // Returns whether a fragment has an @inline directive defined or not
@@ -216,6 +355,9 @@ let makeExprAccessor = (~loc, ~moduleName, path) => {
     },
   );
 };
+
+let makeStringExpr = (~loc, str) =>
+  Ppxlib.Ast_helper.Exp.constant(~loc, Ppxlib.Ast_helper.Const.string(str));
 
 let makeModuleIdent = (~loc, ~moduleName, path) => {
   let gqlModuleName = Lident(getGraphQLModuleName(moduleName));

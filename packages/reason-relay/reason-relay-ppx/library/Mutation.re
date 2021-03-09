@@ -99,7 +99,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         %private
-        [@module "react-relay/lib/relay-experimental"]
+        [@module "react-relay/hooks"]
         external internal_useMutation:
           ReasonRelay.mutationNode(
             [%t typeFromGeneratedModule(["relayOperationNode"])],

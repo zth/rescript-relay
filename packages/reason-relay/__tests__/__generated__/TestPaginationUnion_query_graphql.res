@@ -100,6 +100,9 @@ external getFragmentRef:
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = "TestPaginationUnion_query_members"
+  
   let getConnectionNodes:
     option<fragment_members> => array<fragment_members_edges_node> =
     connection => switch connection {

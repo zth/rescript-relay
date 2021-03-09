@@ -62,19 +62,6 @@ type cacheConfig = {
 
 The cache config provided to the network layer. Relay won't do anything in particular with these, it's up to you to use them if you want inside of your `NetworkLayer`.
 
-## [renderPolicy](#renderpolicy)
-
-```reason
-type renderPolicy =
-  | Full
-  /* Allow rendering any fragments that already have the data needed */
-  | Partial
-```
-
-renderPolicy controls if Relay is allowed to render partially available data or not.
-
-Relay rendering partial data means it will suspend at the _fragment level_ rather than at the _query level_ if a query does not exist in the cache. This has the implication that if a fragment can be reached because the data for that fragment already exists, Relay can allow that to render while waiting for new data.
-
 ## [fetchPolicy](#fetchpolicy)
 
 ```reason
@@ -1157,13 +1144,12 @@ let make: (
       ~nodeObj: {.."__typename": string, "id": string} as 'a,
       ~typeName: string,
     ) => string=?,
-    ~defaultRenderPolicy: renderPolicy=?,
     ~treatMissingFieldsAsNull: bool=?,
     unit,
   ) => t
 ```
 
-> Read more about: [renderPolicy](#renderpolicy), [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet), [Environment.t](#environmentt)
+> Read more about: [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet), [Environment.t](#environmentt)
 
 Create a new [Environment](#environment) .
 

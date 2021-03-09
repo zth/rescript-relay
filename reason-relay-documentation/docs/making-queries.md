@@ -131,13 +131,12 @@ As shown in the snippet above, `Query.use` is a React hook that dispatches your 
 
 _Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
 
-| Name                 | Type                                         | Required | Notes                                                                                                                                        |
-| -------------------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined.                                                            |
-| `fetchPolicy`        | [`fetchPolicy`](api-reference#fetchpolicy)   | No       | Control how you want Relay to resolve your data.                                                                                             |
-| `renderPolicy`       | [`renderPolicy`](api-reference#renderpolicy) | No       | Control if Relay should partially render views with data it already has in the store, or all data at once when it's fetched from the server. |
-| `fetchKey`           | `string`                                     | No       | Can be used to force a refetch, much like React's `key` can be used to force a re-render.                                                    |
-| `networkCacheConfig` | [`CacheConfig.t`](api-reference#cacheconfig) | No       |                                                                                                                                              |
+| Name                 | Type                                         | Required | Notes                                                                                     |
+| -------------------- | -------------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined.         |
+| `fetchPolicy`        | [`fetchPolicy`](api-reference#fetchpolicy)   | No       | Control how you want Relay to resolve your data.                                          |
+| `fetchKey`           | `string`                                     | No       | Can be used to force a refetch, much like React's `key` can be used to force a re-render. |
+| `networkCacheConfig` | [`CacheConfig.t`](api-reference#cacheconfig) | No       |                                                                                           |
 
 ### `fetch`
 
@@ -201,9 +200,8 @@ Uses a preloaded query. Pass the `queryRef` from `Query.useLoader` to this hook 
 
 Returns the query's `response`.
 
-| Name           | Type                                         | Required | Notes                                                                                                                                        |
-| -------------- | -------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `queryRef`     | `queryRef`                                   | _Yes_    | The query referenced returned by `loadQuery` from `Query.useLoader`.                                                                         |
-| `renderPolicy` | [`renderPolicy`](api-reference#renderpolicy) | No       | Control if Relay should partially render views with data it already has in the store, or all data at once when it's fetched from the server. |
+| Name       | Type       | Required | Notes                                                                |
+| ---------- | ---------- | -------- | -------------------------------------------------------------------- |
+| `queryRef` | `queryRef` | _Yes_    | The query referenced returned by `loadQuery` from `Query.useLoader`. |
 
 > `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery).

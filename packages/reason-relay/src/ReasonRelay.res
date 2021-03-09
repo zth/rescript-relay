@@ -30,6 +30,9 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 @module("relay-runtime")
 external isClientID: dataId => bool = "isClientID"
 
+@module("relay-runtime")
+external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
+
 type featureFlags = {
   @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,
@@ -448,17 +451,6 @@ module Store = {
   @send external publish: (t, RecordSource.t) => unit = "publish"
 }
 
-type renderPolicy =
-  | Full
-  | Partial
-
-let mapRenderPolicy = x =>
-  switch x {
-  | Some(Full) => Some("full")
-  | Some(Partial) => Some("partial")
-  | None => None
-  }
-
 module Environment = {
   type t
 
@@ -468,10 +460,8 @@ module Environment = {
   type environmentConfig<'a> = {
     network: Network.t,
     store: Store.t,
-    @optional @as("UNSTABLE_DO_NOT_USE_getDataID")
+    @optional
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
-    @optional @as("UNSTABLE_defaultRenderPolicy")
-    defaultRenderPolicy: string,
     @optional
     treatMissingFieldsAsNull: bool,
     missingFieldHandlers: missingFieldHandlers,
@@ -480,20 +470,12 @@ module Environment = {
   @module("relay-runtime") @new
   external make: environmentConfig<'a> => t = "Environment"
 
-  let make = (
-    ~network,
-    ~store,
-    ~getDataID=?,
-    ~defaultRenderPolicy=?,
-    ~treatMissingFieldsAsNull=?,
-    (),
-  ) =>
+  let make = (~network, ~store, ~getDataID=?, ~treatMissingFieldsAsNull=?, ()) =>
     make(
       environmentConfig(
         ~network,
         ~store,
         ~getDataID?,
-        ~defaultRenderPolicy=?defaultRenderPolicy->mapRenderPolicy,
         ~treatMissingFieldsAsNull?,
         // This handler below enables automatic resolution of all cached items through the Node interface
         ~missingFieldHandlers=%raw(
@@ -627,7 +609,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       variables->C.convertVariables,
       {
         fetchKey: fetchKey,
-        fetchPolicy: fetchPolicy |> mapFetchPolicy,
+        fetchPolicy: fetchPolicy->mapFetchPolicy,
         networkCacheConfig: networkCacheConfig,
       },
     )
