@@ -1,5 +1,5 @@
 ---
-id: about-reason-relay
+id: about-rescript-relay
 title: About Reason Relay
 sidebar_label: About Reason Relay
 ---
@@ -11,7 +11,7 @@ sidebar_label: About Reason Relay
 
 ## An opinionated binding to Relay
 
-ReasonRelay does _not_ aim to be a 1-to-1 binding of all of Relay. Rather, we take the following approach:
+RescriptRelay does _not_ aim to be a 1-to-1 binding of all of Relay. Rather, we take the following approach:
 
 - Focus on binding the parts that lend themselves well to ReasonML's type system. In our case, this means _we only bind Relay's hooks, not their higher-order components_.
 - Include tools and utilities that help make life with Relay easier. This includes simplifying common patterns like updating the store, dealing with connections and so on.

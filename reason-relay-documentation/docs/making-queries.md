@@ -14,7 +14,7 @@ sidebar_label: Making Queries
 
 Let's make our first query!
 
-Queries in ReasonRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
+Queries in RescriptRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
 
 ```reason
 /* UserProfile.res */
@@ -35,7 +35,7 @@ module Query = %relay(
 
 > Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen a new query (and optionally a component) via the command `> Add query`.
 
-This is what a query definition looks like in ReasonRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
+This is what a query definition looks like in RescriptRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
 ```reason
 @react.component
@@ -67,7 +67,7 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
 
-In ReasonRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
+In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
 1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaed`, like `let queryData = Query.usePreloaded(~queryRef=queryRef, ())`, to get the data for the query as soon as it's available.
 2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.

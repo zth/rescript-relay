@@ -1,0 +1,36 @@
+{
+  "name": "rescript-relay-bin",
+  "version": "0.1.0",
+  "description": "Native helper for RescriptRelay",
+  "license": "MIT",
+  "esy": {
+    "build": "dune build --only-package RescriptRelayBin",
+    "buildDev": "refmterr dune build --promote-install-files --root . --only-package RescriptRelayBin"
+  },
+  "scripts": {
+    "go": "esy x RescriptRelayBin",
+    "test": "esy x RunTests.exe",
+    "linux-release-static": "dune build --root . --only-packages RescriptRelayBin --ignore-promoted-rules --no-config --profile release-static",
+    "format": "esy dune build @fmt --auto-promote"
+  },
+  "dependencies": {
+    "@esy-ocaml/reason": ">= 3.6.0 < 4.0.0",
+    "@opam/easy-format": "1.3.2",
+    "@opam/flow_parser": "giltho/flow#5f4a473",
+    "@opam/ppx_deriving_yojson": "3.6.1",
+    "@opam/re": "1.9.0",
+    "@opam/shexp": "v0.14.0",
+    "@opam/tablecloth-native": "0.0.7",
+    "@opam/yojson": "1.7.0",
+    "@reason-native/console": "*",
+    "@reason-native/pastel": "*",
+    "ocaml": "~4.10.0"
+  },
+  "devDependencies": {
+    "@opam/merlin": "*",
+    "@reason-native/rely": "*",
+    "refmterr": "*",
+    "@opam/ocaml-lsp-server": "1.1.0",
+    "@opam/dune": ">=2.6"
+  }
+}

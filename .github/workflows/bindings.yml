@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/reason-relay
+        working-directory: packages/rescript-relay
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -22,7 +22,7 @@ jobs:
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay/reason-relay-ppx
+          working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Install
         run: |
           yarn --frozen-lockfile

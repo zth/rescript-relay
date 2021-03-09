@@ -8,7 +8,7 @@ mkdir -p _release/src;
 
 # build language plugin
 echo "Build language plugin...";
-cd packages/reason-relay/language-plugin/; yarn; yarn build; cd ..;
+cd packages/rescript-relay/language-plugin/; yarn; yarn build; cd ..;
 
 # build bindings
 echo "Build bindings...";

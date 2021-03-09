@@ -28,6 +28,6 @@ module.exports = {
       "coming-from-reason-apollo",
       "migrating-from-javascript-typescript-incrementally",
     ],
-    Misc: ["the-compiler", "quirks-of-reason-relay", "examples"],
+    Misc: ["the-compiler", "quirks-of-rescript-relay", "examples"],
   },
 };

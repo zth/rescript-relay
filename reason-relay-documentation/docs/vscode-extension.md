@@ -4,7 +4,7 @@ title: Dedicated VSCode extension
 sidebar_label: Dedicated VSCode extension
 ---
 
-There's a [dedicated VSCode extension](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay) for using ReasonRelay with VSCode and ReScript syntax. You are **very encouraged** to use that if you can. I promise it'll make life simpler for you.
+There's a [dedicated VSCode extension](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay) for using RescriptRelay with VSCode and ReScript syntax. You are **very encouraged** to use that if you can. I promise it'll make life simpler for you.
 
 _Short video detailing the extension is coming soon_.
 
@@ -13,11 +13,11 @@ _Short video detailing the extension is coming soon_.
 In order to use the dedicated VSCode extension, you need to satisfy the following requirements:
 
 1. Using only ReScript syntax. The extension won't work for ReasonML syntax.
-2. Using `reason-relay >= 0.13.0`
+2. Using `rescript-relay >= 0.13.0`
 
 ### What does it do?
 
-The extension aims to make life using ReasonRelay as simple and efficient as possible. There's a [full list of features available here](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay), but let's take a brief tour of the most important ones:
+The extension aims to make life using RescriptRelay as simple and efficient as possible. There's a [full list of features available here](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay), but let's take a brief tour of the most important ones:
 
 #### Running the Relay compiler for you
 

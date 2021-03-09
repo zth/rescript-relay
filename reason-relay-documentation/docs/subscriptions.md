@@ -10,7 +10,7 @@ sidebar_label: Subscriptions
 
 ## Subscriptions in Relay
 
-Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws). Those are the minimal required bindings for our example to work, but they are tied to reason-relay itself, and would need to be adjusted in order to be used for other purposes.
+Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws). Those are the minimal required bindings for our example to work, but they are tied to rescript-relay itself, and would need to be adjusted in order to be used for other purposes.
 
 ```reason
 /* SubscriptionsTransportWs.res */
@@ -21,7 +21,7 @@ type operationOptions = {
 
 type observable<'a> = {
   @meth
-  "subscribe": ReasonRelay.Observable.sink<'a> => ReasonRelay.Observable.subscription,
+  "subscribe": RescriptRelay.Observable.sink<'a> => RescriptRelay.Observable.subscription,
 }
 
 type t<'a> = {@meth "request": operationOptions => observable<'a>}
@@ -42,36 +42,36 @@ let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
   {"reconnect": true},
 )
 
-let subscriptionFunction: ReasonRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
+let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
   let query = config.text
   let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
     query: query,
     variables: variables,
   }
 
-  ReasonRelay.Observable.make(sink => {
+  RescriptRelay.Observable.make(sink => {
     let observable = subscriptionClient["request"](subscriptionQuery)
     let subscription = observable["subscribe"](sink)
     Some(subscription)
   })
 }
 
-let network = ReasonRelay.Network.makePromiseBased(
+let network = RescriptRelay.Network.makePromiseBased(
   ~fetchFunction=fetchQuery(token),
   ~subscriptionFunction,
   (),
 )
 
 let store = {
-  open ReasonRelay
+  open RescriptRelay
   Store.make(~source=RecordSource.make(), ())
 }
 
-let environment = ReasonRelay.Environment.make(~network, ~store, ())
+let environment = RescriptRelay.Environment.make(~network, ~store, ())
 
 ```
 
-Subscriptions in ReasonRelay are defined using the `%relay()` extension node. The following example shows how to define and start a subscription with ReasonRelay.
+Subscriptions in RescriptRelay are defined using the `%relay()` extension node. The following example shows how to define and start a subscription with RescriptRelay.
 
 Lets imagine we have the following schema:
 
@@ -111,14 +111,14 @@ module TicketStatusSubscription = %relay(
 
 @react.component
 let make = (~ticketId) => {
-  let environment = ReasonRelay.useEnvironmentFromContext()
+  let environment = RescriptRelay.useEnvironmentFromContext()
   React.useEffect2(() => {
     let subscription = TicketStatusSubscription.subscribe(
       ~environment,
       ~variables={id: ticketId},
       (),
     )
-    Some(() => ReasonRelay.Disposable.dispose(subscription))
+    Some(() => RescriptRelay.Disposable.dispose(subscription))
   }, (ticketId, environment))
 
   /* The rest of the code here... */
@@ -130,7 +130,7 @@ let make = (~ticketId) => {
 
 > Using VSCode? Our [dedicated VSCode extension](vscode-extension) lets you codegen new subscriptions easily, including boilerplate for components, via the command `> Add subscription`.
 
-See the [examples](https://github.com/zth/reason-relay/tree/master/example) folder for a working subscription sample.
+See the [examples](https://github.com/zth/rescript-relay/tree/master/example) folder for a working subscription sample.
 
 ## API Reference
 
