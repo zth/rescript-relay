@@ -168,24 +168,13 @@ let getPrintedFullState =
   Printer.(
     otherDeclarations
     |> List.iter(def =>
-         def
-         |> printRootType(
-              ~recursiveMode=None,
-              ~state,
-            )
-         |> addToTypesModule
+         def |> printRootType(~recursiveMode=None, ~state) |> addToTypesModule
        )
   );
 
   Printer.(
     definitions^
-    |> List.iter(def => {
-         def
-         |> printRootType(
-              ~state,
-            )
-         |> addToTypesModule
-       })
+    |> List.iter(def => {def |> printRootType(~state) |> addToTypesModule})
   );
 
   addToStr(Utils.print_indented(2, insideTypes^));
@@ -349,7 +338,9 @@ let getPrintedFullState =
     let connPath = connection.atObjectPath;
 
     // Print the connection key so it can be referenced from the outside if needed.
-    add_to_utils("@inline\nlet connectionKey = \"" ++ connection.key ++ "\"\n\n")
+    add_to_utils(
+      "@inline\nlet connectionKey = \"" ++ connection.key ++ "\"\n\n",
+    );
 
     switch (
       state.objects
@@ -388,6 +379,7 @@ let getPrintedFullState =
        ~f=
          fun
          | {Types.originalFlowTypeName: Some(typeName), definition} => {
+             add_to_utils("\n");
              definition
              |> Printer.printObjectMaker(
                   ~targetType=Tablecloth.String.uncapitalize(typeName),

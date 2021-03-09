@@ -345,6 +345,7 @@ module Utils = {
   open Types
   external userRole_toString:
   enum_UserRole => string = \\"%identity\\"
+  
   let make_locationBounds = (
     ~lat,
     ~lng,
@@ -355,6 +356,7 @@ module Utils = {
     lng: lng,
     child: child
   }
+  
   
   let make_setUserLocationInput = (
     ~clientMutationId=?,
@@ -491,6 +493,7 @@ module Utils = {
     lng: lng,
     child: child
   }
+  
   
   let make_setUserLocationInput = (
     ~clientMutationId=?,
@@ -669,6 +672,7 @@ module Utils = {
     lng: lng,
     child: child
   }
+  
   
   let make_setUserLocationInput = (
     ~clientMutationId=?,
