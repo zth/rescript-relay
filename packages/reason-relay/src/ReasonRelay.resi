@@ -637,16 +637,6 @@ module Store: {
   external publish: (t, RecordSource.t) => unit = "publish"
 }
 
-@ocaml.doc("renderPolicy controls if Relay is allowed to render partially available data or not.")
-type renderPolicy =
-  /* Always render the full result */
-  | Full
-  /* Allow rendering any fragments that already have the data needed */
-  | Partial
-
-@ocaml.doc("Internal, do not use.")
-let mapRenderPolicy: option<renderPolicy> => option<string>
-
 @ocaml.doc("Internal, do not use.")
 type operationDescriptor
 

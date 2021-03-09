@@ -167,8 +167,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                            ["Types", "refetchVariables"],
                          )
                        ],
-                      ~fetchPolicy=?,
-                      ~renderPolicy=?,
+                      ~fetchPolicy=?,                      
                       ~onComplete=?,
                       (),
                     ) =>
@@ -185,7 +184,6 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                       internal_makeRefetchableFnOpts(
                         ~onComplete?,
                         ~fetchPolicy?,
-                        ~renderPolicy?,
                         (),
                       ),
                     ),
@@ -244,7 +242,6 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                          )
                        ],
                       ~fetchPolicy=?,
-                      ~renderPolicy=?,
                       ~onComplete=?,
                       (),
                     ) =>
@@ -261,7 +258,6 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                       internal_makeRefetchableFnOpts(
                         ~onComplete?,
                         ~fetchPolicy?,
-                        ~renderPolicy?,
                         (),
                       ),
                     ),

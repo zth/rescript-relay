@@ -451,17 +451,6 @@ module Store = {
   @send external publish: (t, RecordSource.t) => unit = "publish"
 }
 
-type renderPolicy =
-  | Full
-  | Partial
-
-let mapRenderPolicy = x =>
-  switch x {
-  | Some(Full) => Some("full")
-  | Some(Partial) => Some("partial")
-  | None => None
-  }
-
 module Environment = {
   type t
 

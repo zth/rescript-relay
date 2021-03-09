@@ -11,7 +11,8 @@
 
 ## Breaking changes
 
-- `defaultRenderPolicy` on `Environment` is gone. It defaults to `Partial` and will be removed in Relay centrally.
+- `defaultRenderPolicy` on `Environment` is gone. It defaults to `Partial` and will be removed in Relay centrally. Migration strategy: Just remove the config.
+- `renderPolicy` is now 100% _gone_ from the API. Relay will remove this in the next release (everything will always be what as previously `Partial`), and there should be no practical downsides to using `Partial` as opposed to `Full`. Migration strategy: Remove any usage of `renderPolicy`.
 
 ## New bindings
 

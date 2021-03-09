@@ -31,8 +31,6 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         type useQueryConfig = {
           fetchKey: option(string),
           fetchPolicy: option(string),
-          [@as "UNSTABLE_renderPolicy"]
-          renderPolicy: option(string),
           networkCacheConfig: option(ReasonRelay.cacheConfig),
         }
       ],
@@ -58,8 +56,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
             ReasonRelay.queryNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
             ),
-            [%t typeFromGeneratedModule(["queryRef"])],
-            option({. "UNSTABLE_renderPolicy": option(string)})
+            [%t typeFromGeneratedModule(["queryRef"])]
           ) =>
           [%t typeFromGeneratedModule(["Types", "response"])] =
           "usePreloadedQuery"
@@ -113,7 +110,6 @@ Prefer using `Query.useLoader()` or `YourQueryName_graphql.load()` in combinatio
             (
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
               ~fetchPolicy: option(ReasonRelay.fetchPolicy)=?,
-              ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
               ~fetchKey: option(string)=?,
               ~networkCacheConfig: option(ReasonRelay.cacheConfig)=?,
               (),
@@ -128,7 +124,6 @@ Prefer using `Query.useLoader()` or `YourQueryName_graphql.load()` in combinatio
               {
                 fetchKey,
                 fetchPolicy: fetchPolicy->ReasonRelay.mapFetchPolicy,
-                renderPolicy: renderPolicy->ReasonRelay.mapRenderPolicy,
                 networkCacheConfig,
               },
             );
@@ -287,7 +282,6 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
         let usePreloaded =
             (
               ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],
-              ~renderPolicy: option(ReasonRelay.renderPolicy)=?,
               (),
             )
             : [%t typeFromGeneratedModule(["Types", "response"])] => {
@@ -295,14 +289,6 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
             internal_usePreloadedQuery(
               [%e valFromGeneratedModule(["node"])],
               queryRef,
-              switch (renderPolicy) {
-              | Some(_) =>
-                Some({
-                  "UNSTABLE_renderPolicy":
-                    renderPolicy->ReasonRelay.mapRenderPolicy,
-                })
-              | None => None
-              },
             );
           ReasonRelay_Internal.internal_useConvertedValue(
             [%e valFromGeneratedModule(["Internal", "convertResponse"])],
