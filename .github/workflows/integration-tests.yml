@@ -18,35 +18,35 @@ jobs:
       - uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay/reason-relay-ppx
+          working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Build PPX
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay/reason-relay-ppx
-      - name: Build ReasonRelayBin
+          working-directory: packages/rescript-relay/rescript-relay-ppx
+      - name: Build RescriptRelayBin
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay-bin
-      - name: Copy built ReasonRelayBin file
-        working-directory: packages/reason-relay-bin
+          working-directory: packages/rescript-relay-bin
+      - name: Copy built RescriptRelayBin file
+        working-directory: packages/rescript-relay-bin
         run: |
           ./copyIntoPlace.sh
       - name: Install - language plugin
-        working-directory: packages/reason-relay/language-plugin
+        working-directory: packages/rescript-relay/language-plugin
         run: |
           yarn --frozen-lockfile
       - name: Build - language plugin
-        working-directory: packages/reason-relay/language-plugin
+        working-directory: packages/rescript-relay/language-plugin
         run: |
           yarn build
       - name: Install - bindings
-        working-directory: packages/reason-relay
+        working-directory: packages/rescript-relay
         run: |
           yarn install
       - name: Build - Relay test files
-        working-directory: packages/reason-relay
+        working-directory: packages/rescript-relay
         run: |
           yarn build:test
       - name: git status
@@ -58,10 +58,10 @@ jobs:
           exit 1
         if: steps.git_status.outputs.status
       - name: Build - bindings
-        working-directory: packages/reason-relay
+        working-directory: packages/rescript-relay
         run: |
           yarn build
       - name: Integration tests
-        working-directory: packages/reason-relay
+        working-directory: packages/rescript-relay
         run: |
           yarn test:ci

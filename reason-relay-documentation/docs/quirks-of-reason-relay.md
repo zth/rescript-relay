@@ -1,10 +1,10 @@
 ---
-id: quirks-of-reason-relay
+id: quirks-of-rescript-relay
 title: Quirks of Reason Relay
 sidebar_label: Quirks of Reason Relay
 ---
 
-Ahh, what would a framework be without quirks and weird stuff? ReasonRelay comes with a few _gotchas_ that are good to keep in mind.
+Ahh, what would a framework be without quirks and weird stuff? RescriptRelay comes with a few _gotchas_ that are good to keep in mind.
 
 ## Field names
 

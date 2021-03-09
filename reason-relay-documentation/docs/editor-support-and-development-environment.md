@@ -4,7 +4,7 @@ title: Editor Support & Development Environment
 sidebar_label: Editor Support & Development Environment
 ---
 
-This page details how to set up the best possible development environment for ReasonRelay.
+This page details how to set up the best possible development environment for RescriptRelay.
 
 ## Editor extensions
 

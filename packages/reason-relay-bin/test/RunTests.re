@@ -1,1 +1,0 @@
-ReasonRelayBinTest.TestFramework.cli();

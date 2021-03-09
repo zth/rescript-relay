@@ -22,8 +22,8 @@ const features = [
     imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
-        ReasonRelay brings tools and utilities to make common patterns in Relay
-        as easy as possible.
+        RescriptRelay brings tools and utilities to make common patterns in
+        Relay as easy as possible.
       </>
     ),
   },

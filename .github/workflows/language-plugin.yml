@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/reason-relay/language-plugin
+        working-directory: packages/rescript-relay/language-plugin
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -24,13 +24,13 @@ jobs:
           yarn build
       - name: Install esy
         run: npm install -g esy
-      - name: Build ReasonRelayBin
+      - name: Build RescriptRelayBin
         uses: esy/github-action@v1
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/reason-relay-bin
-      - name: Copy built ReasonRelayBin file
-        working-directory: packages/reason-relay-bin
+          working-directory: packages/rescript-relay-bin
+      - name: Copy built RescriptRelayBin file
+        working-directory: packages/rescript-relay-bin
         run: |
           ./copyIntoPlace.sh
       - name: Test

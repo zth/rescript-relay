@@ -11,9 +11,9 @@ sidebar_label: Mutations
 
 ## Mutations in Relay
 
-Fetching and displaying data is only half the fun, right? We want to change stuff as well! Making mutations in Relay is pretty straight-forward, and we'll introduce exactly how you do it in ReasonRelay here.
+Fetching and displaying data is only half the fun, right? We want to change stuff as well! Making mutations in Relay is pretty straight-forward, and we'll introduce exactly how you do it in RescriptRelay here.
 
-Mutations in ReasonRelay are defined using the `%relay()` extension node. The following example shows how to define and then run a simple mutation with ReasonRelay:
+Mutations in RescriptRelay are defined using the `%relay()` extension node. The following example shows how to define and then run a simple mutation with RescriptRelay:
 
 ```reason
 /* SingleTodo.res */
@@ -173,7 +173,7 @@ type rawResponse = {
 
 Look at that. All fragments are flattened and included in the type. This type corresponds to _exactly_ what Relay expects the server to return, which makes your optimistic update work just as you want it to!
 
-#### `ReasonRelay.generateUniqueClientID` for `id` fields in optimistic updates
+#### `RescriptRelay.generateUniqueClientID` for `id` fields in optimistic updates
 
 Now, the type for the optimistic response above contains a bunch of `id` fields. `id`'s you naturally don't have yet since they'll be created on the server. Relay ships with a function just for this - `generateUniqueClientID`.
 
@@ -182,7 +182,7 @@ You use it like this:
 ```reason
 ~optimisticResponse={
   addedBlogPost: Some({
-    id: ReasonRelay.(generateUniqueClientID->dataIdToString),
+    id: RescriptRelay.(generateUniqueClientID->dataIdToString),
     ...
   })
 }
@@ -192,7 +192,7 @@ This will generate a local, unique id. As soon as the actual server update comes
 
 ## More information
 
-There's plenty of more advanced things you can do with optimistic updates in Relay. We won't be covering them in detail here, but you're encouraged to read [the Relay documentation on optimistic updates here](https://relay.dev/docs/en/mutations#optimistic-updates), and then check out [interacting with the store in ReasonRelay](interacting-with-the-store).
+There's plenty of more advanced things you can do with optimistic updates in Relay. We won't be covering them in detail here, but you're encouraged to read [the Relay documentation on optimistic updates here](https://relay.dev/docs/en/mutations#optimistic-updates), and then check out [interacting with the store in RescriptRelay](interacting-with-the-store).
 
 ## The next step
 

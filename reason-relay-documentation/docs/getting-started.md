@@ -6,17 +6,17 @@ sidebar_label: Getting Started
 
 #### Recommended background reading
 
-- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction) - _Note that ReasonRelay requires `bs-platform > 8.3.0`_
+- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction) - _Note that RescriptRelay requires `bs-platform > 8.3.0`_
 - [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
 
 #### Want to follow along with code?
 
-You're encouraged to follow along this walkthrough and play with the concepts through actual code if you can. The easiest way to get started is to use the example that's available in the ReasonRelay repository. Do the following:
+You're encouraged to follow along this walkthrough and play with the concepts through actual code if you can. The easiest way to get started is to use the example that's available in the RescriptRelay repository. Do the following:
 
-- Clone [the ReasonRelay repository](https://github.com/zth/reason-relay)
-- Open the `example` folder and then follow [the instructions](https://github.com/zth/reason-relay/blob/master/example/README.md) to start the example locally.
+- Clone [the RescriptRelay repository](https://github.com/zth/rescript-relay)
+- Open the `example` folder and then follow [the instructions](https://github.com/zth/rescript-relay/blob/master/example/README.md) to start the example locally.
 
 ## Getting Started
 
@@ -24,13 +24,13 @@ Let's get started!
 
 #### Concurrent Mode is encouraged
 
-You will have the absolute best experience using ReasonRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too. There are a few rough edges to keep in mind when not running in concurrent mode, namely:
+You will have the absolute best experience using RescriptRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too. There are a few rough edges to keep in mind when not running in concurrent mode, namely:
 
 - You won't have the same control over when things suspend and not as you do in concurrent mode. This can be problematic when doing refetches, which suspend after some default duration in a way you can't really control without concurrent mode.
 
 ##### Extra bindings for experimental APIs with no official bindings yet
 
-Not all experimental APIs from React are currently bound in the official `@rescript/react` bindings. ReasonRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
+Not all experimental APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
 This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
@@ -41,38 +41,38 @@ You can view Relay as being made up of two parts:
 1. The framework Relay that runs on the client and integrates with React.
 2. The _Relay compiler_, that takes the GraphQL definitions you write and generate artifacts _at build time_. These artifacts are then used by Relay at runtime.
 
-ReasonRelay adds a thin layer on top of the Relay compiler ([read more about that here](the-compiler)). This means that the workflow for using ReasonRelay is:
+RescriptRelay adds a thin layer on top of the Relay compiler ([read more about that here](the-compiler)). This means that the workflow for using RescriptRelay is:
 
 1. You write code including GraphQL definitions that Relay will use
 2. The Relay compiler finds and compiles your Relay code
 3. Repeat
 
-You really don't need to care about the generated artifacts though, ReasonRelay hides them pretty well from you. But, remember the compiler! It needs to run. Luckily it's fast and it has an excellent watch mode.
+You really don't need to care about the generated artifacts though, RescriptRelay hides them pretty well from you. But, remember the compiler! It needs to run. Luckily it's fast and it has an excellent watch mode.
 
 ## Installation
 
-First thing's first - ReasonRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+First thing's first - RescriptRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
 yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb10c
 
-# Add reason-relay and dependencies to the project
+# Add rescript-relay and dependencies to the project
 # We currently depend on Relay version 10.1.3, so install that exact version
 # We also depend on reason-promise for promises
-yarn add reason-relay graphql relay-runtime@10.1.3 relay-compiler@10.1.3 react-relay@0.0.0-experimental-4c4107dd relay-config@10.1.3 reason-promise
+yarn add rescript-relay graphql relay-runtime@10.1.3 relay-compiler@10.1.3 react-relay@0.0.0-experimental-4c4107dd relay-config@10.1.3 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
 
 ```json
 ...
-"ppx-flags": ["reason-relay/ppx"],
-"bs-dependencies": ["@rescript/react", "reason-relay", "reason-promise"],
+"ppx-flags": ["rescript-relay/ppx"],
+"bs-dependencies": ["@rescript/react", "rescript-relay", "reason-promise"],
 ...
 ```
 
-> Are you using VSCode? Make sure you install and use our [dedicated VSCode extension](vscode-extension). It'll make your life using ReasonRelay _much_ smoother.
+> Are you using VSCode? Make sure you install and use our [dedicated VSCode extension](vscode-extension). It'll make your life using RescriptRelay _much_ smoother.
 
 #### Using experimental React versions
 
@@ -118,7 +118,7 @@ module.exports = {
 
 > Read more about [custom scalars here.](custom-scalars)
 
-Please note that ReasonRelay enforces two things that regular Relay does not:
+Please note that RescriptRelay enforces two things that regular Relay does not:
 
 1. You must provide an `artifactDirectory`.
 2. You cannot provide your own language plugin.
@@ -129,12 +129,12 @@ We'll also add a script to our `package.json` to run the Relay compiler:
 // package.json
 ...
 "scripts": {
-  "relay": "reason-relay-compiler",
-  "relay:watch": "reason-relay-compiler --watch"
+  "relay": "rescript-relay-compiler",
+  "relay:watch": "rescript-relay-compiler --watch"
 }
 ```
 
-> Notice that we're calling `reason-relay-compiler`, and not `relay-compiler`. This is because ReasonRelay adds a thin layer on top of the regular `relay-compiler`. Read more about [the Relay compiler and how ReasonRelay uses it here](the-compiler).
+> Notice that we're calling `rescript-relay-compiler`, and not `relay-compiler`. This is because RescriptRelay adds a thin layer on top of the regular `relay-compiler`. Read more about [the Relay compiler and how RescriptRelay uses it here](the-compiler).
 
 Now you have two scripts set up; one for running the compiler once, and one for running it in watch-mode.
 
@@ -142,7 +142,7 @@ You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a
 
 > Using VSCode? Our [dedicated VSCode extension](vscode-extension) will run the Relay compiler for you automatically. Check it out!
 
-The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how ReasonRelay uses it [here](the-compiler).
+The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how RescriptRelay uses it [here](the-compiler).
 
 ## Setting up the Relay environment
 
@@ -160,7 +160,7 @@ exception Graphql_error(string)
  * A standard fetch that sends our operation and variables to the
  * GraphQL server, and then decodes and returns the response.
  */
-let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (
+let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
   operation,
   variables,
   _cacheConfig,
@@ -193,12 +193,12 @@ let fetchQuery: ReasonRelay.Network.fetchFunctionPromise = (
   )
 }
 
-let network = ReasonRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ())
+let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ())
 
-let environment = ReasonRelay.Environment.make(
+let environment = RescriptRelay.Environment.make(
   ~network,
-  ~store=ReasonRelay.Store.make(
-    ~source=ReasonRelay.RecordSource.make(),
+  ~store=RescriptRelay.Store.make(
+    ~source=RescriptRelay.RecordSource.make(),
     ~gcReleaseBufferSize=10, /* This sets the query cache size to 10 */
     (),
   ),
@@ -212,14 +212,14 @@ There, we now have a Relay environment! We only have two more things to fix befo
 
 ##### 1. Adding our Relay environment to React's context
 
-Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<ReasonRelay.Context.Provider />`:
+Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<RescriptRelay.Context.Provider />`:
 
 ```reason
 /* Index.res */
 ReactExperimental.renderConcurrentRootAtElementWithId(
-  <ReasonRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
+  <RescriptRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />
-  </ReasonRelay.Context.Provider>,
+  </RescriptRelay.Context.Provider>,
   "app",
 )
 
@@ -227,7 +227,7 @@ ReactExperimental.renderConcurrentRootAtElementWithId(
 
 ##### 2. Rendering your app in Concurrent Mode
 
-We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for ReasonRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
+We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for RescriptRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
 
 ## Time to make your first query
 
