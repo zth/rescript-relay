@@ -52,10 +52,6 @@ let makeConnectionAssets = (~loc, ~extractedConnectionInfo) =>
   switch (extractedConnectionInfo) {
   | None => []
   | Some({Util.key, applicableFilterKeys}) => [
-      [%stri
-        [@inline]
-        let connectionKey = [%e Util.makeStringExpr(~loc, key)]
-      ],
       switch (applicableFilterKeys) {
       | [] => [%stri
           [@module "relay-runtime"]

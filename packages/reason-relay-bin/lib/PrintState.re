@@ -357,6 +357,9 @@ let getPrintedFullState =
   | Some(connection) =>
     let connPath = connection.atObjectPath;
 
+    // Print the connection key so it can be referenced from the outside if needed.
+    add_to_utils("@inline\nlet connectionKey = \"" ++ connection.key ++ "\"\n\n")
+
     switch (
       state.objects
       |> Tablecloth.List.find(~f=(o: Types.finalizedObj) => {

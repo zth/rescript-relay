@@ -44,6 +44,9 @@ external getFragmentRef:
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = "TestPaginationInNode_friendsConnection"
+  
   let getConnectionNodes:
     fragment_friendsConnection => array<fragment_friendsConnection_edges_node> =
     connection => switch connection.edges { 
