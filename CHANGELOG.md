@@ -4,10 +4,10 @@
 
 - `react` to `0.0.0-experimental-4e08fb10c`
 - `react-dom` to `0.0.0-experimental-4e08fb10c`
-- `react-relay` to `11.0.0-rc.0`
-- `relay-compiler` to `11.0.0-rc.0`
-- `relay-config` to `11.0.0-rc.0`
-- `relay-runtime` to `11.0.0-rc.0`
+- `react-relay` to `11.0.0`
+- `relay-compiler` to `11.0.0`
+- `relay-config` to `11.0.0`
+- `relay-runtime` to `11.0.0`
 
 ## Breaking changes
 
