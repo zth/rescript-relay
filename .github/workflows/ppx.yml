@@ -42,6 +42,9 @@ jobs:
       - name: Copy built PPX file
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-linux
+      - name: Strip binary
+        run: |
+          strip ppx-linux
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
@@ -76,10 +79,13 @@ jobs:
         run: esy test
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ${{ fromJson('{ "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-darwin
+      - name: Strip PPX binary
+        run: |
+          strip ppx-darwin
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ matrix.platform }}
-          path: packages/rescript-relay/rescript-relay-ppx/ppx-*
+          name: ppx-darwin
+          path: packages/rescript-relay/rescript-relay-ppx/ppx-darwin
           if-no-files-found: error

@@ -42,6 +42,9 @@ jobs:
       - name: Copy built RescriptRelayBin file
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-linux
+      - name: Strip binary
+        run: |
+          strip bin-linux
       - name: Upload RescriptRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
@@ -76,10 +79,13 @@ jobs:
         run: esy test
       - name: Copy built RescriptRelayBin file
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe ${{ fromJson('{ "ubuntu-latest": "bin-linux", "macos-latest": "bin-darwin" }')[matrix.platform] }}
+          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-darwin
+      - name: Strip binary
+        run: |
+          strip bin-darwin
       - name: Upload RescriptRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
-          name: bin-${{ matrix.platform }}
-          path: packages/rescript-relay-bin/bin-*
+          name: bin-darwin
+          path: packages/rescript-relay-bin/bin-darwin
           if-no-files-found: error
