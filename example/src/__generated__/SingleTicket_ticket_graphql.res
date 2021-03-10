@@ -4,11 +4,11 @@ module Types = {
   @@ocaml.warning("-30")
   
   type fragment_assignee_User = {
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #Avatar_user]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>
   }
   
   type fragment_assignee_WorkingGroup = {
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>
   }
   
   
@@ -29,7 +29,7 @@ module Types = {
     subject: string,
     lastUpdated: option<string>,
     trackingId: string,
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TicketStatusBadge_ticket]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TicketStatusBadge_ticket]>
   }
 }
 
@@ -67,7 +67,7 @@ module Internal = {
     "fragment_assignee": unwrap_fragment_assignee,
   }
   
-  let convertFragment = v => v->ReasonRelay.convertObj(
+  let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter, 
     fragmentConverterMap, 
     Js.undefined
@@ -76,14 +76,14 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs<[> | #SingleTicket_ticket]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #SingleTicket_ticket]> => fragmentRef = "%identity"
 
 
 module Utils = {
 
 }
 type relayOperationNode
-type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` {

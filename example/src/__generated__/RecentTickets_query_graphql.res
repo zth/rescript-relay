@@ -16,7 +16,7 @@ module Types = {
   }
    and fragment_ticketsConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SingleTicket_ticket]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicket_ticket]>
   }
   
   
@@ -34,7 +34,7 @@ module Internal = {
     )
   
   let fragmentConverterMap = ()
-  let convertFragment = v => v->ReasonRelay.convertObj(
+  let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter, 
     fragmentConverterMap, 
     Js.undefined
@@ -43,11 +43,14 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs<[> | #RecentTickets_query]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #RecentTickets_query]> => fragmentRef = "%identity"
 
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = "RecentTickets_ticketsConnection"
+  
   let getConnectionNodes:
     fragment_ticketsConnection => array<fragment_ticketsConnection_edges_node> =
     connection => switch connection.edges { 
@@ -60,7 +63,7 @@ module Utils = {
    }
 }
 type relayOperationNode
-type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` (function(){

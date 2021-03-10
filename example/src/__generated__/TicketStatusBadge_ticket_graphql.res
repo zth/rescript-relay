@@ -25,7 +25,7 @@ module Internal = {
     )
   
   let fragmentConverterMap = ()
-  let convertFragment = v => v->ReasonRelay.convertObj(
+  let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter, 
     fragmentConverterMap, 
     Js.undefined
@@ -34,7 +34,7 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs<[> | #TicketStatusBadge_ticket]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #TicketStatusBadge_ticket]> => fragmentRef = "%identity"
 
 
 module Utils = {
@@ -43,7 +43,7 @@ module Utils = {
   enum_TicketStatus => string = "%identity"
 }
 type relayOperationNode
-type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` {

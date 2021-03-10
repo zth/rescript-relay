@@ -4,7 +4,7 @@ module Types = {
   @@ocaml.warning("-30")
   
   type rec fragment_todosConnection = {
-    __id: ReasonRelay.dataId,
+    __id: RescriptRelay.dataId,
     edges: option<array<option<fragment_todosConnection_edges>>>,
   }
    and fragment_todosConnection_edges = {
@@ -12,7 +12,7 @@ module Types = {
   }
    and fragment_todosConnection_edges_node = {
     id: string,
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #SingleTodo_todoItem]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTodo_todoItem]>
   }
   
   
@@ -30,7 +30,7 @@ module Internal = {
     )
   
   let fragmentConverterMap = ()
-  let convertFragment = v => v->ReasonRelay.convertObj(
+  let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter, 
     fragmentConverterMap, 
     Js.undefined
@@ -39,11 +39,14 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  ReasonRelay.fragmentRefs<[> | #TodoList_query]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #TodoList_query]> => fragmentRef = "%identity"
 
 
 module Utils = {
   open Types
+  @inline
+  let connectionKey = "TodoList_query_todosConnection"
+  
   let getConnectionNodes:
     fragment_todosConnection => array<fragment_todosConnection_edges_node> =
     connection => switch connection.edges { 
@@ -56,7 +59,7 @@ module Utils = {
    }
 }
 type relayOperationNode
-type operationType = ReasonRelay.fragmentNode<relayOperationNode>
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` {

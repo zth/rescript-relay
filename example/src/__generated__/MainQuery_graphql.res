@@ -4,11 +4,11 @@ module Types = {
   @@ocaml.warning("-30")
   
   type rec response_siteStatistics = {
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #TopCardsDisplayer_siteStatistics]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TopCardsDisplayer_siteStatistics]>
   }
   type response = {
     siteStatistics: response_siteStatistics,
-    fragmentRefs: ReasonRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>
   }
   type rawResponse = response
   type variables = unit
@@ -23,7 +23,7 @@ module Internal = {
     )
   
   let wrapResponseConverterMap = ()
-  let convertWrapResponse = v => v->ReasonRelay.convertObj(
+  let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter, 
     wrapResponseConverterMap, 
     Js.null
@@ -36,7 +36,7 @@ module Internal = {
     )
   
   let responseConverterMap = ()
-  let convertResponse = v => v->ReasonRelay.convertObj(
+  let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter, 
     responseConverterMap, 
     Js.undefined
@@ -52,7 +52,7 @@ module Internal = {
     )
   
   let variablesConverterMap = ()
-  let convertVariables = v => v->ReasonRelay.convertObj(
+  let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter, 
     variablesConverterMap, 
     Js.undefined
@@ -65,7 +65,7 @@ module Utils = {
 
 }
 type relayOperationNode
-type operationType = ReasonRelay.queryNode<relayOperationNode>
+type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` (function(){
@@ -434,7 +434,7 @@ return {
 };
 })() `)
 
-include ReasonRelay.MakeLoadQuery({
+include RescriptRelay.MakeLoadQuery({
     type variables = Types.variables
     type loadedQueryRef = queryRef
     type response = Types.response

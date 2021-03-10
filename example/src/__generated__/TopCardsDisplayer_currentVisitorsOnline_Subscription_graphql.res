@@ -22,7 +22,7 @@ module Internal = {
     )
   
   let responseConverterMap = ()
-  let convertResponse = v => v->ReasonRelay.convertObj(
+  let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter, 
     responseConverterMap, 
     Js.undefined
@@ -36,7 +36,7 @@ module Internal = {
     )
   
   let variablesConverterMap = ()
-  let convertVariables = v => v->ReasonRelay.convertObj(
+  let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter, 
     variablesConverterMap, 
     Js.undefined
@@ -48,7 +48,7 @@ module Utils = {
 
 }
 type relayOperationNode
-type operationType = ReasonRelay.subscriptionNode<relayOperationNode>
+type operationType = RescriptRelay.subscriptionNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` (function(){
