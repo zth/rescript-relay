@@ -2,6 +2,8 @@
 
 # 0.16.0
 
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/bfb904065c22bdfc1c5bd268704b8d061c7f85ec)_
+
 Finally, we've renamed to `RescriptRelay`! In addition to that, Relay has also released their hook APIs as stable, which means that we for the first time in history can depend on a stable Relay version. Weehoo!
 
 In general, this release will involve quite some renaming etc for you, but other than that, the actual breaking changes are minimal. Read the full changelog below for instructions and information about what exactly has changed.
