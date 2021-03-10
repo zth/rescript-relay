@@ -80,9 +80,6 @@ jobs:
       - name: Copy built RescriptRelayBin file
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-darwin
-      - name: Strip binary
-        run: |
-          strip bin-darwin
       - name: Upload RescriptRelayBin artifact
         uses: actions/upload-artifact@v2
         with:

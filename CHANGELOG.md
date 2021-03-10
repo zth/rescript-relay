@@ -1,5 +1,11 @@
 # master
 
+# 0.16.0
+
+Finally, we've renamed to `RescriptRelay`! In addition to that, Relay has also released their hook APIs as stable, which means that we for the first time in history can depend on a stable Relay version. Weehoo!
+
+In general, this release will involve quite some renaming etc for you, but other than that, the actual breaking changes are minimal. Read the full changelog below for instructions and information about what exactly has changed.
+
 ## Upgrade versions
 
 - `react-relay` to `11.0.0`
@@ -9,7 +15,7 @@
 
 ## Breaking changes
 
-- `ReasonRelay` is now called `RescriptRelay` :tada:. Just search-and-replace `ReasonRelay` to `RescriptRelay` and you should be fine.
+- `ReasonRelay` is now called `RescriptRelay` :tada:. Just search-and-replace `ReasonRelay` to `RescriptRelay`, and `reason-relay` to `rescript-relay`, and you should be fine.
 - `defaultRenderPolicy` on `Environment` is gone. It defaults to `Partial` and will be removed in Relay centrally. Migration strategy: Just remove the config.
 - `renderPolicy` is now 100% _gone_ from the API. Relay will remove this in the next release (everything will always be what as previously `Partial`), and there should be no practical downsides to using `Partial` as opposed to `Full`. Migration strategy: Remove any usage of `renderPolicy`.
 
