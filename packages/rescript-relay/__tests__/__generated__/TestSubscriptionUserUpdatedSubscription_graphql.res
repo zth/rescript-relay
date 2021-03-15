@@ -9,6 +9,12 @@ module Types = {
     | #Online
   ]
   
+  type enum_OnlineStatus_input = [
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
   type rec response_userUpdated = {
     user: option<response_userUpdated_user>,
   }
@@ -63,6 +69,8 @@ module Utils = {
   open Types
   external onlineStatus_toString:
   enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString:
+  enum_OnlineStatus_input => string = "%identity"
   let makeVariables = (
     ~userId
   ): variables => {

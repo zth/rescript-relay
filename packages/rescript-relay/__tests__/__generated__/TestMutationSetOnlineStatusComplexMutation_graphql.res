@@ -9,6 +9,12 @@ module Types = {
     | #Online
   ]
   
+  type enum_OnlineStatus_input = [
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
   type rec response_setOnlineStatusComplex = {
     user: option<response_setOnlineStatusComplex_user>,
   }
@@ -17,7 +23,7 @@ module Types = {
     onlineStatus: option<enum_OnlineStatus>,
   }
    and setOnlineStatusInput = {
-    onlineStatus: enum_OnlineStatus,
+    onlineStatus: enum_OnlineStatus_input,
   }
   
   
@@ -80,6 +86,8 @@ module Utils = {
   open Types
   external onlineStatus_toString:
   enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString:
+  enum_OnlineStatus_input => string = "%identity"
   
   let make_setOnlineStatusInput = (
     ~onlineStatus

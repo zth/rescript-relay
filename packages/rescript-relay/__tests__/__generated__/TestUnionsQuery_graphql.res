@@ -9,6 +9,12 @@ module Types = {
     | #Online
   ]
   
+  type enum_OnlineStatus_input = [
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option<enum_OnlineStatus>,
     firstName: string,
@@ -176,6 +182,8 @@ module Utils = {
   open Types
   external onlineStatus_toString:
   enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString:
+  enum_OnlineStatus_input => string = "%identity"
 }
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>

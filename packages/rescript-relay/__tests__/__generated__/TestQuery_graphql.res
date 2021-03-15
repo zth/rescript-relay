@@ -9,6 +9,12 @@ module Types = {
     | #Online
   ]
   
+  type enum_OnlineStatus_input = [
+    | #Idle
+    | #Offline
+    | #Online
+  ]
+  
   type rec response_users = {
     edges: option<array<option<response_users_edges>>>,
   }
@@ -27,7 +33,7 @@ module Types = {
   }
   type rawResponse = response
   type refetchVariables = {
-    status: option<enum_OnlineStatus>,
+    status: option<enum_OnlineStatus_input>,
   }
   let makeRefetchVariables = (
     ~status=?,
@@ -37,7 +43,7 @@ module Types = {
   }
   
   type variables = {
-    status: option<enum_OnlineStatus>,
+    status: option<enum_OnlineStatus_input>,
   }
 }
 
@@ -92,6 +98,8 @@ module Utils = {
   open Types
   external onlineStatus_toString:
   enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString:
+  enum_OnlineStatus_input => string = "%identity"
   let makeVariables = (
     ~status=?,
     ()
