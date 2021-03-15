@@ -127,7 +127,18 @@ let getPrintedFullState =
 
   // Print enums
   state.enums
-  |> List.iter(enum => {addToTypesModule(Printer.printEnum(enum) ++ "\n")});
+  |> List.iter(enum => {
+       // One regular, that'll end up private and therefore enforce a fall through
+       // case, which we want when users use enums coming from the server.
+       addToTypesModule(
+         Printer.printEnum(~printingContext=Other, enum) ++ "\n",
+       );
+
+       // And one for input objects and variables, that is exact.
+       addToTypesModule(
+         Printer.printEnum(~printingContext=InputObject, enum) ++ "\n",
+       );
+     });
 
   state.unions
   |> List.iter(({union, printName}: Types.unionInState) => {
@@ -328,7 +339,15 @@ let getPrintedFullState =
   // Enum toString functions
   state.enums
   |> List.iter(enum => {
-       enum |> Printer.printEnumToStringFn |> add_to_utils;
+       // Again, one enum for responses and one for inputs/variables
+       enum
+       |> Printer.printEnumToStringFn(~printingContext=Other)
+       |> add_to_utils;
+       add_to_utils("\n");
+
+       enum
+       |> Printer.printEnumToStringFn(~printingContext=InputObject)
+       |> add_to_utils;
        add_to_utils("\n");
      });
 

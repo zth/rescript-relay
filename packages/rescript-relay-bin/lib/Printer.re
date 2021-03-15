@@ -3,11 +3,14 @@ open Types;
 exception Could_not_find_matching_record_definition(string);
 exception Invalid_top_level_shape;
 
+type printingContext =
+  | Variables
+  | InputObject
+  | Other;
+
 let printQuoted = propName => "\"" ++ propName ++ "\"";
 let makeUnionName = path =>
   path |> List.rev |> Tablecloth.String.join(~sep="_");
-
-let makeEnumName = enumName => "enum_" ++ enumName;
 
 let printComment = (comment: option(string)) =>
   switch (comment) {
@@ -37,9 +40,16 @@ let printSafeName = propName =>
   | Some(_) => propName ++ "_"
   | None => propName
   };
-let printEnumName = name => "enum_" ++ name;
+let printEnumName = (~printingContext, ~prefix=true, name) =>
+  (prefix ? "enum_" ++ name : Tablecloth.String.uncapitalize(name))
+  ++ (
+    switch (printingContext) {
+    | Variables
+    | InputObject => "_input"
+    | Other => ""
+    }
+  );
 let getObjName = name => "obj_" ++ name;
-let printEnumTypeName = name => makeEnumName(name);
 
 let printLocalUnionName = (union: union) =>
   union.atPath |> Utils.makeRecordName;
@@ -74,10 +84,21 @@ let getEnumFutureAddedValueName = (enum: fullEnum) =>
   | None => "FutureAddedValue"
   };
 
-let printEnumDefinition = (enum: fullEnum): string => {
-  let enumName = makeEnumName(enum.name);
+let printEnumDefinition = (~printingContext, enum: fullEnum): string => {
+  let enumName = printEnumName(~printingContext, enum.name);
 
-  let str = ref("type " ++ enumName ++ " = private [>");
+  let str =
+    ref(
+      "type "
+      ++ enumName
+      ++ (
+        switch (printingContext) {
+        | Variables
+        | InputObject => " = ["
+        | Other => " = private [>"
+        }
+      ),
+    );
 
   let addToStr = s => str := str^ ++ s;
 
@@ -88,6 +109,11 @@ let printEnumDefinition = (enum: fullEnum): string => {
   str^;
 };
 
+// This is mighty ugly, but a simple way to figure out whether a definition is
+// an input object or not is to check if its path is just of length 1. All other
+// objects are prefixed with "response", "fragment" or similar.
+let isInputObject = (obj: Types.object_) => List.length(obj.atPath) == 1;
+
 let objHasPrintableContents = (obj: object_) =>
   obj.values
   |> List.exists(
@@ -96,7 +122,8 @@ let objHasPrintableContents = (obj: object_) =>
        | _ => false,
      );
 
-let rec printTypeReference = (~state: option(fullState), typeName: string) =>
+let rec printTypeReference =
+        (~printingContext, ~state: option(fullState), typeName: string) =>
   switch (state) {
   | Some(state) =>
     switch (
@@ -107,7 +134,7 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
            obj.originalFlowTypeName == Some(typeName)
          ),
     ) {
-    | (Some(enum), _) => printEnumName(enum.name)
+    | (Some(enum), _) => printEnumName(~printingContext, enum.name)
     | (_, Some(_)) => Tablecloth.String.uncapitalize(typeName)
     | _ =>
       // If this doesn't match any existing types in the state, and if it's a module name
@@ -117,7 +144,7 @@ let rec printTypeReference = (~state: option(fullState), typeName: string) =>
     }
   | None => typeName |> Utils.isModuleName ? typeName ++ ".t" : typeName
   }
-and printPropType = (~propType, ~state: Types.fullState) =>
+and printPropType = (~propType, ~printingContext, ~state: Types.fullState) =>
   switch (propType) {
   | DataId => printDataIdType()
   | Scalar(scalar) => printScalar(scalar)
@@ -127,8 +154,8 @@ and printPropType = (~propType, ~state: Types.fullState) =>
     printStringLiteral(~literal, ~needsEscaping=true)
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
-  | Array(propValue) => printArray(~propValue, ~state)
-  | Enum(enum) => printEnumName(enum.name)
+  | Array(propValue) => printArray(~printingContext, ~propValue, ~state)
+  | Enum(enum) => printEnumName(~printingContext, enum.name)
   | Union(union) =>
     printUnionTypeDefinition(
       union,
@@ -136,9 +163,10 @@ and printPropType = (~propType, ~state: Types.fullState) =>
       ~extraIndent=true,
     )
   | FragmentRefValue(name) => printFragmentRef(name)
-  | TypeReference(name) => printTypeReference(~state=Some(state), name)
+  | TypeReference(name) =>
+    printTypeReference(~printingContext, ~state=Some(state), name)
   }
-and printPropValue = (~propValue, ~state) => {
+and printPropValue = (~printingContext, ~propValue, ~state) => {
   let str = ref("");
   let addToStr = s => str := str^ ++ s;
 
@@ -146,7 +174,8 @@ and printPropValue = (~propValue, ~state) => {
     addToStr("option<");
   };
 
-  printPropType(~propType=propValue.propType, ~state) |> addToStr;
+  printPropType(~printingContext, ~propType=propValue.propType, ~state)
+  |> addToStr;
 
   if (propValue.nullable) {
     addToStr(">");
@@ -154,7 +183,7 @@ and printPropValue = (~propValue, ~state) => {
 
   str^;
 }
-and printObject = (~obj: object_, ~state, ()) => {
+and printObject = (~printingContext, ~obj: object_, ~state, ()) => {
   switch (obj.values |> List.length) {
   | 0 => "unit"
   | _ =>
@@ -185,7 +214,7 @@ and printObject = (~obj: object_, ~state, ()) => {
              ++ printRecordPropComment(propValue)
              ++ printRecordPropName(name)
              ++ ": "
-             ++ printPropValue(~propValue, ~state)
+             ++ printPropValue(~printingContext, ~propValue, ~state)
              ++ ","
            | FragmentRef(_) => ""
            },
@@ -231,8 +260,8 @@ and printFragmentRefs = (obj: object_) => {
 
   str^;
 }
-and printArray = (~propValue, ~state) =>
-  "array<" ++ printPropValue(~propValue, ~state) ++ ">"
+and printArray = (~printingContext, ~propValue, ~state) =>
+  "array<" ++ printPropValue(~printingContext, ~propValue, ~state) ++ ">"
 and printRecordReference = (~state: fullState, ~obj: object_) => {
   switch (
     state.objects |> Tablecloth.List.find(~f=o => {o.atPath == obj.atPath})
@@ -333,7 +362,9 @@ and printRefetchVariablesMaker = (obj: object_, ~state) => {
   };
 
   addToStr("type refetchVariables = ");
-  addToStr(printObject(~state, ~obj=optionalObj, ()));
+  addToStr(
+    printObject(~printingContext=Variables, ~state, ~obj=optionalObj, ()),
+  );
   addToStr("\n");
 
   addToStr(
@@ -351,12 +382,12 @@ and printRootType = (~recursiveMode=None, ~state: fullState, rootType) => {
   | Operation(Object(obj)) =>
     printRecordComment(obj)
     ++ "type response = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~printingContext=Other, ~obj, ~state, ())
     ++ "\n"
   | RawResponse(Some(Object(obj))) =>
     printRecordComment(obj)
     ++ "type rawResponse = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~printingContext=Other, ~obj, ~state, ())
     ++ "\n"
   | RawResponse(None) => "type rawResponse = response\n"
   | RawResponse(Some(Union(_)))
@@ -364,7 +395,7 @@ and printRootType = (~recursiveMode=None, ~state: fullState, rootType) => {
   | Variables(Object(obj)) =>
     printRecordComment(obj)
     ++ "type variables = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~printingContext=Variables, ~obj, ~state, ())
     ++ "\n"
   | Variables(Union(_)) => raise(Invalid_top_level_shape)
   | RefetchVariables(obj) =>
@@ -376,7 +407,7 @@ and printRootType = (~recursiveMode=None, ~state: fullState, rootType) => {
   | Fragment(Object(obj)) =>
     printRecordComment(obj)
     ++ "type fragment = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~printingContext=Other, ~obj, ~state, ())
     ++ "\n"
   | Fragment(Union(union)) =>
     printComment(union.comment)
@@ -393,7 +424,16 @@ and printRootType = (~recursiveMode=None, ~state: fullState, rootType) => {
       ++ (
         switch (definition.values |> List.length) {
         | 0 => ""
-        | _ => " = " ++ printObject(~obj=definition, ~state, ()) ++ "\n"
+        | _ =>
+          " = "
+          ++ printObject(
+               ~printingContext=
+                 isInputObject(definition) ? InputObject : Other,
+               ~obj=definition,
+               ~state,
+               (),
+             )
+          ++ "\n"
         }
       );
 
@@ -408,7 +448,7 @@ and printRootType = (~recursiveMode=None, ~state: fullState, rootType) => {
     printRecordComment(definition) ++ prefix ++ typeDef ++ suffix;
   | PluralFragment(Object(obj)) =>
     "type fragment_t = "
-    ++ printObject(~obj, ~state, ())
+    ++ printObject(~printingContext=Other, ~obj, ~state, ())
     ++ "\n"
     ++ printRecordComment(obj)
     ++ "type fragment = array<fragment_t>\n"
@@ -584,14 +624,15 @@ let printUnionTypes = (~state, ~printName, union: union) => {
   typeDefs^ ++ "\n" ++ (printName ? typeT : "");
 };
 
-let printEnumToStringFn = (enum: fullEnum): string =>
+let printEnumToStringFn = (~printingContext, enum: fullEnum): string =>
   "external "
-  ++ Tablecloth.String.uncapitalize(enum.name)
+  ++ printEnumName(~printingContext, ~prefix=false, enum.name)
   ++ "_toString:\n"
-  ++ printEnumName(enum.name)
+  ++ printEnumName(~printingContext, enum.name)
   ++ " => string = \"%identity\"";
 
-let printEnum = (enum: fullEnum): string => printEnumDefinition(enum);
+let printEnum = (~printingContext, enum: fullEnum): string =>
+  printEnumDefinition(~printingContext, enum);
 
 let fragmentRefAssets = (~plural=false, fragmentName) => {
   let str = ref("");

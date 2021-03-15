@@ -1,0 +1,7 @@
+codegen › print variable/input object enums formatted
+type enum_someEnum_input = [
+  | #First
+  | #Second
+  | #Third
+]
+

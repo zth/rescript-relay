@@ -1,4 +1,4 @@
-codegen › print enums formatted
+codegen › print regular enums formatted
 type enum_someEnum = private [>
   | #First
   | #Second

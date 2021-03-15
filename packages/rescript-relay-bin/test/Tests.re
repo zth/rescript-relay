@@ -17,14 +17,28 @@ describe("string literals", ({test, _}) => {
 });
 
 describe("codegen", ({test, _}) => {
-  test("print enums formatted", ({expect, _}) => {
+  test("print regular enums formatted", ({expect, _}) => {
     Types.(
       Printer.(
         expect.string(
-          printEnumDefinition({
-            name: "someEnum",
-            values: ["First", "Second", "Third"],
-          }),
+          printEnumDefinition(
+            ~printingContext=Other,
+            {name: "someEnum", values: ["First", "Second", "Third"]},
+          ),
+        ).
+          toMatchSnapshot()
+      )
+    )
+  });
+
+  test("print variable/input object enums formatted", ({expect, _}) => {
+    Types.(
+      Printer.(
+        expect.string(
+          printEnumDefinition(
+            ~printingContext=InputObject,
+            {name: "someEnum", values: ["First", "Second", "Third"]},
+          ),
         ).
           toMatchSnapshot()
       )
@@ -69,6 +83,7 @@ describe("codegen", ({test, _}) => {
     Printer.(
       expect.string(
         printObject(
+          ~printingContext=Other,
           ~obj={
             comment: None,
             values: [
