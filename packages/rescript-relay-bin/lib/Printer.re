@@ -8,8 +8,6 @@ let makeUnionName = path =>
   path |> List.rev |> Tablecloth.String.join(~sep="_");
 
 let makeEnumName = enumName => "enum_" ++ enumName;
-let makeUnwrapEnumFnName = enumName => "unwrap_" ++ makeEnumName(enumName);
-let makeWrapEnumFnName = enumName => "wrap_" ++ makeEnumName(enumName);
 
 let printComment = (comment: option(string)) =>
   switch (comment) {
@@ -42,8 +40,6 @@ let printSafeName = propName =>
 let printEnumName = name => "enum_" ++ name;
 let getObjName = name => "obj_" ++ name;
 let printEnumTypeName = name => makeEnumName(name);
-let printEnumUnwrapFnReference = name => makeUnwrapEnumFnName(name);
-let printEnumWrapFnReference = name => makeWrapEnumFnName(name);
 
 let printLocalUnionName = (union: union) =>
   union.atPath |> Utils.makeRecordName;
