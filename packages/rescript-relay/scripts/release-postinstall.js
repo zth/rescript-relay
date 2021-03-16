@@ -21,6 +21,13 @@ var platform = process.platform;
 
 function arch() {
   /**
+   * Use Rosetta for ARM on macOS
+   */
+  if (platform === "darwin" && process.arch === "arm64") {
+    return "x64";
+  }
+
+  /**
    * The running binary is 64-bit, so the OS is clearly 64-bit.
    */
   if (process.arch === "x64") {

@@ -1,5 +1,9 @@
 # master
 
+## Fixes & misc
+
+- Every enum now gets an exact version output of itself too, and that exact version is now wired up to be used in variables and inputs, where it doesn't make sense to use the open enum we use for responses/fragments (that is open to enforce adding a catch-all case for any enums that the server might add in the future).
+
 # 0.16.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/bfb904065c22bdfc1c5bd268704b8d061c7f85ec)_
