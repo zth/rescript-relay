@@ -100,7 +100,7 @@ mutate(
 So, what's going on here?
 
 1. In addition to `variables`, we also supply `optimisticResponse` to `mutate`.
-2. `optimisticResponse` is expected to _match the shape of the server response exactly_. The ReasonML compiler will guide you through providing a response of the correct shape.
+2. `optimisticResponse` is expected to _match the shape of the server response exactly_. The ReScript compiler will guide you through providing a response of the correct shape.
 3. Relay will take the `optimisticResponse` and apply it as it's sending the mutation request, which in turn will make the UI update right away.
 
 There, now we have a basic optimistic update set up! Instead of waiting for the mutation to complete, Relay will update all parts of the UI using that particular todo item's `text` field right away, and it'll roll back to the old value appropriately if the mutation fails.

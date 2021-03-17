@@ -10,7 +10,7 @@ sidebar_label: Unions
 
 ## Unions in RescriptRelay
 
-Since ReasonML's type system is quite different to Flow/TypeScript, working with unions is different in RescriptRelay compared to regular Relay. In RescriptRelay, every union is _unwrapped to a polymorphic variant_.
+Since ReScripts type system is quite different to Flow/TypeScript, working with unions is different in RescriptRelay compared to regular Relay. In RescriptRelay, every union is _unwrapped to a polymorphic variant_.
 
 Let's clarify this with an example. Imagine this GraphQL schema:
 

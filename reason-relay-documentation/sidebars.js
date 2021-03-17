@@ -8,7 +8,7 @@
 module.exports = {
   docs: {
     Introduction: ["start-here", "getting-started", "vscode-extension"],
-    "Using Reason Relay": [
+    "Using RescriptRelay": [
       "making-queries",
       "using-fragments",
       "mutations",
@@ -25,7 +25,6 @@ module.exports = {
       "custom-scalars",
       "using-with-hasura",
       "using-with-schemas-that-dont-conform-to-the-relay-spec",
-      "coming-from-reason-apollo",
       "migrating-from-javascript-typescript-incrementally",
     ],
     Misc: ["the-compiler", "quirks-of-rescript-relay", "examples"],

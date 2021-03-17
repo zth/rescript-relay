@@ -1,13 +1,13 @@
 ---
 id: getting-started
-title: Getting Started with Reason Relay
+title: Getting Started with RescriptRelay
 sidebar_label: Getting Started
 ---
 
 #### Recommended background reading
 
-- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction) - _Note that RescriptRelay requires `bs-platform > 8.3.0`_
-- [A Guided Tour of Relay: Setup and Workflow](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#setup-and-workflow)
+- [Getting started with RescriptReact](https://rescript-lang.org/docs/react/latest/introduction)
+- [A Guided Tour of Relay: Setup](https://relay.dev/docs/guided-tour/)
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
 
@@ -24,9 +24,7 @@ Let's get started!
 
 #### Concurrent Mode is encouraged
 
-You will have the absolute best experience using RescriptRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too. There are a few rough edges to keep in mind when not running in concurrent mode, namely:
-
-- You won't have the same control over when things suspend and not as you do in concurrent mode. This can be problematic when doing refetches, which suspend after some default duration in a way you can't really control without concurrent mode.
+You will have the absolute best experience using RescriptRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too.
 
 ##### Extra bindings for experimental APIs with no official bindings yet
 
@@ -58,9 +56,9 @@ First thing's first - RescriptRelay _requires BuckleScript 8.3 or above_. It wil
 yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb10c
 
 # Add rescript-relay and dependencies to the project
-# We currently depend on Relay version 10.1.3, so install that exact version
+# We currently depend on Relay version 11.0.0, so install that exact version
 # We also depend on reason-promise for promises
-yarn add rescript-relay graphql relay-runtime@10.1.3 relay-compiler@10.1.3 react-relay@0.0.0-experimental-4c4107dd relay-config@10.1.3 reason-promise
+yarn add rescript-relay graphql relay-runtime@11.0.0 relay-compiler@11.0.0 react-relay@11.0.0 relay-config@11.0.0 reason-promise
 ```
 
 After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
@@ -175,9 +173,9 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
         ("query", Js.Json.string(operation.text)),
         ("variables", variables),
       })
-      |> Js.Json.object_
-      |> Js.Json.stringify
-      |> BodyInit.make,
+      ->Js.Json.object_
+      ->Js.Json.stringify
+      ->BodyInit.make,
       ~headers=HeadersInit.make({
         "content-type": "application/json",
         "accept": "application/json",

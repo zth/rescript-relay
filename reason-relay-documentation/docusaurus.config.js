@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-  title: "Reason Relay",
+  title: "RescriptRelay",
   tagline: "Use Relay with ReScript",
   url: "https://your-docusaurus-test-site.com",
   baseUrl: "/",
@@ -15,7 +15,7 @@ module.exports = {
   projectName: "rescript-relay", // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: "Reason Relay",
+      title: "RescriptRelay",
       items: [
         { to: "docs/start-here", label: "Docs", position: "left" },
         { to: "blog", label: "Blog", position: "left" },

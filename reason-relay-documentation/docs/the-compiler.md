@@ -8,7 +8,7 @@ sidebar_label: The Compiler
 
 Relay's compiler is responsible for taking all GraphQL operations defined in your code, analyze their relationships and check their validity. It then compiles them to generated files containing optimized artifacts that Relay uses at runtime to make queries and understand the response. This means that Relay moves work like parsing and understanding how responses to queries are structured to compile time. A good example of how Relay treats performance as a core feature.
 
-In addition to emitting runtime artifacts, the compiler also _emits ReasonML types through RescriptRelay's language plugin for the compiler_, describing your operations and their relationships. RescriptRelay takes these types and uses them to enforce type safety. This means that Relay and RescriptRelay can _guarantee type-safety_ when interacting with all data, and that you'll get a great developer experience through the tooling that types enable.
+In addition to emitting runtime artifacts, the compiler also _emits ReScript types through RescriptRelay's language plugin for the compiler_, describing your operations and their relationships. RescriptRelay takes these types and uses them to enforce type safety. This means that Relay and RescriptRelay can _guarantee type-safety_ when interacting with all data, and that you'll get a great developer experience through the tooling that types enable.
 
 As said before, you really don't have to think about the generated artifacts as RescriptRelay does the heavy lifting of using them for you, but if you're interested, have a look at the files in your `artifactDirectory`.
 
