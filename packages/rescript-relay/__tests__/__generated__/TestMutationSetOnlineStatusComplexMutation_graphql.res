@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type rec response_setOnlineStatusComplex = {
     user: option<response_setOnlineStatusComplex_user>,
@@ -23,7 +23,11 @@ module Types = {
     onlineStatus: option<enum_OnlineStatus>,
   }
    and setOnlineStatusInput = {
-    onlineStatus: enum_OnlineStatus_input,
+    onlineStatus: [
+    | #Idle
+    | #Offline
+    | #Online
+    ],
   }
   
   

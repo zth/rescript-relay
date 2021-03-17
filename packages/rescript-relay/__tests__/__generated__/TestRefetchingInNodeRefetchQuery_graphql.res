@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type rec response_node = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>
@@ -23,7 +23,11 @@ module Types = {
   }
   type rawResponse = response
   type refetchVariables = {
-    friendsOnlineStatuses: option<array<enum_OnlineStatus_input>>,
+    friendsOnlineStatuses: option<array<[
+    | #Idle
+    | #Offline
+    | #Online
+    ]>>,
     showOnlineStatus: option<bool>,
     id: option<string>,
   }
@@ -39,7 +43,11 @@ module Types = {
   }
   
   type variables = {
-    friendsOnlineStatuses: array<enum_OnlineStatus_input>,
+    friendsOnlineStatuses: array<[
+    | #Idle
+    | #Offline
+    | #Online
+    ]>,
     showOnlineStatus: bool,
     id: string,
   }

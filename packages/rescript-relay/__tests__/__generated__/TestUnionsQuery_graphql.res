@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type response_members_edges_node_Group_members_User = {
     onlineStatus: option<enum_OnlineStatus>,

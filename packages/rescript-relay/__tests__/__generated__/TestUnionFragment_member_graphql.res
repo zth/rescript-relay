@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type fragment_User = {
     onlineStatus: option<enum_OnlineStatus>,

@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type rec response_loggedInUser = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_user | #TestFragment_inline]>

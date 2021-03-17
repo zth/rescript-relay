@@ -84,29 +84,39 @@ let getEnumFutureAddedValueName = (enum: fullEnum) =>
   | None => "FutureAddedValue"
   };
 
-let printEnumDefinition = (~printingContext, enum: fullEnum): string => {
-  let enumName = printEnumName(~printingContext, enum.name);
-
+let printEnumBody = (~printingContext, enum: fullEnum) => {
   let str =
     ref(
-      "type "
-      ++ enumName
-      ++ (
-        switch (printingContext) {
-        | Variables
-        | InputObject => " = ["
-        | Other => " = private [>"
-        }
-      ),
+      switch (printingContext) {
+      | Variables
+      | InputObject => "["
+      | Other => "[>"
+      },
     );
 
-  let addToStr = s => str := str^ ++ s;
+  let addToStr = Utils.makeAddToStr(str);
 
   enum.values |> List.iter(v => addToStr("\n  | #" ++ printSafeName(v)));
 
-  addToStr("\n]\n");
+  addToStr("\n  ]");
 
   str^;
+};
+
+let printEnumDefinition = (~printingContext, enum: fullEnum): string => {
+  let enumName = printEnumName(~printingContext, enum.name);
+  "type "
+  ++ enumName
+  ++ " = "
+  ++ (
+    switch (printingContext) {
+    | Variables
+    | InputObject => ""
+    | Other => "private "
+    }
+  )
+  ++ printEnumBody(~printingContext, enum)
+  ++ "\n";
 };
 
 // This is mighty ugly, but a simple way to figure out whether a definition is
@@ -155,7 +165,12 @@ and printPropType = (~propType, ~printingContext, ~state: Types.fullState) =>
   | Object(obj) => printRecordReference(~obj, ~state)
   | TopLevelNodeField(_, obj) => printRecordReference(~obj, ~state)
   | Array(propValue) => printArray(~printingContext, ~propValue, ~state)
-  | Enum(enum) => printEnumName(~printingContext, enum.name)
+  | Enum(enum) =>
+    switch (printingContext) {
+    | Variables
+    | InputObject => printEnumBody(~printingContext, enum)
+    | Other => printEnumName(~printingContext, enum.name)
+    }
   | Union(union) =>
     printUnionTypeDefinition(
       union,

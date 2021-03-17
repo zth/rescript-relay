@@ -264,12 +264,12 @@ module Types = {
   type enum_UserRole = private [>
     | #Admin
     | #User
-  ]
+    ]
   
   type enum_UserRole_input = [
     | #Admin
     | #User
-  ]
+    ]
   
   type rec response_setUserLocation = {
     changedUser: option<response_setUserLocation_changedUser>,
@@ -546,12 +546,12 @@ module Types = {
   type enum_UserRole = private [>
     | #Admin
     | #User
-  ]
+    ]
   
   type enum_UserRole_input = [
     | #Admin
     | #User
-  ]
+    ]
   
   type fragment = {
     firstName: string,
@@ -1659,12 +1659,12 @@ module Types = {
   type enum_ObserverStatus = private [>
     | #Active
     | #Inactive
-  ]
+    ]
   
   type enum_ObserverStatus_input = [
     | #Active
     | #Inactive
-  ]
+    ]
   
   type response_participantById_Observer_manager_User = {
     lastName: string,

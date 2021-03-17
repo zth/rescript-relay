@@ -7,13 +7,13 @@ module Types = {
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type enum_OnlineStatus_input = [
     | #Idle
     | #Offline
     | #Online
-  ]
+    ]
   
   type rec response_setOnlineStatus = {
     user: option<response_setOnlineStatus_user>,
@@ -42,7 +42,11 @@ module Types = {
     setOnlineStatus: option<rawResponse_setOnlineStatus>,
   }
   type variables = {
-    onlineStatus: enum_OnlineStatus_input,
+    onlineStatus: [
+    | #Idle
+    | #Offline
+    | #Online
+    ],
   }
 }
 
