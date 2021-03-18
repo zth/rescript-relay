@@ -3,5 +3,5 @@ type enum_someEnum = private [>
   | #First
   | #Second
   | #Third
-]
+  ]
 
