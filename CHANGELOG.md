@@ -3,6 +3,7 @@
 ## Fixes & misc
 
 - Every enum now gets an exact version output of itself too, and that exact version is now wired up to be used in variables and inputs, where it doesn't make sense to use the open enum we use for responses/fragments (that is open to enforce adding a catch-all case for any enums that the server might add in the future).
+- All hooks produced by the PPX now have _stable references_ (or as stable as they can be), meaning you won't get a new function on each render for most of the callbacks and functions the PPX returns.
 
 # 0.16.0
 

@@ -159,9 +159,8 @@ Use this together with `Query.usePreloaded`.*/
           let (nullableQueryRef, loadQueryFn, disposableFn) =
             internal_useQueryLoader([%e valFromGeneratedModule(["node"])]);
 
-          // TODO: Fix stability of this reference. Can't seem to use React.useCallback with labelled arguments for some reason.
           let loadQuery =
-              (
+              React.useMemo1(() => (
                 ~variables: [%t
                    typeFromGeneratedModule(["Types", "variables"])
                  ],
@@ -177,7 +176,7 @@ Use this together with `Query.usePreloaded`.*/
                            ])
                          ],
               {fetchPolicy, networkCacheConfig},
-            );
+            ), [|loadQueryFn|]);
 
           (Js.Nullable.toOption(nullableQueryRef), loadQuery, disposableFn);
         }

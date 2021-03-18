@@ -272,7 +272,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
             let (mutate, mutating) =
               internal_useMutation([%e valFromGeneratedModule(["node"])]);
             (
-              (
+              React.useMemo1(() => (
                 ~onError=?,
                 ~onCompleted=?,
                 ~onUnsubscribe=?,
@@ -344,7 +344,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
                           ),
                       )
                     },
-                }),
+                }), [|mutate|]),
               mutating,
             );
           }

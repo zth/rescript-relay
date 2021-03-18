@@ -138,28 +138,28 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
 
                 {
                   data,
-                  loadNext: (~count, ~onComplete=?, ()) =>
+                  loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
                     p.loadNext(.
                       count,
                       {
                         onComplete:
                           onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
                       },
-                    ),
-                  loadPrevious: (~count, ~onComplete=?, ()) =>
+                    ), [|p.loadNext|]),
+                  loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
                     p.loadPrevious(.
                       count,
                       {
                         onComplete:
                           onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
                       },
-                    ),
+                    ), [|p.loadPrevious|]),
                   hasNext: p.hasNext,
                   hasPrevious: p.hasPrevious,
                   isLoadingNext: p.isLoadingNext,
                   isLoadingPrevious: p.isLoadingPrevious,
                   refetch:
-                    (
+                    React.useMemo1(() => (
                       ~variables: [%t
                          makeTypeAccessor(
                            ~loc,
@@ -186,7 +186,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                         ~fetchPolicy?,
                         (),
                       ),
-                    ),
+                    ), [|p.refetch|]),
                 };
               }
             ]
@@ -214,26 +214,26 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
 
                 {
                   data,
-                  loadNext: (~count, ~onComplete=?, ()) =>
+                  loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
                     p.loadNext(.
                       count,
                       {
                         onComplete:
                           onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
                       },
-                    ),
-                  loadPrevious: (~count, ~onComplete=?, ()) =>
+                    ), [|p.loadNext|]),
+                  loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
                     p.loadPrevious(.
                       count,
                       {
                         onComplete:
                           onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
                       },
-                    ),
+                    ), [|p.loadPrevious|]),
                   hasNext: p.hasNext,
                   hasPrevious: p.hasPrevious,
                   refetch:
-                    (
+                    React.useMemo1(() => (
                       ~variables: [%t
                          makeTypeAccessor(
                            ~loc,
@@ -260,7 +260,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
                         ~fetchPolicy?,
                         (),
                       ),
-                    ),
+                    ), [|p.refetch|]),
                 };
               }
             ]

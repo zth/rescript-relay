@@ -266,7 +266,7 @@ There's a helper generated for you to create those diffed variables more easily 
             );
           (
             data,
-            (
+            React.useMemo1(() => (
               (
                 ~variables: [%t
                    makeTypeAccessor(
@@ -296,7 +296,7 @@ There's a helper generated for you to create those diffed variables more easily 
                   ),
                 ): RescriptRelay.Disposable.t
               )
-            ),
+            ), [|refetchFn|])
           );
         }
       ],
