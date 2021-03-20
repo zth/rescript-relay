@@ -8,7 +8,14 @@ module Types = {
     | #OnHold
     | #Progress
     | #Rejected
-  ]
+    ]
+  
+  type enum_TicketStatus_input = [
+    | #Done
+    | #OnHold
+    | #Progress
+    | #Rejected
+    ]
   
   type fragment = {
     status: enum_TicketStatus,
@@ -41,6 +48,8 @@ module Utils = {
   open Types
   external ticketStatus_toString:
   enum_TicketStatus => string = "%identity"
+  external ticketStatus_input_toString:
+  enum_TicketStatus_input => string = "%identity"
 }
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>

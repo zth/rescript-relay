@@ -4059,10 +4059,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.16.0.tgz#cd136b4287d612e4722a4fd703664d99097dc27c"
-  integrity sha512-jNGZxGpzRgGoLPFLfLz+byFycrOk+uh+vd5VykOtFJE5Ag8Pye6cATh9A9yvqhMeHW/e50t2WQxWtvcifMegpQ==
+rescript-relay@0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.17.0.tgz#7fc3eb6846b50ac5b1ec292870cce6721b5696af"
+  integrity sha512-b4NjnedWR1YxJ0kKMTG7h2f6fnwA81FxsixFLQLQvRrazhBdyppse9Pw9xlwY3GDno5ZVlcGNgtbEO8A6NHptg==
   dependencies:
     mkdirp-sync "^0.0.3"
 

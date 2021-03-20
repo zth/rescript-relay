@@ -23,7 +23,7 @@
     "react-relay": "11.0.0",
     "reason-promise": "^1.1.1",
     "@rescript/react": "0.10.1",
-    "rescript-relay": "0.16.0",
+    "rescript-relay": "0.17.0",
     "relay-compiler": "11.0.0",
     "relay-config": "11.0.0",
     "relay-runtime": "11.0.0",
