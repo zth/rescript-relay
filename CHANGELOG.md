@@ -1,5 +1,9 @@
 # master
 
+# 0.17.0
+
+Small release, mainly bringing stable references to functions produced by the PPX, and a fix for enums in input positions.
+
 ## Fixes & misc
 
 - Every enum now gets an exact version output of itself too, and that exact version is now wired up to be used in variables and inputs, where it doesn't make sense to use the open enum we use for responses/fragments (that is open to enforce adding a catch-all case for any enums that the server might add in the future).
