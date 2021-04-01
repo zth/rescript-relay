@@ -30,9 +30,6 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 @module("relay-runtime")
 external isClientID: dataId => bool = "isClientID"
 
-@module("relay-runtime")
-external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
-
 type featureFlags = {
   @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,
@@ -324,6 +321,9 @@ module ConnectionHandler = {
 
   @module("relay-runtime") @scope("ConnectionHandler")
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
+
+  @module("relay-runtime") @scope("ConnectionHandler")
+  external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
 }
 
 type operationDescriptor

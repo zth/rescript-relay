@@ -1,5 +1,9 @@
 # master
 
+## Fixes & misc
+
+- Fix broken `getConnectionID` binding. It's now _properly_ exposed on `ConnectionHandler.getConnectionID`, so use that instead.
+
 # 0.17.0
 
 Small release, mainly bringing stable references to functions produced by the PPX, and a fix for enums in input positions.
