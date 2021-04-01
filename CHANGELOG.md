@@ -3,6 +3,7 @@
 ## Fixes & misc
 
 - Fix broken `getConnectionID` binding. It's now _properly_ exposed on `ConnectionHandler.getConnectionID`, so use that instead.
+- Remove `getConnectionID` generation from PPX. Prefer `ConnectionHandler.getConnectionID`. Even though it's slightly more cumbersome, it's guaranteed to not give you dependency cycles.
 
 # 0.17.0
 

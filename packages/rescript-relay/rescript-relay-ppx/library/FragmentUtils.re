@@ -48,36 +48,6 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
 ];
 
-let makeConnectionAssets = (~loc, ~extractedConnectionInfo) =>
-  switch (extractedConnectionInfo) {
-  | None => []
-  | Some({Util.key, applicableFilterKeys}) => [
-      switch (applicableFilterKeys) {
-      | [] => [%stri
-          [@module "relay-runtime"]
-          external getConnectionID:
-            (
-              RescriptRelay.dataId,
-              [@as [%e Util.makeStringExpr(~loc, key)]] _
-            ) =>
-            RescriptRelay.dataId =
-            "getConnectionID"
-        ]
-      | _filterKeys => [%stri
-          [@module "relay-runtime"]
-          external getConnectionID:
-            (
-              RescriptRelay.dataId,
-              [@as [%e Util.makeStringExpr(~loc, key)]] _,
-              'filters
-            ) =>
-            RescriptRelay.dataId =
-            "getConnectionID"
-        ]
-      },
-    ]
-  };
-
 let makeRefetchableAssets =
     (
       ~loc,
@@ -266,8 +236,9 @@ There's a helper generated for you to create those diffed variables more easily 
             );
           (
             data,
-            React.useMemo1(() => (
+            React.useMemo1(
               (
+                (),
                 ~variables: [%t
                    makeTypeAccessor(
                      ~loc,
@@ -278,7 +249,7 @@ There's a helper generated for you to create those diffed variables more easily 
                 ~fetchPolicy: option(RescriptRelay.fetchPolicy)=?,
                 ~onComplete: option(option(Js.Exn.t) => unit)=?,
                 (),
-              ) => (
+              ): RescriptRelay.Disposable.t =>
                 refetchFn(
                   variables
                   ->[%e
@@ -294,9 +265,9 @@ There's a helper generated for you to create those diffed variables more easily 
                     ~onComplete?,
                     (),
                   ),
-                ): RescriptRelay.Disposable.t
-              )
-            ), [|refetchFn|])
+                ),
+              [|refetchFn|],
+            ),
           );
         }
       ],

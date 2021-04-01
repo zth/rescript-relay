@@ -196,10 +196,7 @@ let fragmentHasConnectionNotation = (~loc, op) =>
   | _ => false
   };
 
-type connectionConfig = {
-  key: string,
-  applicableFilterKeys: list(string),
-};
+type connectionConfig = {key: string};
 
 let extractFragmentConnectionInfo = (~loc, op) =>
   switch (op) {
@@ -221,50 +218,6 @@ let extractFragmentConnectionInfo = (~loc, op) =>
       switch (connectionDirective) {
       | None => None
       | Some(directive) =>
-        let filters =
-          directive.arguments
-          |> List.find_opt(
-               fun
-               | ("filters", `List(filters)) => true
-               | _ => false,
-             );
-
-        let filtersConfig =
-          switch (filters) {
-          | Some((_, `List(filters))) =>
-            switch (
-              filters
-              |> List.map(
-                   fun
-                   | `String(s) => Some(s)
-                   | _ => None,
-                 )
-              |> List.filter(
-                   fun
-                   | Some("before" | "after" | "first" | "last") => false
-                   | None => false
-                   | Some(_) => true,
-                 )
-            ) {
-            | [] => Some([])
-            | notEmpty => Some(notEmpty)
-            }
-          | _ => None
-          };
-
-        let keys =
-          field.arguments
-          |> List.filter(((key, _value)) =>
-               switch (key) {
-               | "before"
-               | "after"
-               | "first"
-               | "last" => false
-               | _ => true
-               }
-             )
-          |> List.map(((key, _value)) => key);
-
         let key =
           directive.arguments
           |> List.find_opt(((key, _)) =>
@@ -275,31 +228,7 @@ let extractFragmentConnectionInfo = (~loc, op) =>
              );
 
         switch (key) {
-        | Some(("key", `String(key))) =>
-          Some({
-            key,
-            applicableFilterKeys:
-              switch (filtersConfig) {
-              | None => keys
-              | Some([]) => []
-              | Some(filtersList) =>
-                keys
-                |> List.filter(key =>
-                     switch (
-                       filtersList
-                       |> List.find_opt(filterKeyName =>
-                            switch (filterKeyName) {
-                            | Some(k) when k == key => true
-                            | _ => false
-                            }
-                          )
-                     ) {
-                     | Some(_) => true
-                     | None => false
-                     }
-                   )
-              },
-          })
+        | Some(("key", `String(key))) => Some({key: key})
         | _ => None
         };
       };

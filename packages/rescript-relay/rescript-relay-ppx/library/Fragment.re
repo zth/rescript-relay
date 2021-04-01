@@ -39,7 +39,6 @@ let make =
           ~makeExprAccessor,
           ~valFromGeneratedModule,
         ),
-        FragmentUtils.makeConnectionAssets(~loc, ~extractedConnectionInfo),
         [
           [%stri
             /**React hook for getting the data of this fragment. Pass the `fragmentRefs` of any object where you've spread your fragment into this and get the fragment data back.
@@ -138,55 +137,67 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
 
                 {
                   data,
-                  loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
-                    p.loadNext(.
-                      count,
-                      {
-                        onComplete:
-                          onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
-                      },
-                    ), [|p.loadNext|]),
-                  loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
-                    p.loadPrevious(.
-                      count,
-                      {
-                        onComplete:
-                          onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
-                      },
-                    ), [|p.loadPrevious|]),
+                  loadNext:
+                    React.useMemo1(
+                      ((), ~count, ~onComplete=?, ()) =>
+                        p.loadNext(.
+                          count,
+                          {
+                            onComplete:
+                              onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
+                          },
+                        ),
+                      [|p.loadNext|],
+                    ),
+                  loadPrevious:
+                    React.useMemo1(
+                      ((), ~count, ~onComplete=?, ()) =>
+                        p.loadPrevious(.
+                          count,
+                          {
+                            onComplete:
+                              onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
+                          },
+                        ),
+                      [|p.loadPrevious|],
+                    ),
                   hasNext: p.hasNext,
                   hasPrevious: p.hasPrevious,
                   isLoadingNext: p.isLoadingNext,
                   isLoadingPrevious: p.isLoadingPrevious,
                   refetch:
-                    React.useMemo1(() => (
-                      ~variables: [%t
-                         makeTypeAccessor(
-                           ~loc,
-                           ~moduleName=queryName,
-                           ["Types", "refetchVariables"],
-                         )
-                       ],
-                      ~fetchPolicy=?,                      
-                      ~onComplete=?,
-                      (),
-                    ) =>
-                    p.refetch(.
-                      variables
-                      ->[%e
-                          makeExprAccessor(
-                            ~loc,
-                            ~moduleName=queryName,
-                            ["Internal", "convertVariables"],
-                          )
-                        ]
-                      ->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-                      internal_makeRefetchableFnOpts(
-                        ~onComplete?,
-                        ~fetchPolicy?,
+                    React.useMemo1(
+                      (
                         (),
-                      ),
-                    ), [|p.refetch|]),
+                        ~variables: [%t
+                           makeTypeAccessor(
+                             ~loc,
+                             ~moduleName=queryName,
+                             ["Types", "refetchVariables"],
+                           )
+                         ],
+                        ~fetchPolicy=?,
+                        ~onComplete=?,
+                        (),
+                      ) =>
+                        p.refetch(.
+                          variables
+                          ->[%e
+                              makeExprAccessor(
+                                ~loc,
+                                ~moduleName=queryName,
+                                ["Internal", "convertVariables"],
+                              )
+                            ]
+                          ->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                          internal_makeRefetchableFnOpts(
+                            ~onComplete?,
+                            ~fetchPolicy?,
+                            (),
+                          ),
+                        ),
+                      [|p.refetch|],
+                    ),
                 };
               }
             ]
@@ -214,53 +225,65 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
 
                 {
                   data,
-                  loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
-                    p.loadNext(.
-                      count,
-                      {
-                        onComplete:
-                          onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
-                      },
-                    ), [|p.loadNext|]),
-                  loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) =>
-                    p.loadPrevious(.
-                      count,
-                      {
-                        onComplete:
-                          onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
-                      },
-                    ), [|p.loadPrevious|]),
+                  loadNext:
+                    React.useMemo1(
+                      ((), ~count, ~onComplete=?, ()) =>
+                        p.loadNext(.
+                          count,
+                          {
+                            onComplete:
+                              onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
+                          },
+                        ),
+                      [|p.loadNext|],
+                    ),
+                  loadPrevious:
+                    React.useMemo1(
+                      ((), ~count, ~onComplete=?, ()) =>
+                        p.loadPrevious(.
+                          count,
+                          {
+                            onComplete:
+                              onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
+                          },
+                        ),
+                      [|p.loadPrevious|],
+                    ),
                   hasNext: p.hasNext,
                   hasPrevious: p.hasPrevious,
                   refetch:
-                    React.useMemo1(() => (
-                      ~variables: [%t
-                         makeTypeAccessor(
-                           ~loc,
-                           ~moduleName=queryName,
-                           ["Types", "refetchVariables"],
-                         )
-                       ],
-                      ~fetchPolicy=?,
-                      ~onComplete=?,
-                      (),
-                    ) =>
-                    p.refetch(.
-                      variables
-                      ->[%e
-                          makeExprAccessor(
-                            ~loc,
-                            ~moduleName=queryName,
-                            ["Internal", "convertVariables"],
-                          )
-                        ]
-                      ->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-                      internal_makeRefetchableFnOpts(
-                        ~onComplete?,
-                        ~fetchPolicy?,
+                    React.useMemo1(
+                      (
                         (),
-                      ),
-                    ), [|p.refetch|]),
+                        ~variables: [%t
+                           makeTypeAccessor(
+                             ~loc,
+                             ~moduleName=queryName,
+                             ["Types", "refetchVariables"],
+                           )
+                         ],
+                        ~fetchPolicy=?,
+                        ~onComplete=?,
+                        (),
+                      ) =>
+                        p.refetch(.
+                          variables
+                          ->[%e
+                              makeExprAccessor(
+                                ~loc,
+                                ~moduleName=queryName,
+                                ["Internal", "convertVariables"],
+                              )
+                            ]
+                          ->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                          internal_makeRefetchableFnOpts(
+                            ~onComplete?,
+                            ~fetchPolicy?,
+                            (),
+                          ),
+                        ),
+                      [|p.refetch|],
+                    ),
                 };
               }
             ]
