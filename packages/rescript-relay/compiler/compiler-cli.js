@@ -20,11 +20,15 @@ if (!relayConfig.artifactDirectory) {
 }
 
 function runRelayCompiler(args) {
-  spawn("relay-compiler", args, {
+  const proc = spawn("relay-compiler", args, {
     stdio: "inherit",
   })
     // Propagate the relay compiler's exit code.
     .on("close", process.exit.bind(process));
+
+  process.on("SIGINT", () => {
+    proc.kill("SIGINT");
+  });
 }
 
 function findArg(name) {
