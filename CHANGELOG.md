@@ -1,5 +1,9 @@
 # master
 
+# 0.17.1
+
+Small patch release, mainly fixing the broken `getConnectionID` binding.
+
 ## Fixes & misc
 
 - Fix broken `getConnectionID` binding. It's now _properly_ exposed on `ConnectionHandler.getConnectionID`, so use that instead.
