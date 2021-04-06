@@ -8,16 +8,29 @@
  *   be working fine.
  */
 
-export function processConcreteText(concreteText: string): string {
+type ReferencedNode = {
+  identifier: string;
+  moduleName: string;
+}
+
+type Result = {
+  processedText: string;
+  referencedNodes: ReferencedNode[];
+}
+
+export function processConcreteText(concreteText: string): Result {
   let requireRegexp = /(require\('.\/)([A-Za-z_.0-9/]+)(.graphql.\w*'\))/gm;
   let str = concreteText;
+  const referencedNodes: ReferencedNode[] = [];
 
   let result;
 
   while ((result = requireRegexp.exec(concreteText)) !== null) {
     let [fullStr, _, moduleName] = result;
-    str = str.replace(fullStr, `require('./${moduleName}_graphql.bs.js').node`);
+    const identifier = `node_${moduleName}`;
+    referencedNodes.push({moduleName, identifier});
+    str = str.replace(fullStr, identifier);
   }
 
-  return str;
+  return { processedText: str, referencedNodes };
 }

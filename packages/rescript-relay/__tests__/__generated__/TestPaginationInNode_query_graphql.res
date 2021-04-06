@@ -62,6 +62,7 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
+let node_TestPaginationInNodeRefetchQuery = TestPaginationInNodeRefetchQuery.node;
 let node: operationType = %raw(json` (function(){
 var v0 = [
   "friendsConnection"
@@ -113,7 +114,7 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": require('./TestPaginationInNodeRefetchQuery_graphql.bs.js').node,
+      "operation": node_TestPaginationInNodeRefetchQuery,
       "identifierField": "id"
     }
   },
