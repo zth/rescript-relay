@@ -1,5 +1,7 @@
 # master
 
+- Support ES6 imports for `@refetchable` queries
+
 # 0.17.1
 
 Small patch release, mainly fixing the broken `getConnectionID` binding.

@@ -7,9 +7,19 @@ describe("processConcreteText", () => {
         ` "operation": require('./BookDisplayerRefetchQuery.graphql.re'),
         "someOtherOp": require('./SomeRefetchQuery.graphql.re'),`
       )
-    ).toBe(
-      ` "operation": require('./BookDisplayerRefetchQuery_graphql.bs.js').node,
-        "someOtherOp": require('./SomeRefetchQuery_graphql.bs.js').node,`
-    );
+    ).toStrictEqual({
+      processedText: ` "operation": node_BookDisplayerRefetchQuery,
+        "someOtherOp": node_SomeRefetchQuery,`,
+      referencedNodes: [
+        {
+          identifier: "node_BookDisplayerRefetchQuery",
+          moduleName: "BookDisplayerRefetchQuery",
+        },
+        {
+          identifier: "node_SomeRefetchQuery",
+          moduleName: "SomeRefetchQuery",
+        },
+      ],
+    });
   });
 });

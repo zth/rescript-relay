@@ -4,12 +4,8 @@ import { processConcreteText } from "./utils/processConcreteText";
 const formatGeneratedModule: FormatModule = ({
   moduleName,
   documentType,
-  docText,
   concreteText,
   typeText,
-  kind,
-  hash,
-  sourceHash,
 }) => {
   const preloadText =
     // @ts-ignore The type definitions are actually wrong from DefinitivelyTyped
@@ -24,12 +20,20 @@ const formatGeneratedModule: FormatModule = ({
     let convertVariables = Internal.convertVariables
   });`
       : "";
+  const { processedText, referencedNodes } = processConcreteText(concreteText);
 
-  return `${typeText || ""}
-let node: operationType = %raw(json\` ${processConcreteText(concreteText)} \`)
-
-${preloadText}
-`;
+  const lines = [
+    typeText || "",
+    ...referencedNodes
+      .map(
+        ({ moduleName, identifier }) => `let ${identifier} = ${moduleName}.node;`
+      ),
+    `let node: operationType = %raw(json\` ${processedText} \`)`,
+    "",
+    preloadText,
+    ""
+  ];
+  return lines.join("\n");
 };
 
 module.exports = formatGeneratedModule;
