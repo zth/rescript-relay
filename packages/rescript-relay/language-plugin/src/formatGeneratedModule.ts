@@ -24,14 +24,14 @@ const formatGeneratedModule: FormatModule = ({
 
   const lines = [
     typeText || "",
-    ...referencedNodes
-      .map(
-        ({ moduleName, identifier }) => `let ${identifier} = ${moduleName}.node;`
-      ),
+    ...referencedNodes.map(
+      ({ moduleName, identifier }) =>
+        `let ${identifier} = ${moduleName}_graphql.node;`
+    ),
     `let node: operationType = %raw(json\` ${processedText} \`)`,
     "",
     preloadText,
-    ""
+    "",
   ];
   return lines.join("\n");
 };

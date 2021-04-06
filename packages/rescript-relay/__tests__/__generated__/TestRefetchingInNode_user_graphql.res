@@ -58,7 +58,7 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node_TestRefetchingInNodeRefetchQuery = TestRefetchingInNodeRefetchQuery.node;
+let node_TestRefetchingInNodeRefetchQuery = TestRefetchingInNodeRefetchQuery_graphql.node;
 let node: operationType = %raw(json` {
   "argumentDefinitions": [
     {
@@ -82,7 +82,7 @@ let node: operationType = %raw(json` {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": node_TestRefetchingInNodeRefetchQuery,
+      "operation": TestRefetchingInNodeRefetchQuery_graphql.node,
       "identifierField": "id"
     }
   },

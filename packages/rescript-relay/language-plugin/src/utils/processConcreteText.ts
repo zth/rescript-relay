@@ -11,12 +11,12 @@
 type ReferencedNode = {
   identifier: string;
   moduleName: string;
-}
+};
 
 type Result = {
   processedText: string;
   referencedNodes: ReferencedNode[];
-}
+};
 
 export function processConcreteText(concreteText: string): Result {
   let requireRegexp = /(require\('.\/)([A-Za-z_.0-9/]+)(.graphql.\w*'\))/gm;
@@ -28,8 +28,8 @@ export function processConcreteText(concreteText: string): Result {
   while ((result = requireRegexp.exec(concreteText)) !== null) {
     let [fullStr, _, moduleName] = result;
     const identifier = `node_${moduleName}`;
-    referencedNodes.push({moduleName, identifier});
-    str = str.replace(fullStr, identifier);
+    referencedNodes.push({ moduleName, identifier });
+    str = str.replace(fullStr, `${moduleName}_graphql.node`);
   }
 
   return { processedText: str, referencedNodes };
