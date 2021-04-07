@@ -51,7 +51,9 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` (function(){
+%%private(let makeNode = (node_SingleTicketWorkingGroupRefetchQuery): operationType => {
+  ignore(node_SingleTicketWorkingGroupRefetchQuery)
+  %raw(json` (function(){
 var v0 = {
   "alias": null,
   "args": null,
@@ -74,7 +76,7 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": require('./SingleTicketWorkingGroupRefetchQuery_graphql.bs.js').node,
+      "operation": node_SingleTicketWorkingGroupRefetchQuery,
       "identifierField": "id"
     }
   },
@@ -146,5 +148,7 @@ return {
   "abstractKey": null
 };
 })() `)
+})
+let node: operationType = makeNode(SingleTicketWorkingGroupRefetchQuery_graphql.node)
 
 
