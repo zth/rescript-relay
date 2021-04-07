@@ -40,12 +40,12 @@ const formatGeneratedModule: FormatModule = ({
          * which gets rid of the "warning" from ReScript that they're unused.
          */
         [
-          `let makeNode = (${referencedNodes
+          `%%private(let makeNode = (${referencedNodes
             .map(({ identifier }) => identifier)
             .join(", ")}): operationType => {`,
           ...referencedNodes.map(({ identifier }) => `  ignore(${identifier})`),
           `  ${rawRelayArtifactJs}`,
-          `}`,
+          `})`,
           `let node: operationType = makeNode(${referencedNodes
             .map(({ moduleName }) => `${moduleName}_graphql.node`)
             .join(", ")})`,
