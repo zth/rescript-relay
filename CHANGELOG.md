@@ -2,6 +2,8 @@
 
 # 0.18.0
 
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/49bf382d80c71207a11fe9aa1271a7cf06a98817)_
+
 ## Fixes & misc
 
 - Support ES6 imports for `@refetchable` queries. This for example allows the use of Vite and similar bundlers.
