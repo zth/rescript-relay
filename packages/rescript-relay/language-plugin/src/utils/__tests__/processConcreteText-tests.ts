@@ -8,8 +8,8 @@ describe("processConcreteText", () => {
         "someOtherOp": require('./SomeRefetchQuery.graphql.re'),`
       )
     ).toStrictEqual({
-      processedText: ` "operation": BookDisplayerRefetchQuery_graphql.node,
-        "someOtherOp": SomeRefetchQuery_graphql.node,`,
+      processedText: ` "operation": node_BookDisplayerRefetchQuery,
+        "someOtherOp": node_SomeRefetchQuery,`,
       referencedNodes: [
         {
           identifier: "node_BookDisplayerRefetchQuery",
