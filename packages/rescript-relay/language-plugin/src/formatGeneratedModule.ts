@@ -40,13 +40,10 @@ const formatGeneratedModule: FormatModule = ({
          * which gets rid of the "warning" from ReScript that they're unused.
          */
         [
-          `%%private(external reify: 't => 't = "%identity";)`,
           `let makeNode = (${referencedNodes
             .map(({ identifier }) => identifier)
             .join(", ")}): operationType => {`,
-          ...referencedNodes.map(
-            ({ identifier }) => `  let _ = reify(${identifier})`
-          ),
+          ...referencedNodes.map(({ identifier }) => `  ignore(${identifier})`),
           `  ${rawRelayArtifactJs}`,
           `}`,
           `let node: operationType = makeNode(${referencedNodes

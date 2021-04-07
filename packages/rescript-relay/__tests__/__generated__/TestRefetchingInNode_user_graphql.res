@@ -58,9 +58,8 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(external reify: 't => 't = "%identity";)
 let makeNode = (node_TestRefetchingInNodeRefetchQuery): operationType => {
-  let _ = reify(node_TestRefetchingInNodeRefetchQuery)
+  ignore(node_TestRefetchingInNodeRefetchQuery)
   %raw(json` {
   "argumentDefinitions": [
     {
