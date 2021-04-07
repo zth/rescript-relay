@@ -1,6 +1,10 @@
 # master
 
-- Support ES6 imports for `@refetchable` queries
+# 0.18.0
+
+## Fixes & misc
+
+- Support ES6 imports for `@refetchable` queries. This for example allows the use of Vite and similar bundlers.
 
 # 0.17.1
 
