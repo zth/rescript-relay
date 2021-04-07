@@ -29,7 +29,7 @@ export function processConcreteText(concreteText: string): Result {
     let [fullStr, _, moduleName] = result;
     const identifier = `node_${moduleName}`;
     referencedNodes.push({ moduleName, identifier });
-    str = str.replace(fullStr, `${moduleName}_graphql.node`);
+    str = str.replace(fullStr, `node_${moduleName}`);
   }
 
   return { processedText: str, referencedNodes };

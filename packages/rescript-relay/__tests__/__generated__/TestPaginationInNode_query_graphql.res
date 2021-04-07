@@ -62,8 +62,9 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node_TestPaginationInNodeRefetchQuery = TestPaginationInNodeRefetchQuery_graphql.node;
-let node: operationType = %raw(json` (function(){
+%%private(let makeNode = (node_TestPaginationInNodeRefetchQuery): operationType => {
+  ignore(node_TestPaginationInNodeRefetchQuery)
+  %raw(json` (function(){
 var v0 = [
   "friendsConnection"
 ],
@@ -114,7 +115,7 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": TestPaginationInNodeRefetchQuery_graphql.node,
+      "operation": node_TestPaginationInNodeRefetchQuery,
       "identifierField": "id"
     }
   },
@@ -210,5 +211,7 @@ return {
   "abstractKey": null
 };
 })() `)
+})
+let node: operationType = makeNode(TestPaginationInNodeRefetchQuery_graphql.node)
 
 
