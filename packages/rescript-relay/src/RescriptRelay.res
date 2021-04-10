@@ -486,7 +486,7 @@ module Environment = {
                 handle: function(field, record, args, store) {
                   if (
                     record != null &&
-                    record.__typename === require("relay-runtime").ROOT_TYPE &&
+                    record.__typename === "__Root" &&
                     field.name === "node" &&
                     args.hasOwnProperty("id")
                   ) {
