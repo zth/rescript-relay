@@ -5,7 +5,18 @@ let lazyExtension =
   Extension.declare(
     "relay.lazyComponent",
     Extension.Context.module_expr,
-    Ast_pattern.(single_expr_payload(pexp_ident(__))),
+    /**
+     * This matches both SomeModule and SomeModule.make by mapping SomeModule to
+       SomeModule.make.
+     */
+    Ast_pattern.(
+      single_expr_payload(
+        pexp_ident(__)
+        ||| map(pexp_construct(__, none), ~f=(f, ident) =>
+              f(Ldot(ident, "make"))
+            ),
+      )
+    ),
     (~loc, ~path as _, ident) => {
     switch (ident) {
     | Ldot(Lident(moduleName), "make") =>
@@ -59,7 +70,7 @@ let lazyExtension =
     | _ =>
       Location.raise_errorf(
         ~loc,
-        "Please provide a reference to the make function of a top level React component module you want to import (MyComponent.make).",
+        "Please provide a reference either to the make function of a top level React component module you want to import (MyComponent.make), or the React component module itself (MyComponent).",
       )
     }
   });
