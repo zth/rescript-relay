@@ -1,5 +1,9 @@
 # master
 
+# 0.18.1
+
+Minor patch release, removing an inline `require` to further enhance ES modules compability.
+
 # 0.18.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/49bf382d80c71207a11fe9aa1271a7cf06a98817)_
