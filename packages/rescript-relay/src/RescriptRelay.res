@@ -335,6 +335,12 @@ module MissingFieldHandler = {
       "kind": #linked,
       "handle": handle,
     })
+
+  let makePluralLinkedMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #pluralLinked,
+      "handle": handle,
+    })
 }
 
 module ConnectionHandler = {

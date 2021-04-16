@@ -473,6 +473,15 @@ module MissingFieldHandler: {
       ReadOnlyRecordSourceProxy.t,
     ) => Js.Nullable.t<dataId>
   ) => t
+
+  let makePluralLinkedMissingFieldHandler: (
+    (
+      normalizationLinkedField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => Js.Nullable.t<array<Js.Nullable.t<dataId>>>
+  ) => t
 }
 
 @ocaml.doc(
