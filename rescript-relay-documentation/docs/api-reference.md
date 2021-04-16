@@ -1122,6 +1122,79 @@ let make = (~serializedRecords: RescriptRelay.recordSourceRecords) => {
 }
 ```
 
+## MissingFieldHandler
+
+A missing field handler, which is a way of teaching Relay more about the relations in your schema, so it can fulfill more things from the cache. Read more [in this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).
+
+Feed a list of missing field handlers into [`Environment.make`](#environmentmake) if you want to use them.
+
+### [MissingFieldHandler.t](#missingfieldhandlert)
+
+```reason
+type t
+```
+
+The type representing a [MissingFieldHandler](#missingfieldhandler) .
+
+### [makeScalarMissingFieldHandler](#missingfieldhandlermakescalarmissingfieldhandler)
+
+Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `Js.null` (to indicate that data exists but is null), `Js.undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).
+
+Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
+
+```reason
+let makeScalarMissingFieldHandler: (
+    (
+      normalizationScalarField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => 'scalarValue
+  ) => t
+```
+
+### [makeLinkedMissingFieldHandler](#missingfieldhandlermakelinkedmissingfieldhandler)
+
+Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.
+
+Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
+
+```reason
+let makeLinkedMissingFieldHandler: (
+    (
+      normalizationLinkedField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => Js.Nullable.t<dataId>
+  ) => t
+```
+
+### [makePluralLinkedMissingFieldHandler](#missingfieldhandlermakeplurallinkedmissingfieldhandler)
+
+Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or an array of `Js.Nullable.t<dataId>` where the `dataId`'s are the linked records/objects.
+
+Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
+
+```reason
+let makeLinkedMissingFieldHandler: (
+    (
+      normalizationLinkedField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => Js.Nullable.t<dataId>
+  ) => t
+```
+
+### [unwrapNormalizationArgument](#missingfieldhandlerunwrapnormalizationargument)
+
+Unwraps a `normalizationArgumentWrapped` to a `normalizationArgument`. Check [`RescriptRelay.resi`](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/src/RescriptRelay.resi) for more information.
+
+```reason
+let unwrapNormalizationArgument: normalizationArgumentWrapped => normalizationArgument
+```
+
 ## Environment
 
 Module representing the environment, which you'll need to use and pass to various functions. Takes a few configuration options like store and network layer.
@@ -1145,11 +1218,12 @@ let make: (
       ~typeName: string,
     ) => string=?,
     ~treatMissingFieldsAsNull: bool=?,
+    ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
     unit,
   ) => t
 ```
 
-> Read more about: [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet), [Environment.t](#environmentt)
+> Read more about: [Network](#network), [Network.t](#networkt), [Store](#store), [Store.t](#storet), [Environment.t](#environmentt), [MissingFieldHandler.t](#missingfieldhandlert)
 
 Create a new [Environment](#environment) .
 
