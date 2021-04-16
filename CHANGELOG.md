@@ -1,5 +1,9 @@
 # master
 
+## New bindings
+
+- Bind `missingFieldHandlers` on `Environment`. Read [this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/) for more information.
+
 # 0.18.1
 
 Minor patch release, removing an inline `require` to further enhance ES modules compability.

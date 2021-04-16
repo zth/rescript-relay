@@ -763,6 +763,7 @@ module Environment: {
       ~typeName: string,
     ) => string=?,
     ~treatMissingFieldsAsNull: bool=?,
+    ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
     unit,
   ) => t
 

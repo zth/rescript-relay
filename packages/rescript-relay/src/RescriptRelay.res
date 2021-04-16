@@ -370,6 +370,15 @@ module MissingFieldHandler = {
     })
 }
 
+// This handler below enables automatic resolution of all cached items through the Node interface
+let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFieldHandler(
+  (field, record, args, _store) =>
+    switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
+    | (Some(record), "node", argsId) when record["__typename"] == storeRootType => argsId
+    | _ => None
+    },
+)
+
 module ConnectionHandler = {
   @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (
@@ -538,8 +547,6 @@ module Store = {
 module Environment = {
   type t
 
-  type missingFieldHandlers
-
   @deriving(abstract)
   type environmentConfig<'a> = {
     network: Network.t,
@@ -548,39 +555,30 @@ module Environment = {
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
     @optional
     treatMissingFieldsAsNull: bool,
-    missingFieldHandlers: missingFieldHandlers,
+    missingFieldHandlers: array<MissingFieldHandler.t>,
   }
 
   @module("relay-runtime") @new
   external make: environmentConfig<'a> => t = "Environment"
 
-  let make = (~network, ~store, ~getDataID=?, ~treatMissingFieldsAsNull=?, ()) =>
+  let make = (
+    ~network,
+    ~store,
+    ~getDataID=?,
+    ~treatMissingFieldsAsNull=?,
+    ~missingFieldHandlers=?,
+    (),
+  ) =>
     make(
       environmentConfig(
         ~network,
         ~store,
         ~getDataID?,
         ~treatMissingFieldsAsNull?,
-        // This handler below enables automatic resolution of all cached items through the Node interface
-        ~missingFieldHandlers=%raw(
-          `
-            [
-              {
-                kind: "linked",
-                handle: function(field, record, args, store) {
-                  if (
-                    record != null &&
-                    record.__typename === "__Root" &&
-                    field.name === "node" &&
-                    args.hasOwnProperty("id")
-                  ) {
-                    return args.id;
-                  }
-                }
-              }
-            ]
-          `
-        ),
+        ~missingFieldHandlers=switch missingFieldHandlers {
+        | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
+        | None => [nodeInterfaceMissingFieldHandler]
+        },
         (),
       ),
     )
