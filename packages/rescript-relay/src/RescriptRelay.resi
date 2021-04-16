@@ -428,21 +428,42 @@ module ReadOnlyRecordSourceProxy: {
 
 @ocaml.doc("TODO")
 module MissingFieldHandler: {
+  @@ocaml.warning("-30")
   type t
 
-  type rec normalizationArgument = {
-    kind: [#ListValue | #Literal | #ObjectValue | #Variable],
+  type normalizationArgumentWrapped = {kind: [#ListValue | #Literal | #ObjectValue | #Variable]}
+
+  type rec normalizationListValueArgument = {
     name: string,
-    items: Js.Nullable.t<array<Js.Nullable.t<normalizationArgument>>>,
-    @as("type") type_: Js.Nullable.t<string>,
-    value: Js.Nullable.t<Js.Json.t>,
-    fields: Js.Nullable.t<array<normalizationArgument>>,
+    items: array<Js.Nullable.t<normalizationArgumentWrapped>>,
   }
+  and normalizationLiteralArgument = {
+    name: string,
+    @as("type") type_: Js.Nullable.t<string>,
+    value: Js.Json.t,
+  }
+  and normalizationObjectValueArgument = {
+    name: string,
+    fields: Js.Nullable.t<array<normalizationArgumentWrapped>>,
+  }
+  and normalizationVariableArgument = {
+    name: string,
+    @as("type") type_: Js.Nullable.t<string>,
+    variableName: string,
+  }
+
+  type normalizationArgument =
+    | ListValue(normalizationListValueArgument)
+    | Literal(normalizationLiteralArgument)
+    | ObjectValue(normalizationObjectValueArgument)
+    | Variable(normalizationVariableArgument)
+
+  let unwrapNormalizationArgument: normalizationArgumentWrapped => normalizationArgument
 
   type normalizationScalarField = {
     alias: Js.Nullable.t<string>,
     name: string,
-    args: Js.Nullable.t<array<normalizationArgument>>,
+    args: Js.Nullable.t<array<normalizationArgumentWrapped>>,
     storageKey: Js.Nullable.t<string>,
   }
 
