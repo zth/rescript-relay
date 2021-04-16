@@ -319,6 +319,22 @@ module MissingFieldHandler = {
       "kind": #scalar,
       "handle": handle,
     })
+
+  type normalizationLinkedField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    storageKey: Js.Nullable.t<string>,
+    args: Js.Nullable.t<array<normalizationArgument>>,
+    concreteType: Js.Nullable.t<string>,
+    plural: bool,
+    selections: array<Js.Json.t>,
+  }
+
+  let makeLinkedMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #linked,
+      "handle": handle,
+    })
 }
 
 module ConnectionHandler = {

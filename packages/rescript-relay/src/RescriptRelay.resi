@@ -454,6 +454,25 @@ module MissingFieldHandler: {
       ReadOnlyRecordSourceProxy.t,
     ) => 'scalarValue
   ) => t
+
+  type normalizationLinkedField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    storageKey: Js.Nullable.t<string>,
+    args: Js.Nullable.t<array<normalizationArgument>>,
+    concreteType: Js.Nullable.t<string>,
+    plural: bool,
+    selections: array<Js.Json.t>,
+  }
+
+  let makeLinkedMissingFieldHandler: (
+    (
+      normalizationLinkedField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => Js.Nullable.t<dataId>
+  ) => t
 }
 
 @ocaml.doc(
