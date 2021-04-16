@@ -70,6 +70,7 @@ module Internal = {
 type queryRef
 
 module Utils = {
+  @@ocaml.warning("-33")
   open Types
   let makeVariables = (
     ~groupId

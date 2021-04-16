@@ -179,6 +179,7 @@ module Internal = {
 type queryRef
 
 module Utils = {
+  @@ocaml.warning("-33")
   open Types
   external onlineStatus_toString:
   enum_OnlineStatus => string = "%identity"

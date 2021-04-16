@@ -460,7 +460,9 @@ let getPrintedFullState =
   };
 
   if (utils_content^ != "") {
-    addToStr("  open Types\n");
+    // Disable warning 33 since this open might be unused (yes, even though we
+    // did the check above).
+    addToStr("  @@ocaml.warning(\"-33\")\n  open Types\n");
   };
 
   addToStr(Utils.print_indented(2, utils_content^) ++ "\n}\n");
