@@ -286,6 +286,15 @@ module RecordSourceSelectorProxy = {
   @send external invalidateStore: t => unit = "invalidateStore"
 }
 
+module ReadOnlyRecordSourceProxy = {
+  type t
+
+  @send @return(nullable)
+  external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
+
+  @send external getRoot: t => RecordProxy.t = "getRoot"
+}
+
 module ConnectionHandler = {
   @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (

@@ -409,6 +409,23 @@ module RecordSourceSelectorProxy: {
   external invalidateStore: t => unit = "invalidateStore"
 }
 
+@ocaml.doc("ReadOnlyRecordSourceProxy is the store, but in read-only mode.")
+module ReadOnlyRecordSourceProxy: {
+  @ocaml.doc("Type type representing a `ReadOnlyRecordSourceProxy`.")
+  type t
+
+  @ocaml.doc("Returns the `RecordProxy` with the provided `dataId`, if it exists.")
+  @send
+  @return(nullable)
+  external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
+
+  @ocaml.doc(
+    "Returns the _root_ `RecordProxy`, meaning the `RecordProxy` holding your top level fields."
+  )
+  @send
+  external getRoot: t => RecordProxy.t = "getRoot"
+}
+
 @ocaml.doc(
   "Read the Relay docs section on [ConnectionHandler](https://relay.dev/docs/en/relay-store#connectionhandler)"
 )
