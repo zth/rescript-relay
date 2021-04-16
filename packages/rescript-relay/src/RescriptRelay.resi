@@ -426,6 +426,36 @@ module ReadOnlyRecordSourceProxy: {
   external getRoot: t => RecordProxy.t = "getRoot"
 }
 
+@ocaml.doc("TODO")
+module MissingFieldHandler: {
+  type t
+
+  type rec normalizationArgument = {
+    kind: [#ListValue | #Literal | #ObjectValue | #Variable],
+    name: string,
+    items: Js.Nullable.t<array<Js.Nullable.t<normalizationArgument>>>,
+    @as("type") type_: Js.Nullable.t<string>,
+    value: Js.Nullable.t<Js.Json.t>,
+    fields: Js.Nullable.t<array<normalizationArgument>>,
+  }
+
+  type normalizationScalarField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    args: Js.Nullable.t<array<normalizationArgument>>,
+    storageKey: Js.Nullable.t<string>,
+  }
+
+  let makeScalarMissingFieldHandler: (
+    (
+      normalizationScalarField,
+      Js.Nullable.t<'record>,
+      'args,
+      ReadOnlyRecordSourceProxy.t,
+    ) => 'scalarValue
+  ) => t
+}
+
 @ocaml.doc(
   "Read the Relay docs section on [ConnectionHandler](https://relay.dev/docs/en/relay-store#connectionhandler)"
 )

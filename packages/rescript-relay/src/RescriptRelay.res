@@ -295,6 +295,32 @@ module ReadOnlyRecordSourceProxy = {
   @send external getRoot: t => RecordProxy.t = "getRoot"
 }
 
+module MissingFieldHandler = {
+  type t
+
+  type rec normalizationArgument = {
+    kind: [#ListValue | #Literal | #ObjectValue | #Variable],
+    name: string,
+    items: Js.Nullable.t<array<Js.Nullable.t<normalizationArgument>>>,
+    @as("type") type_: Js.Nullable.t<string>,
+    value: Js.Nullable.t<Js.Json.t>,
+    fields: Js.Nullable.t<array<normalizationArgument>>,
+  }
+
+  type normalizationScalarField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    args: Js.Nullable.t<array<normalizationArgument>>,
+    storageKey: Js.Nullable.t<string>,
+  }
+
+  let makeScalarMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #scalar,
+      "handle": handle,
+    })
+}
+
 module ConnectionHandler = {
   @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (
