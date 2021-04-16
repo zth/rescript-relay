@@ -286,6 +286,99 @@ module RecordSourceSelectorProxy = {
   @send external invalidateStore: t => unit = "invalidateStore"
 }
 
+module ReadOnlyRecordSourceProxy = {
+  type t
+
+  @send @return(nullable)
+  external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
+
+  @send external getRoot: t => RecordProxy.t = "getRoot"
+}
+
+module MissingFieldHandler = {
+  @@ocaml.warning("-30")
+  type t
+
+  type normalizationArgumentWrapped = {kind: [#ListValue | #Literal | #ObjectValue | #Variable]}
+
+  type rec normalizationListValueArgument = {
+    name: string,
+    items: array<Js.Nullable.t<normalizationArgumentWrapped>>,
+  }
+  and normalizationLiteralArgument = {
+    name: string,
+    @as("type") type_: Js.Nullable.t<string>,
+    value: Js.Json.t,
+  }
+  and normalizationObjectValueArgument = {
+    name: string,
+    fields: Js.Nullable.t<array<normalizationArgumentWrapped>>,
+  }
+  and normalizationVariableArgument = {
+    name: string,
+    @as("type") type_: Js.Nullable.t<string>,
+    variableName: string,
+  }
+
+  type normalizationArgument =
+    | ListValue(normalizationListValueArgument)
+    | Literal(normalizationLiteralArgument)
+    | ObjectValue(normalizationObjectValueArgument)
+    | Variable(normalizationVariableArgument)
+
+  let unwrapNormalizationArgument = wrapped =>
+    switch wrapped.kind {
+    | #ListValue => ListValue(Obj.magic(wrapped))
+    | #Literal => Literal(Obj.magic(wrapped))
+    | #ObjectValue => ObjectValue(Obj.magic(wrapped))
+    | #Variable => Variable(Obj.magic(wrapped))
+    }
+
+  type normalizationScalarField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    args: Js.Nullable.t<array<normalizationArgumentWrapped>>,
+    storageKey: Js.Nullable.t<string>,
+  }
+
+  let makeScalarMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #scalar,
+      "handle": handle,
+    })
+
+  type normalizationLinkedField = {
+    alias: Js.Nullable.t<string>,
+    name: string,
+    storageKey: Js.Nullable.t<string>,
+    args: Js.Nullable.t<array<normalizationArgument>>,
+    concreteType: Js.Nullable.t<string>,
+    plural: bool,
+    selections: array<Js.Json.t>,
+  }
+
+  let makeLinkedMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #linked,
+      "handle": handle,
+    })
+
+  let makePluralLinkedMissingFieldHandler = handle =>
+    Obj.magic({
+      "kind": #pluralLinked,
+      "handle": handle,
+    })
+}
+
+// This handler below enables automatic resolution of all cached items through the Node interface
+let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFieldHandler(
+  (field, record, args, _store) =>
+    switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
+    | (Some(record), "node", argsId) when record["__typename"] == storeRootType => argsId
+    | _ => None
+    },
+)
+
 module ConnectionHandler = {
   @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (
@@ -454,8 +547,6 @@ module Store = {
 module Environment = {
   type t
 
-  type missingFieldHandlers
-
   @deriving(abstract)
   type environmentConfig<'a> = {
     network: Network.t,
@@ -464,39 +555,30 @@ module Environment = {
     getDataID: (~nodeObj: 'a, ~typeName: string) => string,
     @optional
     treatMissingFieldsAsNull: bool,
-    missingFieldHandlers: missingFieldHandlers,
+    missingFieldHandlers: array<MissingFieldHandler.t>,
   }
 
   @module("relay-runtime") @new
   external make: environmentConfig<'a> => t = "Environment"
 
-  let make = (~network, ~store, ~getDataID=?, ~treatMissingFieldsAsNull=?, ()) =>
+  let make = (
+    ~network,
+    ~store,
+    ~getDataID=?,
+    ~treatMissingFieldsAsNull=?,
+    ~missingFieldHandlers=?,
+    (),
+  ) =>
     make(
       environmentConfig(
         ~network,
         ~store,
         ~getDataID?,
         ~treatMissingFieldsAsNull?,
-        // This handler below enables automatic resolution of all cached items through the Node interface
-        ~missingFieldHandlers=%raw(
-          `
-            [
-              {
-                kind: "linked",
-                handle: function(field, record, args, store) {
-                  if (
-                    record != null &&
-                    record.__typename === "__Root" &&
-                    field.name === "node" &&
-                    args.hasOwnProperty("id")
-                  ) {
-                    return args.id;
-                  }
-                }
-              }
-            ]
-          `
-        ),
+        ~missingFieldHandlers=switch missingFieldHandlers {
+        | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
+        | None => [nodeInterfaceMissingFieldHandler]
+        },
         (),
       ),
     )

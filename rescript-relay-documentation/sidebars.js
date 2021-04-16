@@ -19,7 +19,7 @@ module.exports = {
       "unions",
       "interacting-with-the-store",
     ],
-    "API Reference": ["api-reference"],
+    "API Reference": ["api-reference", "relay-environment"],
     Guides: [
       "editor-support-and-development-environment",
       "custom-scalars",
