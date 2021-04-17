@@ -23,14 +23,14 @@
     "react-relay": "11.0.0",
     "reason-promise": "^1.1.1",
     "@rescript/react": "0.10.1",
-    "rescript-relay": "0.18.0",
+    "rescript-relay": "0.18.2",
     "relay-compiler": "11.0.0",
     "relay-config": "11.0.0",
     "relay-runtime": "11.0.0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
-    "bs-platform": "9.0.0",
+    "bs-platform": "9.0.2",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",

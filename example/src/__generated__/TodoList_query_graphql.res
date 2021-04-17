@@ -43,6 +43,7 @@ external getFragmentRef:
 
 
 module Utils = {
+  @@ocaml.warning("-33")
   open Types
   @inline
   let connectionKey = "TodoList_query_todosConnection"

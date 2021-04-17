@@ -75,6 +75,7 @@ module Internal = {
 
 
 module Utils = {
+  @@ocaml.warning("-33")
   open Types
   let make_updateTodoItemInput = (
     ~id,

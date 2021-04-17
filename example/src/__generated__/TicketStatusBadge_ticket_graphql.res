@@ -45,6 +45,7 @@ external getFragmentRef:
 
 
 module Utils = {
+  @@ocaml.warning("-33")
   open Types
   external ticketStatus_toString:
   enum_TicketStatus => string = "%identity"

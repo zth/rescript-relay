@@ -1076,10 +1076,10 @@ bs-fetch@^0.5.0:
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.5.2.tgz#a9f4582ddb1414d3467b900305c738813481988c"
   integrity sha512-CYweTJcgLeLOqzR3vNsB+NmyEFhWThnPNdZmmF28nkFmo0CQEf+20eSHZJDO6EuAhhoRqJ0qp2VgxtH6zBB5xA==
 
-bs-platform@9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-9.0.0.tgz#873e9edcfe49a89b082e71c604d73bdb8276e2fb"
-  integrity sha512-32gIXIUt1RO+OUWLrkhXFOuZKS5Cka6lEShXaVC/ohg5N8cUnoNZW9M/vW3CWnmgZkQ0Hp9g9vj5I5NfzHpy5A==
+bs-platform@9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-9.0.2.tgz#a6eac70eb8924a322556dacaccbfbc9b2a0d3a37"
+  integrity sha512-Ye9JqJ4Oa7mcjjoOVRYI8Uc2Cf8N7jQLWDcdUplY7996d/YErSR7WitmV7XnSwr4EvdrbwjEsg1NxNjUQv3ChA==
 
 bser@2.1.1:
   version "2.1.1"
@@ -4059,10 +4059,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.18.0.tgz#6476821c9eafff0472d146cebbdad7ed396c3301"
-  integrity sha512-1rYY49856fnVDL+qv3Ed/bvjU6ef8J+IKMKpPX3TAs1jw6ITRXUWhCg80tUJRxljdbATrZZTUZ+JsHA0oD+9Sw==
+rescript-relay@0.18.2:
+  version "0.18.2"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.18.2.tgz#feb129d6c5c49a72061f8fa3737bbc2710a8c63d"
+  integrity sha512-6vVObBpFapAEP8T2/XI3ggSlkpeYEFzwZQjJiCnZEhBU1XfAr0ECGcBAwLuTn0HgC9Z1cyEIZfM2UZIAj/4hZg==
   dependencies:
     mkdirp-sync "^0.0.3"
 
