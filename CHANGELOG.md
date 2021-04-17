@@ -1,8 +1,16 @@
 # master
 
+# 0.18.2
+
+Another small patch release, fixing an annoying warning in the generated files, and adding bindings from Relay's [missing field handlers](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).
+
+## Fixes & misc
+
+- Turn off warnings for unused opens in generated files.
+
 ## New bindings
 
-- Bind `missingFieldHandlers` on `Environment`. Read [this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/) for more information.
+- Bind `missingFieldHandlers` on `Environment`. Read [this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/) for more information. Add custom ones by passing `array<MissingFieldHandler.t>` to `Environment.make`.
 
 # 0.18.1
 
