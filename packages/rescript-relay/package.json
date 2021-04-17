@@ -16,7 +16,8 @@
     "relaymodern",
     "react",
     "reason",
-    "reasonml"
+    "reasonml",
+    "rescript"
   ],
   "bin": {
     "rescript-relay-compiler": "compiler/compiler-cli.js"
