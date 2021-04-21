@@ -1,0 +1,28 @@
+# RescriptRelay experimental example
+
+This is an example of how most concepts in RescriptRelay work.
+This version is experimental because is use [React Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html).
+
+## Setup
+
+You can run it by doing the following:
+
+### Run server
+
+The examples use `graphql-client-example-server`, install like this:
+
+```
+yarn global add graphql-client-example-server
+```
+
+After the installation you can start the server like this:
+
+```
+yarn server
+```
+
+You will now have a GraphQL server running at http://localhost:4000.
+
+### Run client
+
+`yarn && yarn start` will install all dependencies and start ReScript / BuckleScript, Webpack and the Relay compiler. The app will now be available at http://localhost:9000.
