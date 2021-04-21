@@ -25,7 +25,9 @@ You will now have a GraphQL server running at http://localhost:4000.
 
 ### Run client
 
-`yarn && yarn start` will install all dependencies and start ReScript / BuckleScript, Webpack and the Relay compiler. The app will now be available at http://localhost:9000.
+`yarn` will install all dependencies.
+
+`yarn start` will start ReScript / BuckleScript, Webpack and the Relay compiler. The app will now be available at http://localhost:9000.
 
 ### Run full stack
 
