@@ -22,11 +22,16 @@
   "ppx-flags": [
     "./rescript-relay-ppx/_esy/default/build/default/bin/RescriptRelayPpxApp.exe"
   ],
-  "bs-dependencies": ["@rescript/react", "reason-promise"],
-  "bs-dev-dependencies": ["bs-fetch"],
+  "bs-dependencies": [
+    "@rescript/react",
+    "reason-promise"
+  ],
+  "bs-dev-dependencies": [
+    "bs-fetch"
+  ],
   "suffix": ".bs.js",
   "warnings": {
-    "error": "+101"
+    "error": "+A+101"
   },
   "refmt": 3
 }

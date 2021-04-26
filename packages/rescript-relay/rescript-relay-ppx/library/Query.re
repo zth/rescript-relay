@@ -11,7 +11,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
 
   Ast_helper.Mod.mk(
     Pmod_structure([
-      [%stri [@ocaml.warning "-32"]],
+      [%stri [@ocaml.warning "-32-34-60"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
