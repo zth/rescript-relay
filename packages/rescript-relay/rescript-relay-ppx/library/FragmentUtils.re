@@ -1,7 +1,7 @@
 open Ppxlib;
 
 let makeGeneratedModuleImports = (~loc, ~moduleIdentFromGeneratedModule) => [
-  [%stri [@ocaml.warning "-32"]],
+  [%stri [@ocaml.warning "-32-34-60"]],
   [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
   [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
 ];
