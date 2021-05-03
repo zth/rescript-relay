@@ -303,17 +303,21 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
   addToStr("let " ++ name ++ " = (");
 
   if (hasContents) {
+    let hasPrintedFragmentRefs = ref(false);
+
     obj.values
     |> List.iteri((index, p) => {
          addToStr(
-           switch (p) {
-           | Prop(name, {nullable}) =>
+           switch (hasPrintedFragmentRefs^, p) {
+           | (_, Prop(name, {nullable})) =>
              (index > 0 ? "," : "")
              ++ "\n  ~"
              ++ printSafeName(name)
              ++ (nullable ? "=?" : "")
-           | FragmentRef(_) =>
-             (index > 0 ? "," : "") ++ "\n  ~" ++ "fragmentRefs"
+           | (false, FragmentRef(_)) =>
+             hasPrintedFragmentRefs := true;
+             (index > 0 ? "," : "") ++ "\n  ~" ++ "fragmentRefs";
+           | (true, FragmentRef(_)) => ""
            },
          )
        });
@@ -330,22 +334,26 @@ and printObjectMaker = (obj: object_, ~targetType, ~name) => {
       (shouldAddUnit ? ",\n  ()" : "") ++ "\n): " ++ targetType ++ " => {",
     );
 
+    let hasPrintedFragmentRefs = ref(false);
+
     obj.values
     |> List.iteri((index, p) => {
          addToStr(
-           switch (p) {
-           | Prop(name, _) =>
+           switch (hasPrintedFragmentRefs^, p) {
+           | (_, Prop(name, _)) =>
              (index > 0 ? "," : "")
              ++ "\n  "
              ++ printSafeName(name)
              ++ ": "
              ++ printSafeName(name)
-           | FragmentRef(_) =>
+           | (false, FragmentRef(_)) =>
+             hasPrintedFragmentRefs := true;
              (index > 0 ? "," : "")
              ++ "\n  "
              ++ "fragmentRefs"
              ++ ": "
-             ++ "fragmentRefs"
+             ++ "fragmentRefs";
+           | (true, FragmentRef(_)) => ""
            },
          )
        });

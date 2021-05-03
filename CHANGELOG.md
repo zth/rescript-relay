@@ -1,5 +1,10 @@
 # master
 
+## Fixes & misc
+
+- Turn off various warnings to ease creation of interface files. ([@tsnobip](https://github.com/tsnobip))
+- Fix multiple `fragmentRefs` appearing in generated object maker functions when multiple fragment refs are present.
+
 # 0.18.2
 
 Another small patch release, fixing an annoying warning in the generated files, and adding bindings from Relay's [missing field handlers](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).

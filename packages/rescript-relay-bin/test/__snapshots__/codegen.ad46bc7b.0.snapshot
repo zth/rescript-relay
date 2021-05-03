@@ -1,0 +1,10 @@
+codegen › prints object maker, collapsing multiple fragmentRefs into one
+let makeTest = (
+  ~someProp=?,
+  ~fragmentRefs,
+  ()
+): testReturnType => {
+  someProp: someProp,
+  fragmentRefs: fragmentRefs
+}
+

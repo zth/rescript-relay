@@ -118,4 +118,31 @@ describe("codegen", ({test, _}) => {
         toMatchSnapshot()
     )
   });
+
+  test(
+    "prints object maker, collapsing multiple fragmentRefs into one",
+    ({expect, _}) => {
+    Printer.(
+      expect.string(
+        printObjectMaker(
+          {
+            comment: None,
+            values: [
+              Prop(
+                "someProp",
+                {comment: None, nullable: true, propType: DataId},
+              ),
+              FragmentRef("SomeFragment"),
+              FragmentRef("SomeOtherFragment"),
+              FragmentRef("SomeThirdFragment"),
+            ],
+            atPath: [],
+          },
+          ~targetType="testReturnType",
+          ~name="makeTest",
+        ),
+      ).
+        toMatchSnapshot()
+    )
+  });
 });
