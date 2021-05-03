@@ -1,5 +1,9 @@
 # master
 
+# 0.19.0
+
+A quick release with a few fixes. More details below.
+
 ## Fixes & misc
 
 - Turn off various warnings to ease creation of interface files. ([@tsnobip](https://github.com/tsnobip))
