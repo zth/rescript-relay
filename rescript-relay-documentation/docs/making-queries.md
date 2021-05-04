@@ -145,11 +145,12 @@ Sometimes you just need the query data outside of React. `fetch` lets you make t
 Using it looks something like this:
 
 ```reason
-Query.fetch(~environment, ~variables={...}, ~onResult=res =>
+Query.fetch(~environment, ~variables=(), ~onResult=res =>
   switch res {
   | Ok(res) => Js.log(res)
   | Error(_) => Js.log("Error")
-  }
+  },
+  ()
 )
 
 ```
