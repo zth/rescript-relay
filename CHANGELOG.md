@@ -1,5 +1,9 @@
 # master
 
+## Fixes & misc
+
+- `getConnectioNodes` is now also generated for aliased connections.
+
 # 0.19.0
 
 A quick release with a few fixes. More details below.

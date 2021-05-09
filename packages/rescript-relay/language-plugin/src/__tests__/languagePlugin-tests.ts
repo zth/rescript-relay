@@ -230,6 +230,32 @@ describe("Language plugin tests", () => {
 
         expect(generated).toMatchSnapshot();
       });
+
+      it("generates helpers for aliased connection", () => {
+        const generated = generate(`
+        fragment TestPagination_query on Query
+          @argumentDefinitions(
+            count: { type: "Int", defaultValue: 2 }
+            cursor: { type: "String", defaultValue: "" }
+          ) {
+          me {
+            friends: friendsConnection(
+              first: $count
+              after: $cursor
+            ) @connection(key: "TestPagination_query_usersConnection") {
+              edges {
+                node {
+                  id
+                  firstName
+                }
+              }
+            }
+          }
+        }
+    `);
+
+        expect(generated).toMatchSnapshot();
+      });
     });
 
     it("types ID as dataId for variables piped into the `connections` arg of the store updater directives", () => {

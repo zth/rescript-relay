@@ -86,7 +86,7 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
               connection: {
                 key,
                 atObjectPath: [...path],
-                fieldName: n.name,
+                fieldName: n.alias,
               },
             };
           }
@@ -94,7 +94,7 @@ export function extractOperationInfo(node: Node | Fragment): printConfig {
 
         maybeAddStoreUpdaterTransforms(node, n, opInfo);
 
-        path.push(n.name);
+        path.push(n.alias);
       },
       InlineFragment(n) {
         if (n.typeCondition.name) {

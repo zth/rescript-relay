@@ -808,6 +808,80 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
 "
 `;
 
+exports[`Language plugin tests Query connections generates helpers for aliased connection 1`] = `
+"// TestPagination_query.graphql
+/* @generated */
+%%raw(\\"/* @generated */\\")
+module Types = {
+  @@ocaml.warning(\\"-30\\")
+  
+  @ocaml.doc(\\"Hint: You can extract all nodes from this connection to an array of non-nullable nodes using the \`FragmentModule.getConnectionNodes\` helper, like \`let nodes = FragmentModule.getConnectionNodes(connectionGoesHere)\`. \`FragmentModule\` is whatever you've named the module where you have defined your fragment.\\")
+  type rec fragment_me = {
+    friends: option<fragment_me_friends>,
+  }
+   and fragment_me_friends = {
+    edges: option<array<option<fragment_me_friends_edges>>>,
+  }
+   and fragment_me_friends_edges = {
+    node: option<fragment_me_friends_edges_node>,
+  }
+   and fragment_me_friends_edges_node = {
+    id: string,
+    firstName: string,
+  }
+  
+  
+  type fragment = {
+    me: fragment_me,
+  }
+}
+
+module Internal = {
+  type fragmentRaw
+  let fragmentConverter: 
+    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
+    %raw(
+      json\`{\\"__root\\":{\\"me_friends_edges_node\\":{\\"n\\":\\"\\"},\\"me_friends\\":{\\"n\\":\\"\\"},\\"me_friends_edges\\":{\\"n\\":\\"\\",\\"na\\":\\"\\"}}}\`
+    )
+  
+  let fragmentConverterMap = ()
+  let convertFragment = v => v->RescriptRelay.convertObj(
+    fragmentConverter, 
+    fragmentConverterMap, 
+    Js.undefined
+  )
+}
+type t
+type fragmentRef
+external getFragmentRef:
+  RescriptRelay.fragmentRefs<[> | #TestPagination_query]> => fragmentRef = \\"%identity\\"
+
+
+module Utils = {
+  @@ocaml.warning(\\"-33\\")
+  open Types
+  @inline
+  let connectionKey = \\"TestPagination_query_usersConnection\\"
+  
+  let getConnectionNodes:
+    option<fragment_me_friends> => array<fragment_me_friends_edges_node> =
+    connection => switch connection {
+    | None => []
+    | Some(connection) => switch connection.edges { 
+     | None => []
+     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
+      | None => None 
+      | Some(edge) => edge.node
+  
+     })
+    }}
+}
+type relayOperationNode
+type operationType = RescriptRelay.fragmentNode<relayOperationNode>
+
+"
+`;
+
 exports[`Language plugin tests Query connections generates helpers for connections with unions 1`] = `
 "// TestPagination_query.graphql
 /* @generated */
