@@ -31,8 +31,11 @@ module.exports = () => ({
   formatModule: formatGeneratedModule,
   findGraphQLTags: find,
   isGeneratedFile: (fileName: string) =>
-    fileName.endsWith("_graphql.res") || fileName.endsWith(".bs.js"),
-  keepExtraFile: (fileName: string) => fileName.endsWith(".bs.js"),
+    fileName.endsWith("_graphql.res") ||
+    fileName.endsWith(".js") ||
+    fileName.endsWith(".mjs"),
+  keepExtraFile: (fileName: string) =>
+    fileName.endsWith(".js") || fileName.endsWith(".mjs"),
   getFileFilter,
   getModuleName: (operationName: string) => `${operationName}_graphql`,
 });

@@ -4,6 +4,7 @@
 
 - `getConnectioNodes` is now also generated for aliased connections.
 - Fix bug with type gen for refetchable queries without arguments not working properly.
+- `.mjs` extensions in Rescript are now handled properly (kudos @sgrove).
 
 # 0.19.0
 
