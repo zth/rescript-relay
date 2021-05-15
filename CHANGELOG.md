@@ -2,6 +2,8 @@
 
 # 0.20.0
 
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/05e045c05eb704e6e102ebf2b361a9a16cef2fb5)_
+
 Other than bug fixes, the major thing about this release is the fact that we've now moved to the new `rescript` package :tada:!
 
 ## Fixes & misc
