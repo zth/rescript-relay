@@ -48,14 +48,14 @@
     "relay-runtime": "^11.0.0"
   },
   "peerDependencies": {
-    "@rescript/react": "^0.10.1",
-    "graphql": "^14.4.2",
-    "react-relay": "^11.0.0",
+    "@rescript/react": "*",
+    "graphql": "*",
+    "react-relay": "*",
     "rescript": "^9.1.2",
     "reason-promise": "^1.0.2",
-    "relay-compiler": "^11.0.0",
-    "relay-config": "^11.0.0",
-    "relay-runtime": "^11.0.0"
+    "relay-compiler": "*",
+    "relay-config": "*",
+    "relay-runtime": "*"
   },
   "dependencies": {
     "mkdirp-sync": "^0.0.3",
