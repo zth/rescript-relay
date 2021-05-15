@@ -1,5 +1,9 @@
 # master
 
+# 0.20.0
+
+Other than bug fixes, the major thing about this release is the fact that we've now moved to the new `rescript` package :tada:!
+
 ## Fixes & misc
 
 - `getConnectioNodes` is now also generated for aliased connections.
