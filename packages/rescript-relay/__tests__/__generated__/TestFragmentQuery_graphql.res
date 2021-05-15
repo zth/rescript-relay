@@ -36,6 +36,10 @@ module Types = {
     users: option<response_users>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 

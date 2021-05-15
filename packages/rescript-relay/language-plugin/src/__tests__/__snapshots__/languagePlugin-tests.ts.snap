@@ -522,7 +522,7 @@ module Utils = {
     input: input
   }
   let make_response_setUserLocation_changedUser = (
-  ) => Js.Obj.empty()
+  ) => ()
   let make_response_setUserLocation = (
     ~changedUser=?,
     ()
@@ -749,6 +749,10 @@ module Types = {
     node: option<response_node>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -1430,6 +1434,10 @@ module Types = {
     ]>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -1557,6 +1565,10 @@ module Types = {
     ]>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -1802,6 +1814,10 @@ module Types = {
     ]>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -1943,6 +1959,10 @@ module Types = {
   type rawResponse = {
     node: option<rawResponse_node>,
   }
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -2063,6 +2083,10 @@ module Types = {
       | #UnselectedUnionMember(string)
     ]>,
   }
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
@@ -2211,6 +2235,10 @@ module Types = {
   type rawResponse = {
     me: rawResponse_me,
   }
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 

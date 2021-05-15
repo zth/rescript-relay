@@ -146,7 +146,7 @@ module Utils = {
     user: user
   }
   let make_response_setOnlineStatus_user = (
-  ) => Js.Obj.empty()
+  ) => ()
   let make_response_setOnlineStatus = (
     ~user=?,
     ()

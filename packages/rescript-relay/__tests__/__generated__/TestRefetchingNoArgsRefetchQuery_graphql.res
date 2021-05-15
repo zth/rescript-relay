@@ -3,12 +3,8 @@
 module Types = {
   @@ocaml.warning("-30")
   
-  type rec response_node = {
-    __typename: [ | #User],
-    firstName: string,
-  }
   type response = {
-    node: option<response_node>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingNoArgs_query]>
   }
   type rawResponse = response
   type refetchVariables = unit
@@ -23,7 +19,7 @@ module Internal = {
   let wrapResponseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"node":{"n":"","tnf":"User"}}}`
+      json`{"__root":{"":{"f":""}}}`
     )
   
   let wrapResponseConverterMap = ()
@@ -36,7 +32,7 @@ module Internal = {
   let responseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"node":{"n":"","tnf":"User"}}}`
+      json`{"__root":{"":{"f":""}}}`
     )
   
   let responseConverterMap = ()
@@ -72,54 +68,17 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` (function(){
-var v0 = [
-  {
-    "kind": "Literal",
-    "name": "id",
-    "value": "123"
-  }
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v2 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "firstName",
-      "storageKey": null
-    }
-  ],
-  "type": "User",
-  "abstractKey": null
-};
-return {
+let node: operationType = %raw(json` {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestRefetchingNoArgsRefetchQuery",
     "selections": [
       {
-        "alias": null,
-        "args": (v0/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "node",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          (v2/*: any*/)
-        ],
-        "storageKey": "node(id:\"123\")"
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "TestRefetchingNoArgs_query"
       }
     ],
     "type": "Query",
@@ -129,40 +88,37 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestRefetchingNoArgsRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
-        "concreteType": null,
+        "args": null,
+        "concreteType": "User",
         "kind": "LinkedField",
-        "name": "node",
+        "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
             "name": "id",
             "storageKey": null
-          },
-          (v2/*: any*/)
+          }
         ],
-        "storageKey": "node(id:\"123\")"
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "1c1b2e4bd56f7774118884e1e522f7ba",
+    "cacheID": "0a2bcc83daa255e2dd47697493a008fe",
     "id": null,
     "metadata": {},
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestRefetchingNoArgsRefetchQuery",
     "operationKind": "query",
-    "text": "query TestMissingFieldHandlersQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n    }\n    id\n  }\n}\n"
+    "text": "query TestRefetchingNoArgsRefetchQuery {\n  ...TestRefetchingNoArgs_query\n}\n\nfragment TestRefetchingNoArgs_query on Query {\n  loggedInUser {\n    id\n  }\n}\n"
   }
-};
-})() `)
+} `)
 
 include RescriptRelay.MakeLoadQuery({
     type variables = Types.variables
