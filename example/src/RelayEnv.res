@@ -62,8 +62,8 @@ let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables
   }
 
   RescriptRelay.Observable.make(sink => {
-    let observable = subscriptionClient["request"](subscriptionQuery)
-    let subscription = observable["subscribe"](sink)
+    let observable = subscriptionClient["request"](. subscriptionQuery)
+    let subscription = observable["subscribe"](. sink)
     Some(subscription)
   })
 }
