@@ -214,22 +214,19 @@ jobs:
             ppx-darwin
             bin-linux
             bin-darwin
-      - name: Publish to NPM (tagged)
-        if: ${{ github.event.inputs.tag_name }}
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd _release && npm publish --access public --tag ${{ github.event.inputs.tag_name }}
-      - name: Publish to NPM (master)
-        if: ${{ !github.event.inputs.tag_name }}
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd _release && npm publish --access public
       - name: Upload built folder
         uses: actions/upload-artifact@v2
         with:
           name: release-build
           path: _release/
+      - uses: JS-DevTools/npm-publish@v1
+        if: ${{ github.event.inputs.tag_name }}
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          working-directory: _release
+          tag: ${{ github.event.inputs.tag_name }}
+      - uses: JS-DevTools/npm-publish@v1
+        if: ${{ !github.event.inputs.tag_name }}
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          working-directory: _release
