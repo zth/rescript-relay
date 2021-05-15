@@ -223,10 +223,10 @@ jobs:
         if: ${{ github.event.inputs.tag_name }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          working-directory: _release
+          package: ./_release/package.json
           tag: ${{ github.event.inputs.tag_name }}
       - uses: JS-DevTools/npm-publish@v1
         if: ${{ !github.event.inputs.tag_name }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          working-directory: _release
+          package: ./_release/package.json
