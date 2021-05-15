@@ -10,10 +10,11 @@ type operationOptions = {
 }
 
 type observable<'a> = {
-  "subscribe": (. RescriptRelay.Observable.sink<'a>) => RescriptRelay.Observable.subscription,
+  @meth
+  "subscribe": RescriptRelay.Observable.sink<'a> => RescriptRelay.Observable.subscription,
 }
 
-type t<'a> = {"request": (. operationOptions) => observable<'a>}
+type t<'a> = {@meth "request": operationOptions => observable<'a>}
 
 @new @module("subscriptions-transport-ws")
 external createSubscriptionClient: (string, 'a) => t<'b> = "SubscriptionClient"

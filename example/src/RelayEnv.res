@@ -26,22 +26,22 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
         ("query", Js.Json.string(operation.text)),
         ("variables", variables),
       })
-      ->Js.Json.object_
-      ->Js.Json.stringify
-      ->BodyInit.make,
+      |> Js.Json.object_
+      |> Js.Json.stringify
+      |> BodyInit.make,
       ~headers=HeadersInit.make({
         "content-type": "application/json",
         "accept": "application/json",
       }),
       (),
     ),
-  )->Js.Promise.then_(resp =>
+  ) |> Js.Promise.then_(resp =>
     if Response.ok(resp) {
       Response.json(resp)
     } else {
       Js.Promise.reject(Graphql_error("Request failed: " ++ Response.statusText(resp)))
     }
-  , _)
+  )
 }
 
 /**
@@ -62,8 +62,8 @@ let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables
   }
 
   RescriptRelay.Observable.make(sink => {
-    let observable = subscriptionClient["request"](. subscriptionQuery)
-    let subscription = observable["subscribe"](. sink)
+    let observable = subscriptionClient["request"](subscriptionQuery)
+    let subscription = observable["subscribe"](sink)
     Some(subscription)
   })
 }

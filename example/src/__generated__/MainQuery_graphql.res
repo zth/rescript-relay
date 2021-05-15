@@ -11,10 +11,6 @@ module Types = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>
   }
   type rawResponse = response
-  type refetchVariables = unit
-  let makeRefetchVariables = (
-  ) => ()
-  
   type variables = unit
 }
 
