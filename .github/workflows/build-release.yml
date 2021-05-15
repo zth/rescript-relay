@@ -79,7 +79,7 @@ jobs:
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ matrix.platform }}
+          name: ppx-darwin
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
@@ -129,7 +129,7 @@ jobs:
         # Add Windows here when it gets supported
         platform: [macos-latest]
 
-    name: Build PPX for release
+    name: Build bin for release
     runs-on: ${{ matrix.platform }}
     defaults:
       run:
