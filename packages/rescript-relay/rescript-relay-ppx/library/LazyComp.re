@@ -37,10 +37,11 @@ let lazyExtension =
               "import"
           ],
           [%stri type component('props) = 'props => React.element],
+          [%stri type withDefault('t) = {default: 't}],
           [%stri
             [@module "react"]
             external lazy_:
-              (unit => Js.Promise.t({. "default": component('props)})) =>
+              (unit => Js.Promise.t(withDefault(component('props)))) =>
               component('props) =
               "lazy"
           ],
@@ -50,7 +51,7 @@ let lazyExtension =
               ->Js.Promise.then_(
                   m => {
                     let (module M): (module T) = m;
-                    Js.Promise.resolve({"default": M.make});
+                    Js.Promise.resolve({default: M.make});
                   },
                   _,
                 )
