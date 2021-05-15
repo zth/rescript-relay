@@ -37,12 +37,12 @@ jobs:
         run: esy test
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-ubuntu-latest
+          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-linux
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-ubuntu-latest
-          path: packages/rescript-relay/rescript-relay-ppx/ppx-ubuntu-latest
+          name: ppx-linux
+          path: packages/rescript-relay/rescript-relay-ppx/ppx-linux
           if-no-files-found: error
 
   build-ppx:
@@ -83,10 +83,87 @@ jobs:
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
+  build-bin-linux:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+
+    name: Build bin for release
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: packages/rescript-relay-bin
+    container:
+      image: cichocinski/docker-esy:alpine3.8
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12.19.0
+          registry-url: "https://registry.npmjs.org"
+        env:
+          CI: true
+      - name: Esy install
+        run: esy install
+      - name: Build bin
+        run: esy linux-release-static
+        working-directory: packages/rescript-relay-bin
+      - name: Test bin
+        run: esy test
+      - name: Copy built RescriptRelayBin file
+        run: |
+          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-linux
+      - name: Strip binary
+        run: |
+          strip bin-linux
+      - name: Upload RescriptRelayBin artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bin-linux
+          path: packages/rescript-relay-bin/bin-*
+          if-no-files-found: error
+
+  build-bin:
+    strategy:
+      matrix:
+        # Add Windows here when it gets supported
+        platform: [macos-latest]
+
+    name: Build PPX for release
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: packages/rescript-relay-bin
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12.19.0
+        env:
+          CI: true
+      - name: Install esy
+        run: npm install -g esy
+      - name: Build RescriptRelayBin
+        uses: esy/github-action@v1
+        with:
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v1
+          working-directory: packages/rescript-relay-bin
+      - name: Test RescriptRelayBin
+        run: esy test
+      - name: Copy built RescriptRelayBin file
+        run: |
+          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe ${{ fromJson('{ "ubuntu-latest": "bin-linux", "macos-latest": "bin-darwin" }')[matrix.platform] }}
+      - name: Upload RescriptRelayBin artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bin-darwin
+          path: packages/rescript-relay-bin/bin-darwin
+          if-no-files-found: error
+
   build-release:
     name: Build release package
     runs-on: ubuntu-latest
-    needs: [build-ppx, build-ppx-linux]
+    needs: [build-ppx, build-ppx-linux, build-bin, build-bin-linux]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -101,25 +178,42 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/rescript-relay/rescript-relay-ppx
-      - name: Clean up before building
-        run: |
-          rm -rf packages/rescript-relay/__tests__/*
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
         run: |
           ./build-ci.sh
-      - name: Download all built PPXes
-        uses: actions/download-artifact@v2
-      - name: Move PPXs into release directory
+      - uses: actions/download-artifact@v2
+        with:
+          name: bin-darwin
+          path: binaries
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: bin-linux
+          path: binaries
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: ppx-linux
+          path: binaries
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: ppx-darwin
+          path: binaries
+
+      - name: Move binaries into release directory
         run: |
-          mv ppx-ubuntu-latest/ppx-* _release/ && mv ppx-macos-latest/ppx-* _release/
-      - name: Remove PPX artifacts
+          mv binaries/* _release/
+      - name: Remove artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            ppx-ubuntu-latest
-            ppx-macos-latest
+            ppx-linux
+            ppx-darwin
+            bin-linux
+            bin-darwin
       - name: Publish to NPM (tagged)
         if: ${{ github.event.inputs.tag_name }}
         env:
