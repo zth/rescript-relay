@@ -49,7 +49,7 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-First thing's first - RescriptRelay _requires BuckleScript 8.3 or above_. It will _not_ work with `bs-platform < 8.3.0`. It also requires `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
@@ -61,7 +61,7 @@ yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb1
 yarn add rescript-relay graphql relay-runtime@11.0.0 relay-compiler@11.0.0 react-relay@11.0.0 relay-config@11.0.0 reason-promise
 ```
 
-After you've installed the packages above, setup BuckleScript through your `bsconfig.json` like this:
+After you've installed the packages above, setup ReScript through your `bsconfig.json` like this:
 
 ```json
 ...
