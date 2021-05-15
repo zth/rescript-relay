@@ -20,6 +20,10 @@ module Types = {
   type rawResponse = {
     loggedInUser: rawResponse_loggedInUser,
   }
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 

@@ -25,6 +25,18 @@ module Fragment = %relay(
 `
 )
 
+module FragmentWithNoArgs = %relay(
+  `
+    fragment TestRefetchingNoArgs_query on Query
+      @refetchable(queryName: "TestRefetchingNoArgsRefetchQuery")
+      {
+      loggedInUser {
+        id
+      }
+    }
+`
+)
+
 module Test = {
   @react.component
   let make = () => {

@@ -11,6 +11,10 @@ module Types = {
     node: option<response_node>,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 

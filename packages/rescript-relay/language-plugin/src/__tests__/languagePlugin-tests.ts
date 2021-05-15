@@ -690,6 +690,20 @@ describe("Language plugin tests", () => {
       );
     });
 
+    it("handles refetchable queries on the root query type without arguments", () => {
+      let generated = generate(
+        `fragment Some_query on Query @refetchable(queryName: "SomeUserRefetchQuery") {
+          me {
+            id
+          }
+        }`
+      );
+
+      expect(collapseString(generated)).toContain(
+        `type refetchVariables = unit`
+      );
+    });
+
     it("generates all __id selections as dataId type", () => {
       let generated = generate(
         `query SomeQuery {

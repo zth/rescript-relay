@@ -10,6 +10,10 @@ module Types = {
     loggedInUser: response_loggedInUser,
   }
   type rawResponse = response
+  type refetchVariables = unit
+  let makeRefetchVariables = (
+  ) => ()
+  
   type variables = unit
 }
 
