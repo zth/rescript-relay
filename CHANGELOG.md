@@ -1,5 +1,9 @@
 # master
 
+# 0.20.1
+
+Quick patch release fixing the Linux binaries that broke with the last release.
+
 # 0.20.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/05e045c05eb704e6e102ebf2b361a9a16cef2fb5)_
