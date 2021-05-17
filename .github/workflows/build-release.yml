@@ -53,7 +53,7 @@ jobs:
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ matrix.platform }}
+          name: ppx-linux
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
@@ -139,7 +139,7 @@ jobs:
       - name: Upload RescriptRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
-          name: bin-${{ matrix.platform }}
+          name: bin-linux
           path: packages/rescript-relay-bin/bin-*
           if-no-files-found: error
 
