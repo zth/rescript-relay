@@ -25,24 +25,36 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: 12.19.0
-          registry-url: "https://registry.npmjs.org"
         env:
           CI: true
       - name: Esy install
         run: esy install
-      - name: Build PPX
-        run: esy linux-release-static
-        working-directory: packages/rescript-relay/rescript-relay-ppx
+      - name: Print esy cache
+        id: print_esy_cache
+        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
+      - name: Try to restore dependencies cache
+        uses: actions/cache@v2
+        id: deps-cache
+        with:
+          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
+          key: ${{ matrix.platform }}---${{ hashFiles('**/index.json') }}
+          restore-keys: |
+            ${{ matrix.platform }}---
       - name: Test PPX
         run: esy test
+      - name: Build PPX
+        run: esy linux-release-static
       - name: Copy built PPX file
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-linux
+      - name: Strip binary
+        run: |
+          strip ppx-linux
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-linux
-          path: packages/rescript-relay/rescript-relay-ppx/ppx-linux
+          name: ppx-${{ matrix.platform }}
+          path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
   build-ppx:
@@ -61,7 +73,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: 12.19.0
-          registry-url: "https://registry.npmjs.org"
         env:
           CI: true
       - name: Install esy
@@ -100,16 +111,25 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: 12.19.0
-          registry-url: "https://registry.npmjs.org"
         env:
           CI: true
       - name: Esy install
         run: esy install
+      - name: Print esy cache
+        id: print_esy_cache
+        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
+      - name: Try to restore dependencies cache
+        uses: actions/cache@v2
+        id: deps-cache
+        with:
+          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
+          key: ${{ matrix.platform }}---${{ hashFiles('**/index.json') }}
+          restore-keys: |
+            ${{ matrix.platform }}---
+      - name: Test RescriptRelayBin
+        run: esy test
       - name: Build bin
         run: esy linux-release-static
-        working-directory: packages/rescript-relay-bin
-      - name: Test bin
-        run: esy test
       - name: Copy built RescriptRelayBin file
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-linux
@@ -119,7 +139,7 @@ jobs:
       - name: Upload RescriptRelayBin artifact
         uses: actions/upload-artifact@v2
         with:
-          name: bin-linux
+          name: bin-${{ matrix.platform }}
           path: packages/rescript-relay-bin/bin-*
           if-no-files-found: error
 
