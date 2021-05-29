@@ -15,6 +15,14 @@ If you're interested, you're welcome to start testing this router and provide yo
 
 Other than that, we try to leverage pattern matching and other language features as much as possible. Most things are "just ReScript".
 
+To summarize - the router will work perfectly fine with the most setups, including:
+
+- webpack
+- Vite
+- Rollup
+
+However, because of the assumptions around control over routing built into some stacks, you cannot use this specific feature with for example Next.js.
+
 ### Getting started
 
 The router will be included in the main RescriptRelay package once it's stable, but for now you'll need to copy it into your own project [from this gist](https://gist.github.com/zth/a48827c83aa6ebf8d1eb2c172e320726).
