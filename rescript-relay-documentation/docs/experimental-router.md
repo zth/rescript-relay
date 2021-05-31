@@ -73,7 +73,11 @@ Now, the final step! Render `RescriptRelayRouter.RouteRenderer` where you want t
 <RescriptRelayRouter.RouteRenderer
   renderFallback={() => <Skeletons.Page />}
   renderNotFound={_ => <FourOhFour.Standard />}
-  renderPending={pending => <PendingIndicatorBar pending />}
+  renderPending={pending =>
+              switch pending {
+              | true => <PendingIndicatorElement pending>
+              | false => React.null
+              }}
 />
 ```
 
