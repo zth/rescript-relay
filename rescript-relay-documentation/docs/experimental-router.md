@@ -25,6 +25,16 @@ However, because of the assumptions around control over routing built into some 
 
 ### Getting started
 
+Currently the router needs the React Experimental version. More specifically it needs version `0.0.0-experimental-4e08fb10c`.
+So make sure to pin the `react` and `react-dom` version like this in your `package.json`:
+
+```
+...
+"react": "0.0.0-experimental-4e08fb10c",
+"react-dom": "0.0.0-experimental-4e08fb10c",
+...
+```
+
 The router will be included in the main RescriptRelay package once it's stable, but for now you'll need to copy it into your own project [from this gist](https://gist.github.com/zth/a48827c83aa6ebf8d1eb2c172e320726).
 
 > You're encouraged to tweak it according to your needs as you copy it into your own project.
