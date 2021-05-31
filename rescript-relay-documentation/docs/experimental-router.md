@@ -71,7 +71,7 @@ Now, the final step! Render `RescriptRelayRouter.RouteRenderer` where you want t
 ```reason
 /* App.res */
 <RescriptRelayRouter.RouteRenderer
-  renderFallback={() => <Skeletons.Page />}
+  renderFallback={_ => <Skeletons.Page />}
   renderNotFound={_ => <FourOhFour.Standard />}
   renderPending={pending =>
               switch pending {
