@@ -75,7 +75,7 @@ Now, the final step! Render `RescriptRelayRouter.RouteRenderer` where you want t
   renderNotFound={_ => <FourOhFour.Standard />}
   renderPending={pending =>
               switch pending {
-              | true => <PendingIndicatorElement pending>
+              | true => <PendingElement >
               | false => React.null
               }}
 />
