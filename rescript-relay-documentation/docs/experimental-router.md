@@ -25,7 +25,7 @@ However, because of the assumptions around control over routing built into some 
 
 ### Getting started
 
-Currently the router needs the React Experimental version. More specifically it needs version `0.0.0-experimental-4e08fb10c`.
+Currently the router needs React Experimental. More specifically it needs version `0.0.0-experimental-4e08fb10c`.
 So make sure to pin the `react` and `react-dom` version like this in your `package.json`:
 
 ```
