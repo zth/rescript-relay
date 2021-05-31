@@ -315,7 +315,7 @@ It's up to you how you want to organize your routes. Some people prefer one huge
 
 #### Navigating programatically
 
-Navigating programatically is just like with `RescriptReactRouter`, but ideally you should call `router.preload(urlOfNewRoute)` to leverage all of the goodies of preloading the route as soon as possible. Check out the included `Link` component for an example of how `router.preload` can be used.
+Navigating programatically is just like with `RescriptReactRouter`, but ideally you should call `router.preload(urlOfNewRoute)` to leverage all of the goodies of preloading the route as soon as possible. To create the `router` you insert a hook in your file `let router = RescriptRelayRouter.use()`.
 
 #### Query params
 
