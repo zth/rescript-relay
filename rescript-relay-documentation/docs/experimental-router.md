@@ -197,7 +197,7 @@ let userRoutes = RescriptRelayRouter.RouteFamily.make(
         ),
       )
     /* Just pass along anything else as-is */
-    | route => route
+    | #UserProfile(userId) => #UserProfile(userId)
     },
   ~render=route =>
     switch route {
