@@ -113,7 +113,31 @@ module Provider = {
 
 exception No_router_in_context
 
-let use = () => React.useContext(context)
+module NavigationUtils = {
+  @send
+  external replaceShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
+    "replaceState"
+
+  let replaceShallow = path =>
+    switch (%external(history), %external(window)) {
+    | (None, _)
+    | (_, None) => ()
+    | (Some(history: Dom.history), Some(_window: Dom.window)) => replaceShallow(history, ~href=path)
+    }
+
+  @send
+  external pushShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
+    "pushState"
+
+  let pushShallow = path =>
+    switch (%external(history), %external(window)) {
+    | (None, _)
+    | (_, None) => ()
+    | (Some(history: Dom.history), Some(_window: Dom.window)) => pushShallow(history, ~href=path)
+    }
+}
+
+let use = (): routerContext => React.useContext(context)
 
 let make = routes => {
   let initialUrl = RescriptReactRouter.dangerouslyGetInitialUrl()
@@ -172,6 +196,26 @@ let make = routes => {
   }
 
   router
+}
+
+type router = {
+  push: string => unit,
+  pushShallow: string => unit,
+  replace: string => unit,
+  replaceShallow: string => unit,
+  preload: string => unit,
+}
+
+let useRouter = () => {
+  let router = use()
+
+  React.useMemo1(() => {
+    push: RescriptReactRouter.push,
+    pushShallow: NavigationUtils.pushShallow,
+    replace: RescriptReactRouter.replace,
+    replaceShallow: NavigationUtils.pushShallow,
+    preload: router.preload,
+  }, [router.preload])
 }
 
 module RouteRenderer = {
@@ -314,28 +358,4 @@ module Link = {
       </a>
     }
   }
-}
-
-module NavigationUtils = {
-  @send
-  external replaceShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
-    "replaceState"
-
-  let replaceShallow = path =>
-    switch (%external(history), %external(window)) {
-    | (None, _)
-    | (_, None) => ()
-    | (Some(history: Dom.history), Some(_window: Dom.window)) => replaceShallow(history, ~href=path)
-    }
-
-  @send
-  external pushShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
-    "pushState"
-
-  let pushShallow = path =>
-    switch (%external(history), %external(window)) {
-    | (None, _)
-    | (_, None) => ()
-    | (Some(history: Dom.history), Some(_window: Dom.window)) => pushShallow(history, ~href=path)
-    }
 }

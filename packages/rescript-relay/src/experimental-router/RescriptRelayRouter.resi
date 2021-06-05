@@ -11,21 +11,7 @@ module RouteFamily: {
   ) => t
 }
 
-type routeEntry = {
-  route: option<RouteFamily.t>,
-  url: RescriptReactRouter.url,
-}
-
-type subscriberCallback = routeEntry => unit
-type disposeSubscriber = unit => unit
-
-type routerContext = {
-  get: unit => routeEntry,
-  preload: string => unit,
-  subscribe: subscriberCallback => disposeSubscriber,
-}
-
-let context: React.Context.t<routerContext>
+type routerContext
 
 module Provider: {
   let makeProps: (
@@ -39,7 +25,15 @@ module Provider: {
 
 exception No_router_in_context
 
-let use: unit => routerContext
+type router = {
+  push: string => unit,
+  pushShallow: string => unit,
+  replace: string => unit,
+  replaceShallow: string => unit,
+  preload: string => unit,
+}
+
+let useRouter: unit => router
 
 let make: array<RouteFamily.t> => routerContext
 
