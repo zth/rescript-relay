@@ -77,4 +77,5 @@ module Link: {
 
 module NavigationUtils: {
   let replaceShallow: string => unit
+  let pushShallow: string => unit
 }

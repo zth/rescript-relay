@@ -316,9 +316,7 @@ module Link = {
   }
 }
 
-module NavigationUtils: {
-  let replaceShallow: string => unit
-} = {
+module NavigationUtils = {
   @send
   external replaceShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
     "replaceState"
@@ -328,5 +326,16 @@ module NavigationUtils: {
     | (None, _)
     | (_, None) => ()
     | (Some(history: Dom.history), Some(_window: Dom.window)) => replaceShallow(history, ~href=path)
+    }
+
+  @send
+  external pushShallow: (Dom.history, @as(json`null`) _, @as("") _, ~href: string) => unit =
+    "pushState"
+
+  let pushShallow = path =>
+    switch (%external(history), %external(window)) {
+    | (None, _)
+    | (_, None) => ()
+    | (Some(history: Dom.history), Some(_window: Dom.window)) => pushShallow(history, ~href=path)
     }
 }
