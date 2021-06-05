@@ -132,7 +132,7 @@ let make = routes => {
   }
 
   let _ = RescriptReactRouter.watchUrl(url =>
-    if url != currentRoute.contents.url {
+    if url.path != currentRoute.contents.url.path {
       let route = matchRoutes(routes, url)
 
       switch route {
