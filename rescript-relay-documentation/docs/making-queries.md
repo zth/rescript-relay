@@ -125,7 +125,7 @@ A very useful pattern that's encouraged over using the lazy approach. In short, 
 
 As shown in the snippet above, `Query.use` is a React hook that dispatches your query + receives the data, and suspends your component if the data's not already there.
 
-> `use` uses Relay's `useLazyLoadQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#uselazyloadquery).
+> `use` uses Relay's `useLazyLoadQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/use-lazy-load-query).
 
 ##### Parameters
 
