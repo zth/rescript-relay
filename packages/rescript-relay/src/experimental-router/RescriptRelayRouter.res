@@ -190,9 +190,7 @@ let make = routes => {
   let router = {
     get: () => currentRoute.contents,
     preload: url => {
-      Js.log("http://localhost:3000/#hejmeddig?hej"->Url.make)
       let asRouterUrl = url->Url.make
-      Js.log(asRouterUrl)
 
       switch routes->matchRoutes(asRouterUrl) {
       | Some(r) => r->RouteFamily.preload(asRouterUrl)
