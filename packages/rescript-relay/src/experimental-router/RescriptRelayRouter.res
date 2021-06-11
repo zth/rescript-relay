@@ -30,59 +30,8 @@ module RouteFamily = {
 }
 
 module Url = {
-  type t = {
-    pathname: string,
-    query: string,
-    hash: string,
-  }
-
-  @module @new external make: string => t = "url-parse"
-
-  // Taken from RescriptReactRouter
-  module RouterCompat = {
-    let path = x =>
-      switch x {
-      | ""
-      | "/" => list{}
-      | raw =>
-        /* remove the preceeding /, which every pathname seems to have */
-        let raw = Js.String.sliceToEnd(~from=1, raw)
-        /* remove the trailing /, which some pathnames might have. Ugh */
-        let raw = switch Js.String.get(raw, Js.String.length(raw) - 1) {
-        | "/" => Js.String.slice(~from=0, ~to_=-1, raw)
-        | _ => raw
-        }
-
-        raw->Js.String2.split("/")->Belt.List.fromArray
-      }
-
-    let hash = x =>
-      switch x {
-      | ""
-      | "#" => ""
-      | raw =>
-        /* remove the preceeding #, which every hash seems to have.
-         Why is this even included in location.hash?? */
-        raw->Js.String.sliceToEnd(~from=1)
-      }
-
-    let search = x =>
-      switch x {
-      | ""
-      | "?" => ""
-      | raw =>
-        /* remove the preceeding ?, which every search seems to have. */
-        raw->Js.String.sliceToEnd(~from=1)
-      }
-  }
-  let toRouterUrl: t => RescriptReactRouter.url = t => {
-    open RouterCompat
-    {
-      path: t.pathname->path,
-      search: t.query->search,
-      hash: t.hash->hash,
-    }
-  }
+  type t = RescriptReactRouter.url
+  let make = url => RescriptReactRouter.dangerouslyGetInitialUrl(~serverUrlString=url, ())
 }
 
 type routeEntry = {
@@ -181,7 +130,7 @@ let make = routes => {
   let router = {
     get: () => currentRoute.contents,
     preload: url => {
-      let asRouterUrl = url->Url.make->Url.toRouterUrl
+      let asRouterUrl = url->Url.make
 
       switch routes->matchRoutes(asRouterUrl) {
       | Some(r) => r->RouteFamily.preload(asRouterUrl)
@@ -329,7 +278,7 @@ module Link = {
 
     switch render {
     | Some(render) =>
-      let linkUrl = to_->Url.make->Url.toRouterUrl
+      let linkUrl = to_->Url.make
       render(~preload, ~changeRoute, ~currentUrl=url, ~linkUrl)
     | None =>
       <a
@@ -343,7 +292,7 @@ module Link = {
         ?id
         className={className->Belt.Option.getWithDefault("") ++
           switch classNameDynamic {
-          | Some(f) => " " ++ f(url, to_->Url.make->Url.toRouterUrl)
+          | Some(f) => " " ++ f(url, to_->Url.make)
           | None => ""
           }}
         onClick=changeRoute

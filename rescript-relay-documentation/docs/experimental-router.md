@@ -41,12 +41,7 @@ The router will be included in the main RescriptRelay package once it's stable, 
 
 #### Setting it up in your project
 
-First, copy the files into your project as described above. You'll also need to install `url-parse` to your project:
-
-```
-yarn add url-parse
-```
-
+First, copy the files into your project as described above.
 Next, add a file where you'll construct your router. We'll call it `Routes.res`:
 
 ```reason
