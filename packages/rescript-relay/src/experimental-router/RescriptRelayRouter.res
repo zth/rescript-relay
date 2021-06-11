@@ -31,7 +31,67 @@ module RouteFamily = {
 
 module Url = {
   type t = RescriptReactRouter.url
-  let make = url => RescriptReactRouter.dangerouslyGetInitialUrl(~serverUrlString=url, ())
+
+  let getHash = url => {
+    switch url->Js.String2.indexOf("#") {
+    | index if index >= 0 => url->Js.String2.sliceToEnd(~from=index + 1)
+    | _ => Js.String2.make("")
+    }
+  }
+
+  // Start - taken from RescriptReactRouter
+  let arrayToList = a => {
+    let rec tolist = (i, res) =>
+      if i < 0 {
+        res
+      } else {
+        tolist(i - 1, list{Js.Array.unsafe_get(a, i), ...res})
+      }
+    tolist(Js.Array.length(a) - 1, list{})
+  }
+  let pathParse = str =>
+    switch str {
+    | ""
+    | "/" => list{}
+    | raw =>
+      /* remove the preceeding /, which every pathname seems to have */
+      let raw = Js.String.sliceToEnd(~from=1, raw)
+      /* remove the trailing /, which some pathnames might have. Ugh */
+      let raw = switch Js.String.get(raw, Js.String.length(raw) - 1) {
+      | "/" => Js.String.slice(~from=0, ~to_=-1, raw)
+      | _ => raw
+      }
+      /* remove search portion if present in string */
+      let raw = switch raw |> Js.String.splitAtMost("?", ~limit=2) {
+      | [path, _] => path
+      | _ => raw
+      }
+
+      raw
+      |> Js.String.split("/")
+      |> Js.Array.filter(item => String.length(item) != 0)
+      |> arrayToList
+    }
+
+  let searchParse = str =>
+    switch str {
+    | ""
+    | "?" => ""
+    | raw =>
+      switch raw |> Js.String.splitAtMost("?", ~limit=2) {
+      | [_, search] => search
+      | _ => ""
+      }
+    }
+  // End - taken from RescriptReactRouter
+
+  let parseUrl = (url: string): t => {
+    path: url->pathParse,
+    hash: url->getHash,
+    search: url->searchParse,
+  }
+
+  let make = url => url->parseUrl
 }
 
 type routeEntry = {
@@ -130,7 +190,9 @@ let make = routes => {
   let router = {
     get: () => currentRoute.contents,
     preload: url => {
+      Js.log("http://localhost:3000/#hejmeddig?hej"->Url.make)
       let asRouterUrl = url->Url.make
+      Js.log(asRouterUrl)
 
       switch routes->matchRoutes(asRouterUrl) {
       | Some(r) => r->RouteFamily.preload(asRouterUrl)
