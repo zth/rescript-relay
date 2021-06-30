@@ -1,3 +1,4 @@
+/* @sourceLoc Test_missingFieldHandlers.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

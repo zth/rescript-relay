@@ -1,3 +1,4 @@
+/* @sourceLoc Test_localPayload.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

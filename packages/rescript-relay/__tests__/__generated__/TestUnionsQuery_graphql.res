@@ -1,3 +1,4 @@
+/* @sourceLoc Test_unions.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

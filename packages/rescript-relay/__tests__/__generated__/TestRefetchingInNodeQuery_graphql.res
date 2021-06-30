@@ -1,3 +1,4 @@
+/* @sourceLoc Test_refetchingInNode.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
