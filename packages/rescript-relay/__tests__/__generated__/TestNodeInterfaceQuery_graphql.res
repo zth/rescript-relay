@@ -1,3 +1,4 @@
+/* @sourceLoc Test_nodeInterface.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

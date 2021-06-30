@@ -1,3 +1,4 @@
+/* @sourceLoc Test_fragment.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

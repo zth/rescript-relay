@@ -1,3 +1,4 @@
+/* @sourceLoc Test_paginationUnion.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
