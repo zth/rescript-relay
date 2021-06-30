@@ -1,3 +1,4 @@
+/* @sourceLoc Test_subscription.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

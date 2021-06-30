@@ -6,7 +6,14 @@ const formatGeneratedModule: FormatModule = ({
   documentType,
   concreteText,
   typeText,
+  definition,
 }) => {
+  let sourceLoc: string | null = null;
+
+  if (definition.loc.kind === "Source") {
+    sourceLoc = definition.loc.source.name;
+  }
+
   const preloadText =
     // @ts-ignore The type definitions are actually wrong from DefinitivelyTyped
     documentType === "ConcreteRequest" &&
@@ -24,6 +31,7 @@ const formatGeneratedModule: FormatModule = ({
   const rawRelayArtifactJs = `%raw(json\` ${processedText} \`)`;
 
   const lines = [
+    sourceLoc ? `/* @sourceLoc ${sourceLoc} */` : null,
     typeText || "",
     ...(referencedNodes.length > 0
       ? /**
@@ -54,7 +62,7 @@ const formatGeneratedModule: FormatModule = ({
     "",
     preloadText,
     "",
-  ];
+  ].filter((line) => line != null);
   return lines.join("\n");
 };
 

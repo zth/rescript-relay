@@ -1,3 +1,4 @@
+/* @sourceLoc Test_refetching.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
+    "reanalyze": "^2.17.0",
     "rescript": "^9.1.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",

@@ -1,3 +1,4 @@
+/* @sourceLoc Test_customScalars.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
