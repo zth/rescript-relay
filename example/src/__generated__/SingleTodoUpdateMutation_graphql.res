@@ -1,3 +1,4 @@
+/* @sourceLoc SingleTodo.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

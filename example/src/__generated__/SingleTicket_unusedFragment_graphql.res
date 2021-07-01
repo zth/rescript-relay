@@ -1,13 +1,14 @@
-/* @sourceLoc TopCardsDisplayer.res */
+/* @sourceLoc SingleTicket.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
   
   type fragment = {
-    weeklySales: float,
-    weeklyOrders: int,
-    currentVisitorsOnline: int,
+    id: string,
+    subject: string,
+    lastUpdated: option<string>,
+    trackingId: string,
   }
 }
 
@@ -16,7 +17,7 @@ module Internal = {
   let fragmentConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{}`
+      json`{"__root":{"lastUpdated":{"n":""}}}`
     )
   
   let fragmentConverterMap = ()
@@ -29,7 +30,7 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  RescriptRelay.fragmentRefs<[> | #TopCardsDisplayer_siteStatistics]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #SingleTicket_unusedFragment]> => fragmentRef = "%identity"
 
 
 module Utils = {
@@ -43,31 +44,38 @@ let node: operationType = %raw(json` {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "TopCardsDisplayer_siteStatistics",
+  "name": "SingleTicket_unusedFragment",
   "selections": [
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "weeklySales",
+      "name": "id",
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "weeklyOrders",
+      "name": "subject",
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "currentVisitorsOnline",
+      "name": "lastUpdated",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "trackingId",
       "storageKey": null
     }
   ],
-  "type": "SiteStatistics",
+  "type": "Ticket",
   "abstractKey": null
 } `)
 

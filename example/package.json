@@ -25,11 +25,12 @@
     "relay-compiler": "11.0.2",
     "relay-config": "11.0.2",
     "relay-runtime": "11.0.2",
-    "rescript-relay": "0.20.0",
+    "rescript-relay": "0.0.0-pre-80e566c0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
+    "reanalyze": "^2.17.0",
     "rescript": "^9.1.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",

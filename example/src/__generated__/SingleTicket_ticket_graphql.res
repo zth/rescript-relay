@@ -1,9 +1,11 @@
+/* @sourceLoc SingleTicket.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
   
   type fragment_assignee_User = {
+    id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>
   }
   
@@ -86,7 +88,15 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` {
+let node: operationType = %raw(json` (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -110,6 +120,7 @@ let node: operationType = %raw(json` {
         {
           "kind": "InlineFragment",
           "selections": [
+            (v0/*: any*/),
             {
               "args": null,
               "kind": "FragmentSpread",
@@ -134,13 +145,7 @@ let node: operationType = %raw(json` {
       ],
       "storageKey": null
     },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -170,6 +175,7 @@ let node: operationType = %raw(json` {
   ],
   "type": "Ticket",
   "abstractKey": null
-} `)
+};
+})() `)
 
 

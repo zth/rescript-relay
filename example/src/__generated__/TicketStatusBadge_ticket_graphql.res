@@ -1,3 +1,4 @@
+/* @sourceLoc TicketStatusBadge.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -17,10 +18,39 @@ module Types = {
     | #Rejected
     ]
   
+  type fragment_assignee_User = {
+    fullName: string,
+  }
+  
+  
+  type fragment_assignee = [
+    | #User(fragment_assignee_User)
+    | #UnselectedUnionMember(string)
+  ]
   type fragment = {
     status: enum_TicketStatus,
     dbId: string,
+    assignee: option<[
+      | #User(fragment_assignee_User)
+      | #UnselectedUnionMember(string)
+    ]>,
   }
+}
+
+let unwrap_fragment_assignee: {. "__typename": string } => [
+  | #User(Types.fragment_assignee_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u["__typename"] {
+ | "User" => #User(u->Obj.magic) 
+ | v => #UnselectedUnionMember(v)
+}
+
+let wrap_fragment_assignee: [
+  | #User(Types.fragment_assignee_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
+ | #User(v) => v->Obj.magic 
+ | #UnselectedUnionMember(v) => {"__typename": v} 
 }
 
 module Internal = {
@@ -28,10 +58,13 @@ module Internal = {
   let fragmentConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{}`
+      json`{"__root":{"assignee":{"n":"","u":"fragment_assignee"}}}`
     )
   
-  let fragmentConverterMap = ()
+  let fragmentConverterMap = {
+    "fragment_assignee": unwrap_fragment_assignee,
+  }
+  
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter, 
     fragmentConverterMap, 
@@ -74,6 +107,38 @@ let node: operationType = %raw(json` {
       "args": null,
       "kind": "ScalarField",
       "name": "dbId",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "assignee",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "fullName",
+              "storageKey": null
+            }
+          ],
+          "type": "User",
+          "abstractKey": null
+        }
+      ],
       "storageKey": null
     }
   ],
