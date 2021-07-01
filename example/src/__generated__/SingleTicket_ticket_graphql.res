@@ -5,7 +5,6 @@ module Types = {
   @@ocaml.warning("-30")
   
   type fragment_assignee_User = {
-    id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>
   }
   
@@ -88,15 +87,7 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
-return {
+let node: operationType = %raw(json` {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -120,7 +111,6 @@ return {
         {
           "kind": "InlineFragment",
           "selections": [
-            (v0/*: any*/),
             {
               "args": null,
               "kind": "FragmentSpread",
@@ -145,7 +135,13 @@ return {
       ],
       "storageKey": null
     },
-    (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -175,7 +171,6 @@ return {
   ],
   "type": "Ticket",
   "abstractKey": null
-};
-})() `)
+} `)
 
 
