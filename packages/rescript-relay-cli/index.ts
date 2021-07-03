@@ -60,7 +60,7 @@ program.version("0.1.0");
 
 program
   .command("format-all-graphql")
-  .description("Format all GraphQL operations in project")
+  .description("Format all GraphQL operations in project.")
   .action(async () => {
     const spinner = ora("Findings files to format").start();
 
@@ -120,6 +120,39 @@ program
       spinner.succeed(
         `Done! Formatted ${maybePluralize("file", numberOfFilesFormatted)}.`
       );
+    }
+  });
+
+program
+  .command("format-single-graphql")
+  .description("Format GraphQL operations in single file.")
+  .argument("<file>", "Path to file to format. Must be absolute.")
+  .action(async (file) => {
+    const spinner = ora("Formatting file..").start();
+
+    const exists = await fs.promises.stat(file, { throwIfNoEntry: false });
+
+    if (exists == null) {
+      spinner.fail("File does not exist.");
+      process.exit(1);
+    }
+
+    try {
+      const fileContents = await fs.promises.readFile(file, {
+        encoding: "utf-8",
+      });
+
+      const formatted = formatOperationsInDocument(fileContents);
+
+      if (fileContents !== formatted) {
+        await fs.promises.writeFile(file, formatted);
+        spinner.succeed("Successfully formatted file.");
+      } else {
+        spinner.succeed("File already formatted.");
+      }
+    } catch {
+      spinner.fail("Could not format file.");
+      process.exit(1);
     }
   });
 
