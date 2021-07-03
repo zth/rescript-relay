@@ -1,11 +1,11 @@
 module Fragment = %relay(
   `
   fragment RecentTickets_query on Query
-    @refetchable(queryName: "RecentTicketsRefetchQuery")
-    @argumentDefinitions(
-      first: { type: "Int!", defaultValue: 2 }
-      after: { type: "String!", defaultValue: "" }
-    ) {
+  @refetchable(queryName: "RecentTicketsRefetchQuery")
+  @argumentDefinitions(
+    first: { type: "Int!", defaultValue: 2 }
+    after: { type: "String!", defaultValue: "" }
+  ) {
     ticketsConnection(first: $first, after: $after)
       @connection(key: "RecentTickets_ticketsConnection") {
       pageInfo {
