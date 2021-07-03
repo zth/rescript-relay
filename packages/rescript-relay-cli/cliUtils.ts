@@ -194,7 +194,6 @@ export const removeUnusedFieldsFromFragment = ({
       return node;
     },
     FragmentDefinition(node) {
-      // This checks whether the entire fragment should be removed.
       const fieldsToRemoveOnFragment = unusedFieldPaths.filter(
         (p) => !p.includes(".")
       );
@@ -312,6 +311,12 @@ export const processReanalyzeOutput = (output: string) => {
         fragmentName == null ? null : `${fragmentName}_graphql.res`;
       const fieldPath = curr.match(fieldPathRegexp)?.[0];
 
+      // Ignore top level `id`, since Relay seems to add these when using
+      // @refetchable, regardless of if they're used or not.
+      if (fieldPath === "id") {
+        return acc;
+      }
+
       if (fragmentName == null || fieldPath == null || fileName == null) {
         return acc;
       }
@@ -326,4 +331,12 @@ export const processReanalyzeOutput = (output: string) => {
     }, {});
 
   return processed;
+};
+
+export const maybePluralize = (str: string, num: number): string => {
+  if (num === 1) {
+    return `${num} ${str}`;
+  }
+
+  return `${num} ${str}s`;
 };

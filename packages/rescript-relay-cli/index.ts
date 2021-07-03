@@ -10,6 +10,7 @@ import {
   extractGraphQLSourceFromReScript,
   GraphQLSourceFromTag,
   IFragmentRepresentationWithSourceLocation,
+  maybePluralize,
   prettify,
   processReanalyzeOutput,
   removeUnusedFieldsFromFragment,
@@ -50,10 +51,15 @@ program.version("0.1.0");
 
 program
   .command("remove-unused-fields")
+  .option("--verbose", "Verbose mode")
+  .option(
+    "--ci",
+    "CI mode: Exit if unused fields exist, but don't remove them."
+  )
   .description(
     "Remove unused GraphQL selections in fragments in current project."
   )
-  .action(() => {
+  .action(({ ci, verbose }: { ci?: boolean; verbose?: boolean }) => {
     const spinner = ora("Analyzing ReScript project").start();
 
     const artifactDirectoryLocation = path.resolve(
@@ -111,6 +117,33 @@ program
           }
         })
       );
+
+      if (verbose && withSourceLocation.length > 0) {
+        console.log(
+          `\n\n------\nUnused fields: \n`,
+          withSourceLocation
+            .map(
+              (f) =>
+                `Fragment "${f.fragmentName}" in ${
+                  f.sourceLocation
+                }: \n  ${f.unusedFieldPaths.join("\n  ")}`
+            )
+            .join("\n\n"),
+          `\n------\n\n`
+        );
+      }
+
+      if (ci) {
+        if (withSourceLocation.length === 0) {
+          spinner.succeed("No unused fields found.");
+          process.exit(0);
+        } else {
+          spinner.fail(
+            `Found ${withSourceLocation.length} file(s) with unused fields.`
+          );
+          process.exit(1);
+        }
+      }
 
       spinner.text = `Findings files to modify`;
 
@@ -203,7 +236,20 @@ program
         })
       );
 
-      spinner.succeed("Done!");
+      const numFieldsRemoved = filesWithInfo.reduce((acc, curr) => {
+        return acc + (curr?.unusedFieldPaths.length ?? 0);
+      }, 0);
+
+      if (numFieldsRemoved === 0) {
+        spinner.succeed("Done! No unused fields found.");
+      } else {
+        spinner.succeed(
+          `Done! Removed ${maybePluralize(
+            "field",
+            numFieldsRemoved
+          )} from ${maybePluralize("file", filesWithInfo.length)}.`
+        );
+      }
     });
   });
 

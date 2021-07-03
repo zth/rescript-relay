@@ -24,15 +24,15 @@ describe("Process output from Reanalyze", () => {
       },
       "SingleTicketWorkingGroup_workingGroup_graphql.res": {
         fragmentName: "SingleTicketWorkingGroup_workingGroup",
-        unusedFieldPaths: ["membersConnection_edges_node.fragmentRefs", "id"],
+        unusedFieldPaths: ["membersConnection_edges_node.fragmentRefs"],
       },
       "SingleTicket_ticket_graphql.res": {
         fragmentName: "SingleTicket_ticket",
-        unusedFieldPaths: ["assignee_User.id", "id"],
+        unusedFieldPaths: ["assignee_User.id"],
       },
       "SingleTicket_unusedFragment_graphql.res": {
         fragmentName: "SingleTicket_unusedFragment",
-        unusedFieldPaths: ["id", "subject", "lastUpdated", "trackingId"],
+        unusedFieldPaths: ["subject", "lastUpdated", "trackingId"],
       },
       "TicketStatusBadge_ticket_graphql.res": {
         fragmentName: "TicketStatusBadge_ticket",
