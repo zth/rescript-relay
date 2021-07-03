@@ -1,5 +1,6 @@
 import { FormatModule } from "relay-compiler";
 import { processConcreteText } from "./utils/processConcreteText";
+import * as path from "path";
 
 const formatGeneratedModule: FormatModule = ({
   moduleName,
@@ -11,7 +12,7 @@ const formatGeneratedModule: FormatModule = ({
   let sourceLoc: string | null = null;
 
   if (definition.loc.kind === "Source") {
-    sourceLoc = definition.loc.source.name;
+    sourceLoc = path.basename(definition.loc.source.name);
   }
 
   const preloadText =
