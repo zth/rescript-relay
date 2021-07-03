@@ -16,6 +16,7 @@ import {
   removeUnusedFieldsFromFragment,
   restoreOperationPadding,
 } from "./cliUtils";
+import { formatOperationsInDocument } from "./formatUtils";
 
 const exists = fs.statSync(
   path.resolve(path.join(process.cwd(), "relay.config.js")),
@@ -47,7 +48,80 @@ if (!relayConfig.artifactDirectory) {
   process.exit(1);
 }
 
+const artifactDirectoryLocation = path.resolve(
+  path.join(process.cwd(), relayConfig.artifactDirectory!)
+);
+
+const sourceLocExtractor = new RegExp(
+  /(?<=\/\* @sourceLoc )[A-Za-z_.0-9]+(?= \*\/)/g
+);
+
 program.version("0.1.0");
+
+program
+  .command("format-all-graphql")
+  .description("Format all GraphQL operations in project")
+  .action(async () => {
+    const spinner = ora("Findings files to format").start();
+
+    const allGeneratedFiles = await glob(`${artifactDirectoryLocation}/*.res`, {
+      absolute: true,
+    });
+
+    const sourceLocs = await Promise.all(
+      allGeneratedFiles.map(async (fileLocation) => {
+        const fileContents = await fs.promises.readFile(fileLocation, {
+          encoding: "utf-8",
+        });
+
+        return fileContents.match(sourceLocExtractor)?.[0];
+      })
+    );
+
+    const sourcesToFind = sourceLocs.reduce((acc: string[], curr) => {
+      if (curr != null) {
+        const targetPath = `**/${curr}`;
+        if (!acc.includes(targetPath)) {
+          acc.push(targetPath);
+        }
+        return acc;
+      }
+
+      return acc;
+    }, []);
+
+    const files = await glob(sourcesToFind, { absolute: true });
+
+    spinner.text = `Formatting ${maybePluralize("file", files.length)}.`;
+
+    const formatSuccesses = await Promise.all(
+      files.map(async (filePath) => {
+        const fileContents = await fs.promises.readFile(filePath, {
+          encoding: "utf-8",
+        });
+
+        const formatted = formatOperationsInDocument(fileContents);
+
+        if (fileContents !== formatted) {
+          await fs.promises.writeFile(filePath, formatted);
+        }
+
+        return fileContents !== formatted;
+      })
+    );
+
+    const numberOfFilesFormatted = formatSuccesses.filter(
+      (status) => status === true
+    ).length;
+
+    if (numberOfFilesFormatted === 0) {
+      spinner.succeed(`Done! No files needed formatting.`);
+    } else {
+      spinner.succeed(
+        `Done! Formatted ${maybePluralize("file", numberOfFilesFormatted)}.`
+      );
+    }
+  });
 
 program
   .command("remove-unused-fields")
@@ -61,14 +135,6 @@ program
   )
   .action(({ ci, verbose }: { ci?: boolean; verbose?: boolean }) => {
     const spinner = ora("Analyzing ReScript project").start();
-
-    const artifactDirectoryLocation = path.resolve(
-      path.join(process.cwd(), relayConfig.artifactDirectory!)
-    );
-
-    const sourceLocExtractor = new RegExp(
-      /(?<=\/\* @sourceLoc )[A-Za-z_.0-9]+(?= \*\/)/g
-    );
 
     const p = cp.exec(`npx reanalyze -dce`);
 
