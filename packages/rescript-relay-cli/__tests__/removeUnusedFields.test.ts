@@ -121,6 +121,20 @@ describe("Removing unused fields", () => {
 }`);
   });
 
+  it("removes fragment spreads if fragmentRefs is unused, at the top level", () => {
+    const fragment = `fragment SomeFragment on User {
+      ...SomeFunFragment
+      id
+    }`;
+
+    const unusedFieldPaths = ["fragmentRefs"];
+
+    expect(printContents(fragment, unusedFieldPaths))
+      .toBe(`fragment SomeFragment on User {
+  id
+}`);
+  });
+
   it("removes entire fragment if all fields are unused", () => {
     const fragment = `fragment SomeFragment on User {
       id

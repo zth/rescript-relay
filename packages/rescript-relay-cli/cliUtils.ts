@@ -204,10 +204,20 @@ export const removeUnusedFieldsFromFragment = ({
         (p) => !p.includes(".")
       );
 
+      const shouldRemoveFragmentSpreads =
+        fieldsToRemoveOnFragment.includes("fragmentRefs");
+
       if (fieldsToRemoveOnFragment.length > 0) {
         const newSelectionSet = {
           ...node.selectionSet,
           selections: node.selectionSet.selections.filter((selection) => {
+            if (
+              selection.kind === "FragmentSpread" &&
+              shouldRemoveFragmentSpreads
+            ) {
+              return false;
+            }
+
             if (selection.kind === "Field") {
               const fieldName = selection.alias?.value ?? selection.name.value;
               return !fieldsToRemoveOnFragment.includes(fieldName);
