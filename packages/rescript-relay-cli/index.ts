@@ -377,7 +377,7 @@ program
                 processedOperation == null
                   ? "# This module is unused and can be removed"
                   : restoreOperationPadding(
-                      print(processedOperation),
+                      prettify(print(processedOperation)),
                       targetTag.content
                     );
 
