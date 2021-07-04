@@ -373,15 +373,13 @@ program
                 unusedFieldPaths: fileWithInfo.unusedFieldPaths,
               });
 
-              const operationAsText =
+              const newContent =
                 processedOperation == null
                   ? "# This module is unused and can be removed"
-                  : print(processedOperation);
-
-              const newContent = restoreOperationPadding(
-                prettify(operationAsText),
-                targetTag.content
-              );
+                  : restoreOperationPadding(
+                      print(processedOperation),
+                      targetTag.content
+                    );
 
               await fs.promises.writeFile(
                 fileWithInfo.absoluteFilePath,
