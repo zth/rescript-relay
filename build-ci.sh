@@ -6,6 +6,14 @@ set -e;
 rm -rf _release;
 mkdir -p _release/src;
 
+# build and copy cli
+mkdir -p _release/cli;
+cd packages/rescript-relay-cli;
+echo "Build CLI...";
+yarn; yarn build;
+cp dist/index.js ../../_release/cli/cli.js;
+cd ../../;
+
 # build language plugin
 echo "Build language plugin...";
 cd packages/rescript-relay/language-plugin/; yarn; yarn build; cd ..;

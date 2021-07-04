@@ -18,10 +18,14 @@ import {
 } from "./cliUtils";
 import { formatOperationsInDocument } from "./formatUtils";
 
-const exists = fs.statSync(
-  path.resolve(path.join(process.cwd(), "relay.config.js")),
-  { throwIfNoEntry: false }
-);
+let exists = null;
+
+try {
+  exists = fs.statSync(
+    path.resolve(path.join(process.cwd(), "relay.config.js")),
+    { throwIfNoEntry: false }
+  );
+} catch {}
 
 if (exists == null) {
   console.error(
