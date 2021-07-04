@@ -317,6 +317,12 @@ export const processReanalyzeOutput = (output: string) => {
         return acc;
       }
 
+      // Ignore `__typename`, since that's occasionally needed for unions etc.
+      // This might change in the future, but right now it needs to be ignored.
+      if (fieldPath?.endsWith("__typename")) {
+        return acc;
+      }
+
       if (fragmentName == null || fieldPath == null || fileName == null) {
         return acc;
       }
