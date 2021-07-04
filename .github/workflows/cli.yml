@@ -1,10 +1,10 @@
-name: Bindings
+name: CLI
 
 on: [push]
 
 jobs:
   build:
-    name: Bindings
+    name: CLI
     runs-on: ubuntu-latest
     defaults:
       run:
