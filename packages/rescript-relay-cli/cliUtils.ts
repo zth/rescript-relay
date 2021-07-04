@@ -1,4 +1,10 @@
-import { ASTNode, BREAK, FragmentDefinitionNode, visit } from "graphql";
+import {
+  ASTNode,
+  BREAK,
+  FieldNode,
+  FragmentDefinitionNode,
+  visit,
+} from "graphql";
 import { getLocator } from "locate-character";
 import { format } from "prettier/standalone";
 import * as parserGraphql from "prettier/parser-graphql";
@@ -227,13 +233,11 @@ export const removeUnusedFieldsFromFragment = ({
     Field(node, _key, _parent, _path, ancestors) {
       const fieldName = node.alias?.value ?? node.name.value;
 
-      const { fieldsToRemove, shouldRemoveFullSelection, path } = getPathAssets(
-        {
-          unusedFieldPaths,
-          fieldName,
-          ancestors,
-        }
-      );
+      const { fieldsToRemove, shouldRemoveFullSelection } = getPathAssets({
+        unusedFieldPaths,
+        fieldName,
+        ancestors,
+      });
 
       if (shouldRemoveFullSelection) {
         return null;
@@ -243,27 +247,45 @@ export const removeUnusedFieldsFromFragment = ({
         const shouldRemoveFragmentSpreads =
           fieldsToRemove.includes("fragmentRefs");
 
+        const newSelections = node.selectionSet?.selections?.filter(
+          (selection) => {
+            if (
+              selection.kind === "FragmentSpread" &&
+              shouldRemoveFragmentSpreads
+            ) {
+              return false;
+            }
+
+            if (selection.kind === "Field") {
+              const fieldName = selection.alias?.value ?? selection.name.value;
+
+              return !fieldsToRemove.includes(fieldName);
+            }
+
+            return true;
+          }
+        );
+
+        const typenameNode: FieldNode = {
+          kind: "Field",
+          name: {
+            kind: "Name",
+            value: "__typename",
+          },
+        };
+
         return {
           ...node,
           selectionSet: {
             kind: "SelectionSet",
-            selections: node.selectionSet?.selections?.filter((selection) => {
-              if (
-                selection.kind === "FragmentSpread" &&
-                shouldRemoveFragmentSpreads
-              ) {
-                return false;
-              }
-
-              if (selection.kind === "Field") {
-                const fieldName =
-                  selection.alias?.value ?? selection.name.value;
-
-                return !fieldsToRemove.includes(fieldName);
-              }
-
-              return true;
-            }),
+            selections:
+              /**
+               * If there's no selections left, but the entire field isn't
+               * scheduled for removal, add a dummy __typename to the selection.
+               * This happens when a field is pattern matched on (for existance)
+               * but no sub fields are selected.
+               */
+              newSelections?.length === 0 ? [typenameNode] : newSelections,
           },
         };
       }

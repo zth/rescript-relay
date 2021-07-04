@@ -237,4 +237,29 @@ describe("Removing unused fields", () => {
   }
 }`);
   });
+
+  describe("Special cases", () => {
+    it("adds dummy __typename when all selections for a field is removed, but the field itself is not instructed to be removed", () => {
+      /**
+       * This happens when no field on the selection is used explicitly, but the
+       * existance of the field itself is pattern matched on.
+       */
+      const fragment = `fragment SomeFragment on User {
+    id
+    someNestedField {
+      name
+    }
+  }`;
+
+      const unusedFieldPaths = ["someNestedField.name"];
+
+      expect(printContents(fragment, unusedFieldPaths))
+        .toBe(`fragment SomeFragment on User {
+  id
+  someNestedField {
+    __typename
+  }
+}`);
+    });
+  });
 });
