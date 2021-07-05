@@ -3,6 +3,7 @@ import {
   BREAK,
   FieldNode,
   FragmentDefinitionNode,
+  OperationDefinitionNode,
   visit,
 } from "graphql";
 import { getLocator } from "locate-character";
@@ -98,7 +99,7 @@ export const restoreOperationPadding = (
 };
 
 interface RemoveUnusedFieldsFromFragmentConfig {
-  definition: FragmentDefinitionNode;
+  definition: FragmentDefinitionNode | OperationDefinitionNode;
   unusedFieldPaths: string[];
 }
 
@@ -153,11 +154,14 @@ const getPathAssets = ({
   };
 };
 
-export const removeUnusedFieldsFromFragment = ({
+export const removeUnusedFieldsFromOperation = ({
   definition,
   unusedFieldPaths,
-}: RemoveUnusedFieldsFromFragmentConfig): FragmentDefinitionNode | null => {
-  let shouldRemoveEntireFragment = false;
+}: RemoveUnusedFieldsFromFragmentConfig):
+  | FragmentDefinitionNode
+  | OperationDefinitionNode
+  | null => {
+  let shouldRemoveEntireQuery = false;
 
   const processed = visit(definition, {
     InlineFragment(node, _a, _b, _c, ancestors) {
@@ -228,7 +232,52 @@ export const removeUnusedFieldsFromFragment = ({
         };
 
         if (newSelectionSet.selections.length === 0) {
-          shouldRemoveEntireFragment = true;
+          shouldRemoveEntireQuery = true;
+          return BREAK;
+        }
+
+        return {
+          ...node,
+          selectionSet: newSelectionSet,
+        };
+      }
+
+      return node;
+    },
+    OperationDefinition(node) {
+      if (node.operation !== "query") {
+        return node;
+      }
+
+      const fieldsToRemoveOnQuery = unusedFieldPaths.filter(
+        (p) => !p.includes(".")
+      );
+
+      const shouldRemoveFragmentSpreads =
+        fieldsToRemoveOnQuery.includes("fragmentRefs");
+
+      if (fieldsToRemoveOnQuery.length > 0) {
+        const newSelectionSet = {
+          ...node.selectionSet,
+          selections: node.selectionSet.selections.filter((selection) => {
+            if (
+              selection.kind === "FragmentSpread" &&
+              shouldRemoveFragmentSpreads
+            ) {
+              return false;
+            }
+
+            if (selection.kind === "Field") {
+              const fieldName = selection.alias?.value ?? selection.name.value;
+              return !fieldsToRemoveOnQuery.includes(fieldName);
+            }
+
+            return true;
+          }),
+        };
+
+        if (newSelectionSet.selections.length === 0) {
+          shouldRemoveEntireQuery = true;
           return BREAK;
         }
 
@@ -304,7 +353,7 @@ export const removeUnusedFieldsFromFragment = ({
     },
   });
 
-  if (shouldRemoveEntireFragment) {
+  if (shouldRemoveEntireQuery) {
     return null;
   }
 
