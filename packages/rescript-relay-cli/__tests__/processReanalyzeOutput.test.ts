@@ -11,31 +11,47 @@ describe("Process output from Reanalyze", () => {
   it("should detect all relevant unused fields", () => {
     expect(processReanalyzeOutput(testData)).toEqual({
       "Assignee_typ_graphql.res": {
-        fragmentName: "Assignee_typ",
+        type: "fragment",
+        graphqlName: "Assignee_typ",
         unusedFieldPaths: ["WorkingGroup.id"],
       },
+      "RecentTicketsRefetchQuery_graphql.res": {
+        type: "query",
+        graphqlName: "RecentTicketsRefetchQuery",
+        unusedFieldPaths: ["fragmentRefs"],
+      },
       "RecentTickets_query_graphql.res": {
-        fragmentName: "RecentTickets_query",
+        type: "fragment",
+        graphqlName: "RecentTickets_query",
         unusedFieldPaths: [
           "ticketsConnection.pageInfo",
           "ticketsConnection_pageInfo.endCursor",
           "ticketsConnection_pageInfo.hasNextPage",
         ],
       },
+      "SingleTicketWorkingGroupRefetchQuery_graphql.res": {
+        type: "query",
+        graphqlName: "SingleTicketWorkingGroupRefetchQuery",
+        unusedFieldPaths: ["node.fragmentRefs", "node"],
+      },
       "SingleTicketWorkingGroup_workingGroup_graphql.res": {
-        fragmentName: "SingleTicketWorkingGroup_workingGroup",
+        type: "fragment",
+        graphqlName: "SingleTicketWorkingGroup_workingGroup",
         unusedFieldPaths: ["membersConnection_edges_node.fragmentRefs"],
       },
       "SingleTicket_ticket_graphql.res": {
-        fragmentName: "SingleTicket_ticket",
+        type: "fragment",
+        graphqlName: "SingleTicket_ticket",
         unusedFieldPaths: ["assignee_User.id"],
       },
       "SingleTicket_unusedFragment_graphql.res": {
-        fragmentName: "SingleTicket_unusedFragment",
+        type: "fragment",
+        graphqlName: "SingleTicket_unusedFragment",
         unusedFieldPaths: ["subject", "lastUpdated", "trackingId"],
       },
       "TicketStatusBadge_ticket_graphql.res": {
-        fragmentName: "TicketStatusBadge_ticket",
+        type: "fragment",
+        graphqlName: "TicketStatusBadge_ticket",
         unusedFieldPaths: ["assignee_User.fullName", "dbId", "assignee"],
       },
     });

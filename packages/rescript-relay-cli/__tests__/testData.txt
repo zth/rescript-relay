@@ -506,6 +506,12 @@ $ /Users/zth/OSS/reason-relay/example/node_modules/.bin/reanalyze -dce
       @dead("Types.response_updateTodoItem.updatedTodoItem") updatedTodoItem: option<response_updateTodoItem_updatedTodoItem>,
 
   Warning Dead Type
+  File "/Users/zth/OSS/reason-relay/example/src/__generated__/SomeQuery_graphql.res", line 8, characters 4-68
+  Types.response.id is a record label never used to read a value
+  <-- line 8
+      @dead("Types.response.id") updatedTodoItem: option<response_updateTodoItem_updatedTodoItem>,
+
+  Warning Dead Type
   File "/Users/zth/OSS/reason-relay/example/src/__generated__/SingleTodoUpdateMutation_graphql.res", line 11, characters 4-14
   Types.response_updateTodoItem_updatedTodoItem.id is a record label never used to read a value
   <-- line 11

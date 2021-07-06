@@ -223,10 +223,11 @@ describe("Removing unused fields", () => {
       }
       ... on Person {
         id
+        ...SomePerson_fragment
       }
     }`;
 
-      const unusedFieldPaths = ["User.name"];
+      const unusedFieldPaths = ["User.name", "Person.fragmentRefs"];
 
       expect(printContents(fragment, unusedFieldPaths))
         .toBe(`fragment SomeFragment on User {
@@ -332,4 +333,50 @@ describe("Removing unused fields", () => {
 }`);
     });
   });
+
+  /*describe("regressions", () => {
+    it("1", () => {
+      const fragment = `fragment OrganizationCostListItem_cost on Cost {
+__typename
+... on RecurringCost {
+  ...EditRecurringCost_recurringCost
+  id
+  endDate
+  startDate
+  active
+  cost {
+    ...CurrencyValueDisplayer_value
+  }
+  identifier
+  sources {
+    source
+  }
+}
+}`;
+
+      const unusedFieldPaths = [
+        "someNestedField.avatarUrl",
+        "someNestedField_anotherLevel.age",
+      ];
+
+      expect(printContents(fragment, unusedFieldPaths))
+        .toBe(`fragment OrganizationCostListItem_cost on Cost {
+  __typename
+  ... on RecurringCost {
+    ...EditRecurringCost_recurringCost
+    id
+    endDate
+    startDate
+    active
+    cost {
+      ...CurrencyValueDisplayer_value
+    }
+    identifier
+    sources {
+      source
+    }
+  }
+}`);
+    });
+  });*/
 });

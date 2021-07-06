@@ -13,7 +13,7 @@ import {
   maybePluralize,
   prettify,
   processReanalyzeOutput,
-  removeUnusedFieldsFromFragment,
+  removeUnusedFieldsFromOperation,
   restoreOperationPadding,
 } from "./cliUtils";
 import { formatOperationsInDocument } from "./formatUtils";
@@ -243,7 +243,7 @@ program
         if (debug) {
           console.log(
             `Extracing source locations for ${maybePluralize(
-              "fragment",
+              "files",
               Object.keys(processed).length
             )}.`
           );
@@ -284,9 +284,11 @@ program
             withSourceLocation
               .map(
                 (f) =>
-                  `Fragment "${f.fragmentName}" in ${
-                    f.sourceLocation
-                  }: \n  ${f.unusedFieldPaths.join("\n  ")}`
+                  `${f.type === "fragment" ? "Fragment" : "Query"} "${
+                    f.graphqlName
+                  }" in ${f.sourceLocation}: \n  ${f.unusedFieldPaths.join(
+                    "\n  "
+                  )}`
               )
               .join("\n\n"),
             `\n------\n\n`
@@ -309,7 +311,7 @@ program
 
         const sourcesToFind = withSourceLocation.map((v) => ({
           path: `**/${v.sourceLocation}`,
-          fragmentName: v.fragmentName,
+          graphqlName: v.graphqlName,
         }));
 
         const files = await glob(
@@ -324,8 +326,8 @@ program
 
           if (entry != null) {
             return {
-              absoluteFilePath,
               ...entry,
+              absoluteFilePath,
             };
           }
         });
@@ -353,9 +355,16 @@ program
               for (const tag of graphqlTags) {
                 const parsed = parse(tag.content);
 
+                const definition = parsed.definitions[0];
+
+                if (definition == null) {
+                  continue;
+                }
+
                 if (
-                  parsed.definitions[0]?.kind === "FragmentDefinition" &&
-                  parsed.definitions[0].name.value === fileWithInfo.fragmentName
+                  (definition.kind === "OperationDefinition" ||
+                    definition.kind === "FragmentDefinition") &&
+                  definition.name?.value === fileWithInfo.graphqlName
                 ) {
                   parsedTag = parsed;
                   targetTag = tag;
@@ -367,12 +376,15 @@ program
               const targetDef = parsedTag.definitions[0];
               if (
                 targetDef == null ||
-                targetDef.kind !== "FragmentDefinition"
+                !(
+                  targetDef.kind === "FragmentDefinition" ||
+                  targetDef.kind === "OperationDefinition"
+                )
               ) {
                 return;
               }
 
-              const processedOperation = removeUnusedFieldsFromFragment({
+              const processedOperation = removeUnusedFieldsFromOperation({
                 definition: targetDef,
                 unusedFieldPaths: fileWithInfo.unusedFieldPaths,
               });

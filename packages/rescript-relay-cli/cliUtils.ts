@@ -179,9 +179,19 @@ export const removeUnusedFieldsFromOperation = ({
         .map((p) => p.slice(prefixedPath.length));
 
       if (fieldsToRemoveOnInlineFragment.length > 0) {
+        const shouldRemoveFragmentSpreads =
+          fieldsToRemoveOnInlineFragment.includes("fragmentRefs");
+
         const newSelectionSet = {
           ...node.selectionSet,
           selections: node.selectionSet.selections.filter((selection) => {
+            if (
+              selection.kind === "FragmentSpread" &&
+              shouldRemoveFragmentSpreads
+            ) {
+              return false;
+            }
+
             if (selection.kind === "Field") {
               const fieldName = selection.alias?.value ?? selection.name.value;
               return !fieldsToRemoveOnInlineFragment.includes(fieldName);
@@ -360,37 +370,47 @@ export const removeUnusedFieldsFromOperation = ({
   return processed;
 };
 
-export interface IFragmentRepresentation {
-  fragmentName: string;
+export interface IRepresentation {
+  type: "fragment" | "query";
+  graphqlName: string;
   unusedFieldPaths: string[];
 }
 
 export interface IFragmentRepresentationWithSourceLocation
-  extends IFragmentRepresentation {
+  extends IRepresentation {
   sourceLocation: string;
 }
 
-const fragmentNameRegexp = new RegExp(
+const graphqlNameRegexp = new RegExp(
   /(?<=__generated__\/)[A-Za-z_0-9]+(?=_graphql\.res)/g
 );
 const fieldPathRegexp = new RegExp(
-  /(?<=Types\.fragment[_.])[A-Za-z_.0-9]+(?= )/g
+  /(?<=Types\.(fragment|response)[_.])[A-Za-z_.0-9]+(?= )/g
 );
+
+const filterRegexp = new RegExp(/Types\.(fragment|response)/g);
 
 export const processReanalyzeOutput = (output: string) => {
   const processed = output
     // Parse reanalyze output
     .split(/\n\n/g)
 
-    // Filter out fragment records
-    .filter((s) => s.includes("Types.fragment"))
+    // Filter out interesting records
+    .filter((s) => s.match(filterRegexp))
 
     // Extract the target file names + actual unused fields (record names/patterns)
-    .reduce((acc: Record<string, IFragmentRepresentation>, curr) => {
-      const fragmentName = curr.match(fragmentNameRegexp)?.[0];
+    .reduce((acc: Record<string, IRepresentation>, curr) => {
+      const type = curr.includes("Types.fragment") ? "fragment" : "query";
+
+      const graphqlName = curr.match(graphqlNameRegexp)?.[0];
       const fileName =
-        fragmentName == null ? null : `${fragmentName}_graphql.res`;
+        graphqlName == null ? null : `${graphqlName}_graphql.res`;
       const fieldPath = curr.match(fieldPathRegexp)?.[0];
+
+      // We only care about queries
+      if (type === "query" && !graphqlName?.toLowerCase().endsWith("query")) {
+        return acc;
+      }
 
       // Ignore top level `id`, since Relay seems to add these when using
       // @refetchable, regardless of if they're used or not.
@@ -404,12 +424,13 @@ export const processReanalyzeOutput = (output: string) => {
         return acc;
       }
 
-      if (fragmentName == null || fieldPath == null || fileName == null) {
+      if (graphqlName == null || fieldPath == null || fileName == null) {
         return acc;
       }
 
       acc[fileName] = acc[fileName] || {
-        fragmentName,
+        type,
+        graphqlName: graphqlName,
         unusedFieldPaths: [],
       };
       acc[fileName].unusedFieldPaths.push(fieldPath);
