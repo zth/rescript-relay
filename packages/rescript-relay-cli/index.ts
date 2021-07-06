@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { program } from "commander";
 import config from "relay-config";
 import fs from "fs";
