@@ -1,5 +1,7 @@
 # master
 
+- Adds `rescript-relay-cli`, a CLI for removing unused fields and formatting GraphQL in your project.
+
 # 0.20.1
 
 Quick patch release fixing the Linux binaries that broke with the last release.
