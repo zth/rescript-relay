@@ -1,0 +1,27 @@
+name: CLI
+
+on: [push]
+
+jobs:
+  build:
+    name: CLI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rescript-relay-cli
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: 12.19.0
+        env:
+          CI: true
+      - name: Install
+        run: |
+          yarn --frozen-lockfile
+      - name: Build
+        run: |
+          yarn build
+      - name: Test
+        run: |
+          yarn test

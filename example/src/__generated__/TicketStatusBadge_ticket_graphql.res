@@ -1,3 +1,4 @@
+/* @sourceLoc TicketStatusBadge.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {

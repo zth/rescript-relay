@@ -3,11 +3,11 @@ module TicketFragment = %relay(
   fragment SingleTicket_ticket on Ticket {
     assignee {
       __typename
-
+  
       ... on User {
         ...Avatar_user
       }
-
+  
       ... on WorkingGroup {
         ...SingleTicketWorkingGroup_workingGroup
       }

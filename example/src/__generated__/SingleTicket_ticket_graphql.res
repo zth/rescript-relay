@@ -1,3 +1,4 @@
+/* @sourceLoc SingleTicket.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
