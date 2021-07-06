@@ -8,10 +8,6 @@ module Fragment = %relay(
   ) {
     ticketsConnection(first: $first, after: $after)
       @connection(key: "RecentTickets_ticketsConnection") {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
       edges {
         node {
           id

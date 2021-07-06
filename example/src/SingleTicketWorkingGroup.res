@@ -9,7 +9,6 @@ module WorkingGroupFragment = %relay(
         node {
           id
           fullName
-          ...Avatar_user
         }
       }
     }

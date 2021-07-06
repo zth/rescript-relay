@@ -5,12 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
   
   type rec fragment_ticketsConnection = {
-    pageInfo: fragment_ticketsConnection_pageInfo,
     edges: option<array<option<fragment_ticketsConnection_edges>>>,
-  }
-   and fragment_ticketsConnection_pageInfo = {
-    endCursor: option<string>,
-    hasNextPage: bool,
   }
    and fragment_ticketsConnection_edges = {
     node: option<fragment_ticketsConnection_edges_node>,
@@ -31,7 +26,7 @@ module Internal = {
   let fragmentConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_pageInfo_endCursor":{"n":""},"ticketsConnection_edges_node":{"f":"","n":""}}}`
+      json`{"__root":{"ticketsConnection_edges":{"n":"","na":""},"ticketsConnection_edges_node":{"f":"","n":""}}}`
     )
   
   let fragmentConverterMap = ()
@@ -123,31 +118,6 @@ return {
         {
           "alias": null,
           "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
           "concreteType": "TicketEdge",
           "kind": "LinkedField",
           "name": "edges",
@@ -188,6 +158,31 @@ return {
               "args": null,
               "kind": "ScalarField",
               "name": "cursor",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
               "storageKey": null
             }
           ],

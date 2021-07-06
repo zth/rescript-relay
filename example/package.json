@@ -9,7 +9,9 @@
     "res:watch": "yarn res -w",
     "webpack": "webpack-dev-server",
     "relay": "rescript-relay-compiler",
-    "relay:watch": "rescript-relay-compiler --watch"
+    "relay:watch": "rescript-relay-compiler --watch",
+    "remove-unused-fields": "rescript-relay-cli remove-unused-fields",
+    "format": "rescript-relay-cli format-all-graphql"
   },
   "dependencies": {
     "@mdi/font": "3.7.95",
@@ -25,7 +27,7 @@
     "relay-compiler": "11.0.2",
     "relay-config": "11.0.2",
     "relay-runtime": "11.0.2",
-    "rescript-relay": "0.0.0-pre-80e566c0",
+    "rescript-relay": "0.21.0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {

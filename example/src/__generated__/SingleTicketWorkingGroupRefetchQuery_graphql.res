@@ -223,13 +223,6 @@ return {
                                 "kind": "ScalarField",
                                 "name": "fullName",
                                 "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "avatarUrl",
-                                "storageKey": null
                               }
                             ],
                             "storageKey": null
@@ -252,12 +245,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ab34f3c15793ee137833c416d7085617",
+    "cacheID": "500db64e99055280a202beb1d1b69bc1",
     "id": null,
     "metadata": {},
     "name": "SingleTicketWorkingGroupRefetchQuery",
     "operationKind": "query",
-    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n        ...Avatar_user\n      }\n    }\n  }\n  id\n}\n"
+    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n      }\n    }\n  }\n  id\n}\n"
   }
 };
 })() `)
