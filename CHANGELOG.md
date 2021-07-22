@@ -1,5 +1,7 @@
 # master
 
+# 0.21.1
+
 - A few bug fixes to the `remove-unused-fields` command in the CLI.
 
 # 0.21.0
