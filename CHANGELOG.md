@@ -1,5 +1,7 @@
 # master
 
+- A few bug fixes to the `remove-unused-fields` command in the CLI.
+
 # 0.21.0
 
 - Adds `rescript-relay-cli`, a CLI for removing unused fields and formatting GraphQL in your project. Read more [here](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay-cli/README.md) (especially look at `remove-unused-fields`).

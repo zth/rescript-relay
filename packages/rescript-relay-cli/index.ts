@@ -214,9 +214,15 @@ program
       });
 
       p.stderr?.on("data", (e) => {
-        spinner.fail(
-          `Something went wrong trying to analyze the ReScript project.`
-        );
+        if (e.includes("End_of_file")) {
+          spinner.fail(
+            `Something went wrong trying to analyze the ReScript project. Try cleaning your ReScript project and rebuilding it from scratch before trying again.`
+          );
+        } else {
+          spinner.fail(
+            `Something went wrong trying to analyze the ReScript project.`
+          );
+        }
         if (debug) {
           console.error(e);
         }
