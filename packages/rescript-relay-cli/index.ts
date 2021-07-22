@@ -200,7 +200,7 @@ program
     }) => {
       const spinner = ora("Analyzing ReScript project").start();
 
-      const p = cp.exec(`npx reanalyze -dce`);
+      const p = cp.spawn("npx", ["reanalyze", "-dce"]);
 
       if (p.stdout == null) {
         console.error("Something went wrong.");
