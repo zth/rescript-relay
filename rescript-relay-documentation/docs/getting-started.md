@@ -230,3 +230,7 @@ We also have to render the app in concurrent mode. Check out how the example app
 ## Time to make your first query
 
 There, all set up and ready to go! Time to [make your first query](making-queries).
+
+## Advanced
+
+You really don't need to dive into the deep end of things just yet, but once you feel all set up and ready, you should read [this section on keeping your RescriptRelay codebase healthy](codebase-health-considerations).

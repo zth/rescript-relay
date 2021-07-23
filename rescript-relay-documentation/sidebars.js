@@ -7,7 +7,12 @@
 
 module.exports = {
   docs: {
-    Introduction: ["start-here", "getting-started", "vscode-extension"],
+    Introduction: [
+      "start-here",
+      "getting-started",
+      "vscode-extension",
+      "rescript-relay-cli",
+    ],
     "Using RescriptRelay": [
       "making-queries",
       "using-fragments",
@@ -21,6 +26,7 @@ module.exports = {
     ],
     "API Reference": ["api-reference", "relay-environment"],
     Guides: [
+      "codebase-health-considerations",
       "editor-support-and-development-environment",
       "custom-scalars",
       "using-with-hasura",
