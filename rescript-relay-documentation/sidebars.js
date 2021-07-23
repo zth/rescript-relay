@@ -34,6 +34,6 @@ module.exports = {
       "migrating-from-javascript-typescript-incrementally",
       "experimental-router",
     ],
-    Misc: ["the-compiler", "quirks-of-rescript-relay", "examples"],
+    Misc: ["the-compiler", "quirks-of-rescript-relay", "examples", "roadmap"],
   },
 };
