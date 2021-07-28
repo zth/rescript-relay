@@ -18,6 +18,13 @@ import {
   restoreOperationPadding,
 } from "./cliUtils";
 import { formatOperationsInDocument } from "./formatUtils";
+import {
+  findAllSourceFilesFromGeneratedFiles,
+  findSourceFiles,
+  getAllGeneratedFiles,
+  getSrcCwd,
+  sourceLocExtractor,
+} from "./fileUtils";
 
 let exists = null;
 
@@ -57,11 +64,42 @@ const artifactDirectoryLocation = path.resolve(
   path.join(process.cwd(), relayConfig.artifactDirectory!)
 );
 
-const sourceLocExtractor = new RegExp(
-  /(?<=\/\* @sourceLoc )[A-Za-z_.0-9]+(?= \*\/)/g
-);
-
 program.version("0.1.0");
+
+program
+  .command("debug")
+  .description("Prints debug information for the CLI.")
+  .action(async () => {
+    console.log(`Artifact directory location: ${artifactDirectoryLocation}\n`);
+
+    console.log("Getting all generated files...\n");
+    const allGeneratedFiles = await getAllGeneratedFiles(
+      artifactDirectoryLocation
+    );
+    console.log(
+      `Number of generated files found in artifact directory: ${allGeneratedFiles.length}\n`
+    );
+
+    console.log("Looking up source files\n");
+
+    const files = await findAllSourceFilesFromGeneratedFiles(allGeneratedFiles);
+
+    console.log(
+      `Found ${files.length} source locations with explicit definitions.\n`
+    );
+
+    console.log("Looking up source files..\n");
+
+    const sourceFiles = await findSourceFiles(files, relayConfig.src);
+
+    console.log(
+      `Found ${
+        sourceFiles.length
+      } actual source files, when looking in ${getSrcCwd(relayConfig.src)}.\n`
+    );
+
+    console.log("Done!");
+  });
 
 program
   .command("format-all-graphql")
@@ -69,42 +107,21 @@ program
   .action(async () => {
     const spinner = ora("Findings files to format").start();
 
-    const allGeneratedFiles = await glob(`${artifactDirectoryLocation}/*.res`, {
-      absolute: true,
-      ignore: ["node_modules/**/*"],
-    });
-
-    const sourceLocs = await Promise.all(
-      allGeneratedFiles.map(async (fileLocation) => {
-        spinner.text = `Checking ${path.basename(fileLocation)}...`;
-        const fileContents = await fs.promises.readFile(fileLocation, {
-          encoding: "utf-8",
-        });
-
-        return fileContents.match(sourceLocExtractor)?.[0];
-      })
+    const allGeneratedFiles = await getAllGeneratedFiles(
+      artifactDirectoryLocation
     );
 
-    const sourcesToFind = sourceLocs.reduce((acc: string[], curr) => {
-      if (curr != null) {
-        const targetPath = `**/${curr}`;
-        if (!acc.includes(targetPath)) {
-          acc.push(targetPath);
-        }
-        return acc;
-      }
-
-      return acc;
-    }, []);
+    const sourcesToFind = await findAllSourceFilesFromGeneratedFiles(
+      allGeneratedFiles,
+      spinner
+    );
 
     spinner.text = `Searching for ${maybePluralize(
       "source file",
       sourcesToFind.length
     )}.`;
-    const files = await glob(sourcesToFind, {
-      absolute: true,
-      ignore: ["node_modules/**/*"],
-    });
+
+    const files = await findSourceFiles(sourcesToFind, relayConfig.src);
 
     const formatSuccesses = await Promise.all(
       files.map(async (filePath) => {
