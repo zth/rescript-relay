@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import ora from "ora";
 import path from "path";
-import glob from "fast-glob";
 import cp from "child_process";
 import fs from "fs";
 import { DocumentNode, parse, print } from "graphql";

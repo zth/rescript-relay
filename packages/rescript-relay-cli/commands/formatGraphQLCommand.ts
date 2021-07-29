@@ -15,8 +15,9 @@ import { formatOperationsInDocument } from "../formatUtils";
 export const addFormatGraphQLCommands = (program: Command) => {
   program
     .command("format-all-graphql")
+    .option("--ci", "CI mode: Exit if unformatted files are encountered.")
     .description("Format all GraphQL operations in project.")
-    .action(async () => {
+    .action(async ({ ci }: { ci?: boolean }) => {
       const relayConfig = loadRelayConfig();
       const artifactDirectoryLocation =
         getRelayArtifactDirectoryLocation(relayConfig);
@@ -41,14 +42,16 @@ export const addFormatGraphQLCommands = (program: Command) => {
 
       const formatSuccesses = await Promise.all(
         files.map(async (filePath) => {
-          spinner.text = `Formatting "${path.basename(filePath)}".`;
+          spinner.text = `${ci ? "Checking" : "Formatting"} "${path.basename(
+            filePath
+          )}".`;
           const fileContents = await fs.promises.readFile(filePath, {
             encoding: "utf-8",
           });
 
           const formatted = formatOperationsInDocument(fileContents);
 
-          if (fileContents !== formatted) {
+          if (fileContents !== formatted && !ci) {
             await fs.promises.writeFile(filePath, formatted);
           }
 
@@ -60,20 +63,40 @@ export const addFormatGraphQLCommands = (program: Command) => {
         (status) => status === true
       ).length;
 
-      if (numberOfFilesFormatted === 0) {
-        spinner.succeed(
-          `Done! None of ${maybePluralize(
-            "scanned file",
-            files.length
-          )} needed formatting.`
-        );
+      if (ci) {
+        if (numberOfFilesFormatted === 0) {
+          spinner.succeed(
+            `Done! None of ${maybePluralize(
+              "file",
+              files.length
+            )} in need of formatting.`
+          );
+          process.exit(0);
+        } else {
+          spinner.fail(
+            `${maybePluralize(
+              "file",
+              numberOfFilesFormatted
+            )} needs formatting.`
+          );
+          process.exit(1);
+        }
       } else {
-        spinner.succeed(
-          `Done! Formatted ${maybePluralize(
-            "file",
-            numberOfFilesFormatted
-          )} of ${maybePluralize("scanned file", files.length)}.`
-        );
+        if (numberOfFilesFormatted === 0) {
+          spinner.succeed(
+            `Done! None of ${maybePluralize(
+              "scanned file",
+              files.length
+            )} needed formatting.`
+          );
+        } else {
+          spinner.succeed(
+            `Done! Formatted ${maybePluralize(
+              "file",
+              numberOfFilesFormatted
+            )} of ${maybePluralize("scanned file", files.length)}.`
+          );
+        }
       }
     });
 

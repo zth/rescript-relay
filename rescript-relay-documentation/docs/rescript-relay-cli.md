@@ -40,6 +40,12 @@ This will output information around which unused fields are found, and in what f
 
 Formats all GraphQL operations in the project using [`prettier`](https://prettier.io/).
 
+#### CLI options
+
+##### `--ci`
+
+This runs the script in "CI mode", meaning it'll only report whether there are unformatted files or not, making it suitable for running in CI, like in a GitHub action.
+
 ### format-single-graphql < absolute-path-to-file >
 
 Formats all GraphQL operations in a single file [`prettier`](https://prettier.io/).
