@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import config from "relay-config";
 import fs from "fs";
 import path from "path";
 import cp from "child_process";
@@ -22,54 +21,57 @@ import {
   findAllSourceFilesFromGeneratedFiles,
   findSourceFiles,
   getAllGeneratedFiles,
+  getRelayArtifactDirectoryLocation,
   getSrcCwd,
+  loadRelayConfig,
   sourceLocExtractor,
 } from "./fileUtils";
 
-let exists = null;
-
-try {
-  exists = fs.statSync(
-    path.resolve(path.join(process.cwd(), "relay.config.js")),
-    { throwIfNoEntry: false }
-  );
-} catch {}
-
-if (exists == null) {
-  console.error(
-    "relay.config.js must exist in the current working directory this script runs in."
-  );
-
-  process.exit(1);
-}
-
-const relayConfig = config.loadConfig();
-
-if (!relayConfig) {
-  console.error(
-    "Could not find relay.config.js. You must configure Relay through relay.config.js for RescriptRelay to work."
-  );
-
-  process.exit(1);
-}
-
-if (!relayConfig.artifactDirectory) {
-  console.error(
-    "RescriptRelay requires you to define 'artifactDirectory' (for outputing generated files in a single directory) in your relay.config.js. Please define it and re-run this command."
-  );
-  process.exit(1);
-}
-
-const artifactDirectoryLocation = path.resolve(
-  path.join(process.cwd(), relayConfig.artifactDirectory!)
-);
-
 program.version("0.1.0");
+
+program
+  .command("init")
+  .description("Set up RescriptRelay in this directory.")
+  .action(async () => {
+    // Being able to run this command means the main package is installed, so we
+    // don't need to care about that.
+    const spinner = ora("Setting up RescriptRelay...").start();
+
+    const packageJsonRaw = fs.readFileSync(
+      path.resolve(process.cwd(), "package.json"),
+      "utf8"
+    );
+
+    let packageJsonParsed: Record<string, unknown> = {};
+
+    try {
+      packageJsonParsed = JSON.parse(packageJsonRaw);
+    } catch (e) {
+      console.error(e);
+      spinner.fail(
+        "Could not load package.json. This command needs to run in the same directory as package.json is located."
+      );
+      return;
+    }
+
+    /**
+     * Install correct Relay versions
+     * Check React version
+     * Create relay.config.js
+     * Create artifact directory
+     */
+
+    spinner.succeed("Done!");
+  });
 
 program
   .command("debug")
   .description("Prints debug information for the CLI.")
   .action(async () => {
+    const relayConfig = loadRelayConfig();
+    const artifactDirectoryLocation =
+      getRelayArtifactDirectoryLocation(relayConfig);
+
     console.log(`Artifact directory location: ${artifactDirectoryLocation}\n`);
 
     console.log("Getting all generated files...\n");
@@ -105,6 +107,10 @@ program
   .command("format-all-graphql")
   .description("Format all GraphQL operations in project.")
   .action(async () => {
+    const relayConfig = loadRelayConfig();
+    const artifactDirectoryLocation =
+      getRelayArtifactDirectoryLocation(relayConfig);
+
     const spinner = ora("Findings files to format").start();
 
     const allGeneratedFiles = await getAllGeneratedFiles(
@@ -215,6 +221,10 @@ program
       verbose?: boolean;
       debug?: boolean;
     }) => {
+      const relayConfig = loadRelayConfig();
+      const artifactDirectoryLocation =
+        getRelayArtifactDirectoryLocation(relayConfig);
+
       const spinner = ora("Analyzing ReScript project").start();
 
       const p = cp.spawn("npx", ["reanalyze", "-dce"]);
