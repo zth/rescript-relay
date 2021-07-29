@@ -19,6 +19,7 @@ import {
   loadRelayConfig,
   getRelayArtifactDirectoryLocation,
   sourceLocExtractor,
+  findSourceFiles,
 } from "../fileUtils";
 
 export const addRemoveUnusedFieldsCommand = (program: Command) => {
@@ -108,7 +109,8 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
           await Promise.all(
             Object.entries(processed).map(async ([fileLocation, data]) => {
               const absoluteFilePath = path.resolve(
-                path.join(artifactDirectoryLocation, fileLocation)
+                artifactDirectoryLocation,
+                fileLocation
               );
 
               try {
@@ -166,13 +168,13 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
           spinner.text = `Findings files to modify`;
 
           const sourcesToFind = withSourceLocation.map((v) => ({
-            path: `**/${v.sourceLocation}`,
+            path: v.sourceLocation,
             graphqlName: v.graphqlName,
           }));
 
-          const files = await glob(
+          const files = await findSourceFiles(
             sourcesToFind.map((s) => s.path),
-            { absolute: true, ignore: ["node_modules/**/*"] }
+            relayConfig.src
           );
 
           const filesWithInfo = files.map((absoluteFilePath) => {
