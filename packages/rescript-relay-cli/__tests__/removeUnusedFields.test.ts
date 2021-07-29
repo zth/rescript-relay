@@ -332,51 +332,30 @@ describe("Removing unused fields", () => {
   id
 }`);
     });
-  });
 
-  /*describe("regressions", () => {
-    it("1", () => {
-      const fragment = `fragment OrganizationCostListItem_cost on Cost {
-__typename
-... on RecurringCost {
-  ...EditRecurringCost_recurringCost
-  id
-  endDate
-  startDate
-  active
-  cost {
-    ...CurrencyValueDisplayer_value
+    it.only("removes in union members", () => {
+      const query = `query SingleGoogleCampaignQuery($id: ID!) {
+  node(id: $id) {
+    __typename
+    ... on GoogleAdsCampaign {
+      id
+      lastSyncedAt
+      ...SingleGoogleCampaignDisplay_campaign
+    }
   }
-  identifier
-  sources {
-    source
-  }
-}
 }`;
 
-      const unusedFieldPaths = [
-        "someNestedField.avatarUrl",
-        "someNestedField_anotherLevel.age",
-      ];
+      const unusedFieldPaths = ["node.id", "node.lastSyncedAt"];
 
-      expect(printContents(fragment, unusedFieldPaths))
-        .toBe(`fragment OrganizationCostListItem_cost on Cost {
-  __typename
-  ... on RecurringCost {
-    ...EditRecurringCost_recurringCost
-    id
-    endDate
-    startDate
-    active
-    cost {
-      ...CurrencyValueDisplayer_value
-    }
-    identifier
-    sources {
-      source
+      expect(printContents(query, unusedFieldPaths))
+        .toBe(`query SingleGoogleCampaignQuery($id: ID!) {
+  node(id: $id) {
+    __typename
+    ... on GoogleAdsCampaign {
+      ...SingleGoogleCampaignDisplay_campaign
     }
   }
 }`);
     });
-  });*/
+  });
 });
