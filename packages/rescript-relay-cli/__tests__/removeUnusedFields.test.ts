@@ -333,7 +333,7 @@ describe("Removing unused fields", () => {
 }`);
     });
 
-    it.only("removes in union members", () => {
+    it("node interface special treatment", () => {
       const query = `query SingleGoogleCampaignQuery($id: ID!) {
   node(id: $id) {
     __typename
