@@ -3,6 +3,7 @@ import ora from "ora";
 import path from "path";
 import fs from "fs";
 
+// This is WIP
 export const addInitCommand = (program: Command) => {
   program
     .command("init")

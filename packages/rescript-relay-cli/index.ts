@@ -3,13 +3,12 @@ import { program } from "commander";
 import { addFormatGraphQLCommands } from "./commands/formatGraphQLCommand";
 import { addDebugCommand } from "./commands/debugCommand";
 import { addRemoveUnusedFieldsCommand } from "./commands/removeUnusedFieldsCommand";
-import { addInitCommand } from "./commands/initCommand";
 
 program.version("0.1.0");
 
 addFormatGraphQLCommands(program);
 addDebugCommand(program);
 addRemoveUnusedFieldsCommand(program);
-addInitCommand(program);
+// addInitCommand(program);
 
 program.parse(process.argv);
