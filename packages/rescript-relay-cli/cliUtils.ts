@@ -103,8 +103,27 @@ interface RemoveUnusedFieldsFromFragmentConfig {
   unusedFieldPaths: string[];
 }
 
+const isNodeInterfaceWithSingleMember = (
+  definition: FragmentDefinitionNode | OperationDefinitionNode
+) => {
+  const nodeSelection = definition.selectionSet.selections.find(
+    (d) => d.kind === "Field" && d.name.value === "node"
+  );
+
+  if (nodeSelection?.kind === "Field") {
+    const inlineFragmentSelections =
+      nodeSelection.selectionSet?.selections.filter(
+        (s) => s.kind === "InlineFragment"
+      );
+
+    return inlineFragmentSelections?.length === 1;
+  }
+
+  return false;
+};
+
 const namedPathOfAncestors = (
-  ancestors?: ReadonlyArray<ASTNode | ReadonlyArray<ASTNode>> | null
+  ancestors: ReadonlyArray<ASTNode | ReadonlyArray<ASTNode>> | null
 ): string =>
   (ancestors || [])
     .reduce((acc: string[], next) => {
@@ -127,7 +146,7 @@ const namedPathOfAncestors = (
 interface getPathAssetsConfig {
   unusedFieldPaths: string[];
   fieldName: string;
-  ancestors?: ReadonlyArray<ASTNode | ReadonlyArray<ASTNode>> | null;
+  ancestors: ReadonlyArray<ASTNode | ReadonlyArray<ASTNode>> | null;
 }
 
 const getPathAssets = ({
@@ -169,9 +188,19 @@ export const removeUnusedFieldsFromOperation = ({
       if (node.typeCondition == null) return node;
 
       const namedPath = namedPathOfAncestors(ancestors);
-      const thisPath = [namedPath, node.typeCondition.name.value]
-        .filter((item) => item !== "")
-        .join("_");
+
+      /**
+       * Handle node interface special treatment, where RescriptRelay transforms
+       * a selection on the Node interface to a single field instead of a union.
+       */
+      const nodeInterfaceSpecialTreatment =
+        namedPath === "node" && isNodeInterfaceWithSingleMember(definition);
+
+      const thisPath = nodeInterfaceSpecialTreatment
+        ? namedPath
+        : [namedPath, node.typeCondition.name.value]
+            .filter((item) => item !== "")
+            .join("_");
 
       const prefixedPath = `${thisPath}.`;
       const fieldsToRemoveOnInlineFragment = unusedFieldPaths
