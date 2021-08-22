@@ -7,7 +7,7 @@ sidebar_label: Using Fragments
 #### Recommended background reading
 
 - [Fragments in GraphQL](https://graphql.org/learn/queries/#fragments)
-- [A Guided Tour of Relay: Fragments](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#fragments)
+- [A Guided Tour of Relay: Fragments](https://relay.dev/docs/guided-tour/rendering/fragments)
 
 ## Using Fragments
 
@@ -176,7 +176,7 @@ See the difference? Let's break it down:
 
 We don't have to change anything anywhere else. `<UserProfile />`, who defines the query and fetches the data, does not need to know anything about this change. It just knows that it needs to get the data for `UserProfileHeader_user` - it's not concerned with how that data looks or if it includes more fragments. It just gets the data for `UserProfileHeader_user`, passes it along and minds its own business.
 
-This is a core strength of Relay called _data masking_ - no data is available to anyone unless they explicitly ask for it. You can [read more about data masking in Relay here](https://relay.dev/docs/en/thinking-in-relay.html#data-masking).
+This is a core strength of Relay called _data masking_ - no data is available to anyone unless they explicitly ask for it. You can [read more about data masking in Relay here](https://relay.dev/docs/principles-and-architecture/thinking-in-relay/#data-masking).
 
 ## Using fragments outside of React's render phase
 
@@ -225,7 +225,7 @@ let make = (~user) =>
 
 ## On to the next thing
 
-That's a basic introduction to fragments. There are a few more concepts around fragments that are worth spending some time to grok. However, none of them are specific to using Relay with Reason, so you can read more about them in the [Relay documentation](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#rendering-data-basics) below.
+That's a basic introduction to fragments. There are a few more concepts around fragments that are worth spending some time to grok. However, none of them are specific to using Relay with Reason, so you can read more about them in the [Relay documentation](https://relay.dev/docs/guided-tour/rendering/fragments) below.
 
 Before we move on to the next thing, there's a few things that's worth keeping in mind about fragments:
 
@@ -244,7 +244,7 @@ With that in mind, Let's jump in to [mutations](mutations).
 
 `SomeFragment.use` is a React hook that takes an object containing a fragment reference for that particular fragment, and returns the fragment data.
 
-> `use` uses Relay's `useFragment` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usefragment).
+> `use` uses Relay's `useFragment` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/use-fragment).
 
 ### `readInline`
 

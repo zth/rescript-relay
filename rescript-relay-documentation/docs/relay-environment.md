@@ -4,7 +4,7 @@ title: Relay Environment
 sidebar_label: Relay Environment
 ---
 
-This section of the docs is quite lacking. However, most of the information you need is available in the [official Relay documentation](https://relay.dev/docs/guided-tour/rendering/environment/).
+This section of the docs is quite lacking. However, most of the information you need is available in the [official Relay documentation](https://relay.dev/docs/guided-tour/rendering/environment).
 
 ## Missing field handlers
 

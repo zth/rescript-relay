@@ -7,7 +7,7 @@ sidebar_label: Making Queries
 #### Recommended background reading
 
 - [Queries and mutations in GraphQL](https://graphql.org/learn/queries/)
-- [A Guided Tour of Relay: Queries](https://relay.dev/docs/en/experimental/a-guided-tour-of-relay#queries)
+- [A Guided Tour of Relay: Queries](https://relay.dev/docs/guided-tour/rendering/queries)
 - [React documentation: Suspense for Data Fetching](https://reactjs.org/docs/concurrent-mode-suspense.html)
 
 ## Making Queries
@@ -65,7 +65,7 @@ There, that's all it takes to do your first query! Continue reading on this page
 
 Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your data until that component actually renders. There's a concept in Relay called _preloaded queries_, which means that you start _preloading your query_ as soon as you can, rather than waiting for UI to render just to trigger a query.
 
-> Please read [this section of the Relay docs](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery) for a more thorough overview of preloaded queries.
+> Please read [this section of the Relay docs](https://relay.dev/docs/api-reference/use-preloaded-query) for a more thorough overview of preloaded queries.
 
 In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
@@ -159,7 +159,7 @@ Please note though that `fetch` does not necessarily retain data in the Relay st
 
 The results are delivered through a `Belt.Result.t` in the `onResult` callback.
 
-> `fetch` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#fetchquery).
+> `fetch` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/fetch-query).
 
 ##### Parameters
 
@@ -185,7 +185,7 @@ Query.fetchPromised(~environment, ~variables=(), ())
 
 ```
 
-> `fetchPromised` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#fetchquery).
+> `fetchPromised` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/fetch-query).
 
 ##### Parameters
 
@@ -220,7 +220,7 @@ A function that manually disposes the query, turning `queryRef` into `None`. Sig
 
 `let disposeQuery: unit => unit;`
 
-> `useLoader` uses Relay's `useQueryLoader` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usequeryloader).
+> `useLoader` uses Relay's `useQueryLoader` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/use-query-loader).
 
 ### `usePreloaded`
 
@@ -232,7 +232,7 @@ Returns the query's `response`.
 | ---------- | ---------- | -------- | -------------------------------------------------------------------- |
 | `queryRef` | `queryRef` | _Yes_    | The query referenced returned by `loadQuery` from `Query.useLoader`. |
 
-> `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery).
+> `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/use-preloaded-query).
 
 ### `retain`
 
@@ -247,7 +247,7 @@ Returns a `Disposable.t` that you can use to dispose of the query results when y
 | `environment` | `Environment.t` | _Yes_    | Your Relay environment.                                                           |
 | `variables`   | `'variables`    | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
 
-> Read more [about retaining queries in Relay here](https://relay.dev/docs/guided-tour/accessing-data-without-react/retaining-queries/#internaldocs-banner).
+> Read more [about retaining queries in Relay here](https://relay.dev/docs/guided-tour/accessing-data-without-react/retaining-queries).
 
 ### `commitLocalPayload`
 
