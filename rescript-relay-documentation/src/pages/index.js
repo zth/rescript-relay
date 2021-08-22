@@ -8,29 +8,38 @@ import styles from "./styles.module.css";
 
 const features = [
   {
-    title: <>Convenient and Fully Type-Safe</>,
+    title: <>100% production focused</>,
     imageUrl: "img/undraw_docusaurus_mountain.svg",
     description: (
       <>
-        Combining Relay's type-safety-first approach with ReasonML's incredible
-        type system and inference makes for a great developer experience.
+        RescriptRelay is fully focused on building maintainable and scalable
+        products fast. Enjoy the raw power of the most powerful GraphQL client
+        in ReScript, the most powerful language available for building frontend
+        applications.
       </>
     ),
   },
   {
-    title: <>Batteries Included</>,
+    title: <>Developer Experience</>,
     imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
-        RescriptRelay brings tools and utilities to make common patterns in
-        Relay as easy as possible.
+        DX is a top priority. We bring dedicated tooling like a VSCode extension
+        and a CLI packed with features designed to help your codebase stay
+        healthy as it grows in size and complexity.
       </>
     ),
   },
   {
-    title: <>...</>,
+    title: <>Unique features</>,
     imageUrl: "img/undraw_docusaurus_react.svg",
-    description: <>TBD.</>,
+    description: (
+      <>
+        ReScript's fully sound type system has empowered us to build out a set
+        of tooling unique to RescriptRelay. As always, the tooling is focused on
+        one thing only - helping you scale and maintain your products.
+      </>
+    ),
   },
 ];
 
@@ -54,8 +63,8 @@ function Home() {
   const { siteConfig = {} } = context;
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title={`${siteConfig.title} - Production ready GraphQL framework for ReScript`}
+      description={`${siteConfig.title} - Production ready GraphQL framework for ReScript`}
     >
       <header className={clsx("hero hero--primary", styles.heroBanner)}>
         <div className="container">
@@ -64,7 +73,7 @@ function Home() {
           <div className={styles.buttons}>
             <Link
               className={clsx(
-                "button button--outline button--secondary button--lg",
+                "button button--outline button--lg",
                 styles.getStarted
               )}
               to={useBaseUrl("docs/start-here")}

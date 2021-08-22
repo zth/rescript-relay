@@ -7,8 +7,9 @@
 
 module.exports = {
   title: "RescriptRelay",
-  tagline: "Use Relay with ReScript",
-  url: "https://your-docusaurus-test-site.com",
+  tagline:
+    "Production ready, batteries included GraphQL frontend framework for ReScript",
+  url: "https://rescript-relay-documentation.vercel.app/",
   baseUrl: "/",
   favicon: "img/favicon.png",
   organizationName: "zth", // Usually your GitHub org/user name.
