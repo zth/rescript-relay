@@ -7,8 +7,9 @@
 
 module.exports = {
   title: "RescriptRelay",
-  tagline: "Use Relay with ReScript",
-  url: "https://your-docusaurus-test-site.com",
+  tagline:
+    "Production ready, batteries included GraphQL frontend framework for ReScript",
+  url: "https://rescript-relay-documentation.vercel.app/",
   baseUrl: "/",
   favicon: "img/favicon.png",
   organizationName: "zth", // Usually your GitHub org/user name.
@@ -19,12 +20,19 @@ module.exports = {
       items: [
         { to: "docs/start-here", label: "Docs", position: "left" },
         { to: "blog", label: "Blog", position: "left" },
+        { to: "showcases", label: "Showcases", position: "left" },
+        { to: "community", label: "Community", position: "left" },
         {
           href: "https://github.com/zth/rescript-relay",
           label: "GitHub",
           position: "right",
         },
       ],
+      googleAnalytics: {
+        trackingID: "UA-205541354-1",
+        // Optional fields.
+        anonymizeIP: true, // Should IPs be anonymized?
+      },
     },
     footer: {
       style: "dark",
