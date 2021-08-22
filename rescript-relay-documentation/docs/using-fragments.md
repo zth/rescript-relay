@@ -248,6 +248,8 @@ With that in mind, Let's jump in to [mutations](mutations).
 
 ### `readInline`
 
+> Your fragment needs to be annotated with [`@inline`](https://relay.dev/docs/api-reference/graphql-and-directives/#inline) for this function to appear.
+
 `SomeFragment.readInline` is a function that takes an object containing a fragment reference for that particular fragment, and returns the fragment data. Can be used outside of React's render phase.
 
 > `readInline` uses Relay's `readInlineData` under the hood.
