@@ -1,6 +1,6 @@
 # rescript-relay
 
-Use Relay with ReScript/ReasonML.
+Use Relay with ReScript.
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
 

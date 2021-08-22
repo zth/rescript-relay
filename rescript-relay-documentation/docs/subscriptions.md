@@ -33,7 +33,7 @@ let createSubscriptionClient = createSubscriptionClient
 
 ```
 
-The following code is a Reason version of the example from the official Relay [documentation](https://relay.dev/docs/en/subscriptions#configure-network):
+The following code is a ReScript version of the example from the official Relay [documentation](https://relay.dev/docs/en/subscriptions#configure-network):
 
 ```reason
 /* RelayEnv.res */

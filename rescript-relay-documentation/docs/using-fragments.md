@@ -225,7 +225,7 @@ let make = (~user) =>
 
 ## On to the next thing
 
-That's a basic introduction to fragments. There are a few more concepts around fragments that are worth spending some time to grok. However, none of them are specific to using Relay with Reason, so you can read more about them in the [Relay documentation](https://relay.dev/docs/guided-tour/rendering/fragments) below.
+That's a basic introduction to fragments. There are a few more concepts around fragments that are worth spending some time to grok. However, none of them are specific to using Relay with ReScript, so you can read more about them in the [Relay documentation](https://relay.dev/docs/guided-tour/rendering/fragments) below.
 
 Before we move on to the next thing, there's a few things that's worth keeping in mind about fragments:
 

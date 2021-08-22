@@ -54,7 +54,7 @@ module.exports = {
 
 Expanding on the `Datetime` example above, whenever you want RescriptRelay to automatically convert a custom scalar for you at runtime, do this:
 
-1. As in the example above, define the custom scalar mapping as a _module_. This is decided by that what the mapping points to is a capitalized name, which in Reason means it's a module.
+1. As in the example above, define the custom scalar mapping as a _module_. This is decided by that what the mapping points to is a capitalized name, which in ReScript means it's a module.
 2. Make sure the module you're pointing to exists in your project, and implements this signature:
 
 ```reason

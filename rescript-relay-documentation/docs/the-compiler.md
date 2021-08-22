@@ -16,4 +16,4 @@ You can [read more about the Relay compiler here](https://relay.dev/docs/en/grap
 
 ## How RescriptRelay uses the Relay compiler
 
-When you run the compiler, you run `rescript-relay-compiler` and not `relay-compiler` - why is that? Well, it's because RescriptRelay ships a thin layer on top of `relay-compiler`, that sets up the configuration the Relay compiler needs to produce Reason automatically. It also enforces a more strict configuration of Relay that RescriptRelay needs to do its thing.
+When you run the compiler, you run `rescript-relay-compiler` and not `relay-compiler` - why is that? Well, it's because RescriptRelay ships a thin layer on top of `relay-compiler`, that sets up the configuration the Relay compiler needs to produce ReScript automatically. It also enforces a more strict configuration of Relay that RescriptRelay needs to do its thing.
