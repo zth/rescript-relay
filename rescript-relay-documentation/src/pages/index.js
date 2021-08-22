@@ -13,20 +13,20 @@ const features = [
     description: (
       <>
         RescriptRelay is fully focused on building maintainable and scalable
-        products fast. Enjoy the raw power of the most powerful GraphQL client
-        in ReScript, the most powerful language available for building frontend
-        applications.
+        products fast. Enjoy the raw power of the most powerful GraphQL client,
+        Relay, in ReScript, the most powerful language available for building
+        frontend applications.
       </>
     ),
   },
   {
-    title: <>Developer Experience</>,
+    title: <>Developer Experience is a top priority</>,
     imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
-        DX is a top priority. We bring dedicated tooling like a VSCode extension
-        and a CLI packed with features designed to help your codebase stay
-        healthy as it grows in size and complexity.
+        We bring dedicated tooling like a VSCode extension and a CLI packed with
+        features designed to help your codebase stay healthy as it grows in size
+        and complexity.
       </>
     ),
   },
