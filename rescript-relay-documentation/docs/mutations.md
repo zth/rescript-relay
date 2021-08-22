@@ -7,7 +7,7 @@ sidebar_label: Mutations
 #### Recommended background reading
 
 - [Queries and mutations in GraphQL](https://graphql.org/learn/queries/)
-- [Mutations in Relay from the Relay documentation]()
+- [Mutations in Relay from the Relay documentation](https://relay.dev/docs/guided-tour/updating-data/graphql-mutations)
 
 ## Mutations in Relay
 
