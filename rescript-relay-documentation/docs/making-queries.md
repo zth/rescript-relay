@@ -140,7 +140,7 @@ _Please note that this function must be called with an ending unit `()` if not a
 
 ### `fetch`
 
-Sometimes you just need the query data outside of React. `fetch` lets you make the query and get the data back in a promise.
+Sometimes you just need the query data outside of React. `fetch` lets you make the query and get the data back in a callback.
 
 Using it looks something like this:
 
@@ -163,11 +163,38 @@ The results are delivered through a `Belt.Result.t` in the `onResult` callback.
 
 ##### Parameters
 
-| Name          | Type                                         | Required | Notes                                                                             |
-| ------------- | -------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
-| `environment` | `Environment.t`                              | _Yes_    | Your Relay environment.                                                           |
-| `variables`   | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
-| `onResult`    | `Belt.Result.t('response, Js.Promise.error)` | _Yes_    | Callback for getting the data (or error) when it's retrieved.                     |
+| Name                 | Type                                         | Required | Notes                                                                             |
+| -------------------- | -------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `environment`        | `Environment.t`                              | _Yes_    | Your Relay environment.                                                           |
+| `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+| `networkCacheConfig` | `cacheConfig`                                | No       | A cache config for the network layer.                                             |
+| `fetchPolicy`        | `fetchQueryFetchPolicy`                      | No       | A fetch policy to use for this particular query.                                  |
+| `onResult`           | `Belt.Result.t('response, Js.Promise.error)` | _Yes_    | Callback for getting the data (or error) when it's retrieved.                     |
+
+### `fetchPromised`
+
+The same as `fetch`, but returns a promise (using `reason-promise` -> `Promise.t`) instead of using a callback.
+
+Using it looks something like this:
+
+```reason
+Query.fetchPromised(~environment, ~variables=(), ())
+  ->Promise.get(res => {
+    Js.log(res)
+  })
+
+```
+
+> `fetchPromised` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#fetchquery).
+
+##### Parameters
+
+| Name                 | Type                    | Required | Notes                                                                             |
+| -------------------- | ----------------------- | -------- | --------------------------------------------------------------------------------- |
+| `environment`        | `Environment.t`         | _Yes_    | Your Relay environment.                                                           |
+| `variables`          | `'variables`            | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+| `networkCacheConfig` | `cacheConfig`           | No       | A cache config for the network layer.                                             |
+| `fetchPolicy`        | `fetchQueryFetchPolicy` | No       | A fetch policy to use for this particular query.                                  |
 
 ### `useLoader`
 
@@ -206,3 +233,34 @@ Returns the query's `response`.
 | `queryRef` | `queryRef` | _Yes_    | The query referenced returned by `loadQuery` from `Query.useLoader`. |
 
 > `usePreloaded` uses Relay's `usePreloadedQuery` under the hood, which you can [read more about here](https://relay.dev/docs/en/experimental/api-reference#usepreloadedquery).
+
+### `retain`
+
+Calling with a set of variables will make Relay _disable garbage collection_ of this query (+ variables) until you explicitly dispose the `Disposable.t` you get back from this call.
+
+Useful for queries and data you know you want to keep in the store regardless of what happens (like it not being used by any view and therefore potentially garbage collected).
+
+Returns a `Disposable.t` that you can use to dispose of the query results when you don't need them anymore.
+
+| Name          | Type            | Required | Notes                                                                             |
+| ------------- | --------------- | -------- | --------------------------------------------------------------------------------- |
+| `environment` | `Environment.t` | _Yes_    | Your Relay environment.                                                           |
+| `variables`   | `'variables`    | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+
+> Read more [about retaining queries in Relay here](https://relay.dev/docs/guided-tour/accessing-data-without-react/retaining-queries/#internaldocs-banner).
+
+### `commitLocalPayload`
+
+> This requires your query to be annotated with [`@raw_response_type`](https://relay.dev/docs/glossary/#raw_response_type).
+
+This commits a payload into the store _locally only_. Useful for driving client-only state via Relay for example, or priming the cache with data you don't necessarily want to hit the server for.
+
+Returns a `Disposable.t` that you can use to dispose of the query results when you don't need them anymore.
+
+| Name          | Type            | Required | Notes                                                                             |
+| ------------- | --------------- | -------- | --------------------------------------------------------------------------------- |
+| `environment` | `Environment.t` | _Yes_    | Your Relay environment.                                                           |
+| `variables`   | `'variables`    | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined. |
+| `payload`     | `'response`     | _Yes_    | The payload to commit.                                                            |
+
+> Read more [about commiting local payloads in Relay here](https://relay.dev/docs/guided-tour/updating-data/local-data-updates/#commitpayload).
