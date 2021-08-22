@@ -28,11 +28,11 @@ module.exports = {
           position: "right",
         },
       ],
-      googleAnalytics: {
-        trackingID: "UA-205541354-1",
-        // Optional fields.
-        anonymizeIP: true, // Should IPs be anonymized?
-      },
+    },
+    googleAnalytics: {
+      trackingID: "UA-205541354-1",
+      // Optional fields.
+      anonymizeIP: true, // Should IPs be anonymized?
     },
     footer: {
       style: "dark",
