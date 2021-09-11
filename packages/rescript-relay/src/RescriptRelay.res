@@ -371,12 +371,16 @@ module MissingFieldHandler = {
 }
 
 // This handler below enables automatic resolution of all cached items through the Node interface
-let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFieldHandler(
-  (field, record, args, _store) =>
-    switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
-    | (Some(record), "node", argsId) when record["__typename"] == storeRootType => argsId
-    | _ => None
-    },
+let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFieldHandler((
+  field,
+  record,
+  args,
+  _store,
+) =>
+  switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
+  | (Some(record), "node", argsId) if record["__typename"] == storeRootType => argsId
+  | _ => None
+  }
 )
 
 module ConnectionHandler = {
@@ -443,9 +447,9 @@ module Observable = {
   }
 
   type sink<'response> = {
-    next: 'response => unit,
-    error: Js.Exn.t => unit,
-    complete: unit => unit,
+    next: (. 'response) => unit,
+    error: (. Js.Exn.t) => unit,
+    complete: (. unit) => unit,
     closed: bool,
   }
 
@@ -453,11 +457,11 @@ module Observable = {
 
   @obj
   external makeObserver: (
-    ~start: subscription => unit=?,
-    ~next: 'response => unit=?,
-    ~error: Js.Exn.t => unit=?,
-    ~complete: unit => unit=?,
-    ~unsubscribe: subscription => unit=?,
+    ~start: @uncurry subscription => unit=?,
+    ~next: @uncurry 'response => unit=?,
+    ~error: @uncurry Js.Exn.t => unit=?,
+    ~complete: @uncurry unit => unit=?,
+    ~unsubscribe: @uncurry subscription => unit=?,
     unit,
   ) => observer<'response> = ""
 

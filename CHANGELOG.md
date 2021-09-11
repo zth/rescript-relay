@@ -1,5 +1,9 @@
 # master
 
+## Breaking changes
+
+- Uncurry `sink` methods. What was previously `sink => sink.error(err)` etc should now instead be `sink => sink.error(. err)`.
+
 # 0.21.1
 
 - A few bug fixes to the `remove-unused-fields` command in the CLI.

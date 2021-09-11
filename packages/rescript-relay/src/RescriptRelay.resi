@@ -3,14 +3,12 @@
 )
 type arguments
 
-@ocaml.doc(
-  "Abstract type for uploadables.
+@ocaml.doc("Abstract type for uploadables.
 
 ### Constructing an `uploadables`
 Use `makeUploadable`: `makeUploadable({ \"someFile\": theFileYouWantToUpload })` to construct an `uploadables`, and then pass it to your mutation via the `uploadables` prop.
 
-Please note that you'll need to handle _sending_ the uploadables to your server yourself in the network layer. [Here's an example](https://github.com/facebook/relay/issues/1844#issuecomment-316893590) in regular JS that you can adapt to ReScript as you need/want."
-)
+Please note that you'll need to handle _sending_ the uploadables to your server yourself in the network layer. [Here's an example](https://github.com/facebook/relay/issues/1844#issuecomment-316893590) in regular JS that you can adapt to ReScript as you need/want.")
 type uploadables
 
 @ocaml.doc(
@@ -55,12 +53,10 @@ external dataIdToString: dataId => string = "%identity"
 @ocaml.doc("Turns a `string` into a `dataId`.")
 external makeDataId: string => dataId = "%identity"
 
-@ocaml.doc(
-  "Construct an `arguments` object for use with certain Relay store APIs.
+@ocaml.doc("Construct an `arguments` object for use with certain Relay store APIs.
 
 ### Usage
-Use it like this: `makeArguments({ \"someArgument\": someValue, \"anotherArgument\": anotherValue })`. Notice the \"\" surrounding the property names - these are important and tells ReScript that we want this to be a JS object."
-)
+Use it like this: `makeArguments({ \"someArgument\": someValue, \"anotherArgument\": anotherValue })`. Notice the \"\" surrounding the property names - these are important and tells ReScript that we want this to be a JS object.")
 external makeArguments: {..} => arguments = "%identity"
 
 @ocaml.doc(
@@ -110,11 +106,9 @@ type featureFlags = {
 @module("relay-runtime")
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
-@ocaml.doc(
-  "An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
+@ocaml.doc("An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
 
-See `RecordSource.toJSON` for how to produce it."
-)
+See `RecordSource.toJSON` for how to produce it.")
 type recordSourceRecords
 
 @ocaml.doc(
@@ -357,13 +351,11 @@ module RecordProxy: {
     unit,
   ) => t = "setLinkedRecords"
 
-  @ocaml.doc(
-    "Invalidates this record.
+  @ocaml.doc("Invalidates this record.
 
 Invalidating a record means that the _next_ time Relay evaluates this record, it'll be treated as missing.
 
-_Beware_ that this doesn't mean that queries using this record will refetch immediately. Rather, it'll happen the next time the query _renders_. Have a look at `useSubscribeToInvalidationState`, that'll allow you to subscribe to whenever records are invalidated, if you're looking for a way to refetch immediately as something invalidates."
-  )
+_Beware_ that this doesn't mean that queries using this record will refetch immediately. Rather, it'll happen the next time the query _renders_. Have a look at `useSubscribeToInvalidationState`, that'll allow you to subscribe to whenever records are invalidated, if you're looking for a way to refetch immediately as something invalidates.")
   @send
   external invalidateRecord: t => unit = "invalidateRecord"
 }
@@ -426,11 +418,9 @@ module ReadOnlyRecordSourceProxy: {
   external getRoot: t => RecordProxy.t = "getRoot"
 }
 
-@ocaml.doc(
-  "A missing field handler, which is a way of teaching Relay more about the relations in your schema, so it can fulfill more things from the cache. Read more [in this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).
+@ocaml.doc("A missing field handler, which is a way of teaching Relay more about the relations in your schema, so it can fulfill more things from the cache. Read more [in this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).
 
-Feed a list of missing field handlers into `Environment.make` if you want to use them."
-)
+Feed a list of missing field handlers into `Environment.make` if you want to use them.")
 module MissingFieldHandler: {
   @@ocaml.warning("-30")
 
@@ -607,9 +597,9 @@ module Observable: {
 
   @ocaml.doc("This sink can be used to give the observable new data.")
   type sink<'response> = {
-    next: 'response => unit,
-    error: Js.Exn.t => unit,
-    complete: unit => unit,
+    next: (. 'response) => unit,
+    error: (. Js.Exn.t) => unit,
+    complete: (. unit) => unit,
     closed: bool,
   }
 
@@ -624,10 +614,10 @@ module Observable: {
 
   @ocaml.doc("Create an observer.") @obj
   external makeObserver: (
-    ~start: subscription => unit=?,
-    ~next: 'response => unit=?,
-    ~error: Js.Exn.t => unit=?,
-    ~complete: unit => unit=?,
+    ~start: @uncurry subscription => unit=?,
+    ~next: @uncurry 'response => unit=?,
+    ~error: @uncurry Js.Exn.t => unit=?,
+    ~complete: @uncurry unit => unit=?,
     ~unsubscribe: subscription => unit=?,
     unit,
   ) => observer<'response> = ""
@@ -737,7 +727,7 @@ module Store: {
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
     int=?,
-    ~queryCacheExpirationTime: int /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */=?,
+    ~queryCacheExpirationTime: int=? /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */,
     unit,
   ) => t
 
@@ -790,10 +780,8 @@ module Environment: {
   @ocaml.doc("Given an `operationDescriptor`, commits the corresponding payload.") @send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
 
-  @ocaml.doc(
-    "Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected.
-You should use the generated `Query.retain` function on your queries instead of using this directly."
-  )
+  @ocaml.doc("Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected.
+You should use the generated `Query.retain` function on your queries instead of using this directly.")
   @send
   external retain: (t, operationDescriptor) => Disposable.t = "retain"
 }
