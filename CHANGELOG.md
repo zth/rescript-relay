@@ -1,5 +1,9 @@
 # master
 
+# 0.22.0
+
+This release brings a few `rescript-relay-cli` improvements under the hood, as well as the breaking (but very easily fixable) change of uncurrying the `sink` methods received back from `RescriptRelay.Observable.make`.
+
 ## Breaking changes
 
 - Uncurry `sink` methods. What was previously `sink => sink.error(err)` etc should now instead be `sink => sink.error(. err)`.
