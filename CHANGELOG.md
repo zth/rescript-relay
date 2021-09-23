@@ -1,5 +1,9 @@
 # master
 
+## Breaking changes
+
+- Remove `reason-promise`. We're waiting for the official new Promise bindings, but since they seem to be quite far away, we'll have to revert back to stock `Js.Promise` for now. This is because `reason-promise` clashes with other Promise bindings that people might want to use before the new official ones are actually shipped.
+
 # 0.22.0
 
 This release brings a few `rescript-relay-cli` improvements under the hood, as well as the breaking (but very easily fixable) change of uncurrying the `sink` methods received back from `RescriptRelay.Observable.make`.
