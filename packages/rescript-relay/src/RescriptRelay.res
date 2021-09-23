@@ -471,7 +471,7 @@ module Observable = {
   @send
   external subscribe: (t<'response>, observer<'response>) => subscription = "subscribe"
 
-  @send external toPromise: t<'t> => Promise.t<'t> = "toPromise"
+  @send external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
 }
 
 module Network = {
@@ -709,18 +709,16 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   }
 
   let queryRefToPromise = token => {
-    let (promise, resolve) = Promise.pending()
-
-    switch token->queryRefToObservable {
-    | None => resolve(Error())
-    | Some(o) =>
-      let _: Observable.subscription = o->{
-        open Observable
-        subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    Js.Promise.make((~resolve, ~reject as _) => {
+      switch token->queryRefToObservable {
+      | None => resolve(. Error())
+      | Some(o) =>
+        let _: Observable.subscription = o->{
+          open Observable
+          subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
+        }
       }
-    }
-
-    promise
+    })
   }
 }
 

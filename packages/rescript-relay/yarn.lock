@@ -3470,11 +3470,6 @@ realpath-native@^1.1.0:
   dependencies:
     util.promisify "^1.0.0"
 
-reason-promise@^1.0.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/reason-promise/-/reason-promise-1.1.2.tgz#00ddb71c4034bdbdadd24f7c95273d32870f6d50"
-  integrity sha512-HmZqSjvKJgU/ARpz9cK5mHGELF/j7shY3Jgz/45kGSgK5DXcBqu5Z2q9iw6GVCNGVu5o4yT4bsj7e3sxLjo1jQ==
-
 redent@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/redent/-/redent-3.0.0.tgz#e557b7998316bb53c9f1f56fa626352c6963059f"

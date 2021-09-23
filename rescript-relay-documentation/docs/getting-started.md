@@ -57,8 +57,7 @@ yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb1
 
 # Add rescript-relay and dependencies to the project
 # We currently depend on Relay version 11.0.0, so install that exact version
-# We also depend on reason-promise for promises
-yarn add rescript-relay graphql relay-runtime@11.0.0 relay-compiler@11.0.0 react-relay@11.0.0 relay-config@11.0.0 reason-promise
+yarn add rescript-relay graphql relay-runtime@11.0.0 relay-compiler@11.0.0 react-relay@11.0.0 relay-config@11.0.0
 ```
 
 After you've installed the packages above, setup ReScript through your `bsconfig.json` like this:
@@ -66,7 +65,7 @@ After you've installed the packages above, setup ReScript through your `bsconfig
 ```json
 ...
 "ppx-flags": ["rescript-relay/ppx"],
-"bs-dependencies": ["@rescript/react", "rescript-relay", "reason-promise"],
+"bs-dependencies": ["@rescript/react", "rescript-relay"],
 ...
 ```
 
