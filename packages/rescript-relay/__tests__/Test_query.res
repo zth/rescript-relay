@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
   query TestQuery($status: OnlineStatus) {
     users(status: $status) {
       edges {
@@ -11,15 +10,15 @@ module Query = %relay(
       }
     }
   }
-`
-)
+`)
 
 module TestPreloaded = {
   @react.component
   let make = (~queryRef) => {
     let query = Query.usePreloaded(~queryRef, ())
     let users = switch query {
-    | {users: Some({edges: Some(edges)})} => edges->Belt.Array.keepMap(edge =>
+    | {users: Some({edges: Some(edges)})} =>
+      edges->Belt.Array.keepMap(edge =>
         switch edge {
         | Some({node}) => node
         | _ => None
@@ -28,7 +27,9 @@ module TestPreloaded = {
     | _ => []
     }
 
-    <div> {users->Belt.Array.map(user =>
+    <div>
+      {users
+      ->Belt.Array.map(user =>
         <div key=user.id>
           {React.string(
             "Preloaded " ++
@@ -40,7 +41,9 @@ module TestPreloaded = {
             })),
           )}
         </div>
-      )->React.array} </div>
+      )
+      ->React.array}
+    </div>
   }
 }
 
@@ -58,7 +61,8 @@ module Test = {
 
     let collectUsers = (res: Query.Types.response) =>
       switch res {
-      | {users: Some({edges: Some(edges)})} => edges->Belt.Array.keepMap(edge =>
+      | {users: Some({edges: Some(edges)})} =>
+        edges->Belt.Array.keepMap(edge =>
           switch edge {
           | Some({node}) => node
           | _ => None
@@ -71,7 +75,8 @@ module Test = {
     let users = collectUsers(query)
 
     <div>
-      {users->Belt.Array.map(user =>
+      {users
+      ->Belt.Array.map(user =>
         <div key=user.id>
           {React.string(
             user.firstName ++
@@ -84,7 +89,8 @@ module Test = {
             }),
           )}
         </div>
-      )->React.array}
+      )
+      ->React.array}
       <button onClick={_ => setStatus(_ => Some(#Offline))}>
         {React.string("Switch to offline")}
       </button>
@@ -102,12 +108,14 @@ module Test = {
         onClick={_ => {
           let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Some(#Idle)}, ())
 
-          queryRef->TestQuery_graphql.queryRefToPromise->Promise.get(res =>
-            switch res {
-            | Ok() => setHasWaitedForPreload(_ => true)
-            | Error() => ()
-            }
-          )
+          let _ = queryRef->TestQuery_graphql.queryRefToPromise->Js.Promise.then_(res => {
+              switch res {
+              | Ok() => setHasWaitedForPreload(_ => true)
+              | Error() => ()
+              }
+
+              Js.Promise.resolve()
+            }, _)
 
           setQueryRefFromModule(_ => Some(queryRef))
         }}>
@@ -129,12 +137,15 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          Query.fetchPromised(
-            ~environment,
-            ~variables={status: Some(#Online)},
-            (),
-          )->Promise.get(res => setFetchedResult(_ => Some(collectUsers(res))))
-          ()
+          let _ =
+            Query.fetchPromised(
+              ~environment,
+              ~variables={status: Some(#Online)},
+              (),
+            )->Js.Promise.then_(res => {
+              setFetchedResult(_ => Some(collectUsers(res)))
+              Js.Promise.resolve()
+            }, _)
         }}>
         {React.string("Test fetch promised")}
       </button>

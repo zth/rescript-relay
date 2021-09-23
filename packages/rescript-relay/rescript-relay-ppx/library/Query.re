@@ -253,7 +253,7 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
               ~fetchPolicy: option(RescriptRelay.fetchQueryFetchPolicy)=?,
               (),
             )
-            : Promise.t([%t typeFromGeneratedModule(["Types", "response"])]) => {
+            : Js.Promise.t([%t typeFromGeneratedModule(["Types", "response"])]) => {
           internal_fetchQuery(
             environment,
             [%e valFromGeneratedModule(["node"])],
@@ -269,11 +269,11 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
             }),
           )
           ->RescriptRelay.Observable.toPromise
-          ->Promise.map(res =>
-              res->[%e
-                     valFromGeneratedModule(["Internal", "convertResponse"])
-                   ]
-            );
+          ->Js.Promise.then_(
+            res => res->[%e
+              valFromGeneratedModule(["Internal", "convertResponse"])
+            ]->Js.Promise.resolve, _
+          );
         }
       ],
       [%stri

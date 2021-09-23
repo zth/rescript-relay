@@ -43,7 +43,6 @@
     "react": "0.0.0-experimental-4e08fb10c",
     "react-dom": "0.0.0-experimental-4e08fb10c",
     "react-relay": "^11.0.0",
-    "reason-promise": "^1.0.2",
     "relay-compiler": "^11.0.0",
     "relay-config": "^11.0.0",
     "relay-runtime": "^11.0.0"
@@ -52,7 +51,6 @@
     "@rescript/react": "*",
     "graphql": "*",
     "react-relay": "*",
-    "reason-promise": "^1.0.2",
     "relay-compiler": "*",
     "relay-config": "*",
     "relay-runtime": "*",

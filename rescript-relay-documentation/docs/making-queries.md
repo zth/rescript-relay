@@ -173,15 +173,16 @@ The results are delivered through a `Belt.Result.t` in the `onResult` callback.
 
 ### `fetchPromised`
 
-The same as `fetch`, but returns a promise (using `reason-promise` -> `Promise.t`) instead of using a callback.
+The same as `fetch`, but returns a promise instead of using a callback.
 
 Using it looks something like this:
 
 ```reason
 Query.fetchPromised(~environment, ~variables=(), ())
-  ->Promise.get(res => {
+  ->Js.Promise.then_(res => {
     Js.log(res)
-  })
+    Js.Promise.resolve()
+  }, _)
 
 ```
 
