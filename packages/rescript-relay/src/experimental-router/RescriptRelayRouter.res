@@ -233,7 +233,7 @@ module RouteRenderer = {
     let (initialized, setInitialized) = React.useState(() => false)
     let router = use()
 
-    let (startTransition, isPending) = ReactExperimental.unstable_useTransition()
+    let (isPending, startTransition) = ReactExperimental.useTransition()
 
     let (routeEntry, setRouteEntry) = React.useState(() => router.get())
 

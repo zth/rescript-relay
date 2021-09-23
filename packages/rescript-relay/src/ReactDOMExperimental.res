@@ -1,7 +1,20 @@
 include ReactDOM.Experimental
 
 @module("react-dom")
-external unstable_createRoot: Dom.element => root = "unstable_createRoot"
+external createRoot: Dom.element => root = "createRoot"
 
-@module("react-dom")
-external unstable_createBlockingRoot: Dom.element => root = "unstable_createBlockingRoot"
+@val @return(nullable)
+external getElementById: string => option<Dom.element> = "document.getElementById"
+
+let renderConcurrentRootAtElementWithId: (React.element, string) => unit = (content, id) =>
+  switch getElementById(id) {
+  | None =>
+    raise(
+      Invalid_argument(
+        "ReactExperimental.renderConcurrentRootAtElementWithId : no element of id " ++
+        id ++ " found in the HTML.",
+      ),
+    )
+  | Some(element) =>
+    createRoot(element)->render(content)
+  }
