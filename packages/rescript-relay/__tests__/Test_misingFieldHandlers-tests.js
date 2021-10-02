@@ -5,6 +5,7 @@ const queryMock = require("./queryMock");
 
 const { test_missingFieldHandlers } = require("./Test_missingFieldHandlers.bs");
 const { fireEvent } = require("@testing-library/react");
+const ReactTestUtils = require("react-dom/test-utils");
 
 describe("Missing field handlers", () => {
   test("resolves nodes via top level node field from cache automatically", async () => {
@@ -20,7 +21,10 @@ describe("Missing field handlers", () => {
 
     t.render(test_missingFieldHandlers());
     await t.screen.findByText("1: First");
-    fireEvent.click(t.screen.getByText("Show next"));
+
+    ReactTestUtils.act(() => {
+      fireEvent.click(t.screen.getByText("Show next"));
+    });
     await t.screen.findByText("2: First");
   });
 });

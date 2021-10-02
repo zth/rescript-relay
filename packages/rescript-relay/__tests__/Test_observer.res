@@ -15,8 +15,6 @@ module Test = {
   }
 }
 
-exception SomeFailure
-
 let test_observer = () => {
   let network = RescriptRelay.Network.makeObservableBased(~observableFunction=(_, _, _, _) => {
     RescriptRelay.Observable.make(sink => {
@@ -39,9 +37,7 @@ let test_observer = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment>
-    <RescriptReactErrorBoundary fallback={_ => React.string("Failed")}>
-      <Test />
-    </RescriptReactErrorBoundary>
-  </TestProviders.Wrapper>
+  <RescriptReactErrorBoundary fallback={_ => React.string("Failed")}>
+    <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  </RescriptReactErrorBoundary>
 }

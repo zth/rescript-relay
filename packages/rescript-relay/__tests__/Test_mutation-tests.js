@@ -2,6 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const React = require("react");
 const queryMock = require("./queryMock");
+const ReactTestUtils = require("react-dom/test-utils");
 
 const { test_mutation } = require("./Test_mutation.bs");
 
@@ -42,7 +43,9 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(t.screen.getByText("Change online status"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Change online status"));
+    });
 
     await t.screen.findByText("First is idle");
   });
@@ -81,13 +84,17 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(
-      t.screen.getByText("Change online status via useMutation hook")
-    );
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Change online status via useMutation hook")
+      );
+    });
 
     await t.screen.findByText("Mutating...");
 
-    resolveQuery();
+    ReactTestUtils.act(() => {
+      resolveQuery();
+    });
 
     await t.screen.findByText("First is idle");
   });
@@ -126,7 +133,9 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(t.screen.getByText("Change online status, complex"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Change online status, complex"));
+    });
 
     await t.screen.findByText("First is idle");
   });
@@ -165,12 +174,16 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(
-      t.screen.getByText("Change online status with optimistic update")
-    );
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Change online status with optimistic update")
+      );
+    });
 
     await t.screen.findByText("First is idle");
-    resolve();
+    ReactTestUtils.act(() => {
+      resolve();
+    });
     await t.screen.findByText("First is idle");
   });
 
@@ -208,7 +221,11 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(t.screen.getByText("Change online status with updater"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Change online status with updater")
+      );
+    });
 
     await t.screen.findByText("First is offline");
   });
@@ -249,10 +266,17 @@ describe("Mutation", () => {
       },
     });
 
-    t.fireEvent.click(t.screen.getByText("Change online status with inline fragment"));
-    
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Change online status with inline fragment")
+      );
+    });
+
     await t.screen.findByText("Inline status: -");
-    resolve()
+
+    ReactTestUtils.act(() => {
+      resolve();
+    });
     // @TODO: find out why commitMutation's onComplete callback isn't being run.
     // await t.screen.findByText("Inline status: idle");
   });

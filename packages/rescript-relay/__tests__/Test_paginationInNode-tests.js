@@ -173,7 +173,9 @@ describe("Pagination nested in node", () => {
       },
     });
 
-    t.fireEvent.click(t.screen.getByText("Refetch connection"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Refetch connection"));
+    });
 
     await t.screen.findByText("User Second has 3 friends");
     expect(t.screen.queryByText("User First has 2 friends")).toBeFalsy();

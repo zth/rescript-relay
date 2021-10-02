@@ -2,6 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const React = require("react");
 const queryMock = require("./queryMock");
+const ReactTestUtils = require("react-dom/test-utils");
 
 const { test_fragment } = require("./Test_fragment.bs");
 
@@ -55,7 +56,9 @@ describe("Fragment", () => {
       },
     });
 
-    t.render(test_fragment());
+    ReactTestUtils.act(() => {
+      t.render(test_fragment());
+    });
     await t.screen.findByText("Second is online");
     await t.screen.findByText("Third is offline");
   });
@@ -78,10 +81,14 @@ describe("Fragment", () => {
 
     await t.screen.findByText("Opt not activated");
 
-    t.fireEvent.click(t.screen.getByText("Use opt"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Use opt"));
+    });
     await t.screen.findByText("First is here!");
 
-    t.fireEvent.click(t.screen.getByText("Hide opt"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Hide opt"));
+    });
     await t.screen.findByText("Opt not activated");
   });
 
@@ -103,7 +110,9 @@ describe("Fragment", () => {
 
     await t.screen.findByText("Set data via inline");
 
-    t.fireEvent.click(t.screen.getByText("Set data via inline"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Set data via inline"));
+    });
     await t.screen.findByText(
       "Inline data: " +
         JSON.stringify({ firstName: "First", onlineStatus: "Online" })
