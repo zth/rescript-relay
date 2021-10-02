@@ -1,6 +1,5 @@
 require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
-const React = require("react");
 const ReactTestUtils = require("react-dom/test-utils");
 const queryMock = require("./queryMock");
 
@@ -15,30 +14,29 @@ describe("Subscription", () => {
           id: "user-1",
           firstName: "First",
           avatarUrl: null,
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     const testAssets = test_subscription();
 
     t.render(testAssets.render());
-    await t.screen.findByText("User First is online");
 
-    const sink = testAssets.getSink();
+    await t.screen.findByText("Ready - User First is online");
 
     ReactTestUtils.act(() => {
-      sink.next({
+      testAssets.pushNext({
         data: {
           userUpdated: {
             user: {
               id: "user-1",
               firstName: "First",
               avatarUrl: "http://some/avatar.png",
-              onlineStatus: "Online"
-            }
-          }
-        }
+              onlineStatus: "Online",
+            },
+          },
+        },
       });
     });
 
@@ -53,33 +51,31 @@ describe("Subscription", () => {
           id: "user-1",
           firstName: "First",
           avatarUrl: null,
-          onlineStatus: "Online"
-        }
-      }
+          onlineStatus: "Online",
+        },
+      },
     });
 
     const testAssets = test_subscription();
 
     t.render(testAssets.render());
-    await t.screen.findByText("User First is online");
-
-    const sink = testAssets.getSink();
+    await t.screen.findByText("Ready - User First is online");
 
     ReactTestUtils.act(() => {
-      sink.next({
+      testAssets.pushNext({
         data: {
           userUpdated: {
             user: {
               id: "user-1",
               firstName: "First",
               avatarUrl: null,
-              onlineStatus: "Idle"
-            }
-          }
-        }
+              onlineStatus: "Idle",
+            },
+          },
+        },
       });
     });
 
-    await t.screen.findByText("User First is offline");
+    await t.screen.findByText("Ready - User First is offline");
   });
 });

@@ -1,25 +1,20 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestPaginationUnionQuery($groupId: ID!) {
       ...TestPaginationUnion_query @arguments(groupId: $groupId)
     }
-`
-)
+`)
 
 // This is just to ensure that fragments on unions work
-module UserFragment = %relay(
-  `
+module UserFragment = %relay(`
   fragment TestPaginationUnion_user on User {
     firstName
     friendsConnection(first: 1) {
       totalCount
     }
   }
-`
-)
+`)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestPaginationUnion_query on Query
       @refetchable(queryName: "TestPaginationUnionRefetchQuery")
       @argumentDefinitions(
@@ -58,8 +53,7 @@ module Fragment = %relay(
         }
       }
     }
-`
-)
+`)
 
 module UserDisplayer = {
   @react.component
@@ -80,13 +74,16 @@ module Test = {
     let groupId = "123"
     let query = Query.use(~variables={groupId: groupId}, ())
 
-    let (startTransition, _) = ReactExperimental.unstable_useTransition()
+    let (_, startTransition) = ReactExperimental.useTransition()
 
     let {data, hasNext, loadNext, isLoadingNext, refetch} = Fragment.usePagination(
       query.fragmentRefs,
     )
 
-    <div> {data.members->Fragment.getConnectionNodes->Belt.Array.mapWithIndex((i, member) =>
+    <div>
+      {data.members
+      ->Fragment.getConnectionNodes
+      ->Belt.Array.mapWithIndex((i, member) =>
         switch member {
         | #User(user) => <div key=user.id> <UserDisplayer user=user.fragmentRefs /> </div>
         | #Group(group) =>
@@ -105,11 +102,16 @@ module Test = {
         | #UnselectedUnionMember(_) =>
           <div key={i->string_of_int}> {React.string("Unknown type")} </div>
         }
-      )->React.array} {hasNext
+      )
+      ->React.array}
+      {hasNext
         ? <button onClick={_ => loadNext(~count=2, ())->ignore}>
             {React.string(isLoadingNext ? "Loading..." : "Load more")}
           </button>
-        : React.null} <button onClick={_ => startTransition(() => {
+        : React.null}
+      <button
+        onClick={_ =>
+          startTransition(() => {
             let _ = refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
@@ -118,7 +120,10 @@ module Test = {
               ),
               (),
             )
-          })}> {React.string("Refetch connection")} </button> </div>
+          })}>
+        {React.string("Refetch connection")}
+      </button>
+    </div>
   }
 }
 
