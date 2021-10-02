@@ -19,7 +19,7 @@ type Result = {
 };
 
 export function processConcreteText(concreteText: string): Result {
-  let requireRegexp = /(require\('.\/)([A-Za-z_.0-9/]+)(.graphql.\w*'\))/gm;
+  let requireRegexp = /(require\('.\/)([A-Za-z_.0-9/]+)(.graphql'\))/gm;
   let str = concreteText;
   const referencedNodes: ReferencedNode[] = [];
 
