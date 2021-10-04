@@ -30,7 +30,7 @@ You will have the absolute best experience using RescriptRelay in concurrent mod
 
 Not all experimental APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
-This means that you'll need to install the `experimental` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
+This means that you'll need to install the `alpha` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
 
 #### A short note on the workflow of using Relay
 
@@ -49,15 +49,15 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@experimental react-dom@experimental`. Let's start by installing the dependencies:
+RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@alpha react-dom@alpha`. Let's start by installing the dependencies:
 
 ```bash
 # Add React and ReactDOM experimental versions
-yarn add react@0.0.0-experimental-4e08fb10c react-dom@0.0.0-experimental-4e08fb10c
+yarn add react@alpha react-dom@alpha
 
 # Add rescript-relay and dependencies to the project
-# We currently depend on Relay version 11.0.0, so install that exact version
-yarn add rescript-relay graphql relay-runtime@11.0.0 relay-compiler@11.0.0 react-relay@11.0.0 relay-config@11.0.0
+# We currently depend on Relay version 12.0.0, so install that exact version
+yarn add rescript-relay graphql relay-runtime@12.0.0 relay-compiler@12.0.0 react-relay@12.0.0 relay-config@12.0.0
 ```
 
 After you've installed the packages above, setup ReScript through your `bsconfig.json` like this:
@@ -77,19 +77,19 @@ You may need to tell `yarn` to prefer the experimental versions of React and Rea
 
 Ensure that only the experimental versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-4e08fb10c` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-d174d063d-20210922` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-4e08fb10c",
-    "react-dom": "0.0.0-experimental-4e08fb10c"
+    "react": "0.0.0-experimental-d174d063d-20210922",
+    "react-dom": "0.0.0-experimental-d174d063d-20210922"
   }
 }
 ```
 
-Remember, the version number for `experimental` releases change pretty often, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
+Remember, the version number for `alpha` releases change pretty often, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
 
 ## Configuring Relay
 
@@ -213,7 +213,7 @@ Your Relay environment needs to be available in React's context in your app. To 
 
 ```reason
 /* Index.res */
-ReactExperimental.renderConcurrentRootAtElementWithId(
+ReactDOMExperimental.renderConcurrentRootAtElementWithId(
   <RescriptRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />
   </RescriptRelay.Context.Provider>,

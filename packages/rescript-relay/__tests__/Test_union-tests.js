@@ -1,6 +1,5 @@
 require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
-const React = require("react");
 const queryMock = require("./queryMock");
 
 const { test_unions } = require("./Test_unions.bs");
@@ -17,16 +16,16 @@ describe("Unions", () => {
                 __typename: "User",
                 id: "user-1",
                 firstName: "First",
-                onlineStatus: null
-              }
+                onlineStatus: null,
+              },
             },
             {
               node: {
                 __typename: "User",
                 id: "user-2",
                 firstName: "Second",
-                onlineStatus: "Offline"
-              }
+                onlineStatus: "Offline",
+              },
             },
             {
               node: {
@@ -39,20 +38,20 @@ describe("Unions", () => {
                     __typename: "User",
                     id: "user-3",
                     firstName: "Third",
-                    onlineStatus: "Idle"
+                    onlineStatus: "Idle",
                   },
                   {
                     __typename: "Group",
                     id: "group-2",
                     name: "Group #2",
-                    avatarUrl: "group2_avatar"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
+                    avatarUrl: "group2_avatar",
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
     });
 
     t.render(test_unions());

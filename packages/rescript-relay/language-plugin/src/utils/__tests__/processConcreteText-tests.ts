@@ -4,8 +4,8 @@ describe("processConcreteText", () => {
   it("replaces require statements correctly", () => {
     expect(
       processConcreteText(
-        ` "operation": require('./BookDisplayerRefetchQuery.graphql.re'),
-        "someOtherOp": require('./SomeRefetchQuery.graphql.re'),`
+        ` "operation": require('./BookDisplayerRefetchQuery.graphql'),
+        "someOtherOp": require('./SomeRefetchQuery.graphql'),`
       )
     ).toStrictEqual({
       processedText: ` "operation": node_BookDisplayerRefetchQuery,

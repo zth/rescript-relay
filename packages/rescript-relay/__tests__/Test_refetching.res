@@ -1,15 +1,12 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestRefetchingQuery {
       loggedInUser {
         ...TestRefetching_user
       }
     }
-`
-)
+`)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestRefetching_user on User
       @refetchable(queryName: "TestRefetchingRefetchQuery")
       @argumentDefinitions(
@@ -22,11 +19,9 @@ module Fragment = %relay(
         totalCount
       }
     }
-`
-)
+`)
 
-module FragmentWithNoArgs = %relay(
-  `
+module FragmentWithNoArgs = %relay(`
     fragment TestRefetchingNoArgs_query on Query
       @refetchable(queryName: "TestRefetchingNoArgsRefetchQuery")
       {
@@ -34,8 +29,7 @@ module FragmentWithNoArgs = %relay(
         id
       }
     }
-`
-)
+`)
 
 module Test = {
   @react.component
@@ -44,7 +38,7 @@ module Test = {
 
     let (data, refetch) = Fragment.useRefetchable(query.loggedInUser.fragmentRefs)
 
-    let (startTransition, _) = ReactExperimental.unstable_useTransition()
+    let (_, startTransition) = ReactExperimental.useTransition()
 
     <div>
       {React.string(
@@ -56,7 +50,9 @@ module Test = {
         }),
       )}
       <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->string_of_int)} </div>
-      <button onClick={_ => startTransition(() => {
+      <button
+        onClick={_ =>
+          startTransition(() => {
             let _ = refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=true,
@@ -65,7 +61,9 @@ module Test = {
               ),
               (),
             )
-          })}> {React.string("Fetch online status")} </button>
+          })}>
+        {React.string("Fetch online status")}
+      </button>
     </div>
   }
 }

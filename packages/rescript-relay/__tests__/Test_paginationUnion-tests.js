@@ -2,6 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const React = require("react");
 const queryMock = require("./queryMock");
+const ReactTestUtils = require("react-dom/test-utils");
 
 const { test_pagination } = require("./Test_paginationUnion.bs");
 
@@ -10,13 +11,13 @@ describe("Pagination", () => {
     queryMock.mockQuery({
       name: "TestPaginationUnionQuery",
       variables: {
-        groupId: "123"
+        groupId: "123",
       },
       data: {
         members: {
           pageInfo: {
             hasNextPage: true,
-            endCursor: "group-1"
+            endCursor: "group-1",
           },
           edges: [
             {
@@ -26,9 +27,9 @@ describe("Pagination", () => {
                 id: "user-1",
                 firstName: "First",
                 friendsConnection: {
-                  totalCount: 2
-                }
-              }
+                  totalCount: 2,
+                },
+              },
             },
             {
               cursor: "group-1",
@@ -41,16 +42,16 @@ describe("Pagination", () => {
                     {
                       node: {
                         id: "user-2",
-                        firstName: "Second"
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
+                        firstName: "Second",
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
     });
 
     t.render(test_pagination());
@@ -64,13 +65,13 @@ describe("Pagination", () => {
         groupId: "123",
         count: 2,
         onlineStatuses: null,
-        cursor: "group-1"
+        cursor: "group-1",
       },
       data: {
         members: {
           pageInfo: {
             hasNextPage: false,
-            endCursor: "user-2"
+            endCursor: "user-2",
           },
           edges: [
             {
@@ -80,16 +81,18 @@ describe("Pagination", () => {
                 id: "user-2",
                 firstName: "Second",
                 friendsConnection: {
-                  totalCount: 4
-                }
-              }
-            }
-          ]
-        }
-      }
+                  totalCount: 4,
+                },
+              },
+            },
+          ],
+        },
+      },
     });
 
-    t.fireEvent.click(t.screen.getByText("Load more"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Load more"));
+    });
 
     await t.screen.findByText("User Second has 4 friends");
   });
@@ -98,13 +101,13 @@ describe("Pagination", () => {
     queryMock.mockQuery({
       name: "TestPaginationUnionQuery",
       variables: {
-        groupId: "123"
+        groupId: "123",
       },
       data: {
         members: {
           pageInfo: {
             hasNextPage: true,
-            endCursor: "user-1"
+            endCursor: "user-1",
           },
           edges: [
             {
@@ -114,13 +117,13 @@ describe("Pagination", () => {
                 id: "user-1",
                 firstName: "First",
                 friendsConnection: {
-                  totalCount: 2
-                }
-              }
-            }
-          ]
-        }
-      }
+                  totalCount: 2,
+                },
+              },
+            },
+          ],
+        },
+      },
     });
 
     t.render(test_pagination());
@@ -133,13 +136,13 @@ describe("Pagination", () => {
         groupId: "123",
         onlineStatuses: ["Online", "Idle"],
         count: 2,
-        cursor: ""
+        cursor: "",
       },
       data: {
         members: {
           pageInfo: {
             hasNextPage: false,
-            endCursor: "user-2"
+            endCursor: "user-2",
           },
           edges: [
             {
@@ -149,16 +152,18 @@ describe("Pagination", () => {
                 id: "user-2",
                 firstName: "Second",
                 friendsConnection: {
-                  totalCount: 4
-                }
-              }
-            }
-          ]
-        }
-      }
+                  totalCount: 4,
+                },
+              },
+            },
+          ],
+        },
+      },
     });
 
-    t.fireEvent.click(t.screen.getByText("Refetch connection"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Refetch connection"));
+    });
 
     await t.screen.findByText("User Second has 4 friends");
     expect(t.screen.queryByText("User First has 2 friends")).toBeFalsy();

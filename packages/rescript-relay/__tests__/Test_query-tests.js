@@ -2,6 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const React = require("react");
 const queryMock = require("./queryMock");
+const ReactTestUtils = require("react-dom/test-utils");
 
 const { test_query } = require("./Test_query.bs");
 
@@ -40,7 +41,9 @@ describe("Query", () => {
       )
     );
 
-    t.fireEvent.click(t.screen.getByText("Switch to offline"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Switch to offline"));
+    });
 
     queryMock.mockQuery(
       makeMockedQuery({ status: null }, [
@@ -50,7 +53,9 @@ describe("Query", () => {
       ])
     );
 
-    t.fireEvent.click(t.screen.getByText("Switch to all statuses"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Switch to all statuses"));
+    });
 
     await t.screen.findByText("First is idle");
     await t.screen.findByText("Second is -");
@@ -79,7 +84,9 @@ describe("Query", () => {
       )
     );
 
-    t.fireEvent.click(t.screen.getByText("Test preloaded from raw module"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Test preloaded from raw module"));
+    });
 
     await t.screen.findByText("Preloaded Second is idle");
   });
@@ -106,7 +113,9 @@ describe("Query", () => {
       )
     );
 
-    t.fireEvent.click(t.screen.getByText("Test wait for preload"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Test wait for preload"));
+    });
 
     await t.screen.findByText("Has waited for preload");
     await t.screen.findByText("Preloaded Second is idle");
@@ -125,7 +134,9 @@ describe("Query", () => {
     t.render(test_query());
     await t.screen.findByText("First is online");
 
-    t.fireEvent.click(t.screen.getByText("Test fetch"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Test fetch"));
+    });
 
     await t.screen.findByText("Fetched!");
   });
@@ -143,7 +154,9 @@ describe("Query", () => {
     t.render(test_query());
     await t.screen.findByText("First is online");
 
-    t.fireEvent.click(t.screen.getByText("Test fetch promised"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Test fetch promised"));
+    });
 
     await t.screen.findByText("Fetched!");
   });
@@ -170,7 +183,9 @@ describe("Query", () => {
       )
     );
 
-    t.fireEvent.click(t.screen.getByText("Test query loader"));
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Test query loader"));
+    });
 
     await t.screen.findByText("Preloaded Second is idle");
   });

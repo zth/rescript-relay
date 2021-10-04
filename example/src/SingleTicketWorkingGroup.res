@@ -1,5 +1,4 @@
-module WorkingGroupFragment = %relay(
-  `
+module WorkingGroupFragment = %relay(`
   fragment SingleTicketWorkingGroup_workingGroup on WorkingGroup
   @argumentDefinitions(includeMembers: { type: "Boolean!", defaultValue: false })
   @refetchable(queryName: "SingleTicketWorkingGroupRefetchQuery") {
@@ -13,13 +12,12 @@ module WorkingGroupFragment = %relay(
       }
     }
   }
-`
-)
+`)
 
 @react.component
 let make = (~workingGroup as wgRef) => {
   let (workingGroup, refetch) = WorkingGroupFragment.useRefetchable(wgRef)
-  let (startTransition, isPending) = ReactExperimental.unstable_useTransition()
+  let (startTransition, isPending) = ReactExperimental.useTransition()
 
   <div>
     <strong> {React.string(workingGroup.name)} </strong>
@@ -27,22 +25,32 @@ let make = (~workingGroup as wgRef) => {
       {switch workingGroup.membersConnection {
       | Some(membersConnection) =>
         switch membersConnection {
-        | {edges: Some(edges)} => edges->Belt.Array.keepMap(edge =>
+        | {edges: Some(edges)} =>
+          edges
+          ->Belt.Array.keepMap(edge =>
             switch edge {
             | Some({node: Some(node)}) => Some(node)
             | _ => None
             }
-          )->Belt.Array.map(member =>
+          )
+          ->Belt.Array.map(member =>
             <div key=member.id> <em> {React.string(member.fullName)} </em> </div>
-          )->React.array
+          )
+          ->React.array
         | _ => React.null
         }
-      | None => <button type_="button" onClick={_ => startTransition(() => {
+      | None =>
+        <button
+          type_="button"
+          onClick={_ =>
+            startTransition(() => {
               let _ = refetch(
                 ~variables=WorkingGroupFragment.makeRefetchVariables(~includeMembers=true, ()),
                 (),
               )
-            })}> {React.string(isPending ? "Loading..." : "See members")} </button>
+            })}>
+          {React.string(isPending ? "Loading..." : "See members")}
+        </button>
       }}
     </div>
   </div>

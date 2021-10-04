@@ -1,26 +1,21 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestSubscriptionQuery {
       loggedInUser {
         ...TestSubscription_user
       }
     }
-`
-)
+`)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestSubscription_user on User {
       id
       firstName
       avatarUrl
       onlineStatus
     }
-`
-)
+`)
 
-module UserUpdatedSubscription = %relay(
-  `
+module UserUpdatedSubscription = %relay(`
   subscription TestSubscriptionUserUpdatedSubscription($userId: ID!) {
     userUpdated(id: $userId) {
       user {
@@ -30,8 +25,7 @@ module UserUpdatedSubscription = %relay(
       }
     }
   }
-`
-)
+`)
 
 module Test = {
   @react.component
@@ -39,6 +33,7 @@ module Test = {
     let environment = RescriptRelay.useEnvironmentFromContext()
     let query = Query.use(~variables=(), ())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
+    let (ready, setReady) = React.useState(() => false)
 
     React.useEffect0(() => {
       let disposable = UserUpdatedSubscription.subscribe(
@@ -70,12 +65,18 @@ module Test = {
         (),
       )
 
+      setReady(_ => true)
+
       Some(() => disposable->RescriptRelay.Disposable.dispose)
     })
 
     <div>
       <div>
         {React.string(
+          switch ready {
+          | true => "Ready - "
+          | false => ""
+          } ++
           "User " ++
           (data.firstName ++
           (" is " ++
@@ -95,14 +96,27 @@ module Test = {
 }
 
 let test_subscription = () => {
-  let theSink: ref<option<RescriptRelay.Observable.sink<'a>>> = ref(None)
+  let subscriptionFns = ref([])
 
-  let observable = RescriptRelay.Observable.make(sink => {
-    theSink := Some(sink)
-    None
-  })
+  let subscribeToOnNext = nextFn => {
+    let _ = subscriptionFns.contents->Js.Array2.push(nextFn)
 
-  let subscriptionFunction = (_, _, _) => observable
+    () => {
+      subscriptionFns.contents = subscriptionFns.contents->Js.Array2.filter(fn => fn !== nextFn)
+    }
+  }
+
+  let pushNext = next => subscriptionFns.contents->Js.Array2.forEach(fn => fn(next))
+
+  let subscriptionFunction = (_, _, _) => {
+    RescriptRelay.Observable.make(sink => {
+      let unsubscribe = subscribeToOnNext(next => sink.next(. next))
+      Some({
+        closed: false,
+        unsubscribe: unsubscribe,
+      })
+    })
+  }
 
   let network = RescriptRelay.Network.makePromiseBased(
     ~fetchFunction=RelayEnv.fetchQuery,
@@ -117,7 +131,7 @@ let test_subscription = () => {
   )
 
   {
-    "getSink": () => theSink.contents,
+    "pushNext": pushNext,
     "subscriptionFunction": subscriptionFunction,
     "render": () => <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>,
   }

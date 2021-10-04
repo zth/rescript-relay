@@ -1,8 +1,20 @@
 # master
 
+## Upgrade versions
+
+- `react-relay` to `12.0.0`
+- `relay-compiler` to `12.0.0`
+- `relay-config` to `12.0.0`
+- `relay-runtime` to `12.0.0`
+- `react` to `alpha`
+- `react-dom` to `alpha`
+
 ## Breaking changes
 
 - Remove `reason-promise`. We're waiting for the official new Promise bindings, but since they seem to be quite far away, we'll have to revert back to stock `Js.Promise` for now. This is because `reason-promise` clashes with other Promise bindings that people might want to use before the new official ones are actually shipped.
+- `ReactExperimental.unstable_useTransition` is now called `ReactExperimental.useTransition`, and the order of the tuple that's returned has been reversed to align with the underlying API. This means that what was before `let (startTransition, isTransitioning) = ReactExperimental.unstable_useTransition()` is now `let (isTransitioning, startTransition) = ReactExperimental.useTransition()`.
+- `ReactExperimental.unstable_useDeferredValue` is now called `ReactExperimental.useDeferredValue`.
+- `ReactExperimental.renderConcurrentRootAtElementWithId` has moved to `ReactDOMExperimental`: `ReactDOMExperimental.renderConcurrentRootAtElementWithId`.
 
 # 0.22.0
 
