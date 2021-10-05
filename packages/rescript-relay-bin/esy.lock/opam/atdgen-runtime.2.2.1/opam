@@ -32,7 +32,7 @@ depends: [
 ]
 dev-repo: "git+https://github.com/ahrefs/atd.git"
 build: [
-  ["dune" "subst"] {dev}
+  ["dune" "subst"] {pinned}
   [
     "dune"
     "build"
