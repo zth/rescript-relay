@@ -6,7 +6,7 @@ jobs:
   ppx_linux:
     strategy:
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-18.04]
 
     name: PPX
     runs-on: ${{ matrix.platform }}
