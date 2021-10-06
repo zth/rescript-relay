@@ -4,17 +4,11 @@ on: [push]
 
 jobs:
   ppx_linux:
-    strategy:
-      matrix:
-        platform: [ubuntu-18.04]
-
     name: PPX
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
-    container:
-      image: cichocinski/docker-esy:alpine3.8
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
@@ -22,6 +16,8 @@ jobs:
           node-version: 12.19.0
         env:
           CI: true
+      - name: Install esy
+        run: npm install -g esy
       - name: Esy install
         run: esy install
       - name: Print esy cache
