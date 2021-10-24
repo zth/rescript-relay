@@ -32,9 +32,9 @@ jobs:
         id: deps-cache
         with:
           path: ${{ steps.print_esy_cache.outputs.esy_cache }}
-          key: ${{ matrix.platform }}---${{ hashFiles('**/index.json') }}
+          key: ${{ matrix.platform }}---v1${{ hashFiles('**/index.json') }}
           restore-keys: |
-            ${{ matrix.platform }}---
+            ${{ matrix.platform }}---v1
       - name: Test PPX
         run: esy test
       - name: Build PPX
@@ -73,7 +73,7 @@ jobs:
       - name: Build PPX
         uses: esy/github-action@v1
         with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v1
+          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v2
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Test PPX
         run: esy test
