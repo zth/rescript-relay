@@ -9,15 +9,15 @@ jobs:
     defaults:
       run:
         working-directory: packages/rescript-relay-bin
+    container:
+      image: alexfedoseev/alpine-node-yarn-esy:0.0.4
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: 12.19.0
+          node-version: 14.x
         env:
           CI: true
-      - name: Install esy
-        run: npm install -g esy
       - name: Esy install
         run: esy install
       - name: Print esy cache

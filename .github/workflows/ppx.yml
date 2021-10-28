@@ -6,7 +6,7 @@ jobs:
   ppx_linux:
     strategy:
       matrix:
-        platform: [ubuntu-18.04]
+        platform: [ubuntu-latest]
 
     name: PPX
     runs-on: ${{ matrix.platform }}
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: 16.10.0
+          node-version: 14.x
         env:
           CI: true
       - name: Esy install
