@@ -14,12 +14,12 @@ jobs:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     container:
-      image: cichocinski/docker-esy:alpine3.8
+      image: alexfedoseev/alpine-node-yarn-esy:0.0.4
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: 12.19.0
+          node-version: 16.10.0
         env:
           CI: true
       - name: Esy install
