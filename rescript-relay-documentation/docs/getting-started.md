@@ -28,9 +28,9 @@ You will have the absolute best experience using RescriptRelay in concurrent mod
 
 ##### Extra bindings for experimental APIs with no official bindings yet
 
-Not all experimental APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
+Not all new APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
-This means that you'll need to install the `alpha` version of React and ReactDOM. It also means that your app will need to _have concurrent mode enabled_. Depending on what dependencies you use, this may or may not be easy to enable for you in existing apps. Please [read more in the React documentation on Adopting Concurrent Mode](https://reactjs.org/docs/concurrent-mode-adoption.html).
+This means that you'll need React 18 (in `rc` at the time of writing) and ReactDOM.
 
 #### A short note on the workflow of using Relay
 
@@ -49,11 +49,11 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with `react@alpha react-dom@alpha`. Let's start by installing the dependencies:
+RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@rc react-dom@rc`). Let's start by installing the dependencies:
 
 ```bash
-# Add React and ReactDOM experimental versions
-yarn add react@alpha react-dom@alpha
+# Add React 18 and ReactDOM rc versions
+yarn add react@rc react-dom@rc
 
 # Add rescript-relay and dependencies to the project
 # We currently depend on Relay version 12.0.0, so install that exact version
@@ -73,23 +73,23 @@ After you've installed the packages above, setup ReScript through your `bsconfig
 
 #### Using experimental React versions
 
-You may need to tell `yarn` to prefer the experimental versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `@rescript/react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
+You may need to tell `yarn` to prefer the React 18 versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `@rescript/react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
 
-Ensure that only the experimental versions are used by doing the following:
+Ensure that only the new React 18 versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `0.0.0-experimental-d174d063d-20210922` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `18.0.0-rc.0` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "0.0.0-experimental-d174d063d-20210922",
-    "react-dom": "0.0.0-experimental-d174d063d-20210922"
+    "react": "18.0.0-rc.0",
+    "react-dom": "18.0.0-rc.0"
   }
 }
 ```
 
-Remember, the version number for `alpha` releases change pretty often, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
+Remember, the version number for `rc` releases might change, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
 
 ## Configuring Relay
 
@@ -224,7 +224,7 @@ ReactDOMExperimental.renderConcurrentRootAtElementWithId(
 
 ##### 2. Rendering your app in Concurrent Mode
 
-We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for RescriptRelay to work as intended. To simplify things before the API's are officially released, `ReactExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
+We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactDOMExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for RescriptRelay to work as intended. To simplify things before the API's are officially released, `ReactDOMExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
 
 ## Time to make your first query
 

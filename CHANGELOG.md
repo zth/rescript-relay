@@ -2,6 +2,8 @@
 
 # 0.23.0
 
+_[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/6e96dfafaec918b1d4e9519d3fcbf5e5c46be6c0)_
+
 Finally, a new release! This brings the Relay version to 12, and the React version to 18 (in rc.0 at the time of writing). This release has a few breaking changes which are necessary as we're slowly approaching version 1.0.0 of RescriptRelay. Check the new "Migrations" section below for a few scripts you can run to help the migration.
 
 ## Upgrade versions
