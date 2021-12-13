@@ -23,12 +23,10 @@ module AddTodoMutation = %relay(`
     $connections: [ID!]!
   ) @raw_response_type {
     addTodoItem(input: $input) {
-      addedTodoItemEdge @appendEdge(connections: $connections) {
-        node {
-          id
-          text
-          completed
-        }
+      addedTodoItem @appendNode(connections: $connections, edgeTypeName: "TodoItemEdge") {
+        id
+        text
+        completed
       }
     }
   }
@@ -58,15 +56,13 @@ let make = (~query as queryRef) => {
               ~onCompleted=(_, _) => setNewTodoText(_ => ""),
               ~optimisticResponse={
                 addTodoItem: Some({
-                  addedTodoItemEdge: Some({
-                    node: Some({
-                      id: {
-                        open RescriptRelay
-                        generateUniqueClientID()->dataIdToString
-                      },
-                      text: newTodoText,
-                      completed: Some(false),
-                    }),
+                  addedTodoItem: Some({
+                    id: {
+                      open RescriptRelay
+                      generateUniqueClientID()->dataIdToString
+                    },
+                    text: newTodoText,
+                    completed: Some(false),
                   }),
                 }),
               },

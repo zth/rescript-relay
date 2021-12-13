@@ -5,23 +5,17 @@ module Types = {
   @@ocaml.warning("-30")
   
   type rec response_addTodoItem = {
-    addedTodoItemEdge: option<response_addTodoItem_addedTodoItemEdge>,
+    addedTodoItem: option<response_addTodoItem_addedTodoItem>,
   }
-   and response_addTodoItem_addedTodoItemEdge = {
-    node: option<response_addTodoItem_addedTodoItemEdge_node>,
-  }
-   and response_addTodoItem_addedTodoItemEdge_node = {
+   and response_addTodoItem_addedTodoItem = {
     id: string,
     text: string,
     completed: option<bool>,
   }
    and rawResponse_addTodoItem = {
-    addedTodoItemEdge: option<rawResponse_addTodoItem_addedTodoItemEdge>,
+    addedTodoItem: option<rawResponse_addTodoItem_addedTodoItem>,
   }
-   and rawResponse_addTodoItem_addedTodoItemEdge = {
-    node: option<rawResponse_addTodoItem_addedTodoItemEdge_node>,
-  }
-   and rawResponse_addTodoItem_addedTodoItemEdge_node = {
+   and rawResponse_addTodoItem_addedTodoItem = {
     id: string,
     text: string,
     completed: option<bool>,
@@ -49,7 +43,7 @@ module Internal = {
   let wrapResponseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}}`
+      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
     )
   
   let wrapResponseConverterMap = ()
@@ -62,7 +56,7 @@ module Internal = {
   let responseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}}`
+      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
     )
   
   let responseConverterMap = ()
@@ -75,7 +69,7 @@ module Internal = {
   let wrapRawResponseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}}`
+      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
     )
   
   let wrapRawResponseConverterMap = ()
@@ -88,7 +82,7 @@ module Internal = {
   let rawResponseConverter: 
     Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
     %raw(
-      json`{"__root":{"addTodoItem_addedTodoItemEdge_node_completed":{"n":""},"addTodoItem_addedTodoItemEdge_node":{"n":""},"addTodoItem":{"n":""},"addTodoItem_addedTodoItemEdge":{"n":""}}}`
+      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
     )
   
   let rawResponseConverterMap = ()
@@ -131,49 +125,37 @@ module Utils = {
     input: input,
     connections: connections
   }
-  let make_rawResponse_addTodoItem_addedTodoItemEdge_node = (
+  let make_rawResponse_addTodoItem_addedTodoItem = (
     ~id,
     ~text,
     ~completed=?,
     ()
-  ): rawResponse_addTodoItem_addedTodoItemEdge_node => {
+  ): rawResponse_addTodoItem_addedTodoItem => {
     id: id,
     text: text,
     completed: completed
-  }
-  let make_rawResponse_addTodoItem_addedTodoItemEdge = (
-    ~node=?,
-    ()
-  ): rawResponse_addTodoItem_addedTodoItemEdge => {
-    node: node
   }
   let make_rawResponse_addTodoItem = (
-    ~addedTodoItemEdge=?,
+    ~addedTodoItem=?,
     ()
   ): rawResponse_addTodoItem => {
-    addedTodoItemEdge: addedTodoItemEdge
+    addedTodoItem: addedTodoItem
   }
-  let make_response_addTodoItem_addedTodoItemEdge_node = (
+  let make_response_addTodoItem_addedTodoItem = (
     ~id,
     ~text,
     ~completed=?,
     ()
-  ): response_addTodoItem_addedTodoItemEdge_node => {
+  ): response_addTodoItem_addedTodoItem => {
     id: id,
     text: text,
     completed: completed
   }
-  let make_response_addTodoItem_addedTodoItemEdge = (
-    ~node=?,
-    ()
-  ): response_addTodoItem_addedTodoItemEdge => {
-    node: node
-  }
   let make_response_addTodoItem = (
-    ~addedTodoItemEdge=?,
+    ~addedTodoItem=?,
     ()
   ): response_addTodoItem => {
-    addedTodoItemEdge: addedTodoItemEdge
+    addedTodoItem: addedTodoItem
   }
   let makeOptimisticResponse = (
     ~addTodoItem=?,
@@ -207,41 +189,30 @@ v2 = [
 v3 = {
   "alias": null,
   "args": null,
-  "concreteType": "TodoItemEdge",
+  "concreteType": "TodoItem",
   "kind": "LinkedField",
-  "name": "addedTodoItemEdge",
+  "name": "addedTodoItem",
   "plural": false,
   "selections": [
     {
       "alias": null,
       "args": null,
-      "concreteType": "TodoItem",
-      "kind": "LinkedField",
-      "name": "node",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "id",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "text",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "completed",
-          "storageKey": null
-        }
-      ],
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "text",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "completed",
       "storageKey": null
     }
   ],
@@ -295,15 +266,20 @@ return {
             "alias": null,
             "args": null,
             "filters": null,
-            "handle": "appendEdge",
+            "handle": "appendNode",
             "key": "",
             "kind": "LinkedHandle",
-            "name": "addedTodoItemEdge",
+            "name": "addedTodoItem",
             "handleArgs": [
               {
                 "kind": "Variable",
                 "name": "connections",
                 "variableName": "connections"
+              },
+              {
+                "kind": "Literal",
+                "name": "edgeTypeName",
+                "value": "TodoItemEdge"
               }
             ]
           }
@@ -313,12 +289,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "24a0ab7c7226072ae69fe6c5dcac2e97",
+    "cacheID": "c011aa6f7e05ca44cf05f93d4ec8c1aa",
     "id": null,
     "metadata": {},
     "name": "TodoListAddTodoMutation",
     "operationKind": "mutation",
-    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItemEdge {\n      node {\n        id\n        text\n        completed\n      }\n    }\n  }\n}\n"
+    "text": "mutation TodoListAddTodoMutation(\n  $input: AddTodoItemInput!\n) {\n  addTodoItem(input: $input) {\n    addedTodoItem {\n      id\n      text\n      completed\n    }\n  }\n}\n"
   }
 };
 })() `)
