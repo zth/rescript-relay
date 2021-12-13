@@ -65,6 +65,7 @@ module Link: {
     ) => React.element=?,
     ~preloadOnHover: bool=?,
     ~children: React.element,
+    ~onClick: unit => unit=?,
     unit,
   ) => React.element
 }

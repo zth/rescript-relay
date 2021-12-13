@@ -310,6 +310,7 @@ module Link = {
     ~render=?,
     ~preloadOnHover=?,
     ~children,
+    ~onClick=?,
     (),
   ) => {
     let router = use()
@@ -355,7 +356,13 @@ module Link = {
           | Some(f) => " " ++ f(url, to_->Url.make)
           | None => ""
           }}
-        onClick=changeRoute
+        onClick={e => {
+          changeRoute(e)
+          switch onClick {
+          | None => ()
+          | Some(onClick) => onClick()
+          }
+        }}
         onMouseDown={_ => preload()}
         onTouchStart={_ => preload()}
         onMouseEnter={_ =>
