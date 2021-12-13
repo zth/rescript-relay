@@ -15,19 +15,18 @@
   },
   "dependencies": {
     "@mdi/font": "3.7.95",
-    "@rescript/react": "0.10.1",
+    "@rescript/react": "0.10.3",
     "bootstrap": "^4.3.1",
     "bs-fetch": "^0.5.0",
     "concurrently": "^5.0.0",
     "graphql": "^14.5.8",
-    "react": "0.0.0-experimental-4e08fb10c",
-    "react-dom": "0.0.0-experimental-4e08fb10c",
-    "react-relay": "11.0.2",
-    "reason-promise": "^1.1.1",
-    "relay-compiler": "11.0.2",
-    "relay-config": "11.0.2",
-    "relay-runtime": "11.0.2",
-    "rescript-relay": "0.21.0",
+    "react": "18.0.0-rc.0",
+    "react-dom": "18.0.0-rc.0",
+    "react-relay": "12.0.0",
+    "relay-compiler": "12.0.0",
+    "relay-config": "12.0.0",
+    "relay-runtime": "12.0.0",
+    "rescript-relay": "0.23.0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
@@ -43,7 +42,7 @@
   "copyright": "",
   "license": "",
   "resolutions": {
-    "react": "0.0.0-experimental-4e08fb10c",
-    "react-dom": "0.0.0-experimental-4e08fb10c"
+    "react": "18.0.0-rc.0",
+    "react-dom": "18.0.0-rc.0"
   }
 }

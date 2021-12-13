@@ -4,7 +4,7 @@
  * it's a requirement that the environment is available in the
  * context.
  */
-ReactExperimental.renderConcurrentRootAtElementWithId(
+ReactDOMExperimental.renderConcurrentRootAtElementWithId(
   <RescriptRelay.Context.Provider environment=RelayEnv.environment>
     <App />
   </RescriptRelay.Context.Provider>,
