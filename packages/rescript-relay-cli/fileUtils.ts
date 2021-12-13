@@ -6,23 +6,6 @@ import config from "relay-config";
 import { Config } from "relay-compiler/lib/bin/RelayCompilerMain";
 
 export const loadRelayConfig = () => {
-  let exists = null;
-
-  try {
-    exists = fs.statSync(
-      path.resolve(path.join(process.cwd(), "relay.config.js")),
-      { throwIfNoEntry: false }
-    );
-  } catch {}
-
-  if (exists == null) {
-    console.error(
-      "relay.config.js must exist in the current working directory this script runs in."
-    );
-
-    process.exit(1);
-  }
-
   const relayConfig = config.loadConfig();
 
   if (!relayConfig) {
