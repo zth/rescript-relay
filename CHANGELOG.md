@@ -1,5 +1,9 @@
 # master
 
+# 0.23.0
+
+Finally, a new release! This brings the Relay version to 12, and the React version to 18 (in rc.0 at the time of writing). This release has a few breaking changes which are necessary as we're slowly approaching version 1.0.0 of RescriptRelay. Check the new "Migrations" section below for a few scripts you can run to help the migration.
+
 ## Upgrade versions
 
 - `react-relay` to `12.0.0`
@@ -12,12 +16,24 @@ React to React 18 rc:
 - `react` to `rc` (`yarn add react@rc`)
 - `react-dom` to `rc`(`yarn add react-dom@rc`)
 
+## Migrations
+
+Want help migrating most of the changes in this release? Install [comby](https://comby.dev) and run the migrations below (paste them into your terminal at the root of your project). Comby will guide you through the proposed changes.
+
+- `comby 'ReactExperimental.unstable_useDeferredValue(:[1])' 'ReactExperimental.useDeferredValue(:[1])' .res -matcher .re -exclude-dir node_modules -review`
+- `comby 'ReactExperimental.renderConcurrentRootAtElementWithId' 'ReactDOMExperimental.renderConcurrentRootAtElementWithId' .res -matcher .re -exclude-dir node_modules -review`
+- `comby 'let (:[1], :[2]) = ReactExperimental.unstable_useTransition()' 'let (:[2], :[1]) = ReactExperimental.useTransition()' .res -matcher .re -exclude-dir node_modules -review`
+
 ## Breaking changes
 
-- Remove `reason-promise`. We're waiting for the official new Promise bindings, but since they seem to be quite far away, we'll have to revert back to stock `Js.Promise` for now. This is because `reason-promise` clashes with other Promise bindings that people might want to use before the new official ones are actually shipped.
-- `ReactExperimental.unstable_useTransition` is now called `ReactExperimental.useTransition`, and the order of the tuple that's returned has been reversed to align with the underlying API. This means that what was before `let (startTransition, isTransitioning) = ReactExperimental.unstable_useTransition()` is now `let (isTransitioning, startTransition) = ReactExperimental.useTransition()`.
-- `ReactExperimental.unstable_useDeferredValue` is now called `ReactExperimental.useDeferredValue`.
-- `ReactExperimental.renderConcurrentRootAtElementWithId` has moved to `ReactDOMExperimental`: `ReactDOMExperimental.renderConcurrentRootAtElementWithId`.
+- Remove `reason-promise` (unless you're using it for something else yourself and want to keep it). We're waiting for the official new Promise bindings, but since they seem to be quite far away, we'll have to revert back to stock `Js.Promise` for now. This is because `reason-promise` clashes with other Promise bindings that people might want to use before the new official ones are actually shipped.
+- `ReactExperimental.unstable_useTransition` is now called `ReactExperimental.useTransition`, and the order of the tuple that's returned has been reversed to align with the underlying API. This means that what was before `let (startTransition, isTransitioning) = ReactExperimental.unstable_useTransition()` is now `let (isTransitioning, startTransition) = ReactExperimental.useTransition()` (migration available above).
+- `ReactExperimental.unstable_useDeferredValue` is now called `ReactExperimental.useDeferredValue` (migration available above).
+- `ReactExperimental.renderConcurrentRootAtElementWithId` has moved to `ReactDOMExperimental`: `ReactDOMExperimental.renderConcurrentRootAtElementWithId` (migration available above).
+
+## Fixes & misc
+
+- You're now allowed to configure Relay via `package.json`.
 
 # 0.22.0
 
