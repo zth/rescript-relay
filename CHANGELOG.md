@@ -6,8 +6,11 @@
 - `relay-compiler` to `12.0.0`
 - `relay-config` to `12.0.0`
 - `relay-runtime` to `12.0.0`
-- `react` to `alpha`
-- `react-dom` to `alpha`
+
+React to React 18 rc:
+
+- `react` to `rc` (`yarn add react@rc`)
+- `react-dom` to `rc`(`yarn add react-dom@rc`)
 
 ## Breaking changes
 

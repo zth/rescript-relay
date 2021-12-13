@@ -967,14 +967,14 @@
     lz-string "^1.4.4"
     pretty-format "^27.0.2"
 
-"@testing-library/jest-dom@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.14.1.tgz#8501e16f1e55a55d675fe73eecee32cdaddb9766"
-  integrity sha512-dfB7HVIgTNCxH22M1+KU6viG5of2ldoA5ly8Ar8xkezKHKXjRvznCdbMbqjYGgO2xjRbwnR+rR8MLUIqF3kKbQ==
+"@testing-library/jest-dom@^5.16.1":
+  version "5.16.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.16.1.tgz#3db7df5ae97596264a7da9696fe14695ba02e51f"
+  integrity sha512-ajUJdfDIuTCadB79ukO+0l8O+QwN0LiSxDaYUTI4LndbbUsGi6rWU1SCexXzBA2NSjlVB9/vbkasQIL3tmPBjw==
   dependencies:
     "@babel/runtime" "^7.9.2"
     "@types/testing-library__jest-dom" "^5.9.1"
-    aria-query "^4.2.2"
+    aria-query "^5.0.0"
     chalk "^3.0.0"
     css "^3.0.0"
     css.escape "^1.5.1"
@@ -982,10 +982,10 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
-"@testing-library/react@^13.0.0-alpha.1":
-  version "13.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.0.0-alpha.1.tgz#e6e1515ee55dd2b8efd35a532368ec40a7af45df"
-  integrity sha512-v9iYmsQAp2dXY4OU23Xmk9qTvUy9rWYpEgQASDQ5Tp6BHc057SVEz/FSuesNbQSsRx8Z74bD11V/jgps24nLRQ==
+"@testing-library/react@^13.0.0-alpha.5":
+  version "13.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.0.0-alpha.5.tgz#29bfc36b550e2a1025cbebf7254d5a0a46cb58c5"
+  integrity sha512-QrxKC/7pTE0ze3wLZNaenGJqsLcbAJL71XqU/ryJTL2pqZBjiJHuxZavl2ZQAxnBQkDQF9oh9my3bKPstWfnhA==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.5.0"
@@ -1206,6 +1206,11 @@ aria-query@^4.2.2:
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@babel/runtime-corejs3" "^7.10.2"
+
+aria-query@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/aria-query/-/aria-query-5.0.0.tgz#210c21aaf469613ee8c9a62c7f86525e058db52c"
+  integrity sha512-V+SM7AbUwJ+EBnB8+DXs0hPZHO0W6pqBcc0dW90OwtVG02PswOu/teuARoLQjdDOH+t9pJgGnW5/Qmouf3gPJg==
 
 asap@~2.0.3:
   version "2.0.6"
@@ -3128,14 +3133,14 @@ punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-react-dom@0.0.0-experimental-d174d063d-20210922:
-  version "0.0.0-experimental-d174d063d-20210922"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-0.0.0-experimental-d174d063d-20210922.tgz#057a0a8573f78f0d522951a569317384fe3c112f"
-  integrity sha512-VkVXeDpEK57BO9qaLrTmq6xMy4GDxRdfnXhWOPsEJYDec/R/r4yacllaI/lgbV49G2WQEZmJjzcQEDEsG9rhCQ==
+react-dom@18.0.0-rc.0, react-dom@^18.0.0-rc.0:
+  version "18.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.0.0-rc.0.tgz#aa07044bdd6399ff94c664b2985e2e25948fbf3e"
+  integrity sha512-tdD1n0svTndHBQvVAq/f2Kx7FgQ30CpSLp87/neQKAHPW5WtdgW1sBSwmFAcMQOrmstTuP0M+zRlH86f9kMX/A==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-    scheduler "0.0.0-experimental-d174d063d-20210922"
+    scheduler "^0.21.0-rc.0"
 
 react-is@^17.0.1:
   version "17.0.1"
@@ -3153,10 +3158,10 @@ react-relay@12.0.0:
     nullthrows "^1.1.1"
     relay-runtime "12.0.0"
 
-react@0.0.0-experimental-d174d063d-20210922:
-  version "0.0.0-experimental-d174d063d-20210922"
-  resolved "https://registry.yarnpkg.com/react/-/react-0.0.0-experimental-d174d063d-20210922.tgz#e2cd1ce3e3ba66940f4ff1d0e06d1a0becda35eb"
-  integrity sha512-7g/NBkafPsW1hBk57i+BGgjMsK61Es8yHpa3I9/RQWXDgdJq6dfNNaVuiS4cgCfudiLgZPSCfQyHiyAj4uE4Jw==
+react@18.0.0-rc.0, react@^18.0.0-rc.0:
+  version "18.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.0.0-rc.0.tgz#60bfcf1edd0b35fbeeeca852515c6cc2ce06a6eb"
+  integrity sha512-PawosMBgF8k5Nlc3++ibzjFqPvo1XKv80MNtVYqz3abHHB2w3IpU65sSdSmBd2ooCwVhcp9b1vkx/twqhakNtA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -3293,10 +3298,10 @@ saxes@^5.0.1:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@0.0.0-experimental-d174d063d-20210922:
-  version "0.0.0-experimental-d174d063d-20210922"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.0.0-experimental-d174d063d-20210922.tgz#97d61d4b8b1e8fecda26228ca93dea3520ecd51c"
-  integrity sha512-dptN3n0EU6/CndtsDgovHfCYdbZ//EyI9ejidhpwVgzwF7ZM5F71HgSf4xCObpcfPBuPev2HTvJ58s1r8soa8g==
+scheduler@^0.21.0-rc.0:
+  version "0.21.0-rc.0-next-f2a59df48-20211208"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0-rc.0-next-f2a59df48-20211208.tgz#54e18e1d360194fd54b47a00616e46403fcabdf1"
+  integrity sha512-x0oLd3YIih9GHqWTaFYejVe6Au+4TadOWZciAq8m4+Fuo5qCi4/3M35a9irVSIP3+qcg/fCqHKJETT9G0ejD1A==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
