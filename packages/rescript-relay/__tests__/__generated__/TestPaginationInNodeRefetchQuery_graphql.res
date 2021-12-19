@@ -1,35 +1,51 @@
+/* @sourceLoc Test_paginationInNode.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
+
+
   type rec response_node = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>
+    __typename: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
   }
   type response = {
     node: option<response_node>,
   }
   type rawResponse = response
+  type variables = {
+    count: option<int>,
+    cursor: option<string>,
+    onlineStatuses: option<array<[
+      | #Online
+      | #Idle
+      | #Offline
+    ]
+>>,
+    id: string,
+  }
   type refetchVariables = {
     count: option<int>,
     cursor: option<string>,
     onlineStatuses: option<array<[
-    | #Idle
-    | #Offline
-    | #Online
-    ]>>,
+      | #Online
+      | #Idle
+      | #Offline
+    ]
+>>,
     id: option<string>,
   }
   let makeRefetchVariables = (
@@ -44,62 +60,42 @@ module Types = {
     onlineStatuses: onlineStatuses,
     id: id
   }
-  
-  type variables = {
-    count: option<int>,
-    cursor: option<string>,
-    onlineStatuses: option<array<[
-    | #Idle
-    | #Offline
-    | #Online
-    ]>>,
-    id: string,
-  }
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"onlineStatuses":{"n":""},"cursor":{"n":""},"count":{"n":""}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"cursor":{"n":""},"count":{"n":""},"onlineStatuses":{"n":""}}}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
 
 type queryRef
@@ -107,10 +103,8 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
   let makeVariables = (
     ~count=?,
     ~cursor=?,
@@ -124,6 +118,7 @@ module Utils = {
     id: id
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -395,4 +390,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});

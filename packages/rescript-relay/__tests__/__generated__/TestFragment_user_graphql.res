@@ -3,56 +3,54 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
+
+
   type fragment = {
     __id: RescriptRelay.dataId,
     firstName: string,
     onlineStatus: option<enum_OnlineStatus>,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_sub_user]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_sub_user]>,
   }
 }
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""},"onlineStatus":{"n":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"onlineStatus":{"n":""},"":{"f":""}}}`
+  )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestFragment_user]> => fragmentRef = "%identity"
 
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -98,5 +96,4 @@ let node: operationType = %raw(json` {
   "type": "User",
   "abstractKey": null
 } `)
-
 

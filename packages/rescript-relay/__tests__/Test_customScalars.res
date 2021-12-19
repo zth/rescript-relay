@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestCustomScalarsQuery($beforeDate: Datetime) {
       loggedInUser {
         createdAt
@@ -15,8 +14,7 @@ module Query = %relay(
         }
       }
     }
-`
-)
+`)
 
 module Test = {
   @react.component

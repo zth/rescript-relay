@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestMissingFieldHandlersQuery {
       node(id: "123") {
         __typename
@@ -8,18 +7,15 @@ module Query = %relay(
         }
       }
     }
-`
-)
+`)
 
-module MeQuery = %relay(
-  `
+module MeQuery = %relay(`
     query TestMissingFieldHandlersMeQuery {
       loggedInUser {
         firstName
       }
     }
-`
-)
+`)
 
 module RenderMe = {
   @react.component

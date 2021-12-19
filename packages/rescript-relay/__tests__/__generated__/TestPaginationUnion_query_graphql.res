@@ -3,51 +3,40 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
-  type fragment_members_edges_node_User = {
+
+  type rec fragment_members_edges_node_User = {
+    __typename: [ | #User],
     id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>,
   }
-  
-  type fragment_members_edges_node_Group_adminsConnection_edges_node = {
+  and fragment_members_edges_node_Group_adminsConnection_edges_node = {
     id: string,
     firstName: string,
   }
-  
-  type fragment_members_edges_node_Group_adminsConnection_edges = {
+  and fragment_members_edges_node_Group_adminsConnection_edges = {
     node: option<fragment_members_edges_node_Group_adminsConnection_edges_node>,
   }
-  
-  type fragment_members_edges_node_Group_adminsConnection = {
+  and fragment_members_edges_node_Group_adminsConnection = {
     edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
   }
-  
-  type fragment_members_edges_node_Group = {
-    adminsConnection: fragment_members_edges_node_Group_adminsConnection,
-    name: string,
+  and fragment_members_edges_node_Group = {
+    __typename: [ | #Group],
     id: string,
+    name: string,
+    adminsConnection: fragment_members_edges_node_Group_adminsConnection,
   }
-  
-  
-  type fragment_members_edges_node = [
+  and fragment_members_edges_node = [
     | #User(fragment_members_edges_node_User)
-  
     | #Group(fragment_members_edges_node_Group)
     | #UnselectedUnionMember(string)
   ]
-  type rec fragment_members = {
+
+  type rec fragment_members_edges = {
+    node: option<fragment_members_edges_node>,
+  }
+  and fragment_members = {
     edges: option<array<option<fragment_members_edges>>>,
   }
-   and fragment_members_edges = {
-    node: option<[
-      | #User(fragment_members_edges_node_User)
-  
-      | #Group(fragment_members_edges_node_Group)
-      | #UnselectedUnionMember(string)
-    ]>,
-  }
-  
-  
   type fragment = {
     members: option<fragment_members>,
   }
@@ -55,76 +44,73 @@ module Types = {
 
 let unwrap_fragment_members_edges_node: {. "__typename": string } => [
   | #User(Types.fragment_members_edges_node_User)
-
   | #Group(Types.fragment_members_edges_node_Group)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
- | "User" => #User(u->Obj.magic) 
- | "Group" => #Group(u->Obj.magic) 
- | v => #UnselectedUnionMember(v)
+  | "User" => #User(u->Obj.magic)
+  | "Group" => #Group(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
 }
 
 let wrap_fragment_members_edges_node: [
   | #User(Types.fragment_members_edges_node_User)
-
   | #Group(Types.fragment_members_edges_node_Group)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
- | #User(v) => v->Obj.magic 
- | #Group(v) => v->Obj.magic 
- | #UnselectedUnionMember(v) => {"__typename": v} 
+  | #User(v) => v->Obj.magic
+  | #Group(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
 }
-
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"members_edges_node":{"n":"","u":"fragment_members_edges_node"},"members_edges":{"n":"","na":""},"members_edges_node_group_adminsConnection_edges_node":{"n":""},"members_edges_node_user":{"f":""},"members_edges_node_group_adminsConnection_edges":{"n":"","na":""},"members":{"n":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"members_edges_node_User":{"f":""},"members_edges_node_Group_adminsConnection_edges_node":{"n":""},"members_edges_node_Group_adminsConnection_edges":{"na":"","n":""},"members_edges_node":{"u":"fragment_members_edges_node","n":""},"members_edges":{"na":"","n":""},"members":{"n":""}}}`
+  )
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
   }
-  
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestPaginationUnion_query]> => fragmentRef = "%identity"
-
 
 module Utils = {
   @@ocaml.warning("-33")
   open Types
   @inline
   let connectionKey = "TestPaginationUnion_query_members"
-  
-  let getConnectionNodes:
-    option<fragment_members> => array<fragment_members_edges_node> =
-    connection => switch connection {
-    | None => []
-    | Some(connection) => switch connection.edges { 
-     | None => []
-     | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-      | None => None 
-      | Some(edge) => edge.node
-  
-     })
-    }}
+
+
+  let getConnectionNodes: option<fragment_members> => array<fragment_members_edges_node> = connection => 
+    switch connection {
+      | None => []
+      | Some(connection) => 
+        switch connection.edges {
+          | None => []
+          | Some(edges) => edges
+            ->Belt.Array.keepMap(edge => switch edge {
+              | None => None
+              | Some(edge) => edge.node
+            })
+        }
+    }
+
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(let makeNode = (node_TestPaginationUnionRefetchQuery): operationType => {
-  ignore(node_TestPaginationUnionRefetchQuery)
-  %raw(json` (function(){
+%%private(let makeNode = (rescript_graphql_node_TestPaginationUnionRefetchQuery): operationType => {
+  ignore(rescript_graphql_node_TestPaginationUnionRefetchQuery)
+  %raw(json`(function(){
 var v0 = [
   "members"
 ],
@@ -178,7 +164,7 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": node_TestPaginationUnionRefetchQuery
+      "operation": rescript_graphql_node_TestPaginationUnionRefetchQuery
     }
   },
   "name": "TestPaginationUnion_query",
@@ -345,8 +331,7 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})() `)
+})()`)
 })
 let node: operationType = makeNode(TestPaginationUnionRefetchQuery_graphql.node)
-
 

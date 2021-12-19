@@ -1,15 +1,12 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestMutationQuery {
       loggedInUser {
         ...TestMutation_user
       }
     }
-`
-)
+`)
 
-module Mutation = %relay(
-  `
+module Mutation = %relay(`
     mutation TestMutationSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
         user {
@@ -19,11 +16,9 @@ module Mutation = %relay(
         }
       }
     }
-`
-)
+`)
 
-module ComplexMutation = %relay(
-  `
+module ComplexMutation = %relay(`
     mutation TestMutationSetOnlineStatusComplexMutation($input: SetOnlineStatusInput!) {
       setOnlineStatusComplex(input: $input) {
         user {
@@ -32,11 +27,9 @@ module ComplexMutation = %relay(
         }
       }
     }
-`
-)
+`)
 
-module MutationWithOnlyFragment = %relay(
-  `
+module MutationWithOnlyFragment = %relay(`
     mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
         user {
@@ -44,11 +37,9 @@ module MutationWithOnlyFragment = %relay(
         }
       }
     }
-`
-)
+`)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestMutation_user on User {
       id
       firstName
@@ -64,11 +55,9 @@ module Fragment = %relay(
         }
       }
     }
-`
-)
+`)
 
-module MutationWithInlineFragment = %relay(
-  `
+module MutationWithInlineFragment = %relay(`
     mutation TestMutationWithInlineFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
         user {
@@ -76,19 +65,16 @@ module MutationWithInlineFragment = %relay(
         }
       }
     }
-`
-)
+`)
 
-module InlineFragment = %relay(
-  `
+module InlineFragment = %relay(`
     fragment TestMutationInline_user on User @inline {
       id
       firstName
       lastName
       onlineStatus
     }
-`
-)
+`)
 
 module Test = {
   @react.component
@@ -136,6 +122,7 @@ module Test = {
                     ~memberOf=[
                       Some(
                         #User({
+                          __typename: #User,
                           firstName: "test",
                           id: "123",
                           __isNode: #User,

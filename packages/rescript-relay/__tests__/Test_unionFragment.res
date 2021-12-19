@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestUnionFragmentQuery {
       member(id: "123") {
         __typename
@@ -7,11 +6,9 @@ module Query = %relay(
         ...TestUnionFragment_plural_member
       }
     }
-`
-)
+`)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestUnionFragment_member on Member {
       __typename
       ... on User {
@@ -22,11 +19,9 @@ module Fragment = %relay(
         name
       }
     }
-`
-)
+`)
 
-module PluralFragment = %relay(
-  `
+module PluralFragment = %relay(`
     fragment TestUnionFragment_plural_member on Member @relay(plural: true) {
       __typename
       ... on User {
@@ -37,14 +32,15 @@ module PluralFragment = %relay(
         name
       }
     }
-`
-)
+`)
 
 module FragmentRenderer = {
   @react.component
   let make = (~fragment) => {
     let regular = Fragment.use(fragment)
     let plural = PluralFragment.use([fragment])
+
+    Js.log(plural)
 
     <>
       {switch regular {
