@@ -158,19 +158,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: relay-compiler-linux-x64
-          path: binaries/relay-compiler-linux
+          path: binaries/relay-compiler-linux-x86
 
       - name: Download artifact relay-compiler-macos-x64
         uses: actions/download-artifact@v2
         with:
           name: relay-compiler-macos-x64
-          path: binaries/relay-compiler-darwin-x64
+          path: binaries/relay-compiler-macos-x64
 
       - name: Download artifact relay-compiler-macos-arm64
         uses: actions/download-artifact@v2
         with:
           name: relay-compiler-macos-arm64
-          path: binaries/relay-compiler-darwin-arm64
+          path: binaries/relay-compiler-macos-arm64
 
       - uses: actions/download-artifact@v2
         with:
@@ -192,7 +192,7 @@ jobs:
             ppx-linux
             ppx-darwin
             relay-compiler-linux-x64
-            relay-compiler-darwin-x64
+            relay-compiler-macos-x64
             relay-compiler-macos-arm64
       - name: Upload built folder
         uses: actions/upload-artifact@v2

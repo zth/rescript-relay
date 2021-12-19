@@ -14,9 +14,9 @@ var platform = process.platform;
 
 function getRelayCompilerPlatformSuffix() {
   if (process.platform === "darwin" && process.arch === "x64") {
-    return "darwin-x64";
+    return "macos-x64";
   } else if (process.platform === "darwin" && process.arch === "arm64") {
-    return "darwin-arm64";
+    return "macos-arm64";
   } else if (process.platform === "linux" && process.arch === "x64") {
     return "linux-x64";
   }
@@ -119,8 +119,8 @@ function removeInitialBinaries() {
   fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
   fs.unlinkSync(path.join(__dirname, "relay-compiler-linux-x86"));
-  fs.unlinkSync(path.join(__dirname, "relay-compiler-darwin-x86"));
-  fs.unlinkSync(path.join(__dirname, "relay-compiler-darwin-arm64"));
+  fs.unlinkSync(path.join(__dirname, "relay-compiler-macos-x86"));
+  fs.unlinkSync(path.join(__dirname, "relay-compiler-macos-arm64"));
 }
 
 switch (platform) {
