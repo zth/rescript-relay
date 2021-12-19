@@ -31,6 +31,7 @@ echo "Copying config files..."
 cp bsconfig.release.json ../../_release/bsconfig.json;
 ./copyPackageJson.js ../../_release $INPUT_TAG_NAME
 cp yarn.lock ../../_release/;
+cp compiler.js ../../_release/;
 
 # copy real post-install
 cp -f scripts/release-postinstall.js ../../_release/postinstall.js
