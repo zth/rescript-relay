@@ -72,8 +72,6 @@ module Internal = {
   )
   let wrapResponseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "response_member": wrap_response_member,
   }
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -86,8 +84,6 @@ module Internal = {
     json`{"__root":{"member_User_createdAt":{"c":"TestsUtils.Datetime"},"member":{"u":"response_member","n":""},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
   )
   let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "response_member": unwrap_response_member,
   }

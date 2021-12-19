@@ -20,12 +20,12 @@
     "rescript"
   ],
   "bin": {
-    "rescript-relay-compiler": "compiler/compiler-cli.js",
+    "rescript-relay-compiler": "relay-compiler",
     "rescript-relay-cli": "cli/cli.js"
   },
   "scripts": {
     "build": "rescript build -with-deps",
-    "build:test": "compiler/compiler-cli.js",
+    "build:test": "./build-compiler-dev.sh && ./relay-compiler",
     "postinstall": "node postinstall.js",
     "test": "jest",
     "test:ci": "jest --ci --runInBand"
@@ -43,21 +43,17 @@
     "react": "^18.0.0-rc.0",
     "react-dom": "^18.0.0-rc.0",
     "react-relay": "12.0.0",
-    "relay-compiler": "12.0.0",
-    "relay-config": "12.0.0",
     "relay-runtime": "12.0.0"
   },
   "peerDependencies": {
     "@rescript/react": "*",
     "graphql": "*",
     "react-relay": "*",
-    "relay-compiler": "*",
     "relay-config": "*",
     "relay-runtime": "*",
     "rescript": "^9.1.2"
   },
   "dependencies": {
-    "mkdirp-sync": "^0.0.3",
     "rescript": "^9.1.2"
   },
   "resolutions": {

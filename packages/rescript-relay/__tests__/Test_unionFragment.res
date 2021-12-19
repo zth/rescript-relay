@@ -40,8 +40,6 @@ module FragmentRenderer = {
     let regular = Fragment.use(fragment)
     let plural = PluralFragment.use([fragment])
 
-    Js.log(plural)
-
     <>
       {switch regular {
       | #User({onlineStatus: Some(#Online), firstName}) =>
