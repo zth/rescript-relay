@@ -4,3 +4,4 @@ node_modules
 src/Dummy.re*
 .bsb.lock
 *.log
+relay-compiler
