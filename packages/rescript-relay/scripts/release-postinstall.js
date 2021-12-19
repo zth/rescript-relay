@@ -21,7 +21,7 @@ function getRelayCompilerPlatformSuffix() {
     return "linux-x64";
   }
 
-  return "linux-x86";
+  return "linux-x64";
 }
 
 /**
@@ -110,19 +110,19 @@ function copyPlatformBinaries(platform) {
       "relay-compiler-" + getRelayCompilerPlatformSuffix(),
       "relay"
     ),
-    path.join(__dirname, "rescript-relay-compiler")
+    path.join(__dirname, "rescript-relay-compiler.exe")
   );
-  fs.chmodSync(path.join(__dirname, "rescript-relay-compiler"), 0777);
+  fs.chmodSync(path.join(__dirname, "rescript-relay-compiler.exe"), 0777);
 }
 
 function removeInitialBinaries() {
   fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
-  fs.rmSync(path.join(__dirname, "relay-compiler-linux-x86"), {
+  fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
     recursive: true,
     force: true,
   });
-  fs.rmSync(path.join(__dirname, "relay-compiler-macos-x86"), {
+  fs.rmSync(path.join(__dirname, "relay-compiler-macos-x64"), {
     recursive: true,
     force: true,
   });

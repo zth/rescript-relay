@@ -158,7 +158,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: relay-compiler-linux-x64
-          path: binaries/relay-compiler-linux-x86
+          path: binaries/relay-compiler-linux-x64
 
       - name: Download artifact relay-compiler-macos-x64
         uses: actions/download-artifact@v2

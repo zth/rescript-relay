@@ -20,7 +20,7 @@
     "rescript"
   ],
   "bin": {
-    "rescript-relay-compiler": "./rescript-relay-compiler",
+    "rescript-relay-compiler": "compiler.js",
     "rescript-relay-cli": "cli/cli.js"
   },
   "scripts": {
