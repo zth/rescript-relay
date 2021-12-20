@@ -35,7 +35,6 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^13.0.0-alpha.5",
     "bs-fetch": "^0.5.0",
-    "graphql": "14.5.0",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.2.4",
     "nock": "^11.7.0",
@@ -47,9 +46,7 @@
   },
   "peerDependencies": {
     "@rescript/react": "*",
-    "graphql": "*",
     "react-relay": "*",
-    "relay-config": "*",
     "relay-runtime": "*",
     "rescript": "^9.1.2"
   },
