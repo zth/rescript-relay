@@ -306,6 +306,7 @@ module Link = {
     ~className=?,
     ~classNameDynamic=?,
     ~target as browserTarget=?,
+    ~tabIndex=?,
     ~mode=?,
     ~render=?,
     ~preloadOnHover=?,
@@ -351,6 +352,7 @@ module Link = {
         }}
         ?title
         ?id
+        ?tabIndex
         className={className->Belt.Option.getWithDefault("") ++
           switch classNameDynamic {
           | Some(f) => " " ++ f(url, to_->Url.make)
