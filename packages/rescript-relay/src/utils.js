@@ -270,7 +270,7 @@ function traverse(
  */
 function traverser(
   root,
-  _instructionMaps,
+  instructionMaps_,
   theConverters,
   nullableValue,
   rootObjectKey
@@ -279,7 +279,7 @@ function traverser(
     return nullableValue;
   }
 
-  var instructionMaps = _instructionMaps || {};
+  var instructionMaps = instructionMaps_ || {};
   var instructionMap = instructionMaps[rootObjectKey || "__root"];
 
   // No instructions

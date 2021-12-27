@@ -482,7 +482,28 @@ describe("conversion", () => {
     ]);
   });
 
-  test("regression", () => {
+  it("handles nullable top level arrays", () => {
+    expect(
+      traverser(
+        [
+          {
+            name: "Name",
+          },
+          null,
+        ],
+
+        { __root: { "": { na: "" } } },
+        undefined
+      )
+    ).toEqual([
+      {
+        name: "Name",
+      },
+      undefined,
+    ]);
+  });
+
+  test("regression - union members not converted properly via member path", () => {
     expect(
       traverser(
         {
