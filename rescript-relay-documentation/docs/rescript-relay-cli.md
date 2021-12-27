@@ -26,6 +26,23 @@ Here's a non exhaustive list of what unused fields the script can remove automat
 - Full union member selections, if the member is no longer in use
 - All fragment spreads, if none of the fragment spreads are used
 
+#### Keeping fields safe from removal
+
+If you want to keep fields around, even though you're not actively using them you can `ignore` them.
+Let's say I have this fragment:
+```
+module Fragment = %relay(`
+  fragment User_user on users {
+    name
+    email
+  }
+`)
+```
+
+And I use the field `name` in my markup; `<div>{React.string(user.name)}</div>`.
+When I run `remove-unused-fields` the email field will be removed.
+If I for some reason need to keep the `email` around I can call `ignore(user.email)` and then it will be safe.
+
 #### CLI options
 
 ##### `--ci`
