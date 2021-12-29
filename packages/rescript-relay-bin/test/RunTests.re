@@ -1,1 +1,0 @@
-RescriptRelayBinTest.TestFramework.cli();

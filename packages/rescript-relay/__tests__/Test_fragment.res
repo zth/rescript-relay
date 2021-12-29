@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestFragmentQuery {
       loggedInUser {
         ...TestFragment_user
@@ -15,8 +14,7 @@ module Query = %relay(
         }
       }
     }
-`
-)
+`)
 
 module SubFragment = %relay(`
     fragment TestFragment_sub_user on User {
@@ -24,42 +22,38 @@ module SubFragment = %relay(`
     }
 `)
 
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
     fragment TestFragment_user on User {
       __id
       firstName
       onlineStatus
       ...TestFragment_sub_user
     }
-`
-)
+`)
 
-module InlineFragment = %relay(
-  `
+module InlineFragment = %relay(`
     fragment TestFragment_inline on User @inline {
       firstName
       onlineStatus
     }
-`
-)
+`)
 
-module PluralFragment = %relay(
-  `
+module PluralFragment = %relay(`
     fragment TestFragment_plural_user on User @relay(plural: true) {
       id
       firstName
       onlineStatus
     }
-`
-)
+`)
 
 module TestPlural = {
   @react.component
   let make = (~users) => {
     let allUsers = PluralFragment.use(users)
 
-    <div> {allUsers->Belt.Array.map(user =>
+    <div>
+      {allUsers
+      ->Belt.Array.map(user =>
         <div key=user.id>
           {React.string(
             user.firstName ++
@@ -71,7 +65,9 @@ module TestPlural = {
             }),
           )}
         </div>
-      )->React.array} </div>
+      )
+      ->React.array}
+    </div>
   }
 }
 
@@ -87,7 +83,8 @@ module Test = {
     let dataOpt = Fragment.useOpt(useOpt ? Some(query.loggedInUser.fragmentRefs) : None)
 
     let users = switch query {
-    | {users: Some({edges: Some(edges)})} => edges->Belt.Array.keepMap(edge =>
+    | {users: Some({edges: Some(edges)})} =>
+      edges->Belt.Array.keepMap(edge =>
         switch edge {
         | Some({node: Some(node)}) => Some(node.fragmentRefs)
         | _ => None

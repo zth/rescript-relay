@@ -3,19 +3,21 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
+
+
   type rec fragment_friendsConnection = {
     totalCount: int,
   }
@@ -29,40 +31,36 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"onlineStatus":{"n":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"onlineStatus":{"n":""}}}`
+  )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestRefetching_user]> => fragmentRef = "%identity"
 
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(let makeNode = (node_TestRefetchingRefetchQuery): operationType => {
-  ignore(node_TestRefetchingRefetchQuery)
-  %raw(json` {
+%%private(let makeNode = (rescript_graphql_node_TestRefetchingRefetchQuery): operationType => {
+  ignore(rescript_graphql_node_TestRefetchingRefetchQuery)
+  %raw(json`{
   "argumentDefinitions": [
     {
       "defaultValue": null,
@@ -82,7 +80,7 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": node_TestRefetchingRefetchQuery,
+      "operation": rescript_graphql_node_TestRefetchingRefetchQuery,
       "identifierField": "id"
     }
   },
@@ -94,6 +92,20 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
       "kind": "ScalarField",
       "name": "firstName",
       "storageKey": null
+    },
+    {
+      "condition": "showOnlineStatus",
+      "kind": "Condition",
+      "passingValue": true,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "onlineStatus",
+          "storageKey": null
+        }
+      ]
     },
     {
       "alias": null,
@@ -125,26 +137,11 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
       "kind": "ScalarField",
       "name": "id",
       "storageKey": null
-    },
-    {
-      "condition": "showOnlineStatus",
-      "kind": "Condition",
-      "passingValue": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "onlineStatus",
-          "storageKey": null
-        }
-      ]
     }
   ],
   "type": "User",
   "abstractKey": null
-} `)
+}`)
 })
 let node: operationType = makeNode(TestRefetchingRefetchQuery_graphql.node)
-
 

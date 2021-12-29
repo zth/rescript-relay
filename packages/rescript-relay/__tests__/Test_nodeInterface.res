@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
     query TestNodeInterfaceQuery {
       node(id: "123") {
         __typename
@@ -8,8 +7,7 @@ module Query = %relay(
         }
       }
     }
-`
-)
+`)
 
 module Test = {
   @react.component

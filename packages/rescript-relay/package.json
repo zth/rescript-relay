@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "0.23.0",
+  "version": "1.0.0-beta.1",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -20,12 +20,12 @@
     "rescript"
   ],
   "bin": {
-    "rescript-relay-compiler": "compiler/compiler-cli.js",
+    "rescript-relay-compiler": "compiler.js",
     "rescript-relay-cli": "cli/cli.js"
   },
   "scripts": {
     "build": "rescript build -with-deps",
-    "build:test": "compiler/compiler-cli.js",
+    "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler",
     "postinstall": "node postinstall.js",
     "test": "jest",
     "test:ci": "jest --ci --runInBand"
@@ -35,7 +35,6 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^13.0.0-alpha.5",
     "bs-fetch": "^0.5.0",
-    "graphql": "14.5.0",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.2.4",
     "nock": "^11.7.0",
@@ -43,21 +42,15 @@
     "react": "^18.0.0-rc.0",
     "react-dom": "^18.0.0-rc.0",
     "react-relay": "12.0.0",
-    "relay-compiler": "12.0.0",
-    "relay-config": "12.0.0",
     "relay-runtime": "12.0.0"
   },
   "peerDependencies": {
     "@rescript/react": "*",
-    "graphql": "*",
     "react-relay": "*",
-    "relay-compiler": "*",
-    "relay-config": "*",
     "relay-runtime": "*",
     "rescript": "^9.1.2"
   },
   "dependencies": {
-    "mkdirp-sync": "^0.0.3",
     "rescript": "^9.1.2"
   },
   "resolutions": {

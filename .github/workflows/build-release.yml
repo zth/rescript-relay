@@ -94,101 +94,52 @@ jobs:
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
-  build-bin-linux:
+  build-compiler:
+    name: Build Relay Rust Compiler (${{ matrix.target.os }})
     strategy:
       matrix:
-        platform: [ubuntu-latest]
-
-    name: Build bin for release
-    runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay-bin
-    container:
-      image: alexfedoseev/alpine-node-yarn-esy:0.0.4
+        target:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            build-name: relay
+            artifact-name: relay-compiler-linux-x64
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            build-name: relay
+            artifact-name: relay-compiler-macos-x64
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            build-name: relay
+            artifact-name: relay-compiler-macos-arm64
+    runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
         with:
-          node-version: 14.x
-        env:
-          CI: true
-      - name: Esy install
-        run: esy install
-      - name: Print esy cache
-        id: print_esy_cache
-        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
-      - name: Try to restore dependencies cache
-        uses: actions/cache@v2
-        id: deps-cache
+          submodules: "true"
+      - uses: actions-rs/toolchain@v1
         with:
-          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
-          key: ${{ matrix.platform }}---${{ hashFiles('**/index.json') }}
-          restore-keys: |
-            ${{ matrix.platform }}---
-      - name: Test RescriptRelayBin
-        run: esy test
-      - name: Build bin
-        run: esy linux-release-static
-      - name: Copy built RescriptRelayBin file
-        run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe bin-linux
-      - name: Strip binary
-        run: |
-          strip bin-linux
-      - name: Upload RescriptRelayBin artifact
-        uses: actions/upload-artifact@v2
+          toolchain: stable
+          override: true
+          target: ${{ matrix.target.target }}
+      - uses: actions-rs/cargo@v1
         with:
-          name: bin-linux
-          path: packages/rescript-relay-bin/bin-*
-          if-no-files-found: error
-
-  build-bin:
-    strategy:
-      matrix:
-        # Add Windows here when it gets supported
-        platform: [macos-latest]
-
-    name: Build bin for release
-    runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay-bin
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+          command: build
+          # add --locked back when we have a better way to ensure it's up to date
+          args: --manifest-path=packages/relay/compiler/Cargo.toml --release --target ${{ matrix.target.target }}
+      - uses: actions/upload-artifact@v2
         with:
-          node-version: 12.19.0
-        env:
-          CI: true
-      - name: Install esy
-        run: npm install -g esy
-      - name: Build RescriptRelayBin
-        uses: esy/github-action@v1
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}-v1
-          working-directory: packages/rescript-relay-bin
-      - name: Test RescriptRelayBin
-        run: esy test
-      - name: Copy built RescriptRelayBin file
-        run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayBin.exe ${{ fromJson('{ "ubuntu-latest": "bin-linux", "macos-latest": "bin-darwin" }')[matrix.platform] }}
-      - name: Upload RescriptRelayBin artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: bin-darwin
-          path: packages/rescript-relay-bin/bin-darwin
-          if-no-files-found: error
+          name: ${{ matrix.target.artifact-name }}
+          path: packages/relay/compiler/target/${{ matrix.target.target }}/release/${{ matrix.target.build-name }}
 
   build-release:
     name: Build release package
     runs-on: ubuntu-latest
-    needs: [build-ppx, build-ppx-linux, build-bin, build-bin-linux]
+    needs: [build-ppx, build-ppx-linux, build-compiler]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: 12.19.0
+          node-version: 16
         env:
           CI: true
       - name: Install esy
@@ -203,15 +154,23 @@ jobs:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
         run: |
           ./build-ci.sh
-      - uses: actions/download-artifact@v2
+      - name: Download artifact relay-compiler-linux-x64
+        uses: actions/download-artifact@v2
         with:
-          name: bin-darwin
-          path: binaries
+          name: relay-compiler-linux-x64
+          path: binaries/relay-compiler-linux-x64
 
-      - uses: actions/download-artifact@v2
+      - name: Download artifact relay-compiler-macos-x64
+        uses: actions/download-artifact@v2
         with:
-          name: bin-linux
-          path: binaries
+          name: relay-compiler-macos-x64
+          path: binaries/relay-compiler-macos-x64
+
+      - name: Download artifact relay-compiler-macos-arm64
+        uses: actions/download-artifact@v2
+        with:
+          name: relay-compiler-macos-arm64
+          path: binaries/relay-compiler-macos-arm64
 
       - uses: actions/download-artifact@v2
         with:
@@ -232,8 +191,9 @@ jobs:
           name: |
             ppx-linux
             ppx-darwin
-            bin-linux
-            bin-darwin
+            relay-compiler-linux-x64
+            relay-compiler-macos-x64
+            relay-compiler-macos-arm64
       - name: Upload built folder
         uses: actions/upload-artifact@v2
         with:

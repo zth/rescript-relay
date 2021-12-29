@@ -207,75 +207,75 @@ describe("conversion", () => {
               n: "",
               u: "union_Union",
             },
-            someUnion_user: {
+            someUnion_User: {
               f: "",
             },
-            someUnion_user_ageRange: {
+            someUnion_User_ageRange: {
               e: "enum_Enum",
             },
-            someUnion_user_meta: {
+            someUnion_User_meta: {
               f: "",
             },
-            someUnion_user_meta_ageRange: {
+            someUnion_User_meta_ageRange: {
               e: "enum_Enum",
             },
-            someUnion_user_meta_nullable: {
+            someUnion_User_meta_nullable: {
               n: "",
             },
             friends: {
               n: "",
               u: "union_Union",
             },
-            friends_user: {
+            friends_User: {
               f: "",
             },
-            friends_user_ageRange: {
+            friends_User_ageRange: {
               e: "enum_Enum",
             },
-            friends_user_meta: {
+            friends_User_meta: {
               f: "",
             },
-            friends_user_meta_ageRange: {
+            friends_User_meta_ageRange: {
               e: "enum_Enum",
             },
-            friends_user_meta_nullable: {
+            friends_User_meta_nullable: {
               n: "",
             },
-            friends_observer: {
+            friends_Observer: {
               f: "",
             },
-            friends_observer_name: {
+            friends_Observer_name: {
               n: "",
             },
-            friends_observer_ageRange: {
+            friends_Observer_ageRange: {
               e: "enum_Enum",
             },
-            friends_observer_meta: {
+            friends_Observer_meta: {
               f: "",
             },
-            friends_observer_meta_ageRange: {
+            friends_Observer_meta_ageRange: {
               e: "enum_Enum",
             },
-            friends_observer_meta_nullable: {
+            friends_Observer_meta_nullable: {
               n: "",
             },
-            friends_observer_friends: {
+            friends_Observer_friends: {
               n: "",
               u: "union_Union",
             },
-            friends_observer_friends_user_ageRange: {
+            friends_Observer_friends_User_ageRange: {
               e: "enum_Enum",
             },
-            friends_observer_friends_user: {
+            friends_Observer_friends_User: {
               f: "",
             },
-            friends_observer_friends_user_meta: {
+            friends_Observer_friends_User_meta: {
               f: "",
             },
-            friends_observer_friends_user_meta_ageRange: {
+            friends_Observer_friends_User_meta_ageRange: {
               e: "enum_Enum",
             },
-            friends_observer_friends_user_meta_nullable: {
+            friends_Observer_friends_User_meta_nullable: {
               n: "",
             },
           },
@@ -456,13 +456,14 @@ describe("conversion", () => {
     expect(
       traverser(
         {
+          __typename: "User",
           name: "Name",
           onlineStatus: "Online",
         },
         {
           __root: {
             "": { u: "fragment" },
-            onlineStatus: { n: "", e: "enum_OnlineStatus" },
+            User_onlineStatus: { n: "", e: "enum_OnlineStatus" },
           },
         },
         {
@@ -474,8 +475,88 @@ describe("conversion", () => {
     ).toEqual([
       123,
       {
+        __typename: "User",
         name: "Name",
         onlineStatus: "enum_OnlineStatus",
+      },
+    ]);
+  });
+
+  it("handles nullable top level arrays", () => {
+    expect(
+      traverser(
+        [
+          {
+            name: "Name",
+          },
+          null,
+        ],
+
+        { __root: { "": { na: "" } } },
+        undefined
+      )
+    ).toEqual([
+      {
+        name: "Name",
+      },
+      undefined,
+    ]);
+  });
+
+  test("regression - union members not converted properly via member path", () => {
+    expect(
+      traverser(
+        {
+          __typename: "RecurringCost",
+          id: "UmVjdXJyaW5nQ29zdDoxNjI2Y2QwNC0yMmE0LTQ5MjktOWQ0MC1hYzdmYzBhNWVkZjY,",
+          endDate: null,
+          startDate: 1633046400000,
+          active: true,
+          cost: {
+            __fragments: {
+              CurrencyValueDisplayer_value: true,
+            },
+          },
+          identifier: "Google Ads",
+          sources: [
+            {
+              source: "google_search_engine_marketing",
+            },
+          ],
+        },
+        {
+          __root: {
+            RecurringCost_endDate: { n: "" },
+            RecurringCost_cost: { f: "" },
+            "": { u: "fragment" },
+          },
+        },
+        {
+          fragment: (v) => [123, v],
+        },
+        undefined,
+        undefined
+      )
+    ).toEqual([
+      123,
+      {
+        __typename: "RecurringCost",
+        id: "UmVjdXJyaW5nQ29zdDoxNjI2Y2QwNC0yMmE0LTQ5MjktOWQ0MC1hYzdmYzBhNWVkZjY,",
+        endDate: undefined,
+        startDate: 1633046400000,
+        active: true,
+        cost: {
+          fragmentRefs: expect.any(Object),
+          __fragments: {
+            CurrencyValueDisplayer_value: true,
+          },
+        },
+        identifier: "Google Ads",
+        sources: [
+          {
+            source: "google_search_engine_marketing",
+          },
+        ],
       },
     ]);
   });

@@ -1,2 +1,0 @@
-codegen › prints string literal, escaped
-[ | #\"some invalid string literal\"]

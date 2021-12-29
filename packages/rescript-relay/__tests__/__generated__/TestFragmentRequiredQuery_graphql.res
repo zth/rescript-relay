@@ -1,30 +1,15 @@
-/* @sourceLoc Test_fragment.res */
+/* @sourceLoc Test_fragment_required.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = private [>
-      | #Online
-      | #Idle
-      | #Offline
-    ]
-
-  type enum_OnlineStatus_input = [
-      | #Online
-      | #Idle
-      | #Offline
-    ]
-
-
-
   type rec response_loggedInUser = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_user | #TestFragment_inline]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragmentRequired_user]>,
   }
   and response_users_edges_node = {
     id: string,
-    onlineStatus: option<enum_OnlineStatus>,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_plural_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragmentRequiredPlural_user]>,
   }
   and response_users_edges = {
     node: option<response_users_edges_node>,
@@ -54,7 +39,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":"","f":""},"users_edges":{"na":"","n":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+    json`{"__root":{"users_edges_node":{"n":"","f":""},"users_edges":{"na":"","n":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -64,7 +49,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"users_edges_node_onlineStatus":{"n":""},"users_edges_node":{"n":"","f":""},"users_edges":{"na":"","n":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
+    json`{"__root":{"users_edges_node":{"n":"","f":""},"users_edges":{"na":"","n":""},"users":{"n":""},"loggedInUser":{"f":""}}}`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
@@ -83,8 +68,6 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
   let makeVariables = () => ()
 }
 
@@ -97,7 +80,7 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "firstName",
+  "name": "id",
   "storageKey": null
 },
 v1 = {
@@ -106,20 +89,13 @@ v1 = {
   "kind": "ScalarField",
   "name": "onlineStatus",
   "storageKey": null
-},
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
 };
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestFragmentQuery",
+    "name": "TestFragmentRequiredQuery",
     "selections": [
       {
         "alias": null,
@@ -132,15 +108,7 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "TestFragment_user"
-          },
-          {
-            "kind": "InlineDataFragmentSpread",
-            "name": "TestFragment_inline",
-            "selections": [
-              (v0/*: any*/),
-              (v1/*: any*/)
-            ]
+            "name": "TestFragmentRequired_user"
           }
         ],
         "storageKey": null
@@ -169,12 +137,11 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
-                  (v1/*: any*/),
+                  (v0/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "TestFragment_plural_user"
+                    "name": "TestFragmentRequiredPlural_user"
                   }
                 ],
                 "storageKey": null
@@ -193,7 +160,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestFragmentQuery",
+    "name": "TestFragmentRequiredQuery",
     "selections": [
       {
         "alias": null,
@@ -203,28 +170,8 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
           (v1/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "lastName",
-            "storageKey": null
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
-          },
-          (v2/*: any*/)
+          (v0/*: any*/)
         ],
         "storageKey": null
       },
@@ -252,9 +199,8 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
-                  (v1/*: any*/),
-                  (v0/*: any*/)
+                  (v0/*: any*/),
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -267,12 +213,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "694e23796b26fa28d35a7a972e55f200",
+    "cacheID": "dcf601c24b575a95dfb437994f5c1c3c",
     "id": null,
     "metadata": {},
-    "name": "TestFragmentQuery",
+    "name": "TestFragmentRequiredQuery",
     "operationKind": "query",
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "query TestFragmentRequiredQuery {\n  loggedInUser {\n    ...TestFragmentRequired_user\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        ...TestFragmentRequiredPlural_user\n      }\n    }\n  }\n}\n\nfragment TestFragmentRequiredPlural_user on User {\n  onlineStatus\n}\n\nfragment TestFragmentRequired_user on User {\n  onlineStatus\n}\n"
   }
 };
 })() `)

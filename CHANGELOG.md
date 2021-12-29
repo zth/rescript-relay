@@ -1,5 +1,28 @@
 # master
 
+# 1.0.0-beta.1
+
+The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major thing this release brings is that the ReScript type generation for the Relay compiler has been completely rewritten, and fully integrated into the new Relay Rust compiler. The RescriptRelay fork of the compiler is available and maintained [here])(https://github.com/zth/relay/tree/rescript-relay).
+
+## Remove Packages
+
+You can go ahead and remove these packages, that are no longer needed, as the compiler is now shipped in the main package:
+
+- `relay-config`
+- `relay-compiler`
+- `graphql` (if you don't use it for anything else)
+
+## Breaking Changes
+
+- The compiler expects the `__generated__` folder to always exist, so if you're not committing your artifacts to source control, make sure you add a `.gitkeep` to the generated folder so git keeps it around.
+
+## Improvements
+
+- The compiler itself should be _much_ faster than the old one. An order of magnitude faster. Especially for incremental compilation in watch mode.
+- There's no longer any need to manually select `__typename` on interfaces and unions for RescriptRelay's sake, unless you actually want to use it yourself.
+- We now support the `@required` directive from Relay, which is a new directive that lets you force non-nullability for nullable fields on the client side. You can then choose to throw an error if null values are encountered, or let the null value bubble up. Docs are coming soon, and you'll need to do `RescriptRelay.relayFeatureFlags.enableRequiredDirective = true` somewhere in your code to enable it for now.
+- The errors reported by the compiler is now quite a lot better.
+
 # 0.23.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/6e96dfafaec918b1d4e9519d3fcbf5e5c46be6c0)_

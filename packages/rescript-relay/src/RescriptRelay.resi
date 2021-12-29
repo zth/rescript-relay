@@ -98,6 +98,8 @@ type featureFlags = {
   mutable enableRelayContainersSuspense: bool,
   @as("ENABLE_PRECISE_TYPE_REFINEMENT")
   mutable enablePrecisTypeRefinement: bool,
+  @as("ENABLE_REQUIRED_DIRECTIVES")
+  mutable enableRequiredDirective: bool,
 }
 
 @ocaml.doc(

@@ -3,102 +3,90 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
-  type fragment_memberOf_User = {
+
+
+
+  type rec fragment_memberOf_User = {
+    __typename: [ | #User],
     firstName: string,
   }
-  
-  type fragment_memberOf_Group = {
+  and fragment_memberOf_Group = {
+    __typename: [ | #Group],
     name: string,
   }
-  
-  
-  type fragment_memberOf = [
+  and fragment_memberOf = [
     | #User(fragment_memberOf_User)
-  
     | #Group(fragment_memberOf_Group)
     | #UnselectedUnionMember(string)
   ]
+
   type fragment = {
     id: string,
     firstName: string,
     lastName: string,
     onlineStatus: option<enum_OnlineStatus>,
-    memberOf: option<array<option<[
-      | #User(fragment_memberOf_User)
-  
-      | #Group(fragment_memberOf_Group)
-      | #UnselectedUnionMember(string)
-    ]>>>,
+    memberOf: option<array<option<fragment_memberOf>>>,
   }
 }
 
 let unwrap_fragment_memberOf: {. "__typename": string } => [
   | #User(Types.fragment_memberOf_User)
-
   | #Group(Types.fragment_memberOf_Group)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
- | "User" => #User(u->Obj.magic) 
- | "Group" => #Group(u->Obj.magic) 
- | v => #UnselectedUnionMember(v)
+  | "User" => #User(u->Obj.magic)
+  | "Group" => #Group(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
 }
 
 let wrap_fragment_memberOf: [
   | #User(Types.fragment_memberOf_User)
-
   | #Group(Types.fragment_memberOf_Group)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
- | #User(v) => v->Obj.magic 
- | #Group(v) => v->Obj.magic 
- | #UnselectedUnionMember(v) => {"__typename": v} 
+  | #User(v) => v->Obj.magic
+  | #Group(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
 }
-
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"onlineStatus":{"n":""},"memberOf":{"n":"","na":"","u":"fragment_memberOf"}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"onlineStatus":{"n":""},"memberOf":{"u":"fragment_memberOf","na":"","n":""}}}`
+  )
   let fragmentConverterMap = {
     "fragment_memberOf": unwrap_fragment_memberOf,
   }
-  
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestMutation_user]> => fragmentRef = "%identity"
 
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -184,5 +172,4 @@ return {
   "abstractKey": null
 };
 })() `)
-
 

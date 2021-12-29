@@ -1,6 +1,0 @@
-(executable
- (name RescriptRelayBin)
- (public_name RescriptRelayBin)
- (libraries lib shexp.process yojson ppx_deriving_yojson.runtime)
- (preprocess
-  (pps ppx_deriving_yojson)))

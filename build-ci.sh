@@ -14,11 +14,8 @@ yarn; yarn build;
 cp dist/index.js ../../_release/cli/cli.js;
 cd ../../;
 
-# build language plugin
-echo "Build language plugin...";
-cd packages/rescript-relay/language-plugin/; yarn; yarn build; cd ..;
-
 # build bindings
+cd packages/rescript-relay;
 echo "Build bindings...";
 yarn; yarn build;
 
@@ -34,15 +31,7 @@ echo "Copying config files..."
 cp bsconfig.release.json ../../_release/bsconfig.json;
 ./copyPackageJson.js ../../_release $INPUT_TAG_NAME
 cp yarn.lock ../../_release/;
+cp compiler.js ../../_release/;
 
 # copy real post-install
 cp -f scripts/release-postinstall.js ../../_release/postinstall.js
-
-# copy language plugin
-echo "Copying language plugin..."
-mkdir -p ../../_release/language-plugin/dist;
-cp -r ./language-plugin/dist ../../_release/language-plugin;
-
-# copy compiler
-echo "Copying compiler..."
-cp -r ./compiler/ ../../_release/compiler;

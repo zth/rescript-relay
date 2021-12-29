@@ -1,4 +1,4 @@
-/* @sourceLoc Test_fragment.res */
+/* @sourceLoc Test_fragment_required.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -18,16 +18,16 @@ module Types = {
 
 
 
-  type fragment = {
-    firstName: string,
-    onlineStatus: option<enum_OnlineStatus>,
+  type fragment_t = {
+    onlineStatus: enum_OnlineStatus,
   }
+  type fragment = option<fragment_t>
 }
 
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"onlineStatus":{"n":""}}}`
+    json`{"__root":{"":{"n":""}}}`
   )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
@@ -40,7 +40,7 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  RescriptRelay.fragmentRefs<[> | #TestFragment_inline]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #TestFragmentRequired_user]> => fragmentRef = "%identity"
 
 module Utils = {
   @@ocaml.warning("-33")
@@ -54,7 +54,25 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` {
-  "kind": "InlineDataFragment",
-  "name": "TestFragment_inline"
+  "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "TestFragmentRequired_user",
+  "selections": [
+    {
+      "kind": "RequiredField",
+      "field": {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "onlineStatus",
+        "storageKey": null
+      },
+      "action": "NONE",
+      "path": "onlineStatus"
+    }
+  ],
+  "type": "User",
+  "abstractKey": null
 } `)
 

@@ -1,33 +1,48 @@
+/* @sourceLoc Test_refetchingInNode.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
+
+
   type rec response_node = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>
+    __typename: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>,
   }
   type response = {
     node: option<response_node>,
   }
   type rawResponse = response
+  type variables = {
+    friendsOnlineStatuses: option<array<[
+      | #Online
+      | #Idle
+      | #Offline
+    ]
+>>,
+    showOnlineStatus: option<bool>,
+    id: string,
+  }
   type refetchVariables = {
     friendsOnlineStatuses: option<array<[
-    | #Idle
-    | #Offline
-    | #Online
-    ]>>,
+      | #Online
+      | #Idle
+      | #Offline
+    ]
+>>,
     showOnlineStatus: option<bool>,
     id: option<string>,
   }
@@ -41,61 +56,42 @@ module Types = {
     showOnlineStatus: showOnlineStatus,
     id: id
   }
-  
-  type variables = {
-    friendsOnlineStatuses: array<[
-    | #Idle
-    | #Offline
-    | #Online
-    ]>,
-    showOnlineStatus: bool,
-    id: string,
-  }
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"showOnlineStatus":{"n":""},"friendsOnlineStatuses":{"n":""}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
 
 type queryRef
@@ -103,20 +99,20 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
   let makeVariables = (
-    ~friendsOnlineStatuses,
-    ~showOnlineStatus,
-    ~id
+    ~friendsOnlineStatuses=?,
+    ~showOnlineStatus=?,
+    ~id,
+    ()
   ): variables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
     showOnlineStatus: showOnlineStatus,
     id: id
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -279,12 +275,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "04d4234bc755b04365ce0ee2a517f66a",
+    "cacheID": "7f7b04c6140e4282e20befe8a201c187",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingInNodeRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]! = [Online, Offline]\n  $showOnlineStatus: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!] = [Online, Offline]\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() `)
@@ -296,4 +292,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});

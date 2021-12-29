@@ -56,6 +56,7 @@ module Link: {
     ~className: string=?,
     ~classNameDynamic: (RescriptReactRouter.url, RescriptReactRouter.url) => string=?,
     ~target: [#self | #blank]=?,
+    ~tabIndex: int=?,
     ~mode: [#push | #replace]=?,
     ~render: (
       ~preload: unit => unit,

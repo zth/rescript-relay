@@ -3,7 +3,13 @@ import ora from "ora";
 import path from "path";
 import cp from "child_process";
 import fs from "fs";
-import { DocumentNode, parse, print } from "graphql";
+import {
+  DocumentNode,
+  FragmentDefinitionNode,
+  OperationDefinitionNode,
+  parse,
+  print,
+} from "graphql";
 import {
   processReanalyzeOutput,
   maybePluralize,
@@ -135,36 +141,7 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
             })
           );
 
-          if (verbose && withSourceLocation.length > 0) {
-            console.log(
-              `\n\n------\nUnused fields: \n`,
-              withSourceLocation
-                .map(
-                  (f) =>
-                    `${f.type === "fragment" ? "Fragment" : "Query"} "${
-                      f.graphqlName
-                    }" in ${f.sourceLocation}: \n  ${f.unusedFieldPaths.join(
-                      "\n  "
-                    )}`
-                )
-                .join("\n\n"),
-              `\n------\n\n`
-            );
-          }
-
-          if (ci) {
-            if (withSourceLocation.length === 0) {
-              spinner.succeed("No unused fields found.");
-              process.exit(0);
-            } else {
-              spinner.fail(
-                `Found ${withSourceLocation.length} file(s) with unused fields.`
-              );
-              process.exit(1);
-            }
-          }
-
-          spinner.text = `Findings files to modify`;
+          spinner.text = `Findings files`;
 
           const sourcesToFind = withSourceLocation.map((v) => ({
             path: v.sourceLocation,
@@ -189,7 +166,18 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
             }
           });
 
-          spinner.text = `Removing unused fields`;
+          spinner.text = `Analyzing found files`;
+
+          const allRealFilesWithMissingFields: {
+            absoluteFilePath: string;
+            sourceLocation: string;
+            type: "fragment" | "query";
+            graphqlName: string;
+            unusedFieldPaths: string[];
+            targetDef: OperationDefinitionNode | FragmentDefinitionNode;
+            fileContents: string;
+            targetTag: GraphQLSourceFromTag;
+          }[] = [];
 
           await Promise.all(
             filesWithInfo.map(async (fileWithInfo) => {
@@ -241,9 +229,61 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
                   return;
                 }
 
+                allRealFilesWithMissingFields.push({
+                  targetDef,
+                  fileContents,
+                  targetTag,
+                  ...fileWithInfo,
+                });
+              } catch (e) {
+                console.error(e);
+              }
+            })
+          );
+
+          if (verbose && withSourceLocation.length > 0) {
+            console.log(
+              `\n\n------\nUnused fields: \n`,
+              allRealFilesWithMissingFields
+                .map(
+                  (f) =>
+                    `${f.type === "fragment" ? "Fragment" : "Query"} "${
+                      f.graphqlName
+                    }" in ${f.sourceLocation}: \n  ${f.unusedFieldPaths.join(
+                      "\n  "
+                    )}`
+                )
+                .join("\n\n"),
+              `\n------\n\n`
+            );
+          }
+
+          if (ci) {
+            if (allRealFilesWithMissingFields.length === 0) {
+              spinner.succeed("No unused fields found.");
+              process.exit(0);
+            } else {
+              spinner.fail(
+                `Found ${allRealFilesWithMissingFields.length} file(s) with unused fields.`
+              );
+              process.exit(1);
+            }
+          }
+
+          spinner.text = `Removing unused fields`;
+
+          await Promise.all(
+            allRealFilesWithMissingFields.map(
+              async ({
+                targetDef,
+                unusedFieldPaths,
+                targetTag,
+                absoluteFilePath,
+                fileContents,
+              }) => {
                 const processedOperation = removeUnusedFieldsFromOperation({
                   definition: targetDef,
-                  unusedFieldPaths: fileWithInfo.unusedFieldPaths,
+                  unusedFieldPaths: unusedFieldPaths,
                 });
 
                 const newContent =
@@ -255,21 +295,22 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
                       );
 
                 await fs.promises.writeFile(
-                  fileWithInfo.absoluteFilePath,
+                  absoluteFilePath,
                   `${fileContents.slice(
                     0,
                     targetTag.start
                   )}${newContent}${fileContents.slice(targetTag.end)}`
                 );
-              } catch (e) {
-                console.error(e);
               }
-            })
+            )
           );
 
-          const numFieldsRemoved = filesWithInfo.reduce((acc, curr) => {
-            return acc + (curr?.unusedFieldPaths.length ?? 0);
-          }, 0);
+          const numFieldsRemoved = allRealFilesWithMissingFields.reduce(
+            (acc, curr) => {
+              return acc + (curr?.unusedFieldPaths.length ?? 0);
+            },
+            0
+          );
 
           if (numFieldsRemoved === 0) {
             spinner.succeed("Done! No unused fields found.");
@@ -278,7 +319,10 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
               `Done! Removed ${maybePluralize(
                 "field",
                 numFieldsRemoved
-              )} from ${maybePluralize("file", filesWithInfo.length)}.`
+              )} from ${maybePluralize(
+                "file",
+                allRealFilesWithMissingFields.length
+              )}.`
             );
           }
         });

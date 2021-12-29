@@ -1,5 +1,4 @@
-module Query = %relay(
-  `
+module Query = %relay(`
   query TestUnionsQuery {
     members(groupId: "123") {
       edges {
@@ -33,8 +32,7 @@ module Query = %relay(
       }
     }
   }
-`
-)
+`)
 
 let mapOnlineStatus = (s: option<Query.Types.enum_OnlineStatus>) =>
   switch s {
@@ -54,7 +52,8 @@ module Test = {
 
     <div>
       {switch query {
-      | {members: Some({edges: Some(edges)})} => edges->Belt.Array.keepMap(edge =>
+      | {members: Some({edges: Some(edges)})} =>
+        edges->Belt.Array.keepMap(edge =>
           switch edge {
           | Some({node: Some(node)}) => Some(node)
           | _ => None
@@ -75,7 +74,9 @@ module Test = {
               (group.name ++
               (" with avatarUrl " ++ group.avatarUrl->Belt.Option.getWithDefault("[no avatar]"))),
             )}
-            {group.members->Belt.Option.getWithDefault([])->Belt.Array.map(x =>
+            {group.members
+            ->Belt.Option.getWithDefault([])
+            ->Belt.Array.map(x =>
               switch x {
               | Some(#User(user)) =>
                 <div key=user.id>
@@ -93,7 +94,8 @@ module Test = {
                 </div>
               | Some(#UnselectedUnionMember(_)) | None => React.null
               }
-            )->React.array}
+            )
+            ->React.array}
           </div>
         | #UnselectedUnionMember(_) => React.null
         }

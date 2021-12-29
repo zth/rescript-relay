@@ -3,25 +3,26 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type rec response_node = {
     __typename: [ | #User],
     firstName: string,
     avatarUrl: option<string>,
   }
-   and rawResponse_node = {
+  and rawResponse_node = {
     __typename: [ | #User],
     id: string,
     firstName: string,
     avatarUrl: option<string>,
   }
-  
-  
   type response = {
     node: option<response_node>,
   }
   type rawResponse = {
     node: option<rawResponse_node>,
+  }
+  type variables = {
+    id: string,
   }
   type refetchVariables = {
     id: option<string>,
@@ -32,75 +33,56 @@ module Types = {
   ): refetchVariables => {
     id: id
   }
-  
-  type variables = {
-    id: string,
-  }
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"tnf":"User","n":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"tnf":"User","n":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw
-  let wrapRawResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
-    )
-  
+  let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"tnf":"User","n":""}}}`
+  )
   let wrapRawResponseConverterMap = ()
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
-    wrapRawResponseConverter, 
-    wrapRawResponseConverterMap, 
+    wrapRawResponseConverter,
+    wrapRawResponseConverterMap,
     Js.null
   )
   type rawResponseRaw
-  let rawResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node_avatarUrl":{"n":""},"node":{"n":"","tnf":"User"}}}`
-    )
-  
+  let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node_avatarUrl":{"n":""},"node":{"tnf":"User","n":""}}}`
+  )
   let rawResponseConverterMap = ()
   let convertRawResponse = v => v->RescriptRelay.convertObj(
-    rawResponseConverter, 
-    rawResponseConverterMap, 
-    Js.undefined
-  )
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
+    rawResponseConverter,
+    rawResponseConverterMap,
     Js.undefined
   )
 }
@@ -116,6 +98,7 @@ module Utils = {
     id: id
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -202,14 +185,14 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
             "name": "id",
             "storageKey": null
-          },
-          (v3/*: any*/)
+          }
         ],
         "storageKey": null
       }
@@ -233,4 +216,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});

@@ -108,10 +108,7 @@ function traverse(
             ) {
               isUnion = true;
 
-              var newPath = makeNewPath(currentPath, [
-                key,
-                v.__typename.toLowerCase(),
-              ]);
+              var newPath = makeNewPath(currentPath, [key, v.__typename]);
 
               var unionRootHasFragment =
                 (instructionMap[getPathName(newPath)] || {}).f === "";
@@ -186,10 +183,7 @@ function traverse(
           ) {
             isUnion = true;
 
-            var newPath = makeNewPath(currentPath, [
-              key,
-              v.__typename.toLowerCase(),
-            ]);
+            var newPath = makeNewPath(currentPath, [key, v.__typename]);
 
             var unionRootHasFragment =
               (instructionMap[getPathName(newPath)] || {}).f === "";
@@ -276,7 +270,7 @@ function traverse(
  */
 function traverser(
   root,
-  _instructionMaps,
+  instructionMaps_,
   theConverters,
   nullableValue,
   rootObjectKey
@@ -285,7 +279,7 @@ function traverser(
     return nullableValue;
   }
 
-  var instructionMaps = _instructionMaps || {};
+  var instructionMaps = instructionMaps_ || {};
   var instructionMap = instructionMaps[rootObjectKey || "__root"];
 
   // No instructions
@@ -311,9 +305,11 @@ function traverser(
         return nullableValue;
       }
 
+      var n = unionRootConverter != null ? [v.__typename] : [];
+
       var traversedObj = traverse(
         instructionMaps,
-        [],
+        n,
         v,
         instructionMap,
         converters,
@@ -330,9 +326,11 @@ function traverser(
 
   var newObj = Object.assign({}, root);
 
+  var n = unionRootConverter != null ? [newObj.__typename] : [];
+
   var v = traverse(
     instructionMaps,
-    [],
+    n,
     newObj,
     instructionMap,
     converters,

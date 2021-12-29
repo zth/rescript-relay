@@ -10,8 +10,19 @@
 var path = require("path");
 var cp = require("child_process");
 var fs = require("fs");
-var os = require("os");
 var platform = process.platform;
+
+function getRelayCompilerPlatformSuffix() {
+  if (process.platform === "darwin" && process.arch === "x64") {
+    return "macos-x64";
+  } else if (process.platform === "darwin" && process.arch === "arm64") {
+    return "macos-arm64";
+  } else if (process.platform === "linux" && process.arch === "x64") {
+    return "linux-x64";
+  }
+
+  return "linux-x64";
+}
 
 /**
  * Since os.arch returns node binary's target arch, not
@@ -19,7 +30,7 @@ var platform = process.platform;
  * Credits: https://github.com/feross/arch/blob/af080ff61346315559451715c5393d8e86a6d33c/index.js#L10-L58
  */
 
-function arch() {
+function ppxArch() {
   /**
    * Use Rosetta for ARM on macOS
    */
@@ -80,39 +91,55 @@ function arch() {
 }
 
 function copyPlatformBinaries(platform) {
+  /**
+   * Copy the PPX
+   */
   fs.copyFileSync(
     path.join(__dirname, "ppx-" + platform),
     path.join(__dirname, "ppx")
   );
   fs.chmodSync(path.join(__dirname, "ppx"), 0777);
 
+  /**
+   * Copy the Relay compiler
+   */
+
   fs.copyFileSync(
-    path.join(__dirname, "bin-" + platform),
-    path.join(__dirname, "language-plugin", "RescriptRelayBin.exe")
+    path.join(
+      __dirname,
+      "relay-compiler-" + getRelayCompilerPlatformSuffix(),
+      "relay"
+    ),
+    path.join(__dirname, "rescript-relay-compiler.exe")
   );
-  fs.chmodSync(
-    path.join(__dirname, "language-plugin", "RescriptRelayBin.exe"),
-    0777
-  );
+  fs.chmodSync(path.join(__dirname, "rescript-relay-compiler.exe"), 0777);
 }
 
 function removeInitialBinaries() {
   fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
-  fs.unlinkSync(path.join(__dirname, "bin-darwin"));
-  fs.unlinkSync(path.join(__dirname, "bin-linux"));
+  fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
+    recursive: true,
+    force: true,
+  });
+  fs.rmSync(path.join(__dirname, "relay-compiler-macos-x64"), {
+    recursive: true,
+    force: true,
+  });
+  fs.rmSync(path.join(__dirname, "relay-compiler-macos-arm64"), {
+    recursive: true,
+    force: true,
+  });
 }
 
 switch (platform) {
   case "win32": {
-    if (arch() !== "x64") {
+    if (ppxArch() !== "x64") {
       console.warn("error: x86 is currently not supported on Windows");
       process.exit(1);
     }
 
     throw new Error("Windows currently not supported.");
-    copyPlatformBinaries("windows");
-    break;
   }
   case "linux":
   case "darwin":

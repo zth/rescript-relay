@@ -3,29 +3,29 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type enum_OnlineStatus = private [>
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
+
   type enum_OnlineStatus_input = [
-    | #Idle
-    | #Offline
-    | #Online
+      | #Online
+      | #Idle
+      | #Offline
     ]
-  
-  type rec response_userUpdated = {
-    user: option<response_userUpdated_user>,
-  }
-   and response_userUpdated_user = {
+
+
+
+  type rec response_userUpdated_user = {
     id: string,
     onlineStatus: option<enum_OnlineStatus>,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>,
   }
-  
-  
+  and response_userUpdated = {
+    user: option<response_userUpdated_user>,
+  }
   type response = {
     userUpdated: option<response_userUpdated>,
   }
@@ -36,49 +36,40 @@ module Types = {
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"userUpdated_user_onlineStatus":{"n":""},"userUpdated":{"n":""},"userUpdated_user":{"f":"","n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"userUpdated_user_onlineStatus":{"n":""},"userUpdated_user":{"n":"","f":""},"userUpdated":{"n":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
-
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  external onlineStatus_toString:
-  enum_OnlineStatus => string = "%identity"
-  external onlineStatus_input_toString:
-  enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
   let makeVariables = (
     ~userId
   ): variables => {
     userId: userId
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.subscriptionNode<relayOperationNode>
 
@@ -201,7 +192,9 @@ return {
   "params": {
     "cacheID": "41b8b12bc049364fa2383c462f7c13de",
     "id": null,
-    "metadata": {},
+    "metadata": {
+      "subscriptionName": "userUpdated"
+    },
     "name": "TestSubscriptionUserUpdatedSubscription",
     "operationKind": "subscription",
     "text": "subscription TestSubscriptionUserUpdatedSubscription(\n  $userId: ID!\n) {\n  userUpdated(id: $userId) {\n    user {\n      id\n      onlineStatus\n      ...TestSubscription_user\n    }\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n"

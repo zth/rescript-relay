@@ -3,16 +3,22 @@ name: Integration tests
 on: [push]
 
 jobs:
-  build:
+  run_integration_tests:
     name: Integration tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: "true"
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: 12.19.0
+          node-version: 16
         env:
           CI: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
       - name: Install esy
         run: npm install -g esy
       - uses: esy/github-action@v1
@@ -24,28 +30,11 @@ jobs:
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/rescript-relay/rescript-relay-ppx
-      - name: Build RescriptRelayBin
-        uses: esy/github-action@v1
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay-bin
-      - name: Copy built RescriptRelayBin file
-        working-directory: packages/rescript-relay-bin
-        run: |
-          ./copyIntoPlace.sh
-      - name: Install - language plugin
-        working-directory: packages/rescript-relay/language-plugin
-        run: |
-          yarn --frozen-lockfile
-      - name: Build - language plugin
-        working-directory: packages/rescript-relay/language-plugin
-        run: |
-          yarn build
       - name: Install - bindings
         working-directory: packages/rescript-relay
         run: |
           yarn install
-      - name: Build - Relay test files
+      - name: Build - compiler & Relay test files
         working-directory: packages/rescript-relay
         run: |
           yarn build:test
