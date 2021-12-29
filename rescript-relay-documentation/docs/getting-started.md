@@ -57,7 +57,7 @@ yarn add react@rc react-dom@rc
 
 # Add rescript-relay and dependencies to the project
 # We currently depend on Relay version 12.0.0, so install that exact version
-yarn add rescript-relay graphql relay-runtime@12.0.0 relay-compiler@12.0.0 react-relay@12.0.0 relay-config@12.0.0
+yarn add rescript-relay@1.0.0-beta.1 relay-runtime@12.0.0 react-relay@12.0.0
 ```
 
 After you've installed the packages above, setup ReScript through your `bsconfig.json` like this:
