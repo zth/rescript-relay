@@ -14,6 +14,7 @@ module Fragment = %relay(`
       ... on User {
         firstName
         onlineStatus
+        ...TestUnionFragmentUser_user
       }
       ... on Group {
         name
@@ -21,18 +22,35 @@ module Fragment = %relay(`
     }
 `)
 
+module UserFragment = %relay(`
+  fragment TestUnionFragmentUser_user on User {
+    firstName
+    onlineStatus
+  }
+`)
+
 module PluralFragment = %relay(`
     fragment TestUnionFragment_plural_member on Member @relay(plural: true) {
       __typename
       ... on User {
-      firstName
+        firstName
         onlineStatus
+        ...TestUnionFragmentUser_user
       }
       ... on Group {
         name
       }
     }
 `)
+
+module UserFragmentRenderer = {
+  @react.component
+  let make = (~user, ~prefix="") => {
+    let user = UserFragment.use(user)
+
+    <div> {React.string(prefix ++ "Yup, " ++ user.firstName ++ " is here.")} </div>
+  }
+}
 
 module FragmentRenderer = {
   @react.component
@@ -42,13 +60,18 @@ module FragmentRenderer = {
 
     <>
       {switch regular {
-      | #User({onlineStatus: Some(#Online), firstName}) =>
-        <div> {React.string(firstName ++ " is online")} </div>
+      | #User({onlineStatus: Some(#Online), firstName, fragmentRefs}) => <>
+          <div> {React.string(firstName ++ " is online")} </div>
+          <UserFragmentRenderer user=fragmentRefs />
+        </>
       | _ => React.null
       }}
       {switch plural {
-      | [#User({onlineStatus: Some(#Online), firstName})] =>
-        <div> {React.string("plural: " ++ (firstName ++ " is online"))} </div>
+      | [#User({onlineStatus: Some(#Online), firstName, fragmentRefs})] => <>
+          <div> {React.string("plural: " ++ (firstName ++ " is online"))} </div>
+          <UserFragmentRenderer prefix="plural: " user=fragmentRefs />
+        </>
+
       | _ => React.null
       }}
     </>

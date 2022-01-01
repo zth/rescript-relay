@@ -23,6 +23,23 @@ describe("Unions on fragments", () => {
     await t.screen.findByText("First is online");
   });
 
+  test("fragments inside of union fragments work", async () => {
+    queryMock.mockQuery({
+      name: "TestUnionFragmentQuery",
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-123",
+          firstName: "First",
+          onlineStatus: "Online",
+        },
+      },
+    });
+
+    t.render(test_unionFragment());
+    await t.screen.findByText("Yup, First is here.");
+  });
+
   test("basic fragments work, plural", async () => {
     queryMock.mockQuery({
       name: "TestUnionFragmentQuery",
@@ -38,5 +55,22 @@ describe("Unions on fragments", () => {
 
     t.render(test_unionFragment());
     await t.screen.findByText("plural: First is online");
+  });
+
+  test("fragments inside of union fragments work, plural", async () => {
+    queryMock.mockQuery({
+      name: "TestUnionFragmentQuery",
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-123",
+          firstName: "First",
+          onlineStatus: "Online",
+        },
+      },
+    });
+
+    t.render(test_unionFragment());
+    await t.screen.findByText("plural: Yup, First is here.");
   });
 });

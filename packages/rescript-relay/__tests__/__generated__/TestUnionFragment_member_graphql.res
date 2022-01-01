@@ -22,6 +22,7 @@ module Types = {
     __typename: [ | #User],
     firstName: string,
     onlineStatus: option<enum_OnlineStatus>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestUnionFragmentUser_user]>,
   }
   and fragment_Group = {
     __typename: [ | #Group],
@@ -57,7 +58,7 @@ let wrap_fragment: [
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"User_onlineStatus":{"n":""},"":{"u":"fragment"}}}`
+    json`{"__root":{"User_onlineStatus":{"n":""},"User":{"f":""},"":{"u":"fragment"}}}`
   )
   let fragmentConverterMap = {
     "fragment": unwrap_fragment,
@@ -114,6 +115,11 @@ let node: operationType = %raw(json` {
           "kind": "ScalarField",
           "name": "onlineStatus",
           "storageKey": null
+        },
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "TestUnionFragmentUser_user"
         }
       ],
       "type": "User",

@@ -305,7 +305,15 @@ function traverser(
         return nullableValue;
       }
 
-      var n = unionRootConverter != null ? [v.__typename] : [];
+      var n = [];
+
+      // Since a root level union is treated as a "new root level", we'll need
+      // to do a separate check here of whether there's a fragment on the root
+      // we need to account for, or not.
+      if (unionRootConverter != null) {
+        n = [v.__typename];
+        fragmentsOnRoot = (instructionMap[v.__typename] || {}).f === "";
+      }
 
       var traversedObj = traverse(
         instructionMaps,
@@ -326,7 +334,14 @@ function traverser(
 
   var newObj = Object.assign({}, root);
 
-  var n = unionRootConverter != null ? [newObj.__typename] : [];
+  var n = [];
+
+  // Same as in the union array check above - if there's a fragment in the new
+  // root created by the union, we need to account for that separately here.
+  if (unionRootConverter != null) {
+    n = [newObj.__typename];
+    fragmentsOnRoot = (instructionMap[newObj.__typename] || {}).f === "";
+  }
 
   var v = traverse(
     instructionMaps,

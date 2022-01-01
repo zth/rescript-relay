@@ -187,12 +187,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a9651bee82711c3df8379b9bbbca2133",
+    "cacheID": "c5f1f3c6d4b69ab72edc21fd70d603d3",
     "id": null,
     "metadata": {},
     "name": "TestUnionFragmentQuery",
     "operationKind": "query",
-    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  __isMember: __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  __isMember: __typename\n  ... on User {\n    firstName\n    onlineStatus\n  }\n  ... on Group {\n    name\n  }\n}\n"
+    "text": "query TestUnionFragmentQuery {\n  member(id: \"123\") {\n    __typename\n    ...TestUnionFragment_member\n    ...TestUnionFragment_plural_member\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment TestUnionFragmentUser_user on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestUnionFragment_member on Member {\n  __typename\n  __isMember: __typename\n  ... on User {\n    firstName\n    onlineStatus\n    ...TestUnionFragmentUser_user\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestUnionFragment_plural_member on Member {\n  __typename\n  __isMember: __typename\n  ... on User {\n    firstName\n    onlineStatus\n    ...TestUnionFragmentUser_user\n  }\n  ... on Group {\n    name\n  }\n}\n"
   }
 };
 })() `)
