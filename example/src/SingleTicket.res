@@ -17,12 +17,6 @@ module TicketFragment = %relay(`
   }
 `)
 
-type x = option<string>
-
-let someVariable = Some("test")
-
-let _ = someVariable
-
 @react.component
 let make = (~ticket as ticketRef) => {
   let ticket = TicketFragment.use(ticketRef)
