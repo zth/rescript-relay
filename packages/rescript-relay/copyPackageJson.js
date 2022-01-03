@@ -10,7 +10,8 @@ const pkgJsonRaw = fs.readFileSync(
 
 const pkgJson = JSON.parse(pkgJsonRaw);
 
-if (tagName) {
+// Bypass forcing package name and version for the beta track.
+if (tagName && tagName !== "beta") {
   const commit = require("child_process")
     .execSync("git rev-parse HEAD")
     .toString()
