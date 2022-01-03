@@ -1,13 +1,10 @@
-module TicketFragment = %relay(
-  `
+module TicketFragment = %relay(`
   fragment SingleTicket_ticket on Ticket {
     assignee {
       __typename
-  
       ... on User {
         ...Avatar_user
       }
-  
       ... on WorkingGroup {
         ...SingleTicketWorkingGroup_workingGroup
       }
@@ -18,8 +15,13 @@ module TicketFragment = %relay(
     trackingId
     ...TicketStatusBadge_ticket
   }
-`
-)
+`)
+
+type x = option<string>
+
+let someVariable = Some("test")
+
+let _ = someVariable
 
 @react.component
 let make = (~ticket as ticketRef) => {

@@ -3,29 +3,27 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
-  type rec response_addTodoItem = {
-    addedTodoItem: option<response_addTodoItem_addedTodoItem>,
-  }
-   and response_addTodoItem_addedTodoItem = {
-    id: string,
-    text: string,
-    completed: option<bool>,
-  }
-   and rawResponse_addTodoItem = {
-    addedTodoItem: option<rawResponse_addTodoItem_addedTodoItem>,
-  }
-   and rawResponse_addTodoItem_addedTodoItem = {
-    id: string,
-    text: string,
-    completed: option<bool>,
-  }
-   and addTodoItemInput = {
+
+  type rec addTodoItemInput = {
     text: string,
     clientMutationId: option<string>,
   }
-  
-  
+  type rec response_addTodoItem_addedTodoItem = {
+    id: string,
+    text: string,
+    completed: option<bool>,
+  }
+  and response_addTodoItem = {
+    addedTodoItem: option<response_addTodoItem_addedTodoItem>,
+  }
+  and rawResponse_addTodoItem_addedTodoItem = {
+    id: string,
+    text: string,
+    completed: option<bool>,
+  }
+  and rawResponse_addTodoItem = {
+    addedTodoItem: option<rawResponse_addTodoItem_addedTodoItem>,
+  }
   type response = {
     addTodoItem: option<response_addTodoItem>,
   }
@@ -39,73 +37,56 @@ module Types = {
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"addTodoItemInput":{"clientMutationId":{"n":""}},"__root":{"input":{"r":"addTodoItemInput"}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw
-  let wrapRawResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
-    )
-  
+  let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
+  )
   let wrapRawResponseConverterMap = ()
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
-    wrapRawResponseConverter, 
-    wrapRawResponseConverterMap, 
+    wrapRawResponseConverter,
+    wrapRawResponseConverterMap,
     Js.null
   )
   type rawResponseRaw
-  let rawResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
-    )
-  
+  let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"addTodoItem_addedTodoItem_completed":{"n":""},"addTodoItem_addedTodoItem":{"n":""},"addTodoItem":{"n":""}}}`
+  )
   let rawResponseConverterMap = ()
   let convertRawResponse = v => v->RescriptRelay.convertObj(
-    rawResponseConverter, 
-    rawResponseConverterMap, 
-    Js.undefined
-  )
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"input":{"r":"AddTodoItemInput"}},"AddTodoItemInput":{"clientMutationId":{"n":""}}}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
+    rawResponseConverter,
+    rawResponseConverterMap,
     Js.undefined
   )
 }
-
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
@@ -117,13 +98,18 @@ module Utils = {
     text: text,
     clientMutationId: clientMutationId
   }
-  
   let makeVariables = (
     ~input,
     ~connections
   ): variables => {
     input: input,
     connections: connections
+  }
+  let makeOptimisticResponse = (
+    ~addTodoItem=?,
+    ()
+  ): rawResponse => {
+    addTodoItem: addTodoItem
   }
   let make_rawResponse_addTodoItem_addedTodoItem = (
     ~id,
@@ -141,29 +127,8 @@ module Utils = {
   ): rawResponse_addTodoItem => {
     addedTodoItem: addedTodoItem
   }
-  let make_response_addTodoItem_addedTodoItem = (
-    ~id,
-    ~text,
-    ~completed=?,
-    ()
-  ): response_addTodoItem_addedTodoItem => {
-    id: id,
-    text: text,
-    completed: completed
-  }
-  let make_response_addTodoItem = (
-    ~addedTodoItem=?,
-    ()
-  ): response_addTodoItem => {
-    addedTodoItem: addedTodoItem
-  }
-  let makeOptimisticResponse = (
-    ~addTodoItem=?,
-    ()
-  ): rawResponse => {
-    addTodoItem: addTodoItem
-  }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.mutationNode<relayOperationNode>
 

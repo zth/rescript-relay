@@ -1,11 +1,9 @@
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
   fragment Avatar_user on User {
     avatarUrl
     fullName
   }
-`
-)
+`)
 
 @react.component
 let make = (~user as userRef) => {

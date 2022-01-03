@@ -3,7 +3,7 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type fragment = {
     avatarUrl: option<string>,
     fullName: string,
@@ -12,28 +12,27 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"avatarUrl":{"n":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"avatarUrl":{"n":""}}}`
+  )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #Avatar_user]> => fragmentRef = "%identity"
 
-
 module Utils = {
-
+  @@ocaml.warning("-33")
+  open Types
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -62,5 +61,4 @@ let node: operationType = %raw(json` {
   "type": "User",
   "abstractKey": null
 } `)
-
 

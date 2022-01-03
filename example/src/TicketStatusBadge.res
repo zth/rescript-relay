@@ -1,10 +1,8 @@
-module Fragment = %relay(
-  `
+module Fragment = %relay(`
   fragment TicketStatusBadge_ticket on Ticket {
     status
   }
-`
-)
+`)
 
 @react.component
 let make = (~ticket as ticketRef) =>

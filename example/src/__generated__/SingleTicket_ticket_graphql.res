@@ -3,86 +3,75 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
-  type fragment_assignee_User = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>
+
+  type rec fragment_assignee_User = {
+    __typename: [ | #User],
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>,
   }
-  
-  type fragment_assignee_WorkingGroup = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>
+  and fragment_assignee_WorkingGroup = {
+    __typename: [ | #WorkingGroup],
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
   }
-  
-  
-  type fragment_assignee = [
+  and fragment_assignee = [
     | #User(fragment_assignee_User)
-  
     | #WorkingGroup(fragment_assignee_WorkingGroup)
     | #UnselectedUnionMember(string)
   ]
+
   type fragment = {
-    assignee: option<[
-      | #User(fragment_assignee_User)
-  
-      | #WorkingGroup(fragment_assignee_WorkingGroup)
-      | #UnselectedUnionMember(string)
-    ]>,
+    assignee: option<fragment_assignee>,
     id: string,
     subject: string,
     lastUpdated: option<string>,
     trackingId: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TicketStatusBadge_ticket]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TicketStatusBadge_ticket]>,
   }
 }
 
 let unwrap_fragment_assignee: {. "__typename": string } => [
   | #User(Types.fragment_assignee_User)
-
   | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
- | "User" => #User(u->Obj.magic) 
- | "WorkingGroup" => #WorkingGroup(u->Obj.magic) 
- | v => #UnselectedUnionMember(v)
+  | "User" => #User(u->Obj.magic)
+  | "WorkingGroup" => #WorkingGroup(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
 }
 
 let wrap_fragment_assignee: [
   | #User(Types.fragment_assignee_User)
-
   | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
- | #User(v) => v->Obj.magic 
- | #WorkingGroup(v) => v->Obj.magic 
- | #UnselectedUnionMember(v) => {"__typename": v} 
+  | #User(v) => v->Obj.magic
+  | #WorkingGroup(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
 }
-
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""},"assignee_user":{"f":""},"assignee":{"n":"","u":"fragment_assignee"},"assignee_workinggroup":{"f":""},"lastUpdated":{"n":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"lastUpdated":{"n":""},"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee","n":""},"":{"f":""}}}`
+  )
   let fragmentConverterMap = {
     "fragment_assignee": unwrap_fragment_assignee,
   }
-  
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #SingleTicket_ticket]> => fragmentRef = "%identity"
 
-
 module Utils = {
-
+  @@ocaml.warning("-33")
+  open Types
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -172,5 +161,4 @@ let node: operationType = %raw(json` {
   "type": "Ticket",
   "abstractKey": null
 } `)
-
 

@@ -3,72 +3,64 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type rec response_siteStatistics = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TopCardsDisplayer_siteStatistics]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TopCardsDisplayer_siteStatistics]>,
   }
   type response = {
     siteStatistics: response_siteStatistics,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query | #TodoList_query]>,
   }
   type rawResponse = response
-  type refetchVariables = unit
-  let makeRefetchVariables = (
-  ) => ()
-  
   type variables = unit
+  type refetchVariables = unit
+  let makeRefetchVariables = () => ()
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""},"siteStatistics":{"f":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"siteStatistics":{"f":""},"":{"f":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""},"siteStatistics":{"f":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"siteStatistics":{"f":""},"":{"f":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
 
 type queryRef
 
 module Utils = {
-
+  @@ocaml.warning("-33")
+  open Types
+  let makeVariables = () => ()
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -422,12 +414,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "19892d5152e888cf4e0df27a9af94a2f",
+    "cacheID": "6e1d23008cd50dc2e850e8ccc349493e",
     "id": null,
     "metadata": {},
     "name": "MainQuery",
     "operationKind": "query",
-    "text": "query MainQuery {\n  siteStatistics {\n    ...TopCardsDisplayer_siteStatistics\n    id\n  }\n  ...RecentTickets_query\n  ...TodoList_query\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query on Query {\n  ticketsConnection(first: 2, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment SingleTodo_todoItem on TodoItem {\n  id\n  text\n  completed\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n\nfragment TodoList_query on Query {\n  todosConnection(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTodo_todoItem\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TopCardsDisplayer_siteStatistics on SiteStatistics {\n  weeklySales\n  weeklyOrders\n  currentVisitorsOnline\n}\n"
+    "text": "query MainQuery {\n  siteStatistics {\n    ...TopCardsDisplayer_siteStatistics\n    id\n  }\n  ...RecentTickets_query\n  ...TodoList_query\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query on Query {\n  ticketsConnection(first: 2, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment SingleTodo_todoItem on TodoItem {\n  id\n  text\n  completed\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n\nfragment TodoList_query on Query {\n  todosConnection(first: 10, after: \"\") {\n    edges {\n      node {\n        id\n        ...SingleTodo_todoItem\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TopCardsDisplayer_siteStatistics on SiteStatistics {\n  weeklySales\n  weeklyOrders\n  currentVisitorsOnline\n}\n"
   }
 };
 })() `)
@@ -439,4 +431,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});

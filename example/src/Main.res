@@ -21,8 +21,7 @@
  * Whew, lots of information... But the only thing you really need to think about is that
  * you _pass along fragment refs by passing the full object the fragment was spread on_.
  */
-module Query = %relay(
-  `
+module Query = %relay(`
   query MainQuery {
     siteStatistics {
       ...TopCardsDisplayer_siteStatistics
@@ -30,8 +29,7 @@ module Query = %relay(
     ...RecentTickets_query
     ...TodoList_query
   }
-`
-)
+`)
 
 @react.component
 let make = () => {

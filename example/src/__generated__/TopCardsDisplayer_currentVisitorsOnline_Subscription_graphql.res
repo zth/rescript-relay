@@ -3,7 +3,7 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type rec response_siteStatisticsUpdated = {
     currentVisitorsOnline: int,
   }
@@ -15,39 +15,34 @@ module Types = {
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"siteStatisticsUpdated":{"n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"siteStatisticsUpdated":{"n":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
-
-
 module Utils = {
-
+  @@ocaml.warning("-33")
+  open Types
+  let makeVariables = () => ()
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.subscriptionNode<relayOperationNode>
 
@@ -113,7 +108,9 @@ return {
   "params": {
     "cacheID": "baa20f0ef1a4dd4e353ad6c271c455bc",
     "id": null,
-    "metadata": {},
+    "metadata": {
+      "subscriptionName": "siteStatisticsUpdated"
+    },
     "name": "TopCardsDisplayer_currentVisitorsOnline_Subscription",
     "operationKind": "subscription",
     "text": "subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {\n  siteStatisticsUpdated {\n    currentVisitorsOnline\n    id\n  }\n}\n"

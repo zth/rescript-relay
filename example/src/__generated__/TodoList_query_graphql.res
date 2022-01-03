@@ -3,20 +3,18 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
-  type rec fragment_todosConnection = {
+
+  type rec fragment_todosConnection_edges_node = {
+    id: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTodo_todoItem]>,
+  }
+  and fragment_todosConnection_edges = {
+    node: option<fragment_todosConnection_edges_node>,
+  }
+  and fragment_todosConnection = {
     __id: RescriptRelay.dataId,
     edges: option<array<option<fragment_todosConnection_edges>>>,
   }
-   and fragment_todosConnection_edges = {
-    node: option<fragment_todosConnection_edges_node>,
-  }
-   and fragment_todosConnection_edges_node = {
-    id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTodo_todoItem]>
-  }
-  
-  
   type fragment = {
     todosConnection: fragment_todosConnection,
   }
@@ -24,42 +22,41 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"todosConnection_edges_node":{"f":"","n":""},"todosConnection_edges":{"n":"","na":""}}}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"todosConnection_edges_node":{"n":"","f":""},"todosConnection_edges":{"na":"","n":""}}}`
+  )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TodoList_query]> => fragmentRef = "%identity"
-
 
 module Utils = {
   @@ocaml.warning("-33")
   open Types
   @inline
   let connectionKey = "TodoList_query_todosConnection"
-  
-  let getConnectionNodes:
-    fragment_todosConnection => array<fragment_todosConnection_edges_node> =
-    connection => switch connection.edges { 
-    | None => []
-    | Some(edges) => edges->Belt.Array.keepMap(edge => switch edge { 
-     | None => None 
-     | Some(edge) => edge.node
-  
-    })
-   }
+
+
+  let getConnectionNodes: fragment_todosConnection => array<fragment_todosConnection_edges_node> = connection => 
+    switch connection.edges {
+      | None => []
+      | Some(edges) => edges
+        ->Belt.Array.keepMap(edge => switch edge {
+          | None => None
+          | Some(edge) => edge.node
+        })
+    }
+
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -124,16 +121,16 @@ let node: operationType = %raw(json` {
                   "storageKey": null
                 },
                 {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "SingleTodo_todoItem"
+                },
+                {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
-                },
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "SingleTodo_todoItem"
                 }
               ],
               "storageKey": null
@@ -192,5 +189,4 @@ let node: operationType = %raw(json` {
   "type": "Query",
   "abstractKey": null
 } `)
-
 

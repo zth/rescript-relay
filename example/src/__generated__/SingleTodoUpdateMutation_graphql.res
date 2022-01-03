@@ -3,23 +3,21 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
-  type rec response_updateTodoItem = {
-    updatedTodoItem: option<response_updateTodoItem_updatedTodoItem>,
-  }
-   and response_updateTodoItem_updatedTodoItem = {
-    id: string,
-    text: string,
-    completed: option<bool>,
-  }
-   and updateTodoItemInput = {
+
+  type rec updateTodoItemInput = {
     id: string,
     text: string,
     completed: bool,
     clientMutationId: option<string>,
   }
-  
-  
+  type rec response_updateTodoItem_updatedTodoItem = {
+    id: string,
+    text: string,
+    completed: option<bool>,
+  }
+  and response_updateTodoItem = {
+    updatedTodoItem: option<response_updateTodoItem_updatedTodoItem>,
+  }
   type response = {
     updateTodoItem: option<response_updateTodoItem>,
   }
@@ -30,51 +28,40 @@ module Types = {
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"updateTodoItemInput":{"clientMutationId":{"n":""}},"__root":{"input":{"r":"updateTodoItemInput"}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"UpdateTodoItemInput":{"clientMutationId":{"n":""}},"__root":{"input":{"r":"UpdateTodoItemInput"}}}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
-
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
@@ -90,35 +77,13 @@ module Utils = {
     completed: completed,
     clientMutationId: clientMutationId
   }
-  
   let makeVariables = (
     ~input
   ): variables => {
     input: input
   }
-  let make_response_updateTodoItem_updatedTodoItem = (
-    ~id,
-    ~text,
-    ~completed=?,
-    ()
-  ): response_updateTodoItem_updatedTodoItem => {
-    id: id,
-    text: text,
-    completed: completed
-  }
-  let make_response_updateTodoItem = (
-    ~updatedTodoItem=?,
-    ()
-  ): response_updateTodoItem => {
-    updatedTodoItem: updatedTodoItem
-  }
-  let makeOptimisticResponse = (
-    ~updateTodoItem=?,
-    ()
-  ): rawResponse => {
-    updateTodoItem: updateTodoItem
-  }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.mutationNode<relayOperationNode>
 

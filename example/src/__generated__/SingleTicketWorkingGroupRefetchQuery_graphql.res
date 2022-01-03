@@ -1,15 +1,21 @@
+/* @sourceLoc SingleTicketWorkingGroup.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type rec response_node = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>
+    __typename: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
   }
   type response = {
     node: option<response_node>,
   }
   type rawResponse = response
+  type variables = {
+    includeMembers: option<bool>,
+    id: string,
+  }
   type refetchVariables = {
     includeMembers: option<bool>,
     id: option<string>,
@@ -22,56 +28,42 @@ module Types = {
     includeMembers: includeMembers,
     id: id
   }
-  
-  type variables = {
-    includeMembers: bool,
-    id: string,
-  }
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"includeMembers":{"n":""}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"node":{"f":"","n":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"node":{"n":"","f":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
 
 type queryRef
@@ -80,13 +72,15 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   let makeVariables = (
-    ~includeMembers,
-    ~id
+    ~includeMembers=?,
+    ~id,
+    ()
   ): variables => {
     includeMembers: includeMembers,
     id: id
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -245,12 +239,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "500db64e99055280a202beb1d1b69bc1",
+    "cacheID": "2d5614ab2556beaabd4afe5f0f83d54f",
     "id": null,
     "metadata": {},
     "name": "SingleTicketWorkingGroupRefetchQuery",
     "operationKind": "query",
-    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean! = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n      }\n    }\n  }\n  id\n}\n"
+    "text": "query SingleTicketWorkingGroupRefetchQuery(\n  $includeMembers: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SingleTicketWorkingGroup_workingGroup_EL0Tc\n    id\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup_EL0Tc on WorkingGroup {\n  name\n  membersConnection @include(if: $includeMembers) {\n    edges {\n      node {\n        id\n        fullName\n      }\n    }\n  }\n  id\n}\n"
   }
 };
 })() `)
@@ -262,4 +256,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});

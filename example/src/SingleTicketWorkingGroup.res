@@ -1,6 +1,6 @@
 module WorkingGroupFragment = %relay(`
   fragment SingleTicketWorkingGroup_workingGroup on WorkingGroup
-  @argumentDefinitions(includeMembers: { type: "Boolean!", defaultValue: false })
+  @argumentDefinitions(includeMembers: { type: "Boolean", defaultValue: false })
   @refetchable(queryName: "SingleTicketWorkingGroupRefetchQuery") {
     name
     membersConnection @include(if: $includeMembers) {

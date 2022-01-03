@@ -3,7 +3,7 @@
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type fragment = {
     weeklySales: float,
     weeklyOrders: int,
@@ -13,28 +13,27 @@ module Types = {
 
 module Internal = {
   type fragmentRaw
-  let fragmentConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
+  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(
-    fragmentConverter, 
-    fragmentConverterMap, 
+    fragmentConverter,
+    fragmentConverterMap,
     Js.undefined
   )
 }
+
 type t
 type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TopCardsDisplayer_siteStatistics]> => fragmentRef = "%identity"
 
-
 module Utils = {
-
+  @@ocaml.warning("-33")
+  open Types
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
@@ -70,5 +69,4 @@ let node: operationType = %raw(json` {
   "type": "SiteStatistics",
   "abstractKey": null
 } `)
-
 

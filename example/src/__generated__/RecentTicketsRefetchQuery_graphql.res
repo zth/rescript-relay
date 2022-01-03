@@ -1,12 +1,17 @@
+/* @sourceLoc RecentTickets.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@ocaml.warning("-30")
-  
+
   type response = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query]>
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RecentTickets_query]>,
   }
   type rawResponse = response
+  type variables = {
+    after: option<string>,
+    first: option<int>,
+  }
   type refetchVariables = {
     after: option<string>,
     first: option<int>,
@@ -19,56 +24,42 @@ module Types = {
     after: after,
     first: first
   }
-  
-  type variables = {
-    after: string,
-    first: int,
-  }
 }
 
 module Internal = {
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"first":{"n":""},"after":{"n":""}}}`
+  )
+  let variablesConverterMap = ()
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   type wrapResponseRaw
-  let wrapResponseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""}}}`
-    )
-  
+  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"":{"f":""}}}`
+  )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter, 
-    wrapResponseConverterMap, 
+    wrapResponseConverter,
+    wrapResponseConverterMap,
     Js.null
   )
   type responseRaw
-  let responseConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{"__root":{"":{"f":""}}}`
-    )
-  
+  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{"__root":{"":{"f":""}}}`
+  )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter, 
-    responseConverterMap, 
+    responseConverter,
+    responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
   let convertRawResponse = convertResponse
-  let variablesConverter: 
-    Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = 
-    %raw(
-      json`{}`
-    )
-  
-  let variablesConverterMap = ()
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter, 
-    variablesConverterMap, 
-    Js.undefined
-  )
 }
 
 type queryRef
@@ -77,13 +68,15 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   let makeVariables = (
-    ~after,
-    ~first
+    ~after=?,
+    ~first=?,
+    ()
   ): variables => {
     after: after,
     first: first
   }
 }
+
 type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
@@ -312,12 +305,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9f56348a978fc934d4cdd9dd33e4b46f",
+    "cacheID": "9b9646eea212d6ac24fc29cf737b78e3",
     "id": null,
     "metadata": {},
     "name": "RecentTicketsRefetchQuery",
     "operationKind": "query",
-    "text": "query RecentTicketsRefetchQuery(\n  $after: String! = \"\"\n  $first: Int! = 2\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  ticketsConnection(first: $first, after: $after) {\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n"
+    "text": "query RecentTicketsRefetchQuery(\n  $after: String = \"\"\n  $first: Int = 2\n) {\n  ...RecentTickets_query_2HEEH6\n}\n\nfragment Avatar_user on User {\n  avatarUrl\n  fullName\n}\n\nfragment RecentTickets_query_2HEEH6 on Query {\n  ticketsConnection(first: $first, after: $after) {\n    edges {\n      node {\n        id\n        ...SingleTicket_ticket\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment SingleTicketWorkingGroup_workingGroup on WorkingGroup {\n  name\n  id\n}\n\nfragment SingleTicket_ticket on Ticket {\n  assignee {\n    __typename\n    ... on User {\n      ...Avatar_user\n    }\n    ... on WorkingGroup {\n      ...SingleTicketWorkingGroup_workingGroup\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n  id\n  subject\n  lastUpdated\n  trackingId\n  ...TicketStatusBadge_ticket\n}\n\nfragment TicketStatusBadge_ticket on Ticket {\n  status\n}\n"
   }
 };
 })() `)
@@ -329,4 +322,4 @@ include RescriptRelay.MakeLoadQuery({
     type node = relayOperationNode
     let query = node
     let convertVariables = Internal.convertVariables
-  });
+});
