@@ -1,4 +1,5 @@
 scalar Datetime
+scalar IntString
 
 interface Node {
   id: ID!
@@ -95,7 +96,7 @@ type SetOnlineStatusPayload {
 }
 
 input RecursiveSetOnlineStatusInput {
-  time: Datetime!
+  someValue: IntString!
   setOnlineStatus: SetOnlineStatusInput
 }
 

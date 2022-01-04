@@ -192,29 +192,10 @@ module Test = {
                 ~input=make_setOnlineStatusInput(
                   ~onlineStatus=#Idle,
                   ~recursed=make_recursiveSetOnlineStatusInput(
-                    ~time=Js.Date.makeWithYMDHMS(
-                      ~date=2.,
-                      ~hours=20.,
-                      ~minutes=0.,
-                      ~month=4.,
-                      ~seconds=0.,
-                      ~year=2022.,
-                      (),
-                    ),
+                    ~someValue=100,
                     ~setOnlineStatus=make_setOnlineStatusInput(
                       ~onlineStatus=#Online,
-                      ~recursed=make_recursiveSetOnlineStatusInput(
-                        ~time=Js.Date.makeWithYMDHMS(
-                          ~date=2.,
-                          ~hours=20.,
-                          ~minutes=0.,
-                          ~month=4.,
-                          ~seconds=0.,
-                          ~year=2022.,
-                          (),
-                        ),
-                        (),
-                      ),
+                      ~recursed=make_recursiveSetOnlineStatusInput(~someValue=100, ()),
                       (),
                     ),
                     (),

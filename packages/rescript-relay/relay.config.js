@@ -5,5 +5,6 @@ module.exports = {
   language: "rescript",
   customScalars: {
     Datetime: "TestsUtils.Datetime",
+    IntString: "TestsUtils.IntString",
   },
 };

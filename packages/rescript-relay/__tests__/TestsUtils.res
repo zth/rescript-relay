@@ -9,3 +9,9 @@ module Datetime = {
     }
   let serialize = t => t->Js.Date.toJSONUnsafe->Js.Json.string
 }
+
+module IntString = {
+  type t = int
+  let parse = Belt.Int.fromString
+  let serialize = Belt.Int.toString
+}
