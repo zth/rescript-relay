@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.1
+# 1.0.0-beta.2
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -24,6 +24,12 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - There's no longer any need to manually select `__typename` on interfaces and unions for RescriptRelay's sake, unless you actually want to use it yourself.
 - We now support the `@required` directive from Relay, which is a new directive that lets you force non-nullability for nullable fields on the client side. You can then choose to throw an error if null values are encountered, or let the null value bubble up. Docs are coming soon, and you'll need to do `RescriptRelay.relayFeatureFlags.enableRequiredDirective = true` somewhere in your code to enable it for now.
 - The errors reported by the compiler is now quite a lot better.
+
+## Beta fix changelog
+
+### beta.2
+
+- Fix issue with recursive input objects not being converted correctly.
 
 # 0.23.0
 
