@@ -186,7 +186,42 @@ module Test = {
             open ComplexMutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(~input=make_setOnlineStatusInput(~onlineStatus=#Idle)),
+              ~variables=makeVariables(
+                // The "mess" below is to try and provoke a test failure if
+                // recursive conversion would be broken.
+                ~input=make_setOnlineStatusInput(
+                  ~onlineStatus=#Idle,
+                  ~recursed=make_recursiveSetOnlineStatusInput(
+                    ~time=Js.Date.makeWithYMDHMS(
+                      ~date=2.,
+                      ~hours=20.,
+                      ~minutes=0.,
+                      ~month=4.,
+                      ~seconds=0.,
+                      ~year=2022.,
+                      (),
+                    ),
+                    ~setOnlineStatus=make_setOnlineStatusInput(
+                      ~onlineStatus=#Online,
+                      ~recursed=make_recursiveSetOnlineStatusInput(
+                        ~time=Js.Date.makeWithYMDHMS(
+                          ~date=2.,
+                          ~hours=20.,
+                          ~minutes=0.,
+                          ~month=4.,
+                          ~seconds=0.,
+                          ~year=2022.,
+                          (),
+                        ),
+                        (),
+                      ),
+                      (),
+                    ),
+                    (),
+                  ),
+                  (),
+                ),
+              ),
               (),
             )
           }

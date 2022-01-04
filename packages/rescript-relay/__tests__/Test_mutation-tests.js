@@ -121,6 +121,15 @@ describe("Mutation", () => {
       variables: {
         input: {
           onlineStatus: "Idle",
+          recursed: {
+            time: "2022-05-02T18:00:00.000Z",
+            setOnlineStatus: {
+              onlineStatus: "Online",
+              recursed: {
+                time: "2022-05-02T18:00:00.000Z",
+              },
+            },
+          },
         },
       },
       data: {

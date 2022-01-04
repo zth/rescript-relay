@@ -20,6 +20,11 @@ module Types = {
 
   type rec setOnlineStatusInput = {
     onlineStatus: enum_OnlineStatus,
+    recursed: option<recursiveSetOnlineStatusInput>,
+  }
+  and recursiveSetOnlineStatusInput = {
+    time: TestsUtils.Datetime.t,
+    setOnlineStatus: option<setOnlineStatusInput>,
   }
   type rec response_setOnlineStatusComplex_user = {
     id: string,
@@ -39,7 +44,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"setOnlineStatusInput":{},"__root":{"input":{"r":"setOnlineStatusInput"}}}`
+    json`{"recursiveSetOnlineStatusInput":{"time":{"c":"TestsUtils.Datetime"},"setOnlineStatus":{"r":"setOnlineStatusInput","n":""}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput","n":""}},"__root":{"input":{"r":"setOnlineStatusInput"}}}`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -78,9 +83,20 @@ module Utils = {
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
   let make_setOnlineStatusInput = (
-    ~onlineStatus
+    ~onlineStatus,
+    ~recursed=?,
+    ()
   ): setOnlineStatusInput => {
-    onlineStatus: onlineStatus
+    onlineStatus: onlineStatus,
+    recursed: recursed
+  }
+  let make_recursiveSetOnlineStatusInput = (
+    ~time,
+    ~setOnlineStatus=?,
+    ()
+  ): recursiveSetOnlineStatusInput => {
+    time: time,
+    setOnlineStatus: setOnlineStatus
   }
   let makeVariables = (
     ~input

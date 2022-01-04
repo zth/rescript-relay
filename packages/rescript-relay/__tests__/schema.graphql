@@ -94,8 +94,14 @@ type SetOnlineStatusPayload {
   user: User
 }
 
+input RecursiveSetOnlineStatusInput {
+  time: Datetime!
+  setOnlineStatus: SetOnlineStatusInput
+}
+
 input SetOnlineStatusInput {
   onlineStatus: OnlineStatus!
+  recursed: RecursiveSetOnlineStatusInput
 }
 
 type Query {
