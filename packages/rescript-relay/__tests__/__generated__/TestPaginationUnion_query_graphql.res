@@ -64,7 +64,7 @@ let wrap_fragment_members_edges_node: [
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"members_edges_node_User":{"f":""},"members_edges_node_Group_adminsConnection_edges_node":{"n":""},"members_edges_node_Group_adminsConnection_edges":{"na":"","n":""},"members_edges_node":{"u":"fragment_members_edges_node","n":""},"members_edges":{"na":"","n":""},"members":{"n":""}}}`
+    json`JSON.parse(\`{"__root":{"members_edges_node_User":{"f":""},"members_edges_node":{"u":"fragment_members_edges_node"}}}\`)`
   )
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,

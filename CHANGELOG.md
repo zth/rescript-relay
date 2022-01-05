@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.2
+# 1.0.0-beta.3
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -26,6 +26,11 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - The errors reported by the compiler is now quite a lot better.
 
 ## Beta fix changelog
+
+### beta.3
+
+- Fix issue with duplicate keys being printed in the conversion instructions.
+- Get rid of the need of nullability conversion instructions, and infer them instead.
 
 ### beta.2
 

@@ -51,7 +51,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`JSON.parse(\`{}\`)`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -61,7 +61,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user":{"n":"","f":""},"setOnlineStatus":{"n":""}}}`
+    json`JSON.parse(\`{"__root":{"setOnlineStatus_user":{"f":""}}}\`)`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -71,7 +71,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user":{"n":"","f":""},"setOnlineStatus":{"n":""}}}`
+    json`JSON.parse(\`{"__root":{"setOnlineStatus_user":{"f":""}}}\`)`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
@@ -81,7 +81,7 @@ module Internal = {
   )
   type wrapRawResponseRaw
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus":{"n":""}}}`
+    json`JSON.parse(\`{}\`)`
   )
   let wrapRawResponseConverterMap = ()
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
@@ -91,7 +91,7 @@ module Internal = {
   )
   type rawResponseRaw
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_onlineStatus":{"n":""},"setOnlineStatus_user":{"n":""},"setOnlineStatus":{"n":""}}}`
+    json`JSON.parse(\`{}\`)`
   )
   let rawResponseConverterMap = ()
   let convertRawResponse = v => v->RescriptRelay.convertObj(

@@ -63,7 +63,7 @@ let wrap_fragment_memberOf: [
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"onlineStatus":{"n":""},"memberOf":{"u":"fragment_memberOf","na":"","n":""}}}`
+    json`JSON.parse(\`{"__root":{"memberOf":{"u":"fragment_memberOf"}}}\`)`
   )
   let fragmentConverterMap = {
     "fragment_memberOf": unwrap_fragment_memberOf,
