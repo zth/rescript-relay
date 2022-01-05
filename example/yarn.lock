@@ -3429,10 +3429,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@1.0.0-beta.1:
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-1.0.0-beta.1.tgz#7926324f2b3372ef34003e7680583d4450ce8627"
-  integrity sha512-MUbH13OxKqzjOfSlU8Wk6YhPhUfOao5w3hGYCkDD5xp85iYJLqMWzmOorVVsqSBi/TPYXUczPmUyrYy7WIX3Rw==
+rescript-relay@1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-1.0.0-beta.3.tgz#dc1f936166bcba726faf6d14c8198a073c778f30"
+  integrity sha512-vMY0aqkUTOvuRKm4ffveQfiVlqqjePJv00X1WmKLKWnfqs1bc6/zvNjgY6icJTbXTV+wZD+tvn3MC9GJFloPJQ==
   dependencies:
     rescript "^9.1.2"
 

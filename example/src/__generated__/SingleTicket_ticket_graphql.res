@@ -50,7 +50,7 @@ let wrap_fragment_assignee: [
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"lastUpdated":{"n":""},"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee","n":""},"":{"f":""}}}`
+    json`JSON.parse(\`{"__root":{"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee"},"":{"f":""}}}\`)`
   )
   let fragmentConverterMap = {
     "fragment_assignee": unwrap_fragment_assignee,

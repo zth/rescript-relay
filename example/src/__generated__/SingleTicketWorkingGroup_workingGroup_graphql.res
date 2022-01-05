@@ -24,7 +24,7 @@ module Types = {
 module Internal = {
   type fragmentRaw
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"membersConnection_edges_node":{"n":""},"membersConnection_edges":{"na":"","n":""},"membersConnection":{"n":""}}}`
+    json`JSON.parse(\`{}\`)`
   )
   let fragmentConverterMap = ()
   let convertFragment = v => v->RescriptRelay.convertObj(

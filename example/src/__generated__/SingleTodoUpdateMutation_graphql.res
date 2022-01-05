@@ -29,7 +29,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"updateTodoItemInput":{"clientMutationId":{"n":""}},"__root":{"input":{"r":"updateTodoItemInput"}}}`
+    json`JSON.parse(\`{"updateTodoItemInput":{},"__root":{"input":{"r":"updateTodoItemInput"}}}\`)`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -39,7 +39,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
+    json`JSON.parse(\`{}\`)`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -49,7 +49,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"updateTodoItem_updatedTodoItem_completed":{"n":""},"updateTodoItem_updatedTodoItem":{"n":""},"updateTodoItem":{"n":""}}}`
+    json`JSON.parse(\`{}\`)`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(

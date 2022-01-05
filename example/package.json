@@ -24,7 +24,7 @@
     "react-dom": "18.0.0-rc.0",
     "react-relay": "13.0.0-rc.2",
     "relay-runtime": "13.0.0-rc.2",
-    "rescript-relay": "1.0.0-beta.1",
+    "rescript-relay": "1.0.0-beta.3",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
