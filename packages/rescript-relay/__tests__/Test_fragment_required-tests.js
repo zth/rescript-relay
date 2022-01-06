@@ -42,7 +42,7 @@ describe("Fragments with required", () => {
   });
 
   describe("Required for plurals bubble to the array item level, but not beyond", () => {
-    test.only("with data", async () => {
+    test("with data", async () => {
       queryMock.mockQuery({
         name: "TestFragmentRequiredQuery",
         data: {

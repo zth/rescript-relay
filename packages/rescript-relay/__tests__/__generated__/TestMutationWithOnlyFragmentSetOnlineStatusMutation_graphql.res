@@ -147,6 +147,15 @@ module Utils = {
   open Types
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
+    switch enum {
+      | #...enum_OnlineStatus_input as valid => Some(valid)
+      | _ => None
+    }
+  }
+  let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
+    onlineStatus_decode(Obj.magic(str))
+  }
   let makeVariables = (
     ~onlineStatus
   ): variables => {
