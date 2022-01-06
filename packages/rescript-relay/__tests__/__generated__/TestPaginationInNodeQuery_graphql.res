@@ -29,7 +29,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -39,7 +39,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"node":{"f":""}}}\`)`
+    json`{"__root":{"node":{"f":""}}}`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -49,7 +49,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"node":{"f":""}}}\`)`
+    json`{"__root":{"node":{"f":""}}}`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(

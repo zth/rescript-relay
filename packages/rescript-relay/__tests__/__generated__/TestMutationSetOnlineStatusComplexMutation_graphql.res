@@ -44,7 +44,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"recursiveSetOnlineStatusInput":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput"}},"__root":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"},"recursed":{"r":"recursiveSetOnlineStatusInput"},"input":{"r":"setOnlineStatusInput"}}}\`)`
+    json`{"recursiveSetOnlineStatusInput":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput"}},"__root":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"},"recursed":{"r":"recursiveSetOnlineStatusInput"},"input":{"r":"setOnlineStatusInput"}}}`
   )
   let variablesConverterMap = {
     "TestsUtils.IntString": TestsUtils.IntString.serialize,
@@ -56,7 +56,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -66,7 +66,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(

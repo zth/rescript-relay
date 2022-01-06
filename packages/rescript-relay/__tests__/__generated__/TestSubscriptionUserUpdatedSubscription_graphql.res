@@ -37,7 +37,7 @@ module Types = {
 
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -47,7 +47,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"userUpdated_user":{"f":""}}}\`)`
+    json`{"__root":{"userUpdated_user":{"f":""}}}`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(

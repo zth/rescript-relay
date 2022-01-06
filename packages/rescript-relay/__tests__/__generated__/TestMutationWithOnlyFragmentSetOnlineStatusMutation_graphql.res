@@ -89,7 +89,7 @@ let wrap_rawResponse_setOnlineStatus_user_memberOf: [
 }
 module Internal = {
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
   let variablesConverterMap = ()
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -99,7 +99,7 @@ module Internal = {
   )
   type wrapResponseRaw
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"setOnlineStatus_user":{"f":""}}}\`)`
+    json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
   )
   let wrapResponseConverterMap = ()
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
@@ -109,7 +109,7 @@ module Internal = {
   )
   type responseRaw
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"setOnlineStatus_user":{"f":""}}}\`)`
+    json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
   )
   let responseConverterMap = ()
   let convertResponse = v => v->RescriptRelay.convertObj(
@@ -119,7 +119,7 @@ module Internal = {
   )
   type wrapRawResponseRaw
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}\`)`
+    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
   let wrapRawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
@@ -131,7 +131,7 @@ module Internal = {
   )
   type rawResponseRaw
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}\`)`
+    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
   let rawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
