@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.4
+# 1.0.0-beta.5
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -18,20 +18,16 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - `relay-compiler`
 - `graphql` (if you don't use it for anything else)
 
-## Breaking Changes
-
-- The compiler expects the `__generated__` folder to always exist, so if you're not committing your artifacts to source control, make sure you add a `.gitkeep` to the generated folder so git keeps it around.
-
 ## Improvements
 
 - The compiler itself should be _much_ faster than the old one. An order of magnitude faster. Especially for incremental compilation in watch mode.
 - There's no longer any need to manually select `__typename` on interfaces and unions for RescriptRelay's sake, unless you actually want to use it yourself.
-- We now support the `@required` directive from Relay, which is a new directive that lets you force non-nullability for nullable fields on the client side. You can then choose to throw an error if null values are encountered, or let the null value bubble up. Docs are coming soon, and you'll need to do `RescriptRelay.relayFeatureFlags.enableRequiredDirective = true` somewhere in your code to enable it for now.
+- We now support the `@required` directive from Relay, which is a new directive that lets you force non-nullability for nullable fields on the client side. You can then choose to throw an error if null values are encountered, or let the null value bubble up. Docs are coming soon.
 - The errors reported by the compiler is now quite a lot better.
 
 ## Beta fix changelog
 
-### main
+### beta.5
 
 - Generate helpers for moving between unsafe enums coming from the server, and safe enums. Also, provide a "fromString" function for each enum used, that can be used to turn any string into your enum.
 - Suppress dead code warnings _in most places_ when running `reanalyze` on a `rescript-relay` code base. Still a few things left to fix, that requires changes to reanalyze. But this should be much better than before.
