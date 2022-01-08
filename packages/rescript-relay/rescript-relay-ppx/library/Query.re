@@ -16,7 +16,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         %private
-        [@module "relay-runtime"]
+        [@module "relay-runtime"] [@live]
         external internal_createOperationDescriptor:
           (
             RescriptRelay.queryNode(
@@ -28,7 +28,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           "createOperationDescriptor"
       ],
       [%stri
-        type useQueryConfig = {
+        [@live] type useQueryConfig = {
           fetchKey: option(string),
           fetchPolicy: option(string),
           networkCacheConfig: option(RescriptRelay.cacheConfig),
@@ -36,7 +36,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_useQuery:
           (
             RescriptRelay.queryNode(
@@ -50,7 +50,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_usePreloadedQuery:
           (
             RescriptRelay.queryNode(
@@ -62,14 +62,14 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
           "usePreloadedQuery"
       ],
       [%stri
-        type useQueryLoaderOptions = {
+        [@live] type useQueryLoaderOptions = {
           fetchPolicy: option(RescriptRelay.fetchPolicy),
           networkCacheConfig: option(RescriptRelay.cacheConfig),
         }
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_useQueryLoader:
           RescriptRelay.queryNode(
             [%t typeFromGeneratedModule(["relayOperationNode"])],
@@ -87,7 +87,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_fetchQuery:
           (
             RescriptRelay.Environment.t,
@@ -106,7 +106,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
         /**React hook for using this query.
 
 Prefer using `Query.useLoader()` or `YourQueryName_graphql.load()` in combination with `Query.usePreloaded()` to this whenever you can, as that will allow you to start loading data before your code actually renders.*/
-        let use =
+        [@live] let use =
             (
               ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
               ~fetchPolicy: option(RescriptRelay.fetchPolicy)=?,
@@ -138,7 +138,7 @@ Prefer using `Query.useLoader()` or `YourQueryName_graphql.load()` in combinatio
         /**React hook for preloading this query. Returns a tuple of `(loadedQueryRef, loadQueryFn, dispose)`.
 
 Use this together with `Query.usePreloaded`.*/
-        let useLoader =
+        [@live] let useLoader =
             ()
             : (
                 option([%t typeFromGeneratedModule(["queryRef"])]),
@@ -186,7 +186,7 @@ Use this together with `Query.usePreloaded`.*/
 This fetches the query in a one-off fashion, and returns a `Belt.Result.t` in a callback for convenience. Use `Query.fetchPromised` if you need this but with promises.
 
 Please *avoid* using `Query.fetch` unless you really need it, since the data you fetch here isn't guaranteed to stick around in the store/cache unless you explicitly use it somewhere in your views.*/
-        let fetch =
+        [@live] let fetch =
             (
               ~environment: RescriptRelay.Environment.t,
               ~variables: [%t
@@ -243,7 +243,7 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
       ],
       [%stri
         /** Promise variant of `Query.fetch`.*/
-        let fetchPromised =
+        [@live] let fetchPromised =
             (
               ~environment: RescriptRelay.Environment.t,
               ~variables: [%t
@@ -278,7 +278,7 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
       ],
       [%stri
         /**Combine this with `Query.useLoader` or `YourQueryName_graphql.load()` to use a query you've started preloading before rendering.*/
-        let usePreloaded =
+        [@live] let usePreloaded =
             (
               ~queryRef: [%t typeFromGeneratedModule(["queryRef"])],
               (),
@@ -299,7 +299,7 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
         /**Calling with a set of variables will make Relay _disable garbage collection_ of this query (+ variables) until you explicitly dispose the `Disposable.t` you get back from this call.
 
 Useful for queries and data you know you want to keep in the store regardless of what happens (like it not being used by any view and therefore potentially garbage collected).*/
-        let retain =
+        [@live] let retain =
             (
               ~environment: RescriptRelay.Environment.t,
               ~variables: [%t
@@ -323,7 +323,7 @@ Useful for queries and data you know you want to keep in the store regardless of
       hasRawResponseType
         ? [%stri
           /**This commits a payload into the store _locally only_. Useful for driving client-only state via Relay for example, or priming the cache with data you don't necessarily want to hit the server for.*/
-          let commitLocalPayload =
+          [@live] let commitLocalPayload =
               (
                 ~environment: RescriptRelay.Environment.t,
                 ~variables: [%t

@@ -15,7 +15,7 @@ let make = (~loc, ~moduleName) => {
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        type updaterFn =
+        [@live] type updaterFn =
           (
             RescriptRelay.RecordSourceSelectorProxy.t,
             [%t typeFromGeneratedModule(["Types", "response"])]
@@ -23,11 +23,11 @@ let make = (~loc, ~moduleName) => {
           unit
       ],
       [%stri
-        type optimisticUpdaterFn =
+        [@live] type optimisticUpdaterFn =
           RescriptRelay.RecordSourceSelectorProxy.t => unit
       ],
       [%stri
-        type useMutationConfig = {
+        [@live] type useMutationConfig = {
           onError: option(RescriptRelay.mutationError => unit),
           onCompleted:
             option(
@@ -47,7 +47,7 @@ let make = (~loc, ~moduleName) => {
         }
       ],
       [%stri
-        type useMutationConfigRaw = {
+        [@live] type useMutationConfigRaw = {
           onError: option(RescriptRelay.mutationError => unit),
           onCompleted:
             option(
@@ -67,7 +67,7 @@ let make = (~loc, ~moduleName) => {
         }
       ],
       [%stri
-        type commitMutationConfigRaw = {
+        [@live] type commitMutationConfigRaw = {
           mutation:
             RescriptRelay.mutationNode(
               [%t typeFromGeneratedModule(["relayOperationNode"])],
@@ -91,7 +91,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         %private
-        [@module "relay-runtime"]
+        [@module "relay-runtime"] [@live]
         external internal_commitMutation:
           (RescriptRelay.Environment.t, commitMutationConfigRaw) =>
           RescriptRelay.Disposable.t =
@@ -99,7 +99,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_useMutation:
           RescriptRelay.mutationNode(
             [%t typeFromGeneratedModule(["relayOperationNode"])],
@@ -113,7 +113,7 @@ let make = (~loc, ~moduleName) => {
 ### Optimistic updates
 Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
 
-        let commitMutation:
+        [@live] let commitMutation:
           (
             ~environment: RescriptRelay.Environment.t,
             ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],
@@ -233,7 +233,7 @@ Remember to annotate your mutation with `@raw_response_type` if you want to do o
 
 ### Optimistic updates
 Remember to annotate your mutation with `@raw_response_type` if you want to do optimistic updates. That'll make Relay emit the required type information for covering everything needed when doing optimistic updates.*/
-        let use:
+        [@live] let use:
           unit =>
           (
             (

@@ -15,7 +15,7 @@ let make = (~loc, ~moduleName) => {
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
-        type updaterFn =
+        [@live] type updaterFn =
           (
             RescriptRelay.RecordSourceSelectorProxy.t,
             [%t typeFromGeneratedModule(["Types", "response"])]
@@ -23,7 +23,7 @@ let make = (~loc, ~moduleName) => {
           unit
       ],
       [%stri
-        [@deriving abstract]
+        [@deriving abstract] [@live]
         type subscriptionConfig = {
           subscription:
             RescriptRelay.subscriptionNode(
@@ -42,7 +42,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         %private
-        [@module "relay-runtime"]
+        [@module "relay-runtime"] [@live]
         external internal_requestSubscription:
           (RescriptRelay.Environment.t, subscriptionConfig) =>
           RescriptRelay.Disposable.t =
@@ -50,7 +50,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         /**This sets up the subscription itself. You typically want to run this in a React.useEffect.*/
-        let subscribe:
+        [@live] let subscribe:
           (
             ~environment: RescriptRelay.Environment.t,
             ~variables: [%t typeFromGeneratedModule(["Types", "variables"])],

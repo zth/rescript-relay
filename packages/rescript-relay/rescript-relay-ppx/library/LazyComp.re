@@ -57,7 +57,7 @@ let lazyExtension =
                 )
           ],
           [%stri
-            let preload = () => {
+            [@live] let preload = () => {
               let _ = import_();
               ();
             }

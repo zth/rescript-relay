@@ -9,7 +9,7 @@ let makeGeneratedModuleImports = (~loc, ~moduleIdentFromGeneratedModule) => [
 let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   [%stri
     %private
-    [@module "react-relay"]
+    [@live] [@module "react-relay"]
     external internal_readInlineData:
       (
         RescriptRelay.fragmentNode(
@@ -22,7 +22,7 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
   [%stri
     %private
-    [@module "react-relay/hooks"]
+    [@live] [@module "react-relay/hooks"]
     external internal_useFragment:
       (
         RescriptRelay.fragmentNode(
@@ -35,7 +35,7 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
   [%stri
     %private
-    [@module "react-relay/hooks"]
+    [@live] [@module "react-relay/hooks"]
     external internal_useFragmentOpt:
       (
         RescriptRelay.fragmentNode(
@@ -61,7 +61,7 @@ let makeRefetchableAssets =
   | None => []
   | Some(queryName) => [
       [%stri
-        [@deriving abstract]
+        [@deriving abstract] [@live]
         type refetchableFnOpts = {
           [@optional]
           fetchPolicy: string,
@@ -70,7 +70,7 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        let internal_makeRefetchableFnOpts =
+        [@live] let internal_makeRefetchableFnOpts =
             (~fetchPolicy=?, ~onComplete=?, ()) =>
           refetchableFnOpts(
             ~fetchPolicy=?fetchPolicy->RescriptRelay.mapFetchPolicy,
@@ -80,17 +80,17 @@ let makeRefetchableAssets =
           )
       ],
       [%stri
-        type paginationLoadMoreOptions = {
+        [@live] type paginationLoadMoreOptions = {
           onComplete: option(Js.nullable(Js.Exn.t) => unit),
         }
       ],
       [%stri
-        type paginationLoadMoreFn =
+        [@live] type paginationLoadMoreFn =
           (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>
           RescriptRelay.Disposable.t
       ],
       [%stri
-        type paginationFragmentReturnRaw = {
+        [@live] type paginationFragmentReturnRaw = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext:
             (. int, paginationLoadMoreOptions) => RescriptRelay.Disposable.t,
@@ -115,7 +115,7 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        type paginationBlockingFragmentReturn = {
+        [@live] type paginationBlockingFragmentReturn = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext: paginationLoadMoreFn,
           loadPrevious: paginationLoadMoreFn,
@@ -138,7 +138,7 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        type paginationFragmentReturn = {
+        [@live] type paginationFragmentReturn = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext: paginationLoadMoreFn,
           loadPrevious: paginationLoadMoreFn,
@@ -164,7 +164,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_usePaginationFragment:
           (
             RescriptRelay.fragmentNode(
@@ -177,7 +177,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_useBlockingPaginationFragment:
           (
             RescriptRelay.fragmentNode(
@@ -190,7 +190,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"]
+        [@module "react-relay/hooks"] [@live]
         external internal_useRefetchableFragment:
           (
             RescriptRelay.fragmentNode(
@@ -222,7 +222,7 @@ You supply a _diff_ of your variables to Relay when refetching. Diffed variables
 
 ### `Fragment.makeRefetchVariables` - helper for making the refetch variables
 There's a helper generated for you to create those diffed variables more easily at `Fragment.makeRefetchVariables`.*/
-        let useRefetchable = fRef => {
+        [@live] let useRefetchable = fRef => {
           let (fragmentData, refetchFn) =
             internal_useRefetchableFragment(
               [%e valFromGeneratedModule(["node"])],

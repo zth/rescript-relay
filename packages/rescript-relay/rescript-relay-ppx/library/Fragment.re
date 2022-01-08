@@ -45,7 +45,7 @@ let make =
 
 ### Fragment data outside of React's render
 If you're looking for a way to use fragments _outside_ of render (for regular function calls for instance, like for logging etc), look in to adding `@inline` to your fragment definition (like `fragment SomeFragment_user on User @inline {...}`) and then use `Fragment.readInline`. This will allow you to get the fragment data, but outside of React's render.*/
-            let use =
+            [@live] let use =
                 (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
               let data =
                 internal_useFragment(
@@ -61,7 +61,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
           ],
           [%stri
             /**A version of `Fragment.use` that'll allow you to pass `option<fragmentRefs>` and get `option<'fragmentData>` back. Useful for scenarios where you don't have the fragmentRefs yet.*/
-            let useOpt =
+            [@live] let useOpt =
                 (opt_fRef)
                 : option([%t typeFromGeneratedModule(["Types", "fragment"])]) => {
               let fr =
@@ -106,7 +106,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
           hasInlineDirective
             ? [%stri
               /**This lets you get the data for this fragment _outside of React's render_. Useful for letting functions with with fragments too, for things like logging etc.*/
-              let readInline =
+              [@live] let readInline =
                   (fRef): [%t typeFromGeneratedModule(["Types", "fragment"])] => {
                 internal_readInlineData(
                   [%e valFromGeneratedModule(["node"])],
@@ -121,7 +121,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
           switch (hasConnection, refetchableQueryName) {
           | (true, Some(queryName)) => [%stri
               /**React hook for paginating a fragment. Paginating with this hook will _not_ cause your component to suspend. If you want pagination to trigger suspense, look into using `Fragment.useBlockingPagination`.*/
-              let usePagination = (fr): paginationFragmentReturn => {
+              [@live] let usePagination = (fr): paginationFragmentReturn => {
                 let p =
                   internal_usePaginationFragment(
                     [%e valFromGeneratedModule(["node"])],
@@ -208,7 +208,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
           switch (hasConnection, refetchableQueryName) {
           | (true, Some(queryName)) => [%stri
               /**Like `Fragment.usePagination`, but calling the pagination function will trigger suspense. Useful for all-at-once pagination.*/
-              let useBlockingPagination =
+              [@live] let useBlockingPagination =
                   (fRef): paginationBlockingFragmentReturn => {
                 let p =
                   internal_useBlockingPaginationFragment(
@@ -294,7 +294,7 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
           switch (refetchableQueryName, hasConnection) {
           | (Some(queryName), _) => [%stri
               /**A helper to make refetch variables. */
-              let makeRefetchVariables = [%e
+              [@live] let makeRefetchVariables = [%e
                 makeExprAccessor(
                   ~loc,
                   ~moduleName=queryName,
