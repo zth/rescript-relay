@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,81 +20,98 @@ module Types = {
 
 
   type rec setOnlineStatusInput = {
-    onlineStatus: enum_OnlineStatus,
-    recursed: option<recursiveSetOnlineStatusInput>,
+    @live onlineStatus: enum_OnlineStatus,
+    @live recursed: option<recursiveSetOnlineStatusInput>,
   }
   and recursiveSetOnlineStatusInput = {
-    someValue: TestsUtils.IntString.t,
-    setOnlineStatus: option<setOnlineStatusInput>,
+    @live someValue: TestsUtils.IntString.t,
+    @live setOnlineStatus: option<setOnlineStatusInput>,
   }
   type rec response_setOnlineStatusComplex_user = {
-    id: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    @live id: string,
+    @live onlineStatus: option<enum_OnlineStatus>,
   }
   and response_setOnlineStatusComplex = {
-    user: option<response_setOnlineStatusComplex_user>,
+    @live user: option<response_setOnlineStatusComplex_user>,
   }
   type response = {
-    setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
+    @live setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
   }
   type rawResponse = response
   type variables = {
-    input: setOnlineStatusInput,
+    @live input: setOnlineStatusInput,
   }
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"recursiveSetOnlineStatusInput":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput"}},"__root":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"},"recursed":{"r":"recursiveSetOnlineStatusInput"},"input":{"r":"setOnlineStatusInput"}}}`
   )
+  @live
   let variablesConverterMap = {
     "TestsUtils.IntString": TestsUtils.IntString.serialize,
   }
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  let make_setOnlineStatusInput = (
+  @live let make_setOnlineStatusInput = (
     ~onlineStatus,
     ~recursed=?,
     ()
@@ -101,7 +119,7 @@ module Utils = {
     onlineStatus: onlineStatus,
     recursed: recursed
   }
-  let make_recursiveSetOnlineStatusInput = (
+  @live let make_recursiveSetOnlineStatusInput = (
     ~someValue,
     ~setOnlineStatus=?,
     ()
@@ -109,7 +127,7 @@ module Utils = {
     someValue: someValue,
     setOnlineStatus: setOnlineStatus
   }
-  let makeVariables = (
+  @live let makeVariables = (
     ~input
   ): variables => {
     input: input

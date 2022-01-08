@@ -90,6 +90,7 @@ module Test = {
   }
 }
 
+@live
 let test_unionFragment = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

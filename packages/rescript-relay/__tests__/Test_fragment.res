@@ -77,6 +77,10 @@ module Test = {
     let query = Query.use(~variables=(), ())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
 
+    // For suppressing dead code warning
+    let subData = SubFragment.use(data.fragmentRefs)
+    ignore(subData.lastName)
+
     let (useOpt, setUseOpt) = React.useState(() => false)
     let (dataViaInline, setDataViaInline) = React.useState(() => None)
 
@@ -117,8 +121,10 @@ module Test = {
       | None => React.null
       | Some(data) =>
         <div>
-          {("Inline data: " ++ data->Js.Json.stringifyAny->Belt.Option.getWithDefault(""))
-            ->React.string}
+          {("Inline data: " ++
+          {"firstName": data.InlineFragment.Types.firstName, "onlineStatus": data.onlineStatus}
+          ->Js.Json.stringifyAny
+          ->Belt.Option.getWithDefault(""))->React.string}
         </div>
       }}
       <button
@@ -130,6 +136,7 @@ module Test = {
   }
 }
 
+@live
 let test_fragment = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

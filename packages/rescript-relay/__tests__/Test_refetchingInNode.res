@@ -67,6 +67,7 @@ module Test = {
   }
 }
 
+@live
 let test_refetching = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

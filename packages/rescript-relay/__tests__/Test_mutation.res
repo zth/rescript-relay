@@ -273,6 +273,7 @@ module Test = {
   }
 }
 
+@live
 let test_mutation = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

@@ -15,6 +15,7 @@ module Test = {
   }
 }
 
+@live
 let test_observer = () => {
   let network = RescriptRelay.Network.makeObservableBased(~observableFunction=(_, _, _, _) => {
     RescriptRelay.Observable.make(sink => {

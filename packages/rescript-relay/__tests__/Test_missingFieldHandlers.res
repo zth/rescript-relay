@@ -44,6 +44,7 @@ module Test = {
   }
 }
 
+@live
 let test_missingFieldHandlers = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

@@ -5,7 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_loggedInUser = {
-    id: string,
+    @live id: string,
   }
   type fragment = {
     loggedInUser: fragment_loggedInUser,
@@ -13,11 +13,15 @@ module Types = {
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,

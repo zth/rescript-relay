@@ -8,18 +8,22 @@ module Types = {
     totalCount: int,
   }
   type fragment = {
-    id: string,
+    @live id: string,
     firstName: string,
     friendsConnection: fragment_friendsConnection,
   }
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,

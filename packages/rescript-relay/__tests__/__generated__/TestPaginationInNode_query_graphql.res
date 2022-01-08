@@ -5,7 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_friendsConnection_edges_node = {
-    id: string,
+    @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_user]>,
   }
   and fragment_friendsConnection_edges = {
@@ -16,16 +16,20 @@ module Types = {
   }
   type fragment = {
     friendsConnection: fragment_friendsConnection,
-    id: string,
+    @live id: string,
   }
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"friendsConnection_edges_node":{"f":""}}}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
@@ -41,10 +45,12 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   @inline
   let connectionKey = "TestPaginationInNode_friendsConnection"
 
 
+  @live
   let getConnectionNodes: fragment_friendsConnection => array<fragment_friendsConnection_edges_node> = connection => 
     switch connection.edges {
       | None => []

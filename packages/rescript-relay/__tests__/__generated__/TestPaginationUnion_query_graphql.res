@@ -5,12 +5,12 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_members_edges_node_User = {
-    __typename: [ | #User],
-    id: string,
+    @live __typename: [ | #User],
+    @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>,
   }
   and fragment_members_edges_node_Group_adminsConnection_edges_node = {
-    id: string,
+    @live id: string,
     firstName: string,
   }
   and fragment_members_edges_node_Group_adminsConnection_edges = {
@@ -20,8 +20,8 @@ module Types = {
     edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
   }
   and fragment_members_edges_node_Group = {
-    __typename: [ | #Group],
-    id: string,
+    @live __typename: [ | #Group],
+    @live id: string,
     name: string,
     adminsConnection: fragment_members_edges_node_Group_adminsConnection,
   }
@@ -42,6 +42,7 @@ module Types = {
   }
 }
 
+@live
 let unwrap_fragment_members_edges_node: {. "__typename": string } => [
   | #User(Types.fragment_members_edges_node_User)
   | #Group(Types.fragment_members_edges_node_Group)
@@ -52,6 +53,7 @@ let unwrap_fragment_members_edges_node: {. "__typename": string } => [
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_fragment_members_edges_node: [
   | #User(Types.fragment_members_edges_node_User)
   | #Group(Types.fragment_members_edges_node_Group)
@@ -62,13 +64,17 @@ let wrap_fragment_members_edges_node: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"members_edges_node_User":{"f":""},"members_edges_node":{"u":"fragment_members_edges_node"}}}`
   )
+  @live
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
   }
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
@@ -84,10 +90,12 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   @inline
   let connectionKey = "TestPaginationUnion_query_members"
 
 
+  @live
   let getConnectionNodes: option<fragment_members> => array<fragment_members_edges_node> = connection => 
     switch connection {
       | None => []

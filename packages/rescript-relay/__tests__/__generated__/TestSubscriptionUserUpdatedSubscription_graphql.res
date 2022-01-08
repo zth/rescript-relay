@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,60 +20,72 @@ module Types = {
 
 
   type rec response_userUpdated_user = {
-    id: string,
-    onlineStatus: option<enum_OnlineStatus>,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>,
+    @live id: string,
+    @live onlineStatus: option<enum_OnlineStatus>,
+    @live fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>,
   }
   and response_userUpdated = {
-    user: option<response_userUpdated_user>,
+    @live user: option<response_userUpdated_user>,
   }
   type response = {
-    userUpdated: option<response_userUpdated>,
+    @live userUpdated: option<response_userUpdated>,
   }
   type rawResponse = response
   type variables = {
-    userId: string,
+    @live userId: string,
   }
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"userUpdated_user":{"f":""}}}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  let makeVariables = (
+  @live let makeVariables = (
     ~userId
   ): variables => {
     userId: userId

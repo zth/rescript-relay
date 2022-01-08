@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,7 +20,7 @@ module Types = {
 
 
   type rec response_node = {
-    __typename: string,
+    @live __typename: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
   }
   type response = {
@@ -27,28 +28,28 @@ module Types = {
   }
   type rawResponse = response
   type variables = {
-    count: option<int>,
-    cursor: option<string>,
-    onlineStatuses: option<array<[
+    @live count: option<int>,
+    @live cursor: option<string>,
+    @live onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
     ]
 >>,
-    id: string,
+    @live id: string,
   }
   type refetchVariables = {
-    count: option<int>,
-    cursor: option<string>,
-    onlineStatuses: option<array<[
+    @live count: option<int>,
+    @live cursor: option<string>,
+    @live onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
     ]
 >>,
-    id: option<string>,
+    @live id: option<string>,
   }
-  let makeRefetchVariables = (
+  @live let makeRefetchVariables = (
     ~count=?,
     ~cursor=?,
     ~onlineStatuses=?,
@@ -63,38 +64,51 @@ module Types = {
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"node":{"f":""}}}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"node":{"f":""}}}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 
@@ -103,18 +117,22 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  let makeVariables = (
+  @live let makeVariables = (
     ~count=?,
     ~cursor=?,
     ~onlineStatuses=?,

@@ -39,6 +39,7 @@ module Test = {
   }
 }
 
+@live
 let test_customScalars = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

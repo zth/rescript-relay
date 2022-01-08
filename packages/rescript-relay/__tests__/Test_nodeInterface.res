@@ -21,6 +21,7 @@ module Test = {
   }
 }
 
+@live
 let test_nodeInterface = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

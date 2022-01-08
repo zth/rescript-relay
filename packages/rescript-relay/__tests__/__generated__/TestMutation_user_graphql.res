@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,11 +20,11 @@ module Types = {
 
 
   type rec fragment_memberOf_User = {
-    __typename: [ | #User],
+    @live __typename: [ | #User],
     firstName: string,
   }
   and fragment_memberOf_Group = {
-    __typename: [ | #Group],
+    @live __typename: [ | #Group],
     name: string,
   }
   and fragment_memberOf = [
@@ -33,7 +34,7 @@ module Types = {
   ]
 
   type fragment = {
-    id: string,
+    @live id: string,
     firstName: string,
     lastName: string,
     onlineStatus: option<enum_OnlineStatus>,
@@ -41,6 +42,7 @@ module Types = {
   }
 }
 
+@live
 let unwrap_fragment_memberOf: {. "__typename": string } => [
   | #User(Types.fragment_memberOf_User)
   | #Group(Types.fragment_memberOf_Group)
@@ -51,6 +53,7 @@ let unwrap_fragment_memberOf: {. "__typename": string } => [
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_fragment_memberOf: [
   | #User(Types.fragment_memberOf_User)
   | #Group(Types.fragment_memberOf_Group)
@@ -61,13 +64,17 @@ let wrap_fragment_memberOf: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"memberOf":{"u":"fragment_memberOf"}}}`
   )
+  @live
   let fragmentConverterMap = {
     "fragment_memberOf": unwrap_fragment_memberOf,
   }
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
@@ -83,14 +90,18 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }

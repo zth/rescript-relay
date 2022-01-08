@@ -5,7 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec response_member_User = {
-    __typename: [ | #User],
+    @live __typename: [ | #User],
     createdAt: TestsUtils.Datetime.t,
   }
   and response_member = [
@@ -26,12 +26,12 @@ module Types = {
   }
   type rawResponse = response
   type variables = {
-    beforeDate: option<TestsUtils.Datetime.t>,
+    @live beforeDate: option<TestsUtils.Datetime.t>,
   }
   type refetchVariables = {
-    beforeDate: option<TestsUtils.Datetime.t>,
+    @live beforeDate: option<TestsUtils.Datetime.t>,
   }
-  let makeRefetchVariables = (
+  @live let makeRefetchVariables = (
     ~beforeDate=?,
     ()
   ): refetchVariables => {
@@ -39,6 +39,7 @@ module Types = {
   }
 }
 
+@live
 let unwrap_response_member: {. "__typename": string } => [
   | #User(Types.response_member_User)
   | #UnselectedUnionMember(string)
@@ -47,6 +48,7 @@ let unwrap_response_member: {. "__typename": string } => [
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_response_member: [
   | #User(Types.response_member_User)
   | #UnselectedUnionMember(string)
@@ -55,46 +57,59 @@ let wrap_response_member: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
+  @live
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
   }
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"member_User_createdAt":{"c":"TestsUtils.Datetime"},"member":{"u":"response_member"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
   )
+  @live
   let wrapResponseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
     "response_member": wrap_response_member,
   }
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"member_User_createdAt":{"c":"TestsUtils.Datetime"},"member":{"u":"response_member"},"loggedInUser_friends_createdAt":{"c":"TestsUtils.Datetime"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
   )
+  @live
   let responseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
     "response_member": unwrap_response_member,
   }
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 
@@ -103,7 +118,7 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let makeVariables = (
+  @live let makeVariables = (
     ~beforeDate=?,
     ()
   ): variables => {

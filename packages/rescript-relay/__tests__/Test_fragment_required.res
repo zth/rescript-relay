@@ -95,6 +95,7 @@ module Test = {
   }
 }
 
+@live
 let test_fragment_required = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
 

@@ -95,6 +95,7 @@ module Test = {
   }
 }
 
+@live
 let test_subscription = () => {
   let subscriptionFns = ref([])
 

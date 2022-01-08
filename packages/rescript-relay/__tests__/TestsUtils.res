@@ -12,6 +12,6 @@ module Datetime = {
 
 module IntString = {
   type t = int
-  let parse = Belt.Int.fromString
+  @live let parse = Belt.Int.fromString
   let serialize = Belt.Int.toString
 }

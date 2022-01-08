@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,26 +20,26 @@ module Types = {
 
 
   type rec response_members_edges_node_User = {
-    __typename: [ | #User],
-    id: string,
+    @live __typename: [ | #User],
+    @live id: string,
     firstName: string,
     onlineStatus: option<enum_OnlineStatus>,
   }
   and response_members_edges_node_Group_members_User = {
-    __typename: [ | #User],
-    id: string,
+    @live __typename: [ | #User],
+    @live id: string,
     firstName: string,
     onlineStatus: option<enum_OnlineStatus>,
   }
   and response_members_edges_node_Group_members_Group = {
-    __typename: [ | #Group],
-    id: string,
+    @live __typename: [ | #Group],
+    @live id: string,
     name: string,
     avatarUrl: option<string>,
   }
   and response_members_edges_node_Group = {
-    __typename: [ | #Group],
-    id: string,
+    @live __typename: [ | #Group],
+    @live id: string,
     name: string,
     avatarUrl: option<string>,
     members: option<array<option<response_members_edges_node_Group_members>>>,
@@ -67,9 +68,10 @@ module Types = {
   type rawResponse = response
   type variables = unit
   type refetchVariables = unit
-  let makeRefetchVariables = () => ()
+  @live let makeRefetchVariables = () => ()
 }
 
+@live
 let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
   | #User(Types.response_members_edges_node_Group_members_User)
   | #Group(Types.response_members_edges_node_Group_members_Group)
@@ -80,6 +82,7 @@ let unwrap_response_members_edges_node_Group_members: {. "__typename": string } 
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_response_members_edges_node_Group_members: [
   | #User(Types.response_members_edges_node_Group_members_User)
   | #Group(Types.response_members_edges_node_Group_members_Group)
@@ -89,6 +92,7 @@ let wrap_response_members_edges_node_Group_members: [
   | #Group(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
+@live
 let unwrap_response_members_edges_node: {. "__typename": string } => [
   | #User(Types.response_members_edges_node_User)
   | #Group(Types.response_members_edges_node_Group)
@@ -99,6 +103,7 @@ let unwrap_response_members_edges_node: {. "__typename": string } => [
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_response_members_edges_node: [
   | #User(Types.response_members_edges_node_User)
   | #Group(Types.response_members_edges_node_Group)
@@ -109,44 +114,57 @@ let wrap_response_members_edges_node: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"members_edges_node_Group_members":{"u":"response_members_edges_node_Group_members"},"members_edges_node":{"u":"response_members_edges_node"}}}`
   )
+  @live
   let wrapResponseConverterMap = {
     "response_members_edges_node_Group_members": wrap_response_members_edges_node_Group_members,
     "response_members_edges_node": wrap_response_members_edges_node,
   }
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"members_edges_node_Group_members":{"u":"response_members_edges_node_Group_members"},"members_edges_node":{"u":"response_members_edges_node"}}}`
   )
+  @live
   let responseConverterMap = {
     "response_members_edges_node_Group_members": unwrap_response_members_edges_node_Group_members,
     "response_members_edges_node": unwrap_response_members_edges_node,
   }
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 
@@ -155,18 +173,22 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  let makeVariables = () => ()
+  @live let makeVariables = () => ()
 }
 
 type relayOperationNode

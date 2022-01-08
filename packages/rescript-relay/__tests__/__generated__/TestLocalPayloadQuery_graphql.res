@@ -5,70 +5,89 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec response_loggedInUser = {
-    id: string,
+    @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
   }
   and rawResponse_loggedInUser = {
-    id: string,
-    firstName: string,
-    avatarUrl: option<string>,
+    @live id: string,
+    @live firstName: string,
+    @live avatarUrl: option<string>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
   }
   type rawResponse = {
-    loggedInUser: rawResponse_loggedInUser,
+    @live loggedInUser: rawResponse_loggedInUser,
   }
   type variables = unit
   type refetchVariables = unit
-  let makeRefetchVariables = () => ()
+  @live let makeRefetchVariables = () => ()
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"loggedInUser":{"f":""}}}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"loggedInUser":{"f":""}}}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
+  @live
   type wrapRawResponseRaw
+  @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let wrapRawResponseConverterMap = ()
+  @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     Js.null
   )
+  @live
   type rawResponseRaw
+  @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let rawResponseConverterMap = ()
+  @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
@@ -81,7 +100,7 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let makeVariables = () => ()
+  @live let makeVariables = () => ()
 }
 
 type relayOperationNode

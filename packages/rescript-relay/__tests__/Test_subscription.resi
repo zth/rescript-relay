@@ -1,3 +1,4 @@
+@live
 let test_subscription: unit => {
   "pushNext": Js.Json.t => unit,
   "render": unit => React.element,

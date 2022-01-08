@@ -10,6 +10,7 @@ module Types = {
       | #Offline
     ]
 
+  @live
   type enum_OnlineStatus_input = [
       | #Online
       | #Idle
@@ -19,16 +20,16 @@ module Types = {
 
 
   type rec rawResponse_setOnlineStatus_user_memberOf_User = {
-    __typename: [ | #User],
-    __isNode: [ | #User],
-    id: string,
-    firstName: string,
+    @live __typename: [ | #User],
+    @live __isNode: [ | #User],
+    @live id: string,
+    @live firstName: string,
   }
   and rawResponse_setOnlineStatus_user_memberOf_Group = {
-    __typename: [ | #Group],
-    __isNode: [ | #Group],
-    id: string,
-    name: string,
+    @live __typename: [ | #Group],
+    @live __isNode: [ | #Group],
+    @live id: string,
+    @live name: string,
   }
   and rawResponse_setOnlineStatus_user_memberOf = [
     | #User(rawResponse_setOnlineStatus_user_memberOf_User)
@@ -37,29 +38,29 @@ module Types = {
   ]
 
   type rec response_setOnlineStatus_user = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestMutation_user]>,
+    @live fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestMutation_user]>,
   }
   and response_setOnlineStatus = {
-    user: option<response_setOnlineStatus_user>,
+    @live user: option<response_setOnlineStatus_user>,
   }
   and rawResponse_setOnlineStatus_user = {
-    id: string,
-    firstName: string,
-    lastName: string,
-    onlineStatus: option<enum_OnlineStatus>,
-    memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
+    @live id: string,
+    @live firstName: string,
+    @live lastName: string,
+    @live onlineStatus: option<enum_OnlineStatus>,
+    @live memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
   }
   and rawResponse_setOnlineStatus = {
-    user: option<rawResponse_setOnlineStatus_user>,
+    @live user: option<rawResponse_setOnlineStatus_user>,
   }
   type response = {
-    setOnlineStatus: option<response_setOnlineStatus>,
+    @live setOnlineStatus: option<response_setOnlineStatus>,
   }
   type rawResponse = {
-    setOnlineStatus: option<rawResponse_setOnlineStatus>,
+    @live setOnlineStatus: option<rawResponse_setOnlineStatus>,
   }
   type variables = {
-    onlineStatus: [
+    @live onlineStatus: [
       | #Online
       | #Idle
       | #Offline
@@ -68,6 +69,7 @@ module Types = {
   }
 }
 
+@live
 let unwrap_rawResponse_setOnlineStatus_user_memberOf: {. "__typename": string } => [
   | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
   | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
@@ -78,6 +80,7 @@ let unwrap_rawResponse_setOnlineStatus_user_memberOf: {. "__typename": string } 
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_rawResponse_setOnlineStatus_user_memberOf: [
   | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
   | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
@@ -88,54 +91,73 @@ let wrap_rawResponse_setOnlineStatus_user_memberOf: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
+  @live
   type wrapRawResponseRaw
+  @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
+  @live
   let wrapRawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
   }
+  @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     Js.null
   )
+  @live
   type rawResponseRaw
+  @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
     json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
+  @live
   let rawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
   }
+  @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
@@ -145,29 +167,33 @@ module Internal = {
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
   external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
   let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
     switch enum {
       | #...enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
+  @live
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  let makeVariables = (
+  @live let makeVariables = (
     ~onlineStatus
   ): variables => {
     onlineStatus: onlineStatus
   }
-  let makeOptimisticResponse = (
+  @live let makeOptimisticResponse = (
     ~setOnlineStatus=?,
     ()
   ): rawResponse => {
     setOnlineStatus: setOnlineStatus
   }
-  let make_rawResponse_setOnlineStatus_user_memberOf_User = (
+  @live let make_rawResponse_setOnlineStatus_user_memberOf_User = (
     ~__typename,
     ~__isNode,
     ~id,
@@ -178,7 +204,7 @@ module Utils = {
     id: id,
     firstName: firstName
   }
-  let make_rawResponse_setOnlineStatus_user_memberOf_Group = (
+  @live let make_rawResponse_setOnlineStatus_user_memberOf_Group = (
     ~__typename,
     ~__isNode,
     ~id,
@@ -189,7 +215,7 @@ module Utils = {
     id: id,
     name: name
   }
-  let make_rawResponse_setOnlineStatus_user = (
+  @live let make_rawResponse_setOnlineStatus_user = (
     ~id,
     ~firstName,
     ~lastName,
@@ -203,7 +229,7 @@ module Utils = {
     onlineStatus: onlineStatus,
     memberOf: memberOf
   }
-  let make_rawResponse_setOnlineStatus = (
+  @live let make_rawResponse_setOnlineStatus = (
     ~user=?,
     ()
   ): rawResponse_setOnlineStatus => {
