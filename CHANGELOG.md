@@ -6,6 +6,10 @@ _[Here's a commit showing a project being upgraded to this version](https://gith
 
 The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major thing this release brings is that the ReScript type generation for the Relay compiler has been completely rewritten, and fully integrated into the new Relay Rust compiler. The RescriptRelay fork of the compiler is available and maintained [here])(https://github.com/zth/relay/tree/rescript-relay).
 
+## Upgrade versions
+
+- `react-relay` and `relay-runtime` to `13.0.1`
+
 ## Remove Packages
 
 You can go ahead and remove these packages, that are no longer needed, as the compiler is now shipped in the main package:
@@ -27,9 +31,10 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## Beta fix changelog
 
-### beta.5
+### main
 
 - Generate helpers for moving between unsafe enums coming from the server, and safe enums. Also, provide a "fromString" function for each enum used, that can be used to turn any string into your enum.
+- Suppress dead code warnings _in most places_ when running `reanalyze` on a `rescript-relay` code base. Still a few things left to fix, that requires changes to reanalyze. But this should be much better than before.
 
 ### beta.4
 
