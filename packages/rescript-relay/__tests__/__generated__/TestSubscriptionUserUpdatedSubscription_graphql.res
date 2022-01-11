@@ -214,9 +214,7 @@ return {
   "params": {
     "cacheID": "41b8b12bc049364fa2383c462f7c13de",
     "id": null,
-    "metadata": {
-      "subscriptionName": "userUpdated"
-    },
+    "metadata": {},
     "name": "TestSubscriptionUserUpdatedSubscription",
     "operationKind": "subscription",
     "text": "subscription TestSubscriptionUserUpdatedSubscription(\n  $userId: ID!\n) {\n  userUpdated(id: $userId) {\n    user {\n      id\n      onlineStatus\n      ...TestSubscription_user\n    }\n  }\n}\n\nfragment TestSubscription_user on User {\n  id\n  firstName\n  avatarUrl\n  onlineStatus\n}\n"
