@@ -5,8 +5,8 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec response_node = {
-    @live id: string,
     @live __typename: string,
+    @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
   }
   type response = {
@@ -111,14 +111,14 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "__typename",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "id",
   "storageKey": null
 },
 v4 = [
@@ -212,7 +212,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v2/*: any*/),
+                          (v3/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -244,7 +244,7 @@ return {
                             ],
                             "storageKey": "friendsConnection(first:1)"
                           },
-                          (v3/*: any*/)
+                          (v2/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -307,12 +307,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4c309879b0c140449fa423561652e94f",
+    "cacheID": "2e6899b5a2ea505e98caf12237c88ac6",
     "id": null,
     "metadata": {},
     "name": "TestPaginationInNodeQuery",
     "operationKind": "query",
-    "text": "query TestPaginationInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    id\n    __typename\n    ... on User {\n      ...TestPaginationInNode_query\n    }\n  }\n}\n\nfragment TestPaginationInNode_query on User {\n  friendsConnection(first: 2, after: \"\") {\n    edges {\n      node {\n        id\n        ...TestPaginationInNode_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPaginationInNode_user on User {\n  id\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationInNodeQuery(\n  $userId: ID!\n) {\n  node(id: $userId) {\n    __typename\n    id\n    ... on User {\n      ...TestPaginationInNode_query\n    }\n  }\n}\n\nfragment TestPaginationInNode_query on User {\n  friendsConnection(first: 2, after: \"\") {\n    edges {\n      node {\n        id\n        ...TestPaginationInNode_user\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPaginationInNode_user on User {\n  id\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() `)

@@ -213,13 +213,6 @@ return {
               "plural": false,
               "selections": [
                 {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
-                },
-                {
                   "kind": "InlineFragment",
                   "selections": [
                     (v1/*: any*/),
@@ -293,6 +286,13 @@ return {
                   ],
                   "type": "Group",
                   "abstractKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
                 }
               ],
               "storageKey": null

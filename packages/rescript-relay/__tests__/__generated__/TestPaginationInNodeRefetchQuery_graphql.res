@@ -229,6 +229,7 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
+          (v5/*: any*/),
           {
             "args": [
               {

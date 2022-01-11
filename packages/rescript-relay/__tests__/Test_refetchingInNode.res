@@ -1,7 +1,6 @@
 module Query = %relay(`
     query TestRefetchingInNodeQuery($userId: ID!) {
       node(id: $userId) {
-        __typename
         ... on User {
           ...TestRefetchingInNode_user
         }

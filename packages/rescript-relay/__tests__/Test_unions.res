@@ -3,7 +3,6 @@ module Query = %relay(`
     members(groupId: "123") {
       edges {
         node {
-          __typename
           ... on User {
             id
             firstName
@@ -15,7 +14,6 @@ module Query = %relay(`
             name
             avatarUrl
             members {
-                __typename
                 ... on User {
                     id
                     firstName

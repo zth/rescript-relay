@@ -10,7 +10,6 @@ module Query = %relay(`
 module ViaNodeInterface = %relay(`
     query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
       node(id: $id) {
-        __typename
         ... on User {
           firstName
           avatarUrl

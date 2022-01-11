@@ -2,7 +2,6 @@ module Query = %relay(`
     query TestPaginationInNodeQuery($userId: ID!) {
       node(id: $userId) {
         id
-        __typename
         ... on User {
           ...TestPaginationInNode_query
         }

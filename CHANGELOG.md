@@ -30,6 +30,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### not released yet
 
 - Fix wrong enum type being printed in input objects
+- Fix `__typename` not being automatically selected (and by that forcing a manual select) in some cases, even though it's not supposed to be required to select manually anymore
 
 ### beta.5
 

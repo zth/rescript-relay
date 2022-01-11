@@ -169,7 +169,14 @@ v3 = [
     "name": "id",
     "variableName": "id"
   }
-];
+],
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [
@@ -189,6 +196,7 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
+          (v4/*: any*/),
           {
             "args": [
               {
@@ -230,13 +238,7 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v4/*: any*/),
           {
             "alias": null,
             "args": null,

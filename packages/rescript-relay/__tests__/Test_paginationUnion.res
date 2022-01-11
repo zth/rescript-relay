@@ -31,7 +31,6 @@ module Fragment = %relay(`
       ) @connection(key: "TestPaginationUnion_query_members") {
         edges {
           node {
-            __typename
             ... on User {
               id
               ...TestPaginationUnion_user

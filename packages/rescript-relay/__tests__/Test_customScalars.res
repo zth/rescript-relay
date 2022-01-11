@@ -8,7 +8,6 @@ module Query = %relay(`
       }
 
       member(id: "user-1") {
-        __typename
         ... on User {
           createdAt
         }
