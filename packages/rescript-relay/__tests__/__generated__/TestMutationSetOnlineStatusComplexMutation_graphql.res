@@ -20,7 +20,12 @@ module Types = {
 
 
   type rec setOnlineStatusInput = {
-    @live onlineStatus: enum_OnlineStatus,
+    @live onlineStatus: [
+      | #Online
+      | #Idle
+      | #Offline
+    ]
+,
     @live recursed: option<recursiveSetOnlineStatusInput>,
   }
   and recursiveSetOnlineStatusInput = {

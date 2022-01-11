@@ -27,6 +27,10 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## Beta fix changelog
 
+### not released yet
+
+- Fix wrong enum type being printed in input objects
+
 ### beta.5
 
 - Generate helpers for moving between unsafe enums coming from the server, and safe enums. Also, provide a "fromString" function for each enum used, that can be used to turn any string into your enum.
