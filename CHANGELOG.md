@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.5
+# 1.0.0-beta.6
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -27,7 +27,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## Beta fix changelog
 
-### not released yet
+### beta.6
 
 - Fix wrong enum type being printed in input objects
 - Fix `__typename` not being automatically selected (and by that forcing a manual select) in some cases, even though it's not supposed to be required to select manually anymore
