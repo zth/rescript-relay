@@ -1,9 +1,9 @@
 module Query = %relay(`
-    query TestRequiredFieldLoggerQuery {
-      loggedInUser {
-        firstName @required(action: LOG)
-      }
+  query TestRequiredFieldLoggerQuery {
+    loggedInUser {
+      firstName @required(action: LOG)
     }
+  }
 `)
 
 module Logger = {
