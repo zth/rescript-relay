@@ -757,6 +757,18 @@ module Disposable: {
 }
 
 @ocaml.doc(
+  "A required field logger, which gets called when a field annotated with the @required directive was missing from the response"
+)
+module RequiredFieldLogger: {
+  type kind = [#"missing_field.log" | #"missing_field.throw"]
+
+  @ocaml.doc(
+    "A required field logger, which gets called when a field annotated with the @required directive was missing from the response"
+  )
+  type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
+}
+
+@ocaml.doc(
   "Module representing the environment, which you'll need to use and pass to various functions. Takes a few configuration options like store and network layer."
 )
 module Environment: {
@@ -773,6 +785,7 @@ module Environment: {
     ) => string=?,
     ~treatMissingFieldsAsNull: bool=?,
     ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
+    ~requiredFieldLogger: RequiredFieldLogger.t=?,
     unit,
   ) => t
 

@@ -550,6 +550,19 @@ module Store = {
   @send external publish: (t, RecordSource.t) => unit = "publish"
 }
 
+module RequiredFieldLogger = {
+  type kind = [#"missing_field.log" | #"missing_field.throw"]
+
+  type arg = {"kind": kind, "owner": string, "fieldPath": string}
+
+  type js = arg => unit
+
+  type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
+
+  let toJs: t => js = (f, arg) =>
+    f(~kind=arg["kind"], ~owner=arg["owner"], ~fieldPath=arg["fieldPath"])
+}
+
 module Environment = {
   type t
 
@@ -562,6 +575,8 @@ module Environment = {
     @optional
     treatMissingFieldsAsNull: bool,
     missingFieldHandlers: array<MissingFieldHandler.t>,
+    @optional
+    requiredFieldLogger: RequiredFieldLogger.js,
   }
 
   @module("relay-runtime") @new
@@ -573,6 +588,7 @@ module Environment = {
     ~getDataID=?,
     ~treatMissingFieldsAsNull=?,
     ~missingFieldHandlers=?,
+    ~requiredFieldLogger=?,
     (),
   ) =>
     make(
@@ -585,6 +601,7 @@ module Environment = {
         | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
         | None => [nodeInterfaceMissingFieldHandler]
         },
+        ~requiredFieldLogger=?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
         (),
       ),
     )
@@ -737,3 +754,4 @@ external commitLocalUpdate: (
 @module("react-relay/hooks")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"
+
