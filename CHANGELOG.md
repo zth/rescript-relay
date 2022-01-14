@@ -27,6 +27,11 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## Beta fix changelog
 
+### unreleased
+
+- Full support for `reanalyze` as all false positive dead code results from generated code are now suppressed.
+- Bindings for `requiredFieldLogger` for logging when missing fields are encountered (kudos [Emilios1995](https://github.com/Emilios1995)).
+
 ### beta.6
 
 - Fix wrong enum type being printed in input objects
