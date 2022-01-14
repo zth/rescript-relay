@@ -33,17 +33,20 @@ module Types = {
   type response = {
     users: option<response_users>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live status: option<[
+    status: option<[
       | #Online
       | #Idle
       | #Offline
     ]
 >,
   }
+  @live
   type refetchVariables = {
-    @live status: option<[
+    status: option<[
       | #Online
       | #Idle
       | #Offline

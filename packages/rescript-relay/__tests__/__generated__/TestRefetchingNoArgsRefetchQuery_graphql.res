@@ -4,11 +4,15 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type response = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingNoArgs_query]>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = unit
+  @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }

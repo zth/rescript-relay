@@ -19,17 +19,19 @@ module Types = {
 
 
 
+  @live
   type rec rawResponse_setOnlineStatus_user_memberOf_User = {
     @live __typename: [ | #User],
-    @live __isNode: [ | #User],
+    __isNode: [ | #User],
     @live id: string,
-    @live firstName: string,
+    firstName: string,
   }
+  @live
   and rawResponse_setOnlineStatus_user_memberOf_Group = {
     @live __typename: [ | #Group],
-    @live __isNode: [ | #Group],
+    __isNode: [ | #Group],
     @live id: string,
-    @live name: string,
+    name: string,
   }
   and rawResponse_setOnlineStatus_user_memberOf = [
     | #User(rawResponse_setOnlineStatus_user_memberOf_User)
@@ -37,30 +39,37 @@ module Types = {
     | #UnselectedUnionMember(string)
   ]
 
+  @live
   type rec response_setOnlineStatus_user = {
-    @live fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestMutation_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestMutation_user]>,
   }
+  @live
   and response_setOnlineStatus = {
-    @live user: option<response_setOnlineStatus_user>,
+    user: option<response_setOnlineStatus_user>,
   }
+  @live
   and rawResponse_setOnlineStatus_user = {
     @live id: string,
-    @live firstName: string,
-    @live lastName: string,
-    @live onlineStatus: option<enum_OnlineStatus>,
-    @live memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
+    firstName: string,
+    lastName: string,
+    onlineStatus: option<enum_OnlineStatus>,
+    memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
   }
+  @live
   and rawResponse_setOnlineStatus = {
-    @live user: option<rawResponse_setOnlineStatus_user>,
+    user: option<rawResponse_setOnlineStatus_user>,
   }
+  @live
   type response = {
-    @live setOnlineStatus: option<response_setOnlineStatus>,
+    setOnlineStatus: option<response_setOnlineStatus>,
   }
+  @live
   type rawResponse = {
-    @live setOnlineStatus: option<rawResponse_setOnlineStatus>,
+    setOnlineStatus: option<rawResponse_setOnlineStatus>,
   }
+  @live
   type variables = {
-    @live onlineStatus: [
+    onlineStatus: [
       | #Online
       | #Idle
       | #Offline

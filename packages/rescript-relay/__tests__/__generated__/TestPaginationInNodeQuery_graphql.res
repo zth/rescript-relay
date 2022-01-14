@@ -12,12 +12,15 @@ module Types = {
   type response = {
     node: option<response_node>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live userId: string,
+    userId: string,
   }
+  @live
   type refetchVariables = {
-    @live userId: option<string>,
+    userId: option<string>,
   }
   @live let makeRefetchVariables = (
     ~userId=?,

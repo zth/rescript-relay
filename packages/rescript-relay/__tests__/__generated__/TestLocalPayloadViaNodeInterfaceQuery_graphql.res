@@ -9,21 +9,25 @@ module Types = {
     firstName: string,
     avatarUrl: option<string>,
   }
+  @live
   and rawResponse_node = {
     @live __typename: [ | #User],
     @live id: string,
-    @live firstName: string,
-    @live avatarUrl: option<string>,
+    firstName: string,
+    avatarUrl: option<string>,
   }
   type response = {
     node: option<response_node>,
   }
+  @live
   type rawResponse = {
-    @live node: option<rawResponse_node>,
+    node: option<rawResponse_node>,
   }
+  @live
   type variables = {
     @live id: string,
   }
+  @live
   type refetchVariables = {
     @live id: option<string>,
   }

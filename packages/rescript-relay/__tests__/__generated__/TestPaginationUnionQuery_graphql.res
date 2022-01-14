@@ -7,12 +7,15 @@ module Types = {
   type response = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_query]>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live groupId: string,
+    groupId: string,
   }
+  @live
   type refetchVariables = {
-    @live groupId: option<string>,
+    groupId: option<string>,
   }
   @live let makeRefetchVariables = (
     ~groupId=?,

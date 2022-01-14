@@ -19,26 +19,30 @@ module Types = {
 
 
 
+  @live
   type response = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_query]>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live count: option<int>,
-    @live cursor: option<string>,
-    @live groupId: string,
-    @live onlineStatuses: option<array<[
+    count: option<int>,
+    cursor: option<string>,
+    groupId: string,
+    onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
     ]
 >>,
   }
+  @live
   type refetchVariables = {
-    @live count: option<int>,
-    @live cursor: option<string>,
-    @live groupId: option<string>,
-    @live onlineStatuses: option<array<[
+    count: option<int>,
+    cursor: option<string>,
+    groupId: option<string>,
+    onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline

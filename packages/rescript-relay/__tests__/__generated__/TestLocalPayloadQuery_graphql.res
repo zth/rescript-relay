@@ -8,18 +8,22 @@ module Types = {
     @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
   }
+  @live
   and rawResponse_loggedInUser = {
     @live id: string,
-    @live firstName: string,
-    @live avatarUrl: option<string>,
+    firstName: string,
+    avatarUrl: option<string>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
   }
+  @live
   type rawResponse = {
-    @live loggedInUser: rawResponse_loggedInUser,
+    loggedInUser: rawResponse_loggedInUser,
   }
+  @live
   type variables = unit
+  @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }

@@ -10,8 +10,11 @@ module Types = {
   type response = {
     loggedInUser: option<response_loggedInUser>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = unit
+  @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }

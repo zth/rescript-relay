@@ -19,32 +19,37 @@ module Types = {
 
 
 
+  @live
   type rec response_node = {
     @live __typename: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>,
   }
+  @live
   type response = {
     node: option<response_node>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live friendsOnlineStatuses: option<array<[
+    friendsOnlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
     ]
 >>,
-    @live showOnlineStatus: option<bool>,
+    showOnlineStatus: option<bool>,
     @live id: string,
   }
+  @live
   type refetchVariables = {
-    @live friendsOnlineStatuses: option<array<[
+    friendsOnlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
     ]
 >>,
-    @live showOnlineStatus: option<bool>,
+    showOnlineStatus: option<bool>,
     @live id: option<string>,
   }
   @live let makeRefetchVariables = (

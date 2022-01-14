@@ -19,20 +19,25 @@ module Types = {
 
 
 
+  @live
   type rec response_userUpdated_user = {
     @live id: string,
-    @live onlineStatus: option<enum_OnlineStatus>,
-    @live fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>,
+    onlineStatus: option<enum_OnlineStatus>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestSubscription_user]>,
   }
+  @live
   and response_userUpdated = {
-    @live user: option<response_userUpdated_user>,
+    user: option<response_userUpdated_user>,
   }
+  @live
   type response = {
-    @live userUpdated: option<response_userUpdated>,
+    userUpdated: option<response_userUpdated>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live userId: string,
+    userId: string,
   }
 }
 

@@ -19,39 +19,46 @@ module Types = {
 
 
 
+  @live
   type rec setOnlineStatusInput = {
-    @live onlineStatus: [
+    onlineStatus: [
       | #Online
       | #Idle
       | #Offline
     ]
 ,
-    @live recursed: option<recursiveSetOnlineStatusInput>,
+    recursed: option<recursiveSetOnlineStatusInput>,
   }
+  @live
   and recursiveSetOnlineStatusInput = {
-    @live someValue: TestsUtils.IntString.t,
-    @live setOnlineStatus: option<setOnlineStatusInput>,
+    someValue: TestsUtils.IntString.t,
+    setOnlineStatus: option<setOnlineStatusInput>,
   }
+  @live
   type rec response_setOnlineStatusComplex_user = {
     @live id: string,
-    @live onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<enum_OnlineStatus>,
   }
+  @live
   and response_setOnlineStatusComplex = {
-    @live user: option<response_setOnlineStatusComplex_user>,
+    user: option<response_setOnlineStatusComplex_user>,
   }
+  @live
   type response = {
-    @live setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
+    setOnlineStatusComplex: option<response_setOnlineStatusComplex>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live input: setOnlineStatusInput,
+    input: setOnlineStatusInput,
   }
 }
 
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"recursiveSetOnlineStatusInput":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput"}},"__root":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"},"recursed":{"r":"recursiveSetOnlineStatusInput"},"input":{"r":"setOnlineStatusInput"}}}`
+    json`{"recursiveSetOnlineStatusInput":{"someValue":{"c":"TestsUtils.IntString"},"setOnlineStatus":{"r":"setOnlineStatusInput"}},"setOnlineStatusInput":{"recursed":{"r":"recursiveSetOnlineStatusInput"}},"__root":{"input":{"r":"setOnlineStatusInput"}}}`
   )
   @live
   let variablesConverterMap = {

@@ -19,18 +19,22 @@ module Types = {
 
 
 
+  @live
   type rec response_node = {
     @live __typename: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
   }
+  @live
   type response = {
     node: option<response_node>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live count: option<int>,
-    @live cursor: option<string>,
-    @live onlineStatuses: option<array<[
+    count: option<int>,
+    cursor: option<string>,
+    onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline
@@ -38,10 +42,11 @@ module Types = {
 >>,
     @live id: string,
   }
+  @live
   type refetchVariables = {
-    @live count: option<int>,
-    @live cursor: option<string>,
-    @live onlineStatuses: option<array<[
+    count: option<int>,
+    cursor: option<string>,
+    onlineStatuses: option<array<[
       | #Online
       | #Idle
       | #Offline

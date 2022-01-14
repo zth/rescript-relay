@@ -24,12 +24,15 @@ module Types = {
     loggedInUser: response_loggedInUser,
     member: option<response_member>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
-    @live beforeDate: option<TestsUtils.Datetime.t>,
+    beforeDate: option<TestsUtils.Datetime.t>,
   }
+  @live
   type refetchVariables = {
-    @live beforeDate: option<TestsUtils.Datetime.t>,
+    beforeDate: option<TestsUtils.Datetime.t>,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,

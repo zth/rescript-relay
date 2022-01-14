@@ -65,8 +65,11 @@ module Types = {
   type response = {
     members: option<response_members>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = unit
+  @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }
