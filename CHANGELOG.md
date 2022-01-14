@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.6
+# 1.0.0-beta.7
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -28,6 +28,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+### beta.7
 
 - Full support for `reanalyze` as all false positive dead code results from generated code are now suppressed.
 - Bindings for `requiredFieldLogger` for logging when missing fields are encountered (kudos [Emilios1995](https://github.com/Emilios1995)).
