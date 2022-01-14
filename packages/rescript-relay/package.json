@@ -19,6 +19,14 @@
     "reasonml",
     "rescript"
   ],
+  "exports": {
+    "./src/utils": {
+      "require": "./src/utils.js",
+      "import": "./src/utils.mjs"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "rescript-relay-compiler": "compiler.js",
     "rescript-relay-cli": "cli/cli.js"
