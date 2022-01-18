@@ -33,6 +33,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### unreleased
 
 - More fixes for conversion instructions in variables and input objects.
+- Project now works in `"type": "module"` mode in `package.json` (kudos [cometkim](https://github.com/cometkim))
 
 ### beta.7
 

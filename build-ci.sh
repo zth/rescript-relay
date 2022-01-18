@@ -26,6 +26,10 @@ cp .npmignore ../../_release/;
 cp ../../README.md ../../_release/;
 cp ../../CHANGELOG.md ../../_release/;
 
+# copy and create mjs version of utils.js
+cp src/utils.js ../../_release/src/utils.mjs;
+sed -i '' 's/module\.exports \= /export /g' ../../_release/src/utils.mjs;
+
 # copy config files
 echo "Copying config files..."
 cp bsconfig.release.json ../../_release/bsconfig.json;
