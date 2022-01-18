@@ -105,6 +105,12 @@ input SetOnlineStatusInput {
   recursed: RecursiveSetOnlineStatusInput
 }
 
+input SearchInput {
+  names: [String]
+  id: Int!
+  someOtherId: Float
+}
+
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
@@ -124,6 +130,7 @@ type Query {
     before: String
     last: Int
   ): UserConnection
+  search(input: SearchInput!): String
 }
 
 type Mutation {

@@ -24,10 +24,15 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - There's no longer any need to manually select `__typename` on interfaces and unions for RescriptRelay's sake, unless you actually want to use it yourself.
 - We now support the `@required` directive from Relay, which is a new directive that lets you force non-nullability for nullable fields on the client side. You can then choose to throw an error if null values are encountered, or let the null value bubble up. Docs are coming soon.
 - The errors reported by the compiler is now quite a lot better.
+- Full support for `reanalyze` as all false positive dead code results from generated code are now suppressed.
+- Bindings for `requiredFieldLogger` for logging when missing fields are encountered (kudos [Emilios1995](https://github.com/Emilios1995)).
+- Improved utils for [dealing with enums](https://rescript-relay-documentation.vercel.app/docs/enums).
 
 ## Beta fix changelog
 
 ### unreleased
+
+- More fixes for conversion instructions in variables and input objects.
 
 ### beta.7
 
