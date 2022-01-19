@@ -12,7 +12,7 @@ There are several scenarios in which it would be a good idea to migrate from eit
 
 ### Strategy
 
-While it's technically possible to migrate using "top-down" strategy starting with your entry point and moving down one-by-one to all your dependencies, it is much easier and efficient, if you use a "leaf-first" approach. You start with part of the code that don't have dependencies to any other part of your code and move up the dependency tree. Rescript generates Javascript code, which can directly be imported by your unconverted codebase whereas if you wanted to use your unconverted JS/TS code in ReScript, you would have to write bindings for them, which probably wouldn't be the best use of your time since eventually they will all be converted to ReScript modules anyway which can then be used directly by your Rescript code without needing any bindings.
+While it's technically possible to migrate using "top-down" strategy starting with your entry point and moving down one-by-one to all your dependencies, it is much easier and efficient, if you use a "leaf-first" approach. You start with part of the code that don't have dependencies to any other part of your code and move up the dependency tree. Rescript generates Javascript code, which can directly be imported by your unconverted codebase. Whereas if you wanted to use your unconverted JS/TS code in ReScript, you would have to write bindings for them. That probably wouldn't be the best use of your time, since eventually they will all be converted to ReScript modules anyway. Those could then be used directly by your Rescript code without needing any bindings.
 
 ### Interop
 
