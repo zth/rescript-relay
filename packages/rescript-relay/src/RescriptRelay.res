@@ -11,7 +11,7 @@ type subscriptionNode<'node>
 type fragmentRefs<'fragments>
 
 type dataId
-type recordSourceRecords
+type recordSourceRecords = Js.Json.t
 type uploadables
 
 external dataIdToString: dataId => string = "%identity"
@@ -754,4 +754,3 @@ external commitLocalUpdate: (
 @module("react-relay/hooks")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"
-

@@ -27,10 +27,13 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - Full support for `reanalyze` as all false positive dead code results from generated code are now suppressed.
 - Bindings for `requiredFieldLogger` for logging when missing fields are encountered (kudos [Emilios1995](https://github.com/Emilios1995)).
 - Improved utils for [dealing with enums](https://rescript-relay-documentation.vercel.app/docs/enums).
+- `recordSourceRecords` is now typed as `Js.Json.t` rather than being abstract.
 
 ## Beta fix changelog
 
 ### unreleased
+
+- `recordSourceRecords` is now typed as `Js.Json.t` rather than being abstract.
 
 ### beta.8
 

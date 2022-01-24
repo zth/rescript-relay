@@ -108,10 +108,10 @@ type featureFlags = {
 @module("relay-runtime")
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
-@ocaml.doc("An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
+@ocaml.doc("Representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
 
 See `RecordSource.toJSON` for how to produce it.")
-type recordSourceRecords
+type recordSourceRecords = Js.Json.t
 
 @ocaml.doc(
   "The `dataId` for the Relay store's root. Useful when for example referencing the `parentID` of a connection that's on the store root."
