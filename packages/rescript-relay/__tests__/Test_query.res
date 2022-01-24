@@ -174,7 +174,6 @@ let test_query = () => {
     ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
     (),
   )
-  ()
 
   <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
 }

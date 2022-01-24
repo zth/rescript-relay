@@ -31,8 +31,6 @@ let test_requiredFieldLogger = () => {
     (),
   )
 
-  RescriptRelay.relayFeatureFlags.enableRequiredDirective = true
-
   Js.Promise.make((~resolve, ~reject as _) => {
     Query.fetch(~environment, ~variables=(), ~onResult={res => resolve(. res)}, ())
   })

@@ -31,16 +31,40 @@ external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 external isClientID: dataId => bool = "isClientID"
 
 type featureFlags = {
+  @as("DELAY_CLEANUP_OF_PENDING_PRELOAD_QUERIES")
+  mutable delayCleanupOfPendingPreloadQueries: bool,
+  @as("ENABLE_CLIENT_EDGES")
+  mutable enableClientEdges: bool,
   @as("ENABLE_VARIABLE_CONNECTION_KEY")
   mutable enableVariableConnectionKey: bool,
   @as("ENABLE_PARTIAL_RENDERING_DEFAULT")
   mutable enablePartialRenderingDefault: bool,
-  @as("ENABLE_RELAY_CONTAINERS_SUSPENSE")
-  mutable enableRelayContainersSuspense: bool,
-  @as("ENABLE_PRECISE_TYPE_REFINEMENT")
-  mutable enablePrecisTypeRefinement: bool,
-  @as("ENABLE_REQUIRED_DIRECTIVES")
-  mutable enableRequiredDirective: bool,
+  @as("ENABLE_REACT_FLIGHT_COMPONENT_FIELD")
+  mutable enableReactFlightComponentField: bool,
+  @as("ENABLE_RELAY_RESOLVERS")
+  mutable enableRelayResolvers: bool,
+  @as("ENABLE_GETFRAGMENTIDENTIFIER_OPTIMIZATION")
+  mutable enableGetFragmentIdentifierOptimization: bool,
+  @as("ENABLE_FRIENDLY_QUERY_NAME_GQL_URL")
+  mutable enableFriendlyQueryNameGqlUrl: bool,
+  @as("ENABLE_LOAD_QUERY_REQUEST_DEDUPING")
+  mutable enableLoadQueryRequestDeduping: bool,
+  @as("ENABLE_DO_NOT_WRAP_LIVE_QUERY")
+  mutable enableDoNotWrapLiveQuery: bool,
+  @as("ENABLE_NOTIFY_SUBSCRIPTION")
+  mutable enableNotifySubscription: bool,
+  @as("ENABLE_CONTAINERS_SUBSCRIBE_ON_COMMIT")
+  mutable enableContainersSubscribeOnCommit: bool,
+  @as("ENABLE_QUERY_RENDERER_OFFSCREEN_SUPPORT")
+  mutable enableQueryRendererOffscreenSupport: bool,
+  @as("MAX_DATA_ID_LENGTH")
+  mutable maxDataIdLength: option<int>,
+  @as("REFACTOR_SUSPENSE_RESOURCE")
+  mutable refactorSuspenseResource: bool,
+  @as("STRING_INTERN_LEVEL")
+  mutable stringInternLevel: int,
+  @as("USE_REACT_CACHE")
+  mutable useReactCache: bool,
 }
 
 @module("relay-runtime")

@@ -1,5 +1,3 @@
-RescriptRelay.relayFeatureFlags.enableRequiredDirective = true
-
 module Query = %relay(`
     query TestFragmentRequiredQuery {
       loggedInUser {

@@ -154,7 +154,7 @@ You'll often want to convert between `string` and [dataId](#dataid) . You can do
 type recordSourceRecords
 ```
 
-An abstract type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store.
+A type representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. Is equivalent to `Js.Json.t`.
 
 See [RecordSource.toJSON](#recordsourcetojson) for how to produce it.
 
