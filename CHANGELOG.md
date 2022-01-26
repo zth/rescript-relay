@@ -34,6 +34,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### unreleased
 
 - `recordSourceRecords` is now typed as `Js.Json.t` rather than being abstract.
+- The field name of the `id` field of the `Node` interface is now configurable via `schemaConfig: {nodeInterfaceIdField: "idNameHere"}`.
 
 ### beta.8
 
