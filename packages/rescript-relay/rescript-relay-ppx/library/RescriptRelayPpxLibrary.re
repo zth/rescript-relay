@@ -43,6 +43,6 @@ let commonExtension =
 // This registers all defined extension points to the "rescript-relay" ppx.
 let () =
   Driver.register_transformation(
-    ~extensions=[commonExtension, LazyComp.lazyExtension],
+    ~extensions=[commonExtension, LazyComp.lazyExtension, DeferredComp.lazyExtension],
     "rescript-relay",
   );
