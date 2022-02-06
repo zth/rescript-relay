@@ -6,11 +6,11 @@ Use Relay with ReScript.
 
 ## Getting started
 
-> Are you using version `>= 0.13.0` and ReScript syntax with VSCode? Make sure you install our [decicated VSCode extension](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay). Note: It only works with ReScript syntax.
+> Are you using version `>= 0.13.0` and ReScript syntax with VSCode? Make sure you install our [dedicated VSCode extension](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay). Note: It only works with ReScript syntax.
 
 Check out the [documentation](https://rescript-relay-documentation.vercel.app).
 
-Also, check out the [changelog](CHANGELOG.md) - things will continue change some between versions (including breaking changes, although we'll try and keep them to a minimum) as we iterate and reach a stable version.
+Also, check out the [changelog](CHANGELOG.md) - things will continue to change between versions (including breaking changes, although we'll try and keep them to a minimum) as we iterate and reach a stable version.
 
 ## What it looks like
 
