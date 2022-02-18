@@ -1,23 +1,27 @@
-// We occasionally have to remove undefined keys from objects, something I haven't figured out how to do with pure BuckleScript
-let internal_cleanObjectFromUndefinedRaw = %raw(
-  `
-  function (obj) {
-    if (!obj) {
-      return obj;
+let internal_keepMapFieldsRaw = (record, f) =>
+  record
+  ->Obj.magic
+  ->Belt.Option.map(obj => obj->Js.Dict.entries->Belt.Array.keepMap(f)->Js.Dict.fromArray)
+  ->Obj.magic
+
+// we need to do this until we can use @obj on record types
+// see https://github.com/rescript-lang/rescript-compiler/pull/5253
+let internal_cleanObjectFromUndefinedRaw = record =>
+  internal_keepMapFieldsRaw(record, ((key, value)) => {
+    switch value {
+    | Some(value) => Some((key, value))
+    | None => None
     }
+  })
 
-    var newObj = {};
-
-    Object.keys(obj).forEach(function(key) {
-      if (typeof obj[key] !== 'undefined') {
-        newObj[key] = obj[key];
-      }
-    });
-
-    return newObj;
-  }
-`
-)
+let internal_removeUndefinedAndConvertNullsRaw = record =>
+  internal_keepMapFieldsRaw(record, ((key, value)) => {
+    switch (value, value == Some(None)) {
+    | (Some(value), _) => Some((key, Js.Nullable.return(value)))
+    | (_, true) => Some((key, Js.Nullable.null))
+    | (None, _) => None
+    }
+  })
 
 let internal_useConvertedValue = (convert, v) => React.useMemo1(() => convert(v), [v])
 
