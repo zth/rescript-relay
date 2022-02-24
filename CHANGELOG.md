@@ -33,6 +33,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Make CLI work with `relay.config.cjs`.
+
 ### beta.11
 
 - Another batch of experimental stuff... Nothing new in this version compared to `beta.9`.

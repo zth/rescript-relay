@@ -2,19 +2,31 @@ import glob from "fast-glob";
 import ora from "ora";
 import path from "path";
 import fs from "fs";
-import config from "relay-config";
+import { cosmiconfigSync } from "cosmiconfig";
 import { Config } from "relay-compiler/lib/bin/RelayCompilerMain";
 
-export const loadRelayConfig = () => {
-  const relayConfig = config.loadConfig();
+const config = cosmiconfigSync("relay", {
+  searchPlaces: [
+    "package.json",
+    "relay.json",
+    "relay.config.json",
+    "relay.config.js",
+    "relay.config.cjs",
+  ],
+});
 
-  if (!relayConfig) {
+export const loadRelayConfig = () => {
+  const res = config.search();
+
+  if (!res) {
     console.error(
       "Could not find relay.config.js. You must configure Relay through relay.config.js for RescriptRelay to work."
     );
 
     process.exit(1);
   }
+
+  const relayConfig: Config = res.config;
 
   if (!relayConfig.artifactDirectory) {
     console.error(
