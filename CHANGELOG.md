@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.11
+# 1.0.0-beta.12
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -8,7 +8,7 @@ The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major
 
 ## Upgrade versions
 
-- `react-relay` and `relay-runtime` to `13.0.1`
+- `react-relay` and `relay-runtime` to `13.1.1`
 
 ## Remove Packages
 
@@ -32,6 +32,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+### beta.12
 
 - Make CLI work with `relay.config.cjs`.
 
