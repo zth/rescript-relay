@@ -43,14 +43,14 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    friendsOnlineStatuses: option<array<[
+    friendsOnlineStatuses: option<option<array<[
       | #Idle
       | #Offline
       | #Online
     ]
->>,
+>>>,
     @live id: option<string>,
-    showOnlineStatus: option<bool>,
+    showOnlineStatus: option<option<bool>>,
   }
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
@@ -151,10 +151,7 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 let node: operationType = %raw(json` (function(){
 var v0 = {
-  "defaultValue": [
-    "Online",
-    "Offline"
-  ],
+  "defaultValue": null,
   "kind": "LocalArgument",
   "name": "friendsOnlineStatuses"
 },
@@ -309,12 +306,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7f7b04c6140e4282e20befe8a201c187",
+    "cacheID": "ac366a8a48f75e444a007e9517c6077d",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingInNodeRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!] = [Online, Offline]\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingInNodeRefetchQuery(\n  $friendsOnlineStatuses: [OnlineStatus!]\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingInNode_user_lLXHd\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_lLXHd on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
   }
 };
 })() `)

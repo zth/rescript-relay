@@ -114,7 +114,7 @@ module Test = {
             let _ = refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
-                ~onlineStatuses=[#Online, #Idle],
+                ~onlineStatuses=Some([#Online, #Idle]),
                 (),
               ),
               (),

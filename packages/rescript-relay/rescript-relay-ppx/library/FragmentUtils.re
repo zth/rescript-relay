@@ -61,7 +61,8 @@ let makeRefetchableAssets =
   | None => []
   | Some(queryName) => [
       [%stri
-        [@deriving abstract] [@live]
+        [@deriving abstract]
+        [@live]
         type refetchableFnOpts = {
           [@optional]
           fetchPolicy: string,
@@ -70,7 +71,8 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        [@live] let internal_makeRefetchableFnOpts =
+        [@live]
+        let internal_makeRefetchableFnOpts =
             (~fetchPolicy=?, ~onComplete=?, ()) =>
           refetchableFnOpts(
             ~fetchPolicy=?fetchPolicy->RescriptRelay.mapFetchPolicy,
@@ -80,17 +82,20 @@ let makeRefetchableAssets =
           )
       ],
       [%stri
-        [@live] type paginationLoadMoreOptions = {
+        [@live]
+        type paginationLoadMoreOptions = {
           onComplete: option(Js.nullable(Js.Exn.t) => unit),
         }
       ],
       [%stri
-        [@live] type paginationLoadMoreFn =
+        [@live]
+        type paginationLoadMoreFn =
           (~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>
           RescriptRelay.Disposable.t
       ],
       [%stri
-        [@live] type paginationFragmentReturnRaw = {
+        [@live]
+        type paginationFragmentReturnRaw = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext:
             (. int, paginationLoadMoreOptions) => RescriptRelay.Disposable.t,
@@ -115,7 +120,8 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        [@live] type paginationBlockingFragmentReturn = {
+        [@live]
+        type paginationBlockingFragmentReturn = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext: paginationLoadMoreFn,
           loadPrevious: paginationLoadMoreFn,
@@ -138,7 +144,8 @@ let makeRefetchableAssets =
         }
       ],
       [%stri
-        [@live] type paginationFragmentReturn = {
+        [@live]
+        type paginationFragmentReturn = {
           data: [%t typeFromGeneratedModule(["Types", "fragment"])],
           loadNext: paginationLoadMoreFn,
           loadPrevious: paginationLoadMoreFn,
@@ -222,7 +229,8 @@ You supply a _diff_ of your variables to Relay when refetching. Diffed variables
 
 ### `Fragment.makeRefetchVariables` - helper for making the refetch variables
 There's a helper generated for you to create those diffed variables more easily at `Fragment.makeRefetchVariables`.*/
-        [@live] let useRefetchable = fRef => {
+        [@live]
+        let useRefetchable = fRef => {
           let (fragmentData, refetchFn) =
             internal_useRefetchableFragment(
               [%e valFromGeneratedModule(["node"])],
@@ -259,7 +267,7 @@ There's a helper generated for you to create those diffed variables more easily 
                         ["Internal", "convertVariables"],
                       )
                     ]
-                  ->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+                  ->RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw,
                   internal_makeRefetchableFnOpts(
                     ~fetchPolicy?,
                     ~onComplete?,

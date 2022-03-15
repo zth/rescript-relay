@@ -46,12 +46,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    status: option<[
+    status: option<option<[
       | #Idle
       | #Offline
       | #Online
     ]
->,
+>>,
   }
   @live let makeRefetchVariables = (
     ~status=?,

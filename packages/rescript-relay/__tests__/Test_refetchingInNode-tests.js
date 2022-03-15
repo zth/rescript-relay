@@ -11,6 +11,7 @@ describe("Fragment", () => {
       name: "TestRefetchingInNodeQuery",
       variables: {
         userId: "user-1",
+        friendsOnlineStatuses: ["Online"],
       },
       data: {
         node: {
@@ -19,7 +20,7 @@ describe("Fragment", () => {
           firstName: "First",
           onlineStatus: null,
           friendsConnection: {
-            totalCount: 20,
+            totalCount: 10,
           },
         },
       },
@@ -28,14 +29,14 @@ describe("Fragment", () => {
     t.render(test_refetching());
 
     await t.screen.findByText("First is -");
-    await t.screen.findByText("Friends: 20");
+    await t.screen.findByText("Friends: 10");
 
     queryMock.mockQuery({
       name: "TestRefetchingInNodeRefetchQuery",
       variables: {
         id: "user-1",
         showOnlineStatus: true,
-        friendsOnlineStatuses: ["Online", "Offline"],
+        friendsOnlineStatuses: null,
       },
       data: {
         node: {
@@ -44,7 +45,7 @@ describe("Fragment", () => {
           firstName: "First",
           onlineStatus: "Online",
           friendsConnection: {
-            totalCount: 10,
+            totalCount: 20,
           },
         },
       },
@@ -55,6 +56,6 @@ describe("Fragment", () => {
     });
 
     await t.screen.findByText("First is online");
-    await t.screen.findByText("Friends: 10");
+    await t.screen.findByText("Friends: 20");
   });
 });

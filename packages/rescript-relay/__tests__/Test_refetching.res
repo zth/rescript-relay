@@ -55,8 +55,8 @@ module Test = {
           startTransition(() => {
             let _ = refetch(
               ~variables=Fragment.makeRefetchVariables(
-                ~showOnlineStatus=true,
-                ~friendsOnlineStatuses=[#Online, #Offline],
+                ~showOnlineStatus=Some(true),
+                ~friendsOnlineStatuses=Some([#Online, #Offline]),
                 (),
               ),
               (),

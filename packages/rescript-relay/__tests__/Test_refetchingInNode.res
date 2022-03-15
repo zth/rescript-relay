@@ -1,8 +1,8 @@
 module Query = %relay(`
-    query TestRefetchingInNodeQuery($userId: ID!) {
+    query TestRefetchingInNodeQuery($userId: ID!, $friendsOnlineStatuses: [OnlineStatus!]) {
       node(id: $userId) {
         ... on User {
-          ...TestRefetchingInNode_user
+          ...TestRefetchingInNode_user @arguments(friendsOnlineStatuses: $friendsOnlineStatuses)
         }
       }
     }
@@ -13,7 +13,7 @@ module Fragment = %relay(`
       @refetchable(queryName: "TestRefetchingInNodeRefetchQuery")
       @argumentDefinitions(
         showOnlineStatus: { type: "Boolean", defaultValue: false }
-        friendsOnlineStatuses: { type: "[OnlineStatus!]", defaultValue: [Online, Offline]}
+        friendsOnlineStatuses: { type: "[OnlineStatus!]"}
       ) {
       firstName
       onlineStatus @include(if: $showOnlineStatus)
@@ -44,7 +44,11 @@ module UserDisplayer = {
         onClick={_ =>
           startTransition(() => {
             let _ = refetch(
-              ~variables=Fragment.makeRefetchVariables(~showOnlineStatus=true, ()),
+              ~variables=Fragment.makeRefetchVariables(
+                ~showOnlineStatus=Some(true),
+                ~friendsOnlineStatuses=None,
+                (),
+              ),
               (),
             )
           })}>
@@ -57,7 +61,7 @@ module UserDisplayer = {
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables={userId: "user-1"}, ())
+    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: Some([#Online])}, ())
 
     switch query.node {
     | Some(user) => <UserDisplayer queryRef=user.fragmentRefs />

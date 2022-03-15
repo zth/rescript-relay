@@ -89,7 +89,7 @@ module UserNodeDisplayer = {
         onClick={_ =>
           startTransition(() => {
             let _ = refetch(
-              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=[#Online, #Idle], ()),
+              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
               (),
             )
           })}>
