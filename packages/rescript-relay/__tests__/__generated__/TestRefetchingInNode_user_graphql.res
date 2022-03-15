@@ -81,10 +81,7 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
   %raw(json`{
   "argumentDefinitions": [
     {
-      "defaultValue": [
-        "Online",
-        "Offline"
-      ],
+      "defaultValue": null,
       "kind": "LocalArgument",
       "name": "friendsOnlineStatuses"
     },

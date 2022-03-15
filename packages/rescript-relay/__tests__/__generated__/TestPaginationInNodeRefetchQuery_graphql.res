@@ -44,15 +44,15 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    count: option<int>,
-    cursor: option<string>,
+    count: option<option<int>>,
+    cursor: option<option<string>>,
     @live id: option<string>,
-    onlineStatuses: option<array<[
+    onlineStatuses: option<option<array<[
       | #Idle
       | #Offline
       | #Online
     ]
->>,
+>>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,

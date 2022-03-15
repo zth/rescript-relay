@@ -43,14 +43,14 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    friendsOnlineStatuses: option<array<[
+    friendsOnlineStatuses: option<option<array<[
       | #Idle
       | #Offline
       | #Online
     ]
->>,
+>>>,
     @live id: option<string>,
-    showOnlineStatus: option<bool>,
+    showOnlineStatus: option<option<bool>>,
   }
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
