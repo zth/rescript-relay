@@ -85,21 +85,15 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live let make_searchInput = (
-    ~id,
-    ~names=?,
-    ~someOtherId=?,
-    ()
-  ): searchInput => {
-    id: id,
-    names: names,
-    someOtherId: someOtherId
-  }
-  @live let makeVariables = (
-    ~input
-  ): variables => {
-    input: input
-  }
+  @live @obj external make_searchInput: (
+    ~id: int,
+    ~names: array<option<string>>=?,
+    ~someOtherId: float=?,
+    unit
+  ) => searchInput = ""
+  @live @obj external makeVariables: (
+    ~input: searchInput
+  ) => variables = ""
 }
 
 type relayOperationNode

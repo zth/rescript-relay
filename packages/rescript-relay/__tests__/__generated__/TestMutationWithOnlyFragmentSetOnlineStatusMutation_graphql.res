@@ -191,59 +191,37 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live let makeVariables = (
-    ~onlineStatus
-  ): variables => {
-    onlineStatus: onlineStatus
-  }
-  @live let makeOptimisticResponse = (
-    ~setOnlineStatus=?,
-    ()
-  ): rawResponse => {
-    setOnlineStatus: setOnlineStatus
-  }
-  @live let make_rawResponse_setOnlineStatus_user_memberOf_Group = (
-    ~__typename,
-    ~__isNode,
-    ~id,
-    ~name
-  ): rawResponse_setOnlineStatus_user_memberOf_Group => {
-    __typename: __typename,
-    __isNode: __isNode,
-    id: id,
-    name: name
-  }
-  @live let make_rawResponse_setOnlineStatus_user_memberOf_User = (
-    ~__typename,
-    ~__isNode,
-    ~firstName,
-    ~id
-  ): rawResponse_setOnlineStatus_user_memberOf_User => {
-    __typename: __typename,
-    __isNode: __isNode,
-    firstName: firstName,
-    id: id
-  }
-  @live let make_rawResponse_setOnlineStatus_user = (
-    ~firstName,
-    ~id,
-    ~lastName,
-    ~memberOf=?,
-    ~onlineStatus=?,
-    ()
-  ): rawResponse_setOnlineStatus_user => {
-    firstName: firstName,
-    id: id,
-    lastName: lastName,
-    memberOf: memberOf,
-    onlineStatus: onlineStatus
-  }
-  @live let make_rawResponse_setOnlineStatus = (
-    ~user=?,
-    ()
-  ): rawResponse_setOnlineStatus => {
-    user: user
-  }
+  @live @obj external makeVariables: (
+    ~onlineStatus: enum_OnlineStatus
+  ) => variables = ""
+  @live @obj external makeOptimisticResponse: (
+    ~setOnlineStatus: rawResponse_setOnlineStatus=?,
+    unit
+  ) => rawResponse = ""
+  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_Group: (
+    ~__typename: [ | #Group],
+    ~__isNode: [ | #Group],
+    ~id: string,
+    ~name: string
+  ) => rawResponse_setOnlineStatus_user_memberOf_Group = ""
+  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_User: (
+    ~__typename: [ | #User],
+    ~__isNode: [ | #User],
+    ~firstName: string,
+    ~id: string
+  ) => rawResponse_setOnlineStatus_user_memberOf_User = ""
+  @live @obj external make_rawResponse_setOnlineStatus_user: (
+    ~firstName: string,
+    ~id: string,
+    ~lastName: string,
+    ~memberOf: array<option<rawResponse_setOnlineStatus_user_memberOf>>=?,
+    ~onlineStatus: enum_OnlineStatus=?,
+    unit
+  ) => rawResponse_setOnlineStatus_user = ""
+  @live @obj external make_rawResponse_setOnlineStatus: (
+    ~user: rawResponse_setOnlineStatus_user=?,
+    unit
+  ) => rawResponse_setOnlineStatus = ""
 }
 
 type relayOperationNode

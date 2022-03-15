@@ -121,12 +121,10 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live let makeVariables = (
-    ~beforeDate=?,
-    ()
-  ): variables => {
-    beforeDate: beforeDate
-  }
+  @live @obj external makeVariables: (
+    ~beforeDate: TestsUtils.Datetime.t=?,
+    unit
+  ) => variables = ""
 }
 
 type relayOperationNode

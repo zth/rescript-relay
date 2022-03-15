@@ -123,27 +123,19 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live let make_setOnlineStatusInput = (
-    ~onlineStatus,
-    ~recursed=?,
-    ()
-  ): setOnlineStatusInput => {
-    onlineStatus: onlineStatus,
-    recursed: recursed
-  }
-  @live let make_recursiveSetOnlineStatusInput = (
-    ~setOnlineStatus=?,
-    ~someValue,
-    ()
-  ): recursiveSetOnlineStatusInput => {
-    setOnlineStatus: setOnlineStatus,
-    someValue: someValue
-  }
-  @live let makeVariables = (
-    ~input
-  ): variables => {
-    input: input
-  }
+  @live @obj external make_setOnlineStatusInput: (
+    ~onlineStatus: enum_OnlineStatus,
+    ~recursed: recursiveSetOnlineStatusInput=?,
+    unit
+  ) => setOnlineStatusInput = ""
+  @live @obj external make_recursiveSetOnlineStatusInput: (
+    ~setOnlineStatus: setOnlineStatusInput=?,
+    ~someValue: TestsUtils.IntString.t,
+    unit
+  ) => recursiveSetOnlineStatusInput = ""
+  @live @obj external makeVariables: (
+    ~input: setOnlineStatusInput
+  ) => variables = ""
 }
 
 type relayOperationNode

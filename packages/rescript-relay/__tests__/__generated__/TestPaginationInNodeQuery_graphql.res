@@ -84,11 +84,9 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live let makeVariables = (
-    ~userId
-  ): variables => {
-    userId: userId
-  }
+  @live @obj external makeVariables: (
+    ~userId: string
+  ) => variables = ""
 }
 
 type relayOperationNode

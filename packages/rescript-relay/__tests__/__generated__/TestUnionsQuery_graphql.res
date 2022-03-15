@@ -191,7 +191,7 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live let makeVariables = () => ()
+  @live @obj external makeVariables: unit => unit = ""
 }
 
 type relayOperationNode
