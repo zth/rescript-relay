@@ -29,9 +29,15 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - Improved utils for [dealing with enums](https://rescript-relay-documentation.vercel.app/docs/enums).
 - `recordSourceRecords` is now typed as `Js.Json.t` rather than being abstract.
 
+## Breaking changes
+
+- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value). This means that what was previously `makeRefetchVariables(~someValue=123, ())` should now be `makeRefetchVariables(~someValue=Some(123), ())`. More details on this in the docs before a `1.0.0` release. Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
+
 ## Beta fix changelog
 
 ### unreleased
+
+- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value).
 
 ### beta.12
 
