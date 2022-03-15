@@ -5,16 +5,16 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
@@ -22,17 +22,17 @@ module Types = {
   @live
   type rec setOnlineStatusInput = {
     onlineStatus: [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 ,
     recursed: option<recursiveSetOnlineStatusInput>,
   }
   @live
   and recursiveSetOnlineStatusInput = {
-    someValue: TestsUtils.IntString.t,
     setOnlineStatus: option<setOnlineStatusInput>,
+    someValue: TestsUtils.IntString.t,
   }
   @live
   type rec response_setOnlineStatusComplex_user = {
@@ -132,12 +132,12 @@ module Utils = {
     recursed: recursed
   }
   @live let make_recursiveSetOnlineStatusInput = (
-    ~someValue,
     ~setOnlineStatus=?,
+    ~someValue,
     ()
   ): recursiveSetOnlineStatusInput => {
-    someValue: someValue,
-    setOnlineStatus: setOnlineStatus
+    setOnlineStatus: setOnlineStatus,
+    someValue: someValue
   }
   @live let makeVariables = (
     ~input

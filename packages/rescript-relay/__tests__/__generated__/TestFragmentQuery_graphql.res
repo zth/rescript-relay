@@ -5,22 +5,22 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
 
   type rec response_loggedInUser = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_user | #TestFragment_inline]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_inline | #TestFragment_user]>,
   }
   and response_users_edges_node = {
     @live id: string,

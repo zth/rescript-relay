@@ -6,15 +6,15 @@ module Types = {
 
   type rec response_node = {
     @live __typename: [ | #User],
-    firstName: string,
     avatarUrl: option<string>,
+    firstName: string,
   }
   @live
   and rawResponse_node = {
     @live __typename: [ | #User],
-    @live id: string,
-    firstName: string,
     avatarUrl: option<string>,
+    firstName: string,
+    @live id: string,
   }
   type response = {
     node: option<response_node>,

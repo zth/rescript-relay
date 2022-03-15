@@ -5,62 +5,62 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
 
-  type rec fragment_memberOf_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-  }
-  and fragment_memberOf_Group = {
+  type rec fragment_memberOf_Group = {
     @live __typename: [ | #Group],
     name: string,
   }
+  and fragment_memberOf_User = {
+    @live __typename: [ | #User],
+    firstName: string,
+  }
   and fragment_memberOf = [
-    | #User(fragment_memberOf_User)
     | #Group(fragment_memberOf_Group)
+    | #User(fragment_memberOf_User)
     | #UnselectedUnionMember(string)
   ]
 
   type fragment = {
-    @live id: string,
     firstName: string,
+    @live id: string,
     lastName: string,
-    onlineStatus: option<enum_OnlineStatus>,
     memberOf: option<array<option<fragment_memberOf>>>,
+    onlineStatus: option<enum_OnlineStatus>,
   }
 }
 
 @live
 let unwrap_fragment_memberOf: {. "__typename": string } => [
-  | #User(Types.fragment_memberOf_User)
   | #Group(Types.fragment_memberOf_Group)
+  | #User(Types.fragment_memberOf_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
   | "Group" => #Group(u->Obj.magic)
+  | "User" => #User(u->Obj.magic)
   | v => #UnselectedUnionMember(v)
 }
 
 @live
 let wrap_fragment_memberOf: [
-  | #User(Types.fragment_memberOf_User)
   | #Group(Types.fragment_memberOf_Group)
+  | #User(Types.fragment_memberOf_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
   | #Group(v) => v->Obj.magic
+  | #User(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {

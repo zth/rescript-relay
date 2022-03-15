@@ -5,54 +5,54 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
 
-  type rec response_members_edges_node_User = {
-    @live __typename: [ | #User],
+  type rec response_members_edges_node_Group_members_Group = {
+    @live __typename: [ | #Group],
+    avatarUrl: option<string>,
     @live id: string,
-    firstName: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    name: string,
   }
   and response_members_edges_node_Group_members_User = {
     @live __typename: [ | #User],
-    @live id: string,
     firstName: string,
-    onlineStatus: option<enum_OnlineStatus>,
-  }
-  and response_members_edges_node_Group_members_Group = {
-    @live __typename: [ | #Group],
     @live id: string,
-    name: string,
-    avatarUrl: option<string>,
+    onlineStatus: option<enum_OnlineStatus>,
   }
   and response_members_edges_node_Group = {
     @live __typename: [ | #Group],
-    @live id: string,
-    name: string,
     avatarUrl: option<string>,
+    @live id: string,
     members: option<array<option<response_members_edges_node_Group_members>>>,
+    name: string,
+  }
+  and response_members_edges_node_User = {
+    @live __typename: [ | #User],
+    firstName: string,
+    @live id: string,
+    onlineStatus: option<enum_OnlineStatus>,
   }
   and response_members_edges_node_Group_members = [
-    | #User(response_members_edges_node_Group_members_User)
     | #Group(response_members_edges_node_Group_members_Group)
+    | #User(response_members_edges_node_Group_members_User)
     | #UnselectedUnionMember(string)
   ]
 
   and response_members_edges_node = [
-    | #User(response_members_edges_node_User)
     | #Group(response_members_edges_node_Group)
+    | #User(response_members_edges_node_User)
     | #UnselectedUnionMember(string)
   ]
 
@@ -76,44 +76,44 @@ module Types = {
 
 @live
 let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
-  | #User(Types.response_members_edges_node_Group_members_User)
   | #Group(Types.response_members_edges_node_Group_members_Group)
+  | #User(Types.response_members_edges_node_Group_members_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
   | "Group" => #Group(u->Obj.magic)
+  | "User" => #User(u->Obj.magic)
   | v => #UnselectedUnionMember(v)
 }
 
 @live
 let wrap_response_members_edges_node_Group_members: [
-  | #User(Types.response_members_edges_node_Group_members_User)
   | #Group(Types.response_members_edges_node_Group_members_Group)
+  | #User(Types.response_members_edges_node_Group_members_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
   | #Group(v) => v->Obj.magic
+  | #User(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 @live
 let unwrap_response_members_edges_node: {. "__typename": string } => [
-  | #User(Types.response_members_edges_node_User)
   | #Group(Types.response_members_edges_node_Group)
+  | #User(Types.response_members_edges_node_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
   | "Group" => #Group(u->Obj.magic)
+  | "User" => #User(u->Obj.magic)
   | v => #UnselectedUnionMember(v)
 }
 
 @live
 let wrap_response_members_edges_node: [
-  | #User(Types.response_members_edges_node_User)
   | #Group(Types.response_members_edges_node_Group)
+  | #User(Types.response_members_edges_node_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
   | #Group(v) => v->Obj.magic
+  | #User(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {

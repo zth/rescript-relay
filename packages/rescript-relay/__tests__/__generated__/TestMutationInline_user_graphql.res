@@ -5,23 +5,23 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
 
   type fragment = {
-    @live id: string,
     firstName: string,
+    @live id: string,
     lastName: string,
     onlineStatus: option<enum_OnlineStatus>,
   }

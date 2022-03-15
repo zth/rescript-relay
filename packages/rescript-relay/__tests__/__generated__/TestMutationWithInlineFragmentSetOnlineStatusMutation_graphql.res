@@ -5,16 +5,16 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
@@ -29,8 +29,8 @@ module Types = {
   }
   @live
   and rawResponse_setOnlineStatus_user = {
-    @live id: string,
     firstName: string,
+    @live id: string,
     lastName: string,
     onlineStatus: option<enum_OnlineStatus>,
   }
@@ -49,9 +49,9 @@ module Types = {
   @live
   type variables = {
     onlineStatus: [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 ,
   }
@@ -157,14 +157,14 @@ module Utils = {
     setOnlineStatus: setOnlineStatus
   }
   @live let make_rawResponse_setOnlineStatus_user = (
-    ~id,
     ~firstName,
+    ~id,
     ~lastName,
     ~onlineStatus=?,
     ()
   ): rawResponse_setOnlineStatus_user => {
-    id: id,
     firstName: firstName,
+    id: id,
     lastName: lastName,
     onlineStatus: onlineStatus
   }

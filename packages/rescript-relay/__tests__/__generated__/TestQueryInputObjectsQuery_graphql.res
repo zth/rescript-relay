@@ -6,8 +6,8 @@ module Types = {
 
   @live
   type rec searchInput = {
-    names: option<array<option<string>>>,
     @live id: int,
+    names: option<array<option<string>>>,
     someOtherId: option<float>,
   }
   type response = {
@@ -86,13 +86,13 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live let make_searchInput = (
-    ~names=?,
     ~id,
+    ~names=?,
     ~someOtherId=?,
     ()
   ): searchInput => {
-    names: names,
     id: id,
+    names: names,
     someOtherId: someOtherId
   }
   @live let makeVariables = (
