@@ -10,6 +10,7 @@
 var path = require("path");
 var cp = require("child_process");
 var fs = require("fs");
+var { isNonGlibcLinux } = require("detect-libc");
 var platform = process.platform;
 
 function getRelayCompilerPlatformSuffix() {
@@ -17,6 +18,8 @@ function getRelayCompilerPlatformSuffix() {
     return "macos-x64";
   } else if (process.platform === "darwin" && process.arch === "arm64") {
     return "macos-arm64";
+  } else if (process.platform === "linux" && isNonGlibcLinux) {
+    return "linux-musl";
   } else if (process.platform === "linux" && process.arch === "x64") {
     return "linux-x64";
   }
