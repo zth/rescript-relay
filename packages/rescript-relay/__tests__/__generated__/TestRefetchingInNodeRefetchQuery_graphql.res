@@ -5,16 +5,16 @@ module Types = {
   @@ocaml.warning("-30")
 
   type enum_OnlineStatus = private [>
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
   @live
   type enum_OnlineStatus_input = [
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 
 
@@ -33,34 +33,34 @@ module Types = {
   @live
   type variables = {
     friendsOnlineStatuses: option<array<[
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 >>,
-    showOnlineStatus: option<bool>,
     @live id: string,
+    showOnlineStatus: option<bool>,
   }
   @live
   type refetchVariables = {
     friendsOnlineStatuses: option<array<[
-      | #Online
       | #Idle
       | #Offline
+      | #Online
     ]
 >>,
-    showOnlineStatus: option<bool>,
     @live id: option<string>,
+    showOnlineStatus: option<bool>,
   }
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
-    ~showOnlineStatus=?,
     ~id=?,
+    ~showOnlineStatus=?,
     ()
   ): refetchVariables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
-    showOnlineStatus: showOnlineStatus,
-    id: id
+    id: id,
+    showOnlineStatus: showOnlineStatus
   }
 }
 
@@ -135,13 +135,13 @@ module Utils = {
   }
   @live let makeVariables = (
     ~friendsOnlineStatuses=?,
-    ~showOnlineStatus=?,
     ~id,
+    ~showOnlineStatus=?,
     ()
   ): variables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
-    showOnlineStatus: showOnlineStatus,
-    id: id
+    id: id,
+    showOnlineStatus: showOnlineStatus
   }
 }
 

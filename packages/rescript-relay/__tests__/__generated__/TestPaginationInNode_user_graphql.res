@@ -8,9 +8,9 @@ module Types = {
     totalCount: int,
   }
   type fragment = {
-    @live id: string,
     firstName: string,
     friendsConnection: fragment_friendsConnection,
+    @live id: string,
   }
 }
 

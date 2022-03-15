@@ -10,9 +10,9 @@ module Types = {
   }
   @live
   and rawResponse_loggedInUser = {
-    @live id: string,
-    firstName: string,
     avatarUrl: option<string>,
+    firstName: string,
+    @live id: string,
   }
   type response = {
     loggedInUser: response_loggedInUser,
