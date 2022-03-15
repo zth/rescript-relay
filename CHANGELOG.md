@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.12
+# 1.0.0-beta.13
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -37,7 +37,11 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+### beta.13
+
 - `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value).
+- Make all object makers inlined. This should improve bundle size some.
+- Support more Linux versions in CI (like the images Vercel uses).
 
 ### beta.12
 
