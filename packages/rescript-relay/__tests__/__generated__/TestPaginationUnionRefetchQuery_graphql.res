@@ -9,14 +9,12 @@ module Types = {
       | #Offline
       | #Online
     ]
-
   @live
   type enum_OnlineStatus_input = [
       | #Idle
       | #Offline
       | #Online
     ]
-
 
 
   @live
@@ -34,8 +32,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->>,
+    ]>>,
   }
   @live
   type refetchVariables = {
@@ -46,8 +43,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->>>,
+    ]>>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,
@@ -136,7 +132,11 @@ module Utils = {
     ~count: int=?,
     ~cursor: string=?,
     ~groupId: string,
-    ~onlineStatuses: array<enum_OnlineStatus>=?,
+    ~onlineStatuses: array<[
+      | #Idle
+      | #Offline
+      | #Online
+    ]>=?,
     unit
   ) => variables = ""
 }

@@ -9,14 +9,12 @@ module Types = {
       | #Offline
       | #Online
     ]
-
   @live
   type enum_OnlineStatus_input = [
       | #Idle
       | #Offline
       | #Online
     ]
-
 
 
   @live
@@ -36,8 +34,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->>,
+    ]>>,
     @live id: string,
     showOnlineStatus: option<bool>,
   }
@@ -47,8 +44,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->>>,
+    ]>>>,
     @live id: option<string>,
     showOnlineStatus: option<option<bool>>,
   }
@@ -134,7 +130,11 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~friendsOnlineStatuses: array<enum_OnlineStatus>=?,
+    ~friendsOnlineStatuses: array<[
+      | #Idle
+      | #Offline
+      | #Online
+    ]>=?,
     ~id: string,
     ~showOnlineStatus: bool=?,
     unit

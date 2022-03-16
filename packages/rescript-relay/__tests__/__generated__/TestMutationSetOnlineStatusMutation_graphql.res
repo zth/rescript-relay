@@ -9,14 +9,12 @@ module Types = {
       | #Offline
       | #Online
     ]
-
   @live
   type enum_OnlineStatus_input = [
       | #Idle
       | #Offline
       | #Online
     ]
-
 
 
   @live
@@ -55,8 +53,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
-,
+    ],
   }
 }
 
@@ -149,7 +146,11 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~onlineStatus: enum_OnlineStatus
+    ~onlineStatus: [
+      | #Idle
+      | #Offline
+      | #Online
+    ]
   ) => variables = ""
   @live @obj external makeOptimisticResponse: (
     ~setOnlineStatus: rawResponse_setOnlineStatus=?,
@@ -160,7 +161,11 @@ module Utils = {
     ~firstName: string,
     ~id: string,
     ~lastName: string,
-    ~onlineStatus: enum_OnlineStatus=?,
+    ~onlineStatus: [
+      | #Idle
+      | #Offline
+      | #Online
+    ]=?,
     unit
   ) => rawResponse_setOnlineStatus_user = ""
   @live @obj external make_rawResponse_setOnlineStatus: (

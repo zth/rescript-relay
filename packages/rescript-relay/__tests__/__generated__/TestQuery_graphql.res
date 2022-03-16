@@ -9,14 +9,12 @@ module Types = {
       | #Offline
       | #Online
     ]
-
   @live
   type enum_OnlineStatus_input = [
       | #Idle
       | #Offline
       | #Online
     ]
-
 
 
   type rec response_users_edges_node = {
@@ -41,8 +39,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->,
+    ]>,
   }
   @live
   type refetchVariables = {
@@ -50,8 +47,7 @@ module Types = {
       | #Idle
       | #Offline
       | #Online
-    ]
->>,
+    ]>>,
   }
   @live let makeRefetchVariables = (
     ~status=?,
@@ -131,7 +127,11 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~status: enum_OnlineStatus=?,
+    ~status: [
+      | #Idle
+      | #Offline
+      | #Online
+    ]=?,
     unit
   ) => variables = ""
 }

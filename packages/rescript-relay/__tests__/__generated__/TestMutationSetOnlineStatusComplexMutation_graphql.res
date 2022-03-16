@@ -9,7 +9,6 @@ module Types = {
       | #Offline
       | #Online
     ]
-
   @live
   type enum_OnlineStatus_input = [
       | #Idle
@@ -18,15 +17,13 @@ module Types = {
     ]
 
 
-
   @live
   type rec setOnlineStatusInput = {
     onlineStatus: [
       | #Idle
       | #Offline
       | #Online
-    ]
-,
+    ],
     recursed: option<recursiveSetOnlineStatusInput>,
   }
   @live
@@ -124,7 +121,11 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external make_setOnlineStatusInput: (
-    ~onlineStatus: enum_OnlineStatus,
+    ~onlineStatus: [
+      | #Idle
+      | #Offline
+      | #Online
+    ],
     ~recursed: recursiveSetOnlineStatusInput=?,
     unit
   ) => setOnlineStatusInput = ""
