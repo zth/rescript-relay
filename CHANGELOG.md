@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.13
+# 1.0.0-beta.14
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -31,11 +31,27 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## Breaking changes
 
-- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value). This means that what was previously `makeRefetchVariables(~someValue=123, ())` should now be `makeRefetchVariables(~someValue=Some(123), ())`. More details on this in the docs before a `1.0.0` release. Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
+- The list of disallowed field names has been adapted to ReScript (it was never properly updated for ReScript when moving from ReasonML). This means that _some of your variable prop names might be renamed_. One example - if you previously had a variable in GraphQL called `$to`, you'd interact with that as `to_` in ReScript. This is because RescriptRelay would pin `to` as a reserved word, and rename it for you. But, `to` _isn't_ actually a keyword in ReScript (it was in ReasonML), so with this release, that `to_` in ReScript will be renamed to `to`. The fix is to just update all `to_` to `to` - let the compiler guide you!
+- Using variable names that are reserved words in ReScript is now _disallowed at the Relay compiler level_. This means that Relay won't compile your project if you have variables whose names are reserved words. The fix is to simply rename the variables.
+- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value). This means that what was previously `makeRefetchVariables(~someValue=123, ())` should now be `makeRefetchVariables(~someValue=Some(123), ())`.
+  Crash course:
+
+  - `makeRefetchVariables(~someValue=Some(123), ())` means _refetch, use the same values for all variables that was used in the last fetch, but change `someValue` to `123`_.
+  - `makeRefetchVariables(~someValue=None, ())` means _refetch, use the same values for all variables that was used in the last fetch, but change `someValue` to `null` (unsetting it)_.
+  - `makeRefetchVariables()` means _refetch, use the same values for all variables that was used in the last fetch, change nothing_.
+
+  This way you can surgically change only certain values when refetching, without having to keep track of the current values for the other values.
+
+  More details on this in the docs before a `1.0.0` release. Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
 
 ## Beta fix changelog
 
 ### unreleased
+
+### beta.14
+
+- Fixes a few issues introduced in `beta.13`.
+- The list of disallowed field names has been adapted to ReScript. This means that _some of your variable prop names might be renamed_. Check out the Breaking Changes section above for details.
 
 ### beta.13
 
