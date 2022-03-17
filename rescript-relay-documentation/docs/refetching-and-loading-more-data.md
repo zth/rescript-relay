@@ -26,10 +26,13 @@ module UserFragment = %relay(
   `
   fragment UserProfileHeader_user on User
     @refetchable(queryName: "UserProfileHeaderRefetchQuery")
-    @argumentDefinitions(includeFullBio: {type: "Boolean!", defaultValue: false}) {
+    @argumentDefinitions(
+      includeFullBio: {type: "Boolean", defaultValue: false}
+      bioMaxLength: {type: "Int"}
+    ) {
     firstName
     lastName
-    bio @include(if: $includeFullBio) {
+    bio(maxLength: $bioMaxLength) @include(if: $includeFullBio) {
       presentationText
       age
     }
@@ -46,13 +49,19 @@ let make = (~user) => {
     {switch user.bio {
     | Some(bio) => <>
         <div> {React.string(bio.presentationText)} </div>
+        <button
+          type_="button"
+          onClick={_ =>
+            refetch(~variables=UserFragment.makeRefetchVariables(~bioMaxLength=Some(500), ()), ())}>
+          {React.string("Show full bio text")}
+        </button>
         <div> {React.string("Age: " ++ string_of_int(bio.age))} </div>
       </>
     | None =>
       <button
         type_="button"
         onClick={_ =>
-          refetch(~variables=UserFragment.makeRefetchVariables(~includeFullBio=true, ()), ())}>
+          refetch(~variables=UserFragment.makeRefetchVariables(~includeFullBio=Some(true), ()), ())}>
         {React.string("Show bio")}
       </button>
     }}
@@ -64,13 +73,27 @@ let make = (~user) => {
 Whew, new stuff to break down. Let's start from the top:
 
 - We've added two directives to our fragment, `@refetchable` and `@argumentDefinitions`. `@refetchable` tells Relay that this fragment can be refetched, and also tells the Relay compiler to _automatically generate a query to use when refetching the fragment_. Remember, fragments always have to end up in a query to be usable, so you need a query to refetch a fragment. But, Relay can autogenerate the query for your, so the only thing you need to think about is giving `@refetchable` a `queryName` prop with a name for your refetch query.
-- `@argumentDefinitions`, is a way to define that a fragment can take _arguments_, much like props in React. This is a very neat feature and you're encouraged to use it as much as you can when it makes sense. Basically, we're saying that "this fragment needs a variable `$includeFullBio` that's required and a boolean. However, if the one who spreads this fragment does not pass that variable, it should default to false". `$includeFullBio` is how we'll control if we should fetch the extra data or not, and since we don't want to load the extra data before the user explicitly asks for it, we'll make sure it defaults to `false`. [You're encouraged to read more about `@argumentDefinitions` here](https://relay.dev/docs/api-reference/graphql-and-directives/#argumentdefinitions).
+- `@argumentDefinitions`, is a way to define that a fragment can take _arguments_, much like props in React. This is a very neat feature and you're encouraged to use it as much as you can when it makes sense. Basically, we're saying that "this fragment needs variables `$includeFullBio` (boolean) and `$bioMaxLength` (int). However, if the one who spreads this fragment does not pass any of those variables, they should have default values". So, for example, `$includeFullBio` is how we'll control if we should fetch the extra data or not, and since we don't want to load the extra data before the user explicitly asks for it, we'll make sure it defaults to `false`.[You're encouraged to read more about `@argumentDefinitions` here](https://relay.dev/docs/api-reference/graphql-and-directives/#argumentdefinitions).
 - In our selection, we use `$includeFullBio` via the built-in GraphQL directive `@include` to control whether the `bio` field should be included in the query or not. Read more about [GraphQL directives and the built in directives `@include` and `@skip` here](https://graphql.org/learn/queries/#directives).
 - Whenever a fragment has a `@refetchable` directive on it with a `queryName`, _RescriptRelay will autogenerate a `useRefetchable` React hook that you can use_, in addition to the default `use` hook. `useRefetchable` works just like `use`, only that it returns a tuple containing both the data and a function to refetch the fragment instead of just the data.
 - When rendering, we check for the `bio` object in the data. If it's not there, we render a button to refetch the fragment with `$includeFullBio` set to `true`. Otherwise, we render a simple UI for showing the full bio.
 - Note the use of the function `UserFragment.makeRefetchVariables` to make the refetch variables. The reason we're not passing raw variables just like we'd normally do is that _when making a refetch, all variables are optional_. Relay lets you supply _only the variables you want to change from the last fetch of the fragment_, and it will re-use anything you don't pass to it from the last fetch. So, if you simply do `UserFragment.makeRefetchVariables()` without passing any changed variables, the fragment will be refetched _with the same configuration it was fetched before_. `makeRefetchVariables` is also autogenerated by RescriptRelay whenever there's a `@refetchable` directive on the fragment, and its a helper to let you easily provide only the parts of the variables that has changed.
 
-Let's sum up:
+### `makeRefetchVariables`
+
+Let's dive into `makeRefetchVariables`, because this can be a bit tricky to understand. Remember that `makeRefetchVariables` _takes a diff of the new variables you want_, based off of the last set of variables used to fetch the fragment data. Let's take a concrete example:
+
+In the example above we have variables `$includeFullBio` and `$bioMaxLength`. Let's say this fragment gets rendered with `$includeFullBio = true` and `$bioMaxLength` not set yet.
+
+- If I want to refetch the fragment with `$includeFullBio` changed to `false`, I'd do `makeRefetchVariables(~includeFullBio=Some(false), ())`. `Some(false)` here tells Relay that "I want to change `$includeFullBio` in the refetch to `false`. Use the last value for all other variables".
+- If I want to set `$bioMaxLength` to something, I'd do `makeRefetchVariables(~bioMaxLength=Some(200), ())`. This tells Relay "set `bioMaxLength`, leave everything else as is".
+- If I have `bioMaxLength` set and I want to refetch data with it _not set at all_ (equivalent of passing `null`), I'd do `makeRefetchVariables(~bioMaxLength=None, ())`.
+
+So, notice how `Some(value)` means "set this value", `None` means "unset this value", and leaving out the variable all together from `makeRefetchVariables` means "don't change this variable, reuse the last value".
+
+This allows us to refetch data in response to parameters changing, without having to keep track of all the current variable values, if we know they haven't changed. Pretty neat!
+
+### Summing up
 
 - Defining a fragment as `@refetchable` will give you a `useRefetchable` hook, which in turn gives you a `refetch` function that you can use to refetch the fragment.
 - When refetching, you provide _only the parts of `variables` that you want to change_. This means that providing an empty `Fragment.makeRefetchVariables()` will refetch the fragment with the _same configuration as it was last fetched with_.
