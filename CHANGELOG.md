@@ -42,7 +42,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
   This way you can surgically change only certain values when refetching, without having to keep track of the current values for the other values.
 
-  More details on this in the docs before a `1.0.0` release. Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
+  More details on this [in the docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables). Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
 
 ## Beta fix changelog
 
@@ -55,7 +55,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### beta.13
 
-- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value).
+- `refetchVariables` now works as intended with regards to supplying only the variables you want _changed_ when refetching, as [detailed under `variables` here](https://relay.dev/docs/next/api-reference/use-refetchable-fragment/#return-value). Check out the [docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables).
 - Make all object makers inlined. This should improve bundle size some.
 - Support more Linux versions in CI (like the images Vercel uses).
 
