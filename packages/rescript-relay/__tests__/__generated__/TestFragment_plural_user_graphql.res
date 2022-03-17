@@ -9,12 +9,14 @@ module Types = {
       | #Offline
       | #Online
     ]
+
   @live
   type enum_OnlineStatus_input = [
       | #Idle
       | #Offline
       | #Online
     ]
+
 
 
   type fragment_t = {
