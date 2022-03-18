@@ -28,6 +28,7 @@ module Types = {
   ): refetchVariables => {
     userId: userId
   }
+
 }
 
 module Internal = {
@@ -85,8 +86,10 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live @obj external makeVariables: (
-    ~userId: string
+    ~userId: string,
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

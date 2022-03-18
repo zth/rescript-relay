@@ -23,6 +23,7 @@ module Types = {
   ): refetchVariables => {
     groupId: groupId
   }
+
 }
 
 module Internal = {
@@ -80,8 +81,10 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live @obj external makeVariables: (
-    ~groupId: string
+    ~groupId: string,
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

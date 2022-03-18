@@ -131,14 +131,20 @@ module Utils = {
     ~recursed: recursiveSetOnlineStatusInput=?,
     unit
   ) => setOnlineStatusInput = ""
+
+
   @live @obj external make_recursiveSetOnlineStatusInput: (
     ~setOnlineStatus: setOnlineStatusInput=?,
     ~someValue: TestsUtils.IntString.t,
     unit
   ) => recursiveSetOnlineStatusInput = ""
+
+
   @live @obj external makeVariables: (
-    ~input: setOnlineStatusInput
+    ~input: setOnlineStatusInput,
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

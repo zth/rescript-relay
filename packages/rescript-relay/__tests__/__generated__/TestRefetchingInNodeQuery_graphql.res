@@ -54,6 +54,7 @@ module Types = {
     friendsOnlineStatuses: friendsOnlineStatuses,
     userId: userId
   }
+
 }
 
 module Internal = {
@@ -134,6 +135,8 @@ module Utils = {
     ~userId: string,
     unit
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

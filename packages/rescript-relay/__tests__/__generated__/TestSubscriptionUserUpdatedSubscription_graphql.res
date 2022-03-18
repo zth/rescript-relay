@@ -91,8 +91,10 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~userId: string
+    ~userId: string,
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

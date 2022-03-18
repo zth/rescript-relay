@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Fixes for input objects.
+
 ### beta.14
 
 - Fixes a few issues introduced in `beta.13`.

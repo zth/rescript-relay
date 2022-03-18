@@ -152,12 +152,16 @@ module Utils = {
       | #Idle
       | #Offline
       | #Online
-    ]
+    ],
   ) => variables = ""
+
+
   @live @obj external makeOptimisticResponse: (
     ~setOnlineStatus: rawResponse_setOnlineStatus=?,
     unit
   ) => rawResponse = ""
+
+
   @live @obj external make_rawResponse_setOnlineStatus_user: (
     ~__id: RescriptRelay.dataId=?,
     ~firstName: string,
@@ -170,10 +174,14 @@ module Utils = {
     ]=?,
     unit
   ) => rawResponse_setOnlineStatus_user = ""
+
+
   @live @obj external make_rawResponse_setOnlineStatus: (
     ~user: rawResponse_setOnlineStatus_user=?,
     unit
   ) => rawResponse_setOnlineStatus = ""
+
+
 }
 
 type relayOperationNode

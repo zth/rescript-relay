@@ -60,6 +60,7 @@ module Types = {
     id: id,
     showOnlineStatus: showOnlineStatus
   }
+
 }
 
 module Internal = {
@@ -141,6 +142,8 @@ module Utils = {
     ~showOnlineStatus: bool=?,
     unit
   ) => variables = ""
+
+
 }
 
 type relayOperationNode

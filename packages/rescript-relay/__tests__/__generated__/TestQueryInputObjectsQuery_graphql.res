@@ -29,6 +29,7 @@ module Types = {
   ): refetchVariables => {
     input: input
   }
+
 }
 
 module Internal = {
@@ -91,9 +92,13 @@ module Utils = {
     ~someOtherId: float=?,
     unit
   ) => searchInput = ""
+
+
   @live @obj external makeVariables: (
-    ~input: searchInput
+    ~input: searchInput,
   ) => variables = ""
+
+
 }
 
 type relayOperationNode
