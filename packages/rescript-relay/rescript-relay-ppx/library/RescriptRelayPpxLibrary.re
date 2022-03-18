@@ -3,6 +3,8 @@ open Util;
 
 module Util = Util;
 
+let endsWithRegexp = Str.regexp(".*Resolver$");
+
 let commonExtension =
   Extension.declare(
     "relay",
@@ -12,17 +14,26 @@ let commonExtension =
       let op = extractGraphQLOperation(~loc, operationStr);
 
       switch (op) {
-      | Graphql_parser.Fragment({name: _, selection_set}) =>
-        let refetchableQueryName =
-          op |> extractFragmentRefetchableQueryName(~loc);
+      | Graphql_parser.Fragment({name: fragmentName, selection_set}) =>
+        if (Str.string_match(endsWithRegexp, fragmentName, 0)) {
+          RelayResolverFragment.make(
+            ~loc,
+            ~moduleName=op |> extractTheFragmentName(~loc),
+          );
+        } else {
+          let refetchableQueryName =
+            op |> extractFragmentRefetchableQueryName(~loc);
 
-        Fragment.make(
-          ~moduleName=op |> extractTheFragmentName(~loc),
-          ~refetchableQueryName,
-          ~extractedConnectionInfo=op |> extractFragmentConnectionInfo(~loc),
-          ~hasInlineDirective=op |> fragmentHasInlineDirective(~loc),
-          ~loc,
-        );
+          Fragment.make(
+            ~moduleName=op |> extractTheFragmentName(~loc),
+            ~refetchableQueryName,
+            ~extractedConnectionInfo=
+              op |> extractFragmentConnectionInfo(~loc),
+            ~hasInlineDirective=op |> fragmentHasInlineDirective(~loc),
+            ~loc,
+          );
+        }
+
       | Operation({optype: Query}) =>
         Query.make(
           ~moduleName=op |> extractTheQueryName(~loc),
@@ -43,6 +54,10 @@ let commonExtension =
 // This registers all defined extension points to the "rescript-relay" ppx.
 let () =
   Driver.register_transformation(
-    ~extensions=[commonExtension, LazyComp.lazyExtension, DeferredComp.lazyExtension],
+    ~extensions=[
+      commonExtension,
+      LazyComp.lazyExtension,
+      DeferredComp.lazyExtension,
+    ],
     "rescript-relay",
   );
