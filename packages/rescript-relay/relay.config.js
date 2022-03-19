@@ -7,4 +7,7 @@ module.exports = {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
   },
+  featureFlags: {
+    enable_relay_resolver_transform: true,
+  },
 };
