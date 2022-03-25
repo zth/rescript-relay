@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Fix bug that caused issues when using unions in optimistic responses and `commitLocalPayload`.
+
 ### beta.15
 
 - Fixes for input objects.

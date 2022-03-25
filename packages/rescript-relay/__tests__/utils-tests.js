@@ -560,4 +560,159 @@ describe("conversion", () => {
       },
     ]);
   });
+
+  describe("regression - union not wrapped", () => {
+    test("case 1", () => {
+      expect(
+        traverser(
+          {
+            __typename: "EphemeralForSalePropertySearch",
+            localUnsavedPropertySearch: {
+              NAME: "EphemeralForSalePropertySearch",
+              VAL: {
+                __typename: "EphemeralForSalePropertySearch",
+                __isPropertySearch: "EphemeralForSalePropertySearch",
+                forSalePropertyTypes: [],
+                isLocalUnsavedSearch: true,
+                nodeId: "local-unsaved-search",
+              },
+            },
+          },
+          {
+            __root: {
+              localUnsavedPropertySearch: {
+                u: "rawResponse_localUnsavedPropertySearch",
+              },
+            },
+          },
+          {
+            rawResponse_localUnsavedPropertySearch:
+              function wrap_rawResponse_localUnsavedPropertySearch(v) {
+                if (v.NAME === "UnselectedUnionMember") {
+                  return {
+                    __typename: v.VAL,
+                  };
+                } else {
+                  return v.VAL;
+                }
+              },
+          },
+          null,
+          undefined
+        )
+      ).toEqual({
+        __typename: "EphemeralForSalePropertySearch",
+        localUnsavedPropertySearch: {
+          __typename: "EphemeralForSalePropertySearch",
+          __isPropertySearch: "EphemeralForSalePropertySearch",
+          forSalePropertyTypes: [],
+          isLocalUnsavedSearch: true,
+          nodeId: "local-unsaved-search",
+        },
+      });
+    });
+
+    test("case 2, nested union", () => {
+      expect(
+        traverser(
+          {
+            node: {
+              __typename: "User",
+              avatarUrl: undefined,
+              firstName: "AnotherFirst",
+              id: "user-1",
+              memberOf: [
+                {
+                  NAME: "Group",
+                  VAL: {
+                    __typename: "Group",
+                    __isNode: "Group",
+                    id: "group-1",
+                    name: "Some Group",
+                    topMember: {
+                      NAME: "User",
+                      VAL: {
+                        __typename: "User",
+                        __isNode: "User",
+                        firstName: "Some User",
+                        id: "user-2",
+                      },
+                    },
+                  },
+                },
+              ],
+              memberOfSingular: undefined,
+            },
+          },
+          {
+            __root: {
+              node_memberOf_Group_topMember: {
+                u: "rawResponse_node_memberOf_Group_topMember",
+              },
+              node_memberOfSingular: { u: "rawResponse_node_memberOfSingular" },
+              node_memberOf: { u: "rawResponse_node_memberOf" },
+              node: { tnf: "User" },
+            },
+          },
+          {
+            rawResponse_node_memberOf_Group_topMember:
+              function wrap_rawResponse_node_memberOf_Group_topMember(v) {
+                if (v.NAME === "User") {
+                  return v.VAL;
+                } else {
+                  return {
+                    __typename: v.VAL,
+                  };
+                }
+              },
+            rawResponse_node_memberOf: function wrap_rawResponse_node_memberOf(
+              v
+            ) {
+              if (v.NAME === "UnselectedUnionMember") {
+                return {
+                  __typename: v.VAL,
+                };
+              } else {
+                return v.VAL;
+              }
+            },
+            rawResponse_node_memberOfSingular:
+              function wrap_rawResponse_node_memberOfSingular(v) {
+                if (v.NAME === "UnselectedUnionMember") {
+                  return {
+                    __typename: v.VAL,
+                  };
+                } else {
+                  return v.VAL;
+                }
+              },
+          },
+          null,
+          undefined
+        )
+      ).toEqual({
+        node: {
+          __typename: "User",
+          avatarUrl: null,
+          firstName: "AnotherFirst",
+          id: "user-1",
+          memberOf: [
+            {
+              __typename: "Group",
+              __isNode: "Group",
+              id: "group-1",
+              name: "Some Group",
+              topMember: {
+                __typename: "User",
+                __isNode: "User",
+                firstName: "Some User",
+                id: "user-2",
+              },
+            },
+          ],
+          memberOfSingular: null,
+        },
+      });
+    });
+  });
 });

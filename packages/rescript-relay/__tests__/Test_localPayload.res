@@ -11,8 +11,7 @@ module ViaNodeInterface = %relay(`
     query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
       node(id: $id) {
         ... on User {
-          firstName
-          avatarUrl
+          ...TestLocalPayload_user
         }
       }
     }
@@ -27,6 +26,27 @@ module Fragment = %relay(`
   fragment TestLocalPayload_user on User {
     firstName
     avatarUrl
+    memberOf {
+      ... on Group {
+        name
+        topMember {
+          ... on User {
+            firstName
+          }
+        }
+      }
+      ... on User {
+        firstName
+      }
+    }
+    memberOfSingular {
+      ... on Group {
+        name
+      }
+      ... on User {
+        firstName
+      }
+    }
   }
 `)
 
@@ -48,6 +68,31 @@ module Test = {
           },
         )}
       </div>
+      <div>
+        {React.string(
+          `Member of: ${switch user.memberOf
+            ->Belt.Option.getWithDefault([])
+            ->Belt.Array.keepMap(v => v)
+            ->Belt.Array.get(0) {
+            | Some(#Group({name, topMember})) =>
+              `Group ${name}, top member: ${switch topMember {
+                | Some(#User({firstName})) => firstName
+                | _ => "-"
+                }}`
+            | Some(#User({firstName})) => `User ${firstName}`
+            | _ => "-"
+            }}`,
+        )}
+      </div>
+      <div>
+        {React.string(
+          `(singular) Member of: ${switch user.memberOfSingular {
+            | Some(#Group({name})) => `Group ${name}`
+            | Some(#User({firstName})) => `User ${firstName}`
+            | _ => "-"
+            }}`,
+        )}
+      </div>
       <button
         onClick={_ =>
           Query.commitLocalPayload(
@@ -58,6 +103,15 @@ module Test = {
                 id: data.loggedInUser.id,
                 firstName: "AnotherFirst",
                 avatarUrl: None,
+                memberOf: None,
+                memberOfSingular: Some(
+                  #Group({
+                    name: "Another Group",
+                    id: "group-2",
+                    __typename: #Group,
+                    __isNode: #Group,
+                  }),
+                ),
               },
             },
           )}>
@@ -74,6 +128,25 @@ module Test = {
                 firstName: "AnotherFirst",
                 avatarUrl: None,
                 __typename: #User,
+                memberOfSingular: None,
+                memberOf: Some([
+                  Some(
+                    #Group({
+                      name: "Some Group",
+                      __typename: #Group,
+                      __isNode: #Group,
+                      id: "group-1",
+                      topMember: Some(
+                        #User({
+                          firstName: "Some User",
+                          id: "user-2",
+                          __typename: #User,
+                          __isNode: #User,
+                        }),
+                      ),
+                    }),
+                  ),
+                ]),
               }),
             },
           )}>

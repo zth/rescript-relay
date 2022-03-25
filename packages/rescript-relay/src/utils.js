@@ -10,6 +10,19 @@ function makeNewPath(currentPath, newKeys) {
   return [].concat(currentPath, newKeys);
 }
 
+function getTypename(v) {
+  if (v != null && typeof v === "object") {
+    if (v.__typename) {
+      return v.__typename;
+    }
+
+    // `v.VAL` relies on internal implementation details in ReScript.
+    if (v.VAL != null && typeof v.VAL === "object") {
+      return v.VAL.__typename;
+    }
+  }
+}
+
 /**
  * Runs on each object in the tree and follows the provided instructions
  * to apply transforms etc.
@@ -36,6 +49,8 @@ function traverse(
   }
 
   for (var key in currentObj) {
+    if (key === "VAL" || key === "NAME") continue;
+
     var isUnion = false;
     var originalValue = currentObj[key];
 
@@ -96,30 +111,41 @@ function traverse(
           return converters[instructions["c"]](v);
         }
 
-        if (
-          shouldConvertUnion &&
-          typeof v === "object" &&
-          typeof v.__typename === "string"
-        ) {
-          isUnion = true;
+        if (shouldConvertUnion && v != null && typeof v === "object") {
+          var typename = getTypename(v);
 
-          var newPath = makeNewPath(currentPath, [key, v.__typename]);
+          if (typename != null) {
+            isUnion = true;
+            var unionObj = v;
 
-          var unionRootHasFragment =
-            (instructionMap[getPathName(newPath)] || {}).f === "";
+            // Means we're wrapping, and this will be a ReScript value.
+            if (nullableValue === null) {
+              // Convert it back to a flat JS value
+              unionObj = converters[instructions["u"]](v);
+            }
 
-          var traversedValue = traverse(
-            fullInstructionMap,
-            newPath,
-            v,
-            instructionMap,
-            converters,
-            nullableValue,
-            instructionPaths,
-            unionRootHasFragment
-          );
+            var newPath = makeNewPath(currentPath, [key, typename]);
 
-          return converters[instructions["u"]](traversedValue);
+            var unionRootHasFragment =
+              (instructionMap[getPathName(newPath)] || {}).f === "";
+
+            var traversedValue = traverse(
+              fullInstructionMap,
+              newPath,
+              unionObj,
+              instructionMap,
+              converters,
+              nullableValue,
+              instructionPaths,
+              unionRootHasFragment
+            );
+
+            // Undefined means we're going from JS to ReScript, in which case we
+            // need to run the conversion here rather than earlier.
+            return nullableValue === undefined
+              ? converters[instructions["u"]](traversedValue)
+              : traversedValue;
+          }
         }
 
         if (shouldAddFragmentFn && typeof v === "object") {
@@ -168,32 +194,44 @@ function traverse(
         newObj[key] = converters[instructions["c"]](v);
       }
 
-      if (
-        shouldConvertUnion &&
-        v != null &&
-        typeof v === "object" &&
-        typeof v.__typename === "string"
-      ) {
-        isUnion = true;
+      if (shouldConvertUnion && v != null && typeof v === "object") {
+        var typename = getTypename(v);
 
-        var newPath = makeNewPath(currentPath, [key, v.__typename]);
+        if (typename != null) {
+          isUnion = true;
+          var unionObj = v;
 
-        var unionRootHasFragment =
-          (instructionMap[getPathName(newPath)] || {}).f === "";
+          // Means we're wrapping, and this will be a ReScript value.
+          if (nullableValue === null) {
+            // Convert it back to a flat JS value
+            unionObj = converters[instructions["u"]](v);
+          }
 
-        var traversedValue = traverse(
-          fullInstructionMap,
-          newPath,
-          v,
-          instructionMap,
-          converters,
-          nullableValue,
-          instructionPaths,
-          unionRootHasFragment
-        );
+          var newPath = makeNewPath(currentPath, [key, typename]);
 
-        newObj = getNewObj(newObj, currentObj);
-        newObj[key] = converters[instructions["u"]](traversedValue);
+          var unionRootHasFragment =
+            (instructionMap[getPathName(newPath)] || {}).f === "";
+
+          var traversedValue = traverse(
+            fullInstructionMap,
+            newPath,
+            unionObj,
+            instructionMap,
+            converters,
+            nullableValue,
+            instructionPaths,
+            unionRootHasFragment
+          );
+
+          newObj = getNewObj(newObj, currentObj);
+
+          newObj[key] =
+            // Undefined means we're going from JS to ReScript, in which case we
+            // need to run the conversion here rather than earlier.
+            nullableValue === undefined
+              ? converters[instructions["u"]](traversedValue)
+              : traversedValue;
+        }
       }
 
       if (shouldAddFragmentFn && typeof v === "object") {
