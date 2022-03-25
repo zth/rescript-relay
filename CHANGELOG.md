@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.15
+# 1.0.0-beta.16
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -48,7 +48,10 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+### beta.16
+
 - Fix bug that caused issues when using unions in optimistic responses and `commitLocalPayload`.
+- Add support for experimental [Relay Resolvers](https://relay.dev/docs/next/guides/relay-resolvers). Undocumented so far, but looking at the [test](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/__tests__/Test_relayResolvers.res) and [definition file](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/__tests__/TestRelayUserResolver.res) should give you a hint of how it works.
 
 ### beta.15
 
