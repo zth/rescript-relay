@@ -133,6 +133,10 @@ function removeInitialBinaries() {
     recursive: true,
     force: true,
   });
+  fs.rmSync(path.join(__dirname, "relay-compiler-linux-musl"), {
+    recursive: true,
+    force: true,
+  });
 }
 
 switch (platform) {
