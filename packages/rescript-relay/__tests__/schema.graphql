@@ -36,12 +36,14 @@ type User implements Node {
     last: Int
   ): UserConnection!
   memberOf: [Member]
+  memberOfSingular: Member
 }
 
 type Group implements Node {
   id: ID!
   name: String!
   avatarUrl: String
+  topMember: Member
   members: [Member]
   adminsConnection(
     after: String

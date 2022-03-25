@@ -16,6 +16,8 @@ describe("LocalPayload", () => {
           id: "user-1",
           firstName: "First",
           avatarUrl: "avatar-url",
+          memberOf: null,
+          memberOfSingular: null,
         },
       },
     });
@@ -30,6 +32,7 @@ describe("LocalPayload", () => {
 
     await t.screen.findByText("Firstname: AnotherFirst");
     await t.screen.findByText("Avatar: -");
+    await t.screen.findByText("(singular) Member of: Group Another Group");
   });
 
   test("commiting a local payload via the Node interface works", async () => {
@@ -41,6 +44,8 @@ describe("LocalPayload", () => {
           id: "user-1",
           firstName: "First",
           avatarUrl: "avatar-url",
+          memberOf: null,
+          memberOfSingular: null,
         },
       },
     });
@@ -57,5 +62,8 @@ describe("LocalPayload", () => {
 
     await t.screen.findByText("Firstname: AnotherFirst");
     await t.screen.findByText("Avatar: -");
+    await t.screen.findByText(
+      "Member of: Group Some Group, top member: Some User"
+    );
   });
 });
