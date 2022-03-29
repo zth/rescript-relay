@@ -1,6 +1,6 @@
 include ReactDOM.Experimental
 
-@module("react-dom")
+@module("react-dom/client")
 external createRoot: Dom.element => root = "createRoot"
 
 @val @return(nullable)
@@ -15,6 +15,5 @@ let renderConcurrentRootAtElementWithId: (React.element, string) => unit = (cont
         id ++ " found in the HTML.",
       ),
     )
-  | Some(element) =>
-    createRoot(element)->render(content)
+  | Some(element) => createRoot(element)->render(content)
   }

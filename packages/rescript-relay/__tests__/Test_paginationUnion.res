@@ -73,8 +73,6 @@ module Test = {
     let groupId = "123"
     let query = Query.use(~variables={groupId: groupId}, ())
 
-    let (_, startTransition) = ReactExperimental.useTransition()
-
     let {data, hasNext, loadNext, isLoadingNext, refetch} = Fragment.usePagination(
       query.fragmentRefs,
     )
@@ -109,17 +107,16 @@ module Test = {
           </button>
         : React.null}
       <button
-        onClick={_ =>
-          startTransition(() => {
-            let _ = refetch(
-              ~variables=Fragment.makeRefetchVariables(
-                ~groupId,
-                ~onlineStatuses=Some([#Online, #Idle]),
-                (),
-              ),
+        onClick={_ => {
+          let _ = refetch(
+            ~variables=Fragment.makeRefetchVariables(
+              ~groupId,
+              ~onlineStatuses=Some([#Online, #Idle]),
               (),
-            )
-          })}>
+            ),
+            (),
+          )
+        }}>
         {React.string("Refetch connection")}
       </button>
     </div>

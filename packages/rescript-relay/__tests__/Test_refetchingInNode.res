@@ -28,8 +28,6 @@ module UserDisplayer = {
   let make = (~queryRef) => {
     let (data, refetch) = Fragment.useRefetchable(queryRef)
 
-    let (_, startTransition) = ReactExperimental.useTransition()
-
     <div>
       {React.string(
         data.firstName ++
@@ -41,17 +39,16 @@ module UserDisplayer = {
       )}
       <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->string_of_int)} </div>
       <button
-        onClick={_ =>
-          startTransition(() => {
-            let _ = refetch(
-              ~variables=Fragment.makeRefetchVariables(
-                ~showOnlineStatus=Some(true),
-                ~friendsOnlineStatuses=None,
-                (),
-              ),
+        onClick={_ => {
+          let _ = refetch(
+            ~variables=Fragment.makeRefetchVariables(
+              ~showOnlineStatus=Some(true),
+              ~friendsOnlineStatuses=None,
               (),
-            )
-          })}>
+            ),
+            (),
+          )
+        }}>
         {React.string("Fetch online status")}
       </button>
     </div>

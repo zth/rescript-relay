@@ -49,11 +49,11 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@rc react-dom@rc`). Let's start by installing the dependencies:
+RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
 
 ```bash
-# Add React 18 and ReactDOM rc versions
-yarn add react@rc react-dom@rc
+# Add React 18
+yarn add react@18 react-dom@18
 
 # Add rescript-relay and dependencies to the project
 # We currently depend on Relay version 13, so install that exact version
@@ -71,25 +71,23 @@ After you've installed the packages above, setup ReScript through your `bsconfig
 
 > Are you using VSCode? Make sure you install and use our [dedicated VSCode extension](vscode-extension). It'll make your life using RescriptRelay _much_ smoother.
 
-#### Using experimental React versions
+#### Using React 18
 
 You may need to tell `yarn` to prefer the React 18 versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `@rescript/react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
 
 Ensure that only the new React 18 versions are used by doing the following:
 
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `18.0.0-rc.0` - copy that version number.
+1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `18.0.0` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
 ```json
 ...
 "resolutions": {
-    "react": "18.0.0-rc.0",
-    "react-dom": "18.0.0-rc.0"
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
   }
 }
 ```
-
-Remember, the version number for `rc` releases might change, so _don't just copy from the code snippet above_, make sure you take the one you have in your own `package.json`.
 
 ## Configuring Relay
 

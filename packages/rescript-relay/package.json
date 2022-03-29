@@ -40,15 +40,15 @@
   },
   "devDependencies": {
     "@rescript/react": "0.10.3",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^13.0.0-alpha.5",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "^13.0.0-alpha.6",
     "bs-fetch": "^0.5.0",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.2.4",
     "nock": "^11.7.0",
     "node-fetch": "^2.6.0",
-    "react": "^18.0.0-rc.0",
-    "react-dom": "^18.0.0-rc.0",
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
     "react-relay": "13.2.0",
     "relay-runtime": "13.2.0"
   },
@@ -63,7 +63,7 @@
     "rescript": "^9.1.2"
   },
   "resolutions": {
-    "react": "18.0.0-rc.0",
-    "react-dom": "18.0.0-rc.0"
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
   }
 }
