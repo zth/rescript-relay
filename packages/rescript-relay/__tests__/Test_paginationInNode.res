@@ -59,6 +59,7 @@ module UserDisplayer = {
 module UserNodeDisplayer = {
   @react.component
   let make = (~queryRef) => {
+    let (_, startTransition) = ReactExperimental.useTransition()
     let {data, hasNext, loadNext, isLoadingNext, refetch} = Fragment.usePagination(queryRef)
 
     <div>
@@ -83,10 +84,12 @@ module UserNodeDisplayer = {
         : React.null}
       <button
         onClick={_ => {
-          let _ = refetch(
-            ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
-            (),
-          )
+          startTransition(() => {
+            let _: RescriptRelay.Disposable.t = refetch(
+              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
+              (),
+            )
+          })
         }}>
         {React.string("Refetch connection")}
       </button>

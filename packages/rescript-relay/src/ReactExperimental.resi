@@ -7,12 +7,9 @@ external useTransitionWithOptions: unit => (
   (. unit => unit, option<{"name": option<string>}>) => unit,
 ) = "useTransition"
 
-let useTransition = () => {
-  let (isPending, startTransition) = useTransitionWithOptions()
-  (isPending, React.useCallback1(cb => startTransition(. cb, None), [startTransition]))
-}
+let useTransition: unit => (bool, React.callback<unit => unit, unit>)
 
-module SuspenseList = {
+module SuspenseList: {
   @module("react") @react.component
   external make: (
     ~children: React.element,

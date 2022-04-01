@@ -49,6 +49,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Fix `useTransition` bindings, where `startTransition` broke after going to React 18. Kudos to [Emilios1995](https://github.com/Emilios1995) for researching and finding the issue!
+
 ### beta.17
 
 - Upgrade to stable React 18

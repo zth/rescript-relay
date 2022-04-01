@@ -38,6 +38,8 @@ module Test = {
 
     let (data, refetch) = Fragment.useRefetchable(query.loggedInUser.fragmentRefs)
 
+    let (_, startTransition) = ReactExperimental.useTransition()
+
     <div>
       {React.string(
         data.firstName ++
@@ -50,14 +52,16 @@ module Test = {
       <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->string_of_int)} </div>
       <button
         onClick={_ => {
-          let _ = refetch(
-            ~variables=Fragment.makeRefetchVariables(
-              ~showOnlineStatus=Some(true),
-              ~friendsOnlineStatuses=Some([#Online, #Offline]),
+          startTransition(() => {
+            let _: RescriptRelay.Disposable.t = refetch(
+              ~variables=Fragment.makeRefetchVariables(
+                ~showOnlineStatus=Some(true),
+                ~friendsOnlineStatuses=Some([#Online, #Offline]),
+                (),
+              ),
               (),
-            ),
-            (),
-          )
+            )
+          })
         }}>
         {React.string("Fetch online status")}
       </button>
