@@ -251,7 +251,7 @@ module RouteRenderer = {
         None
       } else {
         let dispose = router.subscribe(nextRoute =>
-          startTransition(() => setRouteEntry(_ => nextRoute))
+          startTransition(. () => setRouteEntry(_ => nextRoute), None)
         )
 
         Some(dispose)
