@@ -4,11 +4,20 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type rec response_node = {
-    @live __typename: [ | #User],
-    firstName: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestNodeInterface_user]>,
+  type rec response_node_Group = {
+    @live __typename: [ | #Group],
+    name: option<string>,
   }
+  and response_node_User = {
+    @live __typename: [ | #User],
+    firstName: option<string>,
+  }
+  and response_node = [
+    | #Group(response_node_Group)
+    | #User(response_node_User)
+    | #UnselectedUnionMember(string)
+  ]
+
   type response = {
     node: option<response_node>,
   }
@@ -21,6 +30,27 @@ module Types = {
   @live let makeRefetchVariables = () => ()
 }
 
+@live
+let unwrap_response_node: {. "__typename": string } => [
+  | #Group(Types.response_node_Group)
+  | #User(Types.response_node_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u["__typename"] {
+  | "Group" => #Group(u->Obj.magic)
+  | "User" => #User(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
+}
+
+@live
+let wrap_response_node: [
+  | #Group(Types.response_node_Group)
+  | #User(Types.response_node_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
+  | #Group(v) => v->Obj.magic
+  | #User(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
+}
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -38,10 +68,12 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node":{"u":"response_node"}}}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "response_node": wrap_response_node,
+  }
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
@@ -52,10 +84,12 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node":{"u":"response_node"}}}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "response_node": unwrap_response_node,
+  }
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
@@ -98,18 +132,39 @@ v1 = {
   "storageKey": null
 },
 v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "firstName",
-  "storageKey": null
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    }
+  ],
+  "type": "User",
+  "abstractKey": null
+},
+v3 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    }
+  ],
+  "type": "Group",
+  "abstractKey": null
 };
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestNodeInterfaceQuery",
+    "name": "TestNodeInterfaceOnAbstractTypeQuery",
     "selections": [
       {
         "alias": null,
@@ -123,15 +178,12 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v1/*: any*/),
               (v2/*: any*/),
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "TestNodeInterface_user"
-              }
+              (v3/*: any*/)
             ],
-            "type": "User",
-            "abstractKey": null
+            "type": "Member",
+            "abstractKey": "__isMember"
           }
         ],
         "storageKey": "node(id:\"123\")"
@@ -144,7 +196,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestNodeInterfaceQuery",
+    "name": "TestNodeInterfaceOnAbstractTypeQuery",
     "selections": [
       {
         "alias": null,
@@ -156,19 +208,20 @@ return {
         "selections": [
           (v1/*: any*/),
           {
-            "kind": "InlineFragment",
-            "selections": [
-              (v2/*: any*/)
-            ],
-            "type": "User",
-            "abstractKey": null
-          },
-          {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
             "name": "id",
             "storageKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/),
+              (v3/*: any*/)
+            ],
+            "type": "Member",
+            "abstractKey": "__isMember"
           }
         ],
         "storageKey": "node(id:\"123\")"
@@ -176,12 +229,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f0b7abdb1b2bf066f00270ab776575e5",
+    "cacheID": "58bb24b67719f1d8b754cbf000aa1684",
     "id": null,
     "metadata": {},
-    "name": "TestNodeInterfaceQuery",
+    "name": "TestNodeInterfaceOnAbstractTypeQuery",
     "operationKind": "query",
-    "text": "query TestNodeInterfaceQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n      ...TestNodeInterface_user\n    }\n    id\n  }\n}\n\nfragment TestNodeInterface_user on User {\n  firstName\n}\n"
+    "text": "query TestNodeInterfaceOnAbstractTypeQuery {\n  node(id: \"123\") {\n    __typename\n    ... on Member {\n      __typename\n      __isMember: __typename\n      ... on User {\n        firstName\n      }\n      ... on Group {\n        name\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })() `)
