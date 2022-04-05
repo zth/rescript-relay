@@ -174,6 +174,9 @@ function traverse(
       }
 
       if (isTopLevelNodeField) {
+        // If this is a top level node field we should try and convert, ensure
+        // it conforms to the desired shape (has the correct typename). If not,
+        // null it and return right away.
         if (
           v == null ||
           !v.hasOwnProperty("__typename") ||
@@ -181,6 +184,7 @@ function traverse(
         ) {
           newObj = getNewObj(newObj, currentObj);
           newObj[key] = nullableValue;
+          return newObj;
         }
       }
 
