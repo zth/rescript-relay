@@ -26,6 +26,7 @@ module Fragment = %relay(`
   fragment TestLocalPayload_user on User {
     firstName
     avatarUrl
+    onlineStatus
     memberOf {
       ... on Group {
         name
@@ -101,6 +102,7 @@ module Test = {
             ~payload={
               loggedInUser: {
                 id: data.loggedInUser.id,
+                onlineStatus: Some(#Online),
                 firstName: "AnotherFirst",
                 avatarUrl: None,
                 memberOf: None,
@@ -126,6 +128,7 @@ module Test = {
               node: Some({
                 id: data.loggedInUser.id,
                 firstName: "AnotherFirst",
+                onlineStatus: Some(#Online),
                 avatarUrl: None,
                 __typename: #User,
                 memberOfSingular: None,

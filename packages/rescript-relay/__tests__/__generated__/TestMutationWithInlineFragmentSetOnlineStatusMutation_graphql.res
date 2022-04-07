@@ -32,7 +32,11 @@ module Types = {
     firstName: string,
     @live id: string,
     lastName: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<[
+      | #Idle
+      | #Offline
+      | #Online
+    ]>,
   }
   @live
   and rawResponse_setOnlineStatus = {

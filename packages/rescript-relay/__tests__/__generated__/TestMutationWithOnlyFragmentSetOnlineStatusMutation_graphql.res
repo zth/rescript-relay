@@ -53,7 +53,11 @@ module Types = {
     @live id: string,
     lastName: string,
     memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<[
+      | #Idle
+      | #Offline
+      | #Online
+    ]>,
   }
   @live
   and rawResponse_setOnlineStatus = {

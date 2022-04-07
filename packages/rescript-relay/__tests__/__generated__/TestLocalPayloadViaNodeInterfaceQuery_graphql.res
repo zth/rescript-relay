@@ -4,6 +4,21 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  type enum_OnlineStatus = private [>
+      | #Idle
+      | #Offline
+      | #Online
+    ]
+
+  @live
+  type enum_OnlineStatus_input = [
+      | #Idle
+      | #Offline
+      | #Online
+    ]
+
+
+
   @live
   type rec rawResponse_node_memberOf_Group_topMember_User = {
     @live __typename: [ | #User],
@@ -69,6 +84,11 @@ module Types = {
     @live id: string,
     memberOf: option<array<option<rawResponse_node_memberOf>>>,
     memberOfSingular: option<rawResponse_node_memberOfSingular>,
+    onlineStatus: option<[
+      | #Idle
+      | #Offline
+      | #Online
+    ]>,
   }
   type response = {
     node: option<response_node>,
@@ -237,6 +257,21 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
+  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  @live
+  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  @live
+  let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
+    switch enum {
+      | #...enum_OnlineStatus_input as valid => Some(valid)
+      | _ => None
+    }
+  }
+  @live
+  let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
+    onlineStatus_decode(Obj.magic(str))
+  }
   @live @obj external makeVariables: (
     ~id: string,
   ) => variables = ""
@@ -372,6 +407,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "onlineStatus",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "memberOf",
@@ -437,12 +479,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5781307374fe6f6c1446057edb649ec5",
+    "cacheID": "6b9239c52d5de197a37c7cb388ca9bef",
     "id": null,
     "metadata": {},
     "name": "TestLocalPayloadViaNodeInterfaceQuery",
     "operationKind": "query",
-    "text": "query TestLocalPayloadViaNodeInterfaceQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on User {\n      ...TestLocalPayload_user\n    }\n    id\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n  memberOf {\n    __typename\n    ... on Group {\n      name\n      topMember {\n        __typename\n        ... on User {\n          firstName\n        }\n        ... on Node {\n          __typename\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n  memberOfSingular {\n    __typename\n    ... on Group {\n      name\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query TestLocalPayloadViaNodeInterfaceQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on User {\n      ...TestLocalPayload_user\n    }\n    id\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n  onlineStatus\n  memberOf {\n    __typename\n    ... on Group {\n      name\n      topMember {\n        __typename\n        ... on User {\n          firstName\n        }\n        ... on Node {\n          __typename\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n  memberOfSingular {\n    __typename\n    ... on Group {\n      name\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __typename\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)
