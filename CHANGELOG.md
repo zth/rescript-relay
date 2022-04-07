@@ -49,6 +49,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Fix enums appearing in `@raw_response_type` (local query updates, optimistic responses) to be input enums.
+
 ### beta.19
 
 - Fix top level node interface issue.
