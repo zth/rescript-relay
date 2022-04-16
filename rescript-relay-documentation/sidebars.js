@@ -22,6 +22,7 @@ module.exports = {
       "subscriptions",
       "enums",
       "unions",
+      "interfaces",
       "interacting-with-the-store",
     ],
     "API Reference": ["api-reference", "relay-environment"],
