@@ -4,65 +4,84 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type rec response_node = {
-    __typename: string,
+    @live __typename: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
   }
+  @live
   type response = {
     node: option<response_node>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
+    @live id: string,
     includeMembers: option<bool>,
-    id: string,
   }
+  @live
   type refetchVariables = {
-    includeMembers: option<bool>,
-    id: option<string>,
+    @live id: option<string>,
+    includeMembers: option<option<bool>>,
   }
-  let makeRefetchVariables = (
-    ~includeMembers=?,
+  @live let makeRefetchVariables = (
     ~id=?,
+    ~includeMembers=?,
     ()
   ): refetchVariables => {
-    includeMembers: includeMembers,
-    id: id
+    id: id,
+    includeMembers: includeMembers
   }
+
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"node":{"f":""}}}\`)`
+    json`{"__root":{"node":{"f":""}}}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"node":{"f":""}}}\`)`
+    json`{"__root":{"node":{"f":""}}}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 
@@ -71,14 +90,13 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let makeVariables = (
-    ~includeMembers=?,
-    ~id,
-    ()
-  ): variables => {
-    includeMembers: includeMembers,
-    id: id
-  }
+  @live @obj external makeVariables: (
+    ~id: string,
+    ~includeMembers: bool=?,
+    unit
+  ) => variables = ""
+
+
 }
 
 type relayOperationNode
@@ -107,6 +125,13 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 };
@@ -128,6 +153,7 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
+          (v3/*: any*/),
           {
             "args": [
               {
@@ -163,14 +189,8 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
           (v3/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -210,7 +230,7 @@ return {
                             "name": "node",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
+                              (v4/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,

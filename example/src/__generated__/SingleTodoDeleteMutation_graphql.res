@@ -4,73 +4,98 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type rec deleteTodoItemInput = {
-    id: string,
     clientMutationId: option<string>,
+    @live id: string,
   }
+  @live
   type rec response_deleteTodoItem = {
     deletedTodoItemId: option<string>,
   }
+  @live
   and rawResponse_deleteTodoItem = {
     deletedTodoItemId: option<string>,
   }
+  @live
   type response = {
     deleteTodoItem: option<response_deleteTodoItem>,
   }
+  @live
   type rawResponse = {
     deleteTodoItem: option<rawResponse_deleteTodoItem>,
   }
+  @live
   type variables = {
-    input: deleteTodoItemInput,
     connections: array<RescriptRelay.dataId>,
+    input: deleteTodoItemInput,
   }
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"deleteTodoItemInput":{},"__root":{"input":{"r":"deleteTodoItemInput"}}}\`)`
+    json`{"deleteTodoItemInput":{},"__root":{"input":{"r":"deleteTodoItemInput"}}}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
+  @live
   type wrapRawResponseRaw
+  @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let wrapRawResponseConverterMap = ()
+  @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     Js.null
   )
+  @live
   type rawResponseRaw
+  @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let rawResponseConverterMap = ()
+  @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
@@ -80,33 +105,31 @@ module Internal = {
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let make_deleteTodoItemInput = (
-    ~id,
-    ~clientMutationId=?,
-    ()
-  ): deleteTodoItemInput => {
-    id: id,
-    clientMutationId: clientMutationId
-  }
-  let makeVariables = (
-    ~input,
-    ~connections
-  ): variables => {
-    input: input,
-    connections: connections
-  }
-  let makeOptimisticResponse = (
-    ~deleteTodoItem=?,
-    ()
-  ): rawResponse => {
-    deleteTodoItem: deleteTodoItem
-  }
-  let make_rawResponse_deleteTodoItem = (
-    ~deletedTodoItemId=?,
-    ()
-  ): rawResponse_deleteTodoItem => {
-    deletedTodoItemId: deletedTodoItemId
-  }
+  @live @obj external make_deleteTodoItemInput: (
+    ~clientMutationId: string=?,
+    ~id: string,
+    unit
+  ) => deleteTodoItemInput = ""
+
+
+  @live @obj external makeVariables: (
+    ~connections: array<RescriptRelay.dataId>,
+    ~input: deleteTodoItemInput,
+  ) => variables = ""
+
+
+  @live @obj external makeOptimisticResponse: (
+    ~deleteTodoItem: rawResponse_deleteTodoItem=?,
+    unit
+  ) => rawResponse = ""
+
+
+  @live @obj external make_rawResponse_deleteTodoItem: (
+    ~deletedTodoItemId: string=?,
+    unit
+  ) => rawResponse_deleteTodoItem = ""
+
+
 }
 
 type relayOperationNode

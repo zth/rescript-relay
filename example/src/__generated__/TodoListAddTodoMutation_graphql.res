@@ -4,83 +4,110 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type rec addTodoItemInput = {
-    text: string,
     clientMutationId: option<string>,
-  }
-  type rec response_addTodoItem_addedTodoItem = {
-    id: string,
     text: string,
-    completed: option<bool>,
   }
+  @live
+  type rec response_addTodoItem_addedTodoItem = {
+    completed: option<bool>,
+    @live id: string,
+    text: string,
+  }
+  @live
   and response_addTodoItem = {
     addedTodoItem: option<response_addTodoItem_addedTodoItem>,
   }
+  @live
   and rawResponse_addTodoItem_addedTodoItem = {
-    id: string,
-    text: string,
     completed: option<bool>,
+    @live id: string,
+    text: string,
   }
+  @live
   and rawResponse_addTodoItem = {
     addedTodoItem: option<rawResponse_addTodoItem_addedTodoItem>,
   }
+  @live
   type response = {
     addTodoItem: option<response_addTodoItem>,
   }
+  @live
   type rawResponse = {
     addTodoItem: option<rawResponse_addTodoItem>,
   }
+  @live
   type variables = {
-    input: addTodoItemInput,
     connections: array<RescriptRelay.dataId>,
+    input: addTodoItemInput,
   }
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"addTodoItemInput":{},"__root":{"input":{"r":"addTodoItemInput"}}}\`)`
+    json`{"addTodoItemInput":{},"__root":{"input":{"r":"addTodoItemInput"}}}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
+  @live
   type wrapRawResponseRaw
+  @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let wrapRawResponseConverterMap = ()
+  @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     Js.null
   )
+  @live
   type rawResponseRaw
+  @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let rawResponseConverterMap = ()
+  @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
@@ -90,43 +117,39 @@ module Internal = {
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let make_addTodoItemInput = (
-    ~text,
-    ~clientMutationId=?,
-    ()
-  ): addTodoItemInput => {
-    text: text,
-    clientMutationId: clientMutationId
-  }
-  let makeVariables = (
-    ~input,
-    ~connections
-  ): variables => {
-    input: input,
-    connections: connections
-  }
-  let makeOptimisticResponse = (
-    ~addTodoItem=?,
-    ()
-  ): rawResponse => {
-    addTodoItem: addTodoItem
-  }
-  let make_rawResponse_addTodoItem_addedTodoItem = (
-    ~id,
-    ~text,
-    ~completed=?,
-    ()
-  ): rawResponse_addTodoItem_addedTodoItem => {
-    id: id,
-    text: text,
-    completed: completed
-  }
-  let make_rawResponse_addTodoItem = (
-    ~addedTodoItem=?,
-    ()
-  ): rawResponse_addTodoItem => {
-    addedTodoItem: addedTodoItem
-  }
+  @live @obj external make_addTodoItemInput: (
+    ~clientMutationId: string=?,
+    ~text: string,
+    unit
+  ) => addTodoItemInput = ""
+
+
+  @live @obj external makeVariables: (
+    ~connections: array<RescriptRelay.dataId>,
+    ~input: addTodoItemInput,
+  ) => variables = ""
+
+
+  @live @obj external makeOptimisticResponse: (
+    ~addTodoItem: rawResponse_addTodoItem=?,
+    unit
+  ) => rawResponse = ""
+
+
+  @live @obj external make_rawResponse_addTodoItem_addedTodoItem: (
+    ~completed: bool=?,
+    ~id: string,
+    ~text: string,
+    unit
+  ) => rawResponse_addTodoItem_addedTodoItem = ""
+
+
+  @live @obj external make_rawResponse_addTodoItem: (
+    ~addedTodoItem: rawResponse_addTodoItem_addedTodoItem=?,
+    unit
+  ) => rawResponse_addTodoItem = ""
+
+
 }
 
 type relayOperationNode

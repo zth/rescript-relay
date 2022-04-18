@@ -45,7 +45,10 @@ let make = (~workingGroup as wgRef) => {
           onClick={_ =>
             startTransition(() => {
               let _ = refetch(
-                ~variables=WorkingGroupFragment.makeRefetchVariables(~includeMembers=true, ()),
+                ~variables=WorkingGroupFragment.makeRefetchVariables(
+                  ~includeMembers=Some(true),
+                  (),
+                ),
                 (),
               )
             })}>

@@ -5,8 +5,8 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_membersConnection_edges_node = {
-    id: string,
     fullName: string,
+    @live id: string,
   }
   and fragment_membersConnection_edges = {
     node: option<fragment_membersConnection_edges_node>,
@@ -15,18 +15,22 @@ module Types = {
     edges: option<array<option<fragment_membersConnection_edges>>>,
   }
   type fragment = {
-    name: string,
+    @live id: string,
     membersConnection: option<fragment_membersConnection>,
-    id: string,
+    name: string,
   }
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,

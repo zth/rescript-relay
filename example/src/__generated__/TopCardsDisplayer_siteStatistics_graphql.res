@@ -5,18 +5,22 @@ module Types = {
   @@ocaml.warning("-30")
 
   type fragment = {
-    weeklySales: float,
-    weeklyOrders: int,
     currentVisitorsOnline: int,
+    weeklyOrders: int,
+    weeklySales: float,
   }
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,

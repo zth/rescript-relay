@@ -6,15 +6,16 @@ module Types = {
 
   type enum_TicketStatus = private [>
       | #Done
-      | #Progress
       | #OnHold
+      | #Progress
       | #Rejected
     ]
 
+  @live
   type enum_TicketStatus_input = [
       | #Done
-      | #Progress
       | #OnHold
+      | #Progress
       | #Rejected
     ]
 
@@ -26,11 +27,15 @@ module Types = {
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
@@ -46,8 +51,21 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   external ticketStatus_toString: enum_TicketStatus => string = "%identity"
+  @live
   external ticketStatus_input_toString: enum_TicketStatus_input => string = "%identity"
+  @live
+  let ticketStatus_decode = (enum: enum_TicketStatus): option<enum_TicketStatus_input> => {
+    switch enum {
+      | #...enum_TicketStatus_input as valid => Some(valid)
+      | _ => None
+    }
+  }
+  @live
+  let ticketStatus_fromString = (str: string): option<enum_TicketStatus_input> => {
+    ticketStatus_decode(Obj.magic(str))
+  }
 }
 
 type relayOperationNode

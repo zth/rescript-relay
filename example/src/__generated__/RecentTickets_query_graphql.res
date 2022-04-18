@@ -5,7 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_ticketsConnection_edges_node = {
-    id: string,
+    @live id: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicket_ticket]>,
   }
   and fragment_ticketsConnection_edges = {
@@ -20,11 +20,15 @@ module Types = {
 }
 
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"ticketsConnection_edges_node":{"f":""}}}\`)`
+    json`{"__root":{"ticketsConnection_edges_node":{"f":""}}}`
   )
+  @live
   let fragmentConverterMap = ()
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
@@ -40,10 +44,12 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
   @inline
   let connectionKey = "RecentTickets_ticketsConnection"
 
 
+  @live
   let getConnectionNodes: fragment_ticketsConnection => array<fragment_ticketsConnection_edges_node> = connection => 
     switch connection.edges {
       | None => []

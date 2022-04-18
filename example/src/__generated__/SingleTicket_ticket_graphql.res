@@ -5,11 +5,11 @@ module Types = {
   @@ocaml.warning("-30")
 
   type rec fragment_assignee_User = {
-    __typename: [ | #User],
+    @live __typename: [ | #User],
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>,
   }
   and fragment_assignee_WorkingGroup = {
-    __typename: [ | #WorkingGroup],
+    @live __typename: [ | #WorkingGroup],
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
   }
   and fragment_assignee = [
@@ -20,14 +20,15 @@ module Types = {
 
   type fragment = {
     assignee: option<fragment_assignee>,
-    id: string,
-    subject: string,
+    @live id: string,
     lastUpdated: option<string>,
+    subject: string,
     trackingId: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TicketStatusBadge_ticket]>,
   }
 }
 
+@live
 let unwrap_fragment_assignee: {. "__typename": string } => [
   | #User(Types.fragment_assignee_User)
   | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
@@ -38,6 +39,7 @@ let unwrap_fragment_assignee: {. "__typename": string } => [
   | v => #UnselectedUnionMember(v)
 }
 
+@live
 let wrap_fragment_assignee: [
   | #User(Types.fragment_assignee_User)
   | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
@@ -48,13 +50,17 @@ let wrap_fragment_assignee: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 module Internal = {
+  @live
   type fragmentRaw
+  @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"__root":{"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee"},"":{"f":""}}}\`)`
+    json`{"__root":{"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee"},"":{"f":""}}}`
   )
+  @live
   let fragmentConverterMap = {
     "fragment_assignee": unwrap_fragment_assignee,
   }
+  @live
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,

@@ -4,43 +4,55 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type rec response_siteStatisticsUpdated = {
     currentVisitorsOnline: int,
   }
+  @live
   type response = {
     siteStatisticsUpdated: option<response_siteStatisticsUpdated>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = unit
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let makeVariables = () => ()
+  @live @obj external makeVariables: unit => unit = ""
 }
 
 type relayOperationNode
@@ -108,9 +120,7 @@ return {
   "params": {
     "cacheID": "baa20f0ef1a4dd4e353ad6c271c455bc",
     "id": null,
-    "metadata": {
-      "subscriptionName": "siteStatisticsUpdated"
-    },
+    "metadata": {},
     "name": "TopCardsDisplayer_currentVisitorsOnline_Subscription",
     "operationKind": "subscription",
     "text": "subscription TopCardsDisplayer_currentVisitorsOnline_Subscription {\n  siteStatisticsUpdated {\n    currentVisitorsOnline\n    id\n  }\n}\n"

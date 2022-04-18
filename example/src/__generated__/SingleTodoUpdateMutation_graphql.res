@@ -4,84 +4,100 @@
 module Types = {
   @@ocaml.warning("-30")
 
+  @live
   type rec updateTodoItemInput = {
-    id: string,
-    text: string,
-    completed: bool,
     clientMutationId: option<string>,
-  }
-  type rec response_updateTodoItem_updatedTodoItem = {
-    id: string,
+    completed: bool,
+    @live id: string,
     text: string,
-    completed: option<bool>,
   }
+  @live
+  type rec response_updateTodoItem_updatedTodoItem = {
+    completed: option<bool>,
+    @live id: string,
+    text: string,
+  }
+  @live
   and response_updateTodoItem = {
     updatedTodoItem: option<response_updateTodoItem_updatedTodoItem>,
   }
+  @live
   type response = {
     updateTodoItem: option<response_updateTodoItem>,
   }
+  @live
   type rawResponse = response
+  @live
   type variables = {
     input: updateTodoItemInput,
   }
 }
 
 module Internal = {
+  @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{"updateTodoItemInput":{},"__root":{"input":{"r":"updateTodoItemInput"}}}\`)`
+    json`{"updateTodoItemInput":{},"__root":{"input":{"r":"updateTodoItemInput"}}}`
   )
+  @live
   let variablesConverterMap = ()
+  @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
     Js.undefined
   )
+  @live
   type wrapResponseRaw
+  @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let wrapResponseConverterMap = ()
+  @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
     Js.null
   )
+  @live
   type responseRaw
+  @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`JSON.parse(\`{}\`)`
+    json`{}`
   )
+  @live
   let responseConverterMap = ()
+  @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
     Js.undefined
   )
   type wrapRawResponseRaw = wrapResponseRaw
+  @live
   let convertWrapRawResponse = convertWrapResponse
   type rawResponseRaw = responseRaw
+  @live
   let convertRawResponse = convertResponse
 }
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  let make_updateTodoItemInput = (
-    ~id,
-    ~text,
-    ~completed,
-    ~clientMutationId=?,
-    ()
-  ): updateTodoItemInput => {
-    id: id,
-    text: text,
-    completed: completed,
-    clientMutationId: clientMutationId
-  }
-  let makeVariables = (
-    ~input
-  ): variables => {
-    input: input
-  }
+  @live @obj external make_updateTodoItemInput: (
+    ~clientMutationId: string=?,
+    ~completed: bool,
+    ~id: string,
+    ~text: string,
+    unit
+  ) => updateTodoItemInput = ""
+
+
+  @live @obj external makeVariables: (
+    ~input: updateTodoItemInput,
+  ) => variables = ""
+
+
 }
 
 type relayOperationNode
