@@ -30,7 +30,7 @@ type Ticket {
 
 Now, imagine we're writing a component that wants to show whether a particular ticket is rejected or not:
 
-```reason
+```rescript
 /* TicketRejectedStatusDisplayer.res */
 module TicketFragment = %relay(`
   fragment TicketRejectedStatusDisplayer_ticket on Ticket {
@@ -69,7 +69,7 @@ However, things are different in _inputs_. While the enum shape might change on 
 
 Now, this safety also means that the enum coming from the server isn't equivalent to the same enum when passed into for example variables. And this can be really annoying to work with, because it effectively means that the type system won't allow us to do this:
 
-```reason
+```rescript
 let ticket = TicketFragment.use(ticket)
 
 let (newStatus, setNewStatus) = React.useState(() => ticket.status)
@@ -84,7 +84,7 @@ setTicketStatus(~variables={id: ticket.id, newStatus: newStatus}, ()))
 
 Luckily, RescriptRelay gives you utils to deal with this situation. Whenever you want to move between the _unsafe_ enum coming directly from the server, and a _safe_ version of that enum that you know is correct, you can use `<enumName>_decode`. This will validate that the enum that came from the server is in fact in the shape you expect. The same example as above, but now ensuring that the enum in the state is actually what we want it to be:
 
-```reason
+```rescript
 let ticket = TicketFragment.use(ticket)
 
 let (newStatus, setNewStatus) = React.useState(() =>
@@ -103,7 +103,7 @@ let (newStatus, setNewStatus) = React.useState(() =>
 
 In addition to the utils listed above, there's also a function available for taking a string and mapping it to your enum, if it's valid. An example:
 
-```reason
+```rescript
 switch TicketFragment.ticketStatus_fromString(someString) {
   | None => Js.log("Nope, this wasn't valid...")
   | Some(validEnum) => Js.log(validEnum)

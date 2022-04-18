@@ -33,11 +33,11 @@ type ColoringBook implements Book {
 }
 ```
 
-Here we have an interface `Book`, which has `title` and `author` fields and `Textbook` and `ColoringBook` types which implements the `Book` interface. Both types have one specific field, `Textbook` - `courses` and `ColoringBook` - `colors`. 
+Here we have an interface `Book`, which has `title` and `author` fields and `Textbook` and `ColoringBook` types which implements the `Book` interface. Both types have one specific field, `Textbook` - `courses` and `ColoringBook` - `colors`.
 
 If all the fields we ask for are within inline fragments of the types which implement the interface, the result will be a polymorphic variant:
 
-```reason
+```rescript
 /* UserBook.res */
 module BookFragment = %relay(`
   fragment UserBook_book on Book {
@@ -72,12 +72,12 @@ let make = (~book) => {
 
 You could notice that in fragment definition we asked for `title` field twice, which is unnecessary since it is a common field coming from the interface. We could instead specify it only once, above inline fragment spreads, on the `Book` itself. This will produce a different result, a record type with type specific fields as optional values:
 
-```reason
+```rescript
 module BookFragment = %relay(`
   fragment MyComponent_book on Book {
     title
     ... on Textbook {
-      courses 
+      courses
     }
     ... on ColoringBook {
       colors
@@ -104,6 +104,6 @@ let make = (~book) => {
 }
 ```
 
-This way, we used the benefits of interfaces, but ended up having a bit harder time using its result. 
+This way, we used the benefits of interfaces, but ended up having a bit harder time using its result.
 
 > Note: Currently, this can't be improved much since these types are coming directly from the Relay compiler, so it's Relay itself that is a bit opinionated here in what types they output. It can get much more complex by adding more type specific fields, so as a workaround we recommend duplicating all field selections in inline fragment spread even if it removes most of the interface benefits. You can see more info on it [here](https://github.com/zth/rescript-relay/issues/315#issuecomment-1078739792).

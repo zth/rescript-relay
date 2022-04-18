@@ -65,7 +65,7 @@ If you want to dive deeper into GraphQL fragments you're encouraged to read thro
 
 Fragments are defined in RescriptRelay by using the `%relay()` extension node. Here's an example of a fragment and a component that renders the fragment data:
 
-```reason
+```rescript
 /* UserProfileHeader.res */
 module UserFragment = %relay(
   `
@@ -100,7 +100,7 @@ Let's break down what's happening here:
 
 A fragment _always has to end up in a query_ at some point for it to be able to render. This is quite simply because a fragment is a _specification of what data is needed_, and somebody (I'm looking at you query) needs to take this specification and get the actual data from the server. Let's tie together the sample fragment code from above with the sample code from [making queries](making-queries) in order to demonstrate how components with fragments are used with other components, and how the fragment ends up in a query:
 
-```reason
+```rescript
 /* UserProfile.res */
 module Query = %relay(
   `
@@ -146,7 +146,7 @@ Yup, you read that right, you can _spread fragments on other fragments_. Remembe
 
 Let's expand our example fragment component to use another component `<Avatar />` that is responsible for showing a an avatar for a user:
 
-```reason
+```rescript
 /* UserProfileHeader.res */
 module UserFragment = %relay(
   `
@@ -186,7 +186,7 @@ This works the same way as `Fragment.use` as in you feed it an object with a fra
 
 Great for logging and similar activities. Example:
 
-```reason
+```rescript
 /* SomeCoolLogger.res */
 module UserFragment = %relay(
   `
@@ -210,7 +210,7 @@ let logPurchase = user => {
 
 ```
 
-```reason
+```rescript
 /* BuyButton.res */
 @react.component
 let make = (~user) =>

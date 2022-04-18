@@ -21,7 +21,7 @@ Relay has some great built-in tools to make pagination very simple if you use [c
 
 Pagination is always done using a [fragment](using-fragments). Here's a definition of a Relay [fragment](using-fragments) that'll allow you to paginate over the connection `ticketsConnection`:
 
-```reason
+```rescript
 module Fragment = %relay(
   `
   fragment RecentTickets_query on Query
@@ -60,7 +60,7 @@ We've now added everything we need to enable pagination for this fragment.
 
 Let's look at a component that uses the fragment above for pagination:
 
-```reason
+```rescript
 @react.component
 let make = (~query) => {
   let {data, hasNext, isLoadingNext, loadNext} = Fragment.usePagination(query)

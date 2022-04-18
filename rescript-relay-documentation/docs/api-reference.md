@@ -10,7 +10,7 @@ _Please note that this reference is under construction. With that said, most thi
 
 ## [allFieldsMasked](#allfieldsmasked)
 
-```reason
+```rescript
 type allFieldsMasked = {.}
 ```
 
@@ -30,7 +30,7 @@ mutation SomeMutation($input: SomeMutationInput!) @raw_response_type {
 
 ## [featureFlags](#featureflags)
 
-```reason
+```rescript
 type featureFlags = {
   mutable enableVariableConnectionKey: bool,
   mutable enablePartialRenderingDefault: bool,
@@ -43,7 +43,7 @@ Relay feature flags. Mutate this record as soon as your application boots to ena
 
 ### Example
 
-```reason
+```rescript
 /* Make sure this runs before Relay is setup. */
 
 RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
@@ -51,7 +51,7 @@ RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
 
 ## [cacheConfig](#cacheconfig)
 
-```reason
+```rescript
 type cacheConfig = {
   force: option<bool>,
   poll: option<int>,
@@ -64,7 +64,7 @@ The cache config provided to the network layer. Relay won't do anything in parti
 
 ## [fetchPolicy](#fetchpolicy)
 
-```reason
+```rescript
 type fetchPolicy =
   | StoreOnly /* Resolve only from the store */
   | StoreOrNetwork /* Resolve from the store if all data is there, otherwise make a network request */
@@ -76,7 +76,7 @@ fetchPolicy controls how you want Relay to resolve your data.
 
 ## [fetchQueryFetchPolicy](#fetchqueryfetchpolicy)
 
-```reason
+```rescript
 type fetchQueryFetchPolicy =
   | NetworkOnly
   | StoreOrNetwork
@@ -86,7 +86,7 @@ The fetch policies allowed for fetching a query outside of React's render (as in
 
 ## [mutationError](#mutationerror)
 
-```reason
+```rescript
 type mutationError = {message: string}
 ```
 
@@ -94,7 +94,7 @@ An error from a mutation.
 
 ## [arguments](#arguments)
 
-```reason
+```rescript
 type arguments
 ```
 
@@ -102,7 +102,7 @@ Abstract type for arguments, used when selecting fields on [RecordProxy](#record
 
 ## [uploadables](#uploadables)
 
-```reason
+```rescript
 type uploadables
 ```
 
@@ -116,7 +116,7 @@ Please note that you'll need to handle _sending_ the uploadables to your server 
 
 ## [any](#any)
 
-```reason
+```rescript
 type any
 ```
 
@@ -124,7 +124,7 @@ Abstract helper type to signify something that could not be generated in a type-
 
 ## [dataId](#dataid)
 
-```reason
+```rescript
 type dataId
 ```
 
@@ -150,7 +150,7 @@ You'll often want to convert between `string` and [dataId](#dataid) . You can do
 
 ## [recordSourceRecords](#recordsourcerecords)
 
-```reason
+```rescript
 type recordSourceRecords
 ```
 
@@ -160,7 +160,7 @@ See [RecordSource.toJSON](#recordsourcetojson) for how to produce it.
 
 ## [dataIdToString](#dataidtostring)
 
-```reason
+```rescript
 let dataIdToString: dataId => string
 ```
 
@@ -170,7 +170,7 @@ Turns a [dataId](#dataid) into a `string`.
 
 ## [makeArguments](#makearguments)
 
-```reason
+```rescript
 let makeArguments: {..} => arguments
 ```
 
@@ -184,7 +184,7 @@ Use it like this: `makeArguments({ "someArgument": someValue, "anotherArgument":
 
 ## [generateClientID](#generateclientid)
 
-```reason
+```rescript
 let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId
 ```
 
@@ -194,7 +194,7 @@ This generates a `dataId` for use on the _client_ side. However, this is farily 
 
 ## [generateUniqueClientID](#generateuniqueclientid)
 
-```reason
+```rescript
 let generateUniqueClientID: unit => dataId
 ```
 
@@ -204,7 +204,7 @@ This generates a unique [dataId](#dataid) that's safe to use on the _client_ sid
 
 ## [isClientID](#isclientid)
 
-```reason
+```rescript
 let isClientID: dataId => bool
 ```
 
@@ -214,7 +214,7 @@ Checks whether the provided [dataId](#dataid) is guaranteed to be a client side 
 
 ## [relayFeatureFlags](#relayfeatureflags)
 
-```reason
+```rescript
 let relayFeatureFlags: featureFlags
 ```
 
@@ -224,7 +224,7 @@ Relay feature flags. Mutate this record as soon as your application boots to ena
 
 ### Example
 
-```reason
+```rescript
 /* Make sure this runs before Relay is setup. */
 
 RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
@@ -232,7 +232,7 @@ RescriptRelay.featureFlags.enablePrecisTypeRefinement = true
 
 ## [storeRootId](#storerootid)
 
-```reason
+```rescript
 let storeRootId: dataId
 ```
 
@@ -244,7 +244,7 @@ See [RecordSource.toJSON](#recordsourcetojson) for how to produce it.
 
 ## [storeRootType](#storeroottype)
 
-```reason
+```rescript
 let storeRootType: string
 ```
 
@@ -252,7 +252,7 @@ The `type` for the Relay store's root [RecordProxy](#recordproxy) .
 
 ## [makeDataId](#makedataid)
 
-```reason
+```rescript
 let makeDataId: string => dataId
 ```
 
@@ -262,7 +262,7 @@ Turns a `string` into a [dataId](#dataid) .
 
 #### Example
 
-```reason
+```rescript
 module User = %relay(`
   fragment SomeModule_user on User {
     id
@@ -280,7 +280,7 @@ let make = (~user) => {
 
 ## [makeUploadables](#makeuploadables)
 
-```reason
+```rescript
 let makeUploadables: Js.Dict.t<'file> => uploadables
 ```
 
@@ -294,7 +294,7 @@ Use it like this: `makeUploadables(myJsDictWithMyFiles)`.
 
 ## [unwrapUploadables](#unwrapuploadables)
 
-```reason
+```rescript
 let unwrapUploadables: uploadables => Js.Dict.t<'file>
 ```
 
@@ -308,7 +308,7 @@ Read the following section on working with the Relay store: https://relay.dev/do
 
 ### [RecordProxy.t](#recordproxyt)
 
-```reason
+```rescript
 type t
 ```
 
@@ -316,7 +316,7 @@ Read the following section on working with the Relay store: https://relay.dev/do
 
 ### [RecordProxy.getLinkedRecords](#recordproxygetlinkedrecords)
 
-```reason
+```rescript
 let getLinkedRecords: (
     t,
     ~name: string,
@@ -331,7 +331,7 @@ Gets an array of linked records, for when a field is a list (meaning a link to m
 
 ### [RecordProxy.copyFieldsFrom](#recordproxycopyfieldsfrom)
 
-```reason
+```rescript
 let copyFieldsFrom: (t, ~sourceRecord: t) => unit
 ```
 
@@ -341,7 +341,7 @@ Read the following section on working with the Relay store: https://relay.dev/do
 
 ### [RecordProxy.getDataId](#recordproxygetdataid)
 
-```reason
+```rescript
 let getDataId: t => dataId
 ```
 
@@ -351,7 +351,7 @@ Gets the [dataId](#dataid) for a particular record.
 
 ### [RecordProxy.getLinkedRecord](#recordproxygetlinkedrecord)
 
-```reason
+```rescript
 let getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t>
 ```
 
@@ -361,7 +361,7 @@ Gets a single linked record. A linked record is another object in the store, and
 
 ### [RecordProxy.getOrCreateLinkedRecord](#recordproxygetorcreatelinkedrecord)
 
-```reason
+```rescript
 let getOrCreateLinkedRecord: (
     t,
     ~name: string,
@@ -377,7 +377,7 @@ Gets an array of linked records, for when a field is a list (meaning a link to m
 
 ### [RecordProxy.getType](#recordproxygettype)
 
-```reason
+```rescript
 let getType: t => string
 ```
 
@@ -387,7 +387,7 @@ Returns the `__typename` of this particular record.
 
 ### [RecordProxy.getValueString](#recordproxygetvaluestring)
 
-```reason
+```rescript
 let getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string>
 ```
 
@@ -397,7 +397,7 @@ Returns a field value, expecting it to be a string.
 
 ### [RecordProxy.getValueStringArray](#recordproxygetvaluestringarray)
 
-```reason
+```rescript
 let getValueStringArray: (
     t,
     ~name: string,
@@ -412,7 +412,7 @@ Returns a field value, expecting it to be an array of strings.
 
 ### [RecordProxy.getValueInt](#recordproxygetvalueint)
 
-```reason
+```rescript
 let getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int>
 ```
 
@@ -422,7 +422,7 @@ Returns a field value, expecting it to be an int.
 
 ### [RecordProxy.getValueIntArray](#recordproxygetvalueintarray)
 
-```reason
+```rescript
 let getValueIntArray: (
     t,
     ~name: string,
@@ -437,7 +437,7 @@ Returns a field value, expecting it to be an array of ints.
 
 ### [RecordProxy.getValueFloat](#recordproxygetvaluefloat)
 
-```reason
+```rescript
 let getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float>
 ```
 
@@ -447,7 +447,7 @@ Returns a field value, expecting it to be a float.
 
 ### [RecordProxy.getValueFloatArray](#recordproxygetvaluefloatarray)
 
-```reason
+```rescript
 let getValueFloatArray: (
     t,
     ~name: string,
@@ -462,7 +462,7 @@ Returns a field value, expecting it to be an array of floats.
 
 ### [RecordProxy.getValueBool](#recordproxygetvaluebool)
 
-```reason
+```rescript
 let getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool>
 ```
 
@@ -472,7 +472,7 @@ Returns a field value, expecting it to be a boolean.
 
 ### [RecordProxy.getValueBoolArray](#recordproxygetvalueboolarray)
 
-```reason
+```rescript
 let getValueBoolArray: (
     t,
     ~name: string,
@@ -487,7 +487,7 @@ Returns a field value, expecting it to be an array of booleans.
 
 ### [RecordProxy.setLinkedRecord](#recordproxysetlinkedrecord)
 
-```reason
+```rescript
 let setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t
 ```
 
@@ -497,7 +497,7 @@ Sets a [RecordProxy.t](#recordproxyt) as the linked record for a particular fiel
 
 ### [RecordProxy.setLinkedRecords](#recordproxysetlinkedrecords)
 
-```reason
+```rescript
 let setLinkedRecords: (
     t,
     ~records: array<option<t>>,
@@ -513,7 +513,7 @@ Sets an array of [RecordProxy.t](#recordproxyt) as the linked records for a part
 
 ### [RecordProxy.setValueString](#recordproxysetvaluestring)
 
-```reason
+```rescript
 let setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t
 ```
 
@@ -523,7 +523,7 @@ Sets a string as field value.
 
 ### [RecordProxy.setValueStringArray](#recordproxysetvaluestringarray)
 
-```reason
+```rescript
 let setValueStringArray: (
     t,
     ~value: array<string>,
@@ -539,7 +539,7 @@ Sets an array of strings as field value.
 
 ### [RecordProxy.setValueInt](#recordproxysetvalueint)
 
-```reason
+```rescript
 let setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t
 ```
 
@@ -549,7 +549,7 @@ Sets an int as field value.
 
 ### [RecordProxy.setValueIntArray](#recordproxysetvalueintarray)
 
-```reason
+```rescript
 let setValueIntArray: (
     t,
     ~value: array<int>,
@@ -565,7 +565,7 @@ Sets an array of ints as field value.
 
 ### [RecordProxy.setValueFloat](#recordproxysetvaluefloat)
 
-```reason
+```rescript
 let setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t
 ```
 
@@ -575,7 +575,7 @@ Sets a float as field value.
 
 ### [RecordProxy.setValueFloatArray](#recordproxysetvaluefloatarray)
 
-```reason
+```rescript
 let setValueFloatArray: (
     t,
     ~value: array<float>,
@@ -591,7 +591,7 @@ Sets an array of floats as field value.
 
 ### [RecordProxy.setValueBool](#recordproxysetvaluebool)
 
-```reason
+```rescript
 let setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t
 ```
 
@@ -601,7 +601,7 @@ Sets a boolean as field value.
 
 ### [RecordProxy.setValueBoolArray](#recordproxysetvalueboolarray)
 
-```reason
+```rescript
 let setValueBoolArray: (
     t,
     ~value: array<bool>,
@@ -617,7 +617,7 @@ Sets an array of booleans as field value.
 
 ### [RecordProxy.setValueToUndefined](#recordproxysetvaluetoundefined)
 
-```reason
+```rescript
 let setValueToUndefined: (
     t,
     ~name: string,
@@ -632,7 +632,7 @@ Sets the field value to `undefined` (meaning Relay will treat it as missing data
 
 ### [RecordProxy.setValueToNull](#recordproxysetvaluetonull)
 
-```reason
+```rescript
 let setValueToNull: (
     t,
     ~name: string,
@@ -647,7 +647,7 @@ Sets the field value to `null`.
 
 ### [RecordProxy.setLinkedRecordToUndefined](#recordproxysetlinkedrecordtoundefined)
 
-```reason
+```rescript
 let setLinkedRecordToUndefined: (
     t,
     ~name: string,
@@ -662,7 +662,7 @@ Sets this linked record to `undefined` (meaning Relay will treat it as missing d
 
 ### [RecordProxy.setLinkedRecordToNull](#recordproxysetlinkedrecordtonull)
 
-```reason
+```rescript
 let setLinkedRecordToNull: (
     t,
     ~name: string,
@@ -677,7 +677,7 @@ Sets this linked record to `null`.
 
 ### [RecordProxy.setLinkedRecordsToUndefined](#recordproxysetlinkedrecordstoundefined)
 
-```reason
+```rescript
 let setLinkedRecordsToUndefined: (
     t,
     ~name: string,
@@ -692,7 +692,7 @@ Sets the field holding these linked records to `undefined` (meaning Relay will t
 
 ### [RecordProxy.setLinkedRecordsToNull](#recordproxysetlinkedrecordstonull)
 
-```reason
+```rescript
 let setLinkedRecordsToNull: (
     t,
     ~name: string,
@@ -707,7 +707,7 @@ Sets the field holding these linked records to `null`.
 
 ### [RecordProxy.invalidateRecord](#recordproxyinvalidaterecord)
 
-```reason
+```rescript
 let invalidateRecord: t => unit
 ```
 
@@ -725,7 +725,7 @@ RecordSourceSelectorProxy and RecordSourceProxy are the two modules representing
 
 ### [RecordSourceSelectorProxy.t](#recordsourceselectorproxyt)
 
-```reason
+```rescript
 type t
 ```
 
@@ -733,7 +733,7 @@ Type type representing a [RecordSourceSelectorProxy](#recordsourceselectorproxy)
 
 ### [RecordSourceSelectorProxy.getPluralRootField](#recordsourceselectorproxygetpluralrootfield)
 
-```reason
+```rescript
 let getPluralRootField: (t, ~fieldName: string) => option<array<option<RecordProxy.t>>>
 ```
 
@@ -743,7 +743,7 @@ Plural version of [RecordSourceSelectorProxy.getRootField](#recordsourceselector
 
 ### [RecordSourceSelectorProxy.create](#recordsourceselectorproxycreate)
 
-```reason
+```rescript
 let create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t
 ```
 
@@ -753,7 +753,7 @@ Type type representing a [RecordSourceSelectorProxy](#recordsourceselectorproxy)
 
 ### [RecordSourceSelectorProxy.delete](#recordsourceselectorproxydelete)
 
-```reason
+```rescript
 let delete: (t, ~dataId: dataId) => unit
 ```
 
@@ -763,7 +763,7 @@ Deletes the [RecordProxy](#recordproxy) with the provided [dataId](#dataid) .
 
 ### [RecordSourceSelectorProxy.get](#recordsourceselectorproxyget)
 
-```reason
+```rescript
 let get: (t, ~dataId: dataId) => option<RecordProxy.t>
 ```
 
@@ -773,7 +773,7 @@ Returns the [RecordProxy](#recordproxy) with the provided [dataId](#dataid) , if
 
 ### [RecordSourceSelectorProxy.getRoot](#recordsourceselectorproxygetroot)
 
-```reason
+```rescript
 let getRoot: t => RecordProxy.t
 ```
 
@@ -783,7 +783,7 @@ Returns the _root_ [RecordProxy](#recordproxy) , meaning the [RecordProxy](#reco
 
 ### [RecordSourceSelectorProxy.getRootField](#recordsourceselectorproxygetrootfield)
 
-```reason
+```rescript
 let getRootField: (t, ~fieldName: string) => option<RecordProxy.t>
 ```
 
@@ -793,7 +793,7 @@ Returns the [RecordProxy](#recordproxy) for the `fieldName` at root. You should 
 
 ### [RecordSourceSelectorProxy.invalidateStore](#recordsourceselectorproxyinvalidatestore)
 
-```reason
+```rescript
 let invalidateStore: t => unit
 ```
 
@@ -807,7 +807,7 @@ Read the Relay docs section on [ConnectionHandler](https://relay.dev/docs/en/rel
 
 ### [ConnectionHandler.getConnection](#connectionhandlergetconnection)
 
-```reason
+```rescript
 let getConnection: (
     ~record: RecordProxy.t,
     ~key: string,
@@ -822,7 +822,7 @@ For a [RecordProxy](#recordproxy) , returns the [RecordProxy](#recordproxy) that
 
 ### [ConnectionHandler.createEdge](#connectionhandlercreateedge)
 
-```reason
+```rescript
 let createEdge: (
     ~store: RecordSourceSelectorProxy.t,
     ~connection: RecordProxy.t,
@@ -837,7 +837,7 @@ Creates an edge for a particular connection.
 
 ### [ConnectionHandler.insertEdgeBefore](#connectionhandlerinsertedgebefore)
 
-```reason
+```rescript
 let insertEdgeBefore: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -852,7 +852,7 @@ Inserts an edge into a connection _before_ the provided cursor. If no cursor is 
 
 ### [ConnectionHandler.insertEdgeAfter](#connectionhandlerinsertedgeafter)
 
-```reason
+```rescript
 let insertEdgeAfter: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -867,7 +867,7 @@ Inserts an edge into a connection _after_ the provided cursor. If no cursor is p
 
 ### [ConnectionHandler.deleteNode](#connectionhandlerdeletenode)
 
-```reason
+```rescript
 let deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit
 ```
 
@@ -881,7 +881,7 @@ A Relay observable, used throughout Relay for delivering data, in particular whe
 
 ### [Observable.subscription](#observablesubscription)
 
-```reason
+```rescript
 type subscription = {
     unsubscribe: unit => unit,
     closed: bool,
@@ -892,7 +892,7 @@ A subscription for an observable, allowing you to unsubscribe if wanted.
 
 ### [Observable.makeObserver](#observablemakeobserver)
 
-```reason
+```rescript
 let makeObserver: (
     ~start: subscription => unit=?,
     ~next: 'response => unit=?,
@@ -909,7 +909,7 @@ The type representing the observable.
 
 ### [Observable.make](#observablemake)
 
-```reason
+```rescript
 let make: (sink<'t> => option<subscription>) => t<'t>
 ```
 
@@ -917,7 +917,7 @@ Create a new observable, getting fed an `Observable.sink` for interacting with t
 
 ### [Observable.subscribe](#observablesubscribe)
 
-```reason
+```rescript
 let subscribe: (t<'t>, observer<'t>) => subscription
 ```
 
@@ -927,7 +927,7 @@ Subscribe to the `Observable.t` using an observer.
 
 ### [Observable.toPromise](#observabletopromise)
 
-```reason
+```rescript
 let toPromise: t<'t> => Promise.t<'t>
 ```
 
@@ -939,7 +939,7 @@ Represents the network layer.
 
 ### [Network.operation](#networkoperation)
 
-```reason
+```rescript
 type operation = {
     id: string,
     text: string,
@@ -952,7 +952,7 @@ The operation fed to the `NetworkLayer` when Relay wants to make a request. Plea
 
 ### [Network.subscribeFn](#networksubscribefn)
 
-```reason
+```rescript
 type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
 ```
 
@@ -962,7 +962,7 @@ The shape of the function Relay expects for creating a subscription.
 
 ### [Network.fetchFunctionPromise](#networkfetchfunctionpromise)
 
-```reason
+```rescript
 type fetchFunctionPromise = (
     operation,
     Js.Json.t,
@@ -975,7 +975,7 @@ The shape of the function responsible for fetching data if you want to return a 
 
 ### [Network.fetchFunctionObservable](#networkfetchfunctionobservable)
 
-```reason
+```rescript
 type fetchFunctionObservable = (
     operation,
     Js.Json.t,
@@ -990,7 +990,7 @@ The shape of the function responsible for fetching data if you want to return an
 
 ### [Network.t](#networkt)
 
-```reason
+```rescript
 type t
 ```
 
@@ -998,7 +998,7 @@ The type representing an instantiated `NetworkLayer`.
 
 ### [Network.makePromiseBased](#networkmakepromisebased)
 
-```reason
+```rescript
 let makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
@@ -1012,7 +1012,7 @@ The type representing an instantiated `NetworkLayer`.
 
 ### [Network.makeObservableBased](#networkmakeobservablebased)
 
-```reason
+```rescript
 let makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
@@ -1030,7 +1030,7 @@ RecordSource is the source of records used by the store. Can be initiated with o
 
 ### [RecordSource.t](#recordsourcet)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1038,7 +1038,7 @@ The type representing an instantiated [RecordSource](#recordsource) .
 
 ### [RecordSource.make](#recordsourcemake)
 
-```reason
+```rescript
 let make: (~records: recordSourceRecords=?, unit) => t
 ```
 
@@ -1048,7 +1048,7 @@ The type representing an instantiated [RecordSource](#recordsource) .
 
 ### [RecordSource.toJSON](#recordsourcetojson)
 
-```reason
+```rescript
 let toJSON: t => recordSourceRecords
 ```
 
@@ -1062,7 +1062,7 @@ The actual store module, with configuration for the store.
 
 ### [Store.t](#storet)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1070,7 +1070,7 @@ The type representing an instantiated [Store](#store) .
 
 ### [Store.make](#storemake)
 
-```reason
+```rescript
 let make: (
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
@@ -1086,7 +1086,7 @@ Creates a new [Store](#store) .
 
 ### [Store.getSource](#storegetsource)
 
-```reason
+```rescript
 let getSource: t => RecordSource.t
 ```
 
@@ -1096,7 +1096,7 @@ The type representing an instantiated [Store](#store) .
 
 ### [Store.publish](#storepublish)
 
-```reason
+```rescript
 let publish: (t, RecordSource.t) => unit
 ```
 
@@ -1106,7 +1106,7 @@ Publishes _new_ records to this store. This is useful in particular with framewo
 
 ### Pseudo-example
 
-```reason
+```rescript
 /* A Next.js route component */
 
 @react.component
@@ -1130,7 +1130,7 @@ Feed a list of missing field handlers into [`Environment.make`](#environmentmake
 
 ### [MissingFieldHandler.t](#missingfieldhandlert)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1142,7 +1142,7 @@ Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function t
 
 Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
 
-```reason
+```rescript
 let makeScalarMissingFieldHandler: (
     (
       normalizationScalarField,
@@ -1159,7 +1159,7 @@ Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give t
 
 Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
 
-```reason
+```rescript
 let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
@@ -1176,7 +1176,7 @@ Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records
 
 Please note that type safety here is _best effort_. This is largely an unsafe API that rely on very dynamic objects at runtime.
 
-```reason
+```rescript
 let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
@@ -1191,7 +1191,7 @@ let makeLinkedMissingFieldHandler: (
 
 Unwraps a `normalizationArgumentWrapped` to a `normalizationArgument`. Check [`RescriptRelay.resi`](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/src/RescriptRelay.resi) for more information.
 
-```reason
+```rescript
 let unwrapNormalizationArgument: normalizationArgumentWrapped => normalizationArgument
 ```
 
@@ -1201,7 +1201,7 @@ Module representing the environment, which you'll need to use and pass to variou
 
 ### [Environment.t](#environmentt)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1209,7 +1209,7 @@ The type representing an instantiated [Environment](#environment) .
 
 ### [Environment.make](#environmentmake)
 
-```reason
+```rescript
 let make: (
     ~network: Network.t,
     ~store: Store.t,
@@ -1229,7 +1229,7 @@ Create a new [Environment](#environment) .
 
 ### [Environment.getStore](#environmentgetstore)
 
-```reason
+```rescript
 let getStore: t => Store.t
 ```
 
@@ -1239,7 +1239,7 @@ The type representing an instantiated [Environment](#environment) .
 
 ### [Environment.commitPayload](#environmentcommitpayload)
 
-```reason
+```rescript
 let commitPayload: (t, operationDescriptor, 'payload) => unit
 ```
 
@@ -1253,7 +1253,7 @@ A disposable is something you can use to dispose of something when you don't use
 
 ### [Disposable.t](#disposablet)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1261,7 +1261,7 @@ The type representing a [Disposable](#disposable) .
 
 ### [Disposable.dispose](#disposabledispose)
 
-```reason
+```rescript
 let dispose: t => unit
 ```
 
@@ -1275,7 +1275,7 @@ Context provider for the Relay environment.
 
 ### [Context.contextShape](#contextcontextshape)
 
-```reason
+```rescript
 type contextShape = {"environment": Environment.t}
 ```
 
@@ -1285,7 +1285,7 @@ The expected shape of the context.
 
 ### [Context.t](#contextt)
 
-```reason
+```rescript
 type t
 ```
 
@@ -1293,7 +1293,7 @@ Type representing the context.
 
 ### [Context.context](#contextcontext)
 
-```reason
+```rescript
 let context: React.Context.t<option<contextShape>>
 ```
 

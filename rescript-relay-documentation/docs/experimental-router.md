@@ -44,7 +44,7 @@ The router will be included in the main RescriptRelay package once it's stable, 
 First, copy the files into your project as described above.
 Next, add a file where you'll construct your router. We'll call it `Routes.res`:
 
-```reason
+```rescript
 /* Routes.res */
 let routerContext = RescriptRelayRouter.make([
   /* We'll put our route families here in a sec */
@@ -53,7 +53,7 @@ let routerContext = RescriptRelayRouter.make([
 
 Wire the router up by wrapping your app with `RescriptRelayRouter.Provider` just like you'd wrap your app with any other top level React context provider, feeding it the `Routes.routerContext` you just constructed:
 
-```reason
+```rescript
 /* Main.res */
 ...
 <RescriptRelayRouter.Provider value={Routes.routerContext}>
@@ -63,7 +63,7 @@ Wire the router up by wrapping your app with `RescriptRelayRouter.Provider` just
 
 Now, the final step! Render `RescriptRelayRouter.RouteRenderer` where you want the router to render in your app (usually at the top level):
 
-```reason
+```rescript
 /* App.res */
 <RescriptRelayRouter.RouteRenderer
   renderFallback={() => <Skeletons.Page />}
@@ -90,7 +90,7 @@ The router uses a concept called _route families_. This really isn't that compli
 
 First, let's look at the type signature for `RescriptRelayRouter.RouteFamily.make`:
 
-```reason
+```rescript
 let make: (
   ~matchUrl: RescriptReactRouter.url => option<'routeParams>,
   ~prepare: 'routeParams => 'prepared,
@@ -104,7 +104,7 @@ Now, with that knowledge fresh in mind, defining a route family looks like this 
 
 > You're strongly encouraged to read [this section about `RescriptReactRouter`](https://rescript-lang.org/docs/react/latest/router) prior to reading this part.
 
-```reason
+```rescript
 /* Routes.res */
 let userRoutes = RescriptRelayRouter.RouteFamily.make(
   ~matchUrl=url =>
@@ -129,7 +129,7 @@ let userRoutes = RescriptRelayRouter.RouteFamily.make(
 
 Now, wire this up in `Routes.res` and we're good to go rendering our first routes!
 
-```reason
+```rescript
 /* Routes.res */
 let routerContext = RescriptRelayRouter.make([
   userRoutes
@@ -146,7 +146,7 @@ We'll re-use our `userRoutes` example, but the `Dashboard` component will now ha
 
 First, let's look at what the `Dashboard` component could look like:
 
-```reason
+```rescript
 /* Dashboard.res */
 module Query = %relay(`
   query DashboardQuery {
@@ -170,7 +170,7 @@ Don't worry if all of this doesn't make sense now, it'll hopefully be clearer in
 
 Now, two things need to change in `userRoutes` for us to be able to render `<Dashboard />` - we'll need to start loading `DashboardQuery`, and we'll need to pass the `queryRef` that gives us to `<Dashboard />`:
 
-```reason
+```rescript
 /* Routes.res */
 let userRoutes = RescriptRelayRouter.RouteFamily.make(
   ~matchUrl=url =>
@@ -220,7 +220,7 @@ The router ships with a `<RescriptRelayRouter.Link>` component. This component l
 
 Linking to any route is as simple as passing the desired url to the `Link` component:
 
-```reason
+```rescript
 <RescriptRelayRouter.Link to_="/" preloadOnHover=true>
   {React.string("Go to the dashboard")}
 </RescriptRelayRouter.Link>
@@ -238,7 +238,7 @@ ReScript currently doesn't have the primitives needed for using dynamic imports 
 
 Anyway, disclaimers aside, with RescriptRelay you can very easily create a fully lazy, code split component leveraging `React.lazy` by doing the following:
 
-```reason
+```rescript
 /* DashboardLazy.res */
 include %relay.lazyComponent(Dashboard.make)
 ```
@@ -256,7 +256,7 @@ But, like with our data, we want to start loading the code for this component as
 
 Let's look at how we'd integrate this into our previous example:
 
-```reason
+```rescript
 /* Routes.res */
 let userRoutes = RescriptRelayRouter.RouteFamily.make(
   ~matchUrl=url =>
@@ -316,7 +316,7 @@ Navigating programatically is just like with `RescriptReactRouter`, but ideally 
 
 Query params is fully up to you how you want to handle. The `url` of `matchUrl` will give you a `url.search`, which is a `string` with the search string for the current route. Use your favorite method of decoding that string into parameters, and just pass those along to `prepare`. Here's a simplified example:
 
-```reason
+```rescript
 /**
  * Imagine `DashboardRouteUtils.decodeQueryParams` takes a url like
  * `/?showFriends=true&tab=Profile`and returns a record like:
@@ -376,7 +376,7 @@ Since there are no child routes with this router, we'll need to make sure that w
 
 Here's an example of something that'd work:
 
-```reason
+```rescript
 let userRoutes = RescriptRelayRouter.RouteFamily.make(
   ~matchUrl=url =>
     switch url.path {

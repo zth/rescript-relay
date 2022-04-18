@@ -21,7 +21,7 @@ fragment UserProfile_user on User {
 
 `type` is a reserved word, so we alias it to `userType`. This means that in our view we access it like this:
 
-```reason
+```rescript
 user.userType
 ```
 

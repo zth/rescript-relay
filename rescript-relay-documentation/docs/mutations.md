@@ -15,7 +15,7 @@ Fetching and displaying data is only half the fun, right? We want to change stuf
 
 Mutations in RescriptRelay are defined using the `%relay()` extension node. The following example shows how to define and then run a simple mutation with RescriptRelay:
 
-```reason
+```rescript
 /* SingleTodo.res */
 module UpdateMutation = %relay(
   `
@@ -78,7 +78,7 @@ _This section is a work in progress_.
 
 Optimistically updating your UI can do wonders for UX, and Relay provides all the primitives you need to do both simple and more advanced optimistic updates. Let's add a simple optimistic update to this mutation by giving Relay the response that we expect the server to return right away:
 
-```reason
+```rescript
 mutate(
   ~variables={
     input: {
@@ -156,7 +156,7 @@ So, there's a mutation, and that mutation includes a fragment. No big deal. Exce
 
 Well, there's a solution for this. Adding `@raw_response_type` to this mutation flattens this for us! The resulting type would look something like this in pseudo-reason:
 
-```reason
+```rescript
 /* You can't construct records like this, but hey, who cares in docs */
 type rawResponse = {
   addedBlogPost: option({
@@ -179,7 +179,7 @@ Now, the type for the optimistic response above contains a bunch of `id` fields.
 
 You use it like this:
 
-```reason
+```rescript
 ~optimisticResponse={
   addedBlogPost: Some({
     id: RescriptRelay.(generateUniqueClientID->dataIdToString),

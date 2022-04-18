@@ -57,7 +57,7 @@ Expanding on the `Datetime` example above, whenever you want RescriptRelay to au
 1. As in the example above, define the custom scalar mapping as a _module_. This is decided by that what the mapping points to is a capitalized name, which in ReScript means it's a module.
 2. Make sure the module you're pointing to exists in your project, and implements this signature:
 
-```reason
+```rescript
 module YourCustomScalarModuleName: {
   type t /* This can be anything */
   let parse: Js.Json.t => t /* Going from a raw JSON value to your type t */
@@ -82,7 +82,7 @@ query SomeQuery {
 
 If no definition for the custom scalars `Datetime` or `Color` were defined in `relay.config.js`, the generated types would look like this:
 
-```reason
+```rescript
 type response = {
   currentTime: RescriptRelay.any,
   favoriteColor: RescriptRelay.any,
@@ -105,7 +105,7 @@ module.exports = {
 
 The response would instead look like this:
 
-```reason
+```rescript
 type response = {
   currentTime: Utils.Datetime.t,
   favoriteColor: string,

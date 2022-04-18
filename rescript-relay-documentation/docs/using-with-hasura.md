@@ -30,7 +30,7 @@ For more information, check out the [Hasura docs](https://hasura.io/docs/1.0/gra
 
 In a [previous section](getting-started), we'd set up the Relay environment. Continuing on that, in the code below, the lines with comments indicate the changes to be made to connect to Hasura.
 
-```reason
+```rescript
 let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (operation, variables, _cacheConfig, _uploadables) => {
   open Fetch
   fetchWithInit(

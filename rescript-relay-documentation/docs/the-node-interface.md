@@ -6,14 +6,14 @@ sidebar_label: The Node Interface
 
 #### Recommended background reading
 
-- 
+-
 
-## Working with the Node Interface 
+## Working with the Node Interface
 
 When working on Relay, it might be more common to use the root node query to gather more information about an individual
 node from your graph. You might also want to extend this node to other components using fragments.
 
-```reason
+```rescript
 /* UserProfile.res */
 module Query = %relay(`
   query UserProfileQuery($id: ID!) {
@@ -70,7 +70,7 @@ let make = (~query) => {
 When using a root node query with fragments this returns an `option<response_node>` so you will need to `switch` on that
 node to access the `fragmentRefs`.
 
-```reason
+```rescript
 module Query = %relay(`
   query UserProfileQuery($id: ID!) {
     node(id: $id) {

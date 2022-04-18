@@ -15,6 +15,9 @@ module.exports = {
   organizationName: "zth", // Usually your GitHub org/user name.
   projectName: "rescript-relay", // Usually your repo name.
   themeConfig: {
+    prism: {
+      additionalLanguages: ["rescript"],
+    },
     navbar: {
       title: "RescriptRelay",
       items: [
@@ -28,11 +31,6 @@ module.exports = {
           position: "right",
         },
       ],
-    },
-    googleAnalytics: {
-      trackingID: "UA-205541354-1",
-      // Optional fields.
-      anonymizeIP: true, // Should IPs be anonymized?
     },
     footer: {
       style: "dark",
@@ -77,6 +75,11 @@ module.exports = {
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
+        },
+        googleAnalytics: {
+          trackingID: "UA-205541354-1",
+          // Optional fields.
+          anonymizeIP: true, // Should IPs be anonymized?
         },
       },
     ],

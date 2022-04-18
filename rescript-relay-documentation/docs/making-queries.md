@@ -16,18 +16,16 @@ Let's make our first query!
 
 Queries in RescriptRelay are defined using the `%relay()` extension node. Let's set up our first query and a component to display the data:
 
-```reason
+```rescript
 /* UserProfile.res */
-module Query = %relay(
-  `
+module Query = %relay(`
   query UserProfileQuery($userId: ID!) {
     userById(id: $userId) {
       firstName
       lastName
     }
   }
-`
-)
+`)
 
 ```
 
@@ -37,7 +35,7 @@ module Query = %relay(
 
 This is what a query definition looks like in RescriptRelay. This will be transformed into a module that exposes a number of hooks and functions to use your query in various ways (you can [read more about exactly what's exposed here](#api-reference)). Let's look at how a component that uses that query could look:
 
-```reason
+```rescript
 @react.component
 let make = (~userId) => {
   let queryData = Query.use(
@@ -75,17 +73,15 @@ In RescriptRelay, every `%relay()` node containing a query automatically generat
 
 So, the typical way to preload a query would be like this:
 
-```reason
+```rescript
 /* SomeComponent.res */
-module Query = %relay(
-  `
+module Query = %relay(`
   query SomeComponentQuery($userId: ID!) {
     user(id: $userId) {
       ...SomeUserComponent_user
     }
   }
-  `
-)
+`)
 
 @react.component
 let make = (~queryRef) => {
@@ -144,7 +140,7 @@ Sometimes you just need the query data outside of React. `fetch` lets you make t
 
 Using it looks something like this:
 
-```reason
+```rescript
 Query.fetch(~environment, ~variables=(), ~onResult=res =>
   switch res {
   | Ok(res) => Js.log(res)
@@ -177,7 +173,7 @@ The same as `fetch`, but returns a promise instead of using a callback.
 
 Using it looks something like this:
 
-```reason
+```rescript
 Query.fetchPromised(~environment, ~variables=(), ())
   ->Js.Promise.then_(res => {
     Js.log(res)

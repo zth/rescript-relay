@@ -145,7 +145,7 @@ Finally time for some actual code. Next thing is setting up the Relay environmen
 
 You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `bs-fetch` for fetching, which you can find [installation instructions for here](https://github.com/reasonml-community/bs-fetch)):
 
-```reason
+```rescript
 /* RelayEnv.res */
 
 /* This is just a custom exception to indicate that something went wrong. */
@@ -209,7 +209,7 @@ There, we now have a Relay environment! We only have two more things to fix befo
 
 Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<RescriptRelay.Context.Provider />`:
 
-```reason
+```rescript
 /* Index.res */
 ReactDOMExperimental.renderConcurrentRootAtElementWithId(
   <RescriptRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>

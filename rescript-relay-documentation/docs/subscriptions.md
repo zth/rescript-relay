@@ -12,7 +12,7 @@ sidebar_label: Subscriptions
 
 Subscriptions use a different network configuration than _queries_ and _mutations_. They use websocket to send and receive data from the server. We will need to configure the Relay environment by providing a `subscriptionFunction` when creating the Relay network. Relay will call this function every time we want to create a new subscription. We will also need to pick a subscription client. In this example we will be using [subscription-transport-ws](https://github.com/apollographql/subscriptions-transport-ws). Those are the minimal required bindings for our example to work, but they are tied to rescript-relay itself, and would need to be adjusted in order to be used for other purposes.
 
-```reason
+```rescript
 /* SubscriptionsTransportWs.res */
 type operationOptions = {
   query: string,
@@ -35,7 +35,7 @@ let createSubscriptionClient = createSubscriptionClient
 
 The following code is a ReScript version of the example from the official Relay [documentation](https://relay.dev/docs/en/subscriptions#configure-network):
 
-```reason
+```rescript
 /* RelayEnv.res */
 let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
   "ws://localhost:4000/graphql",
@@ -90,7 +90,7 @@ type Ticket implements Node {
 
 Then in your `Ticket.re` module we can subscribe to changes to the ticket status. Fragments in relay automatically subscribe to updates for the fragment data, see [Relay docs](https://relay.dev/docs/guided-tour/rendering/fragments). So when we receive an event that the ticket status updated the fragments referencing the data will receive an update and re-render the new state.
 
-```reason
+```rescript
 /* Ticket.res */
 module TicketStatusFragment = %relay(`
   fragment TicketStatus on Ticket {

@@ -332,7 +332,7 @@ const transformDoc = (doc, level) => {
 
 const printInReScriptTag = (c, name, prefix) => {
   let content = c.replace(/(@bs)([\s\S]*?)((,|\n)[\n\t\r ]*)/g, "");
-  let res = "```reason\n" + content + "\n```";
+  let res = "```rescript\n" + content + "\n```";
 
   const tokensInCode = [
     ...tokens.filter(
@@ -448,7 +448,7 @@ const resToMd = (r) => {
 # Types, values and functions
 ${printContents(r, [])}`;
 
-  return str.replace(/```rescript/g, "```reason");
+  return str.replace(/```rescript/g, "```rescript");
 };
 
 fs.writeFileSync(
