@@ -19,10 +19,29 @@ export const formatOperationsInDocument = (doc: string): string => {
     const lastTagEnd = lastTag == null ? 0 : lastTag.end;
 
     formatted += doc.slice(lastTagEnd, thisTag.start);
-    formatted += restoreOperationPadding(
-      prettify(thisTag.content),
-      thisTag.content
-    );
+    const isCommented = thisTag.content
+      .split("\n")
+      .some((line) => line.trim().startsWith("//"));
+    if (isCommented) {
+      // Uncomment the `tag`, format it and then comment it back
+      const uncommentedContent = thisTag.content
+        .split("\n")
+        .map((line) => line.replace("//", ""))
+        .join("\n");
+      formatted += restoreOperationPadding(
+        prettify(uncommentedContent),
+        uncommentedContent
+      )
+        .split("\n")
+        // Ignore empty lines
+        .map((line) => (line !== "" ? `//${line}` : line))
+        .join("\n");
+    } else {
+      formatted += restoreOperationPadding(
+        prettify(thisTag.content),
+        thisTag.content
+      );
+    }
   }
 
   const lastTag = tags[tags.length - 1];
