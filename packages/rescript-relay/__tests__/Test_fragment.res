@@ -3,6 +3,7 @@ module Query = %relay(`
       loggedInUser {
         ...TestFragment_user
         ...TestFragment_inline
+        ...TestFragment_allowUnsafeEnum
       }
       users {
         edges {
@@ -17,7 +18,7 @@ module Query = %relay(`
 `)
 
 module SubFragment = %relay(`
-    fragment TestFragment_sub_user on User {
+    fragment TestFragment_sub_user on User @rescriptRelayIgnoreUnused {
       lastName
     }
 `)
@@ -35,6 +36,13 @@ module InlineFragment = %relay(`
     fragment TestFragment_inline on User @inline {
       firstName
       onlineStatus
+    }
+`)
+
+module AllowUnsafeEnumFragment = %relay(`
+    fragment TestFragment_allowUnsafeEnum on User {
+      firstName
+      onlineStatus @rescriptRelayAllowUnsafeEnum
     }
 `)
 
@@ -77,14 +85,23 @@ module Test = {
     let query = Query.use(~variables=(), ())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
 
-    // For suppressing dead code warning
-    let subData = SubFragment.use(data.fragmentRefs)
-    ignore(subData.lastName)
-
     let (useOpt, setUseOpt) = React.useState(() => false)
     let (dataViaInline, setDataViaInline) = React.useState(() => None)
 
     let dataOpt = Fragment.useOpt(useOpt ? Some(query.loggedInUser.fragmentRefs) : None)
+    let withUnsafeEnumOpt = AllowUnsafeEnumFragment.useOpt(
+      useOpt ? Some(query.loggedInUser.fragmentRefs) : None,
+    )
+
+    let _justToCheckThingsWork = switch withUnsafeEnumOpt {
+    | Some(data) =>
+      switch data.onlineStatus {
+      | None | Some(#Online) => "Online"
+      | Some(#Offline) => "Offline"
+      | Some(#Idle) => "Idle"
+      }
+    | None => ""
+    }
 
     let users = switch query {
     | {users: Some({edges: Some(edges)})} =>

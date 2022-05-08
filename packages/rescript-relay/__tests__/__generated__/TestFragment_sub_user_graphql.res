@@ -5,7 +5,7 @@ module Types = {
   @@ocaml.warning("-30")
 
   type fragment = {
-    lastName: string,
+    @live lastName: string,
   }
 }
 

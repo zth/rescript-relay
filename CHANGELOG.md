@@ -50,6 +50,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### unreleased
 
 - Support formatting commented out operations in the CLI ([reck753](https://github.com/reck753)).
+- Support `@rescriptRelayIgnoreUnused` directive on fragment definitions to insert annotations that makes `reanalyze` consider all fields in the fragment used, even if they aren't.
+- Support `@rescriptRelayAllowUnsafeEnum` directive on fields selecting enums, which will ignore safety measures for enums, meaning you won't need to add a catch all clause, etc. It'll essentially output the enum as an _input_ enum (as desribed in the docs).
 
 ### beta.20
 

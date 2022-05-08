@@ -20,7 +20,7 @@ module Types = {
 
 
   type rec response_loggedInUser = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_inline | #TestFragment_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_allowUnsafeEnum | #TestFragment_inline | #TestFragment_user]>,
   }
   and response_users_edges_node = {
     @live id: string,
@@ -171,6 +171,11 @@ return {
               (v0/*: any*/),
               (v1/*: any*/)
             ]
+          },
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "TestFragment_allowUnsafeEnum"
           }
         ],
         "storageKey": null
@@ -254,6 +259,7 @@ return {
               }
             ]
           },
+          (v1/*: any*/),
           (v2/*: any*/)
         ],
         "storageKey": null
@@ -297,12 +303,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "694e23796b26fa28d35a7a972e55f200",
+    "cacheID": "1d110c375b41debc8478f4df010b0fb3",
     "id": null,
     "metadata": {},
     "name": "TestFragmentQuery",
     "operationKind": "query",
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    ...TestFragment_allowUnsafeEnum\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_allowUnsafeEnum on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
   }
 };
 })() `)

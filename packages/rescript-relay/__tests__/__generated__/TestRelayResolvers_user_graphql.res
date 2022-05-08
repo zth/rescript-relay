@@ -58,6 +58,7 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
     },
     {
       "alias": null,
+      "args": null,
       "fragment": {
         "args": null,
         "kind": "FragmentSpread",
