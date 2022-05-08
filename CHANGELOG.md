@@ -49,6 +49,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Support formatting commented out operations in the CLI ([reck753](https://github.com/reck753)).
+
 ### beta.20
 
 - Fix enums appearing in `@raw_response_type` (local query updates, optimistic responses) to be input enums.
