@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.20
+# 1.0.0-beta.21
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+### beta.21
 
 - Support formatting commented out operations in the CLI ([reck753](https://github.com/reck753)).
 - Support `@rescriptRelayIgnoreUnused` directive on fragment definitions to insert annotations that makes `reanalyze` consider all fields in the fragment used, even if they aren't.
