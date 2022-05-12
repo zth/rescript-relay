@@ -703,7 +703,7 @@ type loadQueryConfig = {
   networkCacheConfig: option<cacheConfig>,
 }
 
-@module("react-relay/hooks")
+@module("react-relay")
 external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
   "loadQuery"
 
@@ -775,6 +775,6 @@ external commitLocalUpdate: (
   ~updater: RecordSourceSelectorProxy.t => unit,
 ) => unit = "commitLocalUpdate"
 
-@module("react-relay/hooks")
+@module("react-relay")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"

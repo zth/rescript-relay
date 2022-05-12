@@ -891,7 +891,7 @@ external commitLocalUpdate: (
 @ocaml.doc(
   "Allows you to subscribe to when a record, connection, or even the store itself is invalidated, and then react to that."
 )
-@module("react-relay/hooks")
+@module("react-relay")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"
 

@@ -100,7 +100,7 @@ let make = (~loc, ~moduleName) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_useMutation:
           RescriptRelay.mutationNode(
             [%t typeFromGeneratedModule(["relayOperationNode"])],
