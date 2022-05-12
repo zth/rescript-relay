@@ -49,6 +49,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Add links for `Operation` module in `Query`, `Mutation`, `Subscription` and `Fragment` ([XiNiHa](https://github.com/XiNiHa))
+
 ### beta.21
 
 - Support formatting commented out operations in the CLI ([reck753](https://github.com/reck753)).
