@@ -37,7 +37,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_useQuery:
           (
             RescriptRelay.queryNode(
@@ -51,7 +51,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_usePreloadedQuery:
           (
             RescriptRelay.queryNode(
@@ -70,7 +70,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_useQueryLoader:
           RescriptRelay.queryNode(
             [%t typeFromGeneratedModule(["relayOperationNode"])],
@@ -88,7 +88,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_fetchQuery:
           (
             RescriptRelay.Environment.t,

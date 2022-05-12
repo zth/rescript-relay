@@ -22,7 +22,7 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
   [%stri
     %private
-    [@live] [@module "react-relay/hooks"]
+    [@live] [@module "react-relay"]
     external internal_useFragment:
       (
         RescriptRelay.fragmentNode(
@@ -35,7 +35,7 @@ let makeInternalExternals = (~loc, ~typeFromGeneratedModule) => [
   ],
   [%stri
     %private
-    [@live] [@module "react-relay/hooks"]
+    [@live] [@module "react-relay"]
     external internal_useFragmentOpt:
       (
         RescriptRelay.fragmentNode(
@@ -171,7 +171,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_usePaginationFragment:
           (
             RescriptRelay.fragmentNode(
@@ -184,7 +184,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_useBlockingPaginationFragment:
           (
             RescriptRelay.fragmentNode(
@@ -197,7 +197,7 @@ let makeRefetchableAssets =
       ],
       [%stri
         %private
-        [@module "react-relay/hooks"] [@live]
+        [@module "react-relay"] [@live]
         external internal_useRefetchableFragment:
           (
             RescriptRelay.fragmentNode(
