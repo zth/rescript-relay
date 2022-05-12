@@ -13,6 +13,7 @@ let make = (~loc, ~moduleName, ~hasRawResponseType) => {
     Pmod_structure([
       [%stri [@ocaml.warning "-32-34-60"]],
       [%stri include [%m moduleIdentFromGeneratedModule(["Utils"])]],
+      [%stri module Operation = [%m moduleIdentFromGeneratedModule([])]],
       [%stri module Types = [%m moduleIdentFromGeneratedModule(["Types"])]],
       [%stri
         %private
