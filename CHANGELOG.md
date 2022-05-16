@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.21
+# 1.0.0-beta.22
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+### beta.22
 
 - Fix locations for `%relay.deferredComponent` so jump-to-definition, hover etc works as expected (pointing to the dynamically imported module rather than what the PPX produces).
 - Add links for `Operation` module in `Query`, `Mutation`, `Subscription` and `Fragment` ([XiNiHa](https://github.com/XiNiHa))
