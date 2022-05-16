@@ -49,6 +49,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Fix locations for `%relay.deferredComponent` so jump-to-definition, hover etc works as expected (pointing to the dynamically imported module rather than what the PPX produces).
 - Add links for `Operation` module in `Query`, `Mutation`, `Subscription` and `Fragment` ([XiNiHa](https://github.com/XiNiHa))
 
 ### beta.21

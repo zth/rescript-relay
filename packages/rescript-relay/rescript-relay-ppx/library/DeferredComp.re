@@ -20,11 +20,26 @@ let lazyExtension =
     (~loc, ~path as _, ident) => {
     switch (ident) {
     | Ldot(Lident(moduleName), "make") =>
+      let realLoc = loc;
+      let loc = Ppxlib.Location.none
+
       let moduleIdent =
         Ppxlib.Ast_helper.Mod.ident(~loc, {txt: Lident(moduleName), loc});
+      
+      let moduleIdentWithCorrectLoc =
+        Ppxlib.Ast_helper.Mod.ident(~loc, {txt: Lident(moduleName), loc: realLoc});
 
       Ast_helper.Mod.mk(
         Pmod_structure([
+          // We use a trick here to ensure that jump-to-definition for the
+          // entire PPX node still points to the _original_ dynamically imported
+          // module. By ensuring there's a reference to the imported module
+          // (module M below), and ensuring that's the only thing that gets the
+          // _real_ loc from the PPX (by assigning that to realLoc, and
+          // everything else to the `none` location), we ensure that jump to
+          // definition, hover etc all point to the dynamically imported module
+          // rather than what the PPX produces.
+          [%stri module M = [%m moduleIdentWithCorrectLoc]],
           [%stri module type T = (module type of [%m moduleIdent])],
           [%stri
             [@val]
