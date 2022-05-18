@@ -61,8 +61,6 @@
     "@esy-ocaml/reason": "*",
     "@opam/dune": "*",
     "@opam/graphql_parser": "0.12.2",
-    "@opam/ocaml-migrate-parsetree": "1.4.0",
-    "@opam/ppx_tools_versioned": "5.2.3",
     "@opam/ppxlib": "*",
     "@reason-native/rely": "*",
     "ocaml": "4.6.1002",

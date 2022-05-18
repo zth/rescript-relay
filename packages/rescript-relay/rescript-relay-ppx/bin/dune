@@ -6,7 +6,7 @@
 (library (public_name rescript-relay-ppx.bin.pesy-modules)
     (name RescriptRelayPpxBinPesyModules)
     (modules RescriptRelayPpxBinPesyModules)
-    (libraries rescript-relay-ppx.library ocaml-migrate-parsetree ppxlib graphql_parser str)
+    (libraries rescript-relay-ppx.library ppxlib graphql_parser str)
     (preprocess (pps ppxlib.metaquot)))
 (rule
     (with-stdout-to RescriptRelayPpxBinPesyModules.re
