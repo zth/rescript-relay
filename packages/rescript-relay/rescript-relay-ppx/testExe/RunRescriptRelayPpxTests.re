@@ -1,1 +1,1 @@
-Test.TestFramework.cli();
+RescriptRelayPpxTest.TestFramework.cli();

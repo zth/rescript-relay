@@ -1,12 +1,3 @@
-(executable (name RunRescriptRelayPpxTests)
-    (modules (:standard \ RescriptRelayPpxTestExePesyModules))
-    (public_name RunRescriptRelayPpxTests.exe)
-    (libraries rescript-relay-ppx.testExe.pesy-modules)
-    (flags -open RescriptRelayPpxTestExePesyModules))
-(library (public_name rescript-relay-ppx.testExe.pesy-modules)
-    (name RescriptRelayPpxTestExePesyModules)
-    (modules RescriptRelayPpxTestExePesyModules)
-    (libraries rescript-relay-ppx.test))
-(rule
-    (with-stdout-to RescriptRelayPpxTestExePesyModules.re
-        (run echo "module Test = RescriptRelayPpxTest;")))
+(executable
+ (name RunRescriptRelayPpxTests)
+ (libraries RescriptRelayPpxTest))

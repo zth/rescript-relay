@@ -1,5 +1,8 @@
-(library (name RescriptRelayPpxLibrary) (public_name rescript-relay-ppx.library)
-    (libraries  ppxlib graphql_parser str)
-    (kind ppx_rewriter)
-    (preprocess (pps ppxlib.metaquot))
-    (flags :standard -w -9-27))
+(library
+ (name RescriptRelayPpxLibrary)
+ (public_name rescript-relay-ppx)
+ (libraries ppxlib graphql_parser str)
+ (kind ppx_rewriter)
+ (preprocess
+  (pps ppxlib.metaquot))
+ (flags :standard -w -9-27))
