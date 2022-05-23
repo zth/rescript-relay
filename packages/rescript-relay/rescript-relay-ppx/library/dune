@@ -1,15 +1,8 @@
-(library (name RescriptRelayPpxLibrary) (public_name rescript-relay-ppx.library)
-    (modules (:standard \ RescriptRelayPpxLibraryPesyModules))
-    (libraries rescript-relay-ppx.library.pesy-modules)
-    (flags -open RescriptRelayPpxLibraryPesyModules)
-    (kind ppx_rewriter)
-    (preprocess (pps ppxlib.metaquot)))
-(library (public_name rescript-relay-ppx.library.pesy-modules)
-    (name RescriptRelayPpxLibraryPesyModules)
-    (modules RescriptRelayPpxLibraryPesyModules)
-    (libraries console.lib pastel.lib ocaml-migrate-parsetree ppxlib graphql_parser str)
-    (preprocess (pps ppxlib.metaquot)))
-(rule
-    (with-stdout-to RescriptRelayPpxLibraryPesyModules.re
-        (run echo  "module Console = Console;\
-                  \nmodule Pastel = Pastel;")))
+(library
+ (name RescriptRelayPpxLibrary)
+ (public_name rescript-relay-ppx)
+ (libraries ppxlib graphql_parser str)
+ (kind ppx_rewriter)
+ (preprocess
+  (pps ppxlib.metaquot))
+ (flags :standard -w -9-27))

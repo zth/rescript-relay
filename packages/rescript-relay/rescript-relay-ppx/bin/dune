@@ -1,13 +1,4 @@
-(executable (name RescriptRelayPpxApp)
-    (modules (:standard \ RescriptRelayPpxBinPesyModules))
-    (public_name RescriptRelayPpxApp.exe)
-    (libraries rescript-relay-ppx.bin.pesy-modules)
-    (flags -open RescriptRelayPpxBinPesyModules))
-(library (public_name rescript-relay-ppx.bin.pesy-modules)
-    (name RescriptRelayPpxBinPesyModules)
-    (modules RescriptRelayPpxBinPesyModules)
-    (libraries rescript-relay-ppx.library ocaml-migrate-parsetree ppxlib graphql_parser str)
-    (preprocess (pps ppxlib.metaquot)))
-(rule
-    (with-stdout-to RescriptRelayPpxBinPesyModules.re
-        (run echo "module Library = RescriptRelayPpxLibrary;")))
+(executable
+ (name RescriptRelayPpxApp)
+ (public_name RescriptRelayPpxApp.exe)
+ (libraries ppxlib))

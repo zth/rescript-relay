@@ -149,7 +149,7 @@ let rec selectionSetHasConnection = selections =>
   | None => false
   };
 
-let rec extractFieldWithConnectionDirective =
+let extractFieldWithConnectionDirective =
         (selections): option(Graphql_parser.field) =>
   switch (
     selections

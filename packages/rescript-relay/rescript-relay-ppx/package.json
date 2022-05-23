@@ -14,42 +14,6 @@
       "ODOC_SYNTAX": "re"
     }
   },
-  "buildDirs": {
-    "test": {
-      "imports": [
-        "Library = require('rescript-relay-ppx/library')",
-        "Rely = require('rely/lib')"
-      ],
-      "flags": [
-        "-linkall",
-        "-g",
-        "-w",
-        "-9"
-      ]
-    },
-    "testExe": {
-      "imports": [
-        "Test = require('rescript-relay-ppx/test')"
-      ],
-      "bin": {
-        "RunRescriptRelayPpxTests.exe": "RunRescriptRelayPpxTests.re"
-      }
-    },
-    "library": {
-      "imports": [
-        "Console = require('console/lib')",
-        "Pastel = require('pastel/lib')"
-      ]
-    },
-    "bin": {
-      "imports": [
-        "Library = require('rescript-relay-ppx/library')"
-      ],
-      "bin": {
-        "RescriptRelayPpxApp.exe": "RescriptRelayPpxApp.re"
-      }
-    }
-  },
   "scripts": {
     "start": "esy x RescriptRelayPpxApp.exe",
     "test": "esy x RunRescriptRelayPpxTests.exe",
@@ -61,8 +25,6 @@
     "@esy-ocaml/reason": "*",
     "@opam/dune": "*",
     "@opam/graphql_parser": "0.12.2",
-    "@opam/ocaml-migrate-parsetree": "1.4.0",
-    "@opam/ppx_tools_versioned": "5.2.3",
     "@opam/ppxlib": "*",
     "@reason-native/rely": "*",
     "ocaml": "4.6.1002",
