@@ -54,7 +54,7 @@
   },
   "peerDependencies": {
     "@rescript/react": "*",
-    "react-relay": "=>11.0.0",
+    "react-relay": ">=11.0.0",
     "relay-runtime": "*",
     "rescript": "^9.1.2"
   },
