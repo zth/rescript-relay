@@ -601,6 +601,8 @@ module Environment = {
     missingFieldHandlers: array<MissingFieldHandler.t>,
     @optional
     requiredFieldLogger: RequiredFieldLogger.js,
+    @optional
+    isServer: bool,
   }
 
   @module("relay-runtime") @new
@@ -613,6 +615,7 @@ module Environment = {
     ~treatMissingFieldsAsNull=?,
     ~missingFieldHandlers=?,
     ~requiredFieldLogger=?,
+    ~isServer=?,
     (),
   ) =>
     make(
@@ -626,6 +629,7 @@ module Environment = {
         | None => [nodeInterfaceMissingFieldHandler]
         },
         ~requiredFieldLogger=?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
+        ~isServer?,
         (),
       ),
     )
