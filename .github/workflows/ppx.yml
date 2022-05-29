@@ -26,8 +26,6 @@ jobs:
           node-version: 14.x
         env:
           CI: true
-      # - name: update esy?
-        # run: npm install -g esy
       - name: Esy install
         run: esy install
       - name: Print esy cache
@@ -47,7 +45,7 @@ jobs:
         run: esy linux-release-static
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-linux
+          esy sh -c 'cp #{self.target_dir}/default/bin/RescriptRelayPpxApp.exe ppx-linux'
       - name: Strip binary
         run: |
           strip ppx-linux
