@@ -1,4 +1,4 @@
 (library
  (name RescriptRelayPpxTest)
  (libraries rely.lib rescript-relay-ppx)
- (flags -linkall -g -w -9))
+ (flags -g -w -9))
