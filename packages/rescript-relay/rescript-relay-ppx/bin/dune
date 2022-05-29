@@ -1,4 +1,4 @@
 (executable
  (name RescriptRelayPpxApp)
  (public_name RescriptRelayPpxApp.exe)
- (libraries ppxlib))
+ (libraries rescript-relay-ppx ppxlib))
