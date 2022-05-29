@@ -18,7 +18,7 @@ jobs:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     container:
-      image: alexfedoseev/alpine-node-yarn-esy:0.0.4
+      image: alexfedoseev/alpine-node-yarn-esy:0.0.9
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -26,8 +26,8 @@ jobs:
           node-version: 14.x
         env:
           CI: true
-      - name: update esy?
-        run: npm install -g esy
+      # - name: update esy?
+        # run: npm install -g esy
       - name: Esy install
         run: esy install
       - name: Print esy cache
