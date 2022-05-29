@@ -26,8 +26,8 @@ jobs:
           node-version: 14.x
         env:
           CI: true
-      - name: Print esy version
-        run: esy --version
+      - name: update esy?
+        run: npm install -g esy
       - name: Esy install
         run: esy install
       - name: Print esy cache
