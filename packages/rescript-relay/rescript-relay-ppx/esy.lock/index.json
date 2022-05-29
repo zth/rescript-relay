@@ -1,5 +1,5 @@
 {
-  "checksum": "ef37dd778cd0f89b16bbe8bdb63ea2b5",
+  "checksum": "94212c6a508bede51db062889079a3ae",
   "root": "rescript-relay-ppx@link-dev:./package.json",
   "node": {
     "rescript-relay-ppx@link-dev:./package.json": {
@@ -19,6 +19,7 @@
         "@opam/dune@opam:3.2.0@586e8442"
       ],
       "devDependencies": [
+        "@reason-native/rely@github:reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9",
         "@opam/odoc@opam:2.1.0@d39daa6f",
         "@opam/merlin@opam:4.5-414@67b2fe71"
       ]
@@ -35,6 +36,92 @@
       },
       "overrides": [],
       "dependencies": [],
+      "devDependencies": []
+    },
+    "@reason-native/rely@github:reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9": {
+      "id":
+        "@reason-native/rely@github:reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9",
+      "name": "@reason-native/rely",
+      "version":
+        "github:reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987",
+      "source": {
+        "type": "install",
+        "source": [
+          "github:reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "ocaml@4.14.0@d41d8cd9", "@reason-native/pastel@0.3.0@e7923f82",
+        "@reason-native/file-context-printer@0.0.3@e7923f82",
+        "@reason-native/cli@github:reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9",
+        "@opam/stdlib-shims@opam:0.3.0@72c7bc98",
+        "@opam/reason@opam:3.8.0@0af856e0", "@opam/re@opam:1.10.4@c4910ba6",
+        "@opam/dune@opam:3.2.0@586e8442"
+      ],
+      "devDependencies": []
+    },
+    "@reason-native/pastel@0.3.0@e7923f82": {
+      "id": "@reason-native/pastel@0.3.0@e7923f82",
+      "name": "@reason-native/pastel",
+      "version": "0.3.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/@reason-native/pastel/-/pastel-0.3.0.tgz#sha1:07da3c5a0933e61bc3b353bc85aa71ac7c0f311c"
+        ]
+      },
+      "overrides": [
+        {
+          "dependencies": { "@esy-ocaml/reason": null, "@opam/reason": "*" }
+        }
+      ],
+      "dependencies": [
+        "ocaml@4.14.0@d41d8cd9", "@opam/reason@opam:3.8.0@0af856e0",
+        "@opam/re@opam:1.10.4@c4910ba6", "@opam/dune@opam:3.2.0@586e8442"
+      ],
+      "devDependencies": []
+    },
+    "@reason-native/file-context-printer@0.0.3@e7923f82": {
+      "id": "@reason-native/file-context-printer@0.0.3@e7923f82",
+      "name": "@reason-native/file-context-printer",
+      "version": "0.0.3",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/@reason-native/file-context-printer/-/file-context-printer-0.0.3.tgz#sha1:b92eec7b10107ccb27528f9eea9bb51252bca491"
+        ]
+      },
+      "overrides": [
+        {
+          "dependencies": { "@esy-ocaml/reason": null, "@opam/reason": "*" }
+        }
+      ],
+      "dependencies": [
+        "ocaml@4.14.0@d41d8cd9", "@reason-native/pastel@0.3.0@e7923f82",
+        "@opam/reason@opam:3.8.0@0af856e0", "@opam/re@opam:1.10.4@c4910ba6",
+        "@opam/dune@opam:3.2.0@586e8442"
+      ],
+      "devDependencies": []
+    },
+    "@reason-native/cli@github:reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9": {
+      "id":
+        "@reason-native/cli@github:reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987@d41d8cd9",
+      "name": "@reason-native/cli",
+      "version":
+        "github:reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987",
+      "source": {
+        "type": "install",
+        "source": [
+          "github:reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "ocaml@4.14.0@d41d8cd9", "@reason-native/pastel@0.3.0@e7923f82",
+        "@opam/reason@opam:3.8.0@0af856e0", "@opam/re@opam:1.10.4@c4910ba6",
+        "@opam/dune@opam:3.2.0@586e8442"
+      ],
       "devDependencies": []
     },
     "@opam/yojson@opam:1.7.0@69d87312": {
