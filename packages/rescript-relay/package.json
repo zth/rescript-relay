@@ -59,8 +59,7 @@
     "rescript": "^9.1.2"
   },
   "dependencies": {
-    "detect-libc": "^2.0.1",
-    "rescript": "^9.1.2"
+    "detect-libc": "^2.0.1"
   },
   "resolutions": {
     "react": "18.0.0",
