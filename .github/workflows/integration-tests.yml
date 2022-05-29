@@ -11,10 +11,10 @@ jobs:
     name: Integration tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: "true"
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
         env:
@@ -25,12 +25,12 @@ jobs:
           override: true
       - name: Install esy
         run: npm install -g esy
-      - uses: esy/github-action@v1
+      - uses: esy/github-action@master
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Build PPX
-        uses: esy/github-action@v1
+        uses: esy/github-action@master
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/rescript-relay/rescript-relay-ppx
