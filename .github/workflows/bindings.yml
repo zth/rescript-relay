@@ -14,8 +14,8 @@ jobs:
       run:
         working-directory: packages/rescript-relay
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 12.19.0
         env:
@@ -23,7 +23,7 @@ jobs:
       - name: Install esy
         run: npm install -g esy
       - name: Build PPX
-        uses: esy/github-action@v1
+        uses: esy/github-action@master
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}
           working-directory: packages/rescript-relay/rescript-relay-ppx
