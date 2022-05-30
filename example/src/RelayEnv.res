@@ -45,26 +45,40 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
 }
 
 /**
- * A subscriptionClient and subscription function, using subscriptions-transport-ws
+ * A graphql-ws client and a subscription
  * See the official Relay documentation for more details:
- * https://relay.dev/docs/en/subscriptions#configure-network
+ * https://relay.dev/docs/guided-tour/updating-data/graphql-subscriptions/#configuring-the-network-layer
  */
-let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
-  "ws://localhost:4000/graphql",
-  {"reconnect": true},
+let wsClient = GraphQLWs.Client.make(
+  GraphQLWs.Client.makeClientOptions(
+    ~url="ws://localhost:4000/graphql",
+    ~shouldRetry={
+      event => {
+        true
+      }
+    },
+    (),
+  ),
 )
 
-let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
-  let query = config.text
-  let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
-    query: query,
+let subscriptionFunction: RescriptRelay.Network.subscribeFn = (
+  operation,
+  variables,
+  _cacheConfig,
+) => {
+  let subscriptionQuery: GraphQLWs.Client.subscribeOptions = {
+    operationName: operation.name,
+    query: operation.text,
     variables: variables,
   }
 
   RescriptRelay.Observable.make(sink => {
-    let observable = subscriptionClient["request"](. subscriptionQuery)
-    let subscription = observable["subscribe"](. sink)
-    Some(subscription)
+    let unsubscribe = GraphQLWs.Client.subscribe(wsClient, subscriptionQuery, sink)
+
+    Some({
+      unsubscribe: unsubscribe,
+      closed: false,
+    })
   })
 }
 
