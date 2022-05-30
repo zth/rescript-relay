@@ -647,15 +647,16 @@ module Context = {
 
   @module("react-relay")
   external context: React.Context.t<option<contextShape>> = "ReactRelayContext"
-  let provider = React.Context.provider(context)
 
   module Provider = {
     @react.component
-    let make = (~environment: Environment.t, ~children) =>
+    let make = (~environment: Environment.t, ~children) => {
+      let provider = React.Context.provider(context)
       React.createElement(
         provider,
         {"value": Some({"environment": environment}), "children": children},
       )
+    }
   }
 }
 
