@@ -20,12 +20,12 @@
     "bs-fetch": "^0.5.0",
     "concurrently": "^5.0.0",
     "graphql": "15.8.0",
+    "graphql-ws": "^5.8.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-relay": "13.2.0",
     "relay-runtime": "13.2.0",
-    "rescript-relay": "1.0.0-beta.20",
-    "subscriptions-transport-ws": "^0.9.18"
+    "rescript-relay": "1.0.0-beta.22"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
