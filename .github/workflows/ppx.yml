@@ -18,10 +18,10 @@ jobs:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     container:
-      image: alexfedoseev/alpine-node-yarn-esy:0.0.4
+      image: alexfedoseev/alpine-node-yarn-esy:0.0.9
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 14.x
         env:
@@ -45,7 +45,7 @@ jobs:
         run: esy linux-release-static
       - name: Copy built PPX file
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx-linux
+          esy sh -c 'cp #{self.target_dir}/default/bin/RescriptRelayPpxApp.exe ppx-linux'
       - name: Strip binary
         run: |
           strip ppx-linux
@@ -66,8 +66,8 @@ jobs:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 12.19.0
         env:
@@ -75,7 +75,7 @@ jobs:
       - name: Install esy
         run: npm install -g esy
       - name: Build PPX
-        uses: esy/github-action@v1
+        uses: esy/github-action@master
         with:
           cache-key: ${{ hashFiles('esy.lock/index.json') }}-v2
           working-directory: packages/rescript-relay/rescript-relay-ppx
