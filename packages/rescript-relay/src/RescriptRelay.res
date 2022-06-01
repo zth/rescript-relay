@@ -572,6 +572,7 @@ module Store = {
 
   @send external getSource: t => RecordSource.t = "getSource"
   @send external publish: (t, RecordSource.t) => unit = "publish"
+  @send external holdGC: t => unit = "holdGC"
 }
 
 module RequiredFieldLogger = {

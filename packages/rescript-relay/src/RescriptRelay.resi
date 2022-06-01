@@ -765,6 +765,12 @@ module Store: {
   )
   @send
   external publish: (t, RecordSource.t) => unit = "publish"
+
+  @ocaml.doc(
+    "Informes the store to stop its normal garbage collection processes. This prevents data being lost between calling relay's `fetchQuery` any serialization process (eg: toJSON)"
+  )
+  @send
+  external holdGC: t => unit = "holdGC"
 }
 
 @ocaml.doc("Internal, do not use.")
