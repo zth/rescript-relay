@@ -94,49 +94,55 @@ function ppxArch() {
 }
 
 function copyPlatformBinaries(platform) {
-  /**
-   * Copy the PPX
-   */
-  fs.copyFileSync(
-    path.join(__dirname, "ppx-" + platform),
-    path.join(__dirname, "ppx")
-  );
-  fs.chmodSync(path.join(__dirname, "ppx"), 0777);
+  try {
+    /**
+       * Copy the PPX
+       */
+    fs.copyFileSync(
+      path.join(__dirname, "ppx-" + platform),
+      path.join(__dirname, "ppx")
+    );
+    fs.chmodSync(path.join(__dirname, "ppx"), 0777);
 
-  /**
-   * Copy the Relay compiler
-   */
+    /**
+     * Copy the Relay compiler
+     */
 
-  fs.copyFileSync(
-    path.join(
-      __dirname,
-      "relay-compiler-" + getRelayCompilerPlatformSuffix(),
-      "relay"
-    ),
-    path.join(__dirname, "rescript-relay-compiler.exe")
-  );
-  fs.chmodSync(path.join(__dirname, "rescript-relay-compiler.exe"), 0777);
+    fs.copyFileSync(
+      path.join(
+        __dirname,
+        "relay-compiler-" + getRelayCompilerPlatformSuffix(),
+        "relay"
+      ),
+      path.join(__dirname, "rescript-relay-compiler.exe")
+    );
+    fs.chmodSync(path.join(__dirname, "rescript-relay-compiler.exe"), 0777);
+  } catch (err) {}
+  
 }
 
 function removeInitialBinaries() {
-  fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
-  fs.unlinkSync(path.join(__dirname, "ppx-linux"));
-  fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
-    recursive: true,
-    force: true,
-  });
-  fs.rmSync(path.join(__dirname, "relay-compiler-macos-x64"), {
-    recursive: true,
-    force: true,
-  });
-  fs.rmSync(path.join(__dirname, "relay-compiler-macos-arm64"), {
-    recursive: true,
-    force: true,
-  });
-  fs.rmSync(path.join(__dirname, "relay-compiler-linux-musl"), {
-    recursive: true,
-    force: true,
-  });
+  try {
+    fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
+    fs.unlinkSync(path.join(__dirname, "ppx-linux"));
+    fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
+      recursive: true,
+      force: true,
+    });
+    fs.rmSync(path.join(__dirname, "relay-compiler-macos-x64"), {
+      recursive: true,
+      force: true,
+    });
+    fs.rmSync(path.join(__dirname, "relay-compiler-macos-arm64"), {
+      recursive: true,
+      force: true,
+    });
+    fs.rmSync(path.join(__dirname, "relay-compiler-linux-musl"), {
+      recursive: true,
+      force: true,
+    });
+  } catch (err) {}
+  
 }
 
 switch (platform) {
