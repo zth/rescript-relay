@@ -79,7 +79,7 @@ let lazyExtension =
             [@live] let preload = () => {
               RelayRouterTypes.Component({
                 moduleName: [%e makeStringExpr(~loc, moduleName)], 
-                chunk: [%e makeStringExpr(~loc, "@rescriptModule/" ++ moduleName)],
+                chunk: [%e makeStringExpr(~loc, moduleName)],
                 eagerPreloadFn: eagerPreload
               })
             }
@@ -92,7 +92,7 @@ let lazyExtension =
             RelayRouter.useRegisterPreloadedAsset(
               RelayRouterTypes.Component({
                 moduleName: [%e makeStringExpr(~loc, moduleName)], 
-                chunk: [%e makeStringExpr(~loc, "@rescriptModule/" ++ moduleName)],
+                chunk: [%e makeStringExpr(~loc, moduleName)],
                 eagerPreloadFn: eagerPreload
               })
             )
