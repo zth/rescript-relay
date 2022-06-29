@@ -49,6 +49,12 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Add Environment isServer option @MoOx
+- Fix incorrect react-relay peerDependencies version @MoOx
+- Remove rescript from dependencies @anmonteiro
+- Fix instantiation of Relay context @vikfroberg
+- Add undocumented holdGC method on relay store @MoOx
+
 ### beta.22
 
 - Fix locations for `%relay.deferredComponent` so jump-to-definition, hover etc works as expected (pointing to the dynamically imported module rather than what the PPX produces).
