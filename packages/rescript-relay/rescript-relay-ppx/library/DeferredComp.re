@@ -71,16 +71,9 @@ let lazyExtension =
                 )
           ],
           [%stri
-            let eagerPreload = () => {
-              let _ = import_()
-            } 
-          ],
-          [%stri
             [@live] let preload = () => {
-              RelayRouterTypes.Component({
-                moduleName: [%e makeStringExpr(~loc, moduleName)], 
+              RelayRouter__Types.Component({
                 chunk: [%e makeStringExpr(~loc, moduleName)],
-                eagerPreloadFn: eagerPreload
               })
             }
           ],
@@ -90,10 +83,8 @@ let lazyExtension =
           [%stri let component =  lazy_(loadReactComponent)],
           [%stri let make = (props) => {
             RelayRouter.useRegisterPreloadedAsset(
-              RelayRouterTypes.Component({
-                moduleName: [%e makeStringExpr(~loc, moduleName)], 
+              RelayRouter__Types.Component({
                 chunk: [%e makeStringExpr(~loc, moduleName)],
-                eagerPreloadFn: eagerPreload
               })
             )
             React.createElement(component, props)
