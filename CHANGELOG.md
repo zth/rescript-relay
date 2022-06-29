@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.22
+# 1.0.0-beta.23
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+## beta.23
 
 - Add Environment isServer option @MoOx
 - Fix incorrect react-relay peerDependencies version @MoOx
