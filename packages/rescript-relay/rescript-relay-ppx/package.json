@@ -36,6 +36,7 @@
   "resolutions": {
     "@reason-native/rely": "reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987",
     "@reason-native/cli": "reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987",
+    "@opam/ppxlib": "zth/ppxlib:ppxlib.opam#32f83395fb89693a873541298b6367449f23bc4a",
     "@reason-native/pastel": {
       "version": "0.3.0",
       "override": {
