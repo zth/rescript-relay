@@ -47,11 +47,10 @@ depends: [
   "base-threads"
 ]
 url {
-  src:
-    "https://github.com/ocaml/dune/releases/download/3.2.0/chrome-trace-3.2.0.tbz"
+  src: "https://github.com/ocaml/dune/releases/download/3.3.1/dune-3.3.1.tbz"
   checksum: [
-    "sha256=bd1fbce6ae79ed1eb26fa89bb2e2e23978afceb3f53f5578cf1bdab08a1ad5bc"
-    "sha512=b99e82d7e2233a9dd8c1fae591a03f9470fcdf9750d0e428cee2d4c8bcfa4da1595e9e10af2f234279a6ca8a120a773b247d4761d2c39210fc6101076631690e"
+    "sha256=840c80491bfe12bab5f2b99d49e163f3e4c4d2fc4b4a3e6fb16c24dccd5502e1"
+    "sha512=b5d7639336b5df8cf37b8aac45906c6d0ff7e38b1a4a2c6ddb616ea81cdc5a8ff36cecf3d4ee4ff9282c835ed2958d4702ae1b3dd1f048c4269f5e7fedbe50d5"
   ]
 }
-x-commit-hash: "43af00f79e41ce9101d42b36dab13e1f68d49a7a"
+x-commit-hash: "b3232b22e13ff2fe4db994ba7ae3db727d1493cd"
