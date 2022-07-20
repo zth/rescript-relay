@@ -71,9 +71,20 @@ let lazyExtension =
                 )
           ],
           [%stri
+            let loadComponent = () =>
+              import_()
+              ->Js.Promise.then_(
+                  _ => {
+                    Js.Promise.resolve();
+                  },
+                  _,
+                )
+          ],
+          [%stri
             [@live] let preload = () => {
               RelayRouter__Types.Component({
                 chunk: [%e makeStringExpr(~loc, moduleName)],
+                load: loadComponent
               })
             }
           ],
@@ -85,6 +96,7 @@ let lazyExtension =
             RelayRouter.useRegisterPreloadedAsset(
               RelayRouter__Types.Component({
                 chunk: [%e makeStringExpr(~loc, moduleName)],
+                load: loadComponent
               })
             )
             React.createElement(component, props)
