@@ -71,14 +71,7 @@ let lazyExtension =
                 )
           ],
           [%stri
-            let loadComponent = () =>
-              import_()
-              ->Js.Promise.then_(
-                  _ => {
-                    Js.Promise.resolve();
-                  },
-                  _,
-                )
+            let loadComponent = () => import_()->ignore              
           ],
           [%stri
             [@live] let preload = () => {
