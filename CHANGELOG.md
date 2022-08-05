@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.25
+# 1.0.0-beta.26
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+## beta.26
 
 - Upgrade Relay packages to version `14.1.0`.
 
