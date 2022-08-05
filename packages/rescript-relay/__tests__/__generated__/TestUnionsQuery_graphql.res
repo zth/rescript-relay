@@ -414,12 +414,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ef07d7c3ba511ea77cb718a12a4094da",
+    "cacheID": "7796bda6800b2da0ffac4f5a3b38b745",
     "id": null,
     "metadata": {},
     "name": "TestUnionsQuery",
     "operationKind": "query",
-    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __typename\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __typename\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __isNode: __typename\n              __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })() `)

@@ -425,12 +425,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "098b4363e057eb23bd5efbc2062d349e",
+    "cacheID": "6af34d73805cda999d6b6988b06000ee",
     "id": null,
     "metadata": {},
     "name": "TestPaginationUnionRefetchQuery",
     "operationKind": "query",
-    "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __typename\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() `)

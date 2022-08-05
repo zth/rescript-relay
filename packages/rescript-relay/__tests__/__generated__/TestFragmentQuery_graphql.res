@@ -170,7 +170,9 @@ return {
             "selections": [
               (v0/*: any*/),
               (v1/*: any*/)
-            ]
+            ],
+            "args": null,
+            "argumentDefinitions": []
           },
           {
             "args": null,

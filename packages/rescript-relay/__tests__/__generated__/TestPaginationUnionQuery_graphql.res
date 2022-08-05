@@ -334,12 +334,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3347c0d30ea5a97e3b21342df1284a5f",
+    "cacheID": "6b445dc55b0afc5f84e817a3301891f3",
     "id": null,
     "metadata": {},
     "name": "TestPaginationUnionQuery",
     "operationKind": "query",
-    "text": "query TestPaginationUnionQuery(\n  $groupId: ID!\n) {\n  ...TestPaginationUnion_query_3nceos\n}\n\nfragment TestPaginationUnion_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __typename\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationUnionQuery(\n  $groupId: ID!\n) {\n  ...TestPaginationUnion_query_3nceos\n}\n\nfragment TestPaginationUnion_query_3nceos on Query {\n  members(groupId: $groupId, first: 2, after: \"\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() `)
