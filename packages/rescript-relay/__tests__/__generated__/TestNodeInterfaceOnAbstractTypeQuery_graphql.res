@@ -229,12 +229,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "58bb24b67719f1d8b754cbf000aa1684",
+    "cacheID": "2b0a77873bd94a6208022409d53b9e5e",
     "id": null,
     "metadata": {},
     "name": "TestNodeInterfaceOnAbstractTypeQuery",
     "operationKind": "query",
-    "text": "query TestNodeInterfaceOnAbstractTypeQuery {\n  node(id: \"123\") {\n    __typename\n    ... on Member {\n      __typename\n      __isMember: __typename\n      ... on User {\n        firstName\n      }\n      ... on Group {\n        name\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query TestNodeInterfaceOnAbstractTypeQuery {\n  node(id: \"123\") {\n    __typename\n    ... on Member {\n      __isMember: __typename\n      __typename\n      ... on User {\n        firstName\n      }\n      ... on Group {\n        name\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })() `)

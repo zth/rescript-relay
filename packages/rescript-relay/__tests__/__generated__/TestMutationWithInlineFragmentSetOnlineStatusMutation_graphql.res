@@ -259,7 +259,9 @@ return {
               {
                 "kind": "InlineDataFragmentSpread",
                 "name": "TestMutationInline_user",
-                "selections": (v2/*: any*/)
+                "selections": (v2/*: any*/),
+                "args": null,
+                "argumentDefinitions": []
               }
             ],
             "storageKey": null

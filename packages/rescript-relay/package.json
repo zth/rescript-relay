@@ -50,8 +50,8 @@
     "node-fetch": "^2.6.0",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-relay": "13.2.0",
-    "relay-runtime": "13.2.0"
+    "react-relay": "14.1.0",
+    "relay-runtime": "14.1.0"
   },
   "peerDependencies": {
     "@rescript/react": "*",
