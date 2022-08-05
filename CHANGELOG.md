@@ -8,7 +8,7 @@ The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major
 
 ## Upgrade versions
 
-- `react-relay` and `relay-runtime` to `13.2.0`
+- `react-relay` and `relay-runtime` to `14.1.0`
 - `react` and `react-dom` to `18.0.0`
 
 ## Remove Packages
@@ -48,6 +48,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ## Beta fix changelog
 
 ### unreleased
+
+- Upgrade Relay packages to version `14.1.0`.
 
 ## beta.25
 
