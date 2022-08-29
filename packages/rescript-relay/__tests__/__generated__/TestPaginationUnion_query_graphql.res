@@ -96,7 +96,7 @@ module Utils = {
 
   %%private(
     @live @module("relay-runtime") @scope("ConnectionHandler")
-    external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationUnion_query_members") _, 'arguments) => RescriptRelay.dataId = "getConnectionId"
+    external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationUnion_query_members") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
   )
 
   let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
