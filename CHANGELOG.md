@@ -49,6 +49,9 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- A `RelaySchemaAssets_graphql.res` is now emitted, containing type definitions for all enums and all input objects. This is designed to help with accessing and using enums and input objects outside of Relay's context. This means it'll be much easier to share makers for input objects, pass enums around, etc.
+- Each fragment with a `@connection` now emits a `makeConnectionId` function that allows you to generate _type safe_ connection IDs. More on why this is useful in the documentation.
+
 ## beta.26
 
 - Upgrade Relay packages to version `14.1.0`.
