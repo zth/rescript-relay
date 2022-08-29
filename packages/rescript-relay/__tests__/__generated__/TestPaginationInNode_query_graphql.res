@@ -49,7 +49,15 @@ module Utils = {
   @inline
   let connectionKey = "TestPaginationInNode_friendsConnection"
 
+  %%private(
+    @live @module("relay-runtime") @scope("ConnectionHandler")
+    external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationInNode_friendsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionId"
+  )
 
+  let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
+    let args = {"statuses": onlineStatuses}
+    internal_makeConnectionId(connectionParentDataId, args)
+  }
   @live
   let getConnectionNodes: fragment_friendsConnection => array<fragment_friendsConnection_edges_node> = connection => 
     switch connection.edges {

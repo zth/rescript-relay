@@ -4,12 +4,7 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  @live
-  type rec searchInput = {
-    @live id: int,
-    names: option<array<option<string>>>,
-    someOtherId: option<float>,
-  }
+  @live type searchInput = RelaySchemaAssets_graphql.input_SearchInput
   type response = {
     search: option<string>,
   }
