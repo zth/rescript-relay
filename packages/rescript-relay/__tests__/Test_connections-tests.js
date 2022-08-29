@@ -10,9 +10,7 @@ describe("Connections", () => {
   test("basic fragments work", async () => {
     queryMock.mockQuery({
       name: "TestConnectionsQuery",
-      variables: {
-        beforeDate: "2022-01-01T00:00:00.000Z",
-      },
+      matchVariables: (_) => true,
       data: {
         loggedInUser: {
           __typename: "User",
@@ -37,7 +35,7 @@ describe("Connections", () => {
 
     queryMock.mockQuery({
       name: "TestConnections_AddFriendMutation",
-      matchVariables: (v) => true,
+      matchVariables: (_) => true,
       data: {
         addFriend: {
           addedFriend: {
