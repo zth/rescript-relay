@@ -112,6 +112,10 @@ switch TicketFragment.ticketStatus_fromString(someString) {
 
 This can be really handy when working with URL parameters, storage, or any other place where you need to go back and forth between your enum and strings.
 
+## Types for all enums in the schema
+
+All enums in your schema will have types emitted into the global `RelaySchemaAssets_graphql.res` file. This is handy if you want to use your enums elsewhere in your application, without necessarily being in a specific Relay context where you've selected that particular enum.
+
 ## Wrapping up
 
 Now you know all about enums in RescriptRelay!
