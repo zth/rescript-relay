@@ -23,6 +23,7 @@ module.exports = {
       "enums",
       "unions",
       "interfaces",
+      "input-objects",
       "interacting-with-the-store",
     ],
     "API Reference": ["api-reference", "relay-environment"],

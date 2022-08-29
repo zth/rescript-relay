@@ -4,35 +4,14 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = private [>
-      | #Idle
-      | #Offline
-      | #Online
-    ]
+  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
 
-  @live
-  type enum_OnlineStatus_input = [
-      | #Idle
-      | #Offline
-      | #Online
-    ]
+  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
 
 
 
-  @live
-  type rec setOnlineStatusInput = {
-    onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
-    recursed: option<recursiveSetOnlineStatusInput>,
-  }
-  @live
-  and recursiveSetOnlineStatusInput = {
-    setOnlineStatus: option<setOnlineStatusInput>,
-    someValue: TestsUtils.IntString.t,
-  }
+  @live type setOnlineStatusInput = RelaySchemaAssets_graphql.input_SetOnlineStatusInput
+  @live type recursiveSetOnlineStatusInput = RelaySchemaAssets_graphql.input_RecursiveSetOnlineStatusInput
   @live
   type rec response_setOnlineStatusComplex_user = {
     @live id: string,
@@ -108,18 +87,18 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live
-  external onlineStatus_toString: enum_OnlineStatus => string = "%identity"
+  external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
-  external onlineStatus_input_toString: enum_OnlineStatus_input => string = "%identity"
+  external onlineStatus_input_toString: RelaySchemaAssets_graphql.enum_OnlineStatus_input => string = "%identity"
   @live
-  let onlineStatus_decode = (enum: enum_OnlineStatus): option<enum_OnlineStatus_input> => {
+  let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...enum_OnlineStatus_input as valid => Some(valid)
+      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
       | _ => None
     }
   }
   @live
-  let onlineStatus_fromString = (str: string): option<enum_OnlineStatus_input> => {
+  let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external make_setOnlineStatusInput: (

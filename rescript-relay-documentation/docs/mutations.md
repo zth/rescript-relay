@@ -70,11 +70,92 @@ But, there's plenty more to mutations than this. Let's move along and look at so
 
 When you do a simple update of a field on an object, Relay will automatically sync your UI and update all places where that field on that object is used, as long as you ask for the updated field in your mutation response. However, there are lots of cases where you'll want to do more intricate updates of the Relay store after a mutation, like when deleting an item from a list, adding an item to a list, and so on.
 
+In general, RescriptRelay works the same way as regular Relay does. But there are some parts where RescriptRelay does a little bit of more work for you than what regular Relay does.
+
+### Updating connections
+
+RescriptRelay has access to all of the tools that regular Relay has for updating connections. However, there's a few additional quality of life helpers in RescriptRelay that we'll talk about below. But first, please read the [Relay docs on updating connections (`@connection`)](https://relay.dev/docs/guided-tour/list-data/updating-connections/). That's going to give you a good foundation for the rest of this section.
+
+#### Type safe connection ID generation: `makeConnectionId`
+
+ID:s for connections are used for a number of things, including [with the declarative directives](https://relay.dev/docs/guided-tour/list-data/updating-connections/#using-declarative-directives) that updates the cache after mutations.
+
+The safest and easiest way to obtain an ID of a connection is to select `__id` on the connection field itself. However, there are plenty of situations where this isn't enough. The connection and mutation can be in different, fairly inaccessible places in the React tree, making passing the `__id` to the mutation hard. Or you might need to insert the same node to multiple configuations of the same connection, which makes `__id` insufficient since it only covers the current configuration.
+
+RescriptRelay is designed to make your life a bit easier in these situations. Every fragment with a `@connection` will have a `makeConnectionId` function generated. This function will help you make ID:s for that connection with various argument configurations, _fully type safe_. It's fully mirrors the `@connection` and relevant parts of `@argumentDefinitions`, down to even supporting default values. Consider the following example:
+
+```rescript
+/* UserFriendsList.res */
+module Fragment = %relay(`
+  fragment UserFriendsList_user on User
+    @argumentDefinitions(
+      onlineStatuses: { type: "[OnlineStatus!]", defaultValue: [Idle] }
+      count: { type: "Int", defaultValue: 2 }
+      cursor: { type: "String", defaultValue: "" }
+      minimumCommonFriends: { type: "Int!" }
+    ) {
+    __id
+    friendsConnection(
+      statuses: $onlineStatuses
+      first: $count
+      after: $cursor
+      minimumCommonFriends: $minimumCommonFriends
+    ) @connection(key: "UserFriendsList_user_friendsConnection") {
+      edges {
+        node {
+          id
+          ...UserFriendsListSingleUser_user
+        }
+      }
+    }
+  }
+`)
+
+@react.component
+let make = (~user) => {
+  let user = Fragment.use(user)
+
+  // This creates an id for the connection above with `minimumCommonFriends` as 10, and `onlineStatuses` at its default value (which is `[Idle]`).
+  // Notice that we use `__id` from the user - that's because `makeConnectionId` needs to know the _owner_ for the connection you're looking for. It doesn't need the field of the connection, just the owner itself.
+  let connectionId =
+    user.__id->UserFriendsList_user_graphql.Utils.makeConnectionId(
+      ~minimumCommonFriends=10,
+      (),
+    )
+
+  // This creates an id with both `minimumCommonFriends` and `onlineStatuses` having explicit values.
+  let connectionId2 =
+    user.__id->UserFriendsList_user_graphql.Utils.makeConnectionId(
+      ~minimumCommonFriends=10,
+      ~onlineStatuses=[#Online, #Idle],
+      (),
+    )
+
+  // We can then use these connection ID:s to either pass into the `connections: [ID!]!` argument of the declarative updater directives, or we can use them to imperatively pull out a connection from the store like this:
+  let environment = RescriptRelay.useEnvironmentFromContext()
+
+  RescriptRelay.commitLocalUpdate(~environment, ~updater=store => {
+    let connectionRecord =
+      store->RecordSourceSelectorProxy.get(~dataId=connectionId)
+  })
+
+  React.null
+}
+```
+
+Let's highlight a few things here:
+
+- We select `__id` from `User` and pipe that as the first parameter into `makeConnectionId`. That's because `makeConnectionId` needs to know who _owns_ the connection. Everything else is baked into the function. But it does need to know who the owner of the connection is, which in the example above means which `User` we're looking to get the connection from. Notice that it's the `__id` of the owning type we're looking for here, not the field which has the connection.
+- The first generated `connectionId` will generate an ID with `minimumCommonFriends` set to 10, and since no explicit value is given for `onlineStatuses` it will use the _default value_ for that. So, what's the default value? It's the value set in its `@argumentDefinitions` entry: `[Idle]`. So, our generated function knows about the types of each variable the connection is provided with, as well as any default value for any variable, even though the default values are actually defined inside of the GraphQL text.
+- The second `connectionId2` passes explicit values for both arguments, so the default value is not used.
+
+The type safe connection id maker will make life _much_ easier when selecting and using the connection's `__id` isn't feasible, like when you want to add or remove the new node/edge from several connections at once, or to the same connection but with multiple configs.
+
+### Imperative updates
+
 All mutation functions you use take an optional prop called `updater`. `updater` is a function that receives the Relay store (`RecordSourceSelectorProxy.t`) and the `'response` from the mutation. It lets you apply any updates to the store in response to a mutation.
 
-_This section is a work in progress_.
-
-## Optimistic updates
+## Declarative, optimistic updates
 
 Optimistically updating your UI can do wonders for UX, and Relay provides all the primitives you need to do both simple and more advanced optimistic updates. Let's add a simple optimistic update to this mutation by giving Relay the response that we expect the server to return right away:
 

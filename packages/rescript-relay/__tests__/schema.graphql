@@ -1,6 +1,29 @@
 scalar Datetime
 scalar IntString
 
+input InputA {
+  time: Datetime!
+  recursiveA: InputA
+  usingB: InputB
+}
+
+"""
+A fine input.
+"""
+input InputB {
+  time: Datetime
+  usingA: InputA
+  constraint: Boolean # Reserved word
+}
+
+input SomeInput {
+  str: String
+  bool: Boolean
+  float: Float
+  int: Int
+  recursive: SomeInput
+}
+
 interface Node {
   id: ID!
 }
@@ -12,10 +35,17 @@ type PageInfo {
   endCursor: String
 }
 
+"""
+Whether something is online or not.
+"""
 enum OnlineStatus {
   Online
   Idle
   Offline
+}
+
+interface HasName {
+  name: String!
 }
 
 type User implements Node {
@@ -30,16 +60,19 @@ type User implements Node {
   friends(beforeDate: Datetime): [User!]!
   friendsConnection(
     statuses: [OnlineStatus!]
+    beforeDate: Datetime
+    name: String
     after: String
     first: Int
     before: String
     last: Int
+    objTest: SomeInput
   ): UserConnection!
   memberOf: [Member]
   memberOfSingular: Member
 }
 
-type Group implements Node {
+type Group implements Node & HasName {
   id: ID!
   name: String!
   avatarUrl: String
@@ -97,6 +130,10 @@ type SetOnlineStatusPayload {
   user: User
 }
 
+type TestIntInputPayload {
+  success: Boolean
+}
+
 input RecursiveSetOnlineStatusInput {
   someValue: IntString!
   setOnlineStatus: SetOnlineStatusInput
@@ -111,6 +148,17 @@ input SearchInput {
   names: [String]
   id: Int!
   someOtherId: Float
+}
+
+input PesticideListSearchInput {
+  companyName: [String!]
+  pesticideIds: [Int!]
+  skip: Int!
+  take: Int!
+}
+
+type RecursiveInputPayload {
+  recursionIsCool: Boolean
 }
 
 type Query {
@@ -133,14 +181,19 @@ type Query {
     last: Int
   ): UserConnection
   search(input: SearchInput!): String
+  searchPesticie(input: PesticideListSearchInput!): String
 }
 
 type Mutation {
   updateUserAvatar(avatarUrl: String): UpdateUserAvatarPayload
   addFriend(friendId: ID!): AddFriendPayload
   removeFriend(friendId: ID!): RemoveFriendPayload
+  testIntInput1(id: Int!): TestIntInputPayload
+  testIntInput2(ids: [Int!]!): TestIntInputPayload
+  testIntInput3(ids: [String!]!): TestIntInputPayload
   setOnlineStatus(onlineStatus: OnlineStatus!): SetOnlineStatusPayload
   setOnlineStatusComplex(input: SetOnlineStatusInput!): SetOnlineStatusPayload
+  recursiveInput(input: InputA): RecursiveInputPayload
 }
 
 type Subscription {
