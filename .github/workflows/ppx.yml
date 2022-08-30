@@ -39,8 +39,6 @@ jobs:
           key: ${{ matrix.platform }}---v1${{ hashFiles('**/index.json') }}
           restore-keys: |
             ${{ matrix.platform }}---v1
-      - name: Test PPX
-        run: esy test
       - name: Build PPX
         run: esy linux-release-static
       - name: Copy built PPX file
@@ -76,9 +74,6 @@ jobs:
         with:
           cache-key: ${{ matrix.os }}-${{ hashFiles('esy.lock/index.json') }}-v2
           working-directory: packages/rescript-relay/rescript-relay-ppx
-      - name: Test PPX
-        run: esy test
-        working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Strip PPX binary
         if: runner.os != 'Windows'
         working-directory: packages/rescript-relay/rescript-relay-ppx
