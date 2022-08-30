@@ -43,7 +43,7 @@ jobs:
         run: esy linux-release-static
       - name: Copy built PPX file
         run: |
-          esy sh -c 'cp #{self.target_dir}/default/bin/RescriptRelayPpxApp.exe ppx-linux'
+          cp _build/default/bin/RescriptRelayPpxApp.exe ppx-linux
       - name: Strip binary
         run: |
           strip ppx-linux
