@@ -109,11 +109,13 @@ function copyPlatformBinaries(platform) {
    * Copy the Relay compiler
    */
 
+  var platformSuffix = getRelayCompilerPlatformSuffix();
+
   fs.copyFileSync(
     path.join(
       __dirname,
-      "relay-compiler-" + getRelayCompilerPlatformSuffix(),
-      "relay"
+      "relay-compiler-" + platformSuffix,
+      platformSuffix === "win-x64" ? "relay.exe" : "relay"
     ),
     path.join(__dirname, "rescript-relay-compiler.exe")
   );

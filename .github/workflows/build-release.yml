@@ -117,7 +117,7 @@ jobs:
             features: vendored
           - target: x86_64-pc-windows-msvc
             os: windows-latest
-            build-name: relay
+            build-name: relay.exe
             artifact-name: relay-compiler-win-x64
     runs-on: ${{ matrix.target.os }}
     steps:
