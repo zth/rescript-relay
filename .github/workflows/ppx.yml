@@ -69,11 +69,23 @@ jobs:
           CI: true
       - name: Install esy
         run: npm install -g esy
-      - name: Build PPX
-        uses: esy/github-action@master
+      - name: Install
+        run: esy install
+
+      - name: Print esy cache
+        id: print_esy_cache
+        run: node .github/workflows/print_esy_cache.js
+
+      - name: Try to restore dependencies cache
+        uses: actions/cache@v2
+        id: deps-cache
         with:
-          cache-key: ${{ matrix.os }}-${{ hashFiles('esy.lock/index.json') }}-v3
-          working-directory: packages/rescript-relay/rescript-relay-ppx
+          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
+          key: ${{ matrix.platform }}-${{ hashFiles('**/index.json') }}
+          restore-keys: |
+            ${{ matrix.platform }}-
+      - name: build
+        run: esy b
       - name: Strip PPX binary
         if: runner.os != 'Windows'
         working-directory: packages/rescript-relay/rescript-relay-ppx
