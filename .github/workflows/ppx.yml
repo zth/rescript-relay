@@ -97,11 +97,6 @@ jobs:
         if: runner.os == 'Windows'
         continue-on-error: true
         run: |
-          dir packages\rescript-relay\rescript-relay-ppx\_esy\default\build
-      - name: Log stuff
-        if: runner.os == 'Windows'
-        continue-on-error: true
-        run: |
           dir packages\rescript-relay\rescript-relay-ppx\_esy\default
       - name: Log stuff
         if: runner.os == 'Windows'
