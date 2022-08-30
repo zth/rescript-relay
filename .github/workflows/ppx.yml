@@ -90,6 +90,6 @@ jobs:
       - name: Upload PPX artifact ${{ matrix.os }}
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ fromJson('{ "windows-latest": "ppx-windows", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
+          name: ppx-${{ matrix.os }}
           path: packages/rescript-relay/rescript-relay-ppx/ppx
           if-no-files-found: error
