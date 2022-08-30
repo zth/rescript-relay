@@ -166,6 +166,10 @@ module RecordProxy = {
   external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
     "setLinkedRecord"
 
+  // `setLinkedRecord` can't be used for "deleting" linked record fields.
+  // It throws an error if anything besides `record` is received:
+  // https://github.com/facebook/relay/blob/bd2e4173ef726804b2ed4e76d88a7bcc1753c496/packages/relay-runtime/mutations/RelayRecordProxy.js#L92
+  // However, `setValue` can be used for this purpose instead.
   @send
   external setLinkedRecordToUndefined: (
     t,
@@ -173,7 +177,7 @@ module RecordProxy = {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecord"
+  ) => t = "setValue"
 
   @send
   external setLinkedRecordToNull: (
@@ -182,7 +186,7 @@ module RecordProxy = {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecord"
+  ) => t = "setValue"
 
   @send
   external setLinkedRecords: (
@@ -193,6 +197,10 @@ module RecordProxy = {
     unit,
   ) => t = "setLinkedRecords"
 
+  // `setLinkedRecords` can't be used for "deleting" linked records.
+  // It throws an error if anything besides an array of `records` is received:
+  // https://github.com/facebook/relay/blob/bd2e4173ef726804b2ed4e76d88a7bcc1753c496/packages/relay-runtime/mutations/RelayRecordProxy.js#L140
+  // However, `setValue` can be used for this purpose instead.
   @send
   external setLinkedRecordsToUndefined: (
     t,
@@ -200,7 +208,7 @@ module RecordProxy = {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecords"
+  ) => t = "setValue"
 
   @send
   external setLinkedRecordsToNull: (
@@ -209,7 +217,7 @@ module RecordProxy = {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecords"
+  ) => t = "setValue"
 
   @send
   external setValueToUndefined: (
