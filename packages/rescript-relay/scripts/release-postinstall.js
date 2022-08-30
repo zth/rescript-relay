@@ -105,6 +105,15 @@ function copyPlatformBinaries(platform) {
   );
   fs.chmodSync(path.join(__dirname, "ppx"), 0777);
 
+  // Windows seems to need an .exe file as well.
+  if (platform === "windows-latest") {
+    fs.copyFileSync(
+      path.join(__dirname, "ppx-" + platform),
+      path.join(__dirname, "ppx.exe")
+    );
+    fs.chmodSync(path.join(__dirname, "ppx.exe"), 0777);
+  }
+
   /**
    * Copy the Relay compiler
    */
