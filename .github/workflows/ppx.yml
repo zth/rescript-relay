@@ -81,16 +81,13 @@ jobs:
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Test PPX
         run: esy test
-      - name: Copy built PPX file
-        run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx
       - name: Strip PPX binary
         if: runner.os != 'Windows'
         run: |
-          strip ppx
-      - name: Upload PPX artifact ${{ matrix.os }}
+          strip _esy/default/build/default/bin/RescriptRelayPpxApp.exe
+      - name: Upload PPX artifact ${{ runner.os }}
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ matrix.os }}
-          path: packages/rescript-relay/rescript-relay-ppx/ppx
+          name: ppx-${{ runner.os }}
+          path: _esy/default/build/default/bin/RescriptRelayPpxApp.exe
           if-no-files-found: error
