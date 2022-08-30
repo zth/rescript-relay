@@ -81,11 +81,15 @@ jobs:
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: |
           strip _build/default/bin/RescriptRelayPpxApp.exe
+      - name: Copy built PPX file
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: |
+          cp _build/default/bin/RescriptRelayPpxApp.exe ppx-${{ matrix.platform }}
       - name: Upload PPX artifact ${{ matrix.platform }}
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ matrix.platform }}
-          path: packages/rescript-relay/rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe
+          path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
   build-compiler:
