@@ -4,22 +4,11 @@
   "description": "Starter Reason Esy Pesy Project",
   "esy": {
     "build": "dune build -p #{self.name}",
-    "NOTE": "Optional release Section. Customizes result of `esy release`",
-    "release": {
-      "releasedBinaries": [
-        "RescriptRelayPpxApp.exe"
-      ]
-    },
-    "buildEnv": {
-      "ODOC_SYNTAX": "re"
-    }
+    "buildsInSource": "_build"
   },
   "scripts": {
     "start": "esy x RescriptRelayPpxApp.exe",
-    "test": "esy b dune runtest",
-    "doc": "esy dune build @doc",
-    "linux-release-static": "dune build --root . ./bin/RescriptRelayPpxApp.exe --ignore-promoted-rules --no-config --profile release-static",
-    "doc-path": "esy echo #{self.target_dir}/default/_doc/_html/index.html"
+    "linux-release-static": "dune build --root . ./bin/RescriptRelayPpxApp.exe --ignore-promoted-rules --no-config --profile release-static"
   },
   "dependencies": {
     "ocaml": "4.14.0",
@@ -27,10 +16,6 @@
     "@opam/dune": "3.3.1",
     "@opam/graphql_parser": "0.12.2",
     "@opam/ppxlib": "*"
-  },
-  "devDependencies": {
-    "@opam/merlin": "*",
-    "@opam/odoc": "*"
   },
   "resolutions": {
     "@opam/ppxlib": "zth/ppxlib:ppxlib.opam#32f83395fb89693a873541298b6367449f23bc4a"
