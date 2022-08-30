@@ -24,7 +24,7 @@
   "dependencies": {
     "ocaml": "4.14.0",
     "@opam/reason": "*",
-    "@opam/dune": "*",
+    "@opam/dune": "3.3.1",
     "@opam/graphql_parser": "0.12.2",
     "@opam/ppxlib": "*"
   },
