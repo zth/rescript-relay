@@ -50,13 +50,13 @@ You can build the language plugin in full by running `yarn build` in the root fo
 
 ## Testing with the integration tests
 
-It's a good idea to run the full integration tests after changing the language plugin. You can do that by first building the language plugin as described above, and then run `yarn build:test` in `/packages/rescript-relay`. It'll show an error message, _but that's fine_ (and expectd).
+It's a good idea to run the full integration tests after changing the language plugin. You can do that by first building the language plugin as described above, and then run `yarn build:test` in `/packages/rescript-relay`. It'll show an error message, _but that's fine_ (and expected).
 
 Running `yarn build:test` will rerun the Relay compiler for the integration test suite using the newly built plugin. After that runs, you can run `yarn test` in `/packages/rescript-relay/` again to run the integration tests with the changes you made.
 
 ## Documentation
 
-The docs are located in `/rescript-relay-documentation`. It's built with Docosaurus, and to develop locally you simply do `yarn && yarn start` in that folder. Currently only @zth can do the prod release of this as it's tied to his `now.sh` account, but this may change in the future.
+The docs are located in `/rescript-relay-documentation`. It's built with Docusaurus, and to develop locally you simply do `yarn && yarn start` in that folder. Currently only @zth can do the prod release of this as it's tied to his `now.sh` account, but this may change in the future.
 
 ## Release
 

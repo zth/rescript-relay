@@ -345,7 +345,7 @@ module RecordProxy: {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecord"
+  ) => t = "setValue"
 
   @ocaml.doc("Sets this linked record to `null`.") @send
   external setLinkedRecordToNull: (
@@ -354,7 +354,7 @@ module RecordProxy: {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecord"
+  ) => t = "setValue"
 
   @ocaml.doc(
     "Sets the field holding these linked records to `undefined` (meaning Relay will treat it as missing data)."
@@ -366,7 +366,7 @@ module RecordProxy: {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecords"
+  ) => t = "setValue"
 
   @ocaml.doc("Sets the field holding these linked records to `null`.") @send
   external setLinkedRecordsToNull: (
@@ -375,7 +375,7 @@ module RecordProxy: {
     ~name: string,
     ~arguments: arguments=?,
     unit,
-  ) => t = "setLinkedRecords"
+  ) => t = "setValue"
 
   @ocaml.doc("Invalidates this record.
 
