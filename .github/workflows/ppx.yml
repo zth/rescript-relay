@@ -70,6 +70,7 @@ jobs:
       - name: Install esy
         run: npm install -g esy
       - name: Install
+        working-directory: packages/rescript-relay/rescript-relay-ppx
         run: esy install
 
       - name: Print esy cache
@@ -85,6 +86,7 @@ jobs:
           restore-keys: |
             ${{ matrix.platform }}-
       - name: build
+        working-directory: packages/rescript-relay/rescript-relay-ppx
         run: esy b
       - name: Strip PPX binary
         if: runner.os != 'Windows'
