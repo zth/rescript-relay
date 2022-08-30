@@ -111,6 +111,10 @@ jobs:
             artifact-name: relay-compiler-linux-musl
             packages: musl-tools
             features: vendored
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            build-name: relay.exe
+            artifact-name: relay-compiler-win-x64
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v2
@@ -181,6 +185,12 @@ jobs:
           name: relay-compiler-linux-musl
           path: binaries/relay-compiler-linux-musl
 
+      - name: Download artifact relay-compiler-win-x64
+        uses: actions/download-artifact@v2
+        with:
+          name: relay-compiler-win-x64
+          path: binaries/relay-compiler-win-x64
+
       - uses: actions/download-artifact@v2
         with:
           name: ppx-linux
@@ -208,6 +218,7 @@ jobs:
             ppx-windows-latest
             relay-compiler-linux-x64
             relay-compiler-macos-x64
+            relay-compiler-win-x64
             relay-compiler-macos-arm64
             relay-compiler-linux-musl
       - name: Upload built folder

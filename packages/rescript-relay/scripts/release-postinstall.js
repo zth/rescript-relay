@@ -14,7 +14,9 @@ var { isNonGlibcLinux } = require("detect-libc");
 var platform = process.platform;
 
 function getRelayCompilerPlatformSuffix() {
-  if (process.platform === "darwin" && process.arch === "x64") {
+  if (process.platform === "win32") {
+    return "win-x64";
+  } else if (process.platform === "darwin" && process.arch === "x64") {
     return "macos-x64";
   } else if (process.platform === "darwin" && process.arch === "arm64") {
     return "macos-arm64";
