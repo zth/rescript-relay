@@ -3424,10 +3424,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@0.0.0-windows-9ba3fe9e:
-  version "0.0.0-windows-9ba3fe9e"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.0.0-windows-9ba3fe9e.tgz#79f70b12c1ba7d358069762e33b2957862fff497"
-  integrity sha512-g5KKKPTT+QnaU5E+LcCdyd0IAmnNVYFvW3ZBBO5jaL9vuSvs/+6JD/Den9I+KWYS69epSHMGZkSnzrtTJQlKTw==
+rescript-relay@0.0.0-windows-ed1ca177:
+  version "0.0.0-windows-ed1ca177"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-0.0.0-windows-ed1ca177.tgz#1801b8bd3104698188fd32d25e953e551d4b19be"
+  integrity sha512-N2o4hs+BeQ+8QAqlIKgaKeKNI7ms/bvFBPV6e6e/EYyUafyzNB38cYxXZ+HVlpGMlLDSI8qEmmGy7qhvr1UqwQ==
   dependencies:
     detect-libc "^2.0.1"
 
