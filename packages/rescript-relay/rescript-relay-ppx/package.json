@@ -4,56 +4,20 @@
   "description": "Starter Reason Esy Pesy Project",
   "esy": {
     "build": "dune build -p #{self.name}",
-    "NOTE": "Optional release Section. Customizes result of `esy release`",
-    "release": {
-      "releasedBinaries": [
-        "RescriptRelayPpxApp.exe"
-      ]
-    },
-    "buildEnv": {
-      "ODOC_SYNTAX": "re"
-    }
+    "buildsInSource": "_build"
   },
   "scripts": {
     "start": "esy x RescriptRelayPpxApp.exe",
-    "test": "esy b dune runtest",
-    "doc": "esy dune build @doc",
-    "linux-release-static": "dune build --root . ./bin/RescriptRelayPpxApp.exe --ignore-promoted-rules --no-config --profile release-static",
-    "doc-path": "esy echo #{self.target_dir}/default/_doc/_html/index.html"
+    "linux-release-static": "dune build --root . ./bin/RescriptRelayPpxApp.exe --ignore-promoted-rules --no-config --profile release-static"
   },
   "dependencies": {
     "ocaml": "4.14.0",
     "@opam/reason": "*",
-    "@opam/dune": "*",
+    "@opam/dune": "3.3.1",
     "@opam/graphql_parser": "0.12.2",
     "@opam/ppxlib": "*"
   },
-  "devDependencies": {
-    "@opam/merlin": "*",
-    "@opam/odoc": "*",
-    "@reason-native/rely": "^3.2.1"
-  },
   "resolutions": {
-    "@reason-native/rely": "reasonml/reason-native:rely.json#7788757212c5b9365ed839b044c4840e3e917987",
-    "@reason-native/cli": "reasonml/reason-native:cli.json#7788757212c5b9365ed839b044c4840e3e917987",
-    "@opam/ppxlib": "zth/ppxlib:ppxlib.opam#32f83395fb89693a873541298b6367449f23bc4a",
-    "@reason-native/pastel": {
-      "version": "0.3.0",
-      "override": {
-        "dependencies": {
-          "@esy-ocaml/reason": null,
-          "@opam/reason": "*"
-        }
-      }
-    },
-    "@reason-native/file-context-printer": {
-      "version": "0.0.3",
-      "override": {
-        "dependencies": {
-          "@esy-ocaml/reason": null,
-          "@opam/reason": "*"
-        }
-      }
-    }
+    "@opam/ppxlib": "zth/ppxlib:ppxlib.opam#32f83395fb89693a873541298b6367449f23bc4a"
   }
 }

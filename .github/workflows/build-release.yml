@@ -40,13 +40,11 @@ jobs:
           key: ${{ matrix.platform }}---v1${{ hashFiles('**/index.json') }}
           restore-keys: |
             ${{ matrix.platform }}---v1
-      - name: Test PPX
-        run: esy test
       - name: Build PPX
         run: esy linux-release-static
       - name: Copy built PPX file
         run: |
-          esy sh -c 'cp #{self.target_dir}/default/bin/RescriptRelayPpxApp.exe ppx-linux'
+          cp _build/default/bin/RescriptRelayPpxApp.exe ppx-linux
       - name: Strip binary
         run: |
           strip ppx-linux
@@ -60,37 +58,37 @@ jobs:
   build-ppx:
     strategy:
       matrix:
-        # Add Windows here when it gets supported
-        platform: [macos-latest]
+        platform: [macos-latest, windows-latest]
 
     name: Build PPX for release
     runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 16.x
         env:
           CI: true
       - name: Install esy
         run: npm install -g esy
       - name: Build PPX
-        uses: esy/github-action@v1
+        uses: esy/github-action@master
         with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
+          cache-key: ${{ matrix.platform }}-${{ hashFiles('esy.lock/index.json') }}-v3
           working-directory: packages/rescript-relay/rescript-relay-ppx
-      - name: Test PPX
-        run: esy test
-      - name: Copy built PPX file
+      - name: Strip PPX binary
+        if: runner.os != 'Windows'
+        working-directory: packages/rescript-relay/rescript-relay-ppx
         run: |
-          mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ${{ fromJson('{ "ubuntu-latest": "ppx-linux", "macos-latest": "ppx-darwin" }')[matrix.platform] }}
-      - name: Upload PPX artifact
+          strip _build/default/bin/RescriptRelayPpxApp.exe
+      - name: Copy built PPX file
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: |
+          cp _build/default/bin/RescriptRelayPpxApp.exe ppx-${{ matrix.platform }}
+      - name: Upload PPX artifact ${{ matrix.platform }}
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-darwin
+          name: ppx-${{ matrix.platform }}
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
@@ -117,6 +115,10 @@ jobs:
             artifact-name: relay-compiler-linux-musl
             packages: musl-tools
             features: vendored
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            build-name: relay.exe
+            artifact-name: relay-compiler-win-x64
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v2
@@ -187,6 +189,12 @@ jobs:
           name: relay-compiler-linux-musl
           path: binaries/relay-compiler-linux-musl
 
+      - name: Download artifact relay-compiler-win-x64
+        uses: actions/download-artifact@v2
+        with:
+          name: relay-compiler-win-x64
+          path: binaries/relay-compiler-win-x64
+
       - uses: actions/download-artifact@v2
         with:
           name: ppx-linux
@@ -194,7 +202,12 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: ppx-darwin
+          name: ppx-macos-latest
+          path: binaries
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: ppx-windows-latest
           path: binaries
 
       - name: Move binaries into release directory
@@ -205,9 +218,11 @@ jobs:
         with:
           name: |
             ppx-linux
-            ppx-darwin
+            ppx-macos-latest
+            ppx-windows-latest
             relay-compiler-linux-x64
             relay-compiler-macos-x64
+            relay-compiler-win-x64
             relay-compiler-macos-arm64
             relay-compiler-linux-musl
       - name: Upload built folder

@@ -14,7 +14,9 @@ var { isNonGlibcLinux } = require("detect-libc");
 var platform = process.platform;
 
 function getRelayCompilerPlatformSuffix() {
-  if (process.platform === "darwin" && process.arch === "x64") {
+  if (process.platform === "win32") {
+    return "win-x64";
+  } else if (process.platform === "darwin" && process.arch === "x64") {
     return "macos-x64";
   } else if (process.platform === "darwin" && process.arch === "arm64") {
     return "macos-arm64";
@@ -103,15 +105,26 @@ function copyPlatformBinaries(platform) {
   );
   fs.chmodSync(path.join(__dirname, "ppx"), 0777);
 
+  // Windows seems to need an .exe file as well.
+  if (platform === "windows-latest") {
+    fs.copyFileSync(
+      path.join(__dirname, "ppx-" + platform),
+      path.join(__dirname, "ppx.exe")
+    );
+    fs.chmodSync(path.join(__dirname, "ppx.exe"), 0777);
+  }
+
   /**
    * Copy the Relay compiler
    */
 
+  var platformSuffix = getRelayCompilerPlatformSuffix();
+
   fs.copyFileSync(
     path.join(
       __dirname,
-      "relay-compiler-" + getRelayCompilerPlatformSuffix(),
-      "relay"
+      "relay-compiler-" + platformSuffix,
+      platformSuffix === "win-x64" ? "relay.exe" : "relay"
     ),
     path.join(__dirname, "rescript-relay-compiler.exe")
   );
@@ -119,7 +132,8 @@ function copyPlatformBinaries(platform) {
 }
 
 function removeInitialBinaries() {
-  fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
+  fs.unlinkSync(path.join(__dirname, "ppx-macos-latest"));
+  fs.unlinkSync(path.join(__dirname, "ppx-windows-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
   fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
     recursive: true,
@@ -145,12 +159,14 @@ switch (platform) {
       console.warn("error: x86 is currently not supported on Windows");
       process.exit(1);
     }
-
-    throw new Error("Windows currently not supported.");
+    copyPlatformBinaries("windows-latest");
+    break;
   }
   case "linux":
-  case "darwin":
     copyPlatformBinaries(platform);
+    break;
+  case "darwin":
+    copyPlatformBinaries("macos-latest");
     break;
   default:
     console.warn("error: no release built for the " + platform + " platform");

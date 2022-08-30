@@ -22,7 +22,7 @@ The PPX is located in `/packages/rescript-relay/rescript-relay-ppx` and is built
 
 ### Developing the PPX
 
-Ensure you have `esy` installed by running `npm install -g esy`. Go to `/packages/rescript-relay/rescript-relay-ppx` and run `esy`. This will take some time as it bootstraps and compiles the project. After this finishes, the PPX will be built, and the relevant file will be located at `/packages/rescript-relay/rescript-relay-ppx/_esy/default/build/default/bin/RescriptRelayPpxApp.exe`.
+Ensure you have `esy` installed by running `npm install -g esy`. Go to `/packages/rescript-relay/rescript-relay-ppx` and run `esy`. This will take some time as it bootstraps and compiles the project. After this finishes, the PPX will be built, and the relevant file will be located at `/packages/rescript-relay/rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe`.
 
 ### Testing with the integration tests
 
