@@ -72,7 +72,7 @@ jobs:
       - name: Build PPX
         uses: esy/github-action@master
         with:
-          cache-key: ${{ matrix.os }}-${{ hashFiles('esy.lock/index.json') }}-v2
+          cache-key: ${{ matrix.os }}-${{ hashFiles('esy.lock/index.json') }}-v3
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Strip PPX binary
         if: runner.os != 'Windows'
