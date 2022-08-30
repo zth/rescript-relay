@@ -85,8 +85,9 @@ jobs:
         run: |
           mv ./_esy/default/build/default/bin/RescriptRelayPpxApp.exe ppx
       - name: Strip PPX binary
+        if: runner.os != 'Windows'
         run: |
-          strip ppx-darwin
+          strip ppx
       - name: Upload PPX artifact ${{ matrix.os }}
         uses: actions/upload-artifact@v2
         with:
