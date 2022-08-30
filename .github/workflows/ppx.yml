@@ -62,9 +62,6 @@ jobs:
 
     name: PPX
     runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -81,10 +78,16 @@ jobs:
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Test PPX
         run: esy test
+        working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Strip PPX binary
         if: runner.os != 'Windows'
+        working-directory: packages/rescript-relay/rescript-relay-ppx
         run: |
           strip _esy/default/build/default/bin/RescriptRelayPpxApp.exe
+      - name: Log stuff
+        if: runner.os == 'Windows'
+        run: |
+          dir packages\rescript-relay\rescript-relay-ppx\_esy\default\build\default\bin & dir packages\rescript-relay\rescript-relay-ppx\_esy
       - name: Upload PPX artifact ${{ runner.os }}
         uses: actions/upload-artifact@v2
         with:
