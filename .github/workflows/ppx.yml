@@ -89,5 +89,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ppx-${{ runner.os }}
-          path: _esy/default/build/default/bin/RescriptRelayPpxApp.exe
+          path: packages/rescript-relay/rescript-relay-ppx/_esy/default/build/default/bin/RescriptRelayPpxApp.exe
           if-no-files-found: error
