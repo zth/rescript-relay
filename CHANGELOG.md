@@ -49,6 +49,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- Windows support! :tada:
 - A `RelaySchemaAssets_graphql.res` is now emitted, containing type definitions for all enums and all input objects. This is designed to help with accessing and using enums and input objects outside of Relay's context. This means it'll be much easier to share makers for input objects, pass enums around, etc.
 - Each fragment with a `@connection` now emits a `makeConnectionId` function that allows you to generate _type safe_ connection IDs. More on why this is useful in the documentation.
 - _breaking_ Input object fields with illegal names in ReScript previously had their maker function argument names suffixed with `_`, like `~type_: string`. This is now instead _prefixed_, like `~_type: string`. Prefixing like this instead of suffixing means we can ship fully zero cost maker functions, which we couldn't before for input objects with illegal field names.

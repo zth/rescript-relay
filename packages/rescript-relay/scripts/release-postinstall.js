@@ -119,7 +119,8 @@ function copyPlatformBinaries(platform) {
 }
 
 function removeInitialBinaries() {
-  fs.unlinkSync(path.join(__dirname, "ppx-darwin"));
+  fs.unlinkSync(path.join(__dirname, "ppx-macos-latest"));
+  fs.unlinkSync(path.join(__dirname, "ppx-windows-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
   fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
     recursive: true,
@@ -145,12 +146,14 @@ switch (platform) {
       console.warn("error: x86 is currently not supported on Windows");
       process.exit(1);
     }
-
-    throw new Error("Windows currently not supported.");
+    copyPlatformBinaries("windows-latest");
+    break;
   }
   case "linux":
-  case "darwin":
     copyPlatformBinaries(platform);
+    break;
+  case "darwin":
+    copyPlatformBinaries("macos-latest");
     break;
   default:
     console.warn("error: no release built for the " + platform + " platform");

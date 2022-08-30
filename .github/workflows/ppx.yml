@@ -72,16 +72,16 @@ jobs:
       - name: Build PPX
         uses: esy/github-action@master
         with:
-          cache-key: ${{ matrix.os }}-${{ hashFiles('esy.lock/index.json') }}-v3
+          cache-key: ${{ matrix.platform }}-${{ hashFiles('esy.lock/index.json') }}-v3
           working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Strip PPX binary
         if: runner.os != 'Windows'
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: |
           strip _build/default/bin/RescriptRelayPpxApp.exe
-      - name: Upload PPX artifact ${{ runner.os }}
+      - name: Upload PPX artifact ${{ matrix.platform }}
         uses: actions/upload-artifact@v2
         with:
-          name: ppx-${{ runner.os }}
+          name: ppx-${{ matrix.platform }}
           path: packages/rescript-relay/rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe
           if-no-files-found: error
