@@ -82,7 +82,19 @@ jobs:
       - name: Log stuff
         if: runner.os == 'Windows'
         run: |
-          dir packages\rescript-relay\rescript-relay-ppx\_esy\default\build\default\bin
+          dir packages\rescript-relay\rescript-relay-ppx\_esy\default\build\default
+      - name: Log stuff
+        if: runner.os == 'Windows'
+        run: |
+          dir packages\rescript-relay\rescript-relay-ppx\_esy\default\build
+      - name: Log stuff
+        if: runner.os == 'Windows'
+        run: |
+          dir packages\rescript-relay\rescript-relay-ppx\_esy\default
+      - name: Log stuff
+        if: runner.os == 'Windows'
+        run: |
+          dir packages\rescript-relay\rescript-relay-ppx\_esy
       - name: Upload PPX artifact ${{ runner.os }}
         uses: actions/upload-artifact@v2
         with:
