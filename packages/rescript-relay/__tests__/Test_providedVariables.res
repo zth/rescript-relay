@@ -20,7 +20,6 @@ module Fragment = %relay(`
 module Query = %relay(`
   query TestProvidedVariablesQuery {
       loggedInUser {
-        # There's a bug in Relay requiring at least one regular variable to be provided for provided variables to work.
         ...TestProvidedVariables_user
       }
     }

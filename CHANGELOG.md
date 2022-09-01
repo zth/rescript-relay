@@ -49,7 +49,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
-
+- Support [provided variables](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables). More info in the docs.
 - Windows support! :tada:
 - Fixed `setLinkedRecordToNull`, `setLinkedRecordToUndefined`, `setLinkedRecordsToNull` and `setLinkedRecordsToUndefined` methods by binding them to `setValue` instead of `setLinkedRecord/s`. Previously they were throwing an error because `setLinkedRecord/s` did not support "deleting" values using them. (@reck753)
 - A `RelaySchemaAssets_graphql.res` is now emitted, containing type definitions for all enums and all input objects. This is designed to help with accessing and using enums and input objects outside of Relay's context. This means it'll be much easier to share makers for input objects, pass enums around, etc.
