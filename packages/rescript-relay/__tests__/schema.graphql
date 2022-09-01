@@ -16,6 +16,11 @@ input InputB {
   constraint: Boolean # Reserved word
 }
 
+input InputC {
+  intStr: IntString!
+  recursiveC: InputC
+}
+
 input SomeInput {
   str: String
   bool: Boolean
@@ -57,6 +62,13 @@ type User implements Node {
   onlineStatus: OnlineStatus
   nicknames: [String!]!
   createdAt: Datetime!
+  someRandomArgField(
+    bool: Boolean
+    someInput: SomeInput
+    inputC: InputC
+    inputCArr: [InputC!]
+    intStr: IntString
+  ): String
   friends(beforeDate: Datetime): [User!]!
   friendsConnection(
     statuses: [OnlineStatus!]
