@@ -7,12 +7,15 @@ let internal_keepMapFieldsRaw = (record, f) =>
 // we need to do this until we can use @obj on record types
 // see https://github.com/rescript-lang/rescript-compiler/pull/5253
 let internal_cleanObjectFromUndefinedRaw = record =>
-  internal_keepMapFieldsRaw(record, ((key, value)) => {
+  switch internal_keepMapFieldsRaw(record, ((key, value)) => {
     switch value {
     | Some(value) => Some((key, value))
     | None => None
     }
-  })
+  }) {
+  | None => /* Relay expects an empty object, not undefined */ %raw(json`{}`)
+  | Some(v) => v
+  }
 
 let internal_removeUndefinedAndConvertNullsRaw = record =>
   internal_keepMapFieldsRaw(record, ((key, value)) => {

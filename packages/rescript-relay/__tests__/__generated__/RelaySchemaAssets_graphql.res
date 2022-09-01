@@ -44,6 +44,12 @@ and input_InputB = {
 }
 
 @live
+and input_InputC = {
+  intStr: TestsUtils.IntString.t,
+  recursiveC: option<input_InputC>,
+}
+
+@live
 and input_SomeInput = {
   str: option<string>,
   bool: option<bool>,
@@ -93,6 +99,13 @@ external make_InputB: (
   ~_constraint: bool=?,
   unit,
 ) => input_InputB = ""
+
+@live @obj
+external make_InputC: (
+  ~intStr: TestsUtils.IntString.t,
+  ~recursiveC: input_InputC=?,
+  unit,
+) => input_InputC = ""
 
 @live @obj
 external make_SomeInput: (

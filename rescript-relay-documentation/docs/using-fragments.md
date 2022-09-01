@@ -178,6 +178,39 @@ We don't have to change anything anywhere else. `<UserProfile />`, who defines t
 
 This is a core strength of Relay called _data masking_ - no data is available to anyone unless they explicitly ask for it. You can [read more about data masking in Relay here](https://relay.dev/docs/principles-and-architecture/thinking-in-relay/#data-masking).
 
+## Arguments in fragments
+
+Fragments can define _arguments_. The [Relay docs on arguments in fragments](https://relay.dev/docs/guided-tour/rendering/variables/#arguments-and-argumentdefinitions) explain the concept well enough, so we'll just focus on the differences between RescriptRelay and regular Relay.
+
+### Provided variables in RescriptRelay
+
+Provided variables [is a Relay concept](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables) that lets you provide _constant values_ (where the value itself is resolved from ReScript) as variables to a fragment. This removes the need to orchestrate adding your constants as regular query variables in every single query where you'd like to use them. It also encapsulates the variable so that the fragment is the only thing that needs to care about it.
+
+Here's an example of how using provided variables in RescriptRelay looks:
+
+```rescript
+// SomeModule.res
+module Fragment = %relay(`
+  fragment SomeModule_user @argumentDefinitions(
+    pixelRatio: {type: "Float!", provider: "MyProvidedVariables.PixelRatio"}
+  ) {
+    name
+    avatar(pixelRatio: $pixelRatio)
+  }
+`)
+
+// MyProvidedVariables.res
+module PixelRatio = {
+  let get = () => getDevicePixelRatio()
+}
+```
+
+Let's distill it:
+
+- We're defining a `pixelRatio` argument for our fragment, and give it a `provider`.
+- The `provider` argument points to a _ReScript module_. This module should define a `get` function that takes `unit` and returns the same type as is defined inside `type` of the argument. So for the example above, that is `let get: unit => float`. The compiler will enforce that you get the types right.
+- Relay will then automatically wire together `MyProvidedVariables.PixelRatio` with the fragment.
+
 ## Using fragments outside of React's render phase
 
 You can also use fragments outside of React's render phase (read: without using hooks). In addition to `Fragment.use`, each fragment will autogenerate a function called `Fragment.readInline` _if your fragment is annotated with `@inline`_.`@inline` tells Relay you'll want to read this fragment outside of React's render phase.
