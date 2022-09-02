@@ -307,6 +307,11 @@ If you're looking for a way to use fragments _outside_ of render (for regular fu
             %stri
             ()
           },
+          if (hasConnection) {
+            [%stri let getConnectionNodes = [%e valFromGeneratedModule(["getConnectionNodes"])]]
+          } else {
+            %stri ()
+          }          
         ],
       ]),
     ),

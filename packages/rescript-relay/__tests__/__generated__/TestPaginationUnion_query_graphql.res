@@ -87,38 +87,39 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestPaginationUnion_query]> => fragmentRef = "%identity"
 
+@live
+@inline
+let connectionKey = "TestPaginationUnion_query_members"
+
+%%private(
+  @live @module("relay-runtime") @scope("ConnectionHandler")
+  external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationUnion_query_members") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
+)
+
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
+  let groupId = Some(groupId)
+  let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}
+  internal_makeConnectionId(connectionParentDataId, args)
+}
+@live
+let getConnectionNodes: option<Types.fragment_members> => array<Types.fragment_members_edges_node> = connection => 
+  switch connection {
+    | None => []
+    | Some(connection) => 
+      switch connection.edges {
+        | None => []
+        | Some(edges) => edges
+          ->Belt.Array.keepMap(edge => switch edge {
+            | None => None
+            | Some(edge) => edge.node
+          })
+      }
+  }
+
+
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live
-  @inline
-  let connectionKey = "TestPaginationUnion_query_members"
-
-  %%private(
-    @live @module("relay-runtime") @scope("ConnectionHandler")
-    external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationUnion_query_members") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
-  )
-
-  let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
-    let groupId = Some(groupId)
-    let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}
-    internal_makeConnectionId(connectionParentDataId, args)
-  }
-  @live
-  let getConnectionNodes: option<fragment_members> => array<fragment_members_edges_node> = connection => 
-    switch connection {
-      | None => []
-      | Some(connection) => 
-        switch connection.edges {
-          | None => []
-          | Some(edges) => edges
-            ->Belt.Array.keepMap(edge => switch edge {
-              | None => None
-              | Some(edge) => edge.node
-            })
-        }
-    }
-
 }
 
 type relayOperationNode

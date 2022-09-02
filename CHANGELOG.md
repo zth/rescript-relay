@@ -49,6 +49,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ### unreleased
 
+- _potentially breaking_ `getConnectionNodes` is now located directly in the generated module, and not in a nested `Utils` module.
 - Support [provided variables](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables). More info in the docs.
 - Windows support! :tada:
 - Fixed `setLinkedRecordToNull`, `setLinkedRecordToUndefined`, `setLinkedRecordsToNull` and `setLinkedRecordsToUndefined` methods by binding them to `setValue` instead of `setLinkedRecord/s`. Previously they were throwing an error because `setLinkedRecord/s` did not support "deleting" values using them. (@reck753)

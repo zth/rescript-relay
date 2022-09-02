@@ -73,7 +73,7 @@ module Test = {
           let _: RescriptRelay.Disposable.t = addFriend(
             ~variables=AddFriendMutation.makeVariables(
               ~connections={
-                open TestConnections_user_graphql.Utils
+                open TestConnections_user_graphql
                 [user.__id->makeConnectionId(~beforeDate=makeDate(), ())]
               },
               ~friendId="123",
