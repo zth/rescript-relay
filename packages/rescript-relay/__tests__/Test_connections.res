@@ -22,6 +22,54 @@ module Fragment = %relay(`
   }
 `)
 
+// This fragment is just to ensure that the PPX finds the nested connection
+module Fragment2 = %relay(`
+  fragment TestConnections2_user on Query 
+    @argumentDefinitions(
+      count: { type: "Int", defaultValue: 2 }
+      cursor: { type: "String", defaultValue: "" }
+    ) {
+    member(id: "123") {
+      ... on User {
+        friendsConnection(
+          first: $count
+          after: $cursor
+        ) @connection(key: "TestConnections2_user_member_friendsConnection") {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`)
+
+module Fragment3 = %relay(`
+  fragment TestConnections3_user on Query 
+    @argumentDefinitions(
+      count: { type: "Int", defaultValue: 2 }
+      cursor: { type: "String", defaultValue: "" }
+    ) {
+    loggedInUser {
+      friendsConnection(
+        first: $count
+        after: $cursor
+      ) @connection(key: "TestConnectionsTest_user_user_friendsConnection") {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }
+  }
+`)
+
+let _test = Fragment2.getConnectionNodes
+let _test = Fragment3.getConnectionNodes
+
 module Query = %relay(`
   query TestConnectionsQuery($beforeDate: Datetime!) {
       loggedInUser {

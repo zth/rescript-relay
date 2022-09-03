@@ -141,40 +141,13 @@ let rec selectionSetHasConnection = selections =>
            | Some(_) => true
            | None => selectionSetHasConnection(selection_set)
            }
+          | InlineFragment({selection_set}) => selectionSetHasConnection(selection_set)
          | _ => false
          }
        )
   ) {
   | Some(_) => true
   | None => false
-  };
-
-let extractFieldWithConnectionDirective =
-        (selections): option(Graphql_parser.field) =>
-  switch (
-    selections
-    |> List.find_opt(sel =>
-         switch (sel) {
-         | Graphql_parser.Field({directives, selection_set}) =>
-           switch (
-             directives
-             |> List.find_opt((dir: Graphql_parser.directive) =>
-                  switch (dir) {
-                  | {name: "connection"} => true
-                  | _ => false
-                  }
-                )
-           ) {
-           | Some(_) => true
-           | None => selectionSetHasConnection(selection_set)
-           }
-         | _ => false
-         }
-       )
-  ) {
-  | Some(Field(v)) => Some(v)
-  | Some(FragmentSpread(_) | InlineFragment(_))
-  | None => None
   };
 
 // Returns whether a query has a @raw_response_type
@@ -201,39 +174,8 @@ type connectionConfig = {key: string};
 let extractFragmentConnectionInfo = (~loc, op) =>
   switch (op) {
   | Graphql_parser.Fragment({name: _, selection_set}) =>
-    let fieldWithConnection =
-      extractFieldWithConnectionDirective(selection_set);
-
-    switch (fieldWithConnection) {
-    | None => None
-    | Some(field) =>
-      let connectionDirective =
-        field.directives
-        |> List.find_opt((d: Graphql_parser.directive) =>
-             switch (d) {
-             | {Graphql_parser.name: "connection"} => true
-             | _ => false
-             }
-           );
-      switch (connectionDirective) {
-      | None => None
-      | Some(directive) =>
-        let key =
-          directive.arguments
-          |> List.find_opt(((key, _)) =>
-               switch (key) {
-               | "key" => true
-               | _ => false
-               }
-             );
-
-        switch (key) {
-        | Some(("key", `String(key))) => Some({key: key})
-        | _ => None
-        };
-      };
-    };
-  | _ => None
+    selectionSetHasConnection(selection_set)
+  | _ => false
   };
 
 // Returns whether a fragment has an @inline directive defined or not

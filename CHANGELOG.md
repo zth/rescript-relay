@@ -47,6 +47,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## 1.0.0 development changelog
 
+- Restore half-broken connection helper function inlining.
+
 ### rc.0
 
 - _potentially breaking_ `getConnectionNodes` is now located directly in the generated module, and not in a nested `Utils` module.

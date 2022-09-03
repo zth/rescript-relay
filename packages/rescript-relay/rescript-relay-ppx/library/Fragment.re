@@ -17,11 +17,7 @@ let make =
   let valFromGeneratedModule = makeExprAccessor(~loc, ~moduleName);
   let moduleIdentFromGeneratedModule = makeModuleIdent(~loc, ~moduleName);
 
-  let hasConnection =
-    switch (extractedConnectionInfo) {
-    | Some(_) => true
-    | None => false
-    };
+  let hasConnection = extractedConnectionInfo;
 
   Ast_helper.Mod.mk(
     Pmod_structure(
