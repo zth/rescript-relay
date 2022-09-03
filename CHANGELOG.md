@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-beta.26
+# 1.0.0-rc.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -45,9 +45,9 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
   More details on this [in the docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables). Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
 
-## Beta fix changelog
+## 1.0.0 development changelog
 
-### unreleased
+### rc.0
 
 - _potentially breaking_ `getConnectionNodes` is now located directly in the generated module, and not in a nested `Utils` module.
 - Support [provided variables](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables). More info in the docs.
