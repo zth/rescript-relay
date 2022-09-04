@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-rc.1
+# 1.0.0-rc.2
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -46,6 +46,10 @@ You can go ahead and remove these packages, that are no longer needed, as the co
   More details on this [in the docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables). Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
 
 ## 1.0.0 development changelog
+
+### rc.2
+
+- Fix long standing bug that would make whether connection helpers were emitted or not unreliable.
 
 ### rc.1
 
