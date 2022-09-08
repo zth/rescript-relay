@@ -34,6 +34,8 @@ module Fragment2 = %relay(`
         friendsConnection(
           first: $count
           after: $cursor
+          # Ensure null constants can be printed properly
+          statuses: null
         ) @connection(key: "TestConnections2_user_member_friendsConnection") {
           edges {
             node {

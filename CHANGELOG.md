@@ -47,6 +47,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## 1.0.0 development changelog
 
+- Fix bug in the new type safe connection ID makers where constant value `null` couldn't be used.
+
 ### rc.2
 
 - Fix long standing bug that would make whether connection helpers were emitted or not unreliable.
@@ -54,10 +56,11 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### rc.1
 
 - Restore half-broken connection helper function inlining.
+-
 
 ### rc.0
 
-- _potentially breaking_ `getConnectionNodes` is now located directly in the generated module, and not in a nested `Utils` module.
+- _potentially breaking_ `getConnectionNodes` and `connectionKey` is now located directly in the generated module, and not in a nested `Utils` module. `connectionKey` is also no longer exposed on the `Fragment` module, but only via the generated module for that fragment (`WhateverYourFragmentIsCalled_whatever_graphql.res`)
 - Support [provided variables](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables). More info in the docs.
 - Windows support! :tada:
 - Fixed `setLinkedRecordToNull`, `setLinkedRecordToUndefined`, `setLinkedRecordsToNull` and `setLinkedRecordsToUndefined` methods by binding them to `setValue` instead of `setLinkedRecord/s`. Previously they were throwing an error because `setLinkedRecord/s` did not support "deleting" values using them. (@reck753)

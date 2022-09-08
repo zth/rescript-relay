@@ -78,7 +78,7 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
 )
 
 let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ) => {
-  let args = ()
+  let args = {"statuses": Some(Js.null)}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 @live
