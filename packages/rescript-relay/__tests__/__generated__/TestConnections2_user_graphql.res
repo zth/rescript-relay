@@ -77,8 +77,8 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
   external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestConnections2_user_member_friendsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
 )
 
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ) => {
-  let args = {"statuses": Some(Js.null)}
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ()) => {
+  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput)]}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 @live
@@ -121,6 +121,11 @@ return {
       "defaultValue": "",
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "someInput"
     }
   ],
   "kind": "Fragment",
@@ -159,7 +164,33 @@ return {
           "selections": [
             {
               "alias": "friendsConnection",
-              "args": null,
+              "args": [
+                {
+                  "items": [
+                    {
+                      "kind": "Literal",
+                      "name": "objTests.0",
+                      "value": {
+                        "str": "123"
+                      }
+                    },
+                    {
+                      "kind": "Literal",
+                      "name": "objTests.1",
+                      "value": {
+                        "bool": true
+                      }
+                    },
+                    {
+                      "kind": "Variable",
+                      "name": "objTests.2",
+                      "variableName": "someInput"
+                    }
+                  ],
+                  "kind": "ListValue",
+                  "name": "objTests"
+                }
+              ],
               "concreteType": "UserConnection",
               "kind": "LinkedField",
               "name": "__TestConnections2_user_member_friendsConnection_connection",

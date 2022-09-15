@@ -33,3 +33,5 @@ let internal_nullableToOptionalExnHandler = x =>
   | None => None
   | Some(handler) => Some(maybeExn => maybeExn->Js.Nullable.toOption->handler)
   }
+
+@live @unboxed type rec arg = Arg(_): arg

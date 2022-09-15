@@ -28,6 +28,7 @@ module Fragment2 = %relay(`
     @argumentDefinitions(
       count: { type: "Int", defaultValue: 2 }
       cursor: { type: "String", defaultValue: "" }
+      someInput: { type: "SomeInput" }
     ) {
     member(id: "123") {
       ... on User {
@@ -36,6 +37,7 @@ module Fragment2 = %relay(`
           after: $cursor
           # Ensure null constants can be printed properly
           statuses: null
+          objTests: [{str: "123"}, {bool: true}, $someInput]
         ) @connection(key: "TestConnections2_user_member_friendsConnection") {
           edges {
             node {

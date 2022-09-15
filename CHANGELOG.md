@@ -47,6 +47,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## 1.0.0 development changelog
 
+- Fix bug in the new type safe connection ID makers where different types could end up in the same array, yielding type errors in ReScript.
+
 ### rc.3
 
 - Fix bug in the new type safe connection ID makers where constant value `null` couldn't be used.

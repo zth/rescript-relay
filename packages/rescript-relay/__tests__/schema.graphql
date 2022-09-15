@@ -79,6 +79,7 @@ type User implements Node {
     before: String
     last: Int
     objTest: SomeInput
+    objTests: [SomeInput]
   ): UserConnection!
   memberOf: [Member]
   memberOfSingular: Member
