@@ -4,12 +4,6 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   type rec fragment_Group = {
     @live __typename: [ | #Group],
     name: string,
@@ -17,7 +11,7 @@ module Types = {
   and fragment_User = {
     @live __typename: [ | #User],
     firstName: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestUnionFragmentUser_user]>,
   }
   type fragment_t = [

@@ -4,12 +4,6 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   @live
   type response = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_query]>,

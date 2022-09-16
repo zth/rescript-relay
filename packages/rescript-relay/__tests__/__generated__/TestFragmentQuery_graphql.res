@@ -4,18 +4,12 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   type rec response_loggedInUser = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_allowUnsafeEnum | #TestFragment_inline | #TestFragment_user]>,
   }
   and response_users_edges_node = {
     @live id: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestFragment_plural_user]>,
   }
   and response_users_edges = {

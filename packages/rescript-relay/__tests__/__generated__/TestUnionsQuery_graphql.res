@@ -4,12 +4,6 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   type rec response_members_edges_node_Group_members_Group = {
     @live __typename: [ | #Group],
     avatarUrl: option<string>,
@@ -20,7 +14,7 @@ module Types = {
     @live __typename: [ | #User],
     firstName: string,
     @live id: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
   }
   and response_members_edges_node_Group = {
     @live __typename: [ | #Group],
@@ -33,7 +27,7 @@ module Types = {
     @live __typename: [ | #User],
     firstName: string,
     @live id: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
   }
   and response_members_edges_node_Group_members = [
     | #Group(response_members_edges_node_Group_members_Group)

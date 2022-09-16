@@ -4,12 +4,6 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   type rec fragment_memberOf_Group_topMember_User = {
     @live __typename: [ | #User],
     firstName: string,
@@ -53,7 +47,7 @@ module Types = {
     firstName: string,
     memberOf: option<array<option<fragment_memberOf>>>,
     memberOfSingular: option<fragment_memberOfSingular>,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
   }
 }
 

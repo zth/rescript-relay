@@ -4,14 +4,8 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   type fragment_t = {
-    onlineStatus: enum_OnlineStatus,
+    onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus,
   }
   type fragment = array<option<fragment_t>>
 }

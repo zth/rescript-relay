@@ -32,7 +32,7 @@ module Query = %relay(`
   }
 `)
 
-let mapOnlineStatus = (s: option<Query.Types.enum_OnlineStatus>) =>
+let mapOnlineStatus = (s: option<RelaySchemaAssets_graphql.enum_OnlineStatus>) =>
   switch s {
   | Some(#Online) => "online"
   | Some(#Offline) => "offline"

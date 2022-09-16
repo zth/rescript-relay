@@ -4,18 +4,12 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_OnlineStatus = RelaySchemaAssets_graphql.enum_OnlineStatus
-
-  type enum_OnlineStatus_input = RelaySchemaAssets_graphql.enum_OnlineStatus_input
-
-
-
   @live type setOnlineStatusInput = RelaySchemaAssets_graphql.input_SetOnlineStatusInput
   @live type recursiveSetOnlineStatusInput = RelaySchemaAssets_graphql.input_RecursiveSetOnlineStatusInput
   @live
   type rec response_setOnlineStatusComplex_user = {
     @live id: string,
-    onlineStatus: option<enum_OnlineStatus>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
   }
   @live
   and response_setOnlineStatusComplex = {
