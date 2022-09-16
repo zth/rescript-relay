@@ -37,7 +37,9 @@ module Fragment2 = %relay(`
           after: $cursor
           # Ensure null constants can be printed properly
           statuses: null
-          objTests: [{str: "123"}, {bool: true}, $someInput]
+          # Use multiple items resulting in different types in the same array
+          # Use the same variable multiple times
+          objTests: [{str: "123"}, {bool: true}, $someInput, $someInput]
         ) @connection(key: "TestConnections2_user_member_friendsConnection") {
           edges {
             node {

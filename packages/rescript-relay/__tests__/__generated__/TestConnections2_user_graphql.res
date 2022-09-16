@@ -78,7 +78,7 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
 )
 
 let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ()) => {
-  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput)]}
+  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)]}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 @live
@@ -184,6 +184,11 @@ return {
                     {
                       "kind": "Variable",
                       "name": "objTests.2",
+                      "variableName": "someInput"
+                    },
+                    {
+                      "kind": "Variable",
+                      "name": "objTests.3",
                       "variableName": "someInput"
                     }
                   ],
