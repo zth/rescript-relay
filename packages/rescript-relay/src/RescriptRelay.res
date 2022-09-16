@@ -573,8 +573,8 @@ module Store = {
     make(
       source,
       {
-        gcReleaseBufferSize: gcReleaseBufferSize,
-        queryCacheExpirationTime: queryCacheExpirationTime,
+        gcReleaseBufferSize,
+        queryCacheExpirationTime,
       },
     )
 
@@ -751,9 +751,9 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       C.query,
       variables->C.convertVariables,
       {
-        fetchKey: fetchKey,
+        fetchKey,
         fetchPolicy: fetchPolicy->mapFetchPolicy,
-        networkCacheConfig: networkCacheConfig,
+        networkCacheConfig,
       },
     )
 
@@ -770,10 +770,8 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       switch token->queryRefToObservable {
       | None => resolve(. Error())
       | Some(o) =>
-        let _: Observable.subscription = o->{
-          open Observable
-          subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
-        }
+        open Observable
+        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
       }
     })
   }

@@ -204,6 +204,7 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
               (),
             )
             : unit => {
+          open RescriptRelay.Observable;
           let _ =
             internal_fetchQuery(
               environment,
@@ -219,25 +220,23 @@ Please *avoid* using `Query.fetch` unless you really need it, since the data you
                 fetchPolicy: fetchPolicy->RescriptRelay.mapFetchQueryFetchPolicy,
               }),
             )
-            ->RescriptRelay.Observable.(
-                subscribe(
-                  makeObserver(
-                    ~next=
-                      res =>
-                        onResult(
-                          Ok(
-                            res->[%e
-                                   valFromGeneratedModule([
-                                     "Internal",
-                                     "convertResponse",
-                                   ])
-                                 ],
-                          ),
+            ->subscribe(
+                makeObserver(
+                  ~next=
+                    res =>
+                      onResult(
+                        Ok(
+                          res->[%e
+                                  valFromGeneratedModule([
+                                    "Internal",
+                                    "convertResponse",
+                                  ])
+                                ],
                         ),
-                    ~error=err => onResult(Error(err)),
-                    (),
-                  ),
-                )
+                      ),
+                  ~error=err => onResult(Error(err)),
+                  (),
+                ),
               );
           ();
         }

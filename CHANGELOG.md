@@ -47,6 +47,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## 1.0.0 development changelog
 
+- Fix compat with `rescript@10.1.0-alpha.1`.
+
 ### rc.4
 
 - _potentially breaking_ All enum type definitions now reside in `RelaySchemaAssets_graphql.enum_<yourEnumName>`, and are _not_ generated on the operation itself anymore. So, if you previously referred to the actual enum _type_, like `Fragment.Types.enum_MyFineEnum`, you'll now need to refer to that enum type as `RelaySchemaAssets_graphql.enum_MyFineEnum`.
