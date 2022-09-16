@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-rc.3
+# 1.0.0-rc.4
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -46,6 +46,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
   More details on this [in the docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables). Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
 
 ## 1.0.0 development changelog
+
+### rc.4
 
 - _potentially breaking_ All enum type definitions now reside in `RelaySchemaAssets_graphql.enum_<yourEnumName>`, and are _not_ generated on the operation itself anymore. So, if you previously referred to the actual enum _type_, like `Fragment.Types.enum_MyFineEnum`, you'll now need to refer to that enum type as `RelaySchemaAssets_graphql.enum_MyFineEnum`.
 - Fix bug in the new type safe connection ID makers where different types could end up in the same array, yielding type errors in ReScript.
