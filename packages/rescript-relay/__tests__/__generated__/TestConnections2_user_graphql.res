@@ -77,8 +77,13 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
   external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestConnections2_user_member_friendsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
 )
 
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ()) => {
-  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)]}
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Js.null<TestsUtils.Datetime.t>=Js.null, ~flt: Js.null<float>=Js.null, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t, ()) => {
+  let datetime = datetime->Js.Null.toOption
+  let datetime = switch datetime { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
+  let flt = flt->Js.Null.toOption
+  let datetime2 = switch datetime2 { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
+  let datetime3 = Some(TestsUtils.Datetime.serialize(datetime3))
+  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 @live
@@ -125,6 +130,26 @@ return {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "datetime"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "datetime2"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "datetime3"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "flt"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "someInput"
     }
   ],
@@ -165,6 +190,44 @@ return {
             {
               "alias": "friendsConnection",
               "args": [
+                {
+                  "fields": [
+                    {
+                      "kind": "Variable",
+                      "name": "datetime",
+                      "variableName": "datetime"
+                    },
+                    {
+                      "fields": [
+                        {
+                          "kind": "Variable",
+                          "name": "datetime",
+                          "variableName": "datetime2"
+                        },
+                        {
+                          "kind": "Variable",
+                          "name": "float",
+                          "variableName": "flt"
+                        },
+                        {
+                          "fields": [
+                            {
+                              "kind": "Variable",
+                              "name": "datetime",
+                              "variableName": "datetime3"
+                            }
+                          ],
+                          "kind": "ObjectValue",
+                          "name": "recursive"
+                        }
+                      ],
+                      "kind": "ObjectValue",
+                      "name": "recursive"
+                    }
+                  ],
+                  "kind": "ObjectValue",
+                  "name": "objTest"
+                },
                 {
                   "items": [
                     {

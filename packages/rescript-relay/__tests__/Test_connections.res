@@ -29,6 +29,10 @@ module Fragment2 = %relay(`
       count: { type: "Int", defaultValue: 2 }
       cursor: { type: "String", defaultValue: "" }
       someInput: { type: "SomeInput" }
+      datetime: { type: "Datetime", defaultValue: null }
+      datetime2: { type: "Datetime" }
+      datetime3: { type: "Datetime!" }
+      flt: { type: "Float", defaultValue: null }
     ) {
     member(id: "123") {
       ... on User {
@@ -40,6 +44,17 @@ module Fragment2 = %relay(`
           # Use multiple items resulting in different types in the same array
           # Use the same variable multiple times
           objTests: [{str: "123"}, {bool: true}, $someInput, $someInput]
+          # Different combinations of null default values, custom scalars, etc
+          objTest: {
+            datetime: $datetime,
+            recursive: {
+              float: $flt,
+              datetime: $datetime2
+              recursive: {
+                datetime: $datetime3
+              }
+            }
+          }
         ) @connection(key: "TestConnections2_user_member_friendsConnection") {
           edges {
             node {

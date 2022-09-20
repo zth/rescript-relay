@@ -26,6 +26,7 @@ input SomeInput {
   bool: Boolean
   float: Float
   int: Int
+  datetime: Datetime
   recursive: SomeInput
 }
 

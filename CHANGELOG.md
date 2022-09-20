@@ -47,6 +47,8 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 ## 1.0.0 development changelog
 
+- Fix bug in the new type safe connection ID makers where null default values wouldn't turn the variable into a `Js.Null.t<t>`, leading to type errors.
+
 ### rc.5
 
 - Fix compat with `rescript@10.1.0-alpha.1`.
