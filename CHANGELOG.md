@@ -49,6 +49,7 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 
 - Fix bug in the new type safe connection ID makers where null default values wouldn't turn the variable into a `Js.Null.t<t>`, leading to type errors.
 - Fix bug with connection handling where connections behind a `@include` or `@skip` directive would not be found.
+- Move `getConnectionNodes` back into generated and auto included `Utils` module. This means that failing to generate `getConnectionNodes`, which can happen for various reasons, won't break the build, but rather not just emit the helper.
 
 ### rc.5
 

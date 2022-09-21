@@ -101,25 +101,26 @@ let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: 
   let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)
 }
-@live
-let getConnectionNodes: option<Types.fragment_members> => array<Types.fragment_members_edges_node> = connection => 
-  switch connection {
-    | None => []
-    | Some(connection) => 
-      switch connection.edges {
-        | None => []
-        | Some(edges) => edges
-          ->Belt.Array.keepMap(edge => switch edge {
-            | None => None
-            | Some(edge) => edge.node
-          })
-      }
-  }
-
-
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+
+  @live
+  let getConnectionNodes: option<Types.fragment_members> => array<Types.fragment_members_edges_node> = connection => 
+    switch connection {
+      | None => []
+      | Some(connection) => 
+        switch connection.edges {
+          | None => []
+          | Some(edges) => edges
+            ->Belt.Array.keepMap(edge => switch edge {
+              | None => None
+              | Some(edge) => edge.node
+            })
+        }
+    }
+
+
 }
 
 type relayOperationNode
