@@ -5,6 +5,7 @@ module Fragment = %relay(`
       count: { type: "Int", defaultValue: 2 }
       cursor: { type: "String", defaultValue: "" }
       beforeDate: { type: "Datetime!" }
+      test: { type: "Boolean", defaultValue: true }
     ) {
     __id
     friendsConnection(
@@ -12,7 +13,7 @@ module Fragment = %relay(`
       first: $count
       after: $cursor
       beforeDate: $beforeDate
-    ) @connection(key: "TestConnections_user_friendsConnection") {
+    ) @connection(key: "TestConnections_user_friendsConnection") @include(if: $test) {
       edges {
         node {
           id

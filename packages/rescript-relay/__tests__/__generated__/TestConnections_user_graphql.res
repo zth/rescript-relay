@@ -15,7 +15,7 @@ module Types = {
   }
   type fragment = {
     @live __id: RescriptRelay.dataId,
-    friendsConnection: fragment_friendsConnection,
+    friendsConnection: option<fragment_friendsConnection>,
   }
 }
 
@@ -57,14 +57,18 @@ let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineSta
   internal_makeConnectionId(connectionParentDataId, args)
 }
 @live
-let getConnectionNodes: Types.fragment_friendsConnection => array<Types.fragment_friendsConnection_edges_node> = connection => 
-  switch connection.edges {
+let getConnectionNodes: option<Types.fragment_friendsConnection> => array<Types.fragment_friendsConnection_edges_node> = connection => 
+  switch connection {
     | None => []
-    | Some(edges) => edges
-      ->Belt.Array.keepMap(edge => switch edge {
-        | None => None
-        | Some(edge) => edge.node
-      })
+    | Some(connection) => 
+      switch connection.edges {
+        | None => []
+        | Some(edges) => edges
+          ->Belt.Array.keepMap(edge => switch edge {
+            | None => None
+            | Some(edge) => edge.node
+          })
+      }
   }
 
 
@@ -100,6 +104,11 @@ let node: operationType = %raw(json` {
       ],
       "kind": "LocalArgument",
       "name": "onlineStatuses"
+    },
+    {
+      "defaultValue": true,
+      "kind": "LocalArgument",
+      "name": "test"
     }
   ],
   "kind": "Fragment",
@@ -118,52 +127,67 @@ let node: operationType = %raw(json` {
   "name": "TestConnections_user",
   "selections": [
     {
-      "alias": "friendsConnection",
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "beforeDate",
-          "variableName": "beforeDate"
-        },
-        {
-          "kind": "Variable",
-          "name": "statuses",
-          "variableName": "onlineStatuses"
-        }
-      ],
-      "concreteType": "UserConnection",
-      "kind": "LinkedField",
-      "name": "__TestConnections_user_friendsConnection_connection",
-      "plural": false,
+      "condition": "test",
+      "kind": "Condition",
+      "passingValue": true,
       "selections": [
         {
-          "alias": null,
-          "args": null,
-          "concreteType": "UserEdge",
+          "alias": "friendsConnection",
+          "args": [
+            {
+              "kind": "Variable",
+              "name": "beforeDate",
+              "variableName": "beforeDate"
+            },
+            {
+              "kind": "Variable",
+              "name": "statuses",
+              "variableName": "onlineStatuses"
+            }
+          ],
+          "concreteType": "UserConnection",
           "kind": "LinkedField",
-          "name": "edges",
-          "plural": true,
+          "name": "__TestConnections_user_friendsConnection_connection",
+          "plural": false,
           "selections": [
             {
               "alias": null,
               "args": null,
-              "concreteType": "User",
+              "concreteType": "UserEdge",
               "kind": "LinkedField",
-              "name": "node",
-              "plural": false,
+              "name": "edges",
+              "plural": true,
               "selections": [
                 {
                   "alias": null,
                   "args": null,
-                  "kind": "ScalarField",
-                  "name": "id",
+                  "concreteType": "User",
+                  "kind": "LinkedField",
+                  "name": "node",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "id",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "__typename",
+                      "storageKey": null
+                    }
+                  ],
                   "storageKey": null
                 },
                 {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "__typename",
+                  "name": "cursor",
                   "storageKey": null
                 }
               ],
@@ -172,40 +196,32 @@ let node: operationType = %raw(json` {
             {
               "alias": null,
               "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
+              "concreteType": "PageInfo",
+              "kind": "LinkedField",
+              "name": "pageInfo",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "endCursor",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "hasNextPage",
+                  "storageKey": null
+                }
+              ],
               "storageKey": null
             }
           ],
           "storageKey": null
         }
-      ],
-      "storageKey": null
+      ]
     },
     {
       "kind": "ClientExtension",
