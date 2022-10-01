@@ -1,6 +1,6 @@
 # master
 
-# 1.0.0-rc.5
+# 1.0.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
@@ -9,7 +9,7 @@ The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major
 ## Upgrade versions
 
 - `react-relay` and `relay-runtime` to `14.1.0`
-- `react` and `react-dom` to `18.0.0`
+- `react` and `react-dom` to `>=18.0.0`
 
 ## Remove Packages
 
@@ -29,6 +29,15 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 - Bindings for `requiredFieldLogger` for logging when missing fields are encountered (kudos [Emilios1995](https://github.com/Emilios1995)).
 - Improved utils for [dealing with enums](https://rescript-relay-documentation.vercel.app/docs/enums).
 - `recordSourceRecords` is now typed as `Js.Json.t` rather than being abstract.
+- Project now works in `"type": "module"` mode in `package.json` (kudos [cometkim](https://github.com/cometkim))
+- The field name of the `id` field of the `Node` interface is now configurable via `schemaConfig: {nodeInterfaceIdField: "idNameHere"}`.
+- Add support for experimental [Relay Resolvers](https://relay.dev/docs/next/guides/relay-resolvers). Undocumented so far, but looking at the [test](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/__tests__/Test_relayResolvers.res) and [definition file](https://github.com/zth/rescript-relay/blob/master/packages/rescript-relay/__tests__/TestRelayUserResolver.res) should give you a hint of how it works.
+- Support `@rescriptRelayIgnoreUnused` directive on fragment definitions to insert annotations that makes `reanalyze` consider all fields in the fragment used, even if they aren't.
+- Support `@rescriptRelayAllowUnsafeEnum` directive on fields selecting enums, which will ignore safety measures for enums, meaning you won't need to add a catch all clause, etc. It'll essentially output the enum as an _input_ enum (as desribed in the docs).
+- Support [provided variables](https://relay.dev/docs/api-reference/graphql-and-directives/#provided-variables). More info in the docs.
+- Windows support! :tada:
+- A `RelaySchemaAssets_graphql.res` is now emitted, containing type definitions for all enums and all input objects. This is designed to help with accessing and using enums and input objects outside of Relay's context. This means it'll be much easier to share makers for input objects, pass enums around, etc.
+- Each fragment with a `@connection` now emits a `makeConnectionId` function that allows you to generate _type safe_ connection IDs. More on why this is useful in the documentation.
 
 ## Breaking changes
 
@@ -44,6 +53,17 @@ You can go ahead and remove these packages, that are no longer needed, as the co
   This way you can surgically change only certain values when refetching, without having to keep track of the current values for the other values.
 
   More details on this [in the docs](https://rescript-relay-documentation.vercel.app/docs/refetching-and-loading-more-data#makerefetchvariables). Thanks to [@tsnobip](https://github.com/tsnobip) for fixing this!
+
+- All enum type definitions now reside in `RelaySchemaAssets_graphql.enum_<yourEnumName>`, and are _not_ generated on the operation itself anymore. So, if you previously referred to the actual enum _type_, like `Fragment.Types.enum_MyFineEnum`, you'll now need to refer to that enum type as `RelaySchemaAssets_graphql.enum_MyFineEnum`.
+- Input object fields with illegal names in ReScript previously had their maker function argument names suffixed with `_`, like `~type_: string`. This is now instead _prefixed_, like `~_type: string`. Prefixing like this instead of suffixing means we can ship fully zero cost maker functions, which we couldn't before for input objects with illegal field names.
+
+## Assorted Changes and Fixes
+
+- Add Environment isServer option @MoOx
+- Remove rescript from dependencies @anmonteiro
+- Add undocumented holdGC method on relay store @MoOx
+- Fixed `setLinkedRecordToNull`, `setLinkedRecordToUndefined`, `setLinkedRecordsToNull` and `setLinkedRecordsToUndefined` methods by binding them to `setValue` instead of `setLinkedRecord/s`. Previously they were throwing an error because `setLinkedRecord/s` did not support "deleting" values using them. (@reck753)
+- Fix long standing bug that would make whether connection helpers were emitted or not unreliable.
 
 ## 1.0.0 development changelog
 
@@ -71,7 +91,6 @@ You can go ahead and remove these packages, that are no longer needed, as the co
 ### rc.1
 
 - Restore half-broken connection helper function inlining.
--
 
 ### rc.0
 
