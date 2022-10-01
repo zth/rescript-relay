@@ -4,11 +4,11 @@
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_
 
-The time has finally come - RescriptRelay `1.0.0` is in beta! The one, big major thing this release brings is that the ReScript type generation for the Relay compiler has been completely rewritten, and fully integrated into the new Relay Rust compiler. The RescriptRelay fork of the compiler is available and maintained [here])(https://github.com/zth/relay/tree/rescript-relay).
+The time has finally come - RescriptRelay `1.0.0` is released! This version brings a ton of new features and improvements. One of the the big major things this release brings is that the ReScript type generation for the Relay compiler has been completely rewritten, and fully integrated into the new Relay Rust compiler. The RescriptRelay fork of the compiler is available and maintained [here])(https://github.com/zth/relay/tree/rescript-relay).
 
 ## Upgrade versions
 
-- `react-relay` and `relay-runtime` to `14.1.0`
+- `react-relay` and `relay-runtime` to `>=14.1.0`
 - `react` and `react-dom` to `>=18.0.0`
 
 ## Remove Packages
