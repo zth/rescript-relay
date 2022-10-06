@@ -102,6 +102,7 @@ module Utils = {
       | #Online
     ],
     ~recursed: recursiveSetOnlineStatusInput=?,
+    ~someJsonValue: Js.Json.t,
     unit
   ) => setOnlineStatusInput = ""
 

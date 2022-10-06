@@ -68,6 +68,7 @@ and input_RecursiveSetOnlineStatusInput = {
 @live
 and input_SetOnlineStatusInput = {
   onlineStatus: [#Online | #Idle | #Offline],
+  someJsonValue: Js.Json.t,
   recursed: option<input_RecursiveSetOnlineStatusInput>,
 }
 
@@ -129,6 +130,7 @@ external make_RecursiveSetOnlineStatusInput: (
 @live @obj
 external make_SetOnlineStatusInput: (
   ~onlineStatus: [#Online | #Idle | #Offline],
+  ~someJsonValue: Js.Json.t,
   ~recursed: input_RecursiveSetOnlineStatusInput=?,
   unit,
 ) => input_SetOnlineStatusInput = ""
