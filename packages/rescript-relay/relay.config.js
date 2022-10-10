@@ -6,6 +6,7 @@ module.exports = {
   customScalars: {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
+    JSON: "Js.Json.t",
   },
   featureFlags: {
     enable_relay_resolver_transform: true,

@@ -1,5 +1,9 @@
 # master
 
+## Bug Fixes
+
+- Fix issue with custom scalar of JSON values being accidentally mangled https://github.com/zth/rescript-relay/pull/395 @tsnobip
+
 # 1.0.0
 
 _[Here's a commit showing a project being upgraded to this version](https://github.com/zth/rescript-relay/commit/5831c2f1f0f13eedc1cb60468c32fd32b2dc01d3)_

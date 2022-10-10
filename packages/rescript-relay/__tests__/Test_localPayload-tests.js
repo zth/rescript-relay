@@ -7,13 +7,14 @@ const ReactTestUtils = require("react-dom/test-utils");
 const { test_query } = require("./Test_localPayload.bs");
 
 describe("LocalPayload", () => {
-  test("commiting a local payload works", async () => {
+  test("committing a local payload works", async () => {
     queryMock.mockQuery({
       name: "TestLocalPayloadQuery",
       variables: {},
       data: {
         loggedInUser: {
           id: "user-1",
+          onlineStatus: "Online",
           firstName: "First",
           avatarUrl: "avatar-url",
           memberOf: null,
@@ -42,6 +43,7 @@ describe("LocalPayload", () => {
       data: {
         loggedInUser: {
           id: "user-1",
+          onlineStatus: "Online",
           firstName: "First",
           avatarUrl: "avatar-url",
           memberOf: null,

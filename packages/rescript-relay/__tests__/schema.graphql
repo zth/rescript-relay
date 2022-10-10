@@ -1,5 +1,6 @@
 scalar Datetime
 scalar IntString
+scalar JSON
 
 input InputA {
   time: Datetime!
@@ -155,6 +156,7 @@ input RecursiveSetOnlineStatusInput {
 
 input SetOnlineStatusInput {
   onlineStatus: OnlineStatus!
+  someJsonValue: JSON!
   recursed: RecursiveSetOnlineStatusInput
 }
 

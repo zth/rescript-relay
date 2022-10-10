@@ -121,10 +121,20 @@ describe("Mutation", () => {
       variables: {
         input: {
           onlineStatus: "Idle",
+          someJsonValue: {
+            foo: null,
+            bar: [["Boz", ["other text"]]],
+            baz: "some string",
+          },
           recursed: {
             someValue: "100",
             setOnlineStatus: {
               onlineStatus: "Online",
+              someJsonValue: {
+                foo: null,
+                bar: [["Boz", ["other text"]]],
+                baz: "some string",
+              },
               recursed: {
                 someValue: "100",
               },

@@ -84,6 +84,19 @@ module Test = {
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (mutate, isMutating) = Mutation.use()
     let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
+    let someJsonValue =
+      [
+        ("foo", Js.Json.null),
+        (
+          "bar",
+          Js.Json.array([
+            Js.Json.array([Js.Json.string("Boz"), Js.Json.array([Js.Json.string("other text")])]),
+          ]),
+        ),
+        ("baz", Js.Json.string("some string")),
+      ]
+      ->Js.Dict.fromArray
+      ->Js.Json.object_
 
     <div>
       {React.string(
@@ -191,10 +204,12 @@ module Test = {
                 // recursive conversion would be broken.
                 ~input=make_setOnlineStatusInput(
                   ~onlineStatus=#Idle,
+                  ~someJsonValue,
                   ~recursed=make_recursiveSetOnlineStatusInput(
                     ~someValue=100,
                     ~setOnlineStatus=make_setOnlineStatusInput(
                       ~onlineStatus=#Online,
+                      ~someJsonValue,
                       ~recursed=make_recursiveSetOnlineStatusInput(~someValue=100, ()),
                       (),
                     ),
