@@ -561,6 +561,118 @@ describe("conversion", () => {
     ]);
   });
 
+  describe("blocking traversal", () => {
+    test("block", () => {
+      expect(
+        traverser(
+          {
+            input: {
+              onlineStatus: "Idle",
+              someJsonValue: {
+                foo: null,
+                bar: [["Boz", ["other text"]]],
+                baz: "some string",
+              },
+              recursed: {
+                someValue: "100",
+                setOnlineStatus: {
+                  onlineStatus: "Online",
+                  someJsonValue: {
+                    foo: null,
+                    bar: [["Boz", ["other text"]]],
+                    baz: "some string",
+                  },
+                  recursed: {
+                    someValue: "100",
+                  },
+                },
+              },
+            },
+          },
+          {
+            recursiveSetOnlineStatusInput: {
+              someValue: { c: "TestsUtils.IntString" },
+              setOnlineStatus: { r: "setOnlineStatusInput" },
+            },
+            setOnlineStatusInput: {
+              someJsonValue: { b: "" },
+              recursed: { r: "recursiveSetOnlineStatusInput" },
+            },
+            __root: { input: { r: "setOnlineStatusInput" } },
+          },
+          {
+            "TestsUtils.IntString": (v) => parseInt(v),
+          },
+          undefined
+        )
+      ).toEqual({
+        input: {
+          onlineStatus: "Idle",
+          someJsonValue: {
+            foo: null,
+            bar: [["Boz", ["other text"]]],
+            baz: "some string",
+          },
+          recursed: {
+            someValue: 100,
+            setOnlineStatus: {
+              onlineStatus: "Online",
+              someJsonValue: {
+                foo: null,
+                bar: [["Boz", ["other text"]]],
+                baz: "some string",
+              },
+              recursed: {
+                someValue: 100,
+              },
+            },
+          },
+        },
+      });
+    });
+
+    test("traversals can be blocked", () => {
+      expect(
+        traverser(
+          {
+            someJsonValue: { value: null },
+            someJsonValueInArr: [null, { value: null }, null],
+            someJsonValueAsArr: [null, { value: null }, null],
+            someJsonValueAsArrInArr: [null, [{ value: null }, null], null],
+          },
+          {
+            __root: {
+              someJsonValue: {
+                b: "",
+              },
+              someJsonValueInArr: {
+                b: "a",
+              },
+              someJsonValueAsArr: {
+                b: "",
+              },
+              someJsonValueAsArrInArr: {
+                b: "a",
+              },
+            },
+          },
+          {},
+          undefined,
+          undefined
+        )
+      ).toEqual({
+        someJsonValue: { value: null },
+        someJsonValueInArr: [undefined, { value: null }, undefined],
+        someJsonValueAsArr: [null, { value: null }, null],
+        someJsonValueAsArrInArr: [
+          undefined,
+          [{ value: null }, null],
+          undefined,
+        ],
+      });
+    });
+  });
+
   describe("regression - union not wrapped", () => {
     test("case 1", () => {
       expect(

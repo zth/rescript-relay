@@ -78,6 +78,16 @@ function traverse(
     var shouldConvertCustomField =
       typeof instructions["c"] === "string" && !!converters[instructions["c"]];
 
+    var shouldBlockTraversal = typeof instructions["b"] === "string";
+    var allowGoingIntoArray = shouldBlockTraversal
+      ? instructions["b"] === "a"
+      : true;
+
+    if (shouldBlockTraversal && !allowGoingIntoArray) {
+      newObj = getNewObj(newObj, currentObj);
+      continue;
+    }
+
     var shouldConvertUnion =
       typeof instructions["u"] === "string" && !!converters[instructions["u"]];
 
@@ -92,7 +102,6 @@ function traverse(
         if (v == null) {
           return nullableValue;
         }
-
         if (shouldConvertRootObj) {
           return traverser(
             v,
@@ -148,7 +157,7 @@ function traverse(
           }
         }
 
-        if (shouldAddFragmentFn && typeof v === "object") {
+        if (shouldAddFragmentFn && typeof v === "object" && !Array.isArray(v)) {
           var objWithFragmentFn = Object.assign({}, v);
           objWithFragmentFn.fragmentRefs = Object.assign({}, objWithFragmentFn);
           return objWithFragmentFn;
@@ -171,6 +180,7 @@ function traverse(
           nullableValue,
           instructions["r"]
         );
+        continue;
       }
 
       if (isTopLevelNodeField) {
@@ -238,7 +248,7 @@ function traverse(
         }
       }
 
-      if (shouldAddFragmentFn && typeof v === "object") {
+      if (shouldAddFragmentFn && typeof v === "object" && !Array.isArray(v)) {
         newObj = getNewObj(newObj, currentObj);
         var objWithFragmentFn = Object.assign({}, v);
         objWithFragmentFn.fragmentRefs = Object.assign({}, objWithFragmentFn);
@@ -264,10 +274,10 @@ function traverse(
           newObj = getNewObj(newObj, currentObj);
           newObj[key] = traversedObj;
         }
-      } else if (Array.isArray(originalValue)) {
+      } else if (Array.isArray(originalValue) && !shouldBlockTraversal) {
         newObj = getNewObj(newObj, currentObj);
         newObj[key] = nextObj.map(function (o) {
-          if (typeof o === "object" && o != null) {
+          if (typeof o === "object" && o != null && !Array.isArray(o)) {
             return traverse(
               fullInstructionMap,
               thisPath,
