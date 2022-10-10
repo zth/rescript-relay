@@ -1,5 +1,7 @@
 # master
 
+# 1.0.1
+
 ## Bug Fixes
 
 - Fix issue with custom scalar of JSON values being accidentally mangled https://github.com/zth/rescript-relay/pull/395 @tsnobip
