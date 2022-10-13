@@ -118,14 +118,14 @@ let make = (~user) => {
   // This creates an id for the connection above with `minimumCommonFriends` as 10, and `onlineStatuses` at its default value (which is `[Idle]`).
   // Notice that we use `__id` from the user - that's because `makeConnectionId` needs to know the _owner_ for the connection you're looking for. It doesn't need the field of the connection, just the owner itself.
   let connectionId =
-    user.__id->UserFriendsList_user_graphql.Utils.makeConnectionId(
+    user.__id->UserFriendsList_user_graphql.makeConnectionId(
       ~minimumCommonFriends=10,
       (),
     )
 
   // This creates an id with both `minimumCommonFriends` and `onlineStatuses` having explicit values.
   let connectionId2 =
-    user.__id->UserFriendsList_user_graphql.Utils.makeConnectionId(
+    user.__id->UserFriendsList_user_graphql.makeConnectionId(
       ~minimumCommonFriends=10,
       ~onlineStatuses=[#Online, #Idle],
       (),
