@@ -1,5 +1,7 @@
 # master
 
+- Add ReScript 10 compat in peerDependencies https://github.com/zth/rescript-relay/pull/397 @MoOx
+
 # 1.0.1
 
 ## Bug Fixes
