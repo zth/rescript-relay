@@ -77,6 +77,7 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
   external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestConnections2_user_member_friendsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
 )
 
+@live
 let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Js.null<TestsUtils.Datetime.t>=Js.null, ~flt: Js.null<float>=Js.null, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t, ()) => {
   let datetime = datetime->Js.Null.toOption
   let datetime = switch datetime { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }

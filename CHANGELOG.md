@@ -1,6 +1,13 @@
 # master
 
+## Bug Fixes
+
+- `private` is now correctly marked as a reserved word.
+
+## Improvements
+
 - Add ReScript 10 compat in peerDependencies https://github.com/zth/rescript-relay/pull/397 @MoOx
+- `makeConnectionId` helpers are now marked as `@live` to not trigger the dead code analysis.
 
 # 1.0.1
 

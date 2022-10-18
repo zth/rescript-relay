@@ -29,6 +29,7 @@ input SomeInput {
   int: Int
   datetime: Datetime
   recursive: SomeInput
+  private: Boolean
 }
 
 interface Node {
@@ -64,6 +65,7 @@ type User implements Node {
   onlineStatus: OnlineStatus
   nicknames: [String!]!
   createdAt: Datetime!
+  private: Boolean
   someRandomArgField(
     bool: Boolean
     someInput: SomeInput

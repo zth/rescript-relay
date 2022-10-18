@@ -96,6 +96,7 @@ let connectionKey = "TestPaginationUnion_query_members"
   external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationUnion_query_members") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
 )
 
+@live
 let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
   let groupId = Some(groupId)
   let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}

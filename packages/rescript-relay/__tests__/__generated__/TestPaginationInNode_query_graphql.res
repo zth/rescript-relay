@@ -51,6 +51,7 @@ let connectionKey = "TestPaginationInNode_friendsConnection"
   external internal_makeConnectionId: (RescriptRelay.dataId, @as("TestPaginationInNode_friendsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
 )
 
+@live
 let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
   let args = {"statuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)
