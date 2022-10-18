@@ -1,5 +1,7 @@
 # master
 
+# 1.0.2
+
 ## Bug Fixes
 
 - `private` is now correctly marked as a reserved word.
