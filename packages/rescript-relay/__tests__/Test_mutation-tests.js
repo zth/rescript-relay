@@ -19,6 +19,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });
@@ -38,6 +39,7 @@ describe("Mutation", () => {
             firstName: "First",
             lastName: "Name",
             onlineStatus: "Idle",
+            someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
           },
         },
       },
@@ -60,6 +62,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });
@@ -79,6 +82,7 @@ describe("Mutation", () => {
             firstName: "First",
             lastName: "Name",
             onlineStatus: "Idle",
+            someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
           },
         },
       },
@@ -109,6 +113,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });
@@ -169,6 +174,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });
@@ -188,6 +194,7 @@ describe("Mutation", () => {
             firstName: "First",
             lastName: "Name",
             onlineStatus: "Idle",
+            someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
           },
         },
       },
@@ -216,6 +223,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });
@@ -235,6 +243,7 @@ describe("Mutation", () => {
             firstName: "First",
             lastName: "Name",
             onlineStatus: "Idle",
+            someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
           },
         },
       },
@@ -259,6 +268,7 @@ describe("Mutation", () => {
           lastName: "Name",
           onlineStatus: "Online",
           memberOf,
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
       },
     });

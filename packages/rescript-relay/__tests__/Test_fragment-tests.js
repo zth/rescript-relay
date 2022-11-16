@@ -16,13 +16,14 @@ describe("Fragment", () => {
           firstName: "First",
           lastName: "Last",
           onlineStatus: "Online",
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
         users: null,
       },
     });
 
     t.render(test_fragment());
-    await t.screen.findByText("First is online");
+    await t.screen.findByText("First is online and day is 3.0");
   });
 
   test("plural fragments work", async () => {
@@ -34,6 +35,7 @@ describe("Fragment", () => {
           firstName: "First",
           lastName: "Last",
           onlineStatus: "Online",
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
         users: {
           edges: [
@@ -72,6 +74,7 @@ describe("Fragment", () => {
           firstName: "First",
           lastName: "Last",
           onlineStatus: "Online",
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
         users: null,
       },
@@ -101,6 +104,7 @@ describe("Fragment", () => {
           firstName: "First",
           lastName: "Last",
           onlineStatus: "Online",
+          someCustomScalar: `{ "name": "First", "timestamp": "2022-11-16T10:59:57.846Z" }`,
         },
         users: null,
       },

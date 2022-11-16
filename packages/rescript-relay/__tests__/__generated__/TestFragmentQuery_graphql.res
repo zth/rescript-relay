@@ -235,6 +235,13 @@ return {
             "storageKey": null
           },
           {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "someCustomScalar",
+            "storageKey": null
+          },
+          {
             "kind": "ClientExtension",
             "selections": [
               {
@@ -290,12 +297,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1d110c375b41debc8478f4df010b0fb3",
+    "cacheID": "6225662b409447bfc1f80e13e3fe7393",
     "id": null,
     "metadata": {},
     "name": "TestFragmentQuery",
     "operationKind": "query",
-    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    ...TestFragment_allowUnsafeEnum\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_allowUnsafeEnum on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "query TestFragmentQuery {\n  loggedInUser {\n    ...TestFragment_user\n    ...TestFragment_inline\n    ...TestFragment_allowUnsafeEnum\n    id\n  }\n  users {\n    edges {\n      node {\n        id\n        onlineStatus\n        ...TestFragment_plural_user\n      }\n    }\n  }\n}\n\nfragment TestFragment_allowUnsafeEnum on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_inline on User {\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_plural_user on User {\n  id\n  firstName\n  onlineStatus\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n  someCustomScalar\n}\n"
   }
 };
 })() `)

@@ -7,6 +7,7 @@ module.exports = {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
     JSON: "Js.Json.t",
+    SomeRecord: "TestsUtils.SomeRecord",
   },
   featureFlags: {
     enable_relay_resolver_transform: true,

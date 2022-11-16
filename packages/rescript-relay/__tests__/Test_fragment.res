@@ -29,6 +29,7 @@ module Fragment = %relay(`
       firstName
       onlineStatus
       ...TestFragment_sub_user
+      someCustomScalar
     }
 `)
 
@@ -121,7 +122,9 @@ module Test = {
         switch data.onlineStatus {
         | Some(#Online) => "online"
         | _ => "-"
-        }),
+        }) ++
+        " and day is " ++
+        data.someCustomScalar.timestamp->Js.Date.getDay->Belt.Float.toString,
       )}
       {switch users->Belt.Array.length {
       | 0 => React.null

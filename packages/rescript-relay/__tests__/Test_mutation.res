@@ -45,6 +45,7 @@ module Fragment = %relay(`
       firstName
       lastName
       onlineStatus
+      someCustomScalar
       memberOf {
         __typename
         ... on User {
@@ -132,6 +133,7 @@ module Test = {
                     ~id=data.id,
                     ~firstName=data.firstName,
                     ~lastName=data.lastName,
+                    ~someCustomScalar=data.someCustomScalar,
                     ~memberOf=[
                       Some(
                         #User({
@@ -239,6 +241,7 @@ module Test = {
                     ~onlineStatus=#Idle,
                     ~firstName=data.firstName,
                     ~lastName=data.lastName,
+                    ~someCustomScalar=data.someCustomScalar,
                     (),
                   ),
                   (),

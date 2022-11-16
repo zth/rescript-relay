@@ -155,6 +155,13 @@ return {
           {
             "alias": null,
             "args": null,
+            "kind": "ScalarField",
+            "name": "someCustomScalar",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
             "concreteType": null,
             "kind": "LinkedField",
             "name": "memberOf",
@@ -206,12 +213,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d3f38be28b6ab5f607e13d37697e05dc",
+    "cacheID": "837ae306e94b66125392e8ae55926701",
     "id": null,
     "metadata": {},
     "name": "TestMutationQuery",
     "operationKind": "query",
-    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "query TestMutationQuery {\n  loggedInUser {\n    ...TestMutation_user\n    id\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  someCustomScalar\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)

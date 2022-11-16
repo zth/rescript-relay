@@ -24,6 +24,7 @@ module Types = {
     lastName: string,
     memberOf: option<array<option<fragment_memberOf>>>,
     onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+    someCustomScalar: TestsUtils.SomeRecord.t,
   }
 }
 
@@ -53,11 +54,12 @@ module Internal = {
   type fragmentRaw
   @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"memberOf":{"u":"fragment_memberOf"}}}`
+    json`{"__root":{"someCustomScalar":{"c":"TestsUtils.SomeRecord"},"memberOf":{"u":"fragment_memberOf"}}}`
   )
   @live
   let fragmentConverterMap = {
     "fragment_memberOf": unwrap_fragment_memberOf,
+    "TestsUtils.SomeRecord": TestsUtils.SomeRecord.parse,
   }
   @live
   let convertFragment = v => v->RescriptRelay.convertObj(
@@ -130,6 +132,13 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "onlineStatus",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "someCustomScalar",
       "storageKey": null
     },
     {

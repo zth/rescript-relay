@@ -25,6 +25,7 @@ module Types = {
       | #Offline
       | #Online
     ]>,
+    someCustomScalar: TestsUtils.SomeRecord.t,
   }
   @live
   and rawResponse_setOnlineStatus = {
@@ -93,10 +94,12 @@ module Internal = {
   type wrapRawResponseRaw
   @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"setOnlineStatus_user_someCustomScalar":{"c":"TestsUtils.SomeRecord"}}}`
   )
   @live
-  let wrapRawResponseConverterMap = ()
+  let wrapRawResponseConverterMap = {
+    "TestsUtils.SomeRecord": TestsUtils.SomeRecord.serialize,
+  }
   @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
@@ -107,10 +110,12 @@ module Internal = {
   type rawResponseRaw
   @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"setOnlineStatus_user_someCustomScalar":{"c":"TestsUtils.SomeRecord"}}}`
   )
   @live
-  let rawResponseConverterMap = ()
+  let rawResponseConverterMap = {
+    "TestsUtils.SomeRecord": TestsUtils.SomeRecord.parse,
+  }
   @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
@@ -161,6 +166,7 @@ module Utils = {
       | #Offline
       | #Online
     ]=?,
+    ~someCustomScalar: TestsUtils.SomeRecord.t,
     unit
   ) => rawResponse_setOnlineStatus_user = ""
 
@@ -285,6 +291,13 @@ return {
                 "storageKey": null
               },
               {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "someCustomScalar",
+                "storageKey": null
+              },
+              {
                 "kind": "ClientExtension",
                 "selections": [
                   {
@@ -305,12 +318,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4268475f132103f907cf195a54f2934d",
+    "cacheID": "bba11b18bec4d244832b70c93cc83ec1",
     "id": null,
     "metadata": {},
     "name": "TestMutationSetOnlineStatusMutation",
     "operationKind": "mutation",
-    "text": "mutation TestMutationSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      id\n      onlineStatus\n      ...TestFragment_user\n    }\n  }\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n}\n"
+    "text": "mutation TestMutationSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      id\n      onlineStatus\n      ...TestFragment_user\n    }\n  }\n}\n\nfragment TestFragment_sub_user on User {\n  lastName\n}\n\nfragment TestFragment_user on User {\n  firstName\n  onlineStatus\n  ...TestFragment_sub_user\n  someCustomScalar\n}\n"
   }
 };
 })() `)

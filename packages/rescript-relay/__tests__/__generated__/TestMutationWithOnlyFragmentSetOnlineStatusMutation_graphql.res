@@ -43,6 +43,7 @@ module Types = {
       | #Offline
       | #Online
     ]>,
+    someCustomScalar: TestsUtils.SomeRecord.t,
   }
   @live
   and rawResponse_setOnlineStatus = {
@@ -132,11 +133,12 @@ module Internal = {
   type wrapRawResponseRaw
   @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
+    json`{"__root":{"setOnlineStatus_user_someCustomScalar":{"c":"TestsUtils.SomeRecord"},"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
   @live
   let wrapRawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
+    "TestsUtils.SomeRecord": TestsUtils.SomeRecord.serialize,
   }
   @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
@@ -148,11 +150,12 @@ module Internal = {
   type rawResponseRaw
   @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
+    json`{"__root":{"setOnlineStatus_user_someCustomScalar":{"c":"TestsUtils.SomeRecord"},"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
   )
   @live
   let rawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
+    "TestsUtils.SomeRecord": TestsUtils.SomeRecord.parse,
   }
   @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(
@@ -220,6 +223,7 @@ module Utils = {
       | #Offline
       | #Online
     ]=?,
+    ~someCustomScalar: TestsUtils.SomeRecord.t,
     unit
   ) => rawResponse_setOnlineStatus_user = ""
 
@@ -344,6 +348,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "someCustomScalar",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "memberOf",
@@ -398,12 +409,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "322a5bb9a0514feff61365f595c40d31",
+    "cacheID": "636529fd0ec4452897b0d28eb5e0cfa2",
     "id": null,
     "metadata": {},
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
     "operationKind": "mutation",
-    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  someCustomScalar\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)
