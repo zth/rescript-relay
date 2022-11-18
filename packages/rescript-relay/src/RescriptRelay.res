@@ -70,8 +70,7 @@ type featureFlags = {
 @module("relay-runtime")
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
-@module("./utils")
-external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
+let convertObj = Utils.convertObj
 
 let optArrayOfNullableToOptArrayOfOpt: option<array<Js.Nullable.t<'a>>> => option<
   array<option<'a>>,
@@ -573,8 +572,8 @@ module Store = {
     make(
       source,
       {
-        gcReleaseBufferSize,
-        queryCacheExpirationTime,
+        gcReleaseBufferSize: gcReleaseBufferSize,
+        queryCacheExpirationTime: queryCacheExpirationTime,
       },
     )
 
@@ -751,9 +750,9 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       C.query,
       variables->C.convertVariables,
       {
-        fetchKey,
+        fetchKey: fetchKey,
         fetchPolicy: fetchPolicy->mapFetchPolicy,
-        networkCacheConfig,
+        networkCacheConfig: networkCacheConfig,
       },
     )
 
