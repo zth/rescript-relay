@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -39,7 +39,6 @@
     "test:ci": "jest --ci --runInBand"
   },
   "devDependencies": {
-    "rescript": "^10.0.0",
     "@rescript/react": "0.10.3",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
@@ -51,7 +50,8 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-relay": "14.1.0",
-    "relay-runtime": "14.1.0"
+    "relay-runtime": "14.1.0",
+    "rescript": "^10.0.0"
   },
   "peerDependencies": {
     "@rescript/react": "*",
