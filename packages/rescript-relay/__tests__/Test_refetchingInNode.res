@@ -43,14 +43,14 @@ module UserDisplayer = {
       <button
         onClick={_ => {
           startTransition(() => {
-            let _: RescriptRelay.Disposable.t = refetch(
+            refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=None,
                 (),
               ),
               (),
-            )
+            )->RescriptRelay.Disposable.ignore
           })
         }}>
         {React.string("Fetch online status")}

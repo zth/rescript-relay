@@ -1,6 +1,8 @@
 # master
 
-# 1.0.3
+## Improvements
+
+- Add `RescriptRelay.Disposable.ignore` for more ergonomic handling of ignoring disposables.
 
 ## Bug Fixes
 

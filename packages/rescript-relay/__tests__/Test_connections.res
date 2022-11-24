@@ -140,7 +140,7 @@ module Test = {
       ->React.array}
       <button
         onClick={_ => {
-          let _: RescriptRelay.Disposable.t = addFriend(
+          addFriend(
             ~variables=AddFriendMutation.makeVariables(
               ~connections={
                 open TestConnections_user_graphql
@@ -149,7 +149,7 @@ module Test = {
               ~friendId="123",
             ),
             (),
-          )
+          )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Add friend")}
       </button>

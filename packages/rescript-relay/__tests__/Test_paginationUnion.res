@@ -111,14 +111,14 @@ module Test = {
       <button
         onClick={_ => {
           startTransition(() => {
-            let _: RescriptRelay.Disposable.t = refetch(
+            refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
                 ~onlineStatuses=Some([#Online, #Idle]),
                 (),
               ),
               (),
-            )
+            )->RescriptRelay.Disposable.ignore
           })
         }}>
         {React.string("Refetch connection")}

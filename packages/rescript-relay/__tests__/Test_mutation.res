@@ -121,66 +121,62 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          let _: RescriptRelay.Disposable.t = {
-            open MutationWithOnlyFragment
-            commitMutation(
-              ~environment,
-              ~variables=makeVariables(~onlineStatus=#Idle),
-              ~optimisticResponse=makeOptimisticResponse(
-                ~setOnlineStatus=make_rawResponse_setOnlineStatus(
-                  ~user=make_rawResponse_setOnlineStatus_user(
-                    ~id=data.id,
-                    ~firstName=data.firstName,
-                    ~lastName=data.lastName,
-                    ~memberOf=[
-                      Some(
-                        #User({
-                          __typename: #User,
-                          firstName: "test",
-                          id: "123",
-                          __isNode: #User,
-                        }),
-                      ),
-                    ],
-                    ~onlineStatus=#Idle,
-                    (),
-                  ),
+          open MutationWithOnlyFragment
+          commitMutation(
+            ~environment,
+            ~variables=makeVariables(~onlineStatus=#Idle),
+            ~optimisticResponse=makeOptimisticResponse(
+              ~setOnlineStatus=make_rawResponse_setOnlineStatus(
+                ~user=make_rawResponse_setOnlineStatus_user(
+                  ~id=data.id,
+                  ~firstName=data.firstName,
+                  ~lastName=data.lastName,
+                  ~memberOf=[
+                    Some(
+                      #User({
+                        __typename: #User,
+                        firstName: "test",
+                        id: "123",
+                        __isNode: #User,
+                      }),
+                    ),
+                  ],
+                  ~onlineStatus=#Idle,
                   (),
                 ),
                 (),
               ),
               (),
-            )
-          }
+            ),
+            (),
+          )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change online status with only fragment")}
       </button>
       <button
         onClick={_ => {
-          let _: RescriptRelay.Disposable.t = {
-            open MutationWithInlineFragment
-            commitMutation(
-              ~environment,
-              ~variables=makeVariables(~onlineStatus=#Idle),
-              ~onCompleted=(response, _) => {
-                setInlineStatus(_ => "completed")
-                switch response {
-                | {setOnlineStatus: Some({user: Some(user)})} =>
-                  let inlineData = InlineFragment.readInline(user.fragmentRefs)
-                  setInlineStatus(_ =>
-                    switch inlineData.onlineStatus {
-                    | Some(#Online) => "online"
-                    | Some(#Idle) => "idle"
-                    | Some(#Offline) => "offline"
-                    | _ => "unknown"
-                    }
-                  )
-                | _ => ignore()
-                }
-              },
-              (),
-            )
-          }
+          open MutationWithInlineFragment
+          commitMutation(
+            ~environment,
+            ~variables=makeVariables(~onlineStatus=#Idle),
+            ~onCompleted=(response, _) => {
+              setInlineStatus(_ => "completed")
+              switch response {
+              | {setOnlineStatus: Some({user: Some(user)})} =>
+                let inlineData = InlineFragment.readInline(user.fragmentRefs)
+                setInlineStatus(_ =>
+                  switch inlineData.onlineStatus {
+                  | Some(#Online) => "online"
+                  | Some(#Idle) => "idle"
+                  | Some(#Offline) => "offline"
+                  | _ => "unknown"
+                  }
+                )
+              | _ => ignore()
+              }
+            },
+            (),
+          )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change online status with inline fragment")}
       </button>

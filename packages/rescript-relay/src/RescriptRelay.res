@@ -463,6 +463,7 @@ module Disposable = {
   type t
 
   @send external dispose: t => unit = "dispose"
+  external ignore: t => unit = "%ignore"
 }
 
 type cacheConfig = {
@@ -573,8 +574,8 @@ module Store = {
     make(
       source,
       {
-        gcReleaseBufferSize,
-        queryCacheExpirationTime,
+        gcReleaseBufferSize: gcReleaseBufferSize,
+        queryCacheExpirationTime: queryCacheExpirationTime,
       },
     )
 
@@ -751,9 +752,9 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       C.query,
       variables->C.convertVariables,
       {
-        fetchKey,
+        fetchKey: fetchKey,
         fetchPolicy: fetchPolicy->mapFetchPolicy,
-        networkCacheConfig,
+        networkCacheConfig: networkCacheConfig,
       },
     )
 

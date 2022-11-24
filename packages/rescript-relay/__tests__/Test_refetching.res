@@ -53,14 +53,14 @@ module Test = {
       <button
         onClick={_ => {
           startTransition(() => {
-            let _: RescriptRelay.Disposable.t = refetch(
+            refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=Some([#Online, #Offline]),
                 (),
               ),
               (),
-            )
+            )->RescriptRelay.Disposable.ignore
           })
         }}>
         {React.string("Fetch online status")}

@@ -784,6 +784,8 @@ module Disposable: {
   type t
 
   @ocaml.doc("Dispose the `Disposable`.") @send external dispose: t => unit = "dispose"
+
+  @ocaml.doc("Ignore this disposable.") external ignore: t => unit = "%ignore"
 }
 
 @ocaml.doc(

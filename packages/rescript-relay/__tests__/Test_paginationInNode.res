@@ -85,10 +85,10 @@ module UserNodeDisplayer = {
       <button
         onClick={_ => {
           startTransition(() => {
-            let _: RescriptRelay.Disposable.t = refetch(
+            refetch(
               ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
               (),
-            )
+            )->RescriptRelay.Disposable.ignore
           })
         }}>
         {React.string("Refetch connection")}
