@@ -55,7 +55,7 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
 
         const spinner = ora("Analyzing ReScript project").start();
 
-        const p = cp.spawn("npx", ["reanalyze", "-dce"]);
+        const p = cp.spawn("npx", ["--yes", "reanalyze", "-dce"]);
 
         if (p.stdout == null) {
           console.error("Something went wrong.");

@@ -1,5 +1,11 @@
 # master
 
+# 1.0.3
+
+## Bug Fixes
+
+- Fix the `remove-unused-fields` script for CI with Node.js version >14 in [#409](https://github.com/zth/rescript-relay/pull/409)
+
 # 1.0.2
 
 ## Bug Fixes
