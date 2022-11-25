@@ -131,7 +131,7 @@ jobs:
           target: ${{ matrix.target.target }}
       - name: Install packages
         if: matrix.target.os == 'ubuntu-latest' && matrix.target.packages
-        run: sudo apt install ${{ matrix.target.packages }} -y
+        run: sudo apt update && sudo apt install ${{ matrix.target.packages }} -y
       - uses: actions-rs/cargo@v1
         with:
           command: build
