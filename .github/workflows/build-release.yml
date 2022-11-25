@@ -110,7 +110,7 @@ jobs:
             build-name: relay
             artifact-name: relay-compiler-macos-arm64
           - target: x86_64-unknown-linux-musl
-            os: Ubuntu-20.04
+            os: ubuntu-latest
             build-name: relay
             artifact-name: relay-compiler-linux-musl
             packages: musl-tools
@@ -126,7 +126,7 @@ jobs:
           submodules: "true"
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: 1.64.0
           override: true
           target: ${{ matrix.target.target }}
       - name: Install packages
