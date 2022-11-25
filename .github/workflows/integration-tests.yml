@@ -9,7 +9,7 @@ on:
 jobs:
   run_integration_tests:
     name: Integration tests
-    runs-on: Ubuntu-20.04
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -21,7 +21,7 @@ jobs:
           CI: true
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.64.0
+          toolchain: stable
           override: true
       - name: Install esy
         run: npm install -g esy
