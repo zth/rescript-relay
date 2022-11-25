@@ -113,7 +113,7 @@ jobs:
             os: ubuntu-latest
             build-name: relay
             artifact-name: relay-compiler-linux-musl
-            packages: musl-tools
+            packages: musl-tools libssl-dev
             features: vendored
           - target: x86_64-pc-windows-msvc
             os: windows-latest
