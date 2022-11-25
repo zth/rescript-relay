@@ -101,7 +101,7 @@ jobs:
             os: Ubuntu-20.04
             build-name: relay
             artifact-name: relay-compiler-linux-x64
-            packages: libssl-dev
+            packages: musl-tools libssl-dev
           - target: x86_64-apple-darwin
             os: macos-latest
             build-name: relay
