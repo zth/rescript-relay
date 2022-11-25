@@ -101,6 +101,7 @@ jobs:
             os: ubuntu-latest
             build-name: relay
             artifact-name: relay-compiler-linux-x64
+            packages: libssl-dev
           - target: x86_64-apple-darwin
             os: macos-latest
             build-name: relay
