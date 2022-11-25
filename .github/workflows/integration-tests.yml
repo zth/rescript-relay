@@ -9,7 +9,7 @@ on:
 jobs:
   run_integration_tests:
     name: Integration tests
-    runs-on: ubuntu-20
+    runs-on: Ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
