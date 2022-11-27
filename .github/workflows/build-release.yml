@@ -97,11 +97,11 @@ jobs:
     strategy:
       matrix:
         target:
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-            build-name: relay
-            artifact-name: relay-compiler-linux-x64
-            packages: musl-tools libssl-dev pkg-config
+          #- target: x86_64-unknown-linux-gnu
+          #  os: ubuntu-latest
+          #  build-name: relay
+          #  artifact-name: relay-compiler-linux-x64
+          #  packages: musl-tools libssl-dev pkg-config
           - target: x86_64-apple-darwin
             os: macos-latest
             build-name: relay
@@ -114,7 +114,7 @@ jobs:
             os: ubuntu-latest
             build-name: relay
             artifact-name: relay-compiler-linux-musl
-            packages: musl-tools libssl-dev pkg-config
+            packages: musl-tools
             features: vendored
           - target: x86_64-pc-windows-msvc
             os: windows-latest
