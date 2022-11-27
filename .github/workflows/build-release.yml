@@ -98,7 +98,7 @@ jobs:
       matrix:
         target:
           - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
+            os: Ubuntu-20.04
             build-name: relay
             artifact-name: relay-compiler-linux-x64
           - target: x86_64-apple-darwin
@@ -126,12 +126,12 @@ jobs:
           submodules: "true"
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: 1.64.0
           override: true
           target: ${{ matrix.target.target }}
       - name: Install packages
         if: matrix.target.os == 'ubuntu-latest' && matrix.target.packages
-        run: sudo apt install ${{ matrix.target.packages }} -y
+        run: sudo apt update && sudo apt install ${{ matrix.target.packages }} -y
       - uses: actions-rs/cargo@v1
         with:
           command: build
