@@ -97,29 +97,29 @@ jobs:
     strategy:
       matrix:
         target:
-          #- target: x86_64-unknown-linux-gnu
-          #  os: ubuntu-latest
-          #  build-name: relay
-          #  artifact-name: relay-compiler-linux-x64
-          #  packages: musl-tools libssl-dev pkg-config
-          - target: x86_64-apple-darwin
-            os: macos-latest
-            build-name: relay
-            artifact-name: relay-compiler-macos-x64
-          - target: aarch64-apple-darwin
-            os: macos-latest
-            build-name: relay
-            artifact-name: relay-compiler-macos-arm64
-          - target: x86_64-unknown-linux-musl
+          - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             build-name: relay
-            artifact-name: relay-compiler-linux-musl
-            packages: musl-tools
-            features: vendored
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            build-name: relay.exe
-            artifact-name: relay-compiler-win-x64
+            artifact-name: relay-compiler-linux-x64
+            packages: libssl-dev pkg-config
+          #- target: x86_64-apple-darwin
+          #  os: macos-latest
+          #  build-name: relay
+          #  artifact-name: relay-compiler-macos-x64
+          #- target: aarch64-apple-darwin
+          #  os: macos-latest
+          #  build-name: relay
+          #  artifact-name: relay-compiler-macos-arm64
+          #- target: x86_64-unknown-linux-musl
+          #  os: ubuntu-latest
+          #  build-name: relay
+          #  artifact-name: relay-compiler-linux-musl
+          #  packages: musl-tools
+          #  features: vendored
+          #- target: x86_64-pc-windows-msvc
+          #  os: windows-latest
+          #  build-name: relay.exe
+          #  artifact-name: relay-compiler-win-x64
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@v2
