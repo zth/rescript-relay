@@ -1,5 +1,7 @@
 # master
 
+# 1.0.4
+
 ## Improvements
 
 - Improved autocomplete for fragments etc (pulled from upstream Relay compiler). https://github.com/facebook/relay/pull/4134
