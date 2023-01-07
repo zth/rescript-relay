@@ -4,6 +4,10 @@ title: GraphQL and Relay
 sidebar_label: GraphQL and Relay
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # GraphQL and Relay
 
 This section is an overview to situate Relay in relation to GraphQL, React, and the other parts of the stack. Don’t worry about understanding every detail, just try to get the gist and the proceed to the next section to start working with code. Much more specifics will be explained as we go through working examples throughout the tutorial.

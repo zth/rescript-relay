@@ -4,6 +4,10 @@ title: Queries for Interactions
 sidebar_label: Queries for Interactions
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Queries for Interactions
 
 We’ve seen how fragments let us specify data requirements in each component, yet at runtime perform only a single query for an entire screen. Here we’ll look at a situation where we _want_ a second query on the same screen. This will also let us explore some more features of GraphQL queries.

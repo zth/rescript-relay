@@ -4,6 +4,10 @@ title: Fragments
 sidebar_label: Fragments
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Fragments
 
 Fragments are one of the distinguishing features of Relay. They let each component declare its own data needs independently, while retaining the efficiency of a single query. In this section, we’ll show how to split a query up into fragments.

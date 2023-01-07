@@ -4,6 +4,10 @@ title: GraphQL Types, Interfaces, and Polymorphism
 sidebar_label: GraphQL Types, Interfaces, and Polymorphism
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # GraphQL Types, Interfaces, and Polymorphism
 
 In this section, we’ll see how to treat different types of nodes differently. You might notice that some of the newsfeed stories in the example app are posted by people, while others are posted by organizations. In this example, we'll enhance our hovercard by writing a fragment that selects people-specific information about people and organization-specific information about organizations.

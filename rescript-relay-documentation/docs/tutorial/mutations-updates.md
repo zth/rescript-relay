@@ -4,6 +4,10 @@ title: Mutations & Updates
 sidebar_label: Mutations & Updates
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Mutations & Updates
 
 In this chapter we’ll learn how to update data on the server and client. We’ll go through two main examples:

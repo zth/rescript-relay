@@ -4,6 +4,10 @@ title: Connections & Pagination
 sidebar_label: Connections & Pagination
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Connections & Pagination
 
 In this section, we’ll see how to handle collections of many items, including paginated lists and infinite scrolling. In Relay, paginated and infinite-scrolled lists are handled using an abstraction known as a _Connection_.

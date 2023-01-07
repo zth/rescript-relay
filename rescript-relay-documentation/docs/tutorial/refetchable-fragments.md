@@ -4,6 +4,10 @@ title: Refetchable Fragments
 sidebar_label: Refetchable Fragments
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Refetchable Fragments
 
 In this section, we'll look at how to fetch different data in response to user input.

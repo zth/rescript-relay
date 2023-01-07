@@ -4,6 +4,10 @@ title: Query Basics
 sidebar_label: Query Basics
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Query Basics
 
 In this section:

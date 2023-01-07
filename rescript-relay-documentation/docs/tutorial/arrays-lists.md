@@ -4,6 +4,10 @@ title: Arrays and Lists
 sidebar_label: Arrays and Lists
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Arrays and Lists
 
 So far we’ve only dealt with components that have a single instance of the components they’re composed from. For example, we’re only showing a single Newsfeed story, and within that story there’s just a single author with a single profile picture. Let’s look at how to handle more than one of something.

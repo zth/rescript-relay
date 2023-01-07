@@ -4,6 +4,10 @@ title: Intro
 sidebar_label: Intro
 ---
 
+:::info
+This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
+:::
+
 # Tutorial Intro
 
 This tutorial will get you started with the most important and frequently-used features of Relay. To do that, we’ll build a simple app that displays a newsfeed. We will cover:
