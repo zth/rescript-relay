@@ -19,12 +19,12 @@ import TabItem from '@theme/TabItem';
 
 To start with, let’s say we want our Story component to show the date that the story was posted. To do that, we need some more data from the server, so we’re going to have to add a field to the query.
 
-Go to `Newsfeed.tsx` and find `NewsfeedQuery` so that you can add the new field:
+Go to `Newsfeed.res` and find `NewsfeedQuery` so that you can add the new field:
 
 ```
-const NewsfeedQuery = graphql`
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
-    top_story {
+    topStory {
       title
       summary
       // change-line
@@ -40,25 +40,15 @@ const NewsfeedQuery = graphql`
       }
     }
   }
-`;
+`)
 ```
 
-Now go to `Story.tsx` and modify it to display the date:
+Now go to `Story.res` and modify it to display the date:
 
 ```
-// change-line
-import Timestamp from './Timestamp';
-
-type Props = {
-  story: {
-    // change-line
-    createdAt: string; // Add this line
-    ...
-  };
-};
-
-export default function Story({story}: Props) {
-  return (
+@react.component
+let make = (~story: NewsfeedQuery_graphql.Types.response_topStory) => {
+  (
     <Card>
       <PosterByline person={story.poster} />
       <Heading>{story.title}</Heading>
@@ -73,11 +63,11 @@ export default function Story({story}: Props) {
 
 The date should now appear. And thanks to GraphQL, we didn't have to write and deploy any new server code.
 
-But if you think about it, why should you have had to modify `Newsfeed.tsx`? Shouldn’t React components be self-contained? Why should Newsfeed care about the specific data required by Story? What if the data was required by some child component of Story way down in the hierarchy? What if it was a component that was used in many different places? Then we would have to modify many components whenever its data requirements changed.
+But if you think about it, why should you have had to modify `Newsfeed.res`? And why does `Story.res` need to refer to the types produced by the query that happens to be using it? Shouldn’t React components be self-contained? Why should Newsfeed care about the specific data required by Story? What if the data was required by some child component of Story way down in the hierarchy? What if it was a component that was used in many different places? Then we would have to modify many components whenever its data requirements changed.
 
-The avoid these and many other problems, we can move the data requirements for the Story component into `Story.tsx`.
+The avoid these and many other problems, we can move the data requirements for the Story component into `Story.res`.
 
-We do this by splitting off `Story`’s data requirements into a _fragment_ defined in `Story.tsx`. Fragments are separate pieces of GraphQL that the Relay compiler stitches together into complete queries. They allow each component to define its own data requirements, without paying the cost at runtime of each component running its own queries.
+We do this by splitting off `Story`’s data requirements into a _fragment_ defined in `Story.res`. Fragments are separate pieces of GraphQL that the Relay compiler stitches together into complete queries. They allow each component to define its own data requirements, without paying the cost at runtime of each component running its own queries.
 
 ![The Relay compiler combines the fragment into the place it's spread](/img/docs/tutorial/fragments-newsfeed-story-compilation.png)
 
@@ -87,12 +77,10 @@ Let’s go ahead and split `Story`’s data requirements into a fragment now.
 
 ### Step 1 — Define a fragment
 
-Add the following to `Story.tsx` (within `src/components`) above the `Story` component:
+Add the following to `Story.res` (within `src/components`) above the `Story` component:
 
 ```
-import { graphql } from 'relay-runtime';
-
-const StoryFragment = graphql`
+module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
     summary
@@ -107,49 +95,47 @@ const StoryFragment = graphql`
       url
     }
   }
-`;
+`)
 ```
 
 Note that we’ve taken all of the selections from within `topStory` in our query and copied them into this new Fragment declaration. Like queries, fragments have a name (`StoryFragment`), which we’ll use in a moment, but they also have a GraphQL type (`Story`) that they’re “on”. This means that this fragment can be used whenever we have a Story node in the graph.
 
 ### Step 2 — Spread the fragment
 
-Go to `Newsfeed.tsx` and modify `NewsfeedQuery` to look like this:
+Go to `Newsfeed.res` and modify `NewsfeedQuery` to look like this:
 
 ```
-const NewsfeedQuery = graphql`
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStory {
       // change-line
       ...StoryFragment
     }
   }
-`;
+`)
 ```
 
 We’ve replaced the selections inside `topStory` with `StoryFragment`. The Relay compiler will make sure that all of Story’s data gets fetched from now on, without having to change `Newsfeed`.
 
-### Step 3 — Call useFragment
+### Step 3 — Call Fragment.use
 
-You’ll notice that Story now renders an empty card! All the data is missing! Wasn’t Relay supposed to include the fields selected by the fragment in the `story` object obtained from `useLazyLoadQuery()`?
+You’ll notice that Story now renders an empty card! All the data is missing! Wasn’t Relay supposed to include the fields selected by the fragment in the `story` object obtained from `NewsfeedQuery.use()`?
 
 The reason is that Relay hides them. Unless a component specifically asks for the data for a certain fragment, that data will not be visible to the component. This is called _data masking_, and enforces that components don’t implicitly rely on another component’s data dependencies, but declare all of their dependencies within their own fragments. This keeps components self-contained and maintainable.
 
 Without data masking, you could never remove a field from a fragment, because it would be hard to verify that some other component somewhere wasn’t using it.
 
-To access the data selected by a fragment, we use a hook called `useFragment`. Modify `Story` to look like this:
+To access the data selected by a fragment, we use a hook called `Fragment.use`. Modify `Story` to look like this:
 
 ```
-import { useFragment } from 'react-relay';
-
-export default function Story({story}: Props) {
-  const data = useFragment(
+@react.component
+let make = (~story) => {
+  let data = StoryFragment.use(
     // color1
-    StoryFragment,
-    // color2
-    story,
-  );
-  return (
+    story
+  )
+
+  (
     <Card>
       <Heading>{data.title}</Heading>
       <PosterByline person={data.poster} />
@@ -161,15 +147,14 @@ export default function Story({story}: Props) {
 }
 ```
 
-`useFragment` takes two arguments:
+`Fragment.use` takes one argument:
 
-- The <span className="color1">GraphQL tagged string</span> literal for the fragment we want to read
 - The same <span className="color2">story object</span> as we used before, which comes from the place within a GraphQL query where we spread the fragment. This is called a _fragment key_.
 
 It returns the data selected by that fragment.
 
 :::tip
-We’ve rewritten `story` to `data` (the data returned by `useFragment`) in all of the JSX here; make sure to do the same in your copy of the component, or it won't work.
+We’ve rewritten `story` to `data` (the data returned by `Fragment.use`) in all of the JSX here; make sure to do the same in your copy of the component, or it won't work.
 :::
 
 Fragment keys are the places in a GraphQL query response where a fragment was spread. For example, given the Newsfeed query:
@@ -182,31 +167,17 @@ query NewsfeedQuery {
 }
 ```
 
-Then if `queryResult` is the object returned by `useLazyLoadQuery`, `queryResult.topStory` will be a fragment key for `StoryFragment`.
+Then if `queryResult` is the object returned by `NewsfeedQuery.use`, `queryResult.topStory` will have a property called `fragmentRefs` which contains the fragment key for `StoryFragment`.
 
-Technically, `queryResult.topStory` is an object that contains some hidden fields that tell Relay's `useFragment` where to look for the data it needs. The fragment key specifies both which node to read from (here there's just one story, but soon we'll have multiple stories), and what fields can be read out (the fields selected by that specific fragment). The `useFragment` hook then reads that specific information out of Relay's local data store.
+Technically, `queryResult.topStory.fragmentRefs` is an object that contains some hidden fields that tell Relay where to look for the data it needs. The fragment key specifies both which node to read from (here there's just one story, but soon we'll have multiple stories), and what fields can be read out (the fields selected by that specific fragment). The `Fragment.use` hook then reads that specific information out of Relay's local data store.
 
 :::note
 As we'll see in later examples, you can spread multiple fragments into the same place in a query, and also mix fragment spreads with directly-selected fields.
 :::
 
-### Step 4 — TypeScript types for fragment refs
+### Step 4 — Type safety
 
-To complete the fragmentization, we also need to change the type definition for `Props` so that TypeScript knows this component expects to receive a fragment key instead of the raw data.
-
-Recall that when you spread a fragment into a query (or another fragment), the part of the query result corresponding to where you spread the fragment becomes a _fragment key_ for that fragment. This is the object that you pass to a component in its props in order to give it a specific place in the graph to read the fragment from.
-
-To make this type-safe, Relay generates a type that represents the fragment key for that specific fragment — this way, if you try to use a component without spreading its fragment into your query, you won’t be able to provide a fragment key that satisfies the type system. Here are the changes we need to make:
-
-```
-// change-line
-import type {StoryFragment$key} from './__generated__/StoryFragment.graphql';
-
-type Props = {
-  // change-line
-  story: StoryFragment$key;
-};
-```
+You don't need to take any extra steps for this to be type safe. ReScript will automatically ensure that you're passing the correct object with the correct fragment keys needed, as well as infer that the data from `Fragment.use` is the data your fragment defines.
 
 With that done, we have a `Newsfeed` that no longer has to care what data `Story` requires, yet can still fetch that data up-front within its own query.
 
@@ -218,8 +189,7 @@ The `PosterByline` component used by `Story` renders the poster’s name and pro
 
 - Declare a `PosterBylineFragment` on `Actor` and specify the fields it needs (`name`, `profilePicture`). The `Actor` type represents a person or organization that can post a story.
 - Spread that fragment within `poster` in `StoryFragment`.
-- Call `useFragment` to retrieve the data.
-- Update the Props to accept a `PosterBylineFragment$key` as the `person` prop.
+- Call `use` on the fragment to retrieve the data.
 
 It’s worth going through these steps a second time, to get the mechanics of using fragments under your fingers. There are a lot of parts here that need to slot together in the right way.
 
@@ -237,16 +207,14 @@ For example, notice that the `Image` component is used in two places: directly w
 
 ### Step 1 — Define the fragment
 
-Open up `Image.tsx` and add a Fragment definition:
+Open up `Image.res` and add a Fragment definition:
 
 ```
-import { graphql } from 'relay-runtime';
-
-const ImageFragment = graphql`
+module ImageFragment = %relay(`
   fragment ImageFragment on Image {
     url
   }
-`;
+`)
 ```
 
 ### Step 2 — Spread the fragment
@@ -254,10 +222,10 @@ const ImageFragment = graphql`
 Go back to `StoryFragment` and `PosterBylineFragment` and spread `ImageFragment` into it in each place where the `Image` component is what’s using the data:
 
 <Tabs>
-  <TabItem value="1" label="Story.tsx" default>
+  <TabItem value="1" label="Story.res" default>
 
 ```
-const StoryFragment = graphql`
+module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
     summary
@@ -270,14 +238,14 @@ const StoryFragment = graphql`
       ...ImageFragment
     }
   }
-`;
+`)
 ```
 
   </TabItem>
-  <TabItem value="2" label="PosterByline.tsx">
+  <TabItem value="2" label="PosterByline.res">
 
 ```
-const PosterBylineFragment = graphql`
+module PosterBylineFragment = %relay(`
   fragment PosterBylineFragment on Actor {
     name
     profilePicture {
@@ -285,7 +253,7 @@ const PosterBylineFragment = graphql`
       ...ImageFragment
     }
   }
-`;
+`)
 ```
 
   </TabItem>
@@ -296,17 +264,10 @@ const PosterBylineFragment = graphql`
 Modify the `Image` component to read the fields using its fragment, and also modify its Props to accept the fragment key:
 
 ```
-import { useFragment } from 'react-relay';
-import type { ImageFragment$key } from "./__generated__/ImageFragment.graphql";
-
-type Props = {
-  image: ImageFragment$key;
-  ...
-};
-
-function Image({image}: Props) {
-  const data = useFragment(ImageFragment, image);
-  return <img key={data.url} src={data.url} ... />
+@react.component
+let make = (~image) {
+  let data = ImageFragment.use(image)
+  <img key={data.url} src={data.url} ... />
 }
 ```
 
@@ -319,19 +280,20 @@ For example, let’s add an `altText` label for accessibility to the `Image` com
 Edit `ImageFragment` as follows:
 
 ```
-const ImageFragment = graphql`
+module ImageFragment = %relay(`
   fragment ImageFragment on Image {
     url
     // change-line
     altText
   }
-`;
+`)
 ```
 
 Now, without editing Story, Newsfeed, or any other component, all of the images within our query will have alt text fetched for them. So we just need to modify `Image` to use the new field:
 
 ```
-function Image({image}) {
+@react.component
+let make = (~image) => {
   // ...
   <img
     // change-line
@@ -379,7 +341,7 @@ Now of course, we don’t want to just hard-code a specific size into `ImageFrag
 To do that, edit `ImageFragment` as follows:
 
 ```
-const ImageFragment = graphql`
+module ImageFragment = %relay(`
   fragment ImageFragment on Image
     @argumentDefinitions(
       // color1
@@ -403,7 +365,7 @@ const ImageFragment = graphql`
     )
     altText
   }
-`;
+`)
 ```
 
 Let’s break this down:
@@ -438,10 +400,10 @@ Besides these, GraphQL servers can specify additional directives as part of thei
 Now the different fragments using `Image` can pass in the appropriate size for each image:
 
 <Tabs>
-  <TabItem value="1" label="Story.tsx" default>
+  <TabItem value="1" label="Story.res" default>
 
 ```
-const StoryFragment = graphql`
+module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
     summary
@@ -454,14 +416,14 @@ const StoryFragment = graphql`
       ...ImageFragment @arguments(width: 400)
     }
   }
-`;
+`)
 ```
 
   </TabItem>
-  <TabItem value="2" label="PosterByline.tsx">
+  <TabItem value="2" label="PosterByline.res">
 
 ```
-const PosterBylineFragment = graphql`
+module PosterBylineFragment = %relay(`
   fragment PosterBylineFragment on Actor {
     name
     profilePicture {
@@ -469,7 +431,7 @@ const PosterBylineFragment = graphql`
       ...ImageFragment @arguments(width: 60, height: 60)
     }
   }
-`;
+`)
 ```
 
   </TabItem>
@@ -486,8 +448,8 @@ Field arguments (e.g. `url(height: 100)`) are a feature of GraphQL itself, while
 Fragments are the most distinctive aspect of how Relay uses GraphQL. We recommend that every component that displays data and cares about the semantics of that data (so not just a typographic or formatting component) use a GraphQL fragment to declare its data dependences.
 
 - Fragments help you scale: No matter how many places a component is used, you can update its data dependencies in a single place.
-- Fragment data needs to be read out with `useFragment`.
-- `useFragment` takes a _fragment key_ which says where in the graph to read from.
+- Fragment data needs to be read out with the `use` hook for the fragment.
+- `use` takes a _fragment key_ which says where in the graph to read from.
 - Fragment keys come from places in a GraphQL response where that fragment was spread.
 - Fragments can define arguments which are used at the point they’re spread. This allows them to be tailored to each situation they're used in.
 

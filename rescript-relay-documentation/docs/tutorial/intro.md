@@ -19,7 +19,7 @@ This tutorial will get you started with the most important and frequently-used f
 
 This tutorial assumes a fair familiarity with React. If you’re still new to React, we suggest going through the [React tutorial](https://reactjs.org/tutorial/) and working with React until you’re comfortable with creating components, passing props, and using the basic hooks such as `useState`. The tutorial is based on the Web, but Relay also works great with React Native.
 
-This tutorial is built with TypeScript, so [very basic knowledge of TypeScript](https://www.typescriptlang.org/docs/) is helpful as well — you don’t need to know anything beyond declaring and importing types and annotating functions. Relay can also be used with the Flow type system or without a type system.
+This tutorial is built with ReScript, so [very basic knowledge of ReScript](https://rescript-lang.org/docs/manual/latest/introduction) is helpful as well.
 
 :::info
 **IMPORTANT**: The tutorial is meant to be gone through in order, as the exercises build on each other. You’ll be making incremental changes to an example app, so later section won’t make sense if you haven’t done the earlier sections.
@@ -30,7 +30,7 @@ This tutorial is built with TypeScript, so [very basic knowledge of TypeScript](
 To get started, run the following commands:
 
 ```
-git clone https://github.com/relayjs/relay-examples.git
+git clone https://github.com/zth/relay-examples.git
 cd relay-examples/newsfeed
 npm install
 npm run dev
@@ -42,7 +42,7 @@ When you run `npm run dev`, several processes are started:
 
 - A Webpack-based HTTP server that serves up the front-end code.
 - A basic GraphQL server that that front-end will query to retrieve information.
-- The Relay compiler, which processes the GraphQL in your app and generates additional files that Relay uses at runtime, as well as TypeScript types representing the inputs and results of your queries. It will automatically regenerate when you save changes in your files.
+- The Relay compiler, which processes the GraphQL in your app and generates additional files that Relay uses at runtime, as well as ReScript code representing the inputs and results of your queries. It will automatically regenerate when you save changes in your files.
 
 In the terminal output, these three processes’ log output are marked with tags: `[webpack]` in yellow, `[server]` in green, and `[relay]` in blue. Keep a look out for errors marked with `[relay]` as these are helpful if your GraphQL has any mistakes.
 
@@ -55,12 +55,12 @@ We start from a webpage that shows a single Newsfeed story rendered with React, 
 The files that make up the example app are laid out in this way:
 
 - `src/components` — the front-end app components that we’ll be modifying and working with. Some of the important components are:
-  - `App.tsx` — the top-level component
-  - `Newsfeed.tsx` — a component that will run a query to fetch newsfeed stories and display a scrolling list of stories. At the beginning of the tutorial, this component uses hard-coded placeholder data — we’ll modify it to fetch data via GraphQL and Relay.
-  - `Story.tsx` — a component that shows a single newsfeed story.
+  - `App.res` — the top-level component
+  - `Newsfeed.res` — a component that will run a query to fetch newsfeed stories and display a scrolling list of stories. At the beginning of the tutorial, this component uses hard-coded placeholder data — we’ll modify it to fetch data via GraphQL and Relay.
+  - `Story.res` — a component that shows a single newsfeed story.
 - `server` — a very basic GraphQL server that serves up example data
   - `server/schema.graphql` — the GraphQL schema: it specifies what information can be queried from the server via GraphQL.
 
-Finally, you may want to install the [Relay VSCode extension](https://marketplace.visualstudio.com/items?itemName=meta.relay) for autocomplete, errors, and other help when using VSCode.
+Finally, you may want to install the [RescriptRelay VSCode extension](https://marketplace.visualstudio.com/items?itemName=GabrielNordeborn.vscode-rescript-relay=meta.relay) for autocomplete, errors, and other help when using VSCode.
 
 Head over to the next section to start learning about GraphQL and Relay.

@@ -48,11 +48,11 @@ Response:
 
 As it happens, the schema in our example app has a `topStories` field that returns a list of Stories, as opposed to the `topStory` field we're currently using that returns just one.
 
-To show multiple stories on our newsfeed, we just need to modify `Newsfeed.tsx` to use `topStories`.
+To show multiple stories on our newsfeed, we just need to modify `Newsfeed.res` to use `topStories`.
 
 ### Step 1 — Select a list in the fragment
 
-Open `Newsfeed.tsx` and find `NewsfeedQuery`. Replace `topStory` with `topStories`.
+Open `Newsfeed.res` and find `NewsfeedQuery`. Replace `topStory` with `topStories`.
 
 ```
 const NewsfeedQuery = graphql`
@@ -70,16 +70,21 @@ const NewsfeedQuery = graphql`
 In the `Newsfeed` component, `data.topStories` will now be an array of fragment refs, each of which can be passed to a `Story` child component to render that story:
 
 ```
-export default function Newsfeed({}) {
-  const data = useLazyLoadQuery<NewsfeedQueryType>(NewsfeedQuery, {});
+@react.component
+let make = () => {
+  let data = NewsfeedQuery.use(~variables=(), ())
   // change-line
-  const stories = data.topStories;
+  let stories = data.topStories
   return (
     <div className="newsfeed">
       // change-line
-      {stories.map(story => <Story story={story} />)}
+      {stories
+        // change-line
+        ->Array.map(story => <Story story={story.fragmentRefs} />)
+        // change-line
+        ->React.array}
     </div>
-  );
+  )
 }
 ```
 
@@ -98,7 +103,7 @@ It's always important to heed this warning, and more specifically to base keys o
 Luckily, GraphQL nodes generally have IDs. We can simply select the `id` field of `story` and use it as a key:
 
 ```
-const NewsfeedQuery = graphql`
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStories {
       // change-line
@@ -106,28 +111,29 @@ const NewsfeedQuery = graphql`
       ...StoryFragment
     }
   }
-`;
+`)
 
 ...
-
-export default function Newsfeed({}) {
-  const data = useLazyLoadQuery<NewsfeedQueryType>(NewsfeedQuery, {});
-  const stories = data.topStories;
+@react.component
+let make = () => {
+  let data = NewsfeedQuery.use(~variables=(), ())
+  let stories = data.topStories
   return (
     <div className="newsfeed">
-      {stories.map(story => (
-        <Story
-          // change-line
-          key={story.id}
-          story={story}
-        />
-      )}
+      {stories
+        ->Array.map(story =>
+          <Story
+            // change-line
+            key={story.id}
+            story={story.fragmentRefs}
+          />)
+        ->React.array}
     </div>
-  );
+  )
 }
 ```
 
-With that, we've got a collection of Stories on the screen. It's worth pointing out that here we're mixing individual fields with fragment spreads in the same place in our query. This means that Newsfeed can read the fields it cares about (directly from `useLazyLoadQuery`) while Story can read the fields it cares about (via `useFragment`). The _same object_ both contains Newsfeed's selected field `id` and is also a fragment key for `StoryFragment`.
+With that, we've got a collection of Stories on the screen. It's worth pointing out that here we're mixing individual fields with fragment spreads in the same place in our query. This means that Newsfeed can read the fields it cares about (directly from `Newsfeed.use`) while Story can read the fields it cares about (via `StoryFragment.use`). The _same object_ both contains Newsfeed's selected field `id` and is also a fragment key for `StoryFragment`.
 
 :::tip
 GraphQL Lists are only the most basic way of dealing with collections of things. We’ll build on them to do pagination and infinite scrolling later in the tutorial, using a special system called Connections. You’ll want to use Connections in most situations where you have a collection of items — although you’ll still use GraphQL Lists as a building block.

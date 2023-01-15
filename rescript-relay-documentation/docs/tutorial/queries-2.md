@@ -45,14 +45,14 @@ mv future/* src/components
 Now, if you did the exercise to make `PosterByline` use fragments, the `PosterByline` component should look something like this:
 
 ```
-export default function PosterByline({ poster }: Props): React.ReactElement {
-  const data = useFragment(PosterBylineFragment, poster);
-  return (
-    <div className="byline">
-      <Image image={data.profilePicture} width={60} height={60} className="byline__image" />
-      <div className="byline__name" ref={hoverRef}>{data.name}</div>
-    </div>
-  );
+@react.component
+let make = (~poster) => {
+  let data = PosterBylineFragment.use(poster)
+
+  <div className="byline">
+    <Image image={data.profilePicture} width={60} height={60} className="byline__image" />
+    <div className="byline__name" ref={hoverRef}>{data.name}</div>
+  </div>
 }
 ```
 
