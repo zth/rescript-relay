@@ -21,7 +21,7 @@ To start with, let’s say we want our Story component to show the date that the
 
 Go to `Newsfeed.res` and find `NewsfeedQuery` so that you can add the new field:
 
-```
+```rescript
 module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStory {
@@ -45,10 +45,8 @@ module NewsfeedQuery = %relay(`
 
 Now go to `Story.res` and modify it to display the date:
 
-```
-@react.component
-let make = (~story: NewsfeedQuery_graphql.Types.response_topStory) => {
-  (
+```rescript
+  ...
     <Card>
       <PosterByline person={story.poster} />
       <Heading>{story.title}</Heading>
@@ -57,13 +55,12 @@ let make = (~story: NewsfeedQuery_graphql.Types.response_topStory) => {
       <Image image={story.image} />
       <StorySummary summary={story.summary} />
     </Card>
-  );
-}
+  ...
 ```
 
 The date should now appear. And thanks to GraphQL, we didn't have to write and deploy any new server code.
 
-But if you think about it, why should you have had to modify `Newsfeed.res`? And why does `Story.res` need to refer to the types produced by the query that happens to be using it? Shouldn’t React components be self-contained? Why should Newsfeed care about the specific data required by Story? What if the data was required by some child component of Story way down in the hierarchy? What if it was a component that was used in many different places? Then we would have to modify many components whenever its data requirements changed.
+But if you think about it, why should you have had to modify `Newsfeed.res`? Shouldn’t React components be self-contained? Why should Newsfeed care about the specific data required by Story? And why should `Story.res` care about the types produced by the Newsfeed query? What if the data was required by some child component of Story way down in the hierarchy? What if it was a component that was used in many different places? Then we would have to modify many components whenever its data requirements changed.
 
 The avoid these and many other problems, we can move the data requirements for the Story component into `Story.res`.
 
@@ -79,8 +76,8 @@ Let’s go ahead and split `Story`’s data requirements into a fragment now.
 
 Add the following to `Story.res` (within `src/components`) above the `Story` component:
 
-```
-module StoryFragment = %relay(`
+```rescript
+module Fragment = %relay(`
   fragment StoryFragment on Story {
     title
     summary
@@ -100,16 +97,16 @@ module StoryFragment = %relay(`
 
 Note that we’ve taken all of the selections from within `topStory` in our query and copied them into this new Fragment declaration. Like queries, fragments have a name (`StoryFragment`), which we’ll use in a moment, but they also have a GraphQL type (`Story`) that they’re “on”. This means that this fragment can be used whenever we have a Story node in the graph.
 
-### Step 2 — Spread the fragment
+### Step 2 — Spread the fragment and pass it to Story
 
 Go to `Newsfeed.res` and modify `NewsfeedQuery` to look like this:
 
-```
+```rescript
 module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStory {
       // change-line
-      ...StoryFragment
+      ...StoryFragment // Add this and delete everything else within "topStory { }"
     }
   }
 `)
@@ -117,35 +114,83 @@ module NewsfeedQuery = %relay(`
 
 We’ve replaced the selections inside `topStory` with `StoryFragment`. The Relay compiler will make sure that all of Story’s data gets fetched from now on, without having to change `Newsfeed`.
 
-### Step 3 — Call Fragment.use
+Modify the make function to pass in the fragment
+
+```rescript
+@react.component
+let make = () => {
+  let data = NewsfeedQuery.use(~variables=(), ())
+
+  switch data.topStory {
+  | None => React.null
+  | Some(topStory) =>
+    <div className="newsfeed">
+      <Story story={topStory.fragmentRefs} />
+    </div>
+  }
+}
+```
+
+### Step 3 — Use the Fragment in Story
+:::warning Keeping here for reference but somewhat different case in ReScript. We can't make Rescript compile without using the fragment
 
 You’ll notice that Story now renders an empty card! All the data is missing! Wasn’t Relay supposed to include the fields selected by the fragment in the `story` object obtained from `NewsfeedQuery.use()`?
 
 The reason is that Relay hides them. Unless a component specifically asks for the data for a certain fragment, that data will not be visible to the component. This is called _data masking_, and enforces that components don’t implicitly rely on another component’s data dependencies, but declare all of their dependencies within their own fragments. This keeps components self-contained and maintainable.
 
 Without data masking, you could never remove a field from a fragment, because it would be hard to verify that some other component somewhere wasn’t using it.
+:::
 
-To access the data selected by a fragment, we use a hook called `Fragment.use`. Modify `Story` to look like this:
+Story is still uses the `Story.story` type that was defined from the beginning. Now that it defines its own data requirements with the fragment, we can use this directly instead of a separate type. To access the data selected by a fragment, we use a hook called `Fragment.use`. Modify `Story` to look like this:
 
-```
+
+```rescript
 @react.component
 let make = (~story) => {
-  let data = StoryFragment.use(
-    // color1
-    story
-  )
+  let data = Fragment.use(story)
 
-  (
-    <Card>
-      <Heading>{data.title}</Heading>
-      <PosterByline person={data.poster} />
-      <Timestamp time={data.createdAt} />
-      <Image image={data.image} />
-      <StorySummary summary={data.summary} />
-    </Card>
-  );
+  let summary = switch data.summary {
+  | None => "Failed to load story summary"
+  | Some(summary) => summary
+  }
+
+  let poster: PosterByline.poster = {
+    name: switch data.poster.name {
+    | None => "Failed to load poster name"
+    | Some(name) => name
+    },
+    profilePicture: switch data.poster.profilePicture {
+    | None => None
+    | Some({url}) => {
+        open Image
+        Some({url: url})
+      }
+    },
+  }
+
+  let thumbnail = switch data.thumbnail {
+  | None => None
+  | Some({url}) => {
+      open Image
+      Some({url: url})
+    }
+  }
+
+  <Card>
+    <PosterByline poster={poster} />
+    <Heading> {data.title->React.string} </Heading>
+    <Timestamp time={data.createdAt} />
+    <Image image={thumbnail} width={400} height={400} />
+    <StorySummary summary={summary} />
+  </Card>
 }
 ```
+
+`Fragment.use` takes one argument:
+
+- The same <span className="color2">story object</span> as we used before, which comes from the place within a GraphQL query where we spread the fragment. This is called a _fragment key_.
+
+It returns the data selected by that fragment.
 
 `Fragment.use` takes one argument:
 
@@ -190,6 +235,7 @@ The `PosterByline` component used by `Story` renders the poster’s name and pro
 - Declare a `PosterBylineFragment` on `Actor` and specify the fields it needs (`name`, `profilePicture`). The `Actor` type represents a person or organization that can post a story.
 - Spread that fragment within `poster` in `StoryFragment`.
 - Call `use` on the fragment to retrieve the data.
+- Reshape `profilePicture` in `PosterByline.re` in the same way as `thumbnail` in `Story.res`, to make it compatible with `Image.res`
 
 It’s worth going through these steps a second time, to get the mechanics of using fragments under your fingers. There are a lot of parts here that need to slot together in the right way.
 
@@ -205,17 +251,31 @@ For example, notice that the `Image` component is used in two places: directly w
 
 ![Fragment can be used in multiple places](/img/docs/tutorial/fragments-image-two-places-compiled.png)
 
-### Step 1 — Define the fragment
+### Step 1 — Define and use the fragment
 
 Open up `Image.res` and add a Fragment definition:
 
-```
+```rescript
 module ImageFragment = %relay(`
   fragment ImageFragment on Image {
     url
   }
 `)
 ```
+
+and use this fragment in the render function
+
+```rescript
+@react.component
+let make = (~image) {
+  let data = ImageFragment.use(image)
+  <img key={data.url} src={data.url} ... />
+}
+```
+
+:::warning
+Something about the option handling no longer being there. Maybe it's actually better to have the option handling in PosterByline? I think so
+:::
 
 ### Step 2 — Spread the fragment
 
@@ -224,7 +284,7 @@ Go back to `StoryFragment` and `PosterBylineFragment` and spread `ImageFragment`
 <Tabs>
   <TabItem value="1" label="Story.res" default>
 
-```
+```rescript
 module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
@@ -244,7 +304,7 @@ module StoryFragment = %relay(`
   </TabItem>
   <TabItem value="2" label="PosterByline.res">
 
-```
+```rescript
 module PosterBylineFragment = %relay(`
   fragment PosterBylineFragment on Actor {
     name
@@ -259,19 +319,9 @@ module PosterBylineFragment = %relay(`
   </TabItem>
 </Tabs>
 
-### Step 3 — Call useFragment
 
-Modify the `Image` component to read the fields using its fragment, and also modify its Props to accept the fragment key:
 
-```
-@react.component
-let make = (~image) {
-  let data = ImageFragment.use(image)
-  <img key={data.url} src={data.url} ... />
-}
-```
-
-### Step 4 — Modify once, enjoy everywhere
+### Step 3 — Modify once, enjoy everywhere
 
 Now that we’ve fragmentized Image’s data requirements and co-located them within the component, we can add new data dependencies to Image without modifying any of the components that use it.
 
@@ -279,7 +329,7 @@ For example, let’s add an `altText` label for accessibility to the `Image` com
 
 Edit `ImageFragment` as follows:
 
-```
+```rescript
 module ImageFragment = %relay(`
   fragment ImageFragment on Image {
     url
@@ -291,7 +341,7 @@ module ImageFragment = %relay(`
 
 Now, without editing Story, Newsfeed, or any other component, all of the images within our query will have alt text fetched for them. So we just need to modify `Image` to use the new field:
 
-```
+```rescript
 @react.component
 let make = (~image) => {
   // ...
@@ -340,7 +390,7 @@ Now of course, we don’t want to just hard-code a specific size into `ImageFrag
 
 To do that, edit `ImageFragment` as follows:
 
-```
+```rescript
 module ImageFragment = %relay(`
   fragment ImageFragment on Image
     @argumentDefinitions(
@@ -402,7 +452,7 @@ Now the different fragments using `Image` can pass in the appropriate size for e
 <Tabs>
   <TabItem value="1" label="Story.res" default>
 
-```
+```rescript
 module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
@@ -422,7 +472,7 @@ module StoryFragment = %relay(`
   </TabItem>
   <TabItem value="2" label="PosterByline.res">
 
-```
+```rescript
 module PosterBylineFragment = %relay(`
   fragment PosterBylineFragment on Actor {
     name

@@ -54,7 +54,7 @@ To show multiple stories on our newsfeed, we just need to modify `Newsfeed.res` 
 
 Open `Newsfeed.res` and find `NewsfeedQuery`. Replace `topStory` with `topStories`.
 
-```
+```rescript
 const NewsfeedQuery = graphql`
   query NewsfeedQuery {
     // change-line
@@ -69,22 +69,21 @@ const NewsfeedQuery = graphql`
 
 In the `Newsfeed` component, `data.topStories` will now be an array of fragment refs, each of which can be passed to a `Story` child component to render that story:
 
-```
+```rescript
 @react.component
 let make = () => {
   let data = NewsfeedQuery.use(~variables=(), ())
-  // change-line
-  let stories = data.topStories
-  return (
+  
+  switch topStories {
+  | None => React.null
+  | Some(stories) =>
     <div className="newsfeed">
-      // change-line
       {stories
-        // change-line
-        ->Array.map(story => <Story story={story.fragmentRefs} />)
-        // change-line
-        ->React.array}
+      ->Belt.Array.keepMap(x => x)
+      ->Belt.Array.map(story => <Story story={story.fragmentRefs} />)
+      ->React.array}
     </div>
-  )
+  }
 }
 ```
 
@@ -102,7 +101,7 @@ It's always important to heed this warning, and more specifically to base keys o
 
 Luckily, GraphQL nodes generally have IDs. We can simply select the `id` field of `story` and use it as a key:
 
-```
+```rescript
 module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStories {
@@ -113,23 +112,21 @@ module NewsfeedQuery = %relay(`
   }
 `)
 
-...
 @react.component
 let make = () => {
-  let data = NewsfeedQuery.use(~variables=(), ())
-  let stories = data.topStories
-  return (
+  let {topStories} = NewsfeedQuery.use(~variables=(), ())
+
+  switch topStories {
+  | None => React.null
+  | Some(stories) =>
     <div className="newsfeed">
       {stories
-        ->Array.map(story =>
-          <Story
-            // change-line
-            key={story.id}
-            story={story.fragmentRefs}
-          />)
-        ->React.array}
+      ->Belt.Array.keepMap(x => x)
+      // change-line
+      ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+      ->React.array}
     </div>
-  )
+  }
 }
 ```
 

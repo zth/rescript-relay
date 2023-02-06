@@ -66,18 +66,21 @@ type Organization implements Actor {
 
 Both of these types have `name` , `profilePicture`, and `joined`, so they can both declare that they implement Actor and thus can be used wherever an Actor is called for in the schema and in fragments. They also have other fields that are distinct to each particular type.
 
-Let’s see how to work with interfaces more by extending the `PosterDetailsHovercardContentsBody` component to display the location of a `Person` or the organization kind of an `Organization`. These are fields that are only present on those specific types, not on the `Actor` interface.
+Let’s see how to work with interfaces more by extending the `PosterDetailsHovercardContentsBody` component in `PosterDetailsHovercardContents.res` to display the location of a `Person` or the organization kind of an `Organization`. These are fields that are only present on those specific types, not on the `Actor` interface.
 
-Right now, if you’ve followed along so far, it should have a fragment defined like this (in `PosterDetailsHovercardContents.tsx`):
+Right now, if you’ve followed along so far, it should have a fragment defined like this:
 
-```
-fragment PosterDetailsHovercardContentsBodyFragment on Actor {
-  name
-  joined
-  profilePicture {
-    ...ImageFragment
+```rescript
+module PosterDetailsHovercardContentsBodyFragment = %relay(`
+  fragment PosterDetailsHovercardContentsBodyFragment on Actor {
+    id
+    name
+    joined
+    profilePicture {
+      ...ImageFragment
+    }
   }
-}
+`)
 ```
 
 If you try to add a field like `organizationKind` to this fragment, you’ll get an error from the Relay compiler:
@@ -86,69 +89,61 @@ If you try to add a field like `organizationKind` to this fragment, you’ll get
 ✖︎ The type `Actor` has no field organizationKind
 ```
 
-This is because when we define a fragment as being on an interface, we can only use fields from that interface. To use fields from a specific type that implements the interface, we use a _type refinement_ to tell GraphQL we’re selecting fields from that type:
+This is because when we define a fragment as being on an interface, we can only use fields from that interface. To use fields from a specific type that implements the interface, we use a _type refinement_ to tell GraphQL we’re selecting fields from that type. Change the fragment so that you select the kind on `Organization` and the location name on `Person`:
 
-```
-fragment PosterDetailsHovercardContentsBodyFragment on Actor {
-  name
-  joined
-  profilePicture {
-    ...ImageFragment
-  }
-  // change
-  ... on Organization {
-    organizationKind
-  }
-  // end-change
-}
-```
-
-Go ahead and add this now. You can also add a type refinement for `Person`:
-
-```
-fragment PosterDetailsHovercardContentsBodyFragment on Actor {
-  name
-  joined
-  profilePicture {
-    ...ImageFragment
-  }
-  ... on Organization {
-    organizationKind
-  }
-  // change
-  ... on Person {
-    location {
-      name
+```rescript
+module PosterDetailsHovercardContentsBodyFragment = %relay(`
+  fragment PosterDetailsHovercardContentsBodyFragment on Actor {
+    id
+    name
+    joined
+    profilePicture {
+      ...ImageFragment
     }
+    // change
+    ... on Organization {
+      organizationKind
+    }
+    ... on Person {
+      location {
+        name
+      }
+    }
+    // end-change
   }
-  // end-change
-}
+`)
 ```
 
 When you select a field that’s only present on some of the types that implement an interface, and the node you’re dealing with is of a different type, then you simply get `null` for the value of that field when you read it out. With that in mind, we can modify the `PosterDetailsHovercardContentsBody` component to show the location of people and organization kind of organizations:
 
-```
-import OrganizationKind from './OrganizationKind';
-
-function PosterDetailsHovercardContentsBody({ poster }: Props): React.ReactElement {
-  const data = useFragment(PosterDetailsHovercardContentsBodyFragment, poster);
-  return (
-    <>
-      <Image image={data.profilePicture} width={128} height={128} className="posterHovercard__image" />
-      <div className="posterHovercard__name">{data.name}</div>
-      <ul className="posterHovercard__details">
-         <li>Joined <Timestamp time={poster.joined} /></li>
-         // change
-         {data.location != null && (
-           <li>{data.location.name}</li>
-         )}
-        {data.organizationKind != null && (
-          <li><OrganizationKind kind={data.organizationKind} /></li>
-         )}
-         // end-change
-      </ul>
-    </>
-  );
+```rescript
+module PosterDetailsHovercardContentsBody = {
+  @react.component
+  let make = (~poster) => {
+    let data = PosterDetailsHovercardContentsBodyFragment.use(poster)
+  ...
+  <ul className="posterHovercard__details">
+    <li>
+      {"Joined "->React.string}
+      {switch data.joined {
+      | None => React.null
+      | Some(joined) => <Timestamp time={joined} />
+      }}
+    </li>
+    // change
+    {switch data.location {
+    | None => React.null
+    | Some(location) => <li> {location.name->React.string} </li>
+    }}
+    {switch data.organizationKind {
+    | None => React.null
+    | Some(organizationKind) =>
+      <li>
+        <OrganizationKind kind={organizationKind} />
+      </li>
+    }}
+    // end-change
+  </ul>
 }
 ```
 
