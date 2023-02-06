@@ -80,38 +80,35 @@ Now that we've stepped through the underlying model for Connections, let’s tur
 
 ## Implementing “Load More Comments”
 
-Take a look once more at the `Story` component. There’s a `StoryCommentsSection` component that you can import and add to the bottom of `Story`:
+Take a look once more at the `Story` component. There’s a `StoryCommentsSection` component that you can add to the bottom of `Story`:
 
-```
-// change-line
-import StoryCommentsSection from './StoryCommentsSection';
-
-function Story({story}) {
-  const data = useFragment(StoryFragment, story);
-  return (
-    <Card>
-      <Heading>{data.title}</Heading>
-      <PosterByline person={data.poster} />
-      <Timestamp time={data.posted_at} />
-      <Image image={data.image} />
-      <StorySummary summary={data.summary} />
-      // change-line
-      <StoryCommentsSection story={data} />
-    </Card>
-  );
+```rescript
+@react.component
+let make = (~story) => {
+  ...
+  
+  <Card>
+    ...
+    <StorySummary summary={summary} />
+    // change-line
+    <StoryCommentsSection story={data.fragmentRefs} />
+  </Card>
 }
 ```
 
 And add `StoryCommentsSection`’s fragment to `Story`’s fragment:
 
-```
-const StoryFragment = graphql`
+```rescript
+module StoryFragment = %relay(`
   fragment StoryFragment on Story {
-    // ... as before
+    ...
+    thumbnail {
+      ...ImageFragment @arguments(width: 400)
+    }
     // change-line
     ...StoryCommentsSectionFragment
   }
-`;
+`)
 ```
 
 At this point, you should see up to three comments on each story. Some stories have more than three comments, and these will show a "Load more" button, although it isn't hooked up yet:
@@ -120,37 +117,49 @@ At this point, you should see up to three comments on each story. Some stories h
 
 Now go to `StoryCommentsSection` and take a look:
 
-```
-const StoryCommentsSectionFragment = graphql`
- fragment StoryCommentsSectionFragment on Story {
-  // color1
-  comments(first: 3) {
-    edges {
-      node {
-        ...CommentFragment
+```rescript
+module StoryCommentsSectionFragment = %relay(`
+  fragment StoryCommentsSectionFragment on Story {
+    comments(first: 3) {
+      edges {
+        node {
+          id
+          ...CommentFragment
+        }
+      }
+      pageInfo {
+        hasNextPage
       }
     }
-    pageInfo {
-      hasNextPage
-    }
   }
- }
-`;
+`)
 
-function StoryCommentsSection({story}) {
-  const data = useFragment(StoryCommentsSectionFragment, story);
-  const onLoadMore = () => {/* TODO */};
-  return (
-    <>
-      {data.comments.edges.map(commentEdge =>
-        <Comment comment={commentEdge.node} />
-      )}
-      {data.comments.pageInfo.hasNextPage && (
-        <LoadMoreCommentsButton onClick={onLoadMore} />
-      )}
-    </>
-  );
+@react.component
+let make = (~story) => {
+  let data = StoryCommentsSectionFragment.use(story)
+
+  <div>
+    {switch data.comments {
+    | Some({edges: Some(edges), pageInfo: Some({hasNextPage})}) =>
+      <>
+        {edges
+        ->Array.filterMap(edge =>
+          switch edge {
+          | Some({node: Some(node)}) => Some(<Comment key=node.id comment=node.fragmentRefs />)
+          | _ => None
+          }
+        )
+        ->React.array}
+        {switch hasNextPage {
+        | Some(true) => <LoadMoreCommentsButton onClick=ignore />
+        | Some(false) | None => React.null
+        }}
+      </>
+    | _ => React.null
+    }}
+  </div>
 }
+
 ```
 
 Here we see that `StoryCommentsSection` is selecting the <span className="color1">first three comments</span> for each story using the Connection schema convention: the `comments` field accepts the page size as an argument, and for each comment there is an `edge` and within that a `node` containing the actual comment data — we’re spreading in `CommentFragment` here to retrieve the data needed to show an individual comment with the `Comment` component. It also uses the `pageInfo` field of the connection to decide whether to show a “Load More” button.
@@ -161,20 +170,19 @@ Our task then is to make the “Load More” button actually load an additional 
 
 Before we modify our component, the fragment itself needs three extra pieces of information. First, we need the fragment to accept the page size and cursor as fragment arguments rather than being hard-coded:
 
-```
-const StoryCommentsSectionFragment = graphql`
+```rescript
+module StoryCommentsSectionFragment = %relay(`
   fragment StoryCommentsSectionFragment on Story
-    // change
-    @argumentDefinitions(
-      cursor: { type: "String" }
-      count: { type: "Int", defaultValue: 3 }
-    )
-    // end-change
-  {
-    // change-line
+  // change
+  @argumentDefinitions(
+    cursor: { type: "String" }
+    count: { type: "Int", defaultValue: 3 }
+  ) {
     comments(after: $cursor, first: $count) {
+  // end-change
       edges {
         node {
+          id
           ...CommentFragment
         }
       }
@@ -183,67 +191,51 @@ const StoryCommentsSectionFragment = graphql`
       }
     }
   }
-`;
+`)
 ```
 
 Next, we need to make the fragment [refetchable](../refetchable-fragments), so that Relay will be able to fetch it again with new values for the arguments — namely, a new cursor for the `$cursor` argument:
 
-```
-const StoryCommentsSectionFragment = graphql`
+```rescript
+module StoryCommentsSectionFragment = %relay(`
   fragment StoryCommentsSectionFragment on Story
-    // change-line
-    @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
-    @argumentDefinitions(
-    ... as before
-`;
+  // change-line
+  @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
+  @argumentDefinitions(
+    ...
+
 ```
 
 Now there’s just one more change we need to make to the fragment. Relay needs to know _which field_ within the fragment represents the Connection that we’re going to paginate over. To do that, we mark it with a `@connection` directive:
 
-```
-const StoryCommentsSectionFragment = graphql`
-  fragment StoryCommentsSectionFragment on Story
-    @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
-    @argumentDefinitions(
-      cursor: { type: "String" }
-      count: { type: "Int", defaultValue: 3 }
-    )
-  {
+```rescript
+module StoryCommentsSectionFragment = %relay(`
+    ...
+    // change-line
     comments(after: $cursor, first: $count)
-      // change-line
-      @connection(key: "StoryCommentsSectionFragment_comments")
-    {
-      edges {
-        node {
-          ...CommentFragment
-        }
-      }
-      pageInfo {
-        hasNextPage
-      }
-    }
-  }
-`;
+      @connection(key: "StoryCommentsSectionFragment_comments") {
+    ...
+`)
+
 ```
 
 The `@connection` directive requires a `key` argument which must be a unique string — here formed from the fragment name and field name. This key is used when editing the connection’s contents during mutations, as we’ll see in the next chapter.
 
-### The usePaginationFragment hook
+### The usePagination hook
 
 Now that we’ve got the fragment all souped up, we can modify our component to implement the Load More button.
 
-Take these two lines at the top of the `StoryCommentsSection` component:
+Change this line at the top of the `StoryCommentsSection` component
 
-```
-const data = useFragment(StoryCommentsSectionFragment, story);
-const onLoadMore = () => {/* TODO */};
+```rescript
+let data = StoryCommentsSectionFragment.use(story)
 ```
 
-and replace them with:
+to
 
-```
-const {data, loadNext} = usePaginationFragment(StoryCommentsSectionFragment, story);
-const onLoadMore = () => loadNext(3);
+```rescript
+let {data, loadNext} = StoryCommentsSectionFragment.usePagination(story)
+let onLoadMore = () => loadNext(~count=3, ())->RescriptRelay.Disposable.ignore
 ```
 
 Now the Load More button should cause another three comments to be loaded.
