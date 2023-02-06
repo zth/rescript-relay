@@ -35,24 +35,20 @@ But fragments are just that, fragments — they aren’t queries and can’t be 
 
 To try this out, let's add a sidebar to the page with a filterable contacts list. After all, it wouldn't feel like a properly cozy newsfeed app without the ability to contact people.
 
-We've already prepared a `Sidebar` component, you just need to drop it into `App.tsx`:
+We've already prepared a `Sidebar` component, you just need to drop it into `App.res`:
 
-```
-// change-line
-import Sidebar from './Sidebar';
-
-export default function App(): React.ReactElement {
-  return (
-    <RelayEnvironment>
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <div className="app">
-          <Newsfeed />
-          // change-line
-          <Sidebar />
-        </div>
-      </React.Suspense>
-    </RelayEnvironment>
-  );
+```rescript
+@react.component
+let make = () => {
+  <RelayEnvironment>
+    <React.Suspense fallback={<LoadingSpinner />}>
+      <div className="app">
+        <Newsfeed />
+        // change-line
+        <Sidebar />
+      </div>
+    </React.Suspense>
+  </RelayEnvironment>
 }
 ```
 
@@ -60,17 +56,17 @@ You should now see a sidebar with a list of people at the top.
 
 ![Contacts list](/img/docs/tutorial/refetchable-contacts-initial.png)
 
-Have a look at `ContactsList.js` and you’ll find this fragment, which is what selects the list of contacts:
+Have a look at `ContactsList.res` and you’ll find this fragment, which is what selects the list of contacts:
 
-```
-const ContactsListFragment = graphql`
+```rescript
+module ContactsListFragment = %relay(`
   fragment ContactsListFragment on Viewer {
     contacts {
       id
       ...ContactRowFragment
     }
   }
-`;
+`)
 ```
 
 As it happens, the `contacts` field accepts a `search` argument that filters the list. You can try it out by changing `contacts` in this fragment to `contacts(search: "S")`. If you refresh the page, you should see only those contacts that have the letter S in them.
@@ -85,41 +81,34 @@ As an optional exercise, try combining the queries of Sidebar and Newsfeed into 
 
 First we need to make this fragment accept an argument. With refetchable fragments, fragment arguments become query variables for the refetch query that Relay generates. (They also work like regular fragment arguments, so the parent query can pass in an initial value for the argument.)
 
-```
-const ContactsListFragment = graphql`
+```rescript
+module ContactsListFragment = %relay(`
   fragment ContactsListFragment on Viewer
-    // change
-    @argumentDefinitions(
-      search: {type: "String", defaultValue: null}
-    )
-    // end-change
-  {
+  // change-line
+  @argumentDefinitions(search: { type: "String", defaultValue: null }) {
     contacts {
       id
       ...ContactRowFragment
     }
   }
-`;
+`)
 ```
 
 ### Step 2 — Pass the fragment argument as a field argument
 
 Pass the fragment argument in as an argument to the `contacts` field.
 
-```
-const ContactsListFragment = graphql`
+```rescript
+module ContactsListFragment = %relay(`
   fragment ContactsListFragment on Viewer
-    @argumentDefinitions(
-      search: {type: "String", defaultValue: null}
-    )
-  {
+  @argumentDefinitions(search: { type: "String", defaultValue: null }) {
     // change-line
     contacts(search: $search) {
       id
       ...ContactRowFragment
     }
   }
-`;
+`)
 ```
 
 Remember, the first `search` here is the name of the argument to `contacts`, while the second `$search` is the variable created by our fragment argument.
@@ -128,93 +117,89 @@ Remember, the first `search` here is the name of the argument to `contacts`, whi
 
 Next we'll add a `@refetchable` directive. This tells Relay to generate the extra query for refetching it. You have to specify the name of the generated query — it's a good idea to base it on the name of the fragment.
 
-```
-const ContactsListFragment = graphql`
+```rescript
+module ContactsListFragment = %relay(`
   fragment ContactsListFragment on Viewer
-    // change-line
-    @refetchable(queryName: "ContactsListRefetchQuery")
-    @argumentDefinitions(
-      search: {type: "String", defaultValue: null}
-    )
-  {
-     // ...
+  @refetchable(queryName: "ContactsListRefetchQuery")
+  // change-line
+  @argumentDefinitions(search: { type: "String", defaultValue: null }) {
+    contacts(search: $search) {
+      id
+      ...ContactRowFragment
+    }
   }
-`;
+`)
 ```
 
 ### Step 4 — Add the search input
 
 Now we need to actually hook this up to our UI. Take a look at the `ContactsList` component:
 
-```
-export default function ContactsList({ viewer }: Props) {
-  const data = useFragment(ContactsListFragment, viewer);
-  return (
-    <Card dim={true}>
-      <h3>Contacts</h3>
-      {data.contacts.map(contact =>
-        <ContactRow key={contact.id} contact={contact} />
-      )}
-    </Card>
-  );
+```rescript
+@react.component
+let make = (~viewer) => {
+  let data = ContactsListFragment.use(viewer)
+  <Card dim={true}>
+    <h3> {"Contacts"->React.string} </h3>
+    {switch data.contacts {
+    | None => React.null
+    | Some(contacts) =>
+      contacts
+      ->Belt.Array.keepMap(x => x)
+      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->React.array
+    }}
+  </Card>
 }
+
 ```
 
 First we need to add a search field.
 
-```
-// change-line
-import SearchInput from './SearchInput';
-
-// change-line
-const {useState} = React;
-
-function ContactsList({viewer}) {
-  const data = useFragment(ContactsListFragment, viewer);
-  // change-line
-  const [searchString, setSearchString] = useState('');
+```rescript
+@react.component
+let make = (~viewer) => {
+  let data = ContactsListFragment.use(viewer)
   // change
-  const onSearchStringChanged = (value: string) => {
-    setSearchString(value);
-  };
+  let (searchString, setSearchString) = React.useState(() => "")
+  let onSearchStringChanged = value => setSearchString(_ => value)
   // end-change
-  return (
-    <Card dim={true}>
-      <h3>Contacts</h3>
-      // change
-      <SearchInput
-        value={searchString}
-        onChange={onSearchStringChanged}
-      />
-      // end-change
-      {data.contacts.map(contact =>
-        <ContactRow key={contact.id} contact={contact} />
-      )}
-    </Card>
-  );
+
+  <Card dim={true}>
+    <h3> {"Contacts"->React.string} </h3>
+    // change-line
+    <SearchInput value={searchString} onChange={onSearchStringChanged} />
+    {switch data.contacts {
+    | None => React.null
+    | Some(contacts) =>
+      contacts
+      ->Belt.Array.keepMap(x => x)
+      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->React.array
+    }}
+  </Card>
 }
 ```
 
-### Step 5 — Call useRefetchableFragment
+### Step 5 — Call useRefetchable
 
-Now to refetch the fragment when the string changes, we change `useFragment` to `useRefetchableFragment`. This hook returns a `refetch` function which will refetch the fragment with new variables which we provide as an argument.
+Now to refetch the fragment when the string changes, we change `use` to `useRefetchable`. This hook returns the `data` as before and a `refetch` function which will refetch the fragment with the new variables.
 
-```
-// change-line
-import {useRefetchableFragment} from 'react-relay';
-
-function ContactsList({viewer}) {
+```rescript
+@react.component
+let make = (~viewer) => {
   // change-line
-  const [data, refetch] = useRefetchableFragment(ContactsListFragment, viewer);
-  const [searchString, setSearchString] = useState('');
-  const onSearchStringChanged = (value) => {
-    setSearchString(value);
-    // change-line
-    refetch({search: value});
-  };
-  return (
-    // ...
-  );
+  let (data, refetch) = ContactsListFragment.useRefetchable(viewer)
+  let (searchString, setSearchString) = React.useState(() => "")
+  // change
+  let onSearchStringChanged = value => {
+    setSearchString(_ => value)
+    let variables = ContactsListFragment.makeRefetchVariables(~search=Some(value), ())
+    refetch(~variables, ())->RescriptRelay.Disposable.ignore
+  }
+  // end-change
+
+  ...
 }
 ```
 
@@ -236,37 +221,36 @@ To achieve this, we can mark the refetch as a _transition_. Transitions are Reac
 
 Transitions are marked by wrapping the state change in a call to a function provided by the `useTransition` hook. This is what the code will look like:
 
-```
-// change-line
-const {useState, useTransition} = React;
-
-function ContactsList({viewer}) {
+```rescript
+@react.component
+let make = (~viewer) => {
+  let (data, refetch) = ContactsListFragment.useRefetchable(viewer)
+  let (searchString, setSearchString) = React.useState(() => "")
   // change-line
-  const [isPending, startTransition] = useTransition();
-  const [searchString, setSearchString] = useState('');
-  const [data, refetch] = useRefetchableFragment(ContactsListFragment, viewer);
-  const onSearchStringChanged = (value) => {
-    setSearchString(value);
+  let (isPending, startTransition) = ReactExperimental.useTransition()
+  let onSearchStringChanged = value => {
+    setSearchString(_ => value)
     // change
     startTransition(() => {
-      refetch({search: value});
-    });
+      let variables = ContactsListFragment.makeRefetchVariables(~search=Some(value), ())
+      refetch(~variables, ())->RescriptRelay.Disposable.ignore
+    })
     // end-change
-  };
-  return (
-    <Card dim={true}>
-      <h3>Contacts</h3>
-      <SearchInput
-        value={searchString}
-        onChange={onSearchStringChanged}
-        // change-line
-        isPending={isPending}
-      />
-      {data.contacts.map(contact =>
-        <ContactRow key={contact.id} contact={contact} />
-      )}
-    </Card>
-  );
+  }
+
+  <Card dim={true}>
+    <h3> {"Contacts"->React.string} </h3>
+    // change-line
+    <SearchInput value={searchString} onChange={onSearchStringChanged} isPending />
+    {switch data.contacts {
+    | None => React.null
+    | Some(contacts) =>
+      contacts
+      ->Belt.Array.keepMap(x => x)
+      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->React.array
+    }}
+  </Card>
 }
 ```
 
