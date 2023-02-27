@@ -28,14 +28,16 @@ module Test = {
       {React.string("Avatar url is " ++ data.avatarUrl->Belt.Option.getWithDefault("-"))}
       <button
         onClick={_ => {
-          open Mutation
-          let variables = {
-            Mutation.Types.avatarUrl: Js.Nullable.null,
-            someInput: Js.Nullable.return({
-              RelaySchemaAssets_graphql.int: Js.Nullable.null,
-            }),
-          }
-          commitMutation(~environment, ~variables, ())->RescriptRelay.Disposable.ignore
+          Mutation.commitMutation(
+            ~environment,
+            ~variables={
+              avatarUrl: Js.Nullable.null,
+              someInput: Js.Nullable.return({
+                RelaySchemaAssets_graphql.int: Js.Nullable.null,
+              }),
+            },
+            (),
+          )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change avatar URL")}
       </button>
