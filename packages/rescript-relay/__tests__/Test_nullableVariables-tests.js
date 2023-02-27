@@ -23,10 +23,6 @@ describe("Mutation", () => {
 
     queryMock.mockQuery({
       name: "TestNullableVariablesMutation",
-      matchVariables: (v) => {
-        console.log(v);
-        return false;
-      },
       variables: {
         avatarUrl: null,
         someInput: {
