@@ -412,7 +412,7 @@ let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFiel
   _store,
 ) =>
   switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
-  | (Some(record), "node", argsId) if record["__typename"] == storeRootType => argsId
+  | (Some(record), "node", argsId) if record->RecordProxy.getType == storeRootType => argsId
   | _ => None
   }
 )
@@ -574,8 +574,8 @@ module Store = {
     make(
       source,
       {
-        gcReleaseBufferSize: gcReleaseBufferSize,
-        queryCacheExpirationTime: queryCacheExpirationTime,
+        gcReleaseBufferSize,
+        queryCacheExpirationTime,
       },
     )
 
@@ -752,9 +752,9 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       C.query,
       variables->C.convertVariables,
       {
-        fetchKey: fetchKey,
+        fetchKey,
         fetchPolicy: fetchPolicy->mapFetchPolicy,
-        networkCacheConfig: networkCacheConfig,
+        networkCacheConfig,
       },
     )
 
