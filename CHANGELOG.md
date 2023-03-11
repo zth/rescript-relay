@@ -7,6 +7,7 @@
 ## Breaking changes
 
 - The signature for missing field handlers has changed. Previously you got an open type `{..}` as record, now instead you get a proper `RecordProxy.t` from the store. Check out [the changelog for Relay 15](https://github.com/facebook/relay/releases/tag/v15.0.0).
+- ReScript `>=10.1` and JSX v4 is now required.
 
 ## Improvements
 
