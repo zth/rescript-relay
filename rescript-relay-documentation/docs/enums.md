@@ -99,6 +99,20 @@ let (newStatus, setNewStatus) = React.useState(() =>
 // Yay, `newStatus` is now safe to use like we expect it to be!
 ```
 
+#### Opting out of safety
+
+It is possible to opt out of this mechanism if you really really want to. You opt out by adding `@rescriptRelayAllowUnsafeEnum` to the field with the enum you want to treat as safe. Doing that will let you bail out of all safety checks, and always consider the enum value as safe (even if it's really not).
+
+```rescript
+module Fragment = %relay(`
+  fragment SomeUserFragment_user on User  {
+    firstName
+    lastName
+    onlineStatus @rescriptRelayAllowUnsafeEnum
+  }
+`)
+```
+
 ### Mapping strings to your enum
 
 In addition to the utils listed above, there's also a function available for taking a string and mapping it to your enum, if it's valid. An example:

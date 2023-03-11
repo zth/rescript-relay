@@ -30,6 +30,7 @@ Here's a non exhaustive list of what unused fields the script can remove automat
 
 If you want to keep fields around, even though you're not actively using them you can `ignore` them.
 Let's say I have this fragment:
+
 ```
 module Fragment = %relay(`
   fragment User_user on users {
@@ -42,6 +43,20 @@ module Fragment = %relay(`
 And I use the field `name` in my markup; `<div>{React.string(user.name)}</div>`.
 When I run `remove-unused-fields` the email field will be removed.
 If I for some reason need to keep the `email` around I can call `ignore(user.email)` and then it will be safe.
+
+#### Ignoring entire fragments
+
+Sometimes you want to consider _all_ fields in a fragment used, regardless of whether they're used or not. This should be rare, but if you do, you can add `@rescriptRelayIgnoreUnused` to your fragment definition, and the CLI will ignore this fragment when it looks for unused fields.
+
+```rescript
+// Analysis will skip checking if the fields in this fragment are unused, and always consider them as used.
+module Fragment = %relay(`
+  fragment SomeUserFragment_user on User @rescriptRelayIgnoreUnused {
+    firstName
+    lastName
+  }
+`)
+```
 
 #### CLI options
 
