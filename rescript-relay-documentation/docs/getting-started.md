@@ -49,7 +49,7 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript > 9`, `@rescript/react`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
+RescriptRelay requires `rescript >= 10.1`, `@rescript/react >= 0.11.0`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
 
 ```bash
 # Add React 18
