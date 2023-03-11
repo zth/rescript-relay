@@ -519,7 +519,7 @@ module MissingFieldHandler: {
   let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Js.Nullable.t<'record>,
+      Js.Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
     ) => Js.Nullable.t<dataId>
@@ -531,7 +531,7 @@ module MissingFieldHandler: {
   let makePluralLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Js.Nullable.t<'record>,
+      Js.Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
     ) => Js.Nullable.t<array<Js.Nullable.t<dataId>>>

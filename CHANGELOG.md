@@ -1,5 +1,13 @@
 # master
 
+## Upgrade versions
+
+- `react-relay` and `relay-runtime` to `>=15.0.0`
+
+## Breaking changes
+
+- The signature for missing field handlers has changed. Previously you got an open type `{..}` as record, now instead you get a proper `RecordProxy.t` from the store. Check out [the changelog for Relay 15](https://github.com/facebook/relay/releases/tag/v15.0.0).
+
 ## Improvements
 
 - Experimental support for allowing `null` in operation variables. Add `@rescriptRelayNullableVariables` to your operation (query, mutation, subscription) and you'll be allowed to pass `Js.Nullable.null` to your server. https://github.com/zth/rescript-relay/pull/426
