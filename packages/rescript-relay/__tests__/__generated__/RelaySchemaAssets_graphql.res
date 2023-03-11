@@ -37,6 +37,13 @@ type rec input_InputA = {
 }
 
 @live
+and input_InputA_nullable = {
+  time: TestsUtils.Datetime.t,
+  recursiveA?: Js.Nullable.t<input_InputA_nullable>,
+  usingB?: Js.Nullable.t<input_InputB_nullable>,
+}
+
+@live
 and input_InputB = {
   time: option<TestsUtils.Datetime.t>,
   usingA: option<input_InputA>,
@@ -44,9 +51,22 @@ and input_InputB = {
 }
 
 @live
+and input_InputB_nullable = {
+  time?: Js.Nullable.t<TestsUtils.Datetime.t>,
+  usingA?: Js.Nullable.t<input_InputA_nullable>,
+  @as("constraint") constraint_?: Js.Nullable.t<bool>,
+}
+
+@live
 and input_InputC = {
   intStr: TestsUtils.IntString.t,
   recursiveC: option<input_InputC>,
+}
+
+@live
+and input_InputC_nullable = {
+  intStr: TestsUtils.IntString.t,
+  recursiveC?: Js.Nullable.t<input_InputC_nullable>,
 }
 
 @live
@@ -61,9 +81,26 @@ and input_SomeInput = {
 }
 
 @live
+and input_SomeInput_nullable = {
+  str?: Js.Nullable.t<string>,
+  bool?: Js.Nullable.t<bool>,
+  float?: Js.Nullable.t<float>,
+  int?: Js.Nullable.t<int>,
+  datetime?: Js.Nullable.t<TestsUtils.Datetime.t>,
+  recursive?: Js.Nullable.t<input_SomeInput_nullable>,
+  @as("private") private_?: Js.Nullable.t<bool>,
+}
+
+@live
 and input_RecursiveSetOnlineStatusInput = {
   someValue: TestsUtils.IntString.t,
   setOnlineStatus: option<input_SetOnlineStatusInput>,
+}
+
+@live
+and input_RecursiveSetOnlineStatusInput_nullable = {
+  someValue: TestsUtils.IntString.t,
+  setOnlineStatus?: Js.Nullable.t<input_SetOnlineStatusInput_nullable>,
 }
 
 @live
@@ -74,6 +111,13 @@ and input_SetOnlineStatusInput = {
 }
 
 @live
+and input_SetOnlineStatusInput_nullable = {
+  onlineStatus: [#Online | #Idle | #Offline],
+  someJsonValue: Js.Json.t,
+  recursed?: Js.Nullable.t<input_RecursiveSetOnlineStatusInput_nullable>,
+}
+
+@live
 and input_SearchInput = {
   names: option<array<option<string>>>,
   id: int,
@@ -81,9 +125,24 @@ and input_SearchInput = {
 }
 
 @live
+and input_SearchInput_nullable = {
+  names?: Js.Nullable.t<array<Js.Nullable.t<string>>>,
+  id: int,
+  someOtherId?: Js.Nullable.t<float>,
+}
+
+@live
 and input_PesticideListSearchInput = {
   companyName: option<array<string>>,
   pesticideIds: option<array<int>>,
+  skip: int,
+  take: int,
+}
+
+@live
+and input_PesticideListSearchInput_nullable = {
+  companyName?: Js.Nullable.t<array<string>>,
+  pesticideIds?: Js.Nullable.t<array<int>>,
   skip: int,
   take: int,
 }
