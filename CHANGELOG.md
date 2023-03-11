@@ -1,5 +1,9 @@
 # master
 
+## Improvements
+
+- Experimental support for allowing `null` in operation variables. Add `@rescriptRelayNullableVariables` to your operation (query, mutation, subscription) and you'll be allowed to pass `Js.Nullable.null` to your server. https://github.com/zth/rescript-relay/pull/426
+
 # 1.0.4
 
 ## Improvements
