@@ -206,6 +206,8 @@ function traverse(
       if (shouldConvertCustomField) {
         newObj = getNewObj(newObj, currentObj);
         newObj[key] = converters[instructions["c"]](v);
+        // Ensure that the custom scalar value itself isn't traversed more.
+        continue;
       }
 
       if (shouldConvertUnion && v != null && typeof v === "object") {
