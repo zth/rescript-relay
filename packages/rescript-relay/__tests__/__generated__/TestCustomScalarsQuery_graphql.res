@@ -29,16 +29,20 @@ module Types = {
   @live
   type variables = {
     beforeDate: option<TestsUtils.Datetime.t>,
+    number: TestsUtils.Number.t,
   }
   @live
   type refetchVariables = {
     beforeDate: option<option<TestsUtils.Datetime.t>>,
+    number: option<TestsUtils.Number.t>,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
+    ~number=?,
     ()
   ): refetchVariables => {
-    beforeDate: beforeDate
+    beforeDate: beforeDate,
+    number: number
   }
 
 }
@@ -63,11 +67,12 @@ let wrap_response_member: [
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime"}}}`
+    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
   @live
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.Number": TestsUtils.Number.serialize,
   }
   @live
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -124,6 +129,7 @@ module Utils = {
   open Types
   @live @obj external makeVariables: (
     ~beforeDate: TestsUtils.Datetime.t=?,
+    ~number: TestsUtils.Number.t,
     unit
   ) => variables = ""
 
@@ -140,6 +146,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "beforeDate"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "number"
   }
 ],
 v1 = {
@@ -154,6 +165,11 @@ v2 = [
     "kind": "Variable",
     "name": "beforeDate",
     "variableName": "beforeDate"
+  },
+  {
+    "kind": "Variable",
+    "name": "number",
+    "variableName": "number"
   }
 ],
 v3 = [
@@ -288,12 +304,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "43f7703aae48d15853367c45e13db4eb",
+    "cacheID": "eb6fcc1cdc3534d168fa96d31831a59d",
     "id": null,
     "metadata": {},
     "name": "TestCustomScalarsQuery",
     "operationKind": "query",
-    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n  $number: Number!\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate, number: $number) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)

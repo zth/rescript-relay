@@ -1,8 +1,8 @@
 module Query = %relay(`
-    query TestCustomScalarsQuery($beforeDate: Datetime) {
+    query TestCustomScalarsQuery($beforeDate: Datetime, $number: Number!) {
       loggedInUser {
         createdAt
-        friends(beforeDate: $beforeDate) {
+        friends(beforeDate: $beforeDate, number: $number) {
           createdAt
         }
       }
@@ -18,7 +18,15 @@ module Query = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables={beforeDate: Some(Js.Date.fromFloat(1514764800000.))}, ())
+    let query = {
+      Query.use(
+        ~variables={
+          beforeDate: Some(Js.Date.fromFloat(1514764800000.)),
+          number: [2],
+        },
+        (),
+      )
+    }
 
     <>
       <div>
@@ -49,5 +57,7 @@ let test_customScalars = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }
