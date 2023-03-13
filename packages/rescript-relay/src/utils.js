@@ -96,6 +96,15 @@ function traverse(
     /**
      * Handle arrays
      */
+
+    // Special case when this is a custom field that's an array. Ensures we
+    // don't accidentally move into the array when we're not supposed to.
+    if (shouldConvertCustomField && Array.isArray(currentObj[key])) {
+      newObj = getNewObj(newObj, currentObj);
+      newObj[key] = converters[instructions["c"]](originalValue);
+      return newObj;
+    }
+
     if (Array.isArray(currentObj[key])) {
       newObj = getNewObj(newObj, currentObj);
       newObj[key] = currentObj[key].map(function (v) {
