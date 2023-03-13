@@ -40,7 +40,7 @@ function ppxArch() {
    * Use Rosetta for ARM on macOS
    */
   if (platform === "darwin" && process.arch === "arm64") {
-    return "x64";
+    return "arm64";
   }
 
   /**
@@ -132,6 +132,7 @@ function copyPlatformBinaries(platform) {
 }
 
 function removeInitialBinaries() {
+  fs.unlinkSync(path.join(__dirname, "binaries/ppx-macos-arm64"));
   fs.unlinkSync(path.join(__dirname, "ppx-macos-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-windows-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
@@ -165,9 +166,14 @@ switch (platform) {
   case "linux":
     copyPlatformBinaries(platform);
     break;
-  case "darwin":
-    copyPlatformBinaries("macos-latest");
+  case "darwin": {
+    if (ppxArch() === "arm64") {
+      copyPlatformBinaries("macos-arm64");
+    } else {
+      copyPlatformBinaries("macos-latest");
+    }
     break;
+  }
   default:
     console.warn("error: no release built for the " + platform + " platform");
     process.exit(1);
