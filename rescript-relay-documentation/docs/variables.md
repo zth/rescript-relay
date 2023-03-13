@@ -12,7 +12,7 @@ This mostly works out well, and gives a better experience in ReScript. However, 
 
 ### `@rescriptRelayNullableVariables`
 
-By adding this directive to your operation, you'll be able to send `null` to your server for any nullable variable (or any nullable value in any input object). It looks like this:
+By adding this directive to your operation, you'll be able to send `null` (using the `Js.Null` module) to your server for any nullable variable (or any nullable value in any input object). It looks like this:
 
 ```rescript
 module Mutation = %relay(`
@@ -26,10 +26,10 @@ module Mutation = %relay(`
 `)
 
 // All optional variables in this operation can now be `null`, which will be preserved and sent to your server.
-Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.Nullable.null}, ())
+Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.null}, ())
 
 // Or if you want to send a value:
-Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.Nullable.return("some-avatar-url")}, ())
+Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.Null.return("some-avatar-url")}, ())
 ```
 
 This works for:

@@ -31,9 +31,9 @@ module Test = {
           Mutation.commitMutation(
             ~environment,
             ~variables={
-              avatarUrl: Js.Nullable.null,
-              someInput: Js.Nullable.return({
-                RelaySchemaAssets_graphql.int: Js.Nullable.null,
+              avatarUrl: Js.null,
+              someInput: Js.Null.return({
+                RelaySchemaAssets_graphql.int: Js.null,
               }),
             },
             (),
