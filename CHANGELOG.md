@@ -14,6 +14,10 @@
 - Experimental support for allowing `null` in operation variables. Add `@rescriptRelayNullableVariables` to your operation (query, mutation, subscription) and you'll be allowed to pass `Js.null` (via the `Js.Null` module) to your server. https://github.com/zth/rescript-relay/pull/426
 - :tada: M1 support for the PPX! This should speed up builds some. https://github.com/zth/rescript-relay/pull/435
 
+## Bug Fixes
+
+- Fix issue with conversion of custom scalars, where custom scalars represented as arrays would get converted "internally" although they should've really just been left alone. https://github.com/zth/rescript-relay/pull/433
+
 # 1.0.4
 
 ## Improvements
