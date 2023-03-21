@@ -75,8 +75,23 @@ function traverse(
     var shouldConvertEnum =
       typeof instructions["e"] === "string" && !!converters[instructions["e"]];
 
+    // This is true for non-arrays that are to be converted
     var shouldConvertCustomField =
       typeof instructions["c"] === "string" && !!converters[instructions["c"]];
+
+    // This is true for arrays that are to be converted. This and the above
+    // won't be true at the same time.
+    var shouldConvertCustomFieldArray =
+      typeof instructions["ca"] === "string" &&
+      !!converters[instructions["ca"]];
+
+    // Special case when this is a custom field that's an array. Ensures we
+    // don't accidentally move into the array when we're not supposed to.
+    if (shouldConvertCustomFieldArray && Array.isArray(currentObj[key])) {
+      newObj = getNewObj(newObj, currentObj);
+      newObj[key] = currentObj[key].map(converters[instructions["ca"]]);
+      return newObj;
+    }
 
     var shouldBlockTraversal = typeof instructions["b"] === "string";
     var allowGoingIntoArray = shouldBlockTraversal
@@ -96,6 +111,15 @@ function traverse(
     /**
      * Handle arrays
      */
+
+    // Special case when this is a custom field that's an array. Ensures we
+    // don't accidentally move into the array when we're not supposed to.
+    if (shouldConvertCustomField && Array.isArray(currentObj[key])) {
+      newObj = getNewObj(newObj, currentObj);
+      newObj[key] = converters[instructions["c"]](originalValue);
+      return newObj;
+    }
+
     if (Array.isArray(currentObj[key])) {
       newObj = getNewObj(newObj, currentObj);
       newObj[key] = currentObj[key].map(function (v) {
@@ -206,6 +230,8 @@ function traverse(
       if (shouldConvertCustomField) {
         newObj = getNewObj(newObj, currentObj);
         newObj[key] = converters[instructions["c"]](v);
+        // Ensure that the custom scalar value itself isn't traversed more.
+        continue;
       }
 
       if (shouldConvertUnion && v != null && typeof v === "object") {

@@ -1,6 +1,7 @@
 scalar Datetime
 scalar IntString
 scalar JSON
+scalar Number
 
 input InputA {
   time: Datetime!
@@ -73,7 +74,7 @@ type User implements Node {
     inputCArr: [InputC!]
     intStr: IntString
   ): String
-  friends(beforeDate: Datetime): [User!]!
+  friends(beforeDate: Datetime, number: Number): [User!]!
   friendsConnection(
     statuses: [OnlineStatus!]
     beforeDate: Datetime

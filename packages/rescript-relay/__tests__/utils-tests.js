@@ -631,6 +631,49 @@ describe("conversion", () => {
       });
     });
 
+    test("properly block", () => {
+      const customScalar = {
+        someProp: null,
+      };
+
+      const traversed = traverser(
+        {
+          someCustomScalarHolder: {
+            someCustomScalar: customScalar,
+            otherField: null,
+            asArray: [customScalar],
+          },
+        },
+        {
+          __root: {
+            someCustomScalarHolder_someCustomScalar: {
+              c: "TestsUtils.SomeCustomScalar",
+            },
+            someCustomScalarHolder_asArray: {
+              b: "a",
+            },
+          },
+        },
+        {
+          "TestsUtils.SomeCustomScalar": () => customScalar,
+        },
+        undefined
+      );
+
+      expect(traversed).toEqual({
+        someCustomScalarHolder: {
+          someCustomScalar: customScalar,
+          otherField: undefined,
+          asArray: [customScalar],
+        },
+      });
+
+      expect(traversed.someCustomScalarHolder.someCustomScalar).toBe(
+        customScalar
+      );
+      expect(traversed.someCustomScalarHolder.asArray[0]).toBe(customScalar);
+    });
+
     test("traversals can be blocked", () => {
       expect(
         traverser(
