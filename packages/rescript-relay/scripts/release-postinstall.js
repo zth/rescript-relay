@@ -132,7 +132,7 @@ function copyPlatformBinaries(platform) {
 }
 
 function removeInitialBinaries() {
-  fs.unlinkSync(path.join(__dirname, "binaries/ppx-macos-arm64"));
+  fs.unlinkSync(path.join(__dirname, "ppx-macos-arm64"));
   fs.unlinkSync(path.join(__dirname, "ppx-macos-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-windows-latest"));
   fs.unlinkSync(path.join(__dirname, "ppx-linux"));
