@@ -8,6 +8,7 @@
 
 - The signature for missing field handlers has changed. Previously you got an open type `{..}` as record, now instead you get a proper `RecordProxy.t` from the store. Check out [the changelog for Relay 15](https://github.com/facebook/relay/releases/tag/v15.0.0).
 - ReScript `>=10.1` and JSX v4 is now required.
+- Work around issue with JSX v4 and `%relay.deferredComponent`. You now need to annotate any component you want to use with `%relay.deferredComponent` with `@relay.deferredComponent`. https://github.com/zth/rescript-relay/pull/439
 
 ## Improvements
 
