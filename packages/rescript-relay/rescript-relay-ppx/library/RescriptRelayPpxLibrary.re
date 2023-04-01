@@ -59,5 +59,6 @@ let () =
       LazyComp.lazyExtension,
       DeferredComp.lazyExtension,
     ],
+    ~preprocess_impl=Transform.structure_mapper,
     "rescript-relay",
   );
