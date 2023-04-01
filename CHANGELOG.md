@@ -1,8 +1,17 @@
 # master
 
+# 1.1.0
+
+Notable changes:
+
+- _JSX v4 is now required_
+- Relay and @rescript/react upgraded
+- M1 support for the PPX (should speed up builds for anyone on an M1)
+
 ## Upgrade versions
 
 - `react-relay` and `relay-runtime` to `>=15.0.0`
+- `@rescript/react` to `>=0.11.0`
 
 ## Breaking changes
 
