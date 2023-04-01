@@ -19,6 +19,12 @@
 
 - Fix issue with conversion of custom scalars, where custom scalars represented as arrays would get converted "internally" although they should've really just been left alone. https://github.com/zth/rescript-relay/pull/433
 
+# 1.0.5
+
+## Bug Fixes
+
+- Fix fairly large performance issue with runtime conversion. This should give a large speedup in certain cases.
+
 # 1.0.4
 
 ## Improvements
