@@ -1,8 +1,4 @@
-@react.component
+@react.component @relay.deferredComponent
 let make = (~name) => {
   React.string(name)
-}
-
-module ExportedForDynamicImport__ = {
-  let make = make
 }
