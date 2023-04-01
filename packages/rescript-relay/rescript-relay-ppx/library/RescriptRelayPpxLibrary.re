@@ -51,10 +51,6 @@ let commonExtension =
     },
   );
 
-
-
-
-
 // This registers all defined extension points to the "rescript-relay" ppx.
 let () =
   Driver.register_transformation(
