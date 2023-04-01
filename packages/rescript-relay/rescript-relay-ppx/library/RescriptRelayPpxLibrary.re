@@ -64,6 +64,5 @@ let () =
       DeferredComp.lazyExtension,
     ],
     ~preprocess_impl=Transform.structure_mapper,
-    ~preprocess_intf=Transform.signature_mapper,
     "rescript-relay",
   );

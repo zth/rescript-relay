@@ -4,8 +4,6 @@ open Ast_helper
 class mapper =
   object (self)
     inherit Ast_traverse.map
-    method! signature signature =
-      signature |> List.map (fun v -> [v]) |> List.concat
     method! structure structure =
       structure
       |> List.map (fun v ->
@@ -48,4 +46,3 @@ class mapper =
   end
 
 let structure_mapper s = (new mapper)#structure s
-let signature_mapper s = (new mapper)#signature s
