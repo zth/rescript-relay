@@ -49,7 +49,19 @@ function traverse(
   }
 
   for (var key in currentObj) {
+    // Internal ReScript polymorphic variant representation, ignore.
     if (key === "VAL" || key === "NAME") continue;
+
+    // Ensure we don't move into internal properties coming from Relay, with the
+    // exception of the few names allowed to start with double underscores
+    // ("__typename" and "__id"), and any Relay provided variables.
+    if (
+      key.startsWith("__") &&
+      key !== "__typename" &&
+      key !== "__id" &&
+      !key.startsWith("__relay_internal")
+    )
+      continue;
 
     var isUnion = false;
     var originalValue = currentObj[key];
