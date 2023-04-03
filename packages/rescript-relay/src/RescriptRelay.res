@@ -330,7 +330,7 @@ module ReadOnlyRecordSourceProxy = {
 }
 
 module MissingFieldHandler = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
   type t
 
   type normalizationArgumentWrapped = {kind: [#ListValue | #Literal | #ObjectValue | #Variable]}

@@ -1,18 +1,16 @@
-@ocaml.doc("Tries to return a record from a nested path of linked records.")
+/**Tries to return a record from a nested path of linked records.*/
 let resolveNestedRecord: (
   ~rootRecord: option<RescriptRelay.RecordProxy.t>,
   ~path: list<string>,
 ) => option<RescriptRelay.RecordProxy.t>
 
-@ocaml.doc(
-  "Tries to return a record from a nested path of linked records, starting from the root. "
-)
+/**Tries to return a record from a nested path of linked records, starting from the root.*/
 let resolveNestedRecordFromRoot: (
   ~store: RescriptRelay.RecordSourceSelectorProxy.t,
   ~path: list<string>,
 ) => option<RescriptRelay.RecordProxy.t>
 
-@ocaml.doc("Helpers for handling connections. ")
+/**Helpers for handling connections.*/
 type insertAt =
   | Start
   | End
