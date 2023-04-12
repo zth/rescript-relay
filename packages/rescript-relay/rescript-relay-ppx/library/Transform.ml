@@ -29,6 +29,12 @@ class mapper =
                                 [
                                   Vb.mk
                                     (Pat.var
+                                       ~attrs:
+                                         [
+                                           Attr.mk
+                                             {txt = "live"; loc = Location.none}
+                                             (PStr []);
+                                         ]
                                        {txt = "make"; loc = Location.none})
                                     (Exp.ident
                                        {

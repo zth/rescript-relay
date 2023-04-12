@@ -1,5 +1,13 @@
 # master
 
+## Improvements
+
+- Add `@live` annotations to generated JSXv4 dynamic import compat modules, so they don't show up in dead code analysis (which they shouldn't).
+
+# 1.1.1
+
+- Fix M1 binary to include new JSXv4 dynamic import compat changes.
+
 # 1.1.0
 
 Notable changes:
