@@ -159,7 +159,6 @@ let make = (~story) => {
     }}
   </div>
 }
-
 ```
 
 Here we see that `StoryCommentsSection` is selecting the <span className="color1">first three comments</span> for each story using the Connection schema convention: the `comments` field accepts the page size as an argument, and for each comment there is an `edge` and within that a `node` containing the actual comment data — we’re spreading in `CommentFragment` here to retrieve the data needed to show an individual comment with the `Comment` component. It also uses the `pageInfo` field of the connection to decide whether to show a “Load More” button.
@@ -240,42 +239,56 @@ let onLoadMore = () => loadNext(~count=3, ())->RescriptRelay.Disposable.ignore
 
 Now the Load More button should cause another three comments to be loaded.
 
-### Improving the Loading Experience with useTransition
+### Improving the User Experience with useTransition
 
-As it stands, there’s no user feedback when you click the “Load More” button until the new comments have finished loading and then appear. Every user action should result in immediate feedback, so let’s show a spinner while the new data is loading — but without hiding the existing UI.
+As it stands, there’s no user feedback when you click the “Load More” button until the new comments have finished loading and then appear, so let’s show a spinner while the new data is loading — but without hiding the existing UI. 
 
-To do that, we need to wrap our call to `loadNext` inside a React transition. Here’s the change’s we need to make:
+Additionally, every user action with results that aren’t immediate should be wrapped in a React transition. This allows React to prioritize different updates: for example, if when the data becomes available and React is rendering the new comments, the user clicks on another tab to navigate to a different page, React can interrupt rendering the comments in order to render the new page that the user wanted.
 
-```
-function StoryCommentsSection({story}) {
+We wrap our call to `loadNext` inside a React transition and use use the `isLoadingNext` flag from the `usePagination` hook to render a small spinner
+
+```rescript
+@react.component
+let make = (~story) => {
   // change-line
-  const [isPending, startTransition] = useTransition();
-  const {data, loadNext} = usePaginationFragment(StoryCommentsSectionFragment, story);
+  let (isPending, startTransition) = ReactExperimental.useTransition()
+  let {data, loadNext, isLoadingNext} = StoryCommentsSectionFragment.usePagination(story)
   // change
-  const onLoadMore = () => startTransition(() => {
-    loadNext(3);
-  });
+  let onLoadMore = () =>
+    startTransition(() => {
+      loadNext(~count=3, ())->ignore
+    })
   // end-change
-  return (
-    <>
-      {data.comments.edges.map(commentEdge =>
-        <Comment comment={commentEdge.node} />
-      )}
-      {data.comments.pageInfo.hasNextPage && (
-        <LoadMoreCommentsButton
-          onClick={onLoadMore}
+  
+  <div>
+    {switch data.comments {
+    | Some({edges: Some(edges), pageInfo: Some({hasNextPage})}) =>
+      <>
+        {edges
+        ->Array.filterMap(edge =>
+          switch edge {
+          | Some({node: Some(node)}) => Some(<Comment key=node.id comment=node.fragmentRefs />)
+          | _ => None
+          }
+        )
+        ->React.array}
+        {switch hasNextPage {
+        | Some(true) =>
+          <LoadMoreCommentsButton
             // change-line
-          disabled={isPending}
-        />
-      )}
-      // change-line
-      {isPending && <CommentsLoadingSpinner />}
-    </>
-  );
+            disabled={isLoadingNext || isPending} onClick={_ => onLoadMore()}
+          />
+        | Some(false) | None => React.null
+        }}
+        // change-line
+        {isLoadingNext || isPending ? <SmallSpinner /> : React.null}
+      </>
+    | _ => React.null
+    }}
+  </div>
 }
 ```
 
-Every user action with results that aren’t immediate should be wrapped in a React transition. This allows React to prioritize different updates: for example, if when the data becomes available and React is rendering the new comments, the user clicks on another tab to navigate to a different page, React can interrupt rendering the comments in order to render the new page that the user wanted.
 
 ---
 
@@ -285,82 +298,31 @@ Let’s use what we’ve learned about pagination to create an infinite scrollin
 
 ### Step 1 — Select the Connection Field in the Query
 
-Right now our app uses the `topStories` root field to fetch a simple array of the top 3 stories. The schema also provides a `newsfeedStories` field on `Viewer` which is a Connection. Let’s modify the `Newsfeed` component to use this new field. Take a look once more at `Newsfeed.tsx` — the GraphQL query at the top should look like this:
+Right now our app uses the `topStories` root field to fetch a simple array of the top 3 stories. The schema also provides a `newsfeedStories` field on `Viewer` which is a Connection. Let’s modify the `Newsfeed` component to use this new field. Take a look once more at `Newsfeed.res` — the GraphQL query at the top should look like this:
 
-```
-const NewsfeedQuery = graphql`
+```rescript
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStories {
       id
       ...StoryFragment
     }
   }
-`;
+`)
 ```
-
-Go ahead and replace it with this:
-
-```
-const NewsfeedQuery = graphql`
-  query NewsfeedQuery {
-    viewer {
-      newsfeedStories(first: 3) {
-        edges {
-          node {
-            id
-            ...StoryFragment
-          }
-        }
-      }
-    }
-  }
-`;
-```
-
-Here we’ve replaced `topStories` with `viewer`’s `newsfeedStories`, adding a `first` argument so that we fetch the first 3 stories initially. Within that we’ve selected the `edge` and then the `node`, which is a `Story` node so we can spread the same `StoryFragment` from before. We also select `id` so that we can use it as a React `key` attribute.
 
 :::tip
 Although we put the `topStory` and `topStories` fields at the top level of `Query` for simplicity, it’s conventional to put fields related to the person who’s looking at the page or app under a field called `viewer`. We’ll switch to that convention now that we’re using the field as it would be in a real app.
 :::
 
-### Step 2 — Map over the Edges of the Connection
-
-We need to modify the Newsfeed component to map over the edges and render each node:
-
-```
-function Newsfeed() {
-  const data = useLazyLoadQuery(NewsfeedFragment, {});
-  // change-line
-  const storyEdges = data.newsfeedStories.edges;
-  return (
-    <>
-      {storyEdges.map(storyEdge =>
-        <Story key={storyEdge.node.id} story={storyEdge.node} />
-      )}
-    </>
-  );
-}
-```
-
-### Step 3 — Lower Newsfeed into a Fragment
-
-Relay’s pagination features only work with fragments, not entire queries. This is because, although we’re directly issuing a query in this component in this simple example app, in real applications the query is generally issued at some high-level routing component, which would rarely be the same component that’s showing a paginated list.
-
-To get this to work, we just need to separate out the contents `NewsfeedQuery` into a fragment, which we’ll call `NewsfeedContentsFragment`:
-
-```
-const NewsfeedQuery = graphql`
+Change the fragment to 
+```rescript
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
-    ...NewsfeedContentsFragment
-  }
-`;
-
-const NewsfeedContentsFragment = graphql`
-  fragment NewsfeedContentsFragment on Query {
     viewer {
-      newsfeedStories {
-        edges {
-          node {
+      newsfeedStories(first: 3) @required(action: NONE) {
+        edges @required(action: NONE) {
+          node @required(action: NONE) {
             id
             ...StoryFragment
           }
@@ -368,21 +330,91 @@ const NewsfeedContentsFragment = graphql`
       }
     }
   }
-`;
+`)
 ```
 
-This is a good time to mention that every GraphQL schema contains a type called `Query` that represents the top-level fields available to queries. By defining a fragment `on Query`, we can spread it directly into the top level.
+We’ve replaced `topStories` with `viewer`’s `newsfeedStories`, adding a `first` argument so that we fetch the first 3 stories initially. Within that we’ve selected the `edge` and then the `node`, which is a `Story` node so we can spread the same `StoryFragment` from before. We also select `id` so that we can use it as a React `key` attribute.
 
-Within `Newsfeed`, we can call both `useLazyLoadQuery` and `useFragment`, though in real life these would generally be in different components:
+### Step 2 - Map over the edges of the connection to render the stories
 
+```rescript
+@react.component
+let make = () => {
+  let {viewer} = NewsfeedQuery.use(~variables=(), ())
+
+  switch viewer {
+  | None => React.null
+  | Some({newsfeedStories}) =>
+    <div className="newsfeed">
+      {newsfeedStories.edges
+      ->Belt.Array.keepMap(edge => edge)
+      ->Belt.Array.map(({node}) => <Story key={node.id} story={node.fragmentRefs} />)
+      ->React.array}
+    </div>
+  }
+}
 ```
-export default function Newsfeed() {
-  // change-line
-  const queryData = useLazyLoadQuery(NewsfeedFragment, {});
-  // change-line
-  const data = useFragment(NewsfeedContentsFragment, queryData);
-  const storyEdges = data.newsfeedStories.edges;
-  ...
+
+### Step 3 - Lower the newsfeed into a fragment
+
+Relay’s pagination features only work with fragments, not entire queries. Although we could directly the query directly in this component, in real applications the query is generally issued at some high-level routing component, which would rarely be the same component that’s showing a paginated list.
+
+We'll fetch the `newsfeedStories` in a fragment on `Viewer` that we'll render in a separate component. Create a new file `NewsfeedContent.res` with the following fragment
+
+```rescript
+module NewsfeedContentFragment = %relay(`
+  fragment NewsfeedContentFragment on Viewer {
+    newsfeedStories(first: 3)
+      @connection(key: "NewsfeedContentsFragment_newsfeedStories") {
+      edges {
+        node {
+          id
+          ...StoryFragment
+        }
+      }
+    }
+  }
+`)
+```
+
+As in the previous example, use the fragment hook and the `getConnectionNodes` helper to render the nodes in the connection:
+
+```rescript
+@react.component
+let make = (~viewer as viewerRef) => {
+  let contents = NewsfeedContentFragment.use(viewerRef)
+  let stories = NewsfeedContentFragment.getConnectionNodes(contents.newsfeedStories)
+
+  <>
+    {stories
+    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->React.array}
+  </>
+}
+```
+
+Now change `Newsfeed.res` to spread the fragment in the query and render the new component
+
+
+```rescript
+module NewsfeedQuery = %relay(`
+  query NewsfeedQuery {
+    viewer {
+      ...NewsfeedContentFragment
+    }
+  }
+`)
+
+@react.component
+let make = () => {
+  let {viewer} = NewsfeedQuery.use(~variables=(), ())
+
+  <div className="newsfeed">
+    {switch viewer {
+    | None => React.null
+    | Some(viewer) => <NewsfeedContent viewer=viewer.fragmentRefs />
+    }}
+  </div>
 }
 ```
 
@@ -393,23 +425,20 @@ Now that we’re using a Connection field for the stories and have ourselves a f
 - Add fragment arguments for the page size and cursor (`first` and `after`).
 - Pass those arguments in to the `newsfeedStories` field as field arguments.
 - Mark the fragment as `@refetchable`.
-- Mark the `newsfeedStories` field with `@connection`.
 
 You should end up with something like this:
 
-```
-const NewsfeedContentsFragment = graphql`
+```rescript
+module NewsfeedContentsFragment = %relay(`
   fragment NewsfeedContentsFragment on Query
-    @argumentDefinitions (
-      cursor: { type: "String" }
-      count: { type: "Int", defaultValue: 3 }
-    )
-    @refetchable(queryName: "NewsfeedContentsRefetchQuery")
-  {
-    viewer {
+  @argumentDefinitions(
+    cursor: { type: "String" }
+    count: { type: "Int", defaultValue: 3 }
+  )
+  @refetchable(queryName: "NewsfeedContentsRefetchQuery") {
+    viewer @required(action: NONE) {
       newsfeedStories(after: $cursor, first: $count)
-        @connection(key: "NewsfeedContentsFragment_newsfeedStories")
-      {
+        @connection(key: "NewsfeedContentsFragment_newsfeedStories") {
         edges {
           node {
             id
@@ -419,62 +448,49 @@ const NewsfeedContentsFragment = graphql`
       }
     }
   }
-`;
+`)
 ```
 
-### Step 5 — Call usePaginationFragment
+### Step 5 — Call usePagination
 
-Now we need to modify the `NewsfeedContents` component to call `usePaginationFragment:`
+Now we need to modify the `NewsfeedContents` component to call `usePagination`:
 
-```
-function NewsfeedContents({viewer}) {
+```rescript
+@react.component
+let make = (~viewer as viewerRef) => {
   // change-line
-  const {data, loadNext} = usePaginationFragment(NewsfeedFragment, viewer);
-  const storyEdges = data.newsfeedStories.edges;
-  return (
-    <>
-      {storyEdges.map(storyEdge =>
-        <Story key={storyEdge.node.id} story={storyEdge.node} />
-      )}
-    </>
-  );
+  let {data} = NewsfeedContentFragment.usePagination(viewerRef)
+  let stories = NewsfeedContentFragment.getConnectionNodes(data.newsfeedStories)
+
+  <>
+    {stories
+    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->React.array}
+  </>
 }
 ```
 
 ### Step 6 — Paginate with a Scroll Trigger
 
-We’ve prepared a component called `InfiniteScrollTrigger` that detects when the bottom of the page is reached — we can use this to call `loadNext` at the appropriate time. It needs to know whether more pages exist and whether we’re currently loading the next page — we can retrieve these from the return value of `usePaginationFragment`:
+We’ve prepared a component called `InfiniteScrollTrigger` that detects when the bottom of the page is reached — we can use this to call `loadNext` at the appropriate time. It needs to know whether more pages exist and whether we’re currently loading the next page — we can retrieve these from the return value of `usePagination`:
 
-```
-function NewsfeedContents({query}) {
-  const {
-    data,
-    loadNext,
+```rescript
+@react.component
+let make = (~viewer as viewerRef) => {
+  // change-line
+  let {data, loadNext, hasNext, isLoadingNext} = NewsfeedContentFragment.usePagination(viewerRef)
+  let stories = NewsfeedContentFragment.getConnectionNodes(data.newsfeedStories)
+
+  // change-line
+  let onEndReached = () => loadNext(~count=3, ())->ignore
+
+  <>
+    {stories
+    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->React.array}
     // change-line
-    hasNext,
-    // change-line
-    isLoadingNext,
-  } = usePaginationFragment(NewsfeedContentsFragment, query);
-  // change
-  function onEndReached() {
-    loadNext(3);
-  }
-  // end-change
-  const storyEdges = data.viewer.newsfeedStories.edges;
-  return (
-    <>
-      {storyEdges.map(storyEdge =>
-        <Story key={storyEdge.node.id} story={storyEdge.node} />
-      )}
-      // change
-      <InfiniteScrollTrigger
-        onEndReached={onEndReached}
-        hasNext={hasNext}
-        isLoadingNext={isLoadingNext}
-      />
-      // end-change
-    </>
-  );
+    <InfiniteScrollTrigger onEndReached hasNext isLoadingNext />
+  </>
 }
 ```
 
