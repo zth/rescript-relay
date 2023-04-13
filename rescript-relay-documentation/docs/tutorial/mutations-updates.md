@@ -45,40 +45,39 @@ Relay tries to make it as easy as possible to update data in response to a mutat
 
 ## Implementing a Like Button
 
-Let’s dip our toes in the water by implementing the Like button for Newsfeed stories. Luckily we already have a Like button prepared, so open up `Story.tsx` and drop it in to the `Story` component, remembering to spread its fragment into Story’s fragment:
+Let’s dip our toes in the water by implementing the Like button for Newsfeed stories. Luckily we already have a Like button prepared, so open up `Story.res` and drop it in to the `Story` component, remembering to spread its fragment into Story’s fragment:
 
-```
-// change-line
-import StoryLikeButton from './StoryLikeButton';
-
-...
-
-const StoryFragment = graphql`
+```rescript
+module StoryFragment = %relay(`
   fragment StoryFragment on Story {
     title
     summary
-    // ... etc
+    createdAt
+    poster {
+      ...PosterBylineFragment
+    }
+    thumbnail {
+      ...ImageFragment @arguments(width: 400)
+    }
     // change-line
     ...StoryLikeButtonFragment
+    ...StoryCommentsSectionFragment
   }
-`;
+`)
 
 ...
 
-export default function Story({story}: Props) {
-  const data = useFragment(StoryFragment, story);
-  return (
-    <Card>
-      <PosterByline person={data.poster} />
-      <Heading>{data.title}</Heading>
-      <Timestamp time={data.posterAt} />
-      <Image image={story.thumbnail} width={400} height={400} />
-      <StorySummary summary={data.summary} />
-      // change-line
-      <StoryLikeButton story={data} />
-      <StoryCommentsSection story={data} />
-    </Card>
-  );
+@react.component
+let make = (~story) => {
+  ...
+
+  <Card>
+    ...
+    <StorySummary summary={summary} />
+    // change-line
+    <StoryLikeButton story={data.fragmentRefs} />
+    <StoryCommentsSection story={data.fragmentRefs} />
+  </Card>
 }
 ```
 
@@ -88,14 +87,14 @@ Now let’s take a look at `StoryLikeButton.js`. Currently, it is a button that 
 
 You can look at its fragment to see that it fetches a field `likeCount` for the like count and `doesViewerLike` to determine whether the Like button is highlighted (it’s highlighted if the viewer likes the story, i.e. if `doesViewerLike` is true):
 
-```
-const StoryLikeButtonFragment = graphql`
+```rescript
+module StoryLikeButtonFragment = %relay(`
   fragment StoryLikeButtonFragment on Story {
     id
     likeCount
     doesViewerLike
   }
-`;
+`)
 ```
 
 We want to make it so that when you press the Like button
@@ -120,49 +119,50 @@ The only difference is that, in a mutation, selecting a field makes something ha
 
 ## The Like Mutation
 
+:::note
+Given that the tutorial seems to be written for peeps without much/any GraphQL experience, maybee we should flesh out these kind of sections? Perhaps in toggle-able sections?
+
+The mutation that we want to fire when the user clicks the like button is defined in the GraphQL schema
+
+```graphql
+type Mutation {
+  likeStory(id: ID!, doesLike: Boolean!): StoryMutationResponse
+}
+
+type StoryMutationResponse {
+  story: Story
+}
+```
+The `likeStory` mutation accepts two variables ()
+:::
+
 With that in mind, this is what our mutation is going to look like — go ahead and add this declaration to the file:
 
-```
-const StoryLikeButtonLikeMutation = graphql`
-  mutation StoryLikeButtonLikeMutation(
-    // color1
-    $id: ID!,
-    // color1
-    $doesLike: Boolean!,
-  ) {
-    // color2
-    likeStory(
-      // color3
-      id: $id,
-      // color3
-      doesLike: $doesLike
-    ) {
-      // color4
+```rescript
+module StoryLikeButtonLikeMutation = %relay(`
+  mutation StoryLikeButtonLikeMutation($id: ID!, $doesLike: Boolean!) {
+    likeStory(id: $id, doesLike: $doesLike) {
       story {
-        // color5
         id
-        // color5
         likeCount
-        // color5
         doesViewerLike
       }
     }
   }
-`;
+`)
 ```
 
 This is a lot, let’s break it down:
 
-- The mutation declares <span className="color1">variables</span> which are passed from the client to the server when the mutation is dispatched. Each variable has a name (`$id`, `$doesLike`) and a type (`ID!`, `Boolean!`). The `!` after the type indicates that it is required, not optional.
-- The mutation selects a <span className="color2">mutation field</span> defined by the GraphQL schema. Each mutation field that the server defines corresponds to some action that the client can request of the server, such as liking a story.
-  - The <span className="color3">mutation field takes arguments</span> (just like any field can do). Here we pass in the mutation variables that we declared as the argument values — for example, the `doesLike` field argument is set to be the `$doesLike` mutation variable.
+- The mutation declares variables (`$id`, `$doesLike`) with type (`ID!`, `Boolean!`). These are passed from the client to the server when the mutation is dispatched. The `!` after a type indicates that it is required.
+- The mutation selects a mutation field defined by the GraphQL schema. Each mutation field that the server defines corresponds to some action that the client can request of the server, such as liking a story. The mutation field accepts arguments (like any field can do). The mutation variables that we declared as the argument values are passed in. For example, the `doesLike` field argument is set to be the `$doesLike` mutation variable.
 - The `likeStory` field returns an edge to a node that represents the mutation response. We can select various fields in order to receive updated data. The fields that are available in the mutation response are specified by the GraphQL schema.
-  - We select the `story` field, which is an <span className="color4">edge to the Story that we just liked</span>.
-  - We select specific <span className="color5">fields from within that Story to get updated data</span>. These are the same fields that a query could select about a Story — in fact, the same fields we selected in our fragment.
+- We select the `story` field, which is (an edge to - not correct. It's just the story) the Story that we just liked.
+- We select specific fields from within that Story to get updated data. These are the same fields that a query could select about a Story — in fact, the same fields we selected in our fragment.
 
 When we send the server this mutation, we’ll get a response that, just like with queries, matches the shape of the mutation that we sent. For example, the server might send this back to us:
 
-```
+```json
 {
   "likeStory": {
     "story": {
@@ -178,64 +178,75 @@ and our job will be to update the local data store to incorporate this updated i
 
 But we’re getting ahead of ourselves — let’s make that button trigger the mutation. Here’s what our component looks like now — we need to hook up the `onLikeButtonClicked` event to execute `StoryLikeButtonLikeMutation`.
 
-```
-function StoryLikeButton({story}) {
-  const data = useFragment(StoryLikeButtonFragment, story);
-  function onLikeButtonClicked() {
+```rescript
+@react.component
+let make = (~story) => {
+  let data = StoryLikeButtonFragment.use(story)
+  let onLikeButtonClicked = () => {
     // To be filled in
+    ()
   }
-  return (
-    <>
-      <LikeCount count={data.likeCount} />
-      <LikeButton value={data.doesViewerLike} onChange={onLikeButtonClicked} />
-    </>
-  )
+  <div className="likeButton">
+    <LikeCount count=?{data.likeCount} />
+    <LikeButton doesViewerLike=?{data.doesViewerLike} onClick={onLikeButtonClicked} />
+  </div>
 }
 ```
 
-To do that, we add a call to `useMutation`:
+To do that, we call the mutation's `use` hook:
 
-```
-// change-line
-import {useMutation, useFragment} from 'react-relay';
-
-function StoryLikeButton({story}) {
-  const data = useFragment(StoryLikeButtonFragment, story);
+```rescript
+@react.component
+let make = (~story) => {
+  let data = StoryLikeButtonFragment.use(story)
   // change-line
-  const [commitMutation, isMutationInFlight] = useMutation(StoryLikeButtonLikeMutation);
-  function onLikeButtonClicked() {
+  let (commitMutation, isMutationInFlight) = StoryLikeButtonLikeMutation.use()
+  let onLikeButtonClicked = () => {
     // change
-    commitMutation({
-      variables: {
-        id: data.id,
-        doesViewerLike: !doesViewerLike,
-      },
-    })
+    let variables = StoryLikeButtonLikeMutation.makeVariables(
+      ~id=data.id,
+      ~doesLike=!(data.doesViewerLike->Belt.Option.getWithDefault(false)),
+    )
+    commitMutation(~variables, ())->RescriptRelay.Disposable.ignore
     // end-change
   }
-  return (
-    <>
-      <LikeCount count={data.likeCount} />
-      <LikeButton value={data.doesViewerLike} onChange={onLikeButtonClicked} />
-    </>
-  )
+  <div className="likeButton">
+    <LikeCount count=?{data.likeCount} />
+    <LikeButton doesViewerLike=?{data.doesViewerLike} onClick={onLikeButtonClicked} />
+  </div>
 }
 ```
 
-The `useMutation` hook returns a function `commitMutation` that we can call to tell the server to do stuff.
-
-We pass in an option called `variables` where we give values for the variables defined by the mutation, namely `id` and `doesViewerLike`. This tells the server which story we’re talking about and whether the we are liking or un-liking it. The `id` of the story we’ve read from the fragment, while whether we like it or unlike it comes from toggling whatever the current value that we rendered is.
+The mutations `use` hook returns a function to fire the mutation (here named `commitMutation`) and a boolean which is true when the mutation is in flight (here named... `isMutationInFlight`). When calling `commitMutation` we pass in a record called `variables`, created using the `makeVariables` helper. It accepts labelled parameters for the variables defined by the mutation, namely `id` and `doesViewerLike`. This tells the server which story we’re talking about and whether the we are liking or un-liking it. The `id` of the story we’ve read from the fragment, while whether we like it or unlike it comes from toggling whatever the current value that we rendered is.
 
 The hook also returns a boolean flag that tells us when the mutation is in flight. We can use that to make the user experience nicer by disabling the button while the mutation is happening:
 
+```rescript
+  <div className="likeButton">
+    <LikeCount count=?{data.likeCount} />
+    <LikeButton
+      doesViewerLike=?{data.doesViewerLike}
+      onClick={onLikeButtonClicked}
+      // change-line
+      disabled=isMutationInFlight
+    />
+  </div>
 ```
-<LikeButton
-  value={data.doesViewerLike}
-  onChange={onLikeButtonClicked}
-  // change-line
-  disabled={isMutationInFlight}
-/>
+
+:::tip
+The variables object can also be constructed manually, so the call to `commitMutation` becomes 
+```rescript
+    commitMutation(
+      ~variables={
+        id: data.id, 
+        doesLike: !(data.doesViewerLike->Belt.Option.getWithDefault(false))
+      },
+      (),
+    )->RescriptRelay.Disposable.ignore
 ```
+For this particular case, whether you do it one way or the other only makes a stylistic difference. However, if a mutation accepts a nullable variable
+`makeVariables` is more convenient as it lets you construct the variables record without having to specify variables that you don't want to pass to the mutation.
+:::
 
 With this in place, we should now be able to like a story!
 
@@ -243,7 +254,7 @@ With this in place, we should now be able to like a story!
 
 But how did Relay know to update the story we clicked on? The server sent back a response with this form:
 
-```
+```json
 {
   "likeStory": {
     "story": {
@@ -263,12 +274,9 @@ Whenever the response includes an object with an `id` field, Relay will check if
 
 Remember that mutations are just like queries. In order to make sure that the mutation response always contains the data we want to render, instead of having a separate set of fields that has to be manually kept up to date, we can simply spread fragments into our mutation response:
 
-```
-const StoryLikeButtonLikeMutation = graphql`
-  mutation StoryLikeButtonLikeMutation(
-    $id: ID,
-    $doesLike: Boolean,
-  ) {
+```rescript
+module StoryLikeButtonLikeMutation = %relay(`
+  mutation StoryLikeButtonLikeMutation($id: ID!, $doesLike: Boolean!) {
     likeStory(id: $id, doesLike: $doesLike) {
       story {
         // change-line
@@ -276,7 +284,7 @@ const StoryLikeButtonLikeMutation = graphql`
       }
     }
   }
-`;
+`)
 ```
 
 Now if we add or remove data requirements, all of the necessary data (but no more) will be included with the mutation response. This is usually the smart way of writing mutation responses. You can spread in any fragment from any component, not just the component that triggers the mutation. This helps you keep your whole UI up to date.
@@ -303,118 +311,99 @@ Mutations proceed in three phases:
 
 With this background knowledge in hand, let’s go ahead and write an optimistic updater for our Like button so that it immediately updates to the new state when clicked.
 
-### Step 1 — Add the optimisticUpdater option to commitMutation
+:::tip
+In Relay, there are two main ways to implement optimistic UI - updatable queries and bla bla bla...
+:::
 
-Go to `StoryLikeButton` and add a new option to the call to `commitMutation`:
+### Step 1 — Prepare the mutation for optimistic updates
 
+Go to `StoryLikeButton` and add `@raw_response_type` to the mutation definition:
+
+```rescript
+module StoryLikeButtonLikeMutation = %relay(`
+  mutation StoryLikeButtonLikeMutation($id: ID!, $doesLike: Boolean!)
+  // change-line
+  @raw_response_type {
+    likeStory(id: $id, doesLike: $doesLike) {
+      story {
+        ...StoryLikeButtonFragment
+      }
+    }
+  }
+`)
 ```
-function StoryLikeButton({story}) {
-  ...
-  function onLikeButtonClicked(newDoesLike) {
-    commitMutation({
-      variables: {
-        id: data.id,
-        doesViewerLike: newDoesLike,
-      },
+
+`@raw_response_type` exposes a type that matches the shape of the expected response from the server, before application of any fragments and other directives. For istance, if you have a fragment `AB` that gets fields `a, b` and `BC` that gets fields `b, c`, adding the `@raw_response_type` directive exposes response type that is exactly `{a, b, c}`.
+
+For this mutation, the raw types are
+
+```rescript
+type rawResponse = {
+  likeStory: option<rawResponse_likeStory>,
+}
+
+type rawResponse_likeStory = {
+  story: option<rawResponse_likeStory_story>,
+}
+
+type rawResponse_likeStory = {
+  story: option<rawResponse_likeStory_story>,
+}
+
+type rawResponse_likeStory_story = {
+  id: string,
+  likeCount: option<int>,
+  doesViewerLike: option<bool>,
+}
+```
+
+This looks verbose, but we when we are going to use this type, it'll look very much like the server response (apart from some wrapping `Some`s)
+
+### Step 2 — Add the optimitic response to `commitMutation`
+
+:::warning
+After adding some more `@required` this might look very different, but making this work for now
+:::
+
+We only need to call `commitMutation` with the response we're expecting
+
+```rescript
+  let onLikeButtonClicked = () => {
+    // change-line
+    let {id, doesViewerLike, likeCount} = data
+
+    let newDoesLike = !(doesViewerLike->Belt.Option.getWithDefault(false))
+
+    commitMutation(
+      ~variables={id, doesLike: newDoesLike},
       // change
-      optimisticUpdater: store => {
-        // TODO fill in optimistic updater
+      ~optimisticResponse={
+        let newLikeCount = Math.Int.max(
+          0,
+          likeCount->Belt.Option.getWithDefault(0) + (newDoesLike ? 1 : -1),
+        )
+
+        {
+          likeStory: Some({
+            story: Some({
+              id,
+              likeCount: Some(newLikeCount),
+              doesViewerLike: Some(newDoesLike),
+            }),
+          }),
+        }
       },
       // end-change
-    })
+      (),
+    )->RescriptRelay.Disposable.ignore
   }
-  ...
-}
 ```
 
-This callback receives a `store` argument which represents Relay’s local data store. It has various methods for reading and writing local data. All of the writes that we make in the optimistic updater will be applied immediately when the mutation is dispatched, and then rolled back when it is complete.
+That's it! When the mutation is fired the UI will update to show the result of updating the store with the optimistic response. If the mutation fails, the optimistic update will be rolled back. If the mutation succeeds, the optimistic update will be replaced with the final result. 
 
-### Step 2 — Create an Updatable Fragment
-
-We can read and write data in the local store by writing a special kind of fragment called an _updatable fragment._ Unlike a regular fragment, it doesn’t get spread into queries and sent to the server. Instead, it lets us read data out of the local store using the same GraphQL syntax we already know and love. Go ahead and add this fragment definition:
-
-```
-function StoryLikeButton({story}) {
-  ...
-      optimisticUpdater: store => {
-        const fragment = graphql`
-          fragment StoryLikeButton_updatable on Story
-            // color1
-            @updatable
-          {
-            likeCount
-            doesViewerLike
-          }
-        `;
-      },
-  ...
-}
-```
-
-It’s exactly like any other fragment but annotated with the <span className="color1">@updatable</span> directive.
-
-Unlike normal fragments, updatable fragments are not spread into queries and do not select data to be fetched from the server. Instead, they select data that’s already in the Relay local data store so that the data may be updated.
-
-### Step 3 — Call readUpdatableFragment
-
-We pass this <span className="color2">fragment</span>, along with the <span className="color3">original fragment ref</span> that we received as a prop (which tells us _which_ story we’re liking), to `store.readUpdatableFragment`. It returns a <span className="color1">special object called `updatableData`</span>:
-
-```
-function StoryLikeButton({story}) {
-  ...
-      optimisticUpdater: store => {
-        const fragment = graphql`
-          fragment StoryLikeButton_updatable on Story @updatable {
-            likeCount
-            doesViewerLike
-          }
-        `;
-        const {
-          // color1
-          updatableData
-        } = store.readUpdatableFragment(
-          // color2
-          fragment,
-          // color3
-          story
-        );
-      },
-  ...
-}
-```
-
-### Step 4 — Modify the Updatable Data
-
-Now `upatableData` is an object representing our existing Story as it exists in the local store. We can read and write the fields listed in our fragment:
-
-```
-function StoryLikeButton({story}) {
-  ...
-      optimisticUpdater: store => {
-        const fragment = graphql`
-          fragment StoryLikeButton_updatable on Story @updatable {
-            likeCount
-            doesViewerLike
-          }
-        `;
-        const {updatableData} = store.readUpdatableFragment(fragment, story);
-        // change
-        const alreadyLikes = updatableData.doesViewerLike;
-        updatableData.doesViewerLike = !alreadyLikes;
-        updatableData.likeCount += (alreadyLikes ? -1 : 1);
-        // end-change
-      },
-  ...
-}
-```
-
-In this example, we toggle `doesViewerLike` (so that clicking the button when you already like the story makes you un-like it) and increment or decrement the like count accordingly.
-
-Relay records the changes we made to `updatableData` and will roll them back once the mutation is complete.
-
-Now when you click the Like button, you should see the UI immediately update.
-
----
+:::tip 
+Try setting the like count to -1000 in the optimistic response to see how the mutation response from replaces the optimistic response.
+:::
 
 ## Adding Comments — Mutations on Connections
 
