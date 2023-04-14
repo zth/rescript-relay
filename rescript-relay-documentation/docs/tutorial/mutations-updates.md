@@ -643,6 +643,7 @@ let make = (~story) => {
         text,
         // change-line
         connections: [connectionId],
+        ...
       },
       (),
     )->RescriptRelay.Disposable.ignore
@@ -660,6 +661,60 @@ Meanwhile, the argument `__id` is the ID of the specific story that we’re conn
 
 With this change, we should see the comment appear in the list of comments once the mutation is complete.
 
+### Step 5 - Add an optimistic response to the mutation
+
+The final piece of the puzzle is to add an optimistic response like we did when liking and unliking a story.
+
+First add `@raw_response_type` to the mutation defintion as before.
+
+```rescript
+module StoryCommentsComposerPostMutation = %relay(`
+    mutation StoryCommentsComposerPostMutation(
+      $id: ID!
+      $text: String!
+      $connections: [ID!]!
+    // change-line
+    ) @raw_response_type {
+      postStoryComment(id: $id, text: $text) {
+        ...
+      }
+    }
+`)
+```
+
+Previously we knew the exact value of the response we expected from the server. For this mutation, however, we can't know before-hand which id the new comment node will have. For these situations, we use a helper function to generate a temporary node id that will let store update correctly for the optimistic UX. When the mutation returns with the actual node id, the optimistic changes to the store will be rolled back and the temporary node id replaced with the actual one.
+
+Make the following changes to `commitMutation`:
+```rescript
+@react.component
+let make = (~story) => {
+    ...
+    commitMutation(
+      ...
+      // change
+      ~optimisticResponse={
+        postStoryComment: Some({
+          commentEdge: Some({
+            node: Some({
+              id: RescriptRelay.generateUniqueClientID()->RescriptRelay.dataIdToString,
+              text: Some(text),
+            }),
+          }),
+        }),
+      },
+      // end-change
+      ()
+      },
+      (),
+    )->RescriptRelay.Disposable.ignore
+  }
+}
+```
+
+:::warning
+TADA!
+:::
+
 ---
 
 ## Summary
@@ -669,6 +724,8 @@ Mutations let us ask the server to make changes.
 - Just like Queries, Mutations are composed of fields, accept variables, and pass those variables as arguments to fields.
 - The fields that are selected by a Mutation constitute the _mutation response_ which we can use to update the Store.
 - Relay automatically merges nodes in the response to nodes in the Store with matching IDs.
+- The `onCompleted` and `onError` callbacks lets you trigger side-effects (such as restoring or clearing component state), when the mutation finishes.
 - The `@appendEdge`, `@prependEdge`, and `@deleteEdge` directives let us insert and remove items from the mutation response into Connections in the store.
-- Updaters let us manually manipulate the store.
-- Optimistic updaters run before the mutation begins and are rolled back when it is done.
+- We can get optimistic UI by using the `@raw_response_type` directive on the mutation and passing what we expect the mutation response to be  to `commitMutation`.
+- Updates to the store via Optimistic responses are rolled back when the mutation completes, so the actual response can be applied instead.
+
