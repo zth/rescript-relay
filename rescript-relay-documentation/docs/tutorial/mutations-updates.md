@@ -291,7 +291,7 @@ Now if we add or remove data requirements, all of the necessary data (but no mor
 
 ---
 
-## Improving the UX with an Optimistic Updater
+## Improving the UX with an Optimistic Response
 
 Mutations take time to perform, yet we always want the UI to update immediately in some way to give the user feedback that they’ve taken an action. In the current example, the Like button is disabled while the mutation is happening, and then after the mutation is done, the UI is updated into the new state as Relay merges the updated data into its store and re-renders the affected components.
 
@@ -413,35 +413,32 @@ Let’s look at the case of Connections. We’ll implement the ability to post a
 
 The server’s mutation response only includes the newly-created comment. We have to tell Relay how to insert that story into the Connection between a story and its comments.
 
-Head back over to `StoryCommentsSection` and add a component for posting a new comment, remembering to spread its fragment into our fragment:
+Head back over to `StoryCommentsSection.res` and the add `StoryCommentsComposer` for posting a new comment, remembering to spread its fragment into our fragment:
 
-```
-// change-line
-import StoryCommentsComposer from './StoryCommentsComposer';
-
-const StoryCommentsSectionFragment = graphql`
+```rescript
+module StoryCommentsSectionFragment = %relay(`
   fragment StoryCommentsSectionFragment on Story
-    ...
-  {
-    comments(after: $cursor, first: $count)
-      @connection(key: "StoryCommentsSectionFragment_comments")
+  ...
     {
       ...
     }
-    // change-line
     ...StoryCommentsComposerFragment
   }
+`)
 `
 
-function StoryCommentsSection({story}) {
+@react.component
+let make = (~story) => {
   ...
-  return (
-    <>
-      // change-line
-      <StoryCommentsComposer story={data} />
-      ...
-    </>
-  );
+
+  <div>
+    // change-line
+    <StoryCommentsComposer story={data.fragmentRefs} />
+    {comments
+    ->Array.map(comment => <Comment key=comment.id comment=comment.fragmentRefs />)
+    ->React.array}
+    ...
+  </div>
 }
 ```
 
@@ -449,103 +446,108 @@ We should now see a composer at the top of the comments section:
 
 ![Comments composer screenshot](/img/docs/tutorial/mutations-comments-composer-screenshot.png)
 
-Now take a look inside `StoryCommentsComposer.js`:
+Now take a look inside `StoryCommentsComposer.res`:
 
-```
-function StoryCommentsComposer({story}) {
-  const data = useFragment(StoryCommentsComposerFragment, story);
-  const [text, setText] = useState('');
-  function onPost() {
-   // TODO post the comment here
+```rescript
+@react.component
+let make = (~story) => {
+  let _data = StoryCommentsComposerFragment.use(story)
+  let (text, setText) = React.useState(() => "")
+  let onPost = () => {
+    // TODO post the comment here
+    ()
   }
-  return (
-    <div className="commentsComposer">
-      <TextComposer text={text} onChange={setText} onReturn={onPost} />
-      <PostButton onClick={onPost} />
-    </div>
-  );
+  <div className="commentsComposer">
+    <TextComposer text={text} onChange={setText} onReturn={onPost} />
+    <PostButton onClick={onPost} />
+  </div>
 }
 ```
 
 ### Step 1 — Define the Comment Posting Mutation
 
-Just like before, we need to define a mutation. It will send to the server the story ID and the text of the comment to be added:
+Just like before, we define a mutation. It will send the story ID and the comment text:
 
-```
-const StoryCommentsComposerPostMutation = graphql`
-  mutation StoryCommentsComposerPostMutation(
-    $id: ID!,
-    $text: String!,
-  ) {
-    postStoryComment(id: $id, text: $text) {
-      commentEdge {
-        node {
-          id
-          text
+```rescript
+module StoryCommentsComposerPostMutation = %relay(`
+    mutation StoryCommentsComposerPostMutation($id: ID!, $text: String!) {
+      postStoryComment(id: $id, text: $text) {
+        commentEdge {
+          node {
+            id
+            text
+          }
         }
       }
     }
-  }
-`;
+`)
 ```
 
-Here, the schema allows us to select as part of the mutation response the newly-created edge to the newly-created comment. We select it and will use it to update the local store by inserting this edge into the Connection.
+We select the newly-created edge to the newly-created comment in the mutation response and update the local store by inserting the edge into the connection.
 
 ### Step 2 — Call commitMutation to post it
 
-Now we use the `useMutation` hook to get access to the `commitMutation` callback, and call it in `onPost`:
+Now we use the mutation's `use` hook to get access to the `commitMutation` callback, and call it in `onPost`:
 
-```
-function StoryCommentsComposer({story}) {
-  const data = useFragment(StoryCommentsComposerFragment, story);
-  const [text, setText] = useState('');
+```rescript
+@react.component
+let make = (~story) => {
   // change-line
-  const [commitMutation, isMutationInFlight] = useMutation(StoryCommentsComposerPostMutation);
-  function onPost() {
+  let {id} = StoryCommentsComposerFragment.use(story)
+  let (text, setText) = React.useState(() => "")
+  // change-line
+  let (commitMutation, isMutationInFlight) = StoryCommentsComposerPostMutation.use()
+  let onPost = () => {
     // change
-    setText(''); // Reset the UI
-    commitMutation({
-      variables: {
-        id: data.id,
+    // reset the UI
+    setText(_ => "")
+    commitMutation(
+      ~variables={
+        id,
         text,
       },
-    })
+      (),
+    )->RescriptRelay.Disposable.ignore
     // end-change
   }
-  ...
+  <div className="commentsComposer">
+    <TextComposer text={text} onChange={setText} onReturn={onPost} />
+    // change-line
+    <PostButton onClick={onPost} disabled={isMutationInFlight} />
+  </div>
 }
 ```
 
 ### Step 3 — Add a Declarative Connection Handler
 
-At this point, we can find from the network logs that clicking Post will send a mutation request to the server — you can even see that the comment has been posted since it appears if you refresh the page. However, nothing happens in the UI. We need to tell Relay to append the newly-created comment to the Connection that goes from the story to its comments.
+Now the mutation has been hooked up, you can see in the network logs that clicking Post sends a mutation request to the server. If you refresh the page, you can see that the comment has been posted. However, nothing happens in the UI. We need to tell Relay to add the newly-created `commentEdge` to the comments Connection on the story.
 
-You’ll notice that in the mutation response that we wrote above we select `commentEdge`. This is the edge to the newly-created comment. We just need to tell Relay what Connections to add that edge to. Relay provides directives called `@appendEdge`, `@prependEdge`, and `@deleteEdge` that you put on the edge in the mutation response. Then when you run the mutation, you pass in the IDs of the Connections that you want to modify. Relay will append, prepend, or delete the edge from those connections as you specify.
+To do that we can use one of Relay's declarative directives to manipulate Connections. There are three edge directions, `@appendEdge`, `@prependEdge`, and `@deleteEdge` that you can use directly in the mutation definition. Then when the mutation is run, you pass in the ID(s) of the Connections that you want to modify. Relay will append, prepend, or delete the edge from those Connections as you specify.
 
-We want our newly-created comment to appear at the top of the list, so we’ll use `@prependEdge`. Make the following additions to the mutation definition:
+We want the newly-created comment to appear at the top of the list, so we’ll use `@prependEdge`. Make the following additions to the mutation definition:
 
-```
-  mutation StoryCommentsComposerPostMutation(
-    $id: ID!,
-    $text: String!,
-    // change-line
-    $connections: [ID!]!,
-  ) {
-    postStoryComment(id: $id, text: $text) {
-      commentEdge
+```rescript
+module StoryCommentsComposerPostMutation = %relay(`
+    mutation StoryCommentsComposerPostMutation(
+      $id: ID!
+      $text: String!
+      // change-line
+      $connections: [ID!]!
+    ) {
+      postStoryComment(id: $id, text: $text) {
         // change-line
-        @prependEdge(connections: $connections)
-      {
-        node {
-          id
-          text
+        commentEdge @prependEdge(connections: $connections) {
+          node {
+            id
+            text
+          }
         }
       }
     }
-  }
+`)
 ```
 
-We’ve added a variable called `connections` to the mutation. We’ll use this to pass in the Connections we want to update.
+We’ve added a variable called `connections` to the mutation which we'll use to pass the IDs of the Connections we want to update.
 
 :::note
 The `$connections` variable is only used as an argument to the `@prependEdge` directive, which is processed on the client by Relay. Because `$connections` is not passed as an argument to any _field_, it is not sent to the server.
@@ -558,53 +560,60 @@ We need to identify the Connection to add the new edge to. A Connections is iden
 - Which node it’s off of — in this case, the Story we’re posting a comment to.
 - The _key_ provided in the `@connection` directive, which lets us distinguish connections in case more than one connection is off of the same node.
 
-We pass this information in to the mutation variables using a special API provided by Relay:
+We pass this information into the mutation variables using a special API provided by RescriptRelay called `ConnectionHandler`.
 
+:::warning
+Explain why we're using `__id` and not just `id`. See https://github.com/zth/rescript-relay/pull/144
+:::
+
+First add the `__id` field on the composers fragment and remove `id`.
+
+```rescript
+module StoryCommentsComposerFragment = %relay(`
+  fragment StoryCommentsComposerFragment on Story {
+    // change-line
+    __id
+  }
+`)
 ```
-// change-line
-import {useFragment, useMutation, ConnectionHandler} from 'react-relay';
 
-...
-
-export default function StoryCommentsComposer({story}: Props) {
-  ...
-  function onPost() {
-    setText('');
+```rescript
+@react.component
+let make = (~story) => {
+  // change-line
+  let {__id} = StoryCommentsComposerFragment.use(story)
+  let (text, setText) = React.useState(() => "")
+  let (commitMutation, isMutationInFlight) = StoryCommentsComposerPostMutation.use()
+  let onPost = () => {
+    setText(_ => "")
     // change
-    const connectionID = ConnectionHandler.getConnectionID(
-      data.id,
-      'StoryCommentsSectionFragment_comments',
-    );
+    let connectionId = RescriptRelay.ConnectionHandler.getConnectionID(
+      __id,
+      "StoryCommentsSectionFragment_comments",
+      (),
+    )
     // end-change
-    commitMutation({
-      variables: {
-        id: data.id,
+    commitMutation(
+      ~variables={
+        // change-line
+        id: __id->RescriptRelay.dataIdToString,
         text,
         // change-line
-        connections: [connectionID],
+        connections: [connectionId],
       },
-    })
+      (),
+    )->RescriptRelay.Disposable.ignore
   }
-  ...
+  <div className="commentsComposer">
+    <TextComposer text={text} onChange={setText} onReturn={onPost} />
+    <PostButton onClick={onPost} disabled={isMutationInFlight} />
+  </div>
 }
 ```
 
-The string `"StoryCommentsSectionFragment_comments"` that we pass to `getConnectionID` is the identifier that we used when fetching the connection in `StoryCommentSection` — just as a reminder, here's what that looked like:
+The string `"StoryCommentsSectionFragment_comments"` that we pass to `getConnectionID` is the identifier that we used when fetching the connection in `StoryCommentSection`.
 
-```
-const StoryCommentsSectionFragment = graphql`
-  fragment StoryCommentsSectionFragment on Story
-  ...
-  {
-    comments(after: $cursor, first: $count)
-     @connection(key: "StoryCommentsSectionFragment_comments")
-    {
-      ...
-  }
-`;
-```
-
-Meanwhile, the argument `data.id` is the ID of the specific story that we’re connecting off of.
+Meanwhile, the argument `__id` is the ID of the specific story that we’re connecting off of.
 
 With this change, we should see the comment appear in the list of comments once the mutation is complete.
 
