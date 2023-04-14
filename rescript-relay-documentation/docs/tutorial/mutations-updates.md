@@ -485,7 +485,7 @@ module StoryCommentsComposerPostMutation = %relay(`
 
 We select the newly-created edge to the newly-created comment in the mutation response and update the local store by inserting the edge into the connection.
 
-### Step 2 — Call commitMutation to post it
+### Step 2 — Call commitMutation to post the comment
 
 Now we use the mutation's `use` hook to get access to the `commitMutation` callback, and call it in `onPost`:
 
@@ -499,7 +499,6 @@ let make = (~story) => {
   let (commitMutation, isMutationInFlight) = StoryCommentsComposerPostMutation.use()
   let onPost = () => {
     // change
-    // reset the UI
     setText(_ => "")
     commitMutation(
       ~variables={
@@ -511,12 +510,56 @@ let make = (~story) => {
     // end-change
   }
   <div className="commentsComposer">
-    <TextComposer text={text} onChange={setText} onReturn={onPost} />
+    // change-line
+    <TextComposer text={text} onChange={setText} onReturn={onPost}
+    disabled={isMutationInFlight} />
     // change-line
     <PostButton onClick={onPost} disabled={isMutationInFlight} />
   </div>
 }
 ```
+
+Note that we are clearing the comment text regardless of whether the mutation was successful or not. If there was en error, we want to make sure to restore the text so the user can try again.
+
+`commitMutation` accepts a callback `onCompleted`, which is called when the mutation returns. `onCompleted` receives the mutation response as the first argument and any thrown GraphQL errors as the second argument. 
+
+:::warning
+Maybe link to somewhere that explains how developer land errors work in GraphQL and are different from e.g. network errors? Explaining is out of scope for the tutorial, I think.
+:::
+
+Here we will assume that posting the comment failed, if there is no `commentEdge` in the data in `onCompleted` or if `onError` is called at all.
+
+Make the following changes to `commitMutation`:
+```rescript
+@react.component
+let make = (~story) => {
+    ...
+    commitMutation(
+      ...
+      // change
+      ~onCompleted=(data, _) => {
+        switch data.postStoryComment {
+        | Some({commentEdge: Some(_)}) => setText(_ => "")
+        | _ => ()
+        }
+      },
+      ~onError=_ => {
+        setText(_ => text)
+      },
+      // end-change
+      ()
+      },
+      (),
+    )->RescriptRelay.Disposable.ignore
+  }
+}
+```
+
+If you disable the network connection in the your browsers devtools networks tab or if you open up `resovlers.mjs` and throw an exception in `resolvePostStoryCommentMutation` you can get the mutation to error. For the former, the `onError` handler is called immediately (since only the server is artifically slowed down) and the comment text is restored. If you do the latter, you'll see the comment text dissapear and then reappear when the mutation response comes back without a new comment edge.
+
+:::tip
+There are different schools of though on how to design your API, but that's outside the scope of this tutorial. See somewhere for stuff...
+:::
 
 ### Step 3 — Add a Declarative Connection Handler
 
