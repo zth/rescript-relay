@@ -55,14 +55,14 @@ To show multiple stories on our newsfeed, we just need to modify `Newsfeed.res` 
 Open `Newsfeed.res` and find `NewsfeedQuery`. Replace `topStory` with `topStories`.
 
 ```rescript
-const NewsfeedQuery = graphql`
+module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     // change-line
     topStories {
       ...StoryFragment
     }
   }
-`;
+`)
 ```
 
 ### Step 2 — Map over the list in the component
