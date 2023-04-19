@@ -22,7 +22,7 @@ This tutorial assumes a fair familiarity with React. If you’re still new to Re
 This tutorial is built with ReScript, so [very basic knowledge of ReScript](https://rescript-lang.org/docs/manual/latest/introduction) is helpful as well.
 
 :::info
-**IMPORTANT**: The tutorial is meant to be gone through in order, as the exercises build on each other. You’ll be making incremental changes to an example app, so later section won’t make sense if you haven’t done the earlier sections.
+**IMPORTANT**: The tutorial is meant to be gone through in order, as the exercises build on each other. You’ll be making incremental changes to an example app, so later sections won’t make sense if you haven’t done the earlier sections.
 :::
 
 ---
@@ -32,19 +32,20 @@ To get started, run the following commands:
 ```
 git clone https://github.com/zth/relay-examples.git
 cd relay-examples/newsfeed
-npm install
-npm run dev
+yarn
+yarn dev
 ```
 
-This downloads a template project to get started from and starts the server. (If they don’t work, you may need to [install git](https://github.com/git-guides/install-git) or [install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).)
+This downloads a template project to get started from and starts the server. (If they don’t work, you may need to [install git](https://github.com/git-guides/install-git) or [install yarn](https://yarnpkg.com/getting-started/install).)
 
-When you run `npm run dev`, several processes are started:
+When you run `yarn dev`, several processes are started:
 
-- A Webpack-based HTTP server that serves up the front-end code.
-- A basic GraphQL server that that front-end will query to retrieve information.
+- A basic GraphQL server that the front-end will query to retrieve information. Later versions of this tutorial will show you how to build the server alongside the client.
 - The Relay compiler, which processes the GraphQL in your app and generates additional files that Relay uses at runtime, as well as ReScript code representing the inputs and results of your queries. It will automatically regenerate when you save changes in your files.
+- The Rescript compiler, which compiles Rescript `.res` files to Javascript (ECMAScript modules) `.mjs`
+- A vite dev server that serves up the front-end `.mjs` code.
 
-In the terminal output, these three processes’ log output are marked with tags: `[webpack]` in yellow, `[server]` in green, and `[relay]` in blue. Keep a look out for errors marked with `[relay]` as these are helpful if your GraphQL has any mistakes.
+In the terminal output, these three processes’ log output are marked with tags: `[vite]` in yellow, `[server]` in green, `[relay]` in turqoise, and `[rescript]` in blue. Keep a look out for errors marked with `[relay]` and `[rescript]` as these are helpful if your GraphQL has any mistakes.
 
 Now that these processes are running, you should be able to open [http://localhost:3000](http://localhost:3000/) in your browser.
 
