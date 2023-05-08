@@ -7,7 +7,7 @@ external useTransitionWithOptions: unit => (
   (. unit => unit, option<{"name": option<string>}>) => unit,
 ) = "useTransition"
 
-let useTransition: unit => (bool, React.callback<unit => unit, unit>)
+let useTransition: unit => (bool, (unit => unit) => unit)
 
 module SuspenseList: {
   @module("react") @react.component
