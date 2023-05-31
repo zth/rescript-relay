@@ -147,3 +147,82 @@ module Mutation = {
     }
   }
 }
+
+module Query = {
+  type useQueryConfig = {
+    fetchKey?: string,
+    fetchPolicy?: string,
+    networkCacheConfig?: cacheConfig,
+  }
+
+  @module("react-relay")
+  external useLazyLoadQuery: (queryNode<'node>, 'variables, useQueryConfig) => 'response =
+    "useLazyLoadQuery"
+
+  let useQuery = (
+    ~convertVariables: 'variables => 'variables,
+    ~node: 'm,
+    ~convertResponse: 'response => 'response,
+  ) => {
+    /**
+    React hook for using this query.\n\n\
+                Prefer using `Query.useLoader()` or \
+                `YourQueryName_graphql.load()` in combination with \
+                `Query.usePreloaded()` to this whenever you can, as that will \
+                allow you to start loading data before your code actually \
+                renders.*/
+    (~variables: 'variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) => {
+      useLazyLoadQuery(
+        node,
+        RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(variables->convertVariables),
+        {
+          ?fetchKey,
+          fetchPolicy: ?fetchPolicy->mapFetchPolicy,
+          ?networkCacheConfig,
+        },
+      )->(RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _))
+    }
+  }
+
+  type useQueryLoaderOptions = {
+    fetchPolicy?: string,
+    networkCacheConfig?: cacheConfig,
+  }
+
+  @module("react-relay")
+  external useQueryLoader: queryNode<'node> => (
+    Js.Nullable.t<'queryRef>,
+    ('variables, useQueryLoaderOptions) => unit,
+    unit => unit,
+  ) = "useQueryLoader"
+
+  type loaderTuple<'queryRef, 'variables> = (
+    option<'queryRef>,
+    (
+      ~variables: 'variables,
+      ~fetchPolicy: fetchPolicy=?,
+      ~networkCacheConfig: cacheConfig=?,
+      unit,
+    ) => unit,
+    unit => unit,
+  )
+
+  let useLoader = (
+    ~convertVariables: 'variables => 'variables,
+    ~node: 'm,
+    ~mkQueryRef: option<'queryRef> => option<'queryRef>,
+  ) => {
+    () => {
+      let (nullableQueryRef, loadQueryFn, disposableFn) = useQueryLoader(node)
+      let loadQuery = React.useMemo1(
+        () => (~variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
+          loadQueryFn(
+            variables->convertVariables,
+            {fetchPolicy: ?fetchPolicy->mapFetchPolicy, ?networkCacheConfig},
+          ),
+        [loadQueryFn],
+      )
+      (nullableQueryRef->Js.Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
+    }
+  }
+}
