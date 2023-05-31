@@ -225,4 +225,20 @@ module Query = {
       (nullableQueryRef->Js.Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
     }
   }
+
+  @module("react-relay")
+  external usePreloadedQuery: (queryNode<'node>, 'queryRef) => 'response = "usePreloadedQuery"
+
+  let usePreloaded = (
+    ~node,
+    ~convertResponse: 'response => 'response,
+    ~mkQueryRef: 'queryRef => 'queryRef,
+  ) => /** Combine this with `Query.useLoader` or \
+                `YourQueryName_graphql.load()` to use a query you've started \
+                preloading before rendering. */
+  (~queryRef: 'queryRef) => {
+    usePreloadedQuery(node, queryRef->mkQueryRef)->(
+      RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _)
+    )
+  }
 }

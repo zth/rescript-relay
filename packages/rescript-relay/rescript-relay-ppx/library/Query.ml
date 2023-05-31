@@ -22,21 +22,6 @@ let make ~loc ~moduleName ~hasRawResponseType =
              [@@module "relay-runtime"] [@@live]]];
          [%stri
            [%%private
-           external internal_usePreloadedQuery :
-             [%t typeFromGeneratedModule ["relayOperationNode"]]
-             RescriptRelay.queryNode ->
-             [%t typeFromGeneratedModule ["queryRef"]] ->
-             [%t typeFromGeneratedModule ["Types"; "response"]]
-             = "usePreloadedQuery"
-             [@@module "react-relay"] [@@live]]];
-         [%stri
-           type useQueryLoaderOptions = {
-             fetchPolicy: RescriptRelay.fetchPolicy option;
-             networkCacheConfig: RescriptRelay.cacheConfig option;
-           }
-           [@@live]];
-         [%stri
-           [%%private
            external internal_fetchQuery :
              RescriptRelay.Environment.t ->
              [%t typeFromGeneratedModule ["relayOperationNode"]]
@@ -57,9 +42,13 @@ let make ~loc ~moduleName ~hasRawResponseType =
                [%t typeFromGeneratedModule ["Types"; "response"]] =
              [%e valFromGeneratedModule ["Internal"; "convertResponse"]]];
          [%stri
-           external mkQueryRef :
+           external mkQueryRefOpt :
              [%t typeFromGeneratedModule ["queryRef"]] option ->
              [%t typeFromGeneratedModule ["queryRef"]] option = "%identity"];
+         [%stri
+           external mkQueryRef :
+             [%t typeFromGeneratedModule ["queryRef"]] ->
+             [%t typeFromGeneratedModule ["queryRef"]] = "%identity"];
          [%stri
            let use =
              RescriptRelay_Migrate.Query.useQuery ~convertVariables
@@ -67,7 +56,13 @@ let make ~loc ~moduleName ~hasRawResponseType =
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let useLoader =
-             RescriptRelay_Migrate.Query.useLoader ~convertVariables ~mkQueryRef
+             RescriptRelay_Migrate.Query.useLoader ~convertVariables
+               ~mkQueryRef:mkQueryRefOpt
+               ~node:[%e valFromGeneratedModule ["node"]]];
+         [%stri
+           let usePreloaded =
+             RescriptRelay_Migrate.Query.usePreloaded ~convertResponse
+               ~mkQueryRef
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let fetch ~(environment : RescriptRelay.Environment.t)
@@ -143,23 +138,6 @@ let make ~loc ~moduleName ~hasRawResponseType =
                  |. Js.Promise.resolve)
                __x
              [@@ocaml.doc " Promise variant of `Query.fetch`."] [@@live]];
-         [%stri
-           let usePreloaded
-               ~(queryRef : [%t typeFromGeneratedModule ["queryRef"]]) () :
-               [%t typeFromGeneratedModule ["Types"; "response"]] =
-             let data : [%t typeFromGeneratedModule ["Types"; "response"]] =
-               internal_usePreloadedQuery
-                 [%e valFromGeneratedModule ["node"]]
-                 queryRef
-             in
-             RescriptRelay_Internal.internal_useConvertedValue
-               [%e valFromGeneratedModule ["Internal"; "convertResponse"]]
-               data
-             [@@ocaml.doc
-               "Combine this with `Query.useLoader` or \
-                `YourQueryName_graphql.load()` to use a query you've started \
-                preloading before rendering."]
-             [@@live]];
          [%stri
            let retain ~(environment : RescriptRelay.Environment.t)
                ~(variables :
