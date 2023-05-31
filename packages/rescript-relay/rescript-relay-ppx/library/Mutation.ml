@@ -57,33 +57,6 @@ let make ~loc ~moduleName =
            }
            [@@live]];
          [%stri
-           type commitMutationConfigRaw = {
-             mutation:
-               [%t typeFromGeneratedModule ["relayOperationNode"]]
-               RescriptRelay.mutationNode;
-             variables: [%t typeFromGeneratedModule ["Types"; "variables"]];
-             onCompleted:
-               ([%t typeFromGeneratedModule ["Types"; "response"]] ->
-               RescriptRelay.mutationError array Js.Nullable.t ->
-               unit)
-               option;
-             onError:
-               (RescriptRelay.mutationError Js.Nullable.t -> unit) option;
-             optimisticResponse:
-               [%t typeFromGeneratedModule ["Types"; "rawResponse"]] option;
-             optimisticUpdater: optimisticUpdaterFn option;
-             updater: updaterFn option;
-             uploadables: RescriptRelay.uploadables option;
-           }
-           [@@live]];
-         [%stri
-           [%%private
-           external internal_commitMutation :
-             RescriptRelay.Environment.t ->
-             commitMutationConfigRaw ->
-             RescriptRelay.Disposable.t = "commitMutation"
-             [@@module "relay-runtime"] [@@live]]];
-         [%stri
            [%%private
            external internal_useMutation :
              [%t typeFromGeneratedModule ["relayOperationNode"]]
@@ -92,85 +65,25 @@ let make ~loc ~moduleName =
              = "useMutation"
              [@@module "react-relay"] [@@live]]];
          [%stri
-           let commitMutation :
-               environment:RescriptRelay.Environment.t ->
-               variables:[%t typeFromGeneratedModule ["Types"; "variables"]] ->
-               ?optimisticUpdater:optimisticUpdaterFn ->
-               ?optimisticResponse:
-                 [%t typeFromGeneratedModule ["Types"; "rawResponse"]] ->
-               ?updater:
-                 (RescriptRelay.RecordSourceSelectorProxy.t ->
-                 [%t typeFromGeneratedModule ["Types"; "response"]] ->
-                 unit) ->
-               ?onCompleted:
-                 ([%t typeFromGeneratedModule ["Types"; "response"]] ->
-                 RescriptRelay.mutationError array option ->
-                 unit) ->
-               ?onError:(RescriptRelay.mutationError option -> unit) ->
-               ?uploadables:RescriptRelay.uploadables ->
-               unit ->
-               RescriptRelay.Disposable.t =
-            fun ~environment ~variables ?optimisticUpdater ?optimisticResponse
-                ?updater ?onCompleted ?onError ?uploadables () :
-                RescriptRelay.Disposable.t ->
-             internal_commitMutation environment
-               {
-                 variables =
-                   variables
-                   |. [%e
-                        valFromGeneratedModule ["Internal"; "convertVariables"]];
-                 mutation = [%e valFromGeneratedModule ["node"]];
-                 onCompleted =
-                   Some
-                     (fun res err ->
-                       match onCompleted with
-                       | Some cb ->
-                         cb
-                           (res
-                           |. [%e
-                                valFromGeneratedModule
-                                  ["Internal"; "convertResponse"]])
-                           (Js.Nullable.toOption err)
-                       | None -> ());
-                 onError =
-                   Some
-                     (fun err ->
-                       match onError with
-                       | Some cb -> cb (Js.Nullable.toOption err)
-                       | None -> ());
-                 uploadables;
-                 optimisticResponse =
-                   (match optimisticResponse with
-                   | None -> None
-                   | Some r ->
-                     Some
-                       (r
-                       |. [%e
-                            valFromGeneratedModule
-                              ["Internal"; "convertWrapRawResponse"]]));
-                 optimisticUpdater;
-                 updater =
-                   (match updater with
-                   | None -> None
-                   | Some updater ->
-                     Some
-                       (fun store r ->
-                         updater store
-                           (r
-                           |. [%e
-                                valFromGeneratedModule
-                                  ["Internal"; "convertResponse"]])));
-               }
-            [@@ocaml.doc
-              "Commits the current mutation. Use this outside of React's \
-               render. If you're inside render, you should use `Mutation.use` \
-               instead, which is more convenient.\n\n\
-               ### Optimistic updates\n\
-               Remember to annotate your mutation with `@raw_response_type` if \
-               you want to do optimistic updates. That'll make Relay emit the \
-               required type information for covering everything needed when \
-               doing optimistic updates."]
-            [@@live]];
+           let convertVariables :
+               [%t typeFromGeneratedModule ["Types"; "variables"]] ->
+               [%t typeFromGeneratedModule ["Types"; "variables"]] =
+             [%e valFromGeneratedModule ["Internal"; "convertVariables"]]];
+         [%stri
+           let convertResponse :
+               [%t typeFromGeneratedModule ["Types"; "response"]] ->
+               [%t typeFromGeneratedModule ["Types"; "response"]] =
+             [%e valFromGeneratedModule ["Internal"; "convertResponse"]]];
+         [%stri
+           let convertWrapRawResponse :
+               [%t typeFromGeneratedModule ["Types"; "rawResponse"]] ->
+               [%t typeFromGeneratedModule ["Types"; "rawResponse"]] =
+             [%e valFromGeneratedModule ["Internal"; "convertWrapRawResponse"]]];
+         [%stri
+           let commitMutation =
+             RescriptRelay_Migrate.Mutation.commitMutation ~convertVariables
+               ~convertResponse ~convertWrapRawResponse
+               ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let use :
                unit ->

@@ -2595,10 +2595,10 @@ require-directory@^2.1.1:
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
   integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
 
-rescript@^10.1.3:
-  version "10.1.3"
-  resolved "https://registry.yarnpkg.com/rescript/-/rescript-10.1.3.tgz#0ff208cef09ea1f8ad38efc171c4942eca72d444"
-  integrity sha512-5qaf63As6nkbrMRJ85kZ0ifLzKAGPOGLuoJ4zFVGZIp4oMePRt6bCKWAIX7zgbRDfRPa3jSu+EnoY2873gxaIA==
+rescript@^11.0.0-beta.1:
+  version "11.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-beta.1.tgz#7e7cf590eab467d0e09caebb7b4706b95daef2b8"
+  integrity sha512-oKgMJAj/hLQFdWcp3hDcRsTJ/HaVdX5Ze41Egj9XUCBzKP89026e/I3eV4N3+OvLPskvvFwiTEVeR3yiDGVTYA==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"
