@@ -241,4 +241,76 @@ module Query = {
       RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _)
     )
   }
+
+  @module("react-relay")
+  external fetchQuery: (
+    Environment.t,
+    queryNode<'node>,
+    'variables,
+    option<fetchQueryOptions>,
+  ) => Observable.t<'response> = "fetchQuery"
+
+  let fetch = (
+    ~node,
+    ~convertResponse: 'response => 'response,
+    ~convertVariables: 'variables => 'variables,
+  ) => {
+    /**\n\
+                This fetches the query in a one-off fashion, and returns a \
+                `Belt.Result.t` in a callback for convenience. Use \
+                `Query.fetchPromised` if you need this but with promises.\n\n\
+                Please *avoid* using `Query.fetch` unless you really need it, \
+                since the data you fetch here isn't guaranteed to stick around \
+                in the store/cache unless you explicitly use it somewhere in \
+                your views.*/
+    (
+      ~environment: Environment.t,
+      ~variables: 'variables,
+      ~onResult,
+      ~networkCacheConfig=?,
+      ~fetchPolicy=?,
+      (),
+    ) => {
+      open Observable
+
+      fetchQuery(
+        environment,
+        node,
+        variables->convertVariables,
+        Some({networkCacheConfig, fetchPolicy: fetchPolicy->mapFetchPolicy}),
+      )
+      ->subscribe(
+        makeObserver(
+          ~next=res => onResult(Ok(res->convertResponse)),
+          ~error=err => onResult(Error(err)),
+          (),
+        ),
+      )
+      ->ignoreSubscription
+    }
+  }
+
+  let fetchPromised = (
+    ~node,
+    ~convertResponse: 'response => 'response,
+    ~convertVariables: 'variables => 'variables,
+  ) => {
+    /**Promise variant of `Query.fetch`.*/
+    (
+      ~environment: Environment.t,
+      ~variables: 'variables,
+      ~networkCacheConfig=?,
+      ~fetchPolicy=?,
+      (),
+    ) => {
+      fetchQuery(
+        environment,
+        node,
+        variables->convertVariables,
+        Some({networkCacheConfig, fetchPolicy: fetchPolicy->mapFetchPolicy}),
+      )
+      ->Observable.toPromise
+      ->Js.Promise2.then(res => res->convertResponse->Js.Promise2.resolve)
+    }
+  }
 }

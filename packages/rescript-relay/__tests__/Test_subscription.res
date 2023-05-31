@@ -111,10 +111,10 @@ let test_subscription = () => {
 
   let subscriptionFunction = (_, _, _) => {
     RescriptRelay.Observable.make(sink => {
-      let unsubscribe = subscribeToOnNext(next => sink.next(. next))
+      let unsubscribe = subscribeToOnNext(next => sink.next(next))
       Some({
         closed: false,
-        unsubscribe: unsubscribe,
+        unsubscribe,
       })
     })
   }
@@ -134,6 +134,9 @@ let test_subscription = () => {
   {
     "pushNext": pushNext,
     "subscriptionFunction": subscriptionFunction,
-    "render": () => <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>,
+    "render": () =>
+      <TestProviders.Wrapper environment>
+        <Test />
+      </TestProviders.Wrapper>,
   }
 }

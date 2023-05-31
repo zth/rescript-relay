@@ -482,9 +482,9 @@ module Observable = {
   }
 
   type sink<'response> = {
-    next: (. 'response) => unit,
-    error: (. Js.Exn.t) => unit,
-    complete: (. unit) => unit,
+    next: 'response => unit,
+    error: Js.Exn.t => unit,
+    complete: unit => unit,
     closed: bool,
   }
 
@@ -507,6 +507,8 @@ module Observable = {
   external subscribe: (t<'response>, observer<'response>) => subscription = "subscribe"
 
   @send external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+
+  external ignoreSubscription: subscription => unit = "%ignore"
 }
 
 module Network = {
@@ -766,10 +768,10 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   let queryRefToPromise = token => {
     Js.Promise.make((~resolve, ~reject as _) => {
       switch token->queryRefToObservable {
-      | None => resolve(. Error())
+      | None => resolve(Error())
       | Some(o) =>
         open Observable
-        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
+        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
       }
     })
   }

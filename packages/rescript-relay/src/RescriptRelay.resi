@@ -577,9 +577,9 @@ module Observable: {
 
   /**This sink can be used to give the observable new data.*/
   type sink<'response> = {
-    next: (. 'response) => unit,
-    error: (. Js.Exn.t) => unit,
-    complete: (. unit) => unit,
+    next: 'response => unit,
+    error: Js.Exn.t => unit,
+    complete: unit => unit,
     closed: bool,
   }
 
@@ -615,6 +615,8 @@ module Observable: {
   /**Turns an `Observable` into a promise. _Beware_ that reading the response in the resulting promise is currently _not safe_ due to some internals of how ReScript Relay works. This will be resolved in the future.*/
   @send
   external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+
+  /**Ignore this subscription.*/ external ignoreSubscription: subscription => unit = "%ignore"
 }
 
 /**Represents the network layer.*/

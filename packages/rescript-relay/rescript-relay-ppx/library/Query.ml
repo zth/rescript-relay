@@ -21,17 +21,6 @@ let make ~loc ~moduleName ~hasRawResponseType =
              RescriptRelay.operationDescriptor = "createOperationDescriptor"
              [@@module "relay-runtime"] [@@live]]];
          [%stri
-           [%%private
-           external internal_fetchQuery :
-             RescriptRelay.Environment.t ->
-             [%t typeFromGeneratedModule ["relayOperationNode"]]
-             RescriptRelay.queryNode ->
-             [%t typeFromGeneratedModule ["Types"; "variables"]] ->
-             RescriptRelay.fetchQueryOptions option ->
-             [%t typeFromGeneratedModule ["Types"; "response"]]
-             RescriptRelay.Observable.t = "fetchQuery"
-             [@@module "react-relay"] [@@live]]];
-         [%stri
            let convertVariables :
                [%t typeFromGeneratedModule ["Types"; "variables"]] ->
                [%t typeFromGeneratedModule ["Types"; "variables"]] =
@@ -65,79 +54,15 @@ let make ~loc ~moduleName ~hasRawResponseType =
                ~mkQueryRef
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
-           let fetch ~(environment : RescriptRelay.Environment.t)
-               ~(variables :
-                  [%t typeFromGeneratedModule ["Types"; "variables"]])
-               ~(onResult :
-                  ( [%t typeFromGeneratedModule ["Types"; "response"]],
-                    Js.Exn.t )
-                  Belt.Result.t ->
-                  unit) ?(networkCacheConfig : RescriptRelay.cacheConfig option)
-               ?(fetchPolicy : RescriptRelay.fetchQueryFetchPolicy option) () :
-               unit =
-             let open RescriptRelay.Observable in
-             let _ =
-               (internal_fetchQuery environment
-                  [%e valFromGeneratedModule ["node"]]
-                  (variables
-                  |. [%e
-                       valFromGeneratedModule ["Internal"; "convertVariables"]]
-                  )
-                  (Some
-                     {
-                       networkCacheConfig;
-                       fetchPolicy =
-                         fetchPolicy |. RescriptRelay.mapFetchQueryFetchPolicy;
-                     })
-               |. subscribe)
-                 (makeObserver
-                    ~next:(fun res ->
-                      onResult
-                        (Ok
-                           (res
-                           |. [%e
-                                valFromGeneratedModule
-                                  ["Internal"; "convertResponse"]])))
-                    ~error:(fun err -> onResult (Error err))
-                    ())
-             in
-             ()
-             [@@ocaml.doc
-               "\n\
-                This fetches the query in a one-off fashion, and returns a \
-                `Belt.Result.t` in a callback for convenience. Use \
-                `Query.fetchPromised` if you need this but with promises.\n\n\
-                Please *avoid* using `Query.fetch` unless you really need it, \
-                since the data you fetch here isn't guaranteed to stick around \
-                in the store/cache unless you explicitly use it somewhere in \
-                your views."]
-             [@@live]];
+           let fetch =
+             RescriptRelay_Migrate.Query.fetch ~convertResponse
+               ~convertVariables
+               ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
-           let fetchPromised ~(environment : RescriptRelay.Environment.t)
-               ~(variables :
-                  [%t typeFromGeneratedModule ["Types"; "variables"]])
-               ?(networkCacheConfig : RescriptRelay.cacheConfig option)
-               ?(fetchPolicy : RescriptRelay.fetchQueryFetchPolicy option) () :
-               [%t typeFromGeneratedModule ["Types"; "response"]] Js.Promise.t =
-             internal_fetchQuery environment
-               [%e valFromGeneratedModule ["node"]]
-               (variables
-               |. [%e valFromGeneratedModule ["Internal"; "convertVariables"]])
-               (Some
-                  {
-                    networkCacheConfig;
-                    fetchPolicy =
-                      fetchPolicy |. RescriptRelay.mapFetchQueryFetchPolicy;
-                  })
-             |. RescriptRelay.Observable.toPromise
-             |. fun __x ->
-             Js.Promise.then_
-               (fun res ->
-                 res
-                 |. [%e valFromGeneratedModule ["Internal"; "convertResponse"]]
-                 |. Js.Promise.resolve)
-               __x
-             [@@ocaml.doc " Promise variant of `Query.fetch`."] [@@live]];
+           let fetchPromised =
+             RescriptRelay_Migrate.Query.fetchPromised ~convertResponse
+               ~convertVariables
+               ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let retain ~(environment : RescriptRelay.Environment.t)
                ~(variables :

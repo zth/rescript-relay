@@ -23,8 +23,8 @@ let test_observer = () => {
         Js.Exn.raiseError("Some error")
       } catch {
       | Js.Exn.Error(obj) =>
-        sink.error(. obj)
-        sink.complete(.)
+        sink.error(obj)
+        sink.complete()
       }
 
       None
@@ -39,6 +39,8 @@ let test_observer = () => {
   ()
 
   <RescriptReactErrorBoundary fallback={_ => React.string("Failed")}>
-    <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+    <TestProviders.Wrapper environment>
+      <Test />
+    </TestProviders.Wrapper>
   </RescriptReactErrorBoundary>
 }
