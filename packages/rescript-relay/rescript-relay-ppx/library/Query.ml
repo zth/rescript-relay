@@ -13,14 +13,6 @@ let make ~loc ~moduleName ~hasRawResponseType =
          [%stri module Operation = [%m moduleIdentFromGeneratedModule []]];
          [%stri module Types = [%m moduleIdentFromGeneratedModule ["Types"]]];
          [%stri
-           [%%private
-           external internal_createOperationDescriptor :
-             [%t typeFromGeneratedModule ["relayOperationNode"]]
-             RescriptRelay.queryNode ->
-             [%t typeFromGeneratedModule ["Types"; "variables"]] ->
-             RescriptRelay.operationDescriptor = "createOperationDescriptor"
-             [@@module "relay-runtime"] [@@live]]];
-         [%stri
            let convertVariables :
                [%t typeFromGeneratedModule ["Types"; "variables"]] ->
                [%t typeFromGeneratedModule ["Types"; "variables"]] =
@@ -30,6 +22,11 @@ let make ~loc ~moduleName ~hasRawResponseType =
                [%t typeFromGeneratedModule ["Types"; "response"]] ->
                [%t typeFromGeneratedModule ["Types"; "response"]] =
              [%e valFromGeneratedModule ["Internal"; "convertResponse"]]];
+         [%stri
+           let convertWrapRawResponse :
+               [%t typeFromGeneratedModule ["Types"; "rawResponse"]] ->
+               [%t typeFromGeneratedModule ["Types"; "rawResponse"]] =
+             [%e valFromGeneratedModule ["Internal"; "convertWrapRawResponse"]]];
          [%stri
            external mkQueryRefOpt :
              [%t typeFromGeneratedModule ["queryRef"]] option ->
@@ -64,54 +61,15 @@ let make ~loc ~moduleName ~hasRawResponseType =
                ~convertVariables
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
-           let retain ~(environment : RescriptRelay.Environment.t)
-               ~(variables :
-                  [%t typeFromGeneratedModule ["Types"; "variables"]]) =
-             let operationDescriptor =
-               internal_createOperationDescriptor
-                 [%e valFromGeneratedModule ["node"]]
-                 (variables
-                 |. [%e valFromGeneratedModule ["Internal"; "convertVariables"]]
-                 )
-             in
-             (environment |. RescriptRelay.Environment.retain)
-               operationDescriptor
-             [@@ocaml.doc
-               "Calling with a set of variables will make Relay _disable \
-                garbage collection_ of this query (+ variables) until you \
-                explicitly dispose the `Disposable.t` you get back from this \
-                call.\n\n\
-                Useful for queries and data you know you want to keep in the \
-                store regardless of what happens (like it not being used by \
-                any view and therefore potentially garbage collected)."]
-             [@@live]];
+           let retain =
+             RescriptRelay_Migrate.Query.retain ~convertVariables
+               ~node:[%e valFromGeneratedModule ["node"]]];
          (match hasRawResponseType with
          | true ->
            [%stri
-             let commitLocalPayload ~(environment : RescriptRelay.Environment.t)
-                 ~(variables :
-                    [%t typeFromGeneratedModule ["Types"; "variables"]])
-                 ~(payload :
-                    [%t typeFromGeneratedModule ["Types"; "rawResponse"]]) =
-               let operationDescriptor =
-                 internal_createOperationDescriptor
-                   [%e valFromGeneratedModule ["node"]]
-                   (variables
-                   |. [%e
-                        valFromGeneratedModule ["Internal"; "convertVariables"]]
-                   )
-               in
-               (environment |. RescriptRelay.Environment.commitPayload)
-                 operationDescriptor
-                 (payload
-                 |. [%e
-                      valFromGeneratedModule
-                        ["Internal"; "convertWrapRawResponse"]])
-               [@@ocaml.doc
-                 "This commits a payload into the store _locally only_. Useful \
-                  for driving client-only state via Relay for example, or \
-                  priming the cache with data you don't necessarily want to \
-                  hit the server for."]
-               [@@live]]
+             let commitLocalPayload =
+               RescriptRelay_Migrate.Query.commitLocalPayload ~convertVariables
+                 ~convertWrapRawResponse
+                 ~node:[%e valFromGeneratedModule ["node"]]]
          | false -> [%stri ()]);
        ])

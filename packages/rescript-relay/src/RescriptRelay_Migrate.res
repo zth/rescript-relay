@@ -313,4 +313,37 @@ module Query = {
       ->Js.Promise2.then(res => res->convertResponse->Js.Promise2.resolve)
     }
   }
+
+  @module("relay-runtime")
+  external createOperationDescriptor: (queryNode<'node>, 'variables) => operationDescriptor =
+    "createOperationDescriptor"
+
+  let retain = (~node, ~convertVariables: 'variables => 'variables) => {
+    /**Calling with a set of variables will make Relay _disable \
+                garbage collection_ of this query (+ variables) until you \
+                explicitly dispose the `Disposable.t` you get back from this \
+                call.\n\n\
+                Useful for queries and data you know you want to keep in the \
+                store regardless of what happens (like it not being used by \
+                any view and therefore potentially garbage collected).*/
+    (~environment: Environment.t, ~variables: 'variables) => {
+      environment->Environment.retain(createOperationDescriptor(node, variables->convertVariables))
+    }
+  }
+
+  let commitLocalPayload = (
+    ~node,
+    ~convertVariables: 'variables => 'variables,
+    ~convertWrapRawResponse: 'rawResponse => 'rawResponse,
+  ) => {
+    /** This commits a payload into the store _locally only_. Useful \
+                  for driving client-only state via Relay for example, or \
+                  priming the cache with data you don't necessarily want to \
+                  hit the server for. */
+    (~environment: Environment.t, ~variables: 'variables, ~payload: 'rawResponse) =>
+      environment->Environment.commitPayload(
+        createOperationDescriptor(node, variables->convertVariables),
+        payload->convertWrapRawResponse,
+      )
+  }
 }
