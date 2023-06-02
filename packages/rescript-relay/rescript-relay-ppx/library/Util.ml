@@ -86,11 +86,6 @@ let queryHasRawResponseTypeDirective ~loc op =
     |> List.exists (fun (directive : Graphql_parser.directive) ->
            directive.name = "raw_response_type")
   | _ -> false
-let fragmentHasConnectionNotation ~loc op =
-  match op with
-  | Graphql_parser.Fragment {name = _; selection_set} ->
-    selectionSetHasConnection selection_set
-  | _ -> false
 type connectionConfig = {key: string}
 let extractFragmentConnectionInfo ~loc op =
   match op with
@@ -131,13 +126,7 @@ let makeExprAccessor ~loc ~moduleName path =
 let makeStringExpr ~loc str =
   Ppxlib.Ast_helper.Exp.constant ~loc (Ppxlib.Ast_helper.Const.string str)
 let makeModuleIdent ~loc ~moduleName path =
-  let gqlModuleName = Lident (getGraphQLModuleName moduleName) in
+  let gqlModuleName = getGraphQLModuleName moduleName in
+  let path = gqlModuleName :: path |> List.rev in
   Ppxlib.Ast_helper.Mod.ident ~loc
-    {
-      txt =
-        (match path with
-        | [t] -> Ldot (gqlModuleName, t)
-        | [innerModule; t] -> Ldot (Ldot (gqlModuleName, innerModule), t)
-        | _ -> gqlModuleName);
-      loc;
-    }
+    {txt = longidentFromStrings (path |> List.rev); loc}
