@@ -376,17 +376,30 @@ module Fragment = {
     option<'fragmentRef>,
   ) => Js.Nullable.t<'fragment> = "useFragment"
 
-  let useFragmentOpt = (~fRef=?, ~node, ~convertFragment: 'fragment => 'fragment) => {
+  let useFragmentOpt = (~fRef, ~node, ~convertFragment: 'fragment => 'fragment) => {
+    // TODO(v11) can convert to Nullable pattern match.
+
     /** A version of `Fragment.use` that'll allow you to pass \
                      `option<fragmentRefs>` and get `option<'fragmentData>` \
                      back. Useful for scenarios where you don't have the \
                      fragmentRefs yet.*/
-    (
-      useFragmentOpt_(node, fRef)
-      ->Js.Nullable.toOption
-      ->Belt.Option.map(data =>
-        RescriptRelay_Internal.internal_useConvertedValue(convertFragment, data)
-      )
-    )
+    let data =
+      useFragmentOpt_(node, fRef)->Js.Nullable.toOption
+    React.useMemo1(() => {
+      switch data {
+      | Some(data) => Some(convertFragment(data))
+      | None => None
+      }
+    }, [data])
+  }
+
+  @module("react-relay")
+  external readInlineData_: (fragmentNode<'node>, 'fragmentRef) => 'fragment = "readInlineData"
+
+  let readInlineData = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) => {
+    /** This lets you get the data for this fragment _outside \
+                       of React's render_. Useful for letting functions with \
+                       with fragments too, for things like logging etc.*/
+    (readInlineData_(node, fRef)->convertFragment)
   }
 }

@@ -35,7 +35,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                 let useOpt fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
                   RescriptRelay_Migrate.Fragment.useFragmentOpt ~convertFragment
-                    ?fRef:
+                    ~fRef:
                       (match fRef with
                       | Some fRef ->
                         Some
@@ -48,16 +48,11 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                 [%stri
                   let readInline fRef :
                       [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                    internal_readInlineData
-                      [%e valFromGeneratedModule ["node"]]
-                      (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    |. [%e
-                         valFromGeneratedModule ["Internal"; "convertFragment"]]
-                    [@@ocaml.doc
-                      "This lets you get the data for this fragment _outside \
-                       of React's render_. Useful for letting functions with \
-                       with fragments too, for things like logging etc."]
-                    [@@live]]
+                    RescriptRelay_Migrate.Fragment.readInlineData
+                      ~convertFragment
+                      ~fRef:
+                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                      ~node:[%e valFromGeneratedModule ["node"]]]
               | false -> [%stri ()]);
               (match (hasConnection, refetchableQueryName) with
               | true, Some queryName ->
