@@ -105,29 +105,29 @@ let fragmentHasInlineDirective ~loc op =
            directive.name = "inline")
   | _ -> false
 let getGraphQLModuleName opName = String.capitalize_ascii opName ^ "_graphql"
-let makeTypeAccessor ~loc ~moduleName path =
-  let gqlModuleName = Lident (getGraphQLModuleName moduleName) in
+
+let rec longidentFromStrings = function
+  | [] -> failwith "Cannot create Longident from empty list"
+  | [s] -> Longident.Lident s
+  | s :: rest -> Longident.Ldot (longidentFromStrings rest, s)
+
+let makeTypeAccessorRaw ~loc path =
   Ppxlib.Ast_helper.Typ.constr ~loc
-    {
-      txt =
-        (match path with
-        | [t] -> Ldot (gqlModuleName, t)
-        | [innerModule; t] -> Ldot (Ldot (gqlModuleName, innerModule), t)
-        | _ -> gqlModuleName);
-      loc;
-    }
+    {txt = longidentFromStrings (path |> List.rev); loc}
     []
+
+let makeTypeAccessor ~loc ~moduleName path =
+  let gqlModuleName = getGraphQLModuleName moduleName in
+  let path = gqlModuleName :: path |> List.rev in
+  Ppxlib.Ast_helper.Typ.constr ~loc {txt = longidentFromStrings path; loc} []
+let makeTypeAccessorWithParams ~loc ~params path =
+  Ppxlib.Ast_helper.Typ.constr ~loc
+    {txt = longidentFromStrings (path |> List.rev); loc}
+    params
 let makeExprAccessor ~loc ~moduleName path =
-  let gqlModuleName = Lident (getGraphQLModuleName moduleName) in
-  Ppxlib.Ast_helper.Exp.ident ~loc
-    {
-      txt =
-        (match path with
-        | [t] -> Ldot (gqlModuleName, t)
-        | [innerModule; t] -> Ldot (Ldot (gqlModuleName, innerModule), t)
-        | _ -> gqlModuleName);
-      loc;
-    }
+  let gqlModuleName = getGraphQLModuleName moduleName in
+  let path = gqlModuleName :: path |> List.rev in
+  Ppxlib.Ast_helper.Exp.ident ~loc {txt = longidentFromStrings path; loc}
 let makeStringExpr ~loc str =
   Ppxlib.Ast_helper.Exp.constant ~loc (Ppxlib.Ast_helper.Const.string str)
 let makeModuleIdent ~loc ~moduleName path =

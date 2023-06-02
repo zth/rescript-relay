@@ -14,29 +14,27 @@ let make ~loc ~moduleName =
               [%stri
                 module Types = [%m moduleIdentFromGeneratedModule ["Types"]]];
               [%stri
-                [%%private
-                external readFragment :
-                  [%t typeFromGeneratedModule ["operationType"]] ->
-                  [%t typeFromGeneratedModule ["fragmentRef"]] ->
-                  [%t typeFromGeneratedModule ["Types"; "fragment"]]
-                  = "readFragment"
-                  [@@live]
-                  [@@module "relay-runtime/lib/store/ResolverFragments"]]];
+                let convertFragment :
+                    [%t typeFromGeneratedModule ["Types"; "fragment"]] ->
+                    [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                  [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
               [%stri
                 let makeRelayResolver
                     (resolver :
-                      [%t typeFromGeneratedModule ["Types"; "fragment"]] ->
-                      t option) =
-                  let relayResolver key =
-                    let data :
-                        [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                      readFragment [%e valFromGeneratedModule ["node"]] key
-                      |. [%e
-                           valFromGeneratedModule
-                             ["Internal"; "convertFragment"]]
-                    in
-                    resolver data
-                  in
-                  relayResolver];
+                      [%t
+                        makeTypeAccessorWithParams
+                          [
+                            "RescriptRelay_Migrate"; "RelayResolvers"; "resolver";
+                          ]
+                          ~loc
+                          ~params:
+                            [
+                              typeFromGeneratedModule ["Types"; "fragment"];
+                              makeTypeAccessorRaw ~loc ["t"];
+                            ]]) =
+                  RescriptRelay_Migrate.RelayResolvers.makeRelayResolver
+                    ~convertFragment
+                    ~node:[%e valFromGeneratedModule ["node"]]
+                    resolver];
             ];
           ]))
