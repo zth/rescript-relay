@@ -29,12 +29,12 @@ let make ~loc ~moduleName =
              [%e valFromGeneratedModule ["Internal"; "convertWrapRawResponse"]]];
          [%stri
            let commitMutation =
-             RescriptRelay_Migrate.Mutation.commitMutation ~convertVariables
+             RescriptRelay_Mutation.commitMutation ~convertVariables
                ~convertResponse ~convertWrapRawResponse
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let use =
-             RescriptRelay_Migrate.Mutation.useMutation ~convertVariables
+             RescriptRelay_Mutation.useMutation ~convertVariables
                ~convertResponse ~convertWrapRawResponse
                ~node:[%e valFromGeneratedModule ["node"]]];
        ])

@@ -25,14 +25,14 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
               [%stri
                 let use fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                  RescriptRelay_Migrate.Fragment.useFragment ~convertFragment
+                  RescriptRelay_Fragment.useFragment ~convertFragment
                     ~fRef:
                       (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
                     ~node:[%e valFromGeneratedModule ["node"]]];
               [%stri
                 let useOpt fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
-                  RescriptRelay_Migrate.Fragment.useFragmentOpt ~convertFragment
+                  RescriptRelay_Fragment.useFragmentOpt ~convertFragment
                     ~fRef:
                       (match fRef with
                       | Some fRef ->
@@ -48,8 +48,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                 [%stri
                   let readInline fRef :
                       [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                    RescriptRelay_Migrate.Fragment.readInlineData
-                      ~convertFragment
+                    RescriptRelay_Fragment.readInlineData ~convertFragment
                       ~fRef:
                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
                       ~node:[%e valFromGeneratedModule ["node"]]];
@@ -82,7 +81,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                       valFromRefetchableModule ["Internal"; "convertVariables"]]];
                 [%stri
                   let useRefetchable fRef =
-                    RescriptRelay_Migrate.Fragment.useRefetchableFragment
+                    RescriptRelay_Fragment.useRefetchableFragment
                       ~convertFragment ~convertRefetchVariables
                       ~fRef:
                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
@@ -93,7 +92,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                 [
                   [%stri
                     let usePagination fRef =
-                      RescriptRelay_Migrate.Fragment.usePaginationFragment
+                      RescriptRelay_Fragment.usePaginationFragment
                         ~convertFragment ~convertRefetchVariables
                         ~fRef:
                           (fRef
@@ -101,9 +100,8 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                         ~node:[%e valFromGeneratedModule ["node"]]];
                   [%stri
                     let useBlockingPagination fRef =
-                      RescriptRelay_Migrate.Fragment
-                      .useBlockingPaginationFragment ~convertFragment
-                        ~convertRefetchVariables
+                      RescriptRelay_Fragment.useBlockingPaginationFragment
+                        ~convertFragment ~convertRefetchVariables
                         ~fRef:
                           (fRef
                           |. [%e valFromGeneratedModule ["getFragmentRef"]])

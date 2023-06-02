@@ -24,7 +24,7 @@ let make ~loc ~moduleName =
              [%e valFromGeneratedModule ["Internal"; "convertResponse"]]];
          [%stri
            let subscribe =
-             RescriptRelay_Migrate.Subscriptions.subscribe ~convertVariables
+             RescriptRelay_Subscriptions.subscribe ~convertVariables
                ~convertResponse
                ~node:[%e valFromGeneratedModule ["node"]]];
        ])

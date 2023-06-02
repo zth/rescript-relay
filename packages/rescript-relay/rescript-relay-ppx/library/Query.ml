@@ -37,38 +37,35 @@ let make ~loc ~moduleName ~hasRawResponseType =
              [%t typeFromGeneratedModule ["queryRef"]] = "%identity"];
          [%stri
            let use =
-             RescriptRelay_Migrate.Query.useQuery ~convertVariables
-               ~convertResponse
+             RescriptRelay_Query.useQuery ~convertVariables ~convertResponse
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let useLoader =
-             RescriptRelay_Migrate.Query.useLoader ~convertVariables
+             RescriptRelay_Query.useLoader ~convertVariables
                ~mkQueryRef:mkQueryRefOpt
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let usePreloaded =
-             RescriptRelay_Migrate.Query.usePreloaded ~convertResponse
-               ~mkQueryRef
+             RescriptRelay_Query.usePreloaded ~convertResponse ~mkQueryRef
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let fetch =
-             RescriptRelay_Migrate.Query.fetch ~convertResponse
-               ~convertVariables
+             RescriptRelay_Query.fetch ~convertResponse ~convertVariables
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let fetchPromised =
-             RescriptRelay_Migrate.Query.fetchPromised ~convertResponse
+             RescriptRelay_Query.fetchPromised ~convertResponse
                ~convertVariables
                ~node:[%e valFromGeneratedModule ["node"]]];
          [%stri
            let retain =
-             RescriptRelay_Migrate.Query.retain ~convertVariables
+             RescriptRelay_Query.retain ~convertVariables
                ~node:[%e valFromGeneratedModule ["node"]]];
          (match hasRawResponseType with
          | true ->
            [%stri
              let commitLocalPayload =
-               RescriptRelay_Migrate.Query.commitLocalPayload ~convertVariables
+               RescriptRelay_Query.commitLocalPayload ~convertVariables
                  ~convertWrapRawResponse
                  ~node:[%e valFromGeneratedModule ["node"]]]
          | false -> [%stri ()]);

@@ -23,16 +23,14 @@ let make ~loc ~moduleName =
                     (resolver :
                       [%t
                         makeTypeAccessorWithParams
-                          [
-                            "RescriptRelay_Migrate"; "RelayResolvers"; "resolver";
-                          ]
+                          ["RescriptRelay_RelayResolvers"; "resolver"]
                           ~loc
                           ~params:
                             [
                               typeFromGeneratedModule ["Types"; "fragment"];
                               makeTypeAccessorRaw ~loc ["t"];
                             ]]) =
-                  RescriptRelay_Migrate.RelayResolvers.makeRelayResolver
+                  RescriptRelay_RelayResolvers.makeRelayResolver
                     ~convertFragment
                     ~node:[%e valFromGeneratedModule ["node"]]
                     resolver];
