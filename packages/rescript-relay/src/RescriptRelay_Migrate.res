@@ -347,3 +347,26 @@ module Query = {
       )
   }
 }
+
+module Fragment = {
+  @module("react-relay")
+  external useFragment_: (fragmentNode<'node>, 'fragmentRef) => 'fragment = "useFragment"
+
+  let useFragment = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) => {
+    /** React hook for getting the data of this fragment. Pass \
+                     the `fragmentRefs` of any object where you've spread your \
+                     fragment into this and get the fragment data back.\n\n\
+                     ### Fragment data outside of React's render\n\
+                     If you're looking for a way to use fragments _outside_ of \
+                     render (for regular function calls for instance, like for \
+                     logging etc), look in to adding `@inline` to your \
+                     fragment definition (like `fragment SomeFragment_user on \
+                     User @inline {...}`) and then use `Fragment.readInline`. \
+                     This will allow you to get the fragment data, but outside \
+                     of React's render.*/
+    (
+      useFragment_(node, fRef)
+      ->(RescriptRelay_Internal.internal_useConvertedValue(convertFragment, _))
+    )
+  }
+}

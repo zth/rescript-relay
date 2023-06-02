@@ -20,29 +20,17 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
             [
               [%stri module Operation = [%m moduleIdentFromGeneratedModule []]];
               [%stri
+                let convertFragment :
+                    [%t typeFromGeneratedModule ["Types"; "fragment"]] ->
+                    [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                  [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
+              [%stri
                 let use fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                  let data =
-                    internal_useFragment
-                      [%e valFromGeneratedModule ["node"]]
+                  RescriptRelay_Migrate.Fragment.useFragment ~convertFragment
+                    ~fRef:
                       (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                  in
-                  RescriptRelay_Internal.internal_useConvertedValue
-                    [%e valFromGeneratedModule ["Internal"; "convertFragment"]]
-                    data
-                  [@@ocaml.doc
-                    "React hook for getting the data of this fragment. Pass \
-                     the `fragmentRefs` of any object where you've spread your \
-                     fragment into this and get the fragment data back.\n\n\
-                     ### Fragment data outside of React's render\n\
-                     If you're looking for a way to use fragments _outside_ of \
-                     render (for regular function calls for instance, like for \
-                     logging etc), look in to adding `@inline` to your \
-                     fragment definition (like `fragment SomeFragment_user on \
-                     User @inline {...}`) and then use `Fragment.readInline`. \
-                     This will allow you to get the fragment data, but outside \
-                     of React's render."]
-                  [@@live]];
+                    ~node:[%e valFromGeneratedModule ["node"]]];
               [%stri
                 let useOpt opt_fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
