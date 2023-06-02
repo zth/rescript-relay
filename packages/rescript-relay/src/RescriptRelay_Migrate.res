@@ -369,4 +369,24 @@ module Fragment = {
       ->(RescriptRelay_Internal.internal_useConvertedValue(convertFragment, _))
     )
   }
+
+  @module("react-relay")
+  external useFragmentOpt_: (
+    fragmentNode<'node>,
+    option<'fragmentRef>,
+  ) => Js.Nullable.t<'fragment> = "useFragment"
+
+  let useFragmentOpt = (~fRef=?, ~node, ~convertFragment: 'fragment => 'fragment) => {
+    /** A version of `Fragment.use` that'll allow you to pass \
+                     `option<fragmentRefs>` and get `option<'fragmentData>` \
+                     back. Useful for scenarios where you don't have the \
+                     fragmentRefs yet.*/
+    (
+      useFragmentOpt_(node, fRef)
+      ->Js.Nullable.toOption
+      ->Belt.Option.map(data =>
+        RescriptRelay_Internal.internal_useConvertedValue(convertFragment, data)
+      )
+    )
+  }
 }

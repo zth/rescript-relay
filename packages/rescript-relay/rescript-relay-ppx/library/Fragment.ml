@@ -32,42 +32,17 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                       (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
                     ~node:[%e valFromGeneratedModule ["node"]]];
               [%stri
-                let useOpt opt_fRef :
+                let useOpt fRef :
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
-                  let fr =
-                    match opt_fRef with
-                    | Some fRef ->
-                      Some
-                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    | None -> None
-                  in
-                  let nullableFragmentData :
-                      [%t typeFromGeneratedModule ["Types"; "fragment"]]
-                      Js.Nullable.t =
-                    internal_useFragmentOpt
-                      [%e valFromGeneratedModule ["node"]]
-                      (match fr with
-                      | Some fr -> Some fr |. Js.Nullable.fromOption
-                      | None -> Js.Nullable.null)
-                  in
-                  let data = nullableFragmentData |. Js.Nullable.toOption in
-                  RescriptRelay_Internal.internal_useConvertedValue
-                    (fun rawFragment ->
-                      match rawFragment with
-                      | Some rawFragment ->
+                  RescriptRelay_Migrate.Fragment.useFragmentOpt ~convertFragment
+                    ?fRef:
+                      (match fRef with
+                      | Some fRef ->
                         Some
-                          (rawFragment
-                          |. [%e
-                               valFromGeneratedModule
-                                 ["Internal"; "convertFragment"]])
+                          (fRef
+                          |. [%e valFromGeneratedModule ["getFragmentRef"]])
                       | None -> None)
-                    data
-                  [@@ocaml.doc
-                    "A version of `Fragment.use` that'll allow you to pass \
-                     `option<fragmentRefs>` and get `option<'fragmentData>` \
-                     back. Useful for scenarios where you don't have the \
-                     fragmentRefs yet."]
-                  [@@live]];
+                    ~node:[%e valFromGeneratedModule ["node"]]];
               (match hasInlineDirective with
               | true ->
                 [%stri

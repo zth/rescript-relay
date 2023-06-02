@@ -15,23 +15,6 @@ let makeInternalExternals ~loc ~typeFromGeneratedModule =
         [%t typeFromGeneratedModule ["fragmentRef"]] ->
         [%t typeFromGeneratedModule ["Types"; "fragment"]] = "readInlineData"
         [@@live] [@@module "react-relay"]]];
-    [%stri
-      [%%private
-      external internal_useFragment :
-        [%t typeFromGeneratedModule ["relayOperationNode"]]
-        RescriptRelay.fragmentNode ->
-        [%t typeFromGeneratedModule ["fragmentRef"]] ->
-        [%t typeFromGeneratedModule ["Types"; "fragment"]] = "useFragment"
-        [@@live] [@@module "react-relay"]]];
-    [%stri
-      [%%private
-      external internal_useFragmentOpt :
-        [%t typeFromGeneratedModule ["relayOperationNode"]]
-        RescriptRelay.fragmentNode ->
-        [%t typeFromGeneratedModule ["fragmentRef"]] Js.Nullable.t ->
-        [%t typeFromGeneratedModule ["Types"; "fragment"]] Js.Nullable.t
-        = "useFragment"
-        [@@live] [@@module "react-relay"]]];
   ]
 let makeRefetchableAssets ~loc ~refetchableQueryName ~typeFromGeneratedModule
     ~makeTypeAccessor ~makeExprAccessor ~valFromGeneratedModule =
