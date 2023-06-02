@@ -11,13 +11,11 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
     (Pmod_structure
        (List.concat
           [
-            FragmentUtils.makeGeneratedModuleImports ~loc
-              ~moduleIdentFromGeneratedModule;
-            FragmentUtils.makeInternalExternals ~loc ~typeFromGeneratedModule;
-            FragmentUtils.makeRefetchableAssets ~loc ~refetchableQueryName
-              ~typeFromGeneratedModule ~makeTypeAccessor ~makeExprAccessor
-              ~valFromGeneratedModule;
             [
+              [%stri [@@@warning "-32-34-60"]];
+              [%stri include [%m moduleIdentFromGeneratedModule ["Utils"]]];
+              [%stri
+                module Types = [%m moduleIdentFromGeneratedModule ["Types"]]];
               [%stri module Operation = [%m moduleIdentFromGeneratedModule []]];
               [%stri
                 let convertFragment :
@@ -43,8 +41,10 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
                       | None -> None)
                     ~node:[%e valFromGeneratedModule ["node"]]];
-              (match hasInlineDirective with
-              | true ->
+            ];
+            (match hasInlineDirective with
+            | true ->
+              [
                 [%stri
                   let readInline fRef :
                       [%t typeFromGeneratedModule ["Types"; "fragment"]] =
@@ -52,153 +52,62 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                       ~convertFragment
                       ~fRef:
                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                      ~node:[%e valFromGeneratedModule ["node"]]]
-              | false -> [%stri ()]);
-              (match (hasConnection, refetchableQueryName) with
-              | true, Some queryName ->
-                [%stri
-                  let usePagination fr : paginationFragmentReturn =
-                    let p =
-                      internal_usePaginationFragment
-                        [%e valFromGeneratedModule ["node"]]
-                        ([%e valFromGeneratedModule ["getFragmentRef"]] fr)
-                    in
-                    let data =
-                      RescriptRelay_Internal.internal_useConvertedValue
-                        [%e
-                          valFromGeneratedModule ["Internal"; "convertFragment"]]
-                        p.data
-                    in
-                    {
-                      data;
-                      loadNext =
-                        React.useMemo1
-                          (fun () ~count ?onComplete () ->
-                            (p.loadNext count
-                               {
-                                 onComplete =
-                                   onComplete
-                                   |. RescriptRelay_Internal
-                                      .internal_nullableToOptionalExnHandler;
-                               } [@bs]))
-                          [|p.loadNext|];
-                      loadPrevious =
-                        React.useMemo1
-                          (fun () ~count ?onComplete () ->
-                            (p.loadPrevious count
-                               {
-                                 onComplete =
-                                   onComplete
-                                   |. RescriptRelay_Internal
-                                      .internal_nullableToOptionalExnHandler;
-                               } [@bs]))
-                          [|p.loadPrevious|];
-                      hasNext = p.hasNext;
-                      hasPrevious = p.hasPrevious;
-                      isLoadingNext = p.isLoadingNext;
-                      isLoadingPrevious = p.isLoadingPrevious;
-                      refetch =
-                        React.useMemo1
-                          (fun ()
-                               ~(variables :
-                                  [%t
-                                    makeTypeAccessor ~loc ~moduleName:queryName
-                                      ["Types"; "refetchVariables"]])
-                               ?fetchPolicy ?onComplete () ->
-                            (p.refetch
-                               (variables
-                               |. [%e
-                                    makeExprAccessor ~loc ~moduleName:queryName
-                                      ["Internal"; "convertVariables"]]
-                               |. RescriptRelay_Internal
-                                  .internal_cleanObjectFromUndefinedRaw)
-                               (internal_makeRefetchableFnOpts ?onComplete
-                                  ?fetchPolicy ()) [@bs]))
-                          [|p.refetch|];
-                    }
-                    [@@ocaml.doc
-                      "React hook for paginating a fragment. Paginating with \
-                       this hook will _not_ cause your component to suspend. \
-                       If you want pagination to trigger suspense, look into \
-                       using `Fragment.useBlockingPagination`."]
-                    [@@live]]
-              | _ -> [%stri ()]);
-              (match (hasConnection, refetchableQueryName) with
-              | true, Some queryName ->
-                [%stri
-                  let useBlockingPagination fRef :
-                      paginationBlockingFragmentReturn =
-                    let p =
-                      internal_useBlockingPaginationFragment
-                        [%e valFromGeneratedModule ["node"]]
-                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    in
-                    let data =
-                      RescriptRelay_Internal.internal_useConvertedValue
-                        [%e
-                          valFromGeneratedModule ["Internal"; "convertFragment"]]
-                        p.data
-                    in
-                    {
-                      data;
-                      loadNext =
-                        React.useMemo1
-                          (fun () ~count ?onComplete () ->
-                            (p.loadNext count
-                               {
-                                 onComplete =
-                                   onComplete
-                                   |. RescriptRelay_Internal
-                                      .internal_nullableToOptionalExnHandler;
-                               } [@bs]))
-                          [|p.loadNext|];
-                      loadPrevious =
-                        React.useMemo1
-                          (fun () ~count ?onComplete () ->
-                            (p.loadPrevious count
-                               {
-                                 onComplete =
-                                   onComplete
-                                   |. RescriptRelay_Internal
-                                      .internal_nullableToOptionalExnHandler;
-                               } [@bs]))
-                          [|p.loadPrevious|];
-                      hasNext = p.hasNext;
-                      hasPrevious = p.hasPrevious;
-                      refetch =
-                        React.useMemo1
-                          (fun ()
-                               ~(variables :
-                                  [%t
-                                    makeTypeAccessor ~loc ~moduleName:queryName
-                                      ["Types"; "refetchVariables"]])
-                               ?fetchPolicy ?onComplete () ->
-                            (p.refetch
-                               (variables
-                               |. [%e
-                                    makeExprAccessor ~loc ~moduleName:queryName
-                                      ["Internal"; "convertVariables"]]
-                               |. RescriptRelay_Internal
-                                  .internal_cleanObjectFromUndefinedRaw)
-                               (internal_makeRefetchableFnOpts ?onComplete
-                                  ?fetchPolicy ()) [@bs]))
-                          [|p.refetch|];
-                    }
-                    [@@ocaml.doc
-                      "Like `Fragment.usePagination`, but calling the \
-                       pagination function will trigger suspense. Useful for \
-                       all-at-once pagination."]
-                    [@@live]]
-              | _ -> [%stri ()]);
-              (match (refetchableQueryName, hasConnection) with
-              | Some queryName, _ ->
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+              ]
+            | false -> []);
+            (match refetchableQueryName with
+            | None -> []
+            | Some refetchableQueryName ->
+              let typeFromRefetchableModule =
+                makeTypeAccessor ~loc ~moduleName:refetchableQueryName
+              in
+              let valFromRefetchableModule =
+                makeExprAccessor ~loc ~moduleName:refetchableQueryName
+              in
+              [
                 [%stri
                   let makeRefetchVariables =
                     [%e
-                      makeExprAccessor ~loc ~moduleName:queryName
-                        ["Types"; "makeRefetchVariables"]]
+                      valFromRefetchableModule ["Types"; "makeRefetchVariables"]]
                     [@@ocaml.doc "A helper to make refetch variables. "]
-                    [@@live]]
-              | _ -> [%stri ()]);
-            ];
+                    [@@live]];
+                [%stri
+                  let convertRefetchVariables :
+                      [%t
+                        typeFromRefetchableModule ["Types"; "refetchVariables"]] ->
+                      [%t
+                        typeFromRefetchableModule ["Types"; "refetchVariables"]]
+                      =
+                    [%e
+                      valFromRefetchableModule ["Internal"; "convertVariables"]]];
+                [%stri
+                  let useRefetchable fRef =
+                    RescriptRelay_Migrate.Fragment.useRefetchableFragment
+                      ~convertFragment ~convertRefetchVariables
+                      ~fRef:
+                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+              ]
+              @
+              if hasConnection then
+                [
+                  [%stri
+                    let usePagination fRef =
+                      RescriptRelay_Migrate.Fragment.usePaginationFragment
+                        ~convertFragment ~convertRefetchVariables
+                        ~fRef:
+                          (fRef
+                          |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                        ~node:[%e valFromGeneratedModule ["node"]]];
+                  [%stri
+                    let useBlockingPagination fRef =
+                      RescriptRelay_Migrate.Fragment
+                      .useBlockingPaginationFragment ~convertFragment
+                        ~convertRefetchVariables
+                        ~fRef:
+                          (fRef
+                          |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                        ~node:[%e valFromGeneratedModule ["node"]]];
+                ]
+              else []);
           ]))

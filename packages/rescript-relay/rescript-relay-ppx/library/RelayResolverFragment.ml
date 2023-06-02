@@ -8,9 +8,11 @@ let make ~loc ~moduleName =
     (Pmod_structure
        (List.concat
           [
-            FragmentUtils.makeGeneratedModuleImports ~loc
-              ~moduleIdentFromGeneratedModule;
             [
+              [%stri [@@@warning "-32-34-60"]];
+              [%stri include [%m moduleIdentFromGeneratedModule ["Utils"]]];
+              [%stri
+                module Types = [%m moduleIdentFromGeneratedModule ["Types"]]];
               [%stri
                 [%%private
                 external readFragment :
