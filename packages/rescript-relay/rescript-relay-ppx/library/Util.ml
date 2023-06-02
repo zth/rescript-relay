@@ -128,5 +128,4 @@ let makeStringExpr ~loc str =
 let makeModuleIdent ~loc ~moduleName path =
   let gqlModuleName = getGraphQLModuleName moduleName in
   let path = gqlModuleName :: path |> List.rev in
-  Ppxlib.Ast_helper.Mod.ident ~loc
-    {txt = longidentFromStrings (path |> List.rev); loc}
+  Ppxlib.Ast_helper.Mod.ident ~loc {txt = longidentFromStrings path; loc}
