@@ -22,6 +22,7 @@ let commitMutation: (
   ~node: mutationNode<'a>,
   ~convertResponse: 'response => 'response,
   ~convertWrapRawResponse: 'rawResponse => 'rawResponse,
+) => (
   ~environment: Environment.t,
   ~variables: 'variables,
   ~optimisticUpdater: optimisticUpdaterFn=?,
@@ -38,8 +39,7 @@ let useMutation: (
   ~node: mutationNode<'node>,
   ~convertResponse: 'response => 'response,
   ~convertWrapRawResponse: 'rawResponse => 'rawResponse,
-  unit,
-) => (
+) => unit => (
   (
     ~variables: 'variables,
     ~optimisticUpdater: optimisticUpdaterFn=?,

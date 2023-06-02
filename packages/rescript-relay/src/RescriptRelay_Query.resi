@@ -4,6 +4,7 @@ let useQuery: (
   ~convertVariables: 'variables => 'variables,
   ~node: queryNode<'a>,
   ~convertResponse: 'response => 'response,
+) => (
   ~variables: 'variables,
   ~fetchPolicy: fetchPolicy=?,
   ~fetchKey: string=?,
@@ -15,8 +16,7 @@ let useLoader: (
   ~convertVariables: 'variables => 'variables,
   ~node: queryNode<'a>,
   ~mkQueryRef: option<'queryRef> => option<'queryRef>,
-  unit,
-) => (
+) => unit => (
   option<'queryRef>,
   (
     ~variables: 'variables,
@@ -31,13 +31,13 @@ let usePreloaded: (
   ~node: queryNode<'a>,
   ~convertResponse: 'response => 'response,
   ~mkQueryRef: 'queryRef => 'queryRef,
-  ~queryRef: 'queryRef,
-) => 'response
+) => (~queryRef: 'queryRef) => 'response
 
 let fetch: (
   ~node: queryNode<'a>,
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,
+) => (
   ~environment: Environment.t,
   ~variables: 'variables,
   ~onResult: result<'response, Js.Exn.t> => unit,
@@ -50,6 +50,7 @@ let fetchPromised: (
   ~node: queryNode<'a>,
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,
+) => (
   ~environment: Environment.t,
   ~variables: 'variables,
   ~networkCacheConfig: cacheConfig=?,
@@ -60,15 +61,10 @@ let fetchPromised: (
 let retain: (
   ~node: queryNode<'a>,
   ~convertVariables: 'variables => 'variables,
-  ~environment: Environment.t,
-  ~variables: 'variables,
-) => Disposable.t
+) => (~environment: Environment.t, ~variables: 'variables) => Disposable.t
 
 let commitLocalPayload: (
   ~node: queryNode<'a>,
   ~convertVariables: 'variables => 'variables,
   ~convertWrapRawResponse: 'rawResponse => 'rawResponse,
-  ~environment: Environment.t,
-  ~variables: 'variables,
-  ~payload: 'rawResponse,
-) => unit
+) => (~environment: Environment.t, ~variables: 'variables, ~payload: 'rawResponse) => unit

@@ -4,6 +4,7 @@ let subscribe: (
   ~node: subscriptionNode<'a>,
   ~convertVariables: 'variables => 'variables,
   ~convertResponse: 'response => 'response,
+) => (
   ~environment: Environment.t,
   ~variables: 'variables,
   ~onCompleted: unit => unit=?,
