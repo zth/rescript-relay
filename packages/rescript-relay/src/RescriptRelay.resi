@@ -805,8 +805,11 @@ module Context: {
   /**The context provider you wrap your app in and pass your `Environment` for Relay to work.*/
   module Provider: {
     /**The React component you wrap your app in and pass your `Environment` for Relay to work.*/
-    @react.component
-    let make: (~environment: Environment.t, ~children: React.element) => React.element
+    type props<'environment, 'children> = {
+      environment: 'environment,
+      children: 'children,
+    }
+    let make: props<Environment.t, React.element> => React.element
   }
 }
 

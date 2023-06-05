@@ -4,12 +4,12 @@ external useDeferredValue: 'value => 'value = "useDeferredValue"
 @module("react")
 external useTransitionWithOptions: unit => (
   bool,
-  (. unit => unit, option<{"name": option<string>}>) => unit,
+  (unit => unit, option<{"name": option<string>}>) => unit,
 ) = "useTransition"
 
 let useTransition = () => {
   let (isPending, startTransition) = useTransitionWithOptions()
-  (isPending, React.useCallback1(cb => startTransition(. cb, None), [startTransition]))
+  (isPending, React.useCallback1(cb => startTransition(cb, None), [startTransition]))
 }
 
 module SuspenseList = {
