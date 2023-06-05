@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "rescript": "^11.0.0-beta.1",
-    "@rescript/react": "0.11.0",
+    "@rescript/react": "0.12.0-alpha.2",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
     "bs-fetch": "^0.5.0",
