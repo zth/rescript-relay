@@ -269,9 +269,7 @@ describe("Mutation", () => {
     const resolve = queryMock.mockQueryWithControlledResolution({
       name: "TestMutationWithInlineFragmentSetOnlineStatusMutation",
       variables: {
-        input: {
-          onlineStatus: "Idle",
-        },
+        onlineStatus: "Idle",
       },
       data: {
         setOnlineStatus: {
