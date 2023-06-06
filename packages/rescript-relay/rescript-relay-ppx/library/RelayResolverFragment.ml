@@ -35,4 +35,5 @@ let make ~loc ~moduleName =
                     ~node:[%e valFromGeneratedModule ["node"]]
                     resolver];
             ];
-          ]))
+          ]
+       |> List.map UncurriedUtils.mapStructureItem))

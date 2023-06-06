@@ -1,6 +1,7 @@
 open Ppxlib
 open Util
 module Util = Util
+module UncurriedUtils = UncurriedUtils
 let endsWithRegexp = Str.regexp ".*Resolver$"
 let commonExtension =
   Extension.declare "relay" Extension.Context.module_expr

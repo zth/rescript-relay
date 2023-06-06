@@ -108,4 +108,5 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                         ~node:[%e valFromGeneratedModule ["node"]]];
                 ]
               else []);
-          ]))
+          ]
+       |> List.map UncurriedUtils.mapStructureItem))
