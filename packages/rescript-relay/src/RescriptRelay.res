@@ -768,10 +768,10 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   let queryRefToPromise = token => {
     Js.Promise.make((~resolve, ~reject as _) => {
       switch token->queryRefToObservable {
-      | None => resolve(Error())
+      | None => resolve(. Error())
       | Some(o) =>
         open Observable
-        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
       }
     })
   }
