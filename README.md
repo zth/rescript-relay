@@ -98,6 +98,14 @@ let make = () => {
 
 ```
 
+## Note about versioning
+
+There's plenty of work ongoing to bring RescriptRelay to full ReScript v11 support, including uncurried mode. Here's the versioning scheme that'll be followed going forward:
+
+- 1.x will receive critical bug fixes etc, but new features won't be added
+- 2.x will soon ship, and it'll focus on compatibility with ReScript v11, and uncurried mode (uncurried mode will be optional). This is intended to make the transition to v11+ smooth
+- 3.x will also soon ship, and that'll fully embrace uncurried mode (no curried mode available), and add a bunch of new stuff + change existing APIs to make them better and more ergonomic
+
 ## Examples
 
 - A general example showcasing most available features: https://github.com/zth/rescript-relay/tree/master/example
