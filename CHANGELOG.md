@@ -1,8 +1,13 @@
 # master
 
+## Breaking changes
+
+- A trailing unit `()` arg is no longer needed in `Query.usePreloaded()`. What was previously `Query.usePreloaded(~queryRef, ())` is now just `Query.usePreloaded(~queryRef)`.
+
 ## Improvements
 
 - Add `@live` annotations to generated JSXv4 dynamic import compat modules, so they don't show up in dead code analysis (which they shouldn't).
+- Preparations under the hood for ReScript v11 + uncurried mode.
 
 # 1.1.1
 

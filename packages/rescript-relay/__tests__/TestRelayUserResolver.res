@@ -7,7 +7,6 @@
  *
  * A users full name.
  */
-
 type t = string
 
 module Fragment = %relay(`

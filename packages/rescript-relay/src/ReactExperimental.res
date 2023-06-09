@@ -9,7 +9,7 @@ external useTransitionWithOptions: unit => (
 
 let useTransition = () => {
   let (isPending, startTransition) = useTransitionWithOptions()
-  (isPending, React.useCallback1(cb => startTransition(. cb, None), [startTransition]))
+  (isPending, React.useMemo1(() => cb => startTransition(. cb, None), [startTransition]))
 }
 
 module SuspenseList = {

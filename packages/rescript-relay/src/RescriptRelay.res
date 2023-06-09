@@ -507,6 +507,8 @@ module Observable = {
   external subscribe: (t<'response>, observer<'response>) => subscription = "subscribe"
 
   @send external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+
+  external ignoreSubscription: subscription => unit = "%ignore"
 }
 
 module Network = {
@@ -593,7 +595,7 @@ module RequiredFieldLogger = {
 
   type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
 
-  let toJs: t => js = (f, arg) =>
+  let toJs: t => js = f => arg =>
     f(~kind=arg["kind"], ~owner=arg["owner"], ~fieldPath=arg["fieldPath"])
 }
 

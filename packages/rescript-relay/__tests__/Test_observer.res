@@ -39,6 +39,8 @@ let test_observer = () => {
   ()
 
   <RescriptReactErrorBoundary fallback={_ => React.string("Failed")}>
-    <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+    <TestProviders.Wrapper environment>
+      <Test />
+    </TestProviders.Wrapper>
   </RescriptReactErrorBoundary>
 }

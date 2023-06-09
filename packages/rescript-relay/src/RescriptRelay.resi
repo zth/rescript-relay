@@ -615,6 +615,8 @@ module Observable: {
   /**Turns an `Observable` into a promise. _Beware_ that reading the response in the resulting promise is currently _not safe_ due to some internals of how ReScript Relay works. This will be resolved in the future.*/
   @send
   external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+
+  /**Ignore this subscription.*/ external ignoreSubscription: subscription => unit = "%ignore"
 }
 
 /**Represents the network layer.*/
@@ -803,8 +805,11 @@ module Context: {
   /**The context provider you wrap your app in and pass your `Environment` for Relay to work.*/
   module Provider: {
     /**The React component you wrap your app in and pass your `Environment` for Relay to work.*/
-    @react.component
-    let make: (~environment: Environment.t, ~children: React.element) => React.element
+    type props<'environment, 'children> = {
+      environment: 'environment,
+      children: 'children,
+    }
+    let make: props<Environment.t, React.element> => React.element
   }
 }
 

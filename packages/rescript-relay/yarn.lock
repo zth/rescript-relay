@@ -516,10 +516,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@rescript/react@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.11.0.tgz#d2545546d823bdb8e6b59daa1790098d1666f79e"
-  integrity sha512-RzoAO+3cJwXE2D7yodMo4tBO2EkeDYCN/I/Sj/yRweI3S1CY1ZBOF/GMcVtjeIurJJt7KMveqQXTaRrqoGZBBg==
+"@rescript/react@0.12.0-alpha.2":
+  version "0.12.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.12.0-alpha.2.tgz#9a65668c6056ac1f80917639a96f4ad7887320f7"
+  integrity sha512-FkVFU7LFT0c9tT01N08VsbhE7X3IuJvxrTBrbCehRyhw3qZy2qq9+HmMWm87kD4jaO23J7OhCGz5ejf66YOyoQ==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -2595,10 +2595,10 @@ require-directory@^2.1.1:
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
   integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
 
-rescript@^10.1.3:
-  version "10.1.3"
-  resolved "https://registry.yarnpkg.com/rescript/-/rescript-10.1.3.tgz#0ff208cef09ea1f8ad38efc171c4942eca72d444"
-  integrity sha512-5qaf63As6nkbrMRJ85kZ0ifLzKAGPOGLuoJ4zFVGZIp4oMePRt6bCKWAIX7zgbRDfRPa3jSu+EnoY2873gxaIA==
+rescript@^11.0.0-beta.1:
+  version "11.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-beta.1.tgz#7e7cf590eab467d0e09caebb7b4706b95daef2b8"
+  integrity sha512-oKgMJAj/hLQFdWcp3hDcRsTJ/HaVdX5Ze41Egj9XUCBzKP89026e/I3eV4N3+OvLPskvvFwiTEVeR3yiDGVTYA==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"

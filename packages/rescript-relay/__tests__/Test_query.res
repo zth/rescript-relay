@@ -15,7 +15,7 @@ module Query = %relay(`
 module TestPreloaded = {
   @react.component
   let make = (~queryRef) => {
-    let query = Query.usePreloaded(~queryRef, ())
+    let query = Query.usePreloaded(~queryRef)
     let users = switch query {
     | {users: Some({edges: Some(edges)})} =>
       edges->Belt.Array.keepMap(edge =>
