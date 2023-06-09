@@ -1,5 +1,7 @@
 # master
 
+# 2.0.0-alpha.1
+
 ## Improvements
 
 - `%relay.deferredComponent` now works with uncurried mode.
