@@ -53,12 +53,12 @@ let readInlineData = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) =>
 }
 
 type refetchableFnOpts = {
-  fetchPolicy?: string,
+  fetchPolicy?: fetchPolicy,
   onComplete?: Js.Nullable.t<Js.Exn.t> => unit,
 }
 
 let internal_makeRefetchableFnOpts = (~fetchPolicy=?, ~onComplete=?, ()) => {
-  fetchPolicy: ?fetchPolicy->mapFetchPolicy,
+  ?fetchPolicy,
   onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler,
 }
 

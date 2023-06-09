@@ -2,7 +2,7 @@ open RescriptRelay
 
 type useQueryConfig = {
   fetchKey?: string,
-  fetchPolicy?: string,
+  fetchPolicy?: fetchPolicy,
   networkCacheConfig?: cacheConfig,
 }
 
@@ -28,7 +28,7 @@ let useQuery = (
       RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(variables->convertVariables),
       {
         ?fetchKey,
-        fetchPolicy: ?fetchPolicy->mapFetchPolicy,
+        ?fetchPolicy,
         ?networkCacheConfig,
       },
     )->(RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _))
@@ -36,7 +36,7 @@ let useQuery = (
 }
 
 type useQueryLoaderOptions = {
-  fetchPolicy?: string,
+  fetchPolicy?: fetchPolicy,
   networkCacheConfig?: cacheConfig,
 }
 
@@ -56,10 +56,7 @@ let useLoader = (
     let (nullableQueryRef, loadQueryFn, disposableFn) = useQueryLoader(node)
     let loadQuery = React.useMemo1(
       () => (~variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
-        loadQueryFn(
-          variables->convertVariables,
-          {fetchPolicy: ?fetchPolicy->mapFetchPolicy, ?networkCacheConfig},
-        ),
+        loadQueryFn(variables->convertVariables, {?fetchPolicy, ?networkCacheConfig}),
       [loadQueryFn],
     )
     (nullableQueryRef->Js.Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
@@ -117,7 +114,7 @@ let fetch = (
       environment,
       node,
       variables->convertVariables,
-      Some({networkCacheConfig, fetchPolicy: fetchPolicy->mapFetchPolicy}),
+      Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->subscribe(
       makeObserver(
@@ -147,7 +144,7 @@ let fetchPromised = (
       environment,
       node,
       variables->convertVariables,
-      Some({networkCacheConfig, fetchPolicy: fetchPolicy->mapFetchPolicy}),
+      Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->Observable.toPromise
     ->Js.Promise2.then(res => res->convertResponse->Js.Promise2.resolve)

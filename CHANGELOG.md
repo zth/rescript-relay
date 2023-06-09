@@ -5,6 +5,10 @@
 - `rescript` to `>=11.0.0-beta.0`
 - `@rescript/react` to `>=0.12.0-alpha.2`
 
+## Improvements
+
+- Leverage variant's new `string` representation + `@as()` to get rid of `mapFetchPolicy`. This was internal so it should not affect you as an end user.
+
 # 1.2.0
 
 This release mainly makes preparations under the hood for the upcoming `2.0` (ReScript v11 + uncurried mode support) and `3.0` (lots of changes, full uncurried mode only).

@@ -482,9 +482,9 @@ module Observable = {
   }
 
   type sink<'response> = {
-    next: (. 'response) => unit,
-    error: (. Js.Exn.t) => unit,
-    complete: (. unit) => unit,
+    next: 'response => unit,
+    error: Js.Exn.t => unit,
+    complete: unit => unit,
     closed: bool,
   }
 
@@ -681,39 +681,23 @@ let useEnvironmentFromContext = () => {
 }
 
 type fetchPolicy =
-  | StoreOnly
-  | StoreOrNetwork
-  | StoreAndNetwork
-  | NetworkOnly
-
-let mapFetchPolicy = x =>
-  switch x {
-  | Some(StoreOnly) => Some("store-only")
-  | Some(StoreOrNetwork) => Some("store-or-network")
-  | Some(StoreAndNetwork) => Some("store-and-network")
-  | Some(NetworkOnly) => Some("network-only")
-  | None => None
-  }
+  | @as("store-only") StoreOnly
+  | @as("store-or-network") StoreOrNetwork
+  | @as("store-and-network") StoreAndNetwork
+  | @as("network-only") NetworkOnly
 
 type fetchQueryFetchPolicy =
-  | NetworkOnly
-  | StoreOrNetwork
-
-let mapFetchQueryFetchPolicy = x =>
-  switch x {
-  | Some(StoreOrNetwork) => Some("store-or-network")
-  | Some(NetworkOnly) => Some("network-only")
-  | None => None
-  }
+  | @as("network-only") NetworkOnly
+  | @as("store-or-network") StoreOrNetwork
 
 type fetchQueryOptions = {
-  networkCacheConfig: option<cacheConfig>,
-  fetchPolicy: option<string>,
+  networkCacheConfig?: cacheConfig,
+  fetchPolicy?: fetchPolicy,
 }
 
 type loadQueryConfig = {
   fetchKey: option<string>,
-  fetchPolicy: option<string>,
+  fetchPolicy: option<fetchPolicy>,
   networkCacheConfig: option<cacheConfig>,
 }
 
@@ -752,7 +736,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       variables->C.convertVariables,
       {
         fetchKey,
-        fetchPolicy: fetchPolicy->mapFetchPolicy,
+        fetchPolicy,
         networkCacheConfig,
       },
     )
@@ -768,10 +752,10 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
   let queryRefToPromise = token => {
     Js.Promise.make((~resolve, ~reject as _) => {
       switch token->queryRefToObservable {
-      | None => resolve(. Error())
+      | None => resolve(Error())
       | Some(o) =>
         open Observable
-        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(. Ok()), ()))
+        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
       }
     })
   }

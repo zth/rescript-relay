@@ -577,9 +577,9 @@ module Observable: {
 
   /**This sink can be used to give the observable new data.*/
   type sink<'response> = {
-    next: (. 'response) => unit,
-    error: (. Js.Exn.t) => unit,
-    complete: (. unit) => unit,
+    next: 'response => unit,
+    error: Js.Exn.t => unit,
+    complete: unit => unit,
     closed: bool,
   }
 
@@ -771,21 +771,27 @@ You should use the generated `Query.retain` function on your queries instead of 
 
 /**fetchPolicy controls how you want Relay to resolve your data.*/
 type fetchPolicy =
-  | StoreOnly /* Resolve only from the store */
-  | StoreOrNetwork /* Resolve from the store if all data is there, otherwise make a network request */
-  | StoreAndNetwork /* Like StoreOrNetwork, but always make a request regardless of if the data was there initially or not */
-  | NetworkOnly /* Always make a request, regardless of what's in the store */
-
-/**Internal, do not use.*/
-let mapFetchPolicy: option<fetchPolicy> => option<string>
+  | /** will only reuse locally cached data, and will never send a network request to fetch the query. In this case, the responsibility of fetching the query falls to the caller, but this policy could also be used to read and operate on data that is entirely local. */
+  @as("store-only")
+  StoreOnly
+  | /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
+  @as("store-or-network")
+  StoreOrNetwork
+  | /** will reuse locally cached data and will always send a network request, regardless of whether any data was missing or stale in the store. */
+  @as("store-and-network")
+  StoreAndNetwork
+  | /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
+  @as("network-only")
+  NetworkOnly
 
 /**The fetch policies allowed for fetching a query outside of React's render (as in `Query.fetch`).*/
 type fetchQueryFetchPolicy =
-  | NetworkOnly
-  | StoreOrNetwork
-
-/**Internal, do not use.*/
-let mapFetchQueryFetchPolicy: option<fetchQueryFetchPolicy> => option<string>
+  | /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
+  @as("network-only")
+  NetworkOnly
+  | /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
+  @as("store-or-network")
+  StoreOrNetwork
 
 /**An error from a mutation.*/
 type mutationError = {message: string}
@@ -835,8 +841,8 @@ external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Dispo
 
 /**Options valid when fetching a query outside of React's render method (like when using `Query.fetch`).*/
 type fetchQueryOptions = {
-  networkCacheConfig: option<cacheConfig>,
-  fetchPolicy: option<string>,
+  networkCacheConfig?: cacheConfig,
+  fetchPolicy?: fetchPolicy,
 }
 
 module type MakeLoadQueryConfig = {
