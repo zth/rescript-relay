@@ -492,11 +492,11 @@ module Observable = {
 
   @obj
   external makeObserver: (
-    ~start: @uncurry subscription => unit=?,
-    ~next: @uncurry 'response => unit=?,
-    ~error: @uncurry Js.Exn.t => unit=?,
-    ~complete: @uncurry unit => unit=?,
-    ~unsubscribe: @uncurry subscription => unit=?,
+    ~start: subscription => unit=?,
+    ~next: 'response => unit=?,
+    ~error: Js.Exn.t => unit=?,
+    ~complete: unit => unit=?,
+    ~unsubscribe: subscription => unit=?,
     unit,
   ) => observer<'response> = ""
 
