@@ -41,6 +41,25 @@ let uncurriedType ~loc ~arity tArg =
 open Parsetree
 open Ast_mapper
 
+let wrapAsUncurriedFn ~arity item =
+  match item.pstr_desc with
+  | Pstr_value (a1, [({pvb_expr = {pexp_desc = Pexp_fun _} as fn} as outerV)])
+    ->
+    {
+      item with
+      pstr_desc =
+        Pstr_value
+          ( a1,
+            [
+              {
+                outerV with
+                (* TODO: Should we care about actually figuring out the arity? *)
+                pvb_expr = uncurriedFun ~loc:outerV.pvb_loc ~arity fn;
+              };
+            ] );
+    }
+  | _ -> item
+
 let uncurriedMapper =
   {
     default_mapper with
