@@ -4,6 +4,10 @@
 
 First alpha of the `2.x` series of releases. `2.x` focuses on compat with ReScript `v11`, including uncurried mode.
 
+### Uncurried mode
+
+You can activate uncurried mode with `RescriptRelay` by setting `"uncurried": true` in your `bsconfig.json`, and then ensuring that you pass `-uncurried` to `rescript-relay/ppx` in `ppx-flags`: `"ppx-flags": ["rescript-relay/ppx -uncurried"]`
+
 ## Upgrade versions
 
 - `rescript` to `>=11.0.0-beta.0`
