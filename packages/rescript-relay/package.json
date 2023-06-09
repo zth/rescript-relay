@@ -39,11 +39,10 @@
     "test:ci": "jest --ci --runInBand"
   },
   "devDependencies": {
-    "rescript": "^11.0.0-beta.1",
+    "@glennsl/rescript-fetch": "^0.2.0",
     "@rescript/react": "0.12.0-alpha.2",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
-    "bs-fetch": "^0.5.0",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.2.4",
     "nock": "^11.7.0",
@@ -51,7 +50,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-relay": "15.0.0",
-    "relay-runtime": "15.0.0"
+    "relay-runtime": "15.0.0",
+    "rescript": "^11.0.0-beta.1"
   },
   "peerDependencies": {
     "@rescript/react": "*",

@@ -143,7 +143,7 @@ The Relay compiler is really awesome. If you're interested there's plenty more t
 
 Finally time for some actual code. Next thing is setting up the Relay environment. The Relay environment consists of a network layer responsible for dispatching your GraphQL queries, and a store responsible for storing data and supplying it to your components.
 
-You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `bs-fetch` for fetching, which you can find [installation instructions for here](https://github.com/reasonml-community/bs-fetch)):
+You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `@glennsl/rescript-fetch` for fetching, which you can find [installation instructions for here](https://github.com/glennsl/rescript-fetch)):
 
 ```rescript
 /* RelayEnv.res */
@@ -155,37 +155,33 @@ exception Graphql_error(string)
  * A standard fetch that sends our operation and variables to the
  * GraphQL server, and then decodes and returns the response.
  */
-let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
+let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
   operation,
   variables,
   _cacheConfig,
   _uploadables,
 ) => {
   open Fetch
-  fetchWithInit(
+  let resp = await fetch(
     "http://localhost:4000/graphql",
-    RequestInit.make(
-      ~method_=Post,
-      ~body=Js.Dict.fromList(list{
-        ("query", Js.Json.string(operation.text)),
-        ("variables", variables),
-      })
-      ->Js.Json.object_
-      ->Js.Json.stringify
-      ->BodyInit.make,
-      ~headers=HeadersInit.make({
+    {
+      method: #POST,
+      body: {"query": operation.text, "variables": variables}
+      ->Js.Json.stringifyAny
+      ->Belt.Option.getExn
+      ->Body.string,
+      headers: Headers.fromObject({
         "content-type": "application/json",
         "accept": "application/json",
       }),
-      (),
-    ),
-  ) |> Js.Promise.then_(resp =>
-    if Response.ok(resp) {
-      Response.json(resp)
-    } else {
-      Js.Promise.reject(Graphql_error("Request failed: " ++ Response.statusText(resp)))
-    }
+    },
   )
+
+  if Response.ok(resp) {
+    await Response.json(resp)
+  } else {
+    raise(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+  }
 }
 
 let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ())

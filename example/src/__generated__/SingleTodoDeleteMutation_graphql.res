@@ -4,11 +4,7 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  @live
-  type rec deleteTodoItemInput = {
-    clientMutationId: option<string>,
-    @live id: string,
-  }
+  @live type deleteTodoItemInput = RelaySchemaAssets_graphql.input_DeleteTodoItemInput
   @live
   type rec response_deleteTodoItem = {
     deletedTodoItemId: option<string>,

@@ -14,22 +14,22 @@
     "format": "rescript-relay-cli format-all-graphql"
   },
   "dependencies": {
+    "@glennsl/rescript-fetch": "^0.2.0",
     "@mdi/font": "3.7.95",
-    "@rescript/react": "0.10.3",
+    "@rescript/react": "0.11.0",
     "bootstrap": "^4.3.1",
-    "bs-fetch": "^0.5.0",
     "concurrently": "^5.0.0",
     "graphql": "15.8.0",
     "graphql-ws": "^5.8.2",
-    "react": "18.0.0",
-    "react-dom": "18.0.0",
-    "react-relay": "13.2.0",
-    "relay-runtime": "13.2.0",
-    "rescript-relay": "1.0.0-beta.22"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-relay": "15.0.0",
+    "relay-runtime": "15.0.0",
+    "rescript-relay": "1.1.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
-    "rescript": "^9.1.2",
+    "rescript": "10.1.4",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.9.0"

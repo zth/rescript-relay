@@ -67,7 +67,7 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
 
-1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaded`, like `let queryData = Query.usePreloaded(~queryRef=queryRef, ())`, to get the data for the query as soon as it's available.
+1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaded`, like `let queryData = Query.usePreloaded(~queryRef=queryRef)`, to get the data for the query as soon as it's available.
 2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
 3. `disposeQuery` - a function that disposes the query reference manually. Calling this would turn `option(queryRef)` into `None`.
 
@@ -85,7 +85,7 @@ module Query = %relay(`
 
 @react.component
 let make = (~queryRef) => {
-  let queryData = Query.usePreloaded(~queryRef, ())
+  let queryData = Query.usePreloaded(~queryRef)
 
   /* Use the data for the query here */
 }

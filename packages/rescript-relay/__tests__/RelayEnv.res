@@ -1,34 +1,30 @@
 exception Graphql_error(string)
 
-let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (
+let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
   operation,
   variables,
   _cacheConfig,
   _uploadables,
 ) => {
   open Fetch
-  fetchWithInit(
+  let resp = await fetch(
     "http://graphql/",
-    RequestInit.make(
-      ~method_=Post,
-      ~body=Js.Dict.fromList(list{
-        ("query", Js.Json.string(operation.text)),
-        ("variables", variables),
-      })
-      ->Js.Json.object_
-      ->Js.Json.stringify
-      ->BodyInit.make,
-      ~headers=HeadersInit.make({
+    {
+      method: #POST,
+      body: {"query": operation.text, "variables": variables}
+      ->Js.Json.stringifyAny
+      ->Belt.Option.getExn
+      ->Body.string,
+      headers: Headers.fromObject({
         "content-type": "application/json",
         "accept": "application/json",
       }),
-      (),
-    ),
-  ) |> Js.Promise.then_(resp =>
-    if Response.ok(resp) {
-      Response.json(resp)
-    } else {
-      Js.Promise.reject(Graphql_error("Request failed: " ++ Response.statusText(resp)))
-    }
+    },
   )
+
+  if Response.ok(resp) {
+    await Response.json(resp)
+  } else {
+    raise(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+  }
 }

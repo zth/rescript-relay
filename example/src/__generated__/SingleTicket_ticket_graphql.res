@@ -54,7 +54,7 @@ module Internal = {
   type fragmentRaw
   @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee"},"":{"f":""}}}`
+    json`{"__root":{"lastUpdated":{"b":""},"assignee_WorkingGroup":{"f":""},"assignee_User":{"f":""},"assignee":{"u":"fragment_assignee"},"":{"f":""}}}`
   )
   @live
   let fragmentConverterMap = {

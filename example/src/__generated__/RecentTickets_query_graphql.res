@@ -41,16 +41,26 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #RecentTickets_query]> => fragmentRef = "%identity"
 
+@live
+@inline
+let connectionKey = "RecentTickets_ticketsConnection"
+
+%%private(
+  @live @module("relay-runtime") @scope("ConnectionHandler")
+  external internal_makeConnectionId: (RescriptRelay.dataId, @as("RecentTickets_ticketsConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
+)
+
+@live
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ) => {
+  let args = ()
+  internal_makeConnectionId(connectionParentDataId, args)
+}
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live
-  @inline
-  let connectionKey = "RecentTickets_ticketsConnection"
-
 
   @live
-  let getConnectionNodes: fragment_ticketsConnection => array<fragment_ticketsConnection_edges_node> = connection => 
+  let getConnectionNodes: Types.fragment_ticketsConnection => array<Types.fragment_ticketsConnection_edges_node> = connection => 
     switch connection.edges {
       | None => []
       | Some(edges) => edges
@@ -59,6 +69,7 @@ module Utils = {
           | Some(edge) => edge.node
         })
     }
+
 
 }
 

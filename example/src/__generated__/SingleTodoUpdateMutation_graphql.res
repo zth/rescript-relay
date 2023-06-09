@@ -4,13 +4,7 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  @live
-  type rec updateTodoItemInput = {
-    clientMutationId: option<string>,
-    completed: bool,
-    @live id: string,
-    text: string,
-  }
+  @live type updateTodoItemInput = RelaySchemaAssets_graphql.input_UpdateTodoItemInput
   @live
   type rec response_updateTodoItem_updatedTodoItem = {
     completed: option<bool>,

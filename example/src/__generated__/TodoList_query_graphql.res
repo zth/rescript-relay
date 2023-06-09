@@ -42,16 +42,26 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TodoList_query]> => fragmentRef = "%identity"
 
+@live
+@inline
+let connectionKey = "TodoList_query_todosConnection"
+
+%%private(
+  @live @module("relay-runtime") @scope("ConnectionHandler")
+  external internal_makeConnectionId: (RescriptRelay.dataId, @as("TodoList_query_todosConnection") _, 'arguments) => RescriptRelay.dataId = "getConnectionID"
+)
+
+@live
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ) => {
+  let args = ()
+  internal_makeConnectionId(connectionParentDataId, args)
+}
 module Utils = {
   @@ocaml.warning("-33")
   open Types
-  @live
-  @inline
-  let connectionKey = "TodoList_query_todosConnection"
-
 
   @live
-  let getConnectionNodes: fragment_todosConnection => array<fragment_todosConnection_edges_node> = connection => 
+  let getConnectionNodes: Types.fragment_todosConnection => array<Types.fragment_todosConnection_edges_node> = connection => 
     switch connection.edges {
       | None => []
       | Some(edges) => edges
@@ -60,6 +70,7 @@ module Utils = {
           | Some(edge) => edge.node
         })
     }
+
 
 }
 

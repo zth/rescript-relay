@@ -4,25 +4,8 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type enum_TicketStatus = private [>
-      | #Done
-      | #OnHold
-      | #Progress
-      | #Rejected
-    ]
-
-  @live
-  type enum_TicketStatus_input = [
-      | #Done
-      | #OnHold
-      | #Progress
-      | #Rejected
-    ]
-
-
-
   type fragment = {
-    status: enum_TicketStatus,
+    status: RelaySchemaAssets_graphql.enum_TicketStatus,
   }
 }
 
@@ -52,18 +35,18 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live
-  external ticketStatus_toString: enum_TicketStatus => string = "%identity"
+  external ticketStatus_toString: RelaySchemaAssets_graphql.enum_TicketStatus => string = "%identity"
   @live
-  external ticketStatus_input_toString: enum_TicketStatus_input => string = "%identity"
+  external ticketStatus_input_toString: RelaySchemaAssets_graphql.enum_TicketStatus_input => string = "%identity"
   @live
-  let ticketStatus_decode = (enum: enum_TicketStatus): option<enum_TicketStatus_input> => {
+  let ticketStatus_decode = (enum: RelaySchemaAssets_graphql.enum_TicketStatus): option<RelaySchemaAssets_graphql.enum_TicketStatus_input> => {
     switch enum {
-      | #...enum_TicketStatus_input as valid => Some(valid)
+      | #...RelaySchemaAssets_graphql.enum_TicketStatus_input as valid => Some(valid)
       | _ => None
     }
   }
   @live
-  let ticketStatus_fromString = (str: string): option<enum_TicketStatus_input> => {
+  let ticketStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_TicketStatus_input> => {
     ticketStatus_decode(Obj.magic(str))
   }
 }

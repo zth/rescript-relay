@@ -26,7 +26,7 @@
     "./rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe"
   ],
   "bs-dependencies": ["@rescript/react"],
-  "bs-dev-dependencies": ["bs-fetch"],
+  "bs-dev-dependencies": ["@glennsl/rescript-fetch"],
   "suffix": ".bs.js",
   "warnings": {
     "error": "+A+101"
