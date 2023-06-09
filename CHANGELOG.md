@@ -1,5 +1,9 @@
 # master
 
+# 2.0.0-alpha.0
+
+First alpha of the `2.x` series of releases. `2.x` focuses on compat with ReScript `v11`, including uncurried mode.
+
 ## Upgrade versions
 
 - `rescript` to `>=11.0.0-beta.0`

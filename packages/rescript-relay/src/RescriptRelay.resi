@@ -132,7 +132,7 @@ module RecordProxy: {
   @send
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom"
 
-  /**Gets the \`dataId\` for a particular record.*/
+  /**Gets the `dataId` for a particular record.*/
   @send
   external getDataId: t => dataId = "getDataID"
 
