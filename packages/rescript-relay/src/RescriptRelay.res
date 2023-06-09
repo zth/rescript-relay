@@ -482,9 +482,9 @@ module Observable = {
   }
 
   type sink<'response> = {
-    next: 'response => unit,
-    error: Js.Exn.t => unit,
-    complete: unit => unit,
+    next: (. 'response) => unit,
+    error: (. Js.Exn.t) => unit,
+    complete: (. unit) => unit,
     closed: bool,
   }
 

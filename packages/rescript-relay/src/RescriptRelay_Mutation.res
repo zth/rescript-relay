@@ -17,7 +17,7 @@ type commitMutationConfigRaw<'m, 'variables, 'response, 'rawResponse> = {
   mutation: mutationNode<'m>,
   variables: 'variables,
   onCompleted?: ('response, Js.Nullable.t<array<mutationError>>) => unit,
-  onError?: Js.Nullable.t<mutationError> => unit,
+  onError?: mutationError => unit,
   optimisticResponse?: 'rawResponse,
   optimisticUpdater?: optimisticUpdaterFn,
   updater?: updaterFn<'response>,
@@ -25,7 +25,7 @@ type commitMutationConfigRaw<'m, 'variables, 'response, 'rawResponse> = {
 }
 
 type useMutationConfigRaw<'m, 'variables, 'response, 'rawResponse> = {
-  onError?: Js.Nullable.t<mutationError> => unit,
+  onError?: mutationError => unit,
   onCompleted?: ('response, Js.Nullable.t<array<mutationError>>) => unit,
   onUnsubscribe?: unit => unit,
   optimisticResponse?: 'rawResponse,
@@ -77,7 +77,7 @@ let commitMutation = (
       {
         mutation: node,
         onCompleted: ?switch onCompleted {
-        | Some(cb) => Some((res, err) => cb(res->convertResponse, err))
+        | Some(cb) => Some((res, err) => cb(res->convertResponse, err->Js.Nullable.toOption))
         | None => None
         },
         ?onError,
@@ -124,7 +124,7 @@ let useMutation = (
         ) => {
           mutate({
             onCompleted: ?switch onCompleted {
-            | Some(cb) => Some((res, err) => cb(res->convertResponse, err))
+            | Some(cb) => Some((res, err) => cb(res->convertResponse, err->Js.Nullable.toOption))
             | None => None
             },
             ?onError,

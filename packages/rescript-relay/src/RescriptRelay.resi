@@ -577,9 +577,9 @@ module Observable: {
 
   /**This sink can be used to give the observable new data.*/
   type sink<'response> = {
-    next: 'response => unit,
-    error: Js.Exn.t => unit,
-    complete: unit => unit,
+    next: (. 'response) => unit,
+    error: (. Js.Exn.t) => unit,
+    complete: (. unit) => unit,
     closed: bool,
   }
 
