@@ -22,8 +22,8 @@ module RenderMe = {
     let query = Query.use(~variables=(), ~fetchPolicy=StoreOnly, ())
 
     switch query.node {
-    | Some(user) => React.string("2: " ++ user.firstName)
-    | None => React.string("-")
+    | Some(#User(user)) => React.string("2: " ++ user.firstName)
+    | _ => React.string("-")
     }
   }
 }
@@ -54,5 +54,7 @@ let test_missingFieldHandlers = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

@@ -4,11 +4,16 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  type rec response_node = {
+  type rec response_node_User = {
     @live __typename: [ | #User],
     firstName: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestNodeInterface_user]>,
   }
+  and response_node = [
+    | #User(response_node_User)
+    | #UnselectedUnionMember(string)
+  ]
+
   type response = {
     node: option<response_node>,
   }
@@ -21,6 +26,23 @@ module Types = {
   @live let makeRefetchVariables = () => ()
 }
 
+@live
+let unwrap_response_node: {. "__typename": string } => [
+  | #User(Types.response_node_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u["__typename"] {
+  | "User" => #User(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
+}
+
+@live
+let wrap_response_node: [
+  | #User(Types.response_node_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
+  | #User(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
+}
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -38,10 +60,12 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "response_node": wrap_response_node,
+  }
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
@@ -52,10 +76,12 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "response_node": unwrap_response_node,
+  }
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,

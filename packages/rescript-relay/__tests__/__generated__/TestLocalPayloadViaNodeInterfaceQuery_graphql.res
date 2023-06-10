@@ -4,77 +4,87 @@
 module Types = {
   @@ocaml.warning("-30")
 
-  @live
-  type rec rawResponse_node_memberOf_Group_topMember_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_node_memberOf_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-    topMember: option<rawResponse_node_memberOf_Group_topMember>,
-  }
-  @live
-  and rawResponse_node_memberOf_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_node_memberOfSingular_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-  }
-  @live
-  and rawResponse_node_memberOfSingular_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  and rawResponse_node_memberOf_Group_topMember = [
-    | #User(rawResponse_node_memberOf_Group_topMember_User)
-    | #UnselectedUnionMember(string)
-  ]
-
-  and rawResponse_node_memberOf = [
-    | #Group(rawResponse_node_memberOf_Group)
-    | #User(rawResponse_node_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
-
-  and rawResponse_node_memberOfSingular = [
-    | #Group(rawResponse_node_memberOfSingular_Group)
-    | #User(rawResponse_node_memberOfSingular_User)
-    | #UnselectedUnionMember(string)
-  ]
-
-  type rec response_node = {
+  type rec response_node_User = {
     @live __typename: [ | #User],
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
   }
   @live
-  and rawResponse_node = {
+  and rawResponse_node_User_memberOf_Group_topMember_User = {
+    @live __typename: [ | #User],
+    __isNode: [ | #User],
+    firstName: string,
+    @live id: string,
+  }
+  @live
+  and rawResponse_node_User_memberOf_Group = {
+    @live __typename: [ | #Group],
+    __isNode: [ | #Group],
+    @live id: string,
+    name: string,
+    topMember: option<rawResponse_node_User_memberOf_Group_topMember>,
+  }
+  @live
+  and rawResponse_node_User_memberOf_User = {
+    @live __typename: [ | #User],
+    __isNode: [ | #User],
+    firstName: string,
+    @live id: string,
+  }
+  @live
+  and rawResponse_node_User_memberOfSingular_Group = {
+    @live __typename: [ | #Group],
+    __isNode: [ | #Group],
+    @live id: string,
+    name: string,
+  }
+  @live
+  and rawResponse_node_User_memberOfSingular_User = {
+    @live __typename: [ | #User],
+    __isNode: [ | #User],
+    firstName: string,
+    @live id: string,
+  }
+  @live
+  and rawResponse_node_User = {
     @live __typename: [ | #User],
     avatarUrl: option<string>,
     firstName: string,
     @live id: string,
-    memberOf: option<array<option<rawResponse_node_memberOf>>>,
-    memberOfSingular: option<rawResponse_node_memberOfSingular>,
+    memberOf: option<array<option<rawResponse_node_User_memberOf>>>,
+    memberOfSingular: option<rawResponse_node_User_memberOfSingular>,
     onlineStatus: option<[
       | #Idle
       | #Offline
       | #Online
     ]>,
   }
+  and response_node = [
+    | #User(response_node_User)
+    | #UnselectedUnionMember(string)
+  ]
+
+  and rawResponse_node_User_memberOf_Group_topMember = [
+    | #User(rawResponse_node_User_memberOf_Group_topMember_User)
+    | #UnselectedUnionMember(string)
+  ]
+
+  and rawResponse_node_User_memberOf = [
+    | #Group(rawResponse_node_User_memberOf_Group)
+    | #User(rawResponse_node_User_memberOf_User)
+    | #UnselectedUnionMember(string)
+  ]
+
+  and rawResponse_node_User_memberOfSingular = [
+    | #Group(rawResponse_node_User_memberOfSingular_Group)
+    | #User(rawResponse_node_User_memberOfSingular_User)
+    | #UnselectedUnionMember(string)
+  ]
+
+  and rawResponse_node = [
+    | #User(rawResponse_node_User)
+    | #UnselectedUnionMember(string)
+  ]
+
   type response = {
     node: option<response_node>,
   }
@@ -100,8 +110,8 @@ module Types = {
 }
 
 @live
-let unwrap_rawResponse_node_memberOf_Group_topMember: {. "__typename": string } => [
-  | #User(Types.rawResponse_node_memberOf_Group_topMember_User)
+let unwrap_response_node: {. "__typename": string } => [
+  | #User(Types.response_node_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
   | "User" => #User(u->Obj.magic)
@@ -109,17 +119,34 @@ let unwrap_rawResponse_node_memberOf_Group_topMember: {. "__typename": string } 
 }
 
 @live
-let wrap_rawResponse_node_memberOf_Group_topMember: [
-  | #User(Types.rawResponse_node_memberOf_Group_topMember_User)
+let wrap_response_node: [
+  | #User(Types.response_node_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
   | #User(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 @live
-let unwrap_rawResponse_node_memberOf: {. "__typename": string } => [
-  | #Group(Types.rawResponse_node_memberOf_Group)
-  | #User(Types.rawResponse_node_memberOf_User)
+let unwrap_rawResponse_node_User_memberOf_Group_topMember: {. "__typename": string } => [
+  | #User(Types.rawResponse_node_User_memberOf_Group_topMember_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u["__typename"] {
+  | "User" => #User(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
+}
+
+@live
+let wrap_rawResponse_node_User_memberOf_Group_topMember: [
+  | #User(Types.rawResponse_node_User_memberOf_Group_topMember_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
+  | #User(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
+}
+@live
+let unwrap_rawResponse_node_User_memberOf: {. "__typename": string } => [
+  | #Group(Types.rawResponse_node_User_memberOf_Group)
+  | #User(Types.rawResponse_node_User_memberOf_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
   | "Group" => #Group(u->Obj.magic)
@@ -128,9 +155,9 @@ let unwrap_rawResponse_node_memberOf: {. "__typename": string } => [
 }
 
 @live
-let wrap_rawResponse_node_memberOf: [
-  | #Group(Types.rawResponse_node_memberOf_Group)
-  | #User(Types.rawResponse_node_memberOf_User)
+let wrap_rawResponse_node_User_memberOf: [
+  | #Group(Types.rawResponse_node_User_memberOf_Group)
+  | #User(Types.rawResponse_node_User_memberOf_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
   | #Group(v) => v->Obj.magic
@@ -138,9 +165,9 @@ let wrap_rawResponse_node_memberOf: [
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
 @live
-let unwrap_rawResponse_node_memberOfSingular: {. "__typename": string } => [
-  | #Group(Types.rawResponse_node_memberOfSingular_Group)
-  | #User(Types.rawResponse_node_memberOfSingular_User)
+let unwrap_rawResponse_node_User_memberOfSingular: {. "__typename": string } => [
+  | #Group(Types.rawResponse_node_User_memberOfSingular_Group)
+  | #User(Types.rawResponse_node_User_memberOfSingular_User)
   | #UnselectedUnionMember(string)
 ] = u => switch u["__typename"] {
   | "Group" => #Group(u->Obj.magic)
@@ -149,12 +176,29 @@ let unwrap_rawResponse_node_memberOfSingular: {. "__typename": string } => [
 }
 
 @live
-let wrap_rawResponse_node_memberOfSingular: [
-  | #Group(Types.rawResponse_node_memberOfSingular_Group)
-  | #User(Types.rawResponse_node_memberOfSingular_User)
+let wrap_rawResponse_node_User_memberOfSingular: [
+  | #Group(Types.rawResponse_node_User_memberOfSingular_Group)
+  | #User(Types.rawResponse_node_User_memberOfSingular_User)
   | #UnselectedUnionMember(string)
 ] => {. "__typename": string } = v => switch v {
   | #Group(v) => v->Obj.magic
+  | #User(v) => v->Obj.magic
+  | #UnselectedUnionMember(v) => {"__typename": v}
+}
+@live
+let unwrap_rawResponse_node: {. "__typename": string } => [
+  | #User(Types.rawResponse_node_User)
+  | #UnselectedUnionMember(string)
+] = u => switch u["__typename"] {
+  | "User" => #User(u->Obj.magic)
+  | v => #UnselectedUnionMember(v)
+}
+
+@live
+let wrap_rawResponse_node: [
+  | #User(Types.rawResponse_node_User)
+  | #UnselectedUnionMember(string)
+] => {. "__typename": string } = v => switch v {
   | #User(v) => v->Obj.magic
   | #UnselectedUnionMember(v) => {"__typename": v}
 }
@@ -175,10 +219,12 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "response_node": wrap_response_node,
+  }
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
@@ -189,10 +235,12 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "response_node": unwrap_response_node,
+  }
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
@@ -203,13 +251,14 @@ module Internal = {
   type wrapRawResponseRaw
   @live
   let wrapRawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node_memberOf_Group_topMember":{"u":"rawResponse_node_memberOf_Group_topMember"},"node_memberOfSingular":{"u":"rawResponse_node_memberOfSingular"},"node_memberOf":{"u":"rawResponse_node_memberOf"},"node":{"tnf":"User"}}}`
+    json`{"__root":{"node_User_memberOf_Group_topMember":{"u":"rawResponse_node_User_memberOf_Group_topMember"},"node_User_memberOfSingular":{"u":"rawResponse_node_User_memberOfSingular"},"node_User_memberOf":{"u":"rawResponse_node_User_memberOf"},"node":{"u":"rawResponse_node"}}}`
   )
   @live
   let wrapRawResponseConverterMap = {
-    "rawResponse_node_memberOf_Group_topMember": wrap_rawResponse_node_memberOf_Group_topMember,
-    "rawResponse_node_memberOf": wrap_rawResponse_node_memberOf,
-    "rawResponse_node_memberOfSingular": wrap_rawResponse_node_memberOfSingular,
+    "rawResponse_node_User_memberOf_Group_topMember": wrap_rawResponse_node_User_memberOf_Group_topMember,
+    "rawResponse_node_User_memberOf": wrap_rawResponse_node_User_memberOf,
+    "rawResponse_node_User_memberOfSingular": wrap_rawResponse_node_User_memberOfSingular,
+    "rawResponse_node": wrap_rawResponse_node,
   }
   @live
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
@@ -221,13 +270,14 @@ module Internal = {
   type rawResponseRaw
   @live
   let rawResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node_memberOf_Group_topMember":{"u":"rawResponse_node_memberOf_Group_topMember"},"node_memberOfSingular":{"u":"rawResponse_node_memberOfSingular"},"node_memberOf":{"u":"rawResponse_node_memberOf"},"node":{"tnf":"User"}}}`
+    json`{"__root":{"node_User_memberOf_Group_topMember":{"u":"rawResponse_node_User_memberOf_Group_topMember"},"node_User_memberOfSingular":{"u":"rawResponse_node_User_memberOfSingular"},"node_User_memberOf":{"u":"rawResponse_node_User_memberOf"},"node":{"u":"rawResponse_node"}}}`
   )
   @live
   let rawResponseConverterMap = {
-    "rawResponse_node_memberOf_Group_topMember": unwrap_rawResponse_node_memberOf_Group_topMember,
-    "rawResponse_node_memberOf": unwrap_rawResponse_node_memberOf,
-    "rawResponse_node_memberOfSingular": unwrap_rawResponse_node_memberOfSingular,
+    "rawResponse_node_User_memberOf_Group_topMember": unwrap_rawResponse_node_User_memberOf_Group_topMember,
+    "rawResponse_node_User_memberOf": unwrap_rawResponse_node_User_memberOf,
+    "rawResponse_node_User_memberOfSingular": unwrap_rawResponse_node_User_memberOfSingular,
+    "rawResponse_node": unwrap_rawResponse_node,
   }
   @live
   let convertRawResponse = v => v->RescriptRelay.convertObj(

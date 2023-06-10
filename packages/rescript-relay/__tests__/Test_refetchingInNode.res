@@ -65,8 +65,8 @@ module Test = {
     let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: Some([#Online])}, ())
 
     switch query.node {
-    | Some(user) => <UserDisplayer queryRef=user.fragmentRefs />
-    | None => React.string("-")
+    | Some(#User(user)) => <UserDisplayer queryRef=user.fragmentRefs />
+    | _ => React.string("-")
     }
   }
 }
@@ -82,5 +82,7 @@ let test_refetching = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

@@ -125,32 +125,34 @@ module Test = {
             ~environment,
             ~variables={id: data.loggedInUser.id},
             ~payload={
-              node: Some({
-                id: data.loggedInUser.id,
-                firstName: "AnotherFirst",
-                onlineStatus: Some(#Online),
-                avatarUrl: None,
-                __typename: #User,
-                memberOfSingular: None,
-                memberOf: Some([
-                  Some(
-                    #Group({
-                      name: "Some Group",
-                      __typename: #Group,
-                      __isNode: #Group,
-                      id: "group-1",
-                      topMember: Some(
-                        #User({
-                          firstName: "Some User",
-                          id: "user-2",
-                          __typename: #User,
-                          __isNode: #User,
-                        }),
-                      ),
-                    }),
-                  ),
-                ]),
-              }),
+              node: Some(
+                #User({
+                  id: data.loggedInUser.id,
+                  firstName: "AnotherFirst",
+                  onlineStatus: Some(#Online),
+                  avatarUrl: None,
+                  __typename: #User,
+                  memberOfSingular: None,
+                  memberOf: Some([
+                    Some(
+                      #Group({
+                        name: "Some Group",
+                        __typename: #Group,
+                        __isNode: #Group,
+                        id: "group-1",
+                        topMember: Some(
+                          #User({
+                            firstName: "Some User",
+                            id: "user-2",
+                            __typename: #User,
+                            __isNode: #User,
+                          }),
+                        ),
+                      }),
+                    ),
+                  ]),
+                }),
+              ),
             },
           )}>
         {React.string("Update locally via Node interface")}
@@ -170,5 +172,7 @@ let test_query = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

@@ -38,8 +38,8 @@ module Test = {
     let query = Query.use(~variables=(), ())
 
     switch query.node {
-    | Some(user) => React.string(user.firstName)
-    | None => React.string("-")
+    | Some(#User(user)) => React.string(user.firstName)
+    | _ => React.string("-")
     }
   }
 }
@@ -55,5 +55,7 @@ let test_nodeInterface = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }
