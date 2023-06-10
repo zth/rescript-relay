@@ -1,5 +1,9 @@
 # master
 
+## Breaking changes
+
+- Remove "top level node field" transform. Previously, a single selection on the top level `node` field (like `node(id: $id) { ... on User { id, name }}`) would skip the union mechanism and automatically collapse the generated types to `option<user>`. This has now changed and the top level node field behaves just like any union. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/9ce73196794dbc6eba435414fcff708e7c53df78
+
 # 2.0.0
 
 RescriptRelay `2.0.0` is here! This isn't a large release really, but it's a major release just because it relies on functionality from ReScript `v11`. Meaning the lower bound of the required ReScript version is `>=11.0.0-beta.2`.
