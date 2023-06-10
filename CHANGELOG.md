@@ -3,6 +3,7 @@
 ## Breaking changes
 
 - Remove "top level node field" transform. Previously, a single selection on the top level `node` field (like `node(id: $id) { ... on User { id, name }}`) would skip the union mechanism and automatically collapse the generated types to `option<user>`. This has now changed and the top level node field behaves just like any union. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/9ce73196794dbc6eba435414fcff708e7c53df78
+- Enums are now (unboxed) regular variants rather than polyvariants. This is a large change, but we're going to provide some tools for easing the transition. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/9da425a3e65ce3e9403168af421522028424a4f0
 
 # 2.0.0
 
