@@ -19,7 +19,7 @@ module MeQuery = %relay(`
 module RenderMe = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables=(), ~fetchPolicy=StoreOnly, ())
+    let query = Query.use(~variables=(), ~fetchPolicy=StoreOnly)
 
     switch query.node {
     | Some(#User(user)) => React.string("2: " ++ user.firstName)
@@ -31,7 +31,7 @@ module RenderMe = {
 module Test = {
   @react.component
   let make = () => {
-    let query = MeQuery.use(~variables=(), ())
+    let query = MeQuery.use(~variables=())
     let (showNext, setShowNext) = React.useState(() => false)
 
     <>
@@ -45,14 +45,12 @@ module Test = {
 
 @live
 let test_missingFieldHandlers = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

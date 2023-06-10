@@ -29,7 +29,6 @@ module Types = {
     ~cursor=?,
     ~groupId=?,
     ~onlineStatuses=?,
-    ()
   ): refetchVariables => {
     count: count,
     cursor: cursor,

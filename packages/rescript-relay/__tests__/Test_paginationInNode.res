@@ -75,14 +75,11 @@ module UserNodeDisplayer = {
         ? <button
             onClick={_ =>
               ignore(
-                loadNext(
-                  ~count=2,
-                  ~onComplete=x =>
-                    switch x {
-                    | Some(e) => Js.Console.error(e)
-                    | None => ()
-                    },
-                  (),
+                loadNext(~count=2, ~onComplete=x =>
+                  switch x {
+                  | Some(e) => Js.Console.error(e)
+                  | None => ()
+                  }
                 ),
               )}>
             {React.string(isLoadingNext ? "Loading..." : "Load more")}
@@ -92,8 +89,7 @@ module UserNodeDisplayer = {
         onClick={_ => {
           startTransition(() => {
             refetch(
-              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([Online, Idle]), ()),
-              (),
+              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([Online, Idle])),
             )->RescriptRelay.Disposable.ignore
           })
         }}>
@@ -107,7 +103,7 @@ module Test = {
   @react.component
   let make = () => {
     let userId = "123"
-    let query = Query.use(~variables={userId: userId}, ())
+    let query = Query.use(~variables={userId: userId})
     switch query.node {
     | Some(node) => <UserNodeDisplayer queryRef=node.fragmentRefs />
     | None => React.string("-")
@@ -117,14 +113,12 @@ module Test = {
 
 @live
 let test_pagination = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

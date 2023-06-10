@@ -31,7 +31,7 @@ module Test = {
   @react.component
   let make = () => {
     let environment = RescriptRelay.useEnvironmentFromContext()
-    let query = Query.use(~variables=(), ())
+    let query = Query.use(~variables=())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (ready, setReady) = React.useState(() => false)
 
@@ -57,12 +57,10 @@ module Test = {
               | Idle => "offline"
               | _ => "Online"
               },
-              (),
             )
             ->ignore
           | _ => ()
           },
-        (),
       )
 
       setReady(_ => true)
@@ -122,13 +120,11 @@ let test_subscription = () => {
   let network = RescriptRelay.Network.makePromiseBased(
     ~fetchFunction=RelayEnv.fetchQuery,
     ~subscriptionFunction,
-    (),
   )
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
 
   {

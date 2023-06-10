@@ -20,11 +20,7 @@ let readInlineData: (
 
 type paginationLoadMoreOptions = {onComplete?: Js.Nullable.t<Js.Exn.t> => unit}
 
-type paginationLoadMoreFn = (
-  ~count: int,
-  ~onComplete: option<Js.Exn.t> => unit=?,
-  unit,
-) => Disposable.t
+type paginationLoadMoreFn = (~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t
 
 type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
   data: 'fragment,
@@ -36,7 +32,6 @@ type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
     ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
   ) => Disposable.t,
 }
 
@@ -52,7 +47,6 @@ type paginationFragmentReturn<'fragment, 'refetchVariables> = {
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
     ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
   ) => Disposable.t,
 }
 
@@ -81,6 +75,5 @@ let useRefetchableFragment: (
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
     ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
   ) => Disposable.t,
 )

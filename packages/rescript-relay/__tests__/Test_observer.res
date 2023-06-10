@@ -9,7 +9,7 @@ module Query = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let data = Query.use(~variables=(), ())
+    let data = Query.use(~variables=())
 
     <div> {React.string(data.loggedInUser.id)} </div>
   }
@@ -29,14 +29,12 @@ let test_observer = () => {
 
       None
     })
-  }, ())
+  })
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <RescriptReactErrorBoundary fallback={_ => React.string("Failed")}>
     <TestProviders.Wrapper environment>

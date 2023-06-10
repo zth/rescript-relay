@@ -21,7 +21,7 @@ external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
 external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
 @module("relay-runtime")
-external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
+external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?) => dataId =
   "generateClientID"
 
 @module("relay-runtime")
@@ -93,14 +93,14 @@ module RecordProxy = {
   @send external getDataId: t => dataId = "getDataID"
 
   @send @return(nullable)
-  external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t> =
+  external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?) => option<t> =
     "getLinkedRecord"
 
   @send @return(nullable)
   external getLinkedRecords: (t, string, option<arguments>) => option<array<Js.Nullable.t<t>>> =
     "getLinkedRecords"
 
-  let getLinkedRecords = (t, ~name, ~arguments=?, ()): option<array<option<t>>> =>
+  let getLinkedRecords = (t, ~name, ~arguments=?): option<array<option<t>>> =>
     getLinkedRecords(t, name, arguments)->optArrayOfNullableToOptArrayOfOpt
 
   @send
@@ -109,13 +109,12 @@ module RecordProxy = {
     ~name: string,
     ~typeName: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "getOrCreateLinkedRecord"
 
   @send external getType: t => string = "getType"
 
   @send @return(nullable)
-  external getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string> =
+  external getValueString: (t, ~name: string, ~arguments: arguments=?) => option<string> =
     "getValue"
 
   @send @return(nullable)
@@ -123,47 +122,40 @@ module RecordProxy = {
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<string>>> = "getValue"
 
   @send @return(nullable)
-  external getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int> =
-    "getValue"
+  external getValueInt: (t, ~name: string, ~arguments: arguments=?) => option<int> = "getValue"
 
   @send @return(nullable)
   external getValueIntArray: (
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<int>>> = "getValue"
 
   @send @return(nullable)
-  external getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float> =
-    "getValue"
+  external getValueFloat: (t, ~name: string, ~arguments: arguments=?) => option<float> = "getValue"
 
   @send @return(nullable)
   external getValueFloatArray: (
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<float>>> = "getValue"
 
   @send @return(nullable)
-  external getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool> =
-    "getValue"
+  external getValueBool: (t, ~name: string, ~arguments: arguments=?) => option<bool> = "getValue"
 
   @send @return(nullable)
   external getValueBoolArray: (
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<bool>>> = "getValue"
 
   @send
-  external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?) => t =
     "setLinkedRecord"
 
   // `setLinkedRecord` can't be used for "deleting" linked record fields.
@@ -176,7 +168,6 @@ module RecordProxy = {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
@@ -185,7 +176,6 @@ module RecordProxy = {
     @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
@@ -194,7 +184,6 @@ module RecordProxy = {
     ~records: array<option<t>>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setLinkedRecords"
 
   // `setLinkedRecords` can't be used for "deleting" linked records.
@@ -207,7 +196,6 @@ module RecordProxy = {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
@@ -216,7 +204,6 @@ module RecordProxy = {
     @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
@@ -225,20 +212,14 @@ module RecordProxy = {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
-  external setValueToNull: (
-    t,
-    @as(json`null`) _,
-    ~name: string,
-    ~arguments: arguments=?,
-    unit,
-  ) => t = "setValue"
+  external setValueToNull: (t, @as(json`null`) _, ~name: string, ~arguments: arguments=?) => t =
+    "setValue"
 
   @send
-  external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?) => t =
     "setValue"
 
   @send
@@ -247,24 +228,17 @@ module RecordProxy = {
     ~value: array<string>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
-  external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?) => t = "setValue"
+
+  @send
+  external setValueIntArray: (t, ~value: array<int>, ~name: string, ~arguments: arguments=?) => t =
     "setValue"
 
   @send
-  external setValueIntArray: (
-    t,
-    ~value: array<int>,
-    ~name: string,
-    ~arguments: arguments=?,
-    unit,
-  ) => t = "setValue"
-
-  @send
-  external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?) => t =
     "setValue"
 
   @send
@@ -273,12 +247,10 @@ module RecordProxy = {
     ~value: array<float>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send
-  external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
-    "setValue"
+  external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?) => t = "setValue"
 
   @send
   external setValueBoolArray: (
@@ -286,7 +258,6 @@ module RecordProxy = {
     ~value: array<bool>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   @send external invalidateRecord: t => unit = "invalidateRecord"
@@ -423,7 +394,6 @@ module ConnectionHandler = {
     ~record: RecordProxy.t,
     ~key: string,
     ~filters: arguments=?,
-    unit,
   ) => option<RecordProxy.t> = "getConnection"
 
   @module("relay-runtime") @scope("ConnectionHandler")
@@ -439,7 +409,6 @@ module ConnectionHandler = {
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
     ~cursor: string=?,
-    unit,
   ) => unit = "insertEdgeBefore"
 
   @module("relay-runtime") @scope("ConnectionHandler")
@@ -447,7 +416,6 @@ module ConnectionHandler = {
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
     ~cursor: string=?,
-    unit,
   ) => unit = "insertEdgeAfter"
 
   @module("relay-runtime") @scope("ConnectionHandler")
@@ -497,7 +465,6 @@ module Observable = {
     ~error: Js.Exn.t => unit=?,
     ~complete: unit => unit=?,
     ~unsubscribe: subscription => unit=?,
-    unit,
   ) => observer<'response> = ""
 
   @module("relay-runtime") @scope("Observable")
@@ -541,14 +508,12 @@ module Network = {
   external makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
-    unit,
   ) => t = "create"
 
   @module("relay-runtime") @scope("Network")
   external makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
-    unit,
   ) => t = "create"
 }
 
@@ -556,7 +521,7 @@ module RecordSource = {
   type t
 
   @module("relay-runtime") @new
-  external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource"
+  external make: (~records: recordSourceRecords=?) => t = "RecordSource"
 
   @send external toJSON: t => recordSourceRecords = "toJSON"
 }
@@ -572,7 +537,7 @@ module Store = {
   @module("relay-runtime") @new
   external make: (RecordSource.t, storeConfig) => t = "Store"
 
-  let make = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?, ()) =>
+  let make = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
     make(
       source,
       {
@@ -602,19 +567,14 @@ module RequiredFieldLogger = {
 module Environment = {
   type t
 
-  @deriving(abstract)
   type environmentConfig<'a> = {
     network: Network.t,
     store: Store.t,
-    @optional
-    getDataID: (~nodeObj: 'a, ~typeName: string) => string,
-    @optional
-    treatMissingFieldsAsNull: bool,
+    getDataID?: (~nodeObj: 'a, ~typeName: string) => string,
+    treatMissingFieldsAsNull?: bool,
     missingFieldHandlers: array<MissingFieldHandler.t>,
-    @optional
-    requiredFieldLogger: RequiredFieldLogger.js,
-    @optional
-    isServer: bool,
+    requiredFieldLogger?: RequiredFieldLogger.js,
+    isServer?: bool,
   }
 
   @module("relay-runtime") @new
@@ -628,23 +588,19 @@ module Environment = {
     ~missingFieldHandlers=?,
     ~requiredFieldLogger=?,
     ~isServer=?,
-    (),
   ) =>
-    make(
-      environmentConfig(
-        ~network,
-        ~store,
-        ~getDataID?,
-        ~treatMissingFieldsAsNull?,
-        ~missingFieldHandlers=switch missingFieldHandlers {
-        | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
-        | None => [nodeInterfaceMissingFieldHandler]
-        },
-        ~requiredFieldLogger=?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
-        ~isServer?,
-        (),
-      ),
-    )
+    make({
+      network,
+      store,
+      ?getDataID,
+      ?treatMissingFieldsAsNull,
+      missingFieldHandlers: switch missingFieldHandlers {
+      | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
+      | None => [nodeInterfaceMissingFieldHandler]
+      },
+      requiredFieldLogger: ?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
+      ?isServer,
+    })
 
   @send external getStore: t => Store.t = "getStore"
   @send
@@ -721,14 +677,12 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
     ~fetchPolicy: fetchPolicy=?,
     ~fetchKey: string=?,
     ~networkCacheConfig: cacheConfig=?,
-    unit,
   ) => C.loadedQueryRef = (
     ~environment,
     ~variables,
     ~fetchPolicy=?,
     ~fetchKey=?,
     ~networkCacheConfig=?,
-    (),
   ) =>
     loadQuery(
       environment,
@@ -755,7 +709,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       | None => resolve(Error())
       | Some(o) =>
         open Observable
-        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+        let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok())))
       }
     })
   }

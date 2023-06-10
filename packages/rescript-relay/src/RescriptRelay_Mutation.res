@@ -70,7 +70,6 @@ let commitMutation = (
     ~onCompleted=?,
     ~onError=?,
     ~uploadables=?,
-    (),
   ) => {
     commitMutation_(
       environment,
@@ -120,7 +119,6 @@ let useMutation = (
           ~onCompleted=?,
           ~onError=?,
           ~uploadables=?,
-          (),
         ) => {
           mutate({
             onCompleted: ?switch onCompleted {

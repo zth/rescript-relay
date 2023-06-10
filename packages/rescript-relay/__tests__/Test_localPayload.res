@@ -55,7 +55,7 @@ module Test = {
   @react.component
   let make = () => {
     let environment = RescriptRelay.useEnvironmentFromContext()
-    let data = Query.use(~variables=(), ())
+    let data = Query.use(~variables=())
     let user = Fragment.use(data.loggedInUser.fragmentRefs)
 
     <div>
@@ -163,14 +163,12 @@ module Test = {
 
 @live
 let test_query = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

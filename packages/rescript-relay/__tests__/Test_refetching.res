@@ -34,7 +34,7 @@ module FragmentWithNoArgs = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables=(), ())
+    let query = Query.use(~variables=())
 
     let (data, refetch) = Fragment.useRefetchable(query.loggedInUser.fragmentRefs)
 
@@ -57,9 +57,7 @@ module Test = {
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=Some([Online, Offline]),
-                (),
               ),
-              (),
             )->RescriptRelay.Disposable.ignore
           })
         }}>
@@ -71,14 +69,12 @@ module Test = {
 
 @live
 let test_refetching = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

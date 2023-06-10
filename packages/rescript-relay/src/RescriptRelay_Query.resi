@@ -9,7 +9,6 @@ let useQuery: (
   ~fetchPolicy: fetchPolicy=?,
   ~fetchKey: string=?,
   ~networkCacheConfig: cacheConfig=?,
-  unit,
 ) => 'response
 
 let useLoader: (
@@ -18,12 +17,7 @@ let useLoader: (
   ~mkQueryRef: option<'queryRef> => option<'queryRef>,
 ) => unit => (
   option<'queryRef>,
-  (
-    ~variables: 'variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~networkCacheConfig: cacheConfig=?,
-    unit,
-  ) => unit,
+  (~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~networkCacheConfig: cacheConfig=?) => unit,
   unit => unit,
 )
 
@@ -43,7 +37,6 @@ let fetch: (
   ~onResult: result<'response, Js.Exn.t> => unit,
   ~networkCacheConfig: cacheConfig=?,
   ~fetchPolicy: fetchPolicy=?,
-  unit,
 ) => unit
 
 let fetchPromised: (
@@ -55,7 +48,6 @@ let fetchPromised: (
   ~variables: 'variables,
   ~networkCacheConfig: cacheConfig=?,
   ~fetchPolicy: fetchPolicy=?,
-  unit,
 ) => promise<'response>
 
 let retain: (

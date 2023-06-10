@@ -22,7 +22,7 @@ let useQuery = (
                 `Query.usePreloaded()` to this whenever you can, as that will \
                 allow you to start loading data before your code actually \
                 renders.*/
-  (~variables: 'variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?, ()) => {
+  (~variables: 'variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?) => {
     useLazyLoadQuery(
       node,
       RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(variables->convertVariables),
@@ -55,7 +55,7 @@ let useLoader = (
   () => {
     let (nullableQueryRef, loadQueryFn, disposableFn) = useQueryLoader(node)
     let loadQuery = React.useMemo1(
-      () => (~variables, ~fetchPolicy=?, ~networkCacheConfig=?, ()) =>
+      () => (~variables, ~fetchPolicy=?, ~networkCacheConfig=?) =>
         loadQueryFn(variables->convertVariables, {?fetchPolicy, ?networkCacheConfig}),
       [loadQueryFn],
     )
@@ -106,7 +106,6 @@ let fetch = (
     ~onResult,
     ~networkCacheConfig=?,
     ~fetchPolicy=?,
-    (),
   ) => {
     open Observable
 
@@ -120,7 +119,6 @@ let fetch = (
       makeObserver(
         ~next=res => onResult(Ok(res->convertResponse)),
         ~error=err => onResult(Error(err)),
-        (),
       ),
     )
     ->ignoreSubscription
@@ -133,13 +131,7 @@ let fetchPromised = (
   ~convertVariables: 'variables => 'variables,
 ) => {
   /**Promise variant of `Query.fetch`.*/
-  (
-    ~environment: Environment.t,
-    ~variables: 'variables,
-    ~networkCacheConfig=?,
-    ~fetchPolicy=?,
-    (),
-  ) => {
+  (~environment: Environment.t, ~variables: 'variables, ~networkCacheConfig=?, ~fetchPolicy=?) => {
     fetchQuery(
       environment,
       node,

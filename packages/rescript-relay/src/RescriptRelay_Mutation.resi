@@ -31,7 +31,6 @@ let commitMutation: (
   ~onCompleted: ('response, option<array<mutationError>>) => unit=?,
   ~onError: mutationError => unit=?,
   ~uploadables: uploadables=?,
-  unit,
 ) => Disposable.t
 
 let useMutation: (
@@ -48,7 +47,6 @@ let useMutation: (
     ~onCompleted: ('response, option<array<mutationError>>) => unit=?,
     ~onError: mutationError => unit=?,
     ~uploadables: uploadables=?,
-    unit,
   ) => Disposable.t,
   bool,
 )

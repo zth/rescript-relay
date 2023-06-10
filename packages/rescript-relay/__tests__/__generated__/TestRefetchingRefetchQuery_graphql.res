@@ -31,7 +31,6 @@ module Types = {
     ~friendsOnlineStatuses=?,
     ~id=?,
     ~showOnlineStatus=?,
-    ()
   ): refetchVariables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
     id: id,

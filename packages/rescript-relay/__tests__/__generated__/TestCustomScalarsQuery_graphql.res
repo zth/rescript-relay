@@ -39,7 +39,6 @@ module Types = {
   @live let makeRefetchVariables = (
     ~beforeDate=?,
     ~number=?,
-    ()
   ): refetchVariables => {
     beforeDate: beforeDate,
     number: number

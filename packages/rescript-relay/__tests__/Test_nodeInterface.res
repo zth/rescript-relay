@@ -35,7 +35,7 @@ module QueryAbstract = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables=(), ())
+    let query = Query.use(~variables=())
 
     switch query.node {
     | Some(#User(user)) => React.string(user.firstName)
@@ -46,14 +46,12 @@ module Test = {
 
 @live
 let test_nodeInterface = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

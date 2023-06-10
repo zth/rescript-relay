@@ -53,7 +53,7 @@ external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
 /**This generates a `dataId` for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is `generateUniqueClientID` that'll let you generate a new, unique `dataId` that you can use for client side only records (like when doing optimistic updates).*/
 @module("relay-runtime")
-external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId =
+external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?) => dataId =
   "generateClientID"
 
 /**This generates a unique `dataId` that's safe to use on the _client_ side. Useful when doing optimistic updates and you need to create IDs that the optimistic update can use.*/
@@ -139,16 +139,11 @@ module RecordProxy: {
   /**Gets a single linked record. A linked record is another object in the store, and not a scalar field like an int or float.*/
   @send
   @return(nullable)
-  external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t> =
+  external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?) => option<t> =
     "getLinkedRecord"
 
   /**Gets an array of linked records, for when a field is a list (meaning a link to multiple records).*/
-  let getLinkedRecords: (
-    t,
-    ~name: string,
-    ~arguments: arguments=?,
-    unit,
-  ) => option<array<option<t>>>
+  let getLinkedRecords: (t, ~name: string, ~arguments: arguments=?) => option<array<option<t>>>
 
   /**This returns an existing linked record, or creates one at the configured place if one does not already exist.*/
   @send
@@ -157,7 +152,6 @@ module RecordProxy: {
     ~name: string,
     ~typeName: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "getOrCreateLinkedRecord"
 
   /**Returns the `__typename` of this particular record.*/
@@ -167,7 +161,7 @@ module RecordProxy: {
   /**Returns a field value, expecting it to be a string.*/
   @send
   @return(nullable)
-  external getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string> =
+  external getValueString: (t, ~name: string, ~arguments: arguments=?) => option<string> =
     "getValue"
 
   /**Returns a field value, expecting it to be an array of strings.*/
@@ -177,14 +171,12 @@ module RecordProxy: {
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<string>>> = "getValue"
 
   /**Returns a field value, expecting it to be an int.*/
   @send
   @return(nullable)
-  external getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int> =
-    "getValue"
+  external getValueInt: (t, ~name: string, ~arguments: arguments=?) => option<int> = "getValue"
 
   /**Returns a field value, expecting it to be an array of ints.*/
   @send
@@ -193,14 +185,12 @@ module RecordProxy: {
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<int>>> = "getValue"
 
   /**Returns a field value, expecting it to be a float.*/
   @send
   @return(nullable)
-  external getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float> =
-    "getValue"
+  external getValueFloat: (t, ~name: string, ~arguments: arguments=?) => option<float> = "getValue"
 
   /**Returns a field value, expecting it to be an array of floats.*/
   @send
@@ -209,14 +199,12 @@ module RecordProxy: {
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<float>>> = "getValue"
 
   /**Returns a field value, expecting it to be a boolean.*/
   @send
   @return(nullable)
-  external getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool> =
-    "getValue"
+  external getValueBool: (t, ~name: string, ~arguments: arguments=?) => option<bool> = "getValue"
 
   /**Returns a field value, expecting it to be an array of booleans.*/
   @send
@@ -225,12 +213,11 @@ module RecordProxy: {
     t,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => option<array<option<bool>>> = "getValue"
 
   /**Sets a `RecordProxy.t` as the linked record for a particular field.*/
   @send
-  external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?) => t =
     "setLinkedRecord"
 
   /**Sets an array of `RecordProxy.t` as the linked records for a particular field.*/
@@ -240,12 +227,11 @@ module RecordProxy: {
     ~records: array<option<t>>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setLinkedRecords"
 
   /**Sets a string as field value.*/
   @send
-  external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?) => t =
     "setValue"
 
   /**Sets an array of strings as field value.*/
@@ -255,27 +241,20 @@ module RecordProxy: {
     ~value: array<string>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets an int as field value.*/
   @send
-  external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t =
-    "setValue"
+  external setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?) => t = "setValue"
 
   /**Sets an array of ints as field value.*/
   @send
-  external setValueIntArray: (
-    t,
-    ~value: array<int>,
-    ~name: string,
-    ~arguments: arguments=?,
-    unit,
-  ) => t = "setValue"
+  external setValueIntArray: (t, ~value: array<int>, ~name: string, ~arguments: arguments=?) => t =
+    "setValue"
 
   /**Sets a float as field value.*/
   @send
-  external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t =
+  external setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?) => t =
     "setValue"
 
   /**Sets an array of floats as field value.*/
@@ -285,13 +264,11 @@ module RecordProxy: {
     ~value: array<float>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets a boolean as field value.*/
   @send
-  external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t =
-    "setValue"
+  external setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?) => t = "setValue"
 
   /**Sets an array of booleans as field value.*/
   @send
@@ -300,7 +277,6 @@ module RecordProxy: {
     ~value: array<bool>,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets the field value to `undefined` (meaning Relay will treat it as missing data).*/
@@ -310,18 +286,12 @@ module RecordProxy: {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets the field value to `null`.*/
   @send
-  external setValueToNull: (
-    t,
-    @as(json`null`) _,
-    ~name: string,
-    ~arguments: arguments=?,
-    unit,
-  ) => t = "setValue"
+  external setValueToNull: (t, @as(json`null`) _, ~name: string, ~arguments: arguments=?) => t =
+    "setValue"
 
   /**Sets this linked record to `undefined` (meaning Relay will treat it as missing data).*/
   @send
@@ -330,7 +300,6 @@ module RecordProxy: {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets this linked record to `null`.*/
@@ -340,7 +309,6 @@ module RecordProxy: {
     @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets the field holding these linked records to `undefined` (meaning Relay will treat it as missing data).*/
@@ -350,7 +318,6 @@ module RecordProxy: {
     @as(json`undefined`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Sets the field holding these linked records to `null`.*/
@@ -360,7 +327,6 @@ module RecordProxy: {
     @as(json`null`) _,
     ~name: string,
     ~arguments: arguments=?,
-    unit,
   ) => t = "setValue"
 
   /**Invalidates this record.
@@ -518,7 +484,6 @@ module ConnectionHandler: {
     ~record: RecordProxy.t,
     ~key: string,
     ~filters: arguments=?,
-    unit,
   ) => option<RecordProxy.t> = "getConnection"
 
   /**Creates an edge for a particular connection.*/
@@ -538,7 +503,6 @@ module ConnectionHandler: {
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
     ~cursor: string=?,
-    unit,
   ) => unit = "insertEdgeBefore"
 
   /**Inserts an edge into a connection _after_ the provided cursor. If no cursor is provided, it inserts the edge at the end of the connection list.*/
@@ -548,7 +512,6 @@ module ConnectionHandler: {
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
     ~cursor: string=?,
-    unit,
   ) => unit = "insertEdgeAfter"
 
   /**Deletes any edge from the connection where the node of the edge has the provided `dataId`. Please not that this _will not_ remove the actual node from the store. Use `RecordSourceSelectorProxy.delete` for that.*/
@@ -600,7 +563,6 @@ module Observable: {
     ~error: Js.Exn.t => unit=?,
     ~complete: unit => unit=?,
     ~unsubscribe: subscription => unit=?,
-    unit,
   ) => observer<'response> = ""
 
   /**Create a new observable, getting fed an `Observable.sink` for interacting with the observable, and optionally returning a `Observable.subscription` if you have things you want to unsubscribe from as the observable closes.*/
@@ -657,7 +619,6 @@ module Network: {
   external makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
-    unit,
   ) => t = "create"
 
   /**Create a new `NetworkLayer` using a fetch function that returns an `Observable`.*/
@@ -666,7 +627,6 @@ module Network: {
   external makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
-    unit,
   ) => t = "create"
 }
 
@@ -678,7 +638,7 @@ module RecordSource: {
   /**Create a new `RecordSource`. Here's where you pass an existing `recordSourceRecords` if you have existing records you want to hydrate the store with, when doing SSR or similar.*/
   @module("relay-runtime")
   @new
-  external make: (~records: recordSourceRecords=?, unit) => t = "RecordSource"
+  external make: (~records: recordSourceRecords=?) => t = "RecordSource"
 
   /**Serializes the `RecordSource` into `recordSourceRecords` that you can use to rehydrate another store. Typically used for SSR.*/
   @send
@@ -695,9 +655,9 @@ module Store: {
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
     int=?,
-    ~queryCacheExpirationTime: int=? /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */,
-    unit,
-  ) => t
+    ~queryCacheExpirationTime: int=?,
+  ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
+  t
 
   /**Gets the `RecordSource` for this `Store`.*/
   @send
@@ -752,7 +712,6 @@ module Environment: {
     ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
     ~requiredFieldLogger: RequiredFieldLogger.t=?,
     ~isServer: bool=?,
-    unit,
   ) => t
 
   /**Get the `Store` for this `Environment`.*/
@@ -862,7 +821,6 @@ module MakeLoadQuery: (C: MakeLoadQueryConfig) =>
     ~fetchPolicy: fetchPolicy=?,
     ~fetchKey: string=?,
     ~networkCacheConfig: cacheConfig=?,
-    unit,
   ) => C.loadedQueryRef
 
   let queryRefToObservable: C.loadedQueryRef => option<Observable.t<C.response>>

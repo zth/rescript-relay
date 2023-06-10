@@ -52,7 +52,7 @@ let connectionKey = "TestPaginationInNode_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus>>=?, ()) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus>>=?) => {
   let args = {"statuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)
 }

@@ -71,7 +71,7 @@ module Test = {
   @react.component
   let make = () => {
     let groupId = "123"
-    let query = Query.use(~variables={groupId: groupId}, ())
+    let query = Query.use(~variables={groupId: groupId})
 
     let (_, startTransition) = ReactExperimental.useTransition()
 
@@ -107,7 +107,7 @@ module Test = {
       )
       ->React.array}
       {hasNext
-        ? <button onClick={_ => loadNext(~count=2, ())->ignore}>
+        ? <button onClick={_ => loadNext(~count=2)->RescriptRelay.Disposable.ignore}>
             {React.string(isLoadingNext ? "Loading..." : "Load more")}
           </button>
         : React.null}
@@ -118,9 +118,7 @@ module Test = {
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
                 ~onlineStatuses=Some([Online, Idle]),
-                (),
               ),
-              (),
             )->RescriptRelay.Disposable.ignore
           })
         }}>
@@ -132,14 +130,12 @@ module Test = {
 
 @live
 let test_pagination = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

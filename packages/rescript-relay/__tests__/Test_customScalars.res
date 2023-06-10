@@ -24,7 +24,6 @@ module Test = {
           beforeDate: Js.Date.fromFloat(1514764800000.),
           number: [2],
         },
-        (),
       )
     }
 
@@ -48,14 +47,12 @@ module Test = {
 
 @live
 let test_customScalars = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

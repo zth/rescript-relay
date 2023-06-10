@@ -20,19 +20,18 @@ module Logger = {
 
 @live
 let test_requiredFieldLogger = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
     ~requiredFieldLogger={
       Logger.log
     },
-    (),
   )
 
   Js.Promise.make((~resolve, ~reject as _) => {
-    Query.fetch(~environment, ~variables=(), ~onResult={res => resolve(res)}, ())
+    Query.fetch(~environment, ~variables=(), ~onResult=res => resolve(res))
   })
 }
 

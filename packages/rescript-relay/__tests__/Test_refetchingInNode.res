@@ -47,9 +47,7 @@ module UserDisplayer = {
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=None,
-                (),
               ),
-              (),
             )->RescriptRelay.Disposable.ignore
           })
         }}>
@@ -62,7 +60,7 @@ module UserDisplayer = {
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: [Online]}, ())
+    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: [Online]})
 
     switch query.node {
     | Some(#User(user)) => <UserDisplayer queryRef=user.fragmentRefs />
@@ -73,14 +71,12 @@ module Test = {
 
 @live
 let test_refetching = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

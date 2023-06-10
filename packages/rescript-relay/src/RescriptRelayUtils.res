@@ -14,7 +14,7 @@ let resolveNestedRecord = (
       let currentPath = path->Belt.List.get(i)
       switch (currentRecord.contents, currentPath) {
       | (Some(record), Some(currentPath)) =>
-        currentRecord := record->RescriptRelay.RecordProxy.getLinkedRecord(~name=currentPath, ())
+        currentRecord := record->RescriptRelay.RecordProxy.getLinkedRecord(~name=currentPath)
       | _ => currentRecord := None
       }
     }
@@ -58,7 +58,6 @@ let removeNodeFromConnections = (~store, ~node, ~connections) =>
         ~record=owner,
         ~key=connectionConfig.key,
         ~filters=?connectionConfig.filters,
-        (),
       ) {
       | Some(connection) =>
         ConnectionHandler.deleteNode(~connection, ~nodeId=node->RecordProxy.getDataId)
@@ -76,13 +75,12 @@ let createAndAddEdgeToConnections = (~store, ~node, ~connections, ~edgeName, ~in
         ~record=connectionOwner,
         ~key=connectionConfig.key,
         ~filters=?connectionConfig.filters,
-        (),
       ) {
       | Some(connection) =>
         let edge = ConnectionHandler.createEdge(~store, ~connection, ~node, ~edgeType=edgeName)
         switch insertAt {
-        | Start => ConnectionHandler.insertEdgeAfter(~connection, ~newEdge=edge, ())
-        | End => ConnectionHandler.insertEdgeBefore(~connection, ~newEdge=edge, ())
+        | Start => ConnectionHandler.insertEdgeAfter(~connection, ~newEdge=edge)
+        | End => ConnectionHandler.insertEdgeBefore(~connection, ~newEdge=edge)
         }
       | None => ()
       }

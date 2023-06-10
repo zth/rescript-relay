@@ -30,7 +30,6 @@ module Types = {
   }
   @live let makeRefetchVariables = (
     ~status=?,
-    ()
   ): refetchVariables => {
     status: status
   }

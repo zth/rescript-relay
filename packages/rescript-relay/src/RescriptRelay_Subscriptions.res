@@ -28,7 +28,6 @@ let subscribe = (
     ~onError=?,
     ~onNext=?,
     ~updater=?,
-    (),
   ) => {
     requestSubscription_(
       environment,

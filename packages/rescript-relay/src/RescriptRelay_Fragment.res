@@ -63,11 +63,7 @@ let internal_makeRefetchableFnOpts = (~fetchPolicy=?, ~onComplete=?, ()) => {
 }
 
 type paginationLoadMoreOptions = {onComplete?: Js.Nullable.t<Js.Exn.t> => unit}
-type paginationLoadMoreFn = (
-  ~count: int,
-  ~onComplete: option<Js.Exn.t> => unit=?,
-  unit,
-) => Disposable.t
+type paginationLoadMoreFn = (~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t
 type paginationFragmentReturnRaw<'fragment, 'refetchVariables> = {
   data: 'fragment,
   loadNext: (int, paginationLoadMoreOptions) => Disposable.t,
@@ -88,7 +84,6 @@ type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
     ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
   ) => Disposable.t,
 }
 type paginationFragmentReturn<'fragment, 'refetchVariables> = {
@@ -103,7 +98,6 @@ type paginationFragmentReturn<'fragment, 'refetchVariables> = {
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
     ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
   ) => Disposable.t,
 }
 
@@ -127,13 +121,13 @@ let usePaginationFragment = (
   let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, p.data)
   {
     data,
-    loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) => {
+    loadNext: React.useMemo1(() => (~count, ~onComplete=?) => {
       p.loadNext(
         count,
         {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
       )
     }, [p.loadNext]),
-    loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) => {
+    loadPrevious: React.useMemo1(() => (~count, ~onComplete=?) => {
       p.loadPrevious(
         count,
         {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
@@ -143,7 +137,7 @@ let usePaginationFragment = (
     hasPrevious: p.hasPrevious,
     isLoadingNext: p.isLoadingNext,
     isLoadingPrevious: p.isLoadingPrevious,
-    refetch: React.useMemo1(() => (~variables, ~fetchPolicy=?, ~onComplete=?, ()) => {
+    refetch: React.useMemo1(() => (~variables, ~fetchPolicy=?, ~onComplete=?) => {
       p.refetch(
         RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(
           variables->convertRefetchVariables,
@@ -173,13 +167,13 @@ let useBlockingPaginationFragment = (
   let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, p.data)
   {
     data,
-    loadNext: React.useMemo1(() => (~count, ~onComplete=?, ()) => {
+    loadNext: React.useMemo1(() => (~count, ~onComplete=?) => {
       p.loadNext(
         count,
         {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
       )
     }, [p.loadNext]),
-    loadPrevious: React.useMemo1(() => (~count, ~onComplete=?, ()) => {
+    loadPrevious: React.useMemo1(() => (~count, ~onComplete=?) => {
       p.loadPrevious(
         count,
         {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
@@ -187,7 +181,7 @@ let useBlockingPaginationFragment = (
     }, [p.loadPrevious]),
     hasNext: p.hasNext,
     hasPrevious: p.hasPrevious,
-    refetch: React.useMemo1(() => (~variables, ~fetchPolicy=?, ~onComplete=?, ()) => {
+    refetch: React.useMemo1(() => (~variables, ~fetchPolicy=?, ~onComplete=?) => {
       p.refetch(
         RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(
           variables->convertRefetchVariables,
@@ -226,7 +220,7 @@ let useRefetchableFragment = (
   (
     data,
     React.useMemo1(
-      () => (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?, ()) =>
+      () => (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?) =>
         refetchFn(
           RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
             variables->convertRefetchVariables,

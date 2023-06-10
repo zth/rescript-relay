@@ -71,7 +71,7 @@ module Test = {
       | _ => []
       }
 
-    let query = Query.use(~variables={status: ?status}, ())
+    let query = Query.use(~variables={status: ?status})
     let users = collectUsers(query)
 
     <div>
@@ -100,13 +100,13 @@ module Test = {
       <button
         onClick={_ =>
           setQueryRefFromModule(_ => Some(
-            TestQuery_graphql.load(~environment, ~variables={status: Idle}, ()),
+            TestQuery_graphql.load(~environment, ~variables={status: Idle}),
           ))}>
         {React.string("Test preloaded from raw module")}
       </button>
       <button
         onClick={_ => {
-          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Idle}, ())
+          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Idle})
 
           let _ = queryRef->TestQuery_graphql.queryRefToPromise->(Js.Promise.then_(res => {
                 switch res {
@@ -123,22 +123,18 @@ module Test = {
       </button>
       <button
         onClick={_ =>
-          Query.fetch(
-            ~environment,
-            ~variables={status: Online},
-            ~onResult=x =>
-              switch x {
-              | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
-              | Error(_) => ()
-              },
-            (),
+          Query.fetch(~environment, ~variables={status: Online}, ~onResult=x =>
+            switch x {
+            | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
+            | Error(_) => ()
+            }
           )}>
         {React.string("Test fetch")}
       </button>
       <button
         onClick={_ => {
           let _ =
-            Query.fetchPromised(~environment, ~variables={status: Online}, ())->(
+            Query.fetchPromised(~environment, ~variables={status: Online})->(
               Js.Promise.then_(res => {
                 setFetchedResult(_ => Some(collectUsers(res)))
                 Js.Promise.resolve()
@@ -147,7 +143,7 @@ module Test = {
         }}>
         {React.string("Test fetch promised")}
       </button>
-      <button onClick={_ => loadQuery(~variables={status: Idle}, ())}>
+      <button onClick={_ => loadQuery(~variables={status: Idle})}>
         {React.string("Test query loader")}
       </button>
       {hasWaitedForPreload ? <div> {React.string("Has waited for preload")} </div> : React.null}
@@ -165,12 +161,11 @@ module Test = {
 
 @live
 let test_query = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
 
   <TestProviders.Wrapper environment>

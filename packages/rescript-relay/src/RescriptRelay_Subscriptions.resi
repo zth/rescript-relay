@@ -11,5 +11,4 @@ let subscribe: (
   ~onError: Js.Exn.t => unit=?,
   ~onNext: 'response => unit=?,
   ~updater: (RecordSourceSelectorProxy.t, 'response) => unit=?,
-  unit,
 ) => Disposable.t

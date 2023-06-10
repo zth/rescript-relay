@@ -7,7 +7,7 @@ module Query = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let data = Query.use(~variables={input: {id: 123, someOtherId: 1.5}}, ())
+    let data = Query.use(~variables={input: {id: 123, someOtherId: 1.5}})
 
     <div>
       {switch data.search {
@@ -20,14 +20,12 @@ module Test = {
 
 @live
 let test_queryInputObjects = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

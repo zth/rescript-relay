@@ -21,7 +21,7 @@ module Test = {
   @react.component
   let make = () => {
     let environment = RescriptRelay.useEnvironmentFromContext()
-    let query = Query.use(~variables=(), ())
+    let query = Query.use(~variables=())
     let data = query.loggedInUser
 
     <div>
@@ -36,7 +36,6 @@ module Test = {
                 RelaySchemaAssets_graphql.int: Js.null,
               }),
             },
-            (),
           )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change avatar URL")}
@@ -47,14 +46,12 @@ module Test = {
 
 @live
 let test_nullableVariables = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

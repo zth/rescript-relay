@@ -80,7 +80,7 @@ module Test = {
   @react.component
   let make = () => {
     let environment = RescriptRelay.useEnvironmentFromContext()
-    let query = Query.use(~variables=(), ())
+    let query = Query.use(~variables=())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (mutate, isMutating) = Mutation.use()
     let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
@@ -115,7 +115,7 @@ module Test = {
         onClick={_ => {
           let _ = {
             open Mutation
-            commitMutation(~environment, ~variables={onlineStatus: Idle}, ())
+            commitMutation(~environment, ~variables={onlineStatus: Idle})
           }
         }}>
         {React.string("Change online status")}
@@ -146,7 +146,6 @@ module Test = {
                 }),
               }),
             },
-            (),
           )->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change online status with only fragment")}
@@ -154,33 +153,31 @@ module Test = {
       <button
         onClick={_ => {
           open MutationWithInlineFragment
-          commitMutation(
-            ~environment,
-            ~variables={onlineStatus: Idle},
-            ~onCompleted=(response, _) => {
-              setInlineStatus(_ => "completed")
-              switch response {
-              | {setOnlineStatus: Some({user: Some(user)})} =>
-                let inlineData = InlineFragment.readInline(user.fragmentRefs)
-                setInlineStatus(_ =>
-                  switch inlineData.onlineStatus {
-                  | Some(Online) => "online"
-                  | Some(Idle) => "idle"
-                  | Some(Offline) => "offline"
-                  | _ => "unknown"
-                  }
-                )
-              | _ => ignore()
-              }
-            },
-            (),
-          )->RescriptRelay.Disposable.ignore
+          commitMutation(~environment, ~variables={onlineStatus: Idle}, ~onCompleted=(
+            response,
+            _,
+          ) => {
+            setInlineStatus(_ => "completed")
+            switch response {
+            | {setOnlineStatus: Some({user: Some(user)})} =>
+              let inlineData = InlineFragment.readInline(user.fragmentRefs)
+              setInlineStatus(_ =>
+                switch inlineData.onlineStatus {
+                | Some(Online) => "online"
+                | Some(Idle) => "idle"
+                | Some(Offline) => "offline"
+                | _ => "unknown"
+                }
+              )
+            | _ => ignore()
+            }
+          })->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Change online status with inline fragment")}
       </button>
       <button
         onClick={_ => {
-          mutate(~variables={onlineStatus: Idle}, ())->RescriptRelay.Disposable.ignore
+          mutate(~variables={onlineStatus: Idle})->RescriptRelay.Disposable.ignore
         }}>
         {React.string(isMutating ? "Mutating..." : "Change online status via useMutation hook")}
       </button>
@@ -206,7 +203,6 @@ module Test = {
                   },
                 },
               },
-              (),
             )
           }
         }}>
@@ -230,7 +226,6 @@ module Test = {
                   }),
                 }),
               },
-              (),
             )
           }
         }}>
@@ -238,33 +233,31 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          let _ = Mutation.commitMutation(
-            ~environment,
-            ~variables={onlineStatus: Idle},
-            ~updater=(store, response) =>
-              switch (
-                store->RescriptRelay.RecordSourceSelectorProxy.get(
-                  ~dataId=RescriptRelay.makeDataId(data.id),
-                ),
-                response,
-              ) {
-              | (
-                  Some(userProxy),
-                  {setOnlineStatus: Some({user: Some({onlineStatus: Some(onlineStatus)})})},
-                ) =>
-                userProxy
-                ->RescriptRelay.RecordProxy.setValueString(
-                  ~name="onlineStatus",
-                  ~value=switch onlineStatus {
-                  | Idle => "offline"
-                  | _ => "Online"
-                  },
-                  (),
-                )
-                ->ignore
-              | _ => Js.log("Error!")
-              },
-            (),
+          let _ = Mutation.commitMutation(~environment, ~variables={onlineStatus: Idle}, ~updater=(
+            store,
+            response,
+          ) =>
+            switch (
+              store->RescriptRelay.RecordSourceSelectorProxy.get(
+                ~dataId=RescriptRelay.makeDataId(data.id),
+              ),
+              response,
+            ) {
+            | (
+                Some(userProxy),
+                {setOnlineStatus: Some({user: Some({onlineStatus: Some(onlineStatus)})})},
+              ) =>
+              userProxy
+              ->RescriptRelay.RecordProxy.setValueString(
+                ~name="onlineStatus",
+                ~value=switch onlineStatus {
+                | Idle => "offline"
+                | _ => "Online"
+                },
+              )
+              ->ignore
+            | _ => Js.log("Error!")
+            }
           )
         }}>
         {React.string("Change online status with updater")}
@@ -275,14 +268,12 @@ module Test = {
 
 @live
 let test_mutation = () => {
-  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery, ())
+  let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-    (),
+    ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
   )
-  ()
 
   <TestProviders.Wrapper environment>
     <Test />

@@ -19,7 +19,6 @@ module Types = {
   }
   @live let makeRefetchVariables = (
     ~groupId=?,
-    ()
   ): refetchVariables => {
     groupId: groupId
   }

@@ -20,7 +20,6 @@ module Types = {
   }
   @live let makeRefetchVariables = (
     ~input=?,
-    ()
   ): refetchVariables => {
     input: input
   }

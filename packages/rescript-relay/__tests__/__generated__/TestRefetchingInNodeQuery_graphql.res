@@ -31,7 +31,6 @@ module Types = {
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
     ~userId=?,
-    ()
   ): refetchVariables => {
     friendsOnlineStatuses: friendsOnlineStatuses,
     userId: userId
