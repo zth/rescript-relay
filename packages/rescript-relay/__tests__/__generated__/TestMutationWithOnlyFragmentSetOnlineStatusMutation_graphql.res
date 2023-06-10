@@ -38,11 +38,7 @@ module Types = {
     @live id: string,
     lastName: string,
     memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
-    onlineStatus: option<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
   @live
   and rawResponse_setOnlineStatus = {
@@ -58,11 +54,7 @@ module Types = {
   }
   @live
   type variables = {
-    onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
+    onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
   }
 }
 
@@ -171,8 +163,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -180,11 +172,7 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
+    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
   ) => variables = ""
 
 
@@ -215,11 +203,7 @@ module Utils = {
     ~id: string,
     ~lastName: string,
     ~memberOf: array<option<rawResponse_setOnlineStatus_user_memberOf>>=?,
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ]=?,
+    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input=?,
     unit
   ) => rawResponse_setOnlineStatus_user = ""
 

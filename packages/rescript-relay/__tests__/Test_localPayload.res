@@ -102,7 +102,7 @@ module Test = {
             ~payload={
               loggedInUser: {
                 id: data.loggedInUser.id,
-                onlineStatus: Some(#Online),
+                onlineStatus: Some(Online),
                 firstName: "AnotherFirst",
                 avatarUrl: None,
                 memberOf: None,
@@ -129,7 +129,7 @@ module Test = {
                 #User({
                   id: data.loggedInUser.id,
                   firstName: "AnotherFirst",
-                  onlineStatus: Some(#Online),
+                  onlineStatus: Some(Online),
                   avatarUrl: None,
                   __typename: #User,
                   memberOfSingular: None,

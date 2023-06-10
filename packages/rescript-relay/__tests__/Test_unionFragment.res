@@ -57,7 +57,7 @@ module FragmentRenderer = {
 
     <>
       {switch regular {
-      | #User({onlineStatus: Some(#Online), firstName, fragmentRefs}) =>
+      | #User({onlineStatus: Some(Online), firstName, fragmentRefs}) =>
         <>
           <div> {React.string(firstName ++ " is online")} </div>
           <UserFragmentRenderer user=fragmentRefs />
@@ -65,7 +65,7 @@ module FragmentRenderer = {
       | _ => React.null
       }}
       {switch plural {
-      | [#User({onlineStatus: Some(#Online), firstName, fragmentRefs})] =>
+      | [#User({onlineStatus: Some(Online), firstName, fragmentRefs})] =>
         <>
           <div> {React.string("plural: " ++ (firstName ++ " is online"))} </div>
           <UserFragmentRenderer prefix="plural: " user=fragmentRefs />

@@ -117,7 +117,7 @@ module Test = {
             refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
-                ~onlineStatuses=Some([#Online, #Idle]),
+                ~onlineStatuses=Some([Online, Idle]),
                 (),
               ),
               (),

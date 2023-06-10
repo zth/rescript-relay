@@ -103,10 +103,10 @@ module Test = {
         data.firstName ++
         (" is " ++
         switch data.onlineStatus {
-        | Some(#Online) => "online"
-        | Some(#Idle) => "idle"
-        | Some(#Offline) => "offline"
-        | _ => "-"
+        | Some(Online) => "online"
+        | Some(Idle) => "idle"
+        | Some(Offline) => "offline"
+        | Some(FutureAddedValue(_)) | None => "-"
         }),
       )}
       <div> {React.string("Inline status: " ++ inlineStatus)} </div>
@@ -114,7 +114,7 @@ module Test = {
         onClick={_ => {
           let _ = {
             open Mutation
-            commitMutation(~environment, ~variables=makeVariables(~onlineStatus=#Idle), ())
+            commitMutation(~environment, ~variables=makeVariables(~onlineStatus=Idle), ())
           }
         }}>
         {React.string("Change online status")}
@@ -124,7 +124,7 @@ module Test = {
           open MutationWithOnlyFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=#Idle),
+            ~variables=makeVariables(~onlineStatus=Idle),
             ~optimisticResponse=makeOptimisticResponse(
               ~setOnlineStatus=make_rawResponse_setOnlineStatus(
                 ~user=make_rawResponse_setOnlineStatus_user(
@@ -141,7 +141,7 @@ module Test = {
                       }),
                     ),
                   ],
-                  ~onlineStatus=#Idle,
+                  ~onlineStatus=Idle,
                   (),
                 ),
                 (),
@@ -158,7 +158,7 @@ module Test = {
           open MutationWithInlineFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=#Idle),
+            ~variables=makeVariables(~onlineStatus=Idle),
             ~onCompleted=(response, _) => {
               setInlineStatus(_ => "completed")
               switch response {
@@ -166,9 +166,9 @@ module Test = {
                 let inlineData = InlineFragment.readInline(user.fragmentRefs)
                 setInlineStatus(_ =>
                   switch inlineData.onlineStatus {
-                  | Some(#Online) => "online"
-                  | Some(#Idle) => "idle"
-                  | Some(#Offline) => "offline"
+                  | Some(Online) => "online"
+                  | Some(Idle) => "idle"
+                  | Some(Offline) => "offline"
                   | _ => "unknown"
                   }
                 )
@@ -184,7 +184,7 @@ module Test = {
         onClick={_ => {
           let _ = {
             open Mutation
-            mutate(~variables=makeVariables(~onlineStatus=#Idle), ())
+            mutate(~variables=makeVariables(~onlineStatus=Idle), ())
           }
         }}>
         {React.string(isMutating ? "Mutating..." : "Change online status via useMutation hook")}
@@ -199,12 +199,12 @@ module Test = {
                 // The "mess" below is to try and provoke a test failure if
                 // recursive conversion would be broken.
                 ~input=make_setOnlineStatusInput(
-                  ~onlineStatus=#Idle,
+                  ~onlineStatus=Idle,
                   ~someJsonValue,
                   ~recursed=make_recursiveSetOnlineStatusInput(
                     ~someValue=100,
                     ~setOnlineStatus=make_setOnlineStatusInput(
-                      ~onlineStatus=#Online,
+                      ~onlineStatus=Online,
                       ~someJsonValue,
                       ~recursed=make_recursiveSetOnlineStatusInput(~someValue=100, ()),
                       (),
@@ -226,13 +226,13 @@ module Test = {
             open Mutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(~onlineStatus=#Idle),
+              ~variables=makeVariables(~onlineStatus=Idle),
               ~optimisticResponse=makeOptimisticResponse(
                 ~setOnlineStatus=make_rawResponse_setOnlineStatus(
                   ~user=make_rawResponse_setOnlineStatus_user(
                     ~id=data.id,
                     ~__id=data.id->RescriptRelay.makeDataId,
-                    ~onlineStatus=#Idle,
+                    ~onlineStatus=Idle,
                     ~firstName=data.firstName,
                     ~lastName=data.lastName,
                     (),
@@ -251,7 +251,7 @@ module Test = {
         onClick={_ => {
           let _ = Mutation.commitMutation(
             ~environment,
-            ~variables={onlineStatus: #Idle},
+            ~variables={onlineStatus: Idle},
             ~updater=(store, response) =>
               switch (
                 store->RescriptRelay.RecordSourceSelectorProxy.get(
@@ -267,7 +267,7 @@ module Test = {
                 ->RescriptRelay.RecordProxy.setValueString(
                   ~name="onlineStatus",
                   ~value=switch onlineStatus {
-                  | #Idle => "Offline"
+                  | Idle => "Offline"
                   | _ => "Online"
                   },
                   (),

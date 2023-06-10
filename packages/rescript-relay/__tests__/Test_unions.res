@@ -34,10 +34,10 @@ module Query = %relay(`
 
 let mapOnlineStatus = (s: option<RelaySchemaAssets_graphql.enum_OnlineStatus>) =>
   switch s {
-  | Some(#Online) => "online"
-  | Some(#Offline) => "offline"
-  | Some(#Idle) => "idle"
-  | Some(_) => "-"
+  | Some(Online) => "online"
+  | Some(Offline) => "offline"
+  | Some(Idle) => "idle"
+  | Some(FutureAddedValue(_)) => "-"
   | None => "[no status]"
   }
 

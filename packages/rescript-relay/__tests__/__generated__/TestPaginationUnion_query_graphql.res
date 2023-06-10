@@ -97,7 +97,7 @@ let connectionKey = "TestPaginationUnion_query_members"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus>>=?, ()) => {
   let groupId = Some(groupId)
   let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)

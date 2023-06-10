@@ -87,8 +87,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -96,11 +96,7 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external make_setOnlineStatusInput: (
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
+    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
     ~recursed: recursiveSetOnlineStatusInput=?,
     ~someJsonValue: Js.Json.t,
     unit

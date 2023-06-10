@@ -15,22 +15,14 @@ module Types = {
     count: option<int>,
     cursor: option<string>,
     groupId: string,
-    onlineStatuses: option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>,
+    onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
   }
   @live
   type refetchVariables = {
     count: option<option<int>>,
     cursor: option<option<string>>,
     groupId: option<string>,
-    onlineStatuses: option<option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>>,
+    onlineStatuses: option<option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,
@@ -108,8 +100,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -120,11 +112,7 @@ module Utils = {
     ~count: int=?,
     ~cursor: string=?,
     ~groupId: string,
-    ~onlineStatuses: array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>=?,
+    ~onlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>=?,
     unit
   ) => variables = ""
 

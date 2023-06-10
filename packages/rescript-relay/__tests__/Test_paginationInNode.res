@@ -92,7 +92,7 @@ module UserNodeDisplayer = {
         onClick={_ => {
           startTransition(() => {
             refetch(
-              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
+              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([Online, Idle]), ()),
               (),
             )->RescriptRelay.Disposable.ignore
           })

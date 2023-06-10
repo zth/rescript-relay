@@ -56,10 +56,10 @@ module Test = {
           React.string(
             "Plain fragment: " ++
             switch fragment.onlineStatus {
-            | #Online => "Online"
-            | #Idle => "Idle"
-            | #Offline => "Offline"
-            | _ => "-"
+            | Online => "Online"
+            | Idle => "Idle"
+            | Offline => "Offline"
+            | FutureAddedValue(_) => "-"
             },
           )
         }}
@@ -77,10 +77,10 @@ module Test = {
               | Some(user) =>
                 Some(
                   switch user.onlineStatus {
-                  | #Online => "Online"
-                  | #Idle => "Idle"
-                  | #Offline => "Offline"
-                  | _ => "-"
+                  | Online => "Online"
+                  | Idle => "Idle"
+                  | Offline => "Offline"
+                  | FutureAddedValue(_) => "-"
                   },
                 )
               }

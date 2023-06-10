@@ -36,7 +36,7 @@ module TestPreloaded = {
             (user.firstName ++
             (" is " ++
             switch user.onlineStatus {
-            | Some(#Idle) => "idle"
+            | Some(Idle) => "idle"
             | _ => "-"
             })),
           )}
@@ -52,7 +52,7 @@ module Test = {
   let make = () => {
     let environment = RescriptRelay.useEnvironmentFromContext()
 
-    let (status, setStatus) = React.useState(() => Some(#Online))
+    let (status, setStatus) = React.useState(() => Some(RelaySchemaAssets_graphql.Online))
     let (queryRefFromModule, setQueryRefFromModule) = React.useState(() => None)
     let (hasWaitedForPreload, setHasWaitedForPreload) = React.useState(() => false)
     let (fetchedResult, setFetchedResult) = React.useState(() => None)
@@ -82,16 +82,16 @@ module Test = {
             user.firstName ++
             (" is " ++
             switch user.onlineStatus {
-            | Some(#Online) => "online"
-            | Some(#Offline) => "offline"
-            | Some(#Idle) => "idle"
-            | Some(_) | None => "-"
+            | Some(Online) => "online"
+            | Some(Offline) => "offline"
+            | Some(Idle) => "idle"
+            | Some(FutureAddedValue(_)) | None => "-"
             }),
           )}
         </div>
       )
       ->React.array}
-      <button onClick={_ => setStatus(_ => Some(#Offline))}>
+      <button onClick={_ => setStatus(_ => Some(Offline))}>
         {React.string("Switch to offline")}
       </button>
       <button onClick={_ => setStatus(_ => None)}>
@@ -100,13 +100,13 @@ module Test = {
       <button
         onClick={_ =>
           setQueryRefFromModule(_ => Some(
-            TestQuery_graphql.load(~environment, ~variables={status: Some(#Idle)}, ()),
+            TestQuery_graphql.load(~environment, ~variables={status: Some(Idle)}, ()),
           ))}>
         {React.string("Test preloaded from raw module")}
       </button>
       <button
         onClick={_ => {
-          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Some(#Idle)}, ())
+          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Some(Idle)}, ())
 
           let _ = queryRef->TestQuery_graphql.queryRefToPromise->(Js.Promise.then_(res => {
                 switch res {
@@ -125,7 +125,7 @@ module Test = {
         onClick={_ =>
           Query.fetch(
             ~environment,
-            ~variables={status: Some(#Online)},
+            ~variables={status: Some(Online)},
             ~onResult=x =>
               switch x {
               | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
@@ -138,7 +138,7 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            Query.fetchPromised(~environment, ~variables={status: Some(#Online)}, ())->(
+            Query.fetchPromised(~environment, ~variables={status: Some(Online)}, ())->(
               Js.Promise.then_(res => {
                 setFetchedResult(_ => Some(collectUsers(res)))
                 Js.Promise.resolve()
@@ -147,7 +147,7 @@ module Test = {
         }}>
         {React.string("Test fetch promised")}
       </button>
-      <button onClick={_ => loadQuery(~variables={status: Some(#Idle)}, ())}>
+      <button onClick={_ => loadQuery(~variables={status: Some(Idle)}, ())}>
         {React.string("Test query loader")}
       </button>
       {hasWaitedForPreload ? <div> {React.string("Has waited for preload")} </div> : React.null}
@@ -156,7 +156,7 @@ module Test = {
       | _ => React.null
       }}
       {switch fetchedResult {
-      | Some([{firstName: "First", onlineStatus: Some(#Online)}]) => React.string("Fetched!")
+      | Some([{firstName: "First", onlineStatus: Some(Online)}]) => React.string("Fetched!")
       | _ => React.null
       }}
     </div>

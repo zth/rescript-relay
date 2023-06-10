@@ -67,9 +67,9 @@ module TestPlural = {
             user.firstName ++
             (" is " ++
             switch user.onlineStatus {
-            | Some(#Online) => "online"
-            | Some(#Offline) => "offline"
-            | _ => "-"
+            | Some(Online) => "online"
+            | Some(Offline) => "offline"
+            | Some(Idle) | Some(FutureAddedValue(_)) | None => "-"
             }),
           )}
         </div>
@@ -96,9 +96,9 @@ module Test = {
     let _justToCheckThingsWork = switch withUnsafeEnumOpt {
     | Some(data) =>
       switch data.onlineStatus {
-      | None | Some(#Online) => "Online"
-      | Some(#Offline) => "Offline"
-      | Some(#Idle) => "Idle"
+      | None | Some(Online) => "Online"
+      | Some(Offline) => "Offline"
+      | Some(Idle) => "Idle"
       }
     | None => ""
     }
@@ -119,7 +119,7 @@ module Test = {
         data.firstName ++
         (" is " ++
         switch data.onlineStatus {
-        | Some(#Online) => "online"
+        | Some(Online) => "online"
         | _ => "-"
         }),
       )}

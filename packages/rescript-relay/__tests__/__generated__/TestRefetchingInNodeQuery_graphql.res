@@ -20,20 +20,12 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    friendsOnlineStatuses: option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>,
+    friendsOnlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
     userId: string,
   }
   @live
   type refetchVariables = {
-    friendsOnlineStatuses: option<option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>>,
+    friendsOnlineStatuses: option<option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>>,
     userId: option<string>,
   }
   @live let makeRefetchVariables = (
@@ -129,8 +121,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -138,11 +130,7 @@ module Utils = {
     onlineStatus_decode(Obj.magic(str))
   }
   @live @obj external makeVariables: (
-    ~friendsOnlineStatuses: array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>=?,
+    ~friendsOnlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>=?,
     ~userId: string,
     unit
   ) => variables = ""

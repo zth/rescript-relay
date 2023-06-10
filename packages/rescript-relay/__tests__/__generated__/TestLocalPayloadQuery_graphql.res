@@ -68,11 +68,7 @@ module Types = {
     @live id: string,
     memberOf: option<array<option<rawResponse_loggedInUser_memberOf>>>,
     memberOfSingular: option<rawResponse_loggedInUser_memberOfSingular>,
-    onlineStatus: option<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
@@ -238,8 +234,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live

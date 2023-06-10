@@ -45,7 +45,7 @@ module Test = {
         data.firstName ++
         (" is " ++
         switch data.onlineStatus {
-        | Some(#Online) => "online"
+        | Some(Online) => "online"
         | _ => "-"
         }),
       )}
@@ -56,7 +56,7 @@ module Test = {
             refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
-                ~friendsOnlineStatuses=Some([#Online, #Offline]),
+                ~friendsOnlineStatuses=Some([Online, Offline]),
                 (),
               ),
               (),
