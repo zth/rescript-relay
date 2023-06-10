@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec response_users_edges_node = {
     firstName: string,
@@ -22,7 +22,7 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    status: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
+    status?: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
   }
   @live
   type refetchVariables = {
@@ -89,7 +89,7 @@ module Internal = {
 type queryRef
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -106,12 +106,6 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~status: RelaySchemaAssets_graphql.enum_OnlineStatus_input=?,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode

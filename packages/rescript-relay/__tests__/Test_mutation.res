@@ -115,7 +115,7 @@ module Test = {
         onClick={_ => {
           let _ = {
             open Mutation
-            commitMutation(~environment, ~variables=makeVariables(~onlineStatus=Idle), ())
+            commitMutation(~environment, ~variables={onlineStatus: Idle}, ())
           }
         }}>
         {React.string("Change online status")}
@@ -125,14 +125,14 @@ module Test = {
           open MutationWithOnlyFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=Idle),
-            ~optimisticResponse=makeOptimisticResponse(
-              ~setOnlineStatus=make_rawResponse_setOnlineStatus(
-                ~user=make_rawResponse_setOnlineStatus_user(
-                  ~id=data.id,
-                  ~firstName=data.firstName,
-                  ~lastName=data.lastName,
-                  ~memberOf=[
+            ~variables={onlineStatus: Idle},
+            ~optimisticResponse={
+              setOnlineStatus: Some({
+                user: Some({
+                  id: data.id,
+                  firstName: data.firstName,
+                  lastName: data.lastName,
+                  memberOf: Some([
                     Some(
                       #User({
                         __typename: #User,
@@ -141,14 +141,11 @@ module Test = {
                         __isNode: #User,
                       }),
                     ),
-                  ],
-                  ~onlineStatus=Idle,
-                  (),
-                ),
-                (),
-              ),
-              (),
-            ),
+                  ]),
+                  onlineStatus: Some(Idle),
+                }),
+              }),
+            },
             (),
           )->RescriptRelay.Disposable.ignore
         }}>
@@ -159,7 +156,7 @@ module Test = {
           open MutationWithInlineFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=Idle),
+            ~variables={onlineStatus: Idle},
             ~onCompleted=(response, _) => {
               setInlineStatus(_ => "completed")
               switch response {
@@ -183,10 +180,7 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          let _ = {
-            open Mutation
-            mutate(~variables=makeVariables(~onlineStatus=Idle), ())
-          }
+          mutate(~variables={onlineStatus: Idle}, ())->RescriptRelay.Disposable.ignore
         }}>
         {React.string(isMutating ? "Mutating..." : "Change online status via useMutation hook")}
       </button>
@@ -196,25 +190,22 @@ module Test = {
             open ComplexMutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(
+              ~variables={
                 // The "mess" below is to try and provoke a test failure if
                 // recursive conversion would be broken.
-                ~input=make_setOnlineStatusInput(
-                  ~onlineStatus=Idle,
-                  ~someJsonValue,
-                  ~recursed=make_recursiveSetOnlineStatusInput(
-                    ~someValue=100,
-                    ~setOnlineStatus=make_setOnlineStatusInput(
-                      ~onlineStatus=Online,
-                      ~someJsonValue,
-                      ~recursed=make_recursiveSetOnlineStatusInput(~someValue=100, ()),
-                      (),
-                    ),
-                    (),
-                  ),
-                  (),
-                ),
-              ),
+                input: {
+                  onlineStatus: Idle,
+                  someJsonValue,
+                  recursed: {
+                    someValue: 100,
+                    setOnlineStatus: {
+                      onlineStatus: Online,
+                      someJsonValue,
+                      recursed: {someValue: 100},
+                    },
+                  },
+                },
+              },
               (),
             )
           }
@@ -227,21 +218,18 @@ module Test = {
             open Mutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(~onlineStatus=Idle),
-              ~optimisticResponse=makeOptimisticResponse(
-                ~setOnlineStatus=make_rawResponse_setOnlineStatus(
-                  ~user=make_rawResponse_setOnlineStatus_user(
-                    ~id=data.id,
-                    ~__id=data.id->RescriptRelay.makeDataId,
-                    ~onlineStatus=Idle,
-                    ~firstName=data.firstName,
-                    ~lastName=data.lastName,
-                    (),
-                  ),
-                  (),
-                ),
-                (),
-              ),
+              ~variables={onlineStatus: Idle},
+              ~optimisticResponse={
+                setOnlineStatus: Some({
+                  user: Some({
+                    id: data.id,
+                    __id: Some(data.id->RescriptRelay.makeDataId),
+                    onlineStatus: Some(Idle),
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                  }),
+                }),
+              },
               (),
             )
           }

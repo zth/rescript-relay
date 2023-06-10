@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_memberOf_Group_topMember_User = {
     @live __typename: [ | #User],
@@ -137,7 +137,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestLocalPayload_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"

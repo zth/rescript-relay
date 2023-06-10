@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_addFriend_addedFriend = {
@@ -74,14 +74,8 @@ module Internal = {
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~connections: array<RescriptRelay.dataId>,
-    ~friendId: string,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode

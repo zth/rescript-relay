@@ -7,10 +7,7 @@ module Query = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let data = Query.use(
-      ~variables=Query.makeVariables(~input=Query.make_searchInput(~id=123, ~someOtherId=1.5, ())),
-      (),
-    )
+    let data = Query.use(~variables={input: {id: 123, someOtherId: 1.5}}, ())
 
     <div>
       {switch data.search {

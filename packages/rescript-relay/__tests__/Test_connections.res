@@ -142,13 +142,13 @@ module Test = {
       <button
         onClick={_ => {
           addFriend(
-            ~variables=AddFriendMutation.makeVariables(
-              ~connections={
+            ~variables={
+              connections: {
                 open TestConnections_user_graphql
                 [user.__id->makeConnectionId(~beforeDate=makeDate(), ())]
               },
-              ~friendId="123",
-            ),
+              friendId: "123",
+            },
             (),
           )->RescriptRelay.Disposable.ignore
         }}>

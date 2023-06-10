@@ -71,7 +71,7 @@ module Test = {
       | _ => []
       }
 
-    let query = Query.use(~variables={status: status}, ())
+    let query = Query.use(~variables={status: ?status}, ())
     let users = collectUsers(query)
 
     <div>
@@ -100,13 +100,13 @@ module Test = {
       <button
         onClick={_ =>
           setQueryRefFromModule(_ => Some(
-            TestQuery_graphql.load(~environment, ~variables={status: Some(Idle)}, ()),
+            TestQuery_graphql.load(~environment, ~variables={status: Idle}, ()),
           ))}>
         {React.string("Test preloaded from raw module")}
       </button>
       <button
         onClick={_ => {
-          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Some(Idle)}, ())
+          let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Idle}, ())
 
           let _ = queryRef->TestQuery_graphql.queryRefToPromise->(Js.Promise.then_(res => {
                 switch res {
@@ -125,7 +125,7 @@ module Test = {
         onClick={_ =>
           Query.fetch(
             ~environment,
-            ~variables={status: Some(Online)},
+            ~variables={status: Online},
             ~onResult=x =>
               switch x {
               | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
@@ -138,7 +138,7 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            Query.fetchPromised(~environment, ~variables={status: Some(Online)}, ())->(
+            Query.fetchPromised(~environment, ~variables={status: Online}, ())->(
               Js.Promise.then_(res => {
                 setFetchedResult(_ => Some(collectUsers(res)))
                 Js.Promise.resolve()
@@ -147,7 +147,7 @@ module Test = {
         }}>
         {React.string("Test fetch promised")}
       </button>
-      <button onClick={_ => loadQuery(~variables={status: Some(Idle)}, ())}>
+      <button onClick={_ => loadQuery(~variables={status: Idle}, ())}>
         {React.string("Test query loader")}
       </button>
       {hasWaitedForPreload ? <div> {React.string("Has waited for preload")} </div> : React.null}

@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type inputC = RelaySchemaAssets_graphql.input_InputC
   type rec response_loggedInUser = {
@@ -74,16 +74,8 @@ module Internal = {
 type queryRef
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_inputC: (
-    ~intStr: TestsUtils.IntString.t,
-    ~recursiveC: inputC=?,
-    unit
-  ) => inputC = ""
-
-
-  @live @obj external makeVariables: unit => unit = ""
 }
 type providedVariable<'t> = { providedVariable: unit => 't, get: unit => 't }
 type providedVariablesType = {

@@ -3,13 +3,14 @@ module Bool = {
 }
 
 module InputC = {
-  open RelaySchemaAssets_graphql
-  let get = () => make_InputC(~intStr=123, ~recursiveC=make_InputC(~intStr=234, ()), ())
+  let get = (): RelaySchemaAssets_graphql.input_InputC => {
+    intStr: 123,
+    recursiveC: {intStr: 234},
+  }
 }
 
 module InputCArr = {
-  open RelaySchemaAssets_graphql
-  let get = () => Some([make_InputC(~intStr=123, ())])
+  let get = (): option<array<RelaySchemaAssets_graphql.input_InputC>> => Some([{intStr: 123}])
 }
 
 module IntStr = {

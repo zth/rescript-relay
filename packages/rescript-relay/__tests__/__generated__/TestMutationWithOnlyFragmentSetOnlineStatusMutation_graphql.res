@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec rawResponse_setOnlineStatus_user_memberOf_Group = {
@@ -154,7 +154,7 @@ module Internal = {
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -171,49 +171,6 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~setOnlineStatus: rawResponse_setOnlineStatus=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_Group: (
-    ~__typename: [ | #Group],
-    ~__isNode: [ | #Group],
-    ~id: string,
-    ~name: string,
-  ) => rawResponse_setOnlineStatus_user_memberOf_Group = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_User: (
-    ~__typename: [ | #User],
-    ~__isNode: [ | #User],
-    ~firstName: string,
-    ~id: string,
-  ) => rawResponse_setOnlineStatus_user_memberOf_User = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user: (
-    ~firstName: string,
-    ~id: string,
-    ~lastName: string,
-    ~memberOf: array<option<rawResponse_setOnlineStatus_user_memberOf>>=?,
-    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input=?,
-    unit
-  ) => rawResponse_setOnlineStatus_user = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus: (
-    ~user: rawResponse_setOnlineStatus_user=?,
-    unit
-  ) => rawResponse_setOnlineStatus = ""
-
-
 }
 
 type relayOperationNode

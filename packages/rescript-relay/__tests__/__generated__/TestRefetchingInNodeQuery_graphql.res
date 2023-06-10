@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec response_node_User = {
     @live __typename: [ | #User],
@@ -20,7 +20,7 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    friendsOnlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
+    friendsOnlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
     userId: string,
   }
   @live
@@ -112,7 +112,7 @@ module Internal = {
 type queryRef
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -129,13 +129,6 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~friendsOnlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>=?,
-    ~userId: string,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode

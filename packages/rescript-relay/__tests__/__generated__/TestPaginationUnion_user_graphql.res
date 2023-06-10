@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_friendsConnection = {
     totalCount: int,
@@ -36,7 +36,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestPaginationUnion_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 

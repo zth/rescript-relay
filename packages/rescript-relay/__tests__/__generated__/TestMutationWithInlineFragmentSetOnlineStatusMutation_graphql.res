@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_setOnlineStatus_user = {
@@ -108,7 +108,7 @@ module Internal = {
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -125,32 +125,6 @@ module Utils = {
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~setOnlineStatus: rawResponse_setOnlineStatus=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user: (
-    ~firstName: string,
-    ~id: string,
-    ~lastName: string,
-    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input=?,
-    unit
-  ) => rawResponse_setOnlineStatus_user = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus: (
-    ~user: rawResponse_setOnlineStatus_user=?,
-    unit
-  ) => rawResponse_setOnlineStatus = ""
-
-
 }
 
 type relayOperationNode

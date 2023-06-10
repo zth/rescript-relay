@@ -21,7 +21,7 @@ module Test = {
     let query = {
       Query.use(
         ~variables={
-          beforeDate: Some(Js.Date.fromFloat(1514764800000.)),
+          beforeDate: Js.Date.fromFloat(1514764800000.),
           number: [2],
         },
         (),

@@ -62,7 +62,7 @@ module UserDisplayer = {
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: Some([Online])}, ())
+    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: [Online]}, ())
 
     switch query.node {
     | Some(#User(user)) => <UserDisplayer queryRef=user.fragmentRefs />

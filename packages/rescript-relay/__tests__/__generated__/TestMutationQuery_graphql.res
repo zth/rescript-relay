@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec response_loggedInUser = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestMutation_user]>,
@@ -71,9 +71,8 @@ module Internal = {
 type queryRef
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: unit => unit = ""
 }
 
 type relayOperationNode

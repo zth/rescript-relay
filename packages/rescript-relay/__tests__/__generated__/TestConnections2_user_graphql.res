@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_member_User_friendsConnection_edges_node = {
     @live id: string,
@@ -88,7 +88,7 @@ let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 
   @live
