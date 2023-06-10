@@ -108,14 +108,14 @@ module Test = {
         onClick={_ => {
           let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Some(#Idle)}, ())
 
-          let _ = queryRef->TestQuery_graphql.queryRefToPromise->Js.Promise.then_(res => {
-              switch res {
-              | Ok() => setHasWaitedForPreload(_ => true)
-              | Error() => ()
-              }
+          let _ = queryRef->TestQuery_graphql.queryRefToPromise->(Js.Promise.then_(res => {
+                switch res {
+                | Ok() => setHasWaitedForPreload(_ => true)
+                | Error() => ()
+                }
 
-              Js.Promise.resolve()
-            }, _)
+                Js.Promise.resolve()
+              }, _))
 
           setQueryRefFromModule(_ => Some(queryRef))
         }}>
@@ -138,14 +138,12 @@ module Test = {
       <button
         onClick={_ => {
           let _ =
-            Query.fetchPromised(
-              ~environment,
-              ~variables={status: Some(#Online)},
-              (),
-            )->Js.Promise.then_(res => {
-              setFetchedResult(_ => Some(collectUsers(res)))
-              Js.Promise.resolve()
-            }, _)
+            Query.fetchPromised(~environment, ~variables={status: Some(#Online)}, ())->(
+              Js.Promise.then_(res => {
+                setFetchedResult(_ => Some(collectUsers(res)))
+                Js.Promise.resolve()
+              }, _)
+            )
         }}>
         {React.string("Test fetch promised")}
       </button>
@@ -175,5 +173,7 @@ let test_query = () => {
     (),
   )
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

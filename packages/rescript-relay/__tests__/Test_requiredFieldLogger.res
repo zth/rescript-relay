@@ -32,7 +32,7 @@ let test_requiredFieldLogger = () => {
   )
 
   Js.Promise.make((~resolve, ~reject as _) => {
-    Query.fetch(~environment, ~variables=(), ~onResult={res => resolve(. res)}, ())
+    Query.fetch(~environment, ~variables=(), ~onResult={res => resolve(res)}, ())
   })
 }
 

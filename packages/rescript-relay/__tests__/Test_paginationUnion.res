@@ -84,7 +84,10 @@ module Test = {
       ->Fragment.getConnectionNodes
       ->Belt.Array.mapWithIndex((i, member) =>
         switch member {
-        | #User(user) => <div key=user.id> <UserDisplayer user=user.fragmentRefs /> </div>
+        | #User(user) =>
+          <div key=user.id>
+            <UserDisplayer user=user.fragmentRefs />
+          </div>
         | #Group(group) =>
           <div key=group.id>
             {React.string(
@@ -138,5 +141,7 @@ let test_pagination = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

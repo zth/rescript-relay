@@ -111,7 +111,7 @@ let test_subscription = () => {
 
   let subscriptionFunction = (_, _, _) => {
     RescriptRelay.Observable.make(sink => {
-      let unsubscribe = subscribeToOnNext(next => sink.next(. next))
+      let unsubscribe = subscribeToOnNext(next => sink.next(next))
       Some({
         closed: false,
         unsubscribe,

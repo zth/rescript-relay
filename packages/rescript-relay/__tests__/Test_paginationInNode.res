@@ -65,20 +65,26 @@ module UserNodeDisplayer = {
     <div>
       {data.friendsConnection
       ->Fragment.getConnectionNodes
-      ->Belt.Array.map(user => <div key=user.id> <UserDisplayer user=user.fragmentRefs /> </div>)
+      ->Belt.Array.map(user =>
+        <div key=user.id>
+          <UserDisplayer user=user.fragmentRefs />
+        </div>
+      )
       ->React.array}
       {hasNext
         ? <button
             onClick={_ =>
-              loadNext(
-                ~count=2,
-                ~onComplete=x =>
-                  switch x {
-                  | Some(e) => Js.Console.error(e)
-                  | None => ()
-                  },
-                (),
-              ) |> ignore}>
+              ignore(
+                loadNext(
+                  ~count=2,
+                  ~onComplete=x =>
+                    switch x {
+                    | Some(e) => Js.Console.error(e)
+                    | None => ()
+                    },
+                  (),
+                ),
+              )}>
             {React.string(isLoadingNext ? "Loading..." : "Load more")}
           </button>
         : React.null}
@@ -120,5 +126,7 @@ let test_pagination = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

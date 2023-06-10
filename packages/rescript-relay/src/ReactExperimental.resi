@@ -4,7 +4,7 @@ external useDeferredValue: 'value => 'value = "useDeferredValue"
 @module("react")
 external useTransitionWithOptions: unit => (
   bool,
-  (. unit => unit, option<{"name": option<string>}>) => unit,
+  (unit => unit, option<{"name": option<string>}>) => unit,
 ) = "useTransition"
 
 let useTransition: unit => (bool, (unit => unit) => unit)

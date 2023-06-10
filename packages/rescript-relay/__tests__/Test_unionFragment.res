@@ -57,14 +57,16 @@ module FragmentRenderer = {
 
     <>
       {switch regular {
-      | #User({onlineStatus: Some(#Online), firstName, fragmentRefs}) => <>
+      | #User({onlineStatus: Some(#Online), firstName, fragmentRefs}) =>
+        <>
           <div> {React.string(firstName ++ " is online")} </div>
           <UserFragmentRenderer user=fragmentRefs />
         </>
       | _ => React.null
       }}
       {switch plural {
-      | [#User({onlineStatus: Some(#Online), firstName, fragmentRefs})] => <>
+      | [#User({onlineStatus: Some(#Online), firstName, fragmentRefs})] =>
+        <>
           <div> {React.string("plural: " ++ (firstName ++ " is online"))} </div>
           <UserFragmentRenderer prefix="plural: " user=fragmentRefs />
         </>
@@ -98,5 +100,7 @@ let test_unionFragment = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }
