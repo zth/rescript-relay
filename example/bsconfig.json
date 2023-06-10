@@ -1,5 +1,6 @@
 {
   "name": "reason-react-examples",
+  "uncurried": true,
   "jsx": {
     "version": 4,
     "mode": "automatic"
@@ -8,7 +9,6 @@
     "dir": "src",
     "subdirs": true
   },
-  "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
   "package-specs": [
     {
       "module": "commonjs",

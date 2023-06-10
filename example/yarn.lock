@@ -3316,14 +3316,6 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-dom@18.0.0:
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.0.0.tgz#26b88534f8f1dbb80853e1eabe752f24100d8023"
-  integrity sha512-XqX7uzmFo0pUceWFCt7Gff6IyIMzFUn7QMZrbrQfGxtaxXZIcGQzoNpRLE3fQLnS4XzLLPMZX2T9TRcSrasicw==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.21.0"
-
 react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
@@ -3342,13 +3334,6 @@ react-relay@15.0.0:
     invariant "^2.2.4"
     nullthrows "^1.1.1"
     relay-runtime "15.0.0"
-
-react@18.0.0:
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.0.0.tgz#b468736d1f4a5891f38585ba8e8fb29f91c3cb96"
-  integrity sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A==
-  dependencies:
-    loose-envify "^1.1.0"
 
 react@18.2.0:
   version "18.2.0"
@@ -3480,17 +3465,17 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-1.1.1.tgz#d07d592d42b52adde8ce9124ecbeed68a9aa7e93"
-  integrity sha512-l+KHESdTOhxNbbBZfh1iXTFZQ1ofHsaKV6cdBRYrNlOuZ2jcdDGWUEKyFNsVBhzvS0TcP7rByPBKYVgPMpCm3w==
+rescript-relay@2.0.0-alpha.1:
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-2.0.0-alpha.1.tgz#6df3f361c2e2ab68bbe8a35a29068a108ab90183"
+  integrity sha512-DfPUWHhZkPXXuViEznGsC5f6NivtftkfXuTjVSPVJLtI2qwt5Ze0g1aPhZmdta8uQJ9+OkcuZ6E5/v65CzNfhw==
   dependencies:
     detect-libc "^2.0.1"
 
-rescript@10.1.4:
-  version "10.1.4"
-  resolved "https://registry.yarnpkg.com/rescript/-/rescript-10.1.4.tgz#0f37710d371f32a704f17b4e804f66ce3c79a305"
-  integrity sha512-FFKlS9AG/XrLepWsyw7B+A9DtQBPWEPDPDKghV831Y2KGbie+eeFBOS0xtRHp0xbt7S0N2Dm6hhX+kTZQ/3Ybg==
+rescript@11.0.0-beta.2:
+  version "11.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-beta.2.tgz#f8be07efcd4aa0f0ab2487e9bec12c0590985b65"
+  integrity sha512-Tcf72sR4EQ+eVMAwMWDSW5VPfg8YOS6bRJQ1Sf4u6jMy7Ui18mZyy0rusQmeq8vf2spgNulMcOw+HzQ9bEiz7g==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
@@ -3585,13 +3570,6 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
-
-scheduler@^0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0.tgz#6fd2532ff5a6d877b6edb12f00d8ab7e8f308820"
-  integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 scheduler@^0.23.0:
   version "0.23.0"
