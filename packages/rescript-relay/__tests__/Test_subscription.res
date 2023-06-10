@@ -54,7 +54,7 @@ module Test = {
             ->RescriptRelay.RecordProxy.setValueString(
               ~name="onlineStatus",
               ~value=switch onlineStatus {
-              | Idle => "Offline"
+              | Idle => "offline"
               | _ => "Online"
               },
               (),

@@ -125,7 +125,8 @@ v2 = [
     "kind": "Literal",
     "name": "statuses",
     "value": [
-      "Idle"
+      "Idle",
+      "offline"
     ]
   }
 ],
@@ -283,12 +284,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f85d0e2a4fdccf6cc34e34573d26baa1",
+    "cacheID": "49a2722398c6ca9a3bb7b05dd5cb00f4",
     "id": null,
     "metadata": {},
     "name": "TestConnectionsQuery",
     "operationKind": "query",
-    "text": "query TestConnectionsQuery(\n  $beforeDate: Datetime!\n) {\n  loggedInUser {\n    ...TestConnections_user_3xCS8w\n    id\n  }\n}\n\nfragment TestConnections_user_3xCS8w on User {\n  friendsConnection(statuses: [Idle], first: 2, after: \"\", beforeDate: $beforeDate) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TestConnectionsQuery(\n  $beforeDate: Datetime!\n) {\n  loggedInUser {\n    ...TestConnections_user_3xCS8w\n    id\n  }\n}\n\nfragment TestConnections_user_3xCS8w on User {\n  friendsConnection(statuses: [Idle, offline], first: 2, after: \"\", beforeDate: $beforeDate) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })() `)

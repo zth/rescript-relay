@@ -84,7 +84,7 @@ let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput
   let flt = flt->Js.Null.toOption
   let datetime2 = switch datetime2 { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
   let datetime3 = Some(TestsUtils.Datetime.serialize(datetime3))
-  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
+  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "enum": Some("offline"), "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
@@ -198,6 +198,11 @@ return {
                       "kind": "Variable",
                       "name": "datetime",
                       "variableName": "datetime"
+                    },
+                    {
+                      "kind": "Literal",
+                      "name": "enum",
+                      "value": "offline"
                     },
                     {
                       "fields": [

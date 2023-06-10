@@ -5,7 +5,7 @@
 type enum_OnlineStatus = 
   | Online
   | Idle
-  | Offline
+  | @as("offline") Offline
   | FutureAddedValue(string)
 
 
@@ -13,7 +13,7 @@ type enum_OnlineStatus =
 type enum_OnlineStatus_input = 
   | Online
   | Idle
-  | Offline
+  | @as("offline") Offline
 
 
 @live @unboxed
@@ -80,6 +80,7 @@ and input_SomeInput = {
   datetime: option<TestsUtils.Datetime.t>,
   recursive: option<input_SomeInput>,
   @as("private") private_: option<bool>,
+  enum: option<enum_OnlineStatus>,
 }
 
 @live
@@ -91,6 +92,7 @@ and input_SomeInput_nullable = {
   datetime?: Js.Null.t<TestsUtils.Datetime.t>,
   recursive?: Js.Null.t<input_SomeInput_nullable>,
   @as("private") private_?: Js.Null.t<bool>,
+  enum?: Js.Null.t<enum_OnlineStatus>,
 }
 
 @live
@@ -180,6 +182,7 @@ external make_SomeInput: (
   ~datetime: TestsUtils.Datetime.t=?,
   ~recursive: input_SomeInput=?,
   ~_private: bool=?,
+  ~enum: enum_OnlineStatus=?,
   unit,
 ) => input_SomeInput = ""
 

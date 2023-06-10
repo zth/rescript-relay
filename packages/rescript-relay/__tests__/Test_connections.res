@@ -1,7 +1,7 @@
 module Fragment = %relay(`
   fragment TestConnections_user on User
     @argumentDefinitions(
-      onlineStatuses: { type: "[OnlineStatus!]", defaultValue: [Idle] }
+      onlineStatuses: { type: "[OnlineStatus!]", defaultValue: [Idle, offline] }
       count: { type: "Int", defaultValue: 2 }
       cursor: { type: "String", defaultValue: "" }
       beforeDate: { type: "Datetime!" }
@@ -48,6 +48,7 @@ module Fragment2 = %relay(`
           # Different combinations of null default values, custom scalars, etc
           objTest: {
             datetime: $datetime,
+            enum: offline,
             recursive: {
               float: $flt,
               datetime: $datetime2

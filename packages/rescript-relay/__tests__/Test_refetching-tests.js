@@ -32,7 +32,7 @@ describe("Fragment", () => {
       variables: {
         id: "user-1",
         showOnlineStatus: true,
-        friendsOnlineStatuses: ["Online", "Offline"],
+        friendsOnlineStatuses: ["Online", "offline"],
       },
       data: {
         node: {

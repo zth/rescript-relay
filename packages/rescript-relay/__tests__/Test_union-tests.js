@@ -24,7 +24,7 @@ describe("Unions", () => {
                 __typename: "User",
                 id: "user-2",
                 firstName: "Second",
-                onlineStatus: "Offline",
+                onlineStatus: "offline",
               },
             },
             {

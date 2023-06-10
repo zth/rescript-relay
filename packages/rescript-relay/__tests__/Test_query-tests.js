@@ -35,9 +35,9 @@ describe("Query", () => {
     queryMock.mockQuery(
       makeMockedQuery(
         {
-          status: "Offline",
+          status: "offline",
         },
-        [{ id: "user-2", firstName: "Second", onlineStatus: "Offline" }]
+        [{ id: "user-2", firstName: "Second", onlineStatus: "offline" }]
       )
     );
 

@@ -106,7 +106,8 @@ module Test = {
         | Some(Online) => "online"
         | Some(Idle) => "idle"
         | Some(Offline) => "offline"
-        | Some(FutureAddedValue(_)) | None => "-"
+        | Some(FutureAddedValue(v)) => v
+        | None => "-"
         }),
       )}
       <div> {React.string("Inline status: " ++ inlineStatus)} </div>
@@ -267,7 +268,7 @@ module Test = {
                 ->RescriptRelay.RecordProxy.setValueString(
                   ~name="onlineStatus",
                   ~value=switch onlineStatus {
-                  | Idle => "Offline"
+                  | Idle => "offline"
                   | _ => "Online"
                   },
                   (),

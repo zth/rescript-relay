@@ -80,9 +80,25 @@ module Internal = {
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
+  external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
+  @live
+  external onlineStatus_input_toString: RelaySchemaAssets_graphql.enum_OnlineStatus_input => string = "%identity"
+  @live
+  let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
+    switch enum {
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
+    }
+  }
+  @live
+  let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
+    onlineStatus_decode(Obj.magic(str))
+  }
   @live @obj external make_someInput: (
     ~bool: bool=?,
     ~datetime: TestsUtils.Datetime.t=?,
+    ~enum: RelaySchemaAssets_graphql.enum_OnlineStatus_input=?,
     ~float: float=?,
     ~int: int=?,
     ~_private: bool=?,

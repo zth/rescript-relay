@@ -61,7 +61,7 @@ describe("Fragments with required", () => {
               {
                 node: {
                   id: "user-3",
-                  onlineStatus: "Offline",
+                  onlineStatus: "offline",
                 },
               },
               {

@@ -31,6 +31,7 @@ input SomeInput {
   datetime: Datetime
   recursive: SomeInput
   private: Boolean
+  enum: OnlineStatus
 }
 
 interface Node {
@@ -50,7 +51,7 @@ Whether something is online or not.
 enum OnlineStatus {
   Online
   Idle
-  Offline
+  offline
 }
 
 interface HasName {

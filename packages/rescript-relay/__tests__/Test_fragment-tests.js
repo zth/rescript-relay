@@ -48,7 +48,7 @@ describe("Fragment", () => {
               node: {
                 id: "user-3",
                 firstName: "Third",
-                onlineStatus: "Offline",
+                onlineStatus: "offline",
               },
             },
           ],
