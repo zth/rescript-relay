@@ -118,8 +118,6 @@ function traverse(
     var shouldConvertUnion =
       typeof instructions["u"] === "string" && !!converters[instructions["u"]];
 
-    var isTopLevelNodeField = typeof instructions["tnf"] === "string";
-
     /**
      * Handle arrays
      */
@@ -217,21 +215,6 @@ function traverse(
           instructions["r"]
         );
         continue;
-      }
-
-      if (isTopLevelNodeField) {
-        // If this is a top level node field we should try and convert, ensure
-        // it conforms to the desired shape (has the correct typename). If not,
-        // null it and return right away.
-        if (
-          v == null ||
-          !v.hasOwnProperty("__typename") ||
-          v.__typename !== instructions["tnf"]
-        ) {
-          newObj = getNewObj(newObj, currentObj);
-          newObj[key] = nullableValue;
-          return newObj;
-        }
       }
 
       if (shouldConvertEnum) {

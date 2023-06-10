@@ -806,7 +806,6 @@ describe("conversion", () => {
               },
               node_memberOfSingular: { u: "rawResponse_node_memberOfSingular" },
               node_memberOf: { u: "rawResponse_node_memberOf" },
-              node: { tnf: "User" },
             },
           },
           {
