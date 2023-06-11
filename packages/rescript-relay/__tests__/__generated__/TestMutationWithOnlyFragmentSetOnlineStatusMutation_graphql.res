@@ -4,25 +4,24 @@
 module Types = {
   @@warning("-30")
 
-  @live
-  type rec rawResponse_setOnlineStatus_user_memberOf_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-  }
-  @live
-  and rawResponse_setOnlineStatus_user_memberOf_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  and rawResponse_setOnlineStatus_user_memberOf = [
-    | #Group(rawResponse_setOnlineStatus_user_memberOf_Group)
-    | #User(rawResponse_setOnlineStatus_user_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_setOnlineStatus_user_memberOf = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   @live
   type rec response_setOnlineStatus_user = {
@@ -59,26 +58,9 @@ module Types = {
 }
 
 @live
-let unwrap_rawResponse_setOnlineStatus_user_memberOf: {. "__typename": string } => [
-  | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
-  | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_rawResponse_setOnlineStatus_user_memberOf: [
-  | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
-  | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(

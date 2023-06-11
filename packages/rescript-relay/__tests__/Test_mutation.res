@@ -134,7 +134,7 @@ module Test = {
                   lastName: data.lastName,
                   memberOf: Some([
                     Some(
-                      #User({
+                      User({
                         __typename: #User,
                         firstName: "test",
                         id: "123",

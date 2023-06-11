@@ -4,19 +4,20 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_node_Group = {
-    @live __typename: [ | #Group],
-    name: option<string>,
-  }
-  and response_node_User = {
-    @live __typename: [ | #User],
-    firstName: option<string>,
-  }
-  and response_node = [
-    | #Group(response_node_Group)
-    | #User(response_node_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_node = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        name: option<string>,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        firstName: option<string>,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   type response = {
     node: option<response_node>,
@@ -31,26 +32,9 @@ module Types = {
 }
 
 @live
-let unwrap_response_node: {. "__typename": string } => [
-  | #Group(Types.response_node_Group)
-  | #User(Types.response_node_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_response_node: [
-  | #Group(Types.response_node_Group)
-  | #User(Types.response_node_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(

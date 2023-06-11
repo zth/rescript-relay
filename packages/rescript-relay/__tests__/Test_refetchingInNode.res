@@ -63,7 +63,7 @@ module Test = {
     let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: [Online]})
 
     switch query.node {
-    | Some(#User(user)) => <UserDisplayer queryRef=user.fragmentRefs />
+    | Some(User(user)) => <UserDisplayer queryRef=user.fragmentRefs />
     | _ => React.string("-")
     }
   }

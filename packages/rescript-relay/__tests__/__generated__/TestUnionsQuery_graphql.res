@@ -4,42 +4,44 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_members_edges_node_Group_members_Group = {
-    @live __typename: [ | #Group],
-    avatarUrl: option<string>,
-    @live id: string,
-    name: string,
-  }
-  and response_members_edges_node_Group_members_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-    @live id: string,
-    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
-  }
-  and response_members_edges_node_Group = {
-    @live __typename: [ | #Group],
-    avatarUrl: option<string>,
-    @live id: string,
-    members: option<array<option<response_members_edges_node_Group_members>>>,
-    name: string,
-  }
-  and response_members_edges_node_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-    @live id: string,
-    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
-  }
-  and response_members_edges_node_Group_members = [
-    | #Group(response_members_edges_node_Group_members_Group)
-    | #User(response_members_edges_node_Group_members_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_members_edges_node_Group_members = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        avatarUrl: option<string>,
+        @live id: string,
+        name: string,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        firstName: string,
+        @live id: string,
+        onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
-  and response_members_edges_node = [
-    | #Group(response_members_edges_node_Group)
-    | #User(response_members_edges_node_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_members_edges_node = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        avatarUrl: option<string>,
+        @live id: string,
+        members: option<array<option<response_members_edges_node_Group_members>>>,
+        name: string,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        firstName: string,
+        @live id: string,
+        onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_members_edges = {
     node: option<response_members_edges_node>,
@@ -60,47 +62,13 @@ module Types = {
 }
 
 @live
-let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
-  | #Group(Types.response_members_edges_node_Group_members_Group)
-  | #User(Types.response_members_edges_node_Group_members_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_response_members_edges_node_Group_members: Types.response_members_edges_node_Group_members => Types.response_members_edges_node_Group_members = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_response_members_edges_node_Group_members: [
-  | #Group(Types.response_members_edges_node_Group_members_Group)
-  | #User(Types.response_members_edges_node_Group_members_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_response_members_edges_node_Group_members: Types.response_members_edges_node_Group_members => Types.response_members_edges_node_Group_members = RescriptRelay_Internal.wrapUnion
 @live
-let unwrap_response_members_edges_node: {. "__typename": string } => [
-  | #Group(Types.response_members_edges_node_Group)
-  | #User(Types.response_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_response_members_edges_node: Types.response_members_edges_node => Types.response_members_edges_node = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_response_members_edges_node: [
-  | #Group(Types.response_members_edges_node_Group)
-  | #User(Types.response_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_response_members_edges_node: Types.response_members_edges_node => Types.response_members_edges_node = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(

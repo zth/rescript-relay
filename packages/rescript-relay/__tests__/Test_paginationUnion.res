@@ -84,11 +84,11 @@ module Test = {
       ->Fragment.getConnectionNodes
       ->Belt.Array.mapWithIndex((i, member) =>
         switch member {
-        | #User(user) =>
+        | User(user) =>
           <div key=user.id>
             <UserDisplayer user=user.fragmentRefs />
           </div>
-        | #Group(group) =>
+        | Group(group) =>
           <div key=group.id>
             {React.string(
               "Group " ++
@@ -101,7 +101,7 @@ module Test = {
               " admins"))),
             )}
           </div>
-        | #UnselectedUnionMember(_) =>
+        | UnselectedUnionMember(_) =>
           <div key={i->string_of_int}> {React.string("Unknown type")} </div>
         }
       )

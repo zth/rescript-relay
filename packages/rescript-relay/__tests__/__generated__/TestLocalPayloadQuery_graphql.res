@@ -4,58 +4,55 @@
 module Types = {
   @@warning("-30")
 
-  @live
-  type rec rawResponse_loggedInUser_memberOf_Group_topMember_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOf_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-    topMember: option<rawResponse_loggedInUser_memberOf_Group_topMember>,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOf_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOfSingular_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOfSingular_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  and rawResponse_loggedInUser_memberOf_Group_topMember = [
-    | #User(rawResponse_loggedInUser_memberOf_Group_topMember_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOf_Group_topMember = 
+    | User(
+      {
+        @live __typename: [ | #User],
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
-  and rawResponse_loggedInUser_memberOf = [
-    | #Group(rawResponse_loggedInUser_memberOf_Group)
-    | #User(rawResponse_loggedInUser_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOf = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+        topMember: option<rawResponse_loggedInUser_memberOf_Group_topMember>,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
-  and rawResponse_loggedInUser_memberOfSingular = [
-    | #Group(rawResponse_loggedInUser_memberOfSingular_Group)
-    | #User(rawResponse_loggedInUser_memberOfSingular_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOfSingular = 
+    | Group(
+      {
+        @live __typename: [ | #Group],
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+      }
+    )
+    | User(
+      {
+        @live __typename: [ | #User],
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_loggedInUser = {
     @live id: string,
@@ -85,64 +82,17 @@ module Types = {
 }
 
 @live
-let unwrap_rawResponse_loggedInUser_memberOf_Group_topMember: {. "__typename": string } => [
-  | #User(Types.rawResponse_loggedInUser_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_rawResponse_loggedInUser_memberOf_Group_topMember: Types.rawResponse_loggedInUser_memberOf_Group_topMember => Types.rawResponse_loggedInUser_memberOf_Group_topMember = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_rawResponse_loggedInUser_memberOf_Group_topMember: [
-  | #User(Types.rawResponse_loggedInUser_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_rawResponse_loggedInUser_memberOf_Group_topMember: Types.rawResponse_loggedInUser_memberOf_Group_topMember => Types.rawResponse_loggedInUser_memberOf_Group_topMember = RescriptRelay_Internal.wrapUnion
 @live
-let unwrap_rawResponse_loggedInUser_memberOf: {. "__typename": string } => [
-  | #Group(Types.rawResponse_loggedInUser_memberOf_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOf_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_rawResponse_loggedInUser_memberOf: Types.rawResponse_loggedInUser_memberOf => Types.rawResponse_loggedInUser_memberOf = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_rawResponse_loggedInUser_memberOf: [
-  | #Group(Types.rawResponse_loggedInUser_memberOf_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOf_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_rawResponse_loggedInUser_memberOf: Types.rawResponse_loggedInUser_memberOf => Types.rawResponse_loggedInUser_memberOf = RescriptRelay_Internal.wrapUnion
 @live
-let unwrap_rawResponse_loggedInUser_memberOfSingular: {. "__typename": string } => [
-  | #Group(Types.rawResponse_loggedInUser_memberOfSingular_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_rawResponse_loggedInUser_memberOfSingular: Types.rawResponse_loggedInUser_memberOfSingular => Types.rawResponse_loggedInUser_memberOfSingular = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_rawResponse_loggedInUser_memberOfSingular: [
-  | #Group(Types.rawResponse_loggedInUser_memberOfSingular_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_rawResponse_loggedInUser_memberOfSingular: Types.rawResponse_loggedInUser_memberOfSingular => Types.rawResponse_loggedInUser_memberOfSingular = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(

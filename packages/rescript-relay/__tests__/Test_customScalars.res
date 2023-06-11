@@ -36,9 +36,9 @@ module Test = {
       </div>
       <div>
         {switch query.member {
-        | Some(#User(user)) =>
+        | Some(User(user)) =>
           React.string("member createdAt: " ++ user.createdAt->Js.Date.getTime->Js.Float.toString)
-        | Some(#UnselectedUnionMember(_)) | None => React.null
+        | Some(UnselectedUnionMember(_)) | None => React.null
         }}
       </div>
     </>

@@ -4,14 +4,14 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_member_User = {
-    @live __typename: [ | #User],
-    createdAt: TestsUtils.Datetime.t,
-  }
-  and response_member = [
-    | #User(response_member_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_member = 
+    | User(
+      {
+        @live __typename: [ | #User],
+        createdAt: TestsUtils.Datetime.t,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_loggedInUser_friends = {
     createdAt: TestsUtils.Datetime.t,
@@ -47,22 +47,9 @@ module Types = {
 }
 
 @live
-let unwrap_response_member: {. "__typename": string } => [
-  | #User(Types.response_member_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_response_member: Types.response_member => Types.response_member = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_response_member: [
-  | #User(Types.response_member_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_response_member: Types.response_member => Types.response_member = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(

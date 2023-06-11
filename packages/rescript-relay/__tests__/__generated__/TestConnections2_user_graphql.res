@@ -13,14 +13,14 @@ module Types = {
   and fragment_member_User_friendsConnection = {
     edges: option<array<option<fragment_member_User_friendsConnection_edges>>>,
   }
-  and fragment_member_User = {
-    @live __typename: [ | #User],
-    friendsConnection: fragment_member_User_friendsConnection,
-  }
-  and fragment_member = [
-    | #User(fragment_member_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") and fragment_member = 
+    | User(
+      {
+        @live __typename: [ | #User],
+        friendsConnection: fragment_member_User_friendsConnection,
+      }
+    )
+    | @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     member: option<fragment_member>,
@@ -28,22 +28,9 @@ module Types = {
 }
 
 @live
-let unwrap_fragment_member: {. "__typename": string } => [
-  | #User(Types.fragment_member_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_member: Types.fragment_member => Types.fragment_member = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_fragment_member: [
-  | #User(Types.fragment_member_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_member: Types.fragment_member => Types.fragment_member = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   type fragmentRaw

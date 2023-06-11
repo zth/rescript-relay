@@ -35,3 +35,15 @@ let internal_nullableToOptionalExnHandler = x =>
   }
 
 @live @unboxed type rec arg = Arg(_): arg
+
+let unwrapUnion: ('a, array<string>) => 'a = %raw(`
+  function unwrapUnion(union, members) {
+    if (union != null && members.indexOf(union.__typename) === -1) { 
+      return Object.assign({}, union, {__typename: "__unselected"});
+    }
+
+    return union;
+  }
+`)
+
+let wrapUnion = union => union

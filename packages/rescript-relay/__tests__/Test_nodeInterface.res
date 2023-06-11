@@ -38,7 +38,7 @@ module Test = {
     let query = Query.use(~variables=())
 
     switch query.node {
-    | Some(#User(user)) => React.string(user.firstName)
+    | Some(User(user)) => React.string(user.firstName)
     | _ => React.string("-")
     }
   }

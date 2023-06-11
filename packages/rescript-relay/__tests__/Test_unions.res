@@ -61,11 +61,11 @@ module Test = {
       }
       ->Belt.Array.map(x =>
         switch x {
-        | #User(user) =>
+        | User(user) =>
           <div key=user.id>
             {React.string("First level: " ++ printUser(user.firstName, user.onlineStatus))}
           </div>
-        | #Group(group) =>
+        | Group(group) =>
           <div key=group.id>
             {React.string(
               "First level: " ++
@@ -76,11 +76,11 @@ module Test = {
             ->Belt.Option.getWithDefault([])
             ->Belt.Array.map(x =>
               switch x {
-              | Some(#User(user)) =>
+              | Some(User(user)) =>
                 <div key=user.id>
                   {React.string("Second level: " ++ printUser(user.firstName, user.onlineStatus))}
                 </div>
-              | Some(#Group(g)) =>
+              | Some(Group(g)) =>
                 <div key=g.id>
                   {React.string(
                     group.name ++
@@ -90,12 +90,12 @@ module Test = {
                     g.avatarUrl->Belt.Option.getWithDefault("[no avatar]")))),
                   )}
                 </div>
-              | Some(#UnselectedUnionMember(_)) | None => React.null
+              | Some(UnselectedUnionMember(_)) | None => React.null
               }
             )
             ->React.array}
           </div>
-        | #UnselectedUnionMember(_) => React.null
+        | UnselectedUnionMember(_) => React.null
         }
       )
       ->React.array}
