@@ -6,6 +6,8 @@ Below is a series of releases for version 3 of RescriptRelay, which contain a la
 
 Dedicated tooling for migrating is coming, as well as docs.
 
+# 0.0.0-version-3-8b552902
+
 ## Breaking changes
 
 - Unions are now represented as regular variants. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/3b5df51b80a0e1222b376fcfc730bb5dd0de099a
