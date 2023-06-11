@@ -8,8 +8,13 @@ Dedicated tooling for migrating is coming, as well as docs.
 
 ## Breaking changes
 
+- Unions are now represented as regular variants. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/3b5df51b80a0e1222b376fcfc730bb5dd0de099a
+
+# 0.0.0-version-3-3504d777
+
+## Breaking changes
+
 - All trailing unit arguments are removed. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/2a16791268afb29d106362d0cf17915f69d5b4ff
-- Unions are now represented as regular variants.
 
 # 0.0.0-version-3-aeebeaab
 
