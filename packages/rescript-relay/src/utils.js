@@ -11,15 +11,8 @@ function makeNewPath(currentPath, newKeys) {
 }
 
 function getTypename(v) {
-  if (v != null && typeof v === "object") {
-    if (v.__typename) {
-      return v.__typename;
-    }
-
-    // `v.VAL` relies on internal implementation details in ReScript.
-    if (v.VAL != null && typeof v.VAL === "object") {
-      return v.VAL.__typename;
-    }
+  if (v != null && typeof v === "object" && v.__typename != null) {
+    return v.__typename;
   }
 }
 
@@ -49,9 +42,6 @@ function traverse(
   }
 
   for (var key in currentObj) {
-    // Internal ReScript polymorphic variant representation, ignore.
-    if (key === "VAL" || key === "NAME") continue;
-
     // Ensure we don't move into internal properties coming from Relay, with the
     // exception of the few names allowed to start with double underscores
     // ("__typename" and "__id"), and any Relay provided variables.

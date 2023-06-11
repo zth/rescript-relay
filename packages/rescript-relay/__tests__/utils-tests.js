@@ -723,14 +723,11 @@ describe("conversion", () => {
           {
             __typename: "EphemeralForSalePropertySearch",
             localUnsavedPropertySearch: {
-              NAME: "EphemeralForSalePropertySearch",
-              VAL: {
-                __typename: "EphemeralForSalePropertySearch",
-                __isPropertySearch: "EphemeralForSalePropertySearch",
-                forSalePropertyTypes: [],
-                isLocalUnsavedSearch: true,
-                nodeId: "local-unsaved-search",
-              },
+              __typename: "EphemeralForSalePropertySearch",
+              __isPropertySearch: "EphemeralForSalePropertySearch",
+              forSalePropertyTypes: [],
+              isLocalUnsavedSearch: true,
+              nodeId: "local-unsaved-search",
             },
           },
           {
@@ -743,13 +740,7 @@ describe("conversion", () => {
           {
             rawResponse_localUnsavedPropertySearch:
               function wrap_rawResponse_localUnsavedPropertySearch(v) {
-                if (v.NAME === "UnselectedUnionMember") {
-                  return {
-                    __typename: v.VAL,
-                  };
-                } else {
-                  return v.VAL;
-                }
+                return v;
               },
           },
           null,
@@ -778,21 +769,15 @@ describe("conversion", () => {
               id: "user-1",
               memberOf: [
                 {
-                  NAME: "Group",
-                  VAL: {
-                    __typename: "Group",
-                    __isNode: "Group",
-                    id: "group-1",
-                    name: "Some Group",
-                    topMember: {
-                      NAME: "User",
-                      VAL: {
-                        __typename: "User",
-                        __isNode: "User",
-                        firstName: "Some User",
-                        id: "user-2",
-                      },
-                    },
+                  __typename: "Group",
+                  __isNode: "Group",
+                  id: "group-1",
+                  name: "Some Group",
+                  topMember: {
+                    __typename: "User",
+                    __isNode: "User",
+                    firstName: "Some User",
+                    id: "user-2",
                   },
                 },
               ],
@@ -811,34 +796,16 @@ describe("conversion", () => {
           {
             rawResponse_node_memberOf_Group_topMember:
               function wrap_rawResponse_node_memberOf_Group_topMember(v) {
-                if (v.NAME === "User") {
-                  return v.VAL;
-                } else {
-                  return {
-                    __typename: v.VAL,
-                  };
-                }
+                return v;
               },
             rawResponse_node_memberOf: function wrap_rawResponse_node_memberOf(
               v
             ) {
-              if (v.NAME === "UnselectedUnionMember") {
-                return {
-                  __typename: v.VAL,
-                };
-              } else {
-                return v.VAL;
-              }
+              return v;
             },
             rawResponse_node_memberOfSingular:
               function wrap_rawResponse_node_memberOfSingular(v) {
-                if (v.NAME === "UnselectedUnionMember") {
-                  return {
-                    __typename: v.VAL,
-                  };
-                } else {
-                  return v.VAL;
-                }
+                return v;
               },
           },
           null,
