@@ -8,8 +8,13 @@ Dedicated tooling for migrating is coming, as well as docs.
 
 ## Breaking changes
 
+- All trailing unit arguments are removed. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/2a16791268afb29d106362d0cf17915f69d5b4ff
+
+# 0.0.0-version-3-aeebeaab
+
+## Breaking changes
+
 - Object maker functions are removed, and leverage optional fields for all variables/input objects. Also a large change, tooling upcoming. Commit showing how this is migrated to in the tests: https://github.com/zth/rescript-relay/commit/fd6b07a1b26620c91e5de61f930235c35517da6a
-- All trailing unit arguments are removed.
 
 # 0.0.0-version-3-89bccc22
 
