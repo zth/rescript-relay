@@ -1,5 +1,15 @@
 # master
 
+# 2.0.0
+
+RescriptRelay `2.0.0` is here! This isn't a large release really, but it's a major release just because it relies on functionality from ReScript `v11`. Meaning the lower bound of the required ReScript version is `>=11.0.0-beta.2`.
+
+### Uncurried mode
+
+`2.0.0` is built to work with uncurried mode. It's not fully _optimized_, that'll come in `3.0.0`, but it works well in uncurried mode.
+
+You can activate uncurried mode with `RescriptRelay` by setting `"uncurried": true` (`true` is also the default in ReScript `>=11.0.0-beta.2`) in your `bsconfig.json`, and then ensuring that you pass `-uncurried` to `rescript-relay/ppx` in `ppx-flags`: `"ppx-flags": [["rescript-relay/ppx", "-uncurried"]]`.
+
 # 2.0.0-alpha.1
 
 ## Improvements
