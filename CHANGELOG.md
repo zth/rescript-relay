@@ -2,6 +2,8 @@
 
 # **Version 3**
 
+# 3.0.0-alpha.1
+
 Below is a series of releases for version 3 of RescriptRelay, which contain a large amount of breaking changes. The releases are cut up with a few breaking changes for each, to make them slightly less hard to migrate to. You're encouraged to start from the bottom and work your way up through the versions.
 
 Dedicated tooling for migrating is coming, as well as docs.
