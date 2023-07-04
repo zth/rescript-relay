@@ -13,7 +13,7 @@ This tutorial is forked from the [official Relay tutorial](https://relay.dev/doc
 In this section:
 
 - We’ll take a React component that displays hard-coded placeholder data and modify it so that it fetches its data using a GraphQL query.
-- We’ll learn how to use the TypeScript types that Relay generates from your GraphQL to ensure type safety.
+- We’ll learn how to use the Rescript types that RescriptRelay generates from your GraphQL to ensure type safety.
 
 ---
 
