@@ -29,7 +29,7 @@ This tutorial is built with ReScript, so [very basic knowledge of ReScript](http
 
 To get started, run the following commands:
 
-```
+```bash
 git clone https://github.com/zth/relay-examples.git
 cd relay-examples/newsfeed
 yarn
@@ -41,11 +41,11 @@ This downloads a template project to get started from and starts the server. (If
 When you run `yarn dev`, several processes are started:
 
 - A basic GraphQL server that the front-end will query to retrieve information. Later versions of this tutorial will show you how to build the server alongside the client.
-- The Relay compiler, which processes the GraphQL in your app and generates additional files that Relay uses at runtime, as well as ReScript code representing the inputs and results of your queries. It will automatically regenerate when you save changes in your files.
+- The RescriptRelay compiler, which processes the GraphQL in your app and files that Relay uses at runtime as well as ReScript code representing the inputs and results of your queries. It will automatically regenerate when you save changes in your files.
 - The Rescript compiler, which compiles Rescript `.res` files to Javascript (ECMAScript modules) `.mjs`
 - A vite dev server that serves up the front-end `.mjs` code.
 
-In the terminal output, these three processes’ log output are marked with tags: `[vite]` in yellow, `[server]` in green, `[relay]` in turqoise, and `[rescript]` in blue. Keep a look out for errors marked with `[relay]` and `[rescript]` as these are helpful if your GraphQL has any mistakes.
+In the terminal output, these three processes’ log output are marked with tags: `[vite]` in yellow, `[server]` in green, `[relay]` in turqoise, and `[rescript]` in blue. Keep a look out for errors marked with `[relay]` and `[rescript]` as these are helpful if your GraphQL or rescript code has any mistakes.
 
 Now that these processes are running, you should be able to open [http://localhost:3000](http://localhost:3000/) in your browser.
 
