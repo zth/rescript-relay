@@ -4,16 +4,12 @@ title: Query Basics
 sidebar_label: Query Basics
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Query Basics
 
 In this section:
 
 - We’ll take a React component that displays hard-coded placeholder data and modify it so that it fetches its data using a GraphQL query.
-- We’ll learn how to use the Rescript types that RescriptRelay generates from your GraphQL to ensure type safety.
+- We’ll learn how to use the ReScript types that RescriptRelay generates from your GraphQL to ensure type safety.
 
 ---
 
@@ -78,7 +74,7 @@ module NewsfeedQuery = %relay(`
 
 Let’s break this down:
 
-- To embed GraphQL within ReScript, we put a string literal <span class="color1">marked with the <code>%relay(``)</code> tag</span>. This tag allows the Relay compiler to find and compile the GraphQL within a ReScript codebase.
+- To embed GraphQL within ReScript, we write a string literal <span class="color1">marked with the <code>%relay(``)</code> tag</span>. This tag allows the Relay compiler to find and compile the GraphQL within a ReScript codebase.
 - Our GraphQL string consists of a <span class="color2">query declaration</span> with the keyword `query` and then a query name.
 - Inside the query declaration are _fields_, which specify what information to query for*:*
   - Some fields are _<span class="color3">scalar fields</span>_ that retrieve a string, number, or other unit of information.
