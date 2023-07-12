@@ -86,7 +86,7 @@ This illustrates the part of the graph that this query is asking for:
 
 Now that we’ve defined the query, we need to modify our React component to fetch it and to use the data returned by the server.
 
-Turn back to the `Newsfeed` component and start by deleting the placeholder data. Then replace it with this:
+Turn back to the `Newsfeed` component and start by deleting the placeholder data. Then replace it with this (which is supposed to not compile, so don't panic when you see the errors!):
 
 ```rescript
 @react.component
@@ -97,18 +97,125 @@ let make = () => {
   | None => React.null
   | Some(topStory) =>
     <div className="newsfeed">
-      <Story story={topStory} />
+      <Story story={(topStory :> Story.story)} />
     </div>
   }
 }
-
 ```
 
-The `NewsfeedQuery.use` hook fetches and returns the data. It always expects <span className="color2">`variables`</span>, but since this query has no variables, we pass it unit (`()`).
+`topStory` returned by the query has type `NewsfeedQuery_graphql.Types.response_topStory`. Since this is compatible with the type `Story.story` expected by the `story` prop, we can use `:>` is needed to convert `topStory` into the expected type. This is necessary because ReScript uses structural types. See the Deep Dive below for more.
+
+<details>
+<summary>Deep dive: Nominal vs Structural types</summary>
+
+We add the `:>` operator, to convert the type returned by the query into the type `Story.story`. We do this because ReScript has what is called nominal types. Typescript, which you may be familiar with, uses structural types. 
+
+```typescript
+type A = { name: string }
+type B = { name: string }
+type C = A & { age: number }
+
+const acceptsA = (arg: A) => {
+  console.log(arg.name)
+}
+
+const valA: A = { name: 'Jean Valjean' }
+const valB: B = { name: 'Jean Valjean' }
+const valC: C = { name: 'Jean Valjean', age: 64 }
+
+acceptsA(valA)
+acceptsA(valB)
+acceptsA(valC)
+```
+
+This, on the other hand, is _not_ valid ReScript
+
+```rescript
+type a = {name: string}
+type b = {name: string}
+type c = {...a, age: int}
+
+let acceptsA = (arg: a) => {
+  Js.log(arg.name)
+}
+
+let valA: a = {name: "Jean Valjean"}
+let valB: b = {name: "Jean Valjean"}
+let valC: c = {name: "Jean Valjean", age: 64}
+
+acceptsA(valA)
+acceptsA(valB)
+acceptsA(valC)
+```
+
+and will give you compile errors at 
+```
+45 │ acceptsA(valB)
+
+  This has type: b
+  Somewhere wanted: a
+```
+and
+```
+ 46 │ acceptsA(valC)
+
+  This has type: c
+  Somewhere wanted: a
+```
+
+If you instead do 
+
+```rescript
+acceptsA((valB :> a))
+acceptsA((valC :> a))
+```
+
+Then your code will compile. "WHY?"
+</details>
+
+Even with `:>` you'll still compiler errors, because the placeholder data and the starting components do not take into account that the schema has all fields except `id` nullable.
+
+While it is good schema design to make fields nullable by default, it can be tedioous to have to handle nulls everywhere. Relay has a `@required` _directive_ that handles this for you. You add it to fields in your query, specifying what Relay should do if the field is (unexpectedly) null. There are three different options. The one we will use here is `NONE`. If a `@required(action: NONE)` field is null, it's parent will be null.
+
+:::tip
+If and how to use the `@required` directive depends on your particular use cases. If a component can meaningfully display information when some of it's child components cannot get their data (e.g. due to auth or a backend error), you should (probably) not make the field required. If a componant cannot show something meaningful, then you (probably) _should_ make the field required. In this tutorial we will plaster `@required` on everything nullable
+:::
+
+:::tip
+The required directive only applies _locally_ when data is pulled out of the store in a query or fragment. If component A uses `required` for a field that component B does not use `required` for, then only A will be affected, even if A is the component to fetch the data.
+
+This is part of Relay's promise that you should only need to reason about data requirements locally.
+:::
+
+To make the code compile, add `@required` directives to our query:
+
+```rescript
+module NewsfeedQuery = %relay(`
+  query NewsfeedQuery {
+    topStory {
+      title @required(action: NONE)
+      summary @required(action: NONE)
+      poster @required(action: NONE) {
+        name @required(action: NONE)
+        profilePicture @required(action: NONE) {
+          url
+        }
+      }
+      thumbnail @required(action: NONE) {
+        url
+      }
+    }
+  }
+`)
+```
+
+If _any_ of the fields `required` fields are null, their parent will be null, which in turn will make their parent null, all the way up to `topStory`. Finally, we get back the the component code:
+
+The `NewsfeedQuery.use` hook fetches and returns the data. It always expects <span className="color2">`variables`</span>. Since this query has no variables, we pass in unit (`()`).
 
 The object that `NewsfeedQuery.use` returns has the same shape as the query. For instance, if printed in JSON format it might look like this:
 
-```
+```json
 {
   topStory: {
     title: "Local Yak Named Yak of the Year",
@@ -128,70 +235,6 @@ The object that `NewsfeedQuery.use` returns has the same shape as the query. For
 
 Notice that each field selected by the GraphQL query corresponds to a property in the JSON response.
 
-Now go to `Story.res` and change it to this
-
-```rescript
-type story = NewsfeedQuery_graphql.Types.response_topStory
-
-@react.component
-let make = (~story: story) => {
-  let summary = switch story.summary {
-  | None => "Failed to load story summary"
-  | Some(summary) => summary
-  }
-
-  let poster: PosterByline.poster = {
-    name: switch story.poster.name {
-    | None => "Failed to load poster name"
-    | Some(name) => name
-    },
-    profilePicture: switch story.poster.profilePicture {
-    | None => None
-    | Some({url}) => {
-        open Image
-        Some({url: url})
-      }
-    },
-  }
-
-  let thumbnail = switch story.thumbnail {
-  | None => None
-  | Some({url}) => {
-      open Image
-      Some({url: url})
-    }
-  }
-
-  <Card>
-    <PosterByline poster={story.poster} />
-    <Heading> {story.title->React.string} </Heading>
-    {switch story.thumbnail {
-    | None => React.null
-    | Some(thumbnail) => <Image image={thumbnail} width={400} height={400} />
-    }}
-    <StorySummary summary={story.summary} />
-  </Card>
-}
-```
-
-The reshaping of `story` like this looks complicated, annoying, cumbersome, and boring. It is only necessary here because ReScript uses nominal types as opposed to structural types. When we get to Fragments (in the very next section), all of this ugliness will go away! Don't worry!
-
-What you've done is replace the previous definition of `Story.story` with the type that Relay has generated for the Newsfeed query. We'll dive deeper into what this `NewsfeedQuery_graphql` type is a bit later.
-
-<details>
-<summary>Deep dive: Nominal vs Structural types</summary>
-
-Nominal types mean, that types are only equal if they have the same name. Structural types, mean that two types are the same if they have the same structure.
-
-ReScript has nominal types... bla bla.
-</details>
-
-:::warning
-Keeping "The one final thing" for reference, but its not quite correct. Changing the type definitions would have to be done all the way down which isn't trivial. The Image component takes data from two different places in the query and without a fragment these types are not compatible.
-
-Now, we need to do one final thing for this to compile. Go to your `Story.res` file, and change the type definition for `story` to `type story = NewsfeedQuery_graphql.Types.response_topStory`, and then remove the type definitions no longer needed in `Story.res`. We'll dive deeper into what `NewsfeedQuery_graphql` is a bit later, but for now what you need to know is that you've now replaced your own definition of `story` with one autogenerated by Relay for the `NewsfeedQuery` operation's `topStory` part.
-:::
-
 At this point, you should see a story fetched from the server:
 
 ![Screenshot](/img/docs/tutorial/queries-basic-screenshot.png)
@@ -207,7 +250,7 @@ This is Relay in its most basic form: fetching the results of a GraphQL query wh
 <details>
 <summary>Deep dive: Suspense for Data Loading</summary>
 
-_Suspense_ is a new API in React that lets React wait while data is loaded before it renders components that need that data. When a component needs to load data before rendering, React shows a loading indicator. You control the loading indicator's location and style using a special component called `Suspense`.
+_Suspense_ is an API in React that lets React wait while data is loaded before it renders components that need that data. When a component needs to load data before rendering, React shows a loading indicator. You control the loading indicator's location and style using a special component called `Suspense`.
 
 Right now, there's a `Suspense` component inside `App.res`, which is what shows the spinner while `NewsfeedQuery.use` is loading data.
 
@@ -218,7 +261,7 @@ We'll look at Suspense in more detail in later sections when we add some more in
 <details>
 <summary>Deep dive: Queries are Static</summary>
 
-All of the GraphQL strings in a Relay app are pre-processed by the Relay compiler and removed from the resulting bundled code. This means you can’t construct GraphQL queries at runtime — they have to be static string literals so that they’re known at compile time. But it comes with major advantages.
+All of the GraphQL strings in a Relay app are pre-processed by the Relay compiler and removed from the resulting bundled code. This means you can’t construct GraphQL queries at runtime — they have to be static string literals so that they’re known at compile time. This comes with major advantages:
 
 First, it allows Relay to generate type definitions for the results of the query, making your code more type-safe.
 
@@ -264,7 +307,7 @@ along with various other properties and information. These data structures are c
 
 ## Relay and the Type System
 
-The Relay compiler generates ReScript types corresponding to every piece of GraphQL that you have in your app within a <code>%relay(``)</code> literal. As long as <code>npm run dev</code> is running, the Relay compiler will automatically regenerate these files whenever you save one of your ReScript source files, so you don’t need to refresh anything to keep them up to date.
+The Relay compiler generates ReScript types corresponding to every piece of GraphQL that you have in your app within a <code>%relay(``)</code> literal. As long as <code>yarn dev</code> is running, the Relay compiler will automatically regenerate these files whenever you save one of your ReScript source files, so you don’t need to refresh anything to keep them up to date.
 
 We’ll revisit types throughout this tutorial. But next, we'll look at an even more important way that Relay helps us with maintainability.
 
