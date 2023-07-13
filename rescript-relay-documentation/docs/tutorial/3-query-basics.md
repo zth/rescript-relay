@@ -79,6 +79,7 @@ Let’s break this down:
 - Inside the query declaration are _fields_, which specify what information to query for*:*
   - Some fields are _<span class="color3">scalar fields</span>_ that retrieve a string, number, or other unit of information.
   - Other fields are _<span class="color4">edges</span>_ that let us traverse from one node in the graph to another. When a field is an edge, it’s followed by another block `{ }` containing fields for the node at the other end of the edge. Here, the `poster` field is an edge that goes from a Story to a Person who posted it. Once we’ve traversed to the Person, we can include fields about the Person such as their `name`.
+- Finally, while you can call the `module` anything you like, the query name (i.e. the stuff that comes right after `query`) must follow relay conventions. A query must start with the name of the component in which it is used and end in "query". That means valid names for this query is e.g. `NewsfeedQuery` and `NewsfeedTopStoryQuery`, but not `MainNewsfeedQuery` or `NewsfeedTopStory`. Don't worry about remembering these rules, the compiler will tell you!
 
 This illustrates the part of the graph that this query is asking for:
 
@@ -209,7 +210,7 @@ module NewsfeedQuery = %relay(`
 `)
 ```
 
-If _any_ of the fields `required` fields are null, their parent will be null, which in turn will make their parent null, all the way up to `topStory`. Finally, we get back the the component code:
+If _any_ of the `required` fields are null, their parent will be null. If the parent is `required` their parent will be null and so one all the way up to `topStory`.
 
 The `NewsfeedQuery.use` hook fetches and returns the data. It always expects <span className="color2">`variables`</span>. Since this query has no variables, we pass in unit (`()`).
 
