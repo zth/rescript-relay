@@ -55,7 +55,7 @@ As the name suggests, GraphQL organizes data into a _graph_. The graph consists 
 
 Nodes have fields. Fields can be either `Scalars`, primitive types like strings or dates, or `Objects`, which are (edges to) other Nodes. GraphQL lets you follow those edges from one node to another and ask for information about each node that you visit. Let's pretend that the `Person` type has this GraphQL schema definition.
 
-```gql
+```graphql
 type Person {
   id: ID!
   name: String
@@ -71,7 +71,7 @@ The `!` after `ID` means that the field is non-nullable. It is an error if a que
 
 Let's say that `Location` has this definition:
 
-```gql
+```graphql
 type Location {
   id: ID!
   name: String
@@ -85,7 +85,7 @@ There are three top-level nodes, `Query`, `Mutation`, and `Subscription`. This t
 
 For a simple app with only one query field, the definition of `Query` looks like this:
 
-```gql
+```graphql
 type Query {
   person(id: ID!): Person
 }
@@ -93,7 +93,7 @@ type Query {
 
 `person` is a field that takes a required argument with name `id` and type `ID` and returns an optional (i.e. not non-nullable) `Person`. `Person` is optional because there might not be a person with the supplied id. We could also have something like
 
-```gql
+```graphql
 type Query {
   personByName(name: String!): [Person]
 }
