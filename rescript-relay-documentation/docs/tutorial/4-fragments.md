@@ -4,20 +4,16 @@ title: Fragments
 sidebar_label: Fragments
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Fragments
 
-Fragments are one of the distinguishing features of Relay. They let each component declare its own data needs independently, while retaining the efficiency of a single query. In this section, we’ll show how to split a query up into fragments.
+Fragments are one of the defining features of Relay. They let each component declare its own data needs independently, while retaining the efficiency of a single query. In this section, we’ll show how to split a query up into fragments.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 ---
 
-To start with, let’s say we want our Story component to show the date that the story was posted. To do that, we need some more data from the server, so we’re going to have to add a field to the query.
+Let’s say we want our Story component to show the date that the story was posted. To do that, we need some more data from the server, so we’re going to have to add a field to the query.
 
 Go to `Newsfeed.res` and find `NewsfeedQuery` so that you can add the new field:
 
@@ -25,17 +21,17 @@ Go to `Newsfeed.res` and find `NewsfeedQuery` so that you can add the new field:
 module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStory {
-      title
-      summary
+      title @required(action: NONE)
+      summary @required(action: NONE)
       // change-line
-      createdAt // Add this line
-      poster {
-        name
-        profilePicture {
+      createdAt @required(action: NONE) // Add this line
+      poster @required(action: NONE) {
+        name @required(action: NONE)
+        profilePicture @required(action: NONE) {
           url
         }
       }
-      image {
+      thumbnail @required(action: NONE) {
         url
       }
     }
@@ -46,6 +42,15 @@ module NewsfeedQuery = %relay(`
 Now go to `Story.res` and modify it to display the date:
 
 ```rescript
+type story = {
+  title: string,
+  summary: string,
+  // change-line
+  createdAt: string, // Add this line
+  thumbnail: Image.image,
+  poster: PosterByline.poster,
+}
+
   ...
     <Card>
       <PosterByline person={story.poster} />
@@ -74,48 +79,109 @@ Let’s go ahead and split `Story`’s data requirements into a fragment now.
 
 ### Step 1 — Define a fragment
 
-Add the following to `Story.res` (within `src/components`) above the `Story` component:
+In `Story.res`, delete the `story` type and add this fragment:
 
 ```rescript
 module Fragment = %relay(`
-  fragment StoryFragment on Story {
-    title
-    summary
-    createdAt
-    poster {
-      name
-      profilePicture {
+  fragment Story_story on Story {
+    title @required(action: NONE)
+    summary @required(action: NONE)
+    createdAt @required(action: NONE)
+    poster @required(action: NONE) {
+      name @required(action: NONE)
+      profilePicture @required(action: NONE) {
         url
       }
     }
-    thumbnail {
+    thumbnail @required(action: NONE) {
       url
     }
   }
 `)
 ```
 
-Note that we’ve taken all of the selections from within `topStory` in our query and copied them into this new Fragment declaration. Like queries, fragments have a name (`StoryFragment`), which we’ll use in a moment, but they also have a GraphQL type (`Story`) that they’re “on”. This means that this fragment can be used whenever we have a Story node in the graph.
+We’ve taken all of the selections from `topStory` in our `Newsfeed` query and copied them into this new Fragment declaration. Like queries, fragments have a name (`StoryFragment`), which we’ll use in a moment, but they also have a GraphQL type (`Story`) that they’re “on”. This means that this fragment can be used whenever we have a `Story` node in the graph, no matter how we got that `Story`.
 
-### Step 2 — Spread the fragment and pass it to Story
+There are also rules for what you can call a fragment. They're a bit more lax. Start the fragment with the name of the component and you're good. A common pattern is to suffix with the type that the fragment is on, here `_story`, making the final name of the component `Story_story`.
 
-Go to `Newsfeed.res` and modify `NewsfeedQuery` to look like this:
+### Step 2 - Use the fragment
+
+Now that `Story` defines its own data requirements with the fragment, we can use this directly. To access the data selected by a fragment, we use the _use_ hook on the `Fragment` module.
+
+```rescript
+@react.component
+let make = (~story) => {
+  let data = Fragment.use(story)
+
+  switch data {
+  | None => "Failed to load story"->React.string
+  | Some(story) =>
+    <Card>
+      <PosterByline poster={(story.poster :> PosterByline.poster)} />
+      <Heading> {story.title->React.string} </Heading>
+      <Timestamp time={story.createdAt} />
+      <Image image={(story.thumbnail :> Image.image)} width={400} height={400} />
+      <StorySummary summary={story.summary} />
+    </Card>
+  }
+}
+```
+
+You know `:>` from before. Since nulls are cascading to the top of the fragment, we switch on data and add a small debug message in case fetching a story fails or there is missing data.
+
+`Fragment.use` takes one argument, the _fragment key_. The fragment key is passed down from where the fragment was spread (we'll do that very shortly). The hook returns the data selected by that fragment.
+
+:::tip
+We call `Fragment.use`, because that is the name we gave to the module returned by `%relay`. If we had done e.g. `module MyFragment = %relay( ... )`, then the hook to use would have been `MyFragment.use`. There are no rules for what you name the module, only what you name the query or fragment (or mutation or subscription) _inside_ `%relay( ... )`.
+:::
+
+### Step 3 - Spread the fragment
+
+The type returned by `NewsfeedQuery.use` is 
+
+```rescript
+type NewsfeedQuery_graphql.Types.response = {
+  topStory: option<response_topStory>,
+}
+
+type response_topStory = {
+  createdAt: string,
+  poster: response_topStory_poster,
+  summary: string,
+  thumbnail: response_topStory_thumbnail,
+  title: string,
+}
+```
+
+We now want to replace all the manual selection of fields in `Newsfeed.res` with the fragment we just defined. The syntax to do that is `...[FragmentName]`. Since `topStory` returns `Story`, we can spread `Story_story` inside `topStory`. Change the query in `Newsfeed.res` to look like this:
 
 ```rescript
 module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStory {
-      // change-line
-      ...StoryFragment // Add this and delete everything else within "topStory { }"
+      ...Story_story
     }
   }
 `)
 ```
 
-We’ve replaced the selections inside `topStory` with `StoryFragment`. The Relay compiler will make sure that all of Story’s data gets fetched from now on, without having to change `Newsfeed`.
+_Now_ the type is 
 
-Modify the make function to pass in the fragment
+```rescript
+type NewsfeedQuery_graphql.Types.response = {
+  topStory: option<response_topStory>,
+}
 
+type response_topStory = {
+  fragmentRefs: RescriptRelay.fragmentRefs<[#Story_story]>,
+}
+```
+
+This means that the hook returns a record that has a `topStory` field that is an optional array of fragment keys spread on the corresponding field in the query. Here there's only the `Story_story` fragment, but if we had spread another fragment that name would appear in the list too.
+
+Technically, `fragmentRefs` is a record that contains some hidden fields that tell Relay where to look for the data it needs. The fragment key specifies both which node to read from (here there's just one story, but soon we'll have multiple stories), and what fields can be read out (the fields selected by that specific fragment). The `Fragment.use` hook reads that specific information out of Relay's local data store.
+
+Since `Story.res` now expects a fragment key, we change the `make` funtion of `Newsfeed.res` to pass that key using the `fragmentRefs` property.
 ```rescript
 @react.component
 let make = () => {
@@ -125,104 +191,23 @@ let make = () => {
   | None => React.null
   | Some(topStory) =>
     <div className="newsfeed">
+      // change-line
       <Story story={topStory.fragmentRefs} />
     </div>
   }
 }
 ```
 
-### Step 3 — Use the Fragment in Story
-:::warning Keeping here for reference but somewhat different case in ReScript. We can't make Rescript compile without using the fragment
+`Story`'s data requirements are now completely encapsulated in `Story`. To get the data you have to call the `use` hook on the module wherein the fragment is defined and the fragment is co-located with the component that uses the fragment. 
 
-You’ll notice that Story now renders an empty card! All the data is missing! Wasn’t Relay supposed to include the fields selected by the fragment in the `story` object obtained from `NewsfeedQuery.use()`?
+With Relay, unless a component specifically asks for data with a fragment, that data will not be visible. This is called _data masking_. It makes sure that component A cannot use data that component B is asking for. This in turn makes sure that you don't create accidental dependencies between components so that component A does not break if component B is changed to not ask for that data anymore. This keeps components self-contained and maintainable and means they can evolve independently without worrying about breaking something elsewhere in your app.
 
-The reason is that Relay hides them. Unless a component specifically asks for the data for a certain fragment, that data will not be visible to the component. This is called _data masking_, and enforces that components don’t implicitly rely on another component’s data dependencies, but declare all of their dependencies within their own fragments. This keeps components self-contained and maintainable.
-
-Without data masking, you could never remove a field from a fragment, because it would be hard to verify that some other component somewhere wasn’t using it.
-:::
-
-Story is still uses the `Story.story` type that was defined from the beginning. Now that it defines its own data requirements with the fragment, we can use this directly instead of a separate type. To access the data selected by a fragment, we use a hook called `Fragment.use`. Modify `Story` to look like this:
-
-
-```rescript
-@react.component
-let make = (~story) => {
-  let data = Fragment.use(story)
-
-  let summary = switch data.summary {
-  | None => "Failed to load story summary"
-  | Some(summary) => summary
-  }
-
-  let poster: PosterByline.poster = {
-    name: switch data.poster.name {
-    | None => "Failed to load poster name"
-    | Some(name) => name
-    },
-    profilePicture: switch data.poster.profilePicture {
-    | None => None
-    | Some({url}) => {
-        open Image
-        Some({url: url})
-      }
-    },
-  }
-
-  let thumbnail = switch data.thumbnail {
-  | None => None
-  | Some({url}) => {
-      open Image
-      Some({url: url})
-    }
-  }
-
-  <Card>
-    <PosterByline poster={poster} />
-    <Heading> {data.title->React.string} </Heading>
-    <Timestamp time={data.createdAt} />
-    <Image image={thumbnail} width={400} height={400} />
-    <StorySummary summary={summary} />
-  </Card>
-}
-```
-
-`Fragment.use` takes one argument:
-
-- The same <span className="color2">story object</span> as we used before, which comes from the place within a GraphQL query where we spread the fragment. This is called a _fragment key_.
-
-It returns the data selected by that fragment.
-
-`Fragment.use` takes one argument:
-
-- The same <span className="color2">story object</span> as we used before, which comes from the place within a GraphQL query where we spread the fragment. This is called a _fragment key_.
-
-It returns the data selected by that fragment.
-
-:::tip
-We’ve rewritten `story` to `data` (the data returned by `Fragment.use`) in all of the JSX here; make sure to do the same in your copy of the component, or it won't work.
-:::
-
-Fragment keys are the places in a GraphQL query response where a fragment was spread. For example, given the Newsfeed query:
-
-```
-query NewsfeedQuery {
-  topStory {
-    ...StoryFragment
-  }
-}
-```
-
-Then if `queryResult` is the object returned by `NewsfeedQuery.use`, `queryResult.topStory` will have a property called `fragmentRefs` which contains the fragment key for `StoryFragment`.
-
-Technically, `queryResult.topStory.fragmentRefs` is an object that contains some hidden fields that tell Relay where to look for the data it needs. The fragment key specifies both which node to read from (here there's just one story, but soon we'll have multiple stories), and what fields can be read out (the fields selected by that specific fragment). The `Fragment.use` hook then reads that specific information out of Relay's local data store.
 
 :::note
 As we'll see in later examples, you can spread multiple fragments into the same place in a query, and also mix fragment spreads with directly-selected fields.
 :::
 
-### Step 4 — Type safety
-
-You don't need to take any extra steps for this to be type safe. ReScript will automatically ensure that you're passing the correct object with the correct fragment keys needed, as well as infer that the data from `Fragment.use` is the data your fragment defines.
+You don't need to take any extra steps for this to be type safe. ReScript will automatically ensure that you're passing the correct object with the correct fragment keys, as well as infer that the data from `Fragment.use` is the data your fragment defines.
 
 With that done, we have a `Newsfeed` that no longer has to care what data `Story` requires, yet can still fetch that data up-front within its own query.
 
@@ -232,10 +217,9 @@ With that done, we have a `Newsfeed` that no longer has to care what data `Story
 
 The `PosterByline` component used by `Story` renders the poster’s name and profile picture. Use these same steps to fragmentize `PosterByline`. You need to:
 
-- Declare a `PosterBylineFragment` on `Actor` and specify the fields it needs (`name`, `profilePicture`). The `Actor` type represents a person or organization that can post a story.
-- Spread that fragment within `poster` in `StoryFragment`.
-- Call `use` on the fragment to retrieve the data.
-- Reshape `profilePicture` in `PosterByline.re` in the same way as `thumbnail` in `Story.res`, to make it compatible with `Image.res`
+- Declare a `PosterByline_actor` fragment on `Actor` and specify the fields it needs (`name`, `profilePicture`). The `Actor` type represents a person or organization that can post a story. Add `@required` as needed and you think makes sense.
+- Call `use` on the fragment to retrieve the data and pass to the child components. Remember to use `:>` so you can pass the `profilePicture` to `Image`.
+- Spread `PosterByline_actor` fragment within `poster` in the `Story_story` fragment and pass the `fragmentRef` to `PosterByLine`.
 
 It’s worth going through these steps a second time, to get the mechanics of using fragments under your fingers. There are a lot of parts here that need to slot together in the right way.
 
@@ -247,7 +231,7 @@ Once you’ve done that, let’s look at a basic example of how fragments help a
 
 A fragment says, given _some_ graph node of a particular type, what data to read from that node. The fragment key specifies _which node_ in the graph the data is selected from. A re-usable component that specifies a fragment can retrieve the data from different parts of the graph in different contexts, by being passed a different fragment key.
 
-For example, notice that the `Image` component is used in two places: directly within `Story` for the story’s thumbnail image, and also within `PosterByline` for the poster’s profile pic. Let’s fragmentize `Image` and see how it can select the data it needs from different places in the graph according to where it is used.
+Notice that the `Image` component is used in two places. The first is in `Story` for the story’s thumbnail image. The second is  `PosterByline` for the poster’s profile pic. Let’s fragmentize `Image` and see how it can select the data it needs from different places in the graph according to where it is used.
 
 ![Fragment can be used in multiple places](/img/docs/tutorial/fragments-image-two-places-compiled.png)
 
@@ -256,49 +240,60 @@ For example, notice that the `Image` component is used in two places: directly w
 Open up `Image.res` and add a Fragment definition:
 
 ```rescript
-module ImageFragment = %relay(`
-  fragment ImageFragment on Image {
+module Fragment = %relay(`
+  fragment Image_image on Image {
     url
   }
 `)
 ```
 
-and use this fragment in the render function
+and use the fragment to render the component
 
 ```rescript
 @react.component
-let make = (~image) {
-  let data = ImageFragment.use(image)
+let make = (~image, ~width=?, ~height=?, ~className=?) => {
+  let data = Fragment.use(image)
   <img key={data.url} src={data.url} ... />
 }
 ```
 
-:::warning
-Something about the option handling no longer being there. Maybe it's actually better to have the option handling in PosterByline? I think so
-:::
 
-### Step 2 — Spread the fragment
+### Step 2 — Spread the fragment and use the fragment
 
-Go back to `StoryFragment` and `PosterBylineFragment` and spread `ImageFragment` into it in each place where the `Image` component is what’s using the data:
+Spread `Image_image` into both `Story_story` and `PosterByline_actor` and pass the ref to the `Image` component
 
 <Tabs>
   <TabItem value="1" label="Story.res" default>
 
 ```rescript
 module StoryFragment = %relay(`
-  fragment StoryFragment on Story {
+  fragment Story_story on Story {
     title
     summary
     postedAt
     poster {
-      ...PosterBylineFragment
+      ...PosterByline_actor
     }
     thumbnail {
       // change-line
-      ...ImageFragment
+      ...Image_image
     }
   }
 `)
+
+...
+@react.component
+let make = (~story) => {
+  ...
+
+  <Card>
+    <Timestamp time={story.createdAt} />
+    // change-line
+    <Image image={story.thumbnail.fragmentRefs} width={400} height={400} />
+    <StorySummary summary={story.summary} />
+  </Card>
+
+  ...
 ```
 
   </TabItem>
@@ -310,65 +305,84 @@ module PosterBylineFragment = %relay(`
     name
     profilePicture {
       // change-line
-      ...ImageFragment
+      ...Image_image
     }
   }
 `)
+
+...
+@react.component
+let make = (~poster) => {
+  ...
+
+  <div className="byline">
+    // change-line
+    <Image image={profilePicture.fragmentRefs} width={60} height={60} className="byline__image" />
+    <div className="byline__name"> {name->React.string} </div>
+  </div>
+
+  ...
 ```
 
   </TabItem>
 </Tabs>
 
 
-
 ### Step 3 — Modify once, enjoy everywhere
 
-Now that we’ve fragmentized Image’s data requirements and co-located them within the component, we can add new data dependencies to Image without modifying any of the components that use it.
+Now that we’ve co-located `Image`’s data dependencies and are using the fragment, we can add new dependencies to without modifying any of the components that use it!
 
-For example, let’s add an `altText` label for accessibility to the `Image` component.
+Let’s add an `altText` label for accessibility to the `Image` component.
 
-Edit `ImageFragment` as follows:
+Edit `Image` as follows:
 
 ```rescript
-module ImageFragment = %relay(`
-  fragment ImageFragment on Image {
+module Fragment = %relay(`
+  fragment Image_image on Image {
     url
     // change-line
     altText
   }
 `)
-```
 
-Now, without editing Story, Newsfeed, or any other component, all of the images within our query will have alt text fetched for them. So we just need to modify `Image` to use the new field:
-
-```rescript
 @react.component
 let make = (~image) => {
-  // ...
+  ...
   <img
     // change-line
-    alt={data.altText}
-  //...
+    alt=?{data.altText}
+  ...
 }
 ```
 
-Now _both_ the story thumbnail image and the poster’s profile pic will have an alt text. (You can use your browser’s Elements inspector to verify this.)
+Now _both_ the story thumbnail image and the poster’s profile pic will have an alt text! Use your browser dev tools to verify it. We use `?` since `altText` is optional. We _can_ render an Image if it doesn't have an alt-text, so we don't want to make it `required` and have a missing alt-text prevent the image being displayed at all... even though you should try to make sure your images should have alt-texts!
 
-You can imagine how beneficial this is as your codebase gets larger. Each component is self-contained, no matter how many places it’s used in! Even if a component is used in hundreds of places, you can add or remove fields from its data dependencies at will. This is one of the main ways that Relay helps you scale with the size of your app.
+So... with only local changes to `Image.res`, we were able to get and render alt-text for all of the images on our screen and still keep everything in _one, single top-level query!_ We changed the behaviour and data dependencies of a component by only modifying _that_ component _and_ we retain our efficient query!
+
+It's easy to imagine how beneficial this is as your codebase grows. Each component is self-contained, no matter how many places it’s used! Even if a component is used in hundreds of places, you can add or remove fields from its data dependencies at will. This is one of the main ways that Relay helps you scale with the size of your app.
 
 ![Field added to one fragment is added in all places it's used](/img/docs/tutorial/fragment-image-add-once-compiled.png)
 
-Fragments are the building blocks of Relay apps. As such, a lot of Relay features are based on fragments. We’ll look at a few of them in the next sections.
+Fragments are the building blocks of Relay apps and a lot of Relay features are based on fragments. We’ll look at a few of them in the next sections.
 
 ---
 
 ## Fragment arguments and field arguments
 
-Currently the `Image` component fetches images at their full size, even if they’ll be displayed at a smaller size. This is inefficient! The `Image` component takes a prop that says what size to show the image at, so it’s controlled by the component that uses `Image`. We’d like in a similar way for the component that uses `Image` to say what size of image to fetch within its fragment.
+Currently the `Image` component fetches images at their full size, even if they’ll be displayed at a smaller size. This is inefficient! The `Image` component takes a prop that says what size to show the image at, so it’s controlled by the component that uses `Image`. We'd like to also have the component that uses Image say what size of image to fetch within its fragment.
 
-GraphQL fields can accept _arguments_ that give the server additional information to fulfill our request. For example, the `url` field on the `Image` type accepts `height` and `width` arguments that the server incorporates into the URL — if we have this fragment:
+GraphQL fields can accept _arguments_ that give the server additional information to fulfill our request. For example, the `url` field on the `Image` type accepts `height` and `width` arguments that the server incorporates into the URL.
 
+```graphql
+type Image {
+  url(height: Int, width: Int): String!
+  altText: String
+}
 ```
+
+If we don't pass arguments to the `url` field
+
+```graphql
 fragment Example1 on Image {
   url
 }
@@ -376,78 +390,43 @@ fragment Example1 on Image {
 
 we might get the URL such as `/images/abcde.jpeg`
 
-— whereas if we have this fragment:
+If we do something like this
 
-```
+```graphql
 fragment Example2 on Image {
   url(height: 100, width: 100)
 }
 ```
 
-we might get a URL like `/images/abcde.jpeg?height=100&width=100`
+we'd get a url `/images/abcde.jpeg?height=100&width=100`
 
-Now of course, we don’t want to just hard-code a specific size into `ImageFragment`, because we’d like the `Image` component to fetch a different size in different contexts. To do that, we can make the `ImageFragment` accept _fragment arguments_ so that the parent component can specify how large of an image should be fetched. These _fragment arguments_ can then be passed into specific fields (in this case `url`) as _field arguments_.
+Now of course, we don’t want to just hard-code a specific size into `Image_image`, because we’d like the `Image` component to fetch a different size in different contexts. To this end, we can make the `Image_image` accept _fragment arguments_ so that the parent component can specify how large of an image should be fetched. These _fragment arguments_ can then be passed into specific fields (in this case `url`) as _field arguments_.
 
-To do that, edit `ImageFragment` as follows:
+### Step 1 — Add argument definitions to the fragment
+
+To do that, change the `Image_image` fragment to this:
 
 ```rescript
-module ImageFragment = %relay(`
-  fragment ImageFragment on Image
-    @argumentDefinitions(
-      // color1
-      width: {
-        // color2
-        type: "Int",
-        // color3
-        defaultValue: null
-      }
-      height: {
-        type: "Int",
-        defaultValue: null
-      }
-    )
-  {
-    url(
-      // color4
-      width: $width,
-      // color4
-      height: $height
-    )
+module Fragment = %relay(`
+  fragment Image_image on Image
+  @argumentDefinitions(
+    width: { type: "Int", defaultValue: null }
+    height: { type: "Int", defaultValue: null }
+  ) {
+    url(width: $width, height: $height)
     altText
   }
 `)
 ```
+- We’ve added an `@argumentDefinitions` directive to the fragment declaration. This says what arguments the fragment accepts. Each argument specifies:
+  - Its name (here `width` and `height`)
+  - Its type, which can be any <a href="https://graphql.org/learn/schema/#scalar-types">GraphQL scalar type</a> (here both are `Int`)
+  - An optional default value. We have here defined a default value of `null`. If we don't supply a value for e.g. `height`, null will be passed to the `url` field. I.e. it is equivalent to `url(height: null)` which in turn is equivalent to `url`. If we didn't define a default value, we'd have to pass a value for the argument everywhere we spread the fragment.
+- We finally pass the arguments to the `url` field. Here the field arguments and fragment arguments have the same names (as will often be the case) but note that `width:` is the field argument while `$width` is the variable created by the fragment argument.
 
-Let’s break this down:
+### Step 2 — Pass arguments to the fragment
 
-- We’ve added an `@argumentDefinitions` directive to the fragment declaration. This says what arguments the fragment accepts. For each argument, we give:
-  - <span className="color1">The name of the argument</span>
-  - <span className="color2">Its type</span> (which can be any <a href="https://graphql.org/learn/schema/#scalar-types">GraphQL scalar type</a>)
-  - Optionally a <span className="color3">default value </span>— in this case, the default value is null, which lets us fetch the image at its inherent size. If no default value is given, then the argument is required at every place the fragment is used.
-- Then we populate an <span className="color4">argument to a GraphQL field</span> by using the fragment argument as a variable. Here the field arguments and fragment arguments have the same name (as will often be the case), but note: `width:` is the field argument while `$width` is the variable created by the fragment argument.
-
-Now the fragment accepts an argument that it passes along to the server via one of the fields it selects.
-
-<details>
-
-<summary>Deep dive: GraphQL Directives</summary>
-
-The syntax for fragment arguments may look rather clumsy. This is because it is based on _directives_, a system for extending the GraphQL language. In GraphQL, any symbol starting with `@` is a directive. Their meaning isn't defined by the GraphQL spec, but is up to the specific client or server implementation.
-
-Relay defines [several directives](../../api-reference/graphql-and-directives) to support its features — fragment arguments for one. These directives are not sent to the server, but give instructions to the Relay compiler at build time.
-
-The GraphQL spec actually does define the meaning of three directives:
-
-- `@deprecated` is used in schema definitions and marks a field as deprecated.
-- `@include` and `@skip` can be used to make the inclusion of a field conditional.
-
-Besides these, GraphQL servers can specify additional directives as part of their schemas. And Relay has its own build-time directives, which allow us to extend the language a bit without changing its grammar.
-
-</details>
-
-### Step 2
-
-Now the different fragments using `Image` can pass in the appropriate size for each image:
+The different fragments using `Image_image` can now pass in the appropriate size for each image:
 
 <Tabs>
   <TabItem value="1" label="Story.res" default>
@@ -490,6 +469,23 @@ module PosterBylineFragment = %relay(`
 Now if you look at the images that our app downloads, you’ll see they’re of the smaller size, saving network bandwidth. Note that although we used integer literals for the value of our fragment arguments, we can also use variables supplied at runtime, as we'll see in later sections.
 
 Field arguments (e.g. `url(height: 100)`) are a feature of GraphQL itself, while fragment arguments (as in `@argumentDefinitions` and `@arguments`) are Relay-specific features. The Relay compiler processes these fragment arguments when it combines fragments into queries.
+
+
+<details>
+<summary>Deep dive: More on GraphQL Directives</summary>
+
+The syntax for arguments and argument defintions is based on _directives_. Directives are a way to extend the GraphQL language with custom features and you've already seen and used `@required`. In GraphQL any symbol starting with `@` is a directive. Their meaning isn't defined by the GraphQL spec, but is instead up to the specific client or server implementations to define.
+
+Relay defines [several directives](https://relay.dev/docs/api-reference/graphql-and-directives/) to support its features — fragment arguments for one. These directives are not sent to the server, but give instructions to the Relay compiler at build time.
+
+The GraphQL spec defines define the meaning of three directives:
+
+- `@deprecated` is used in schema definitions and marks a field as deprecated.
+- `@include` and `@skip` can be used to make the inclusion of a field conditional.
+
+Besides these three, GraphQL servers can specify additional directives as part of their schemas. And Relay has its own build-time directives, which allow us to extend the language a bit without changing its grammar.
+
+</details>
 
 ---
 
