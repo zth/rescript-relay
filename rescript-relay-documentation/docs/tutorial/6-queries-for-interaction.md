@@ -4,10 +4,6 @@ title: Queries for Interactions
 sidebar_label: Queries for Interactions
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Queries for Interactions
 
 We’ve seen how fragments let us specify data requirements in each component, yet at runtime perform only a single query for an entire screen. Here we’ll look at a situation where we _want_ a second query on the same screen. This will also let us explore some more features of GraphQL queries.
@@ -26,17 +22,16 @@ In this section we’ll add a hovercard to `PosterByline` so that you can see mo
 <details>
 <summary>Deep dive: When to use a secondary query</summary>
 
-We've mentioned before that Relay is designed to help you fetch all of your data requirements for an entire screen up-front. But we can generalize this and say that it's a _user interaction_ that should have at most one query. Navigating to another screen is just one common type of user interaction.
+Relay is designed to help you fetch all of your data requirements for an entire screen up-front. But we can generalize this and say that a _user interaction_ should have at most one query. Navigating to another screen is just one (very) common type of user interaction.
 
-Within a screen, some interactions may disclose additional data from what was shown initially. If an interaction is performed relatively rarely, but needs a significant amount of additional data, it can be smart to fetch that additional data in a second query, performed when the interaction happens, rather than up-front when the screen is first loaded. This makes that initial load faster and less expensive.
+Within a screen, some interactions may disclose more data than what was shown initially. If an interaction is performed relatively rarely, but needs a significant amount of additional data, it can be a good idea to fetch that additional data in a second query when the interaction happens, rather than up-front when the screen is first loaded. This makes that initial load faster and less expensive.
 
-There are also some interactions where the amount of data fetched is indefinite — e.g., a hovercard within a hovercard — and not feasible to know statically.
+There are also some interactions where the amount of additional data is indefinite — e.g., a hovercard within a hovercard — and not feasible to know statically.
 
 If data is lower-priority and should be loaded after the main data has loaded, but should pop in automatically without further user input, Relay has a feature called a _deferred fragment_ for that. We'll cover it later.
-
 </details>
 
-We’ve already prepared a hovercard component that you can put to use. However, it has been in a directory called `future` in order to avoid compilation errors since it uses `ImageFragment`. Now that we’re at this stage of the tutorial, you can move the modules in `future` into `src/components`:
+We’ve already prepared a hovercard component that you can put to use. However, it has been in a directory called `future` in order to avoid compilation errors since it uses `Image_image`. Now that we’re at this stage of the tutorial, you can move the modules in `future` into `src/components`:
 
 ```
 mv future/* src/components
@@ -45,47 +40,62 @@ mv future/* src/components
 Now, if you did the exercise to make `PosterByline` use fragments, the `PosterByline` component should look something like this:
 
 ```rescript
+module Fragment = %relay(`
+  fragment PosterByline_actor on Actor {
+    name @required(action: NONE)
+    profilePicture @required(action: NONE) {
+      ...Image_image @arguments(width: 60, height: 60)
+    }
+  }
+`)
+
 @react.component
 let make = (~poster) => {
-  let data = PosterBylineFragment.use(poster)
+  let data = Fragment.use(poster)
 
-  let name = switch data.name {
-  | None => "Failed to load name"
-  | Some(name) => name
-  }
-
-  <div className="byline">
-    {switch data.profilePicture {
-    | None => React.null
-    | Some(profilePicture) =>
+  switch data {
+  | None => React.null
+  | Some({name, profilePicture}) =>
+    <div className="byline">
       <Image image={profilePicture.fragmentRefs} width={60} height={60} className="byline__image" />
-    }}
-    <div className="byline__name"> {name->React.string} </div>
-  </div>
+      <div className="byline__name"> {name->React.string} </div>
+    </div>
+  }
 }
 ```
 
 To use the hovercard component, you can make the following changes:
 
 ```rescript
+module Fragment = %relay(`
+  fragment PosterByline_actor on Actor {
+    name @required(action: NONE)
+    profilePicture @required(action: NONE) {
+      ...Image_image @arguments(width: 60, height: 60)
+    }
+  }
+`)
+
 @react.component
 let make = (~poster) => {
-  let data = PosterBylineFragment.use(poster)
+  let data = Fragment.use(poster)
   // change-line
   let hoverRef = React.useRef(Js.Nullable.null)
 
-  <div 
-    className="byline"
+  switch data {
+  | None => React.null
+  | Some({name, profilePicture}) =>
     // change-line
-    ref={ReactDOM.Ref.domRef(hoverRef)}>
-    <Image image={data.profilePicture} width={60} height={60} className="byline__image" />
-    <div className="byline__name" ref={hoverRef}>{data.name}</div>
-    // change
-    <Hovercard targetRef={hoverRef}>
-      <PosterDetailsHovercardContents />
-    </Hovercard>
-    // end-change
-  </div>
+    <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
+      <Image image={profilePicture.fragmentRefs} width={60} height={60} className="byline__image" />
+      <div className="byline__name"> {name->React.string} </div>
+      // change
+      <Hovercard targetRef={hoverRef}>
+        <PosterDetailsHovercardContents />
+      </Hovercard>
+      // end-change
+    </div>
+  }
 }
 ```
 
@@ -108,11 +118,9 @@ Take a look inside `PosterDetailsHovercardContents.res`: you should see a query 
 ```rescript
 module PosterDetailsHovercardContentsQuery = %relay(`
   query PosterDetailsHovercardContentsQuery {
-    // color1
     node(id: "1") {
-      // color2
       ... on Actor {
-        ...PosterDetailsHovercardContentsBodyFragment
+        ...PosterDetailsHovercardContents_actor
       }
     }
   }
@@ -125,12 +133,12 @@ The funny-looking `... on Actor` is a <span className="color2">_type refinement_
 
 Within that, we simply spread a fragment that contains the fields we want to show — about which more later. For now, here are the steps to take to replace this hard-coded ID with the ID of the poster we’re hovering over:
 
-### Step 1 — define a query variable
+### Step 1 — Define a query variable
 
-First we need to edit our query to declare that it accepts a query variable. Here’s the change:
+First we make the query accept a query variable. Here’s the change:
 
 ```rescript
-module PosterDetailsHovercardContentsQuery = %relay(`
+module HovercardQuery = %relay(`
   query PosterDetailsHovercardContentsQuery(
     // change-line
     $posterID: ID!
@@ -144,15 +152,17 @@ module PosterDetailsHovercardContentsQuery = %relay(`
 `)
 ```
 
-- The variable name is `$posterID`. This is the symbol we’ll use within the rest of the GraphQL query to refer to the value passed in from the UI.
+- The variable name is `$posterID`. This is the symbol we’ll use within the GraphQL query to refer to the value passed in from the UI.
 - Variables have a type — in this case `ID!`_._ The `ID` type is a synonym for `String` that is used for node IDs to help distinguish them from other strings. The `!` on `ID!` means that field is non-nullable. In GraphQL, fields are normally nullable and non-nullability is the exception.
 
-### Step 2 — pass the variable in as a field argument
+You should be getting a compile error telling you that the variable `$posterID` is not used in the query.
 
-Now we replace the hard-coded `"1"` with our new variable:
+### Step 2 — Pass the variable in as a field argument
+
+Now we replace the hard-coded `"1"` with the variable:
 
 ```rescript
-module PosterDetailsHovercardContentsQuery = %relay(`
+module HovercardQuery = %relay(`
   query PosterDetailsHovercardContentsQuery($posterID: ID!) {
     node(
       // change-line
@@ -166,21 +176,23 @@ module PosterDetailsHovercardContentsQuery = %relay(`
 `)
 ```
 
+You should now be getting a compile error for the `PosterDetailsHovercardContentsQuery.use` hook, saying that the type you're passing to `~variables` is `unit`, but `PosterDetailsHovercardContentsQuery_graphql.Types.variables` was expected.
+
 :::note
 You can use query variables not only as field arguments, but as arguments to fragments.
 :::
 
-### Step 3 — provide the argument value to the query hook
-
-You should now be getting a compile error for the `PosterDetailsHovercardContentsQuery.use` hook. Because you've added query variables to `PosterDetailsHovercardContentsQuery`, the variables argument to the hook cannot be empty and we need to pass in the actual value from our UI at runtime.
+### Step 3 — Provide the argument value to the query hook
+Because you've added query variables to `PosterDetailsHovercardContentsQuery`, the variables argument to the hook cannot be empty and we need to pass in the actual value from our UI at runtime.
 
 We’ll add a new prop to our component and pass its value in there:
 
 ```rescript
 @react.component
+// change-line
 let make = (~posterID) => {
-  let variables = PosterDetailsHovercardContentsQuery.makeVariables(~posterID)
-  let data = PosterDetailsHovercardContentsQuery.use(~variables, ())
+  // change-line
+  let data = HovercardQuery.use(~variables={posterID: posterID}, ())
   <div className="posterHovercard">
     {switch data.node {
     | None => React.null
@@ -189,10 +201,11 @@ let make = (~posterID) => {
   </div>
 }
 ```
+As you may have guessed, you'll now see another compiler error saying that a required field is missing and that `"If this is a component, add the missing props"`. Let's do that.
 
-### Step 4 — pass the ID in from the parent component
+### Step 4 — Pass the ID in from the parent component
 
-Now we need to supply the `posterID` prop from the hovercard’s parent component, which is `PosterByline`. Head over to that file and add `id` to its fragment — then pass the ID in as a prop:
+Head over to `PosterByline` and add `id` to its fragment and pass it to `PosterDetailsHovercardContents`:
 
 ```rescript
 module PosterBylineFragment = %relay(`
@@ -205,13 +218,19 @@ module PosterBylineFragment = %relay(`
 
 @react.component
 let make = (~poster) => {
-  <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
-    ...
-    <Hovercard targetRef={hoverRef}>
-      // change-line
-      <PosterDetailsHovercardContents posterID={data.id} />
-    </Hovercard>
-  </div>
+  ...
+
+  switch data {
+  | None => React.null
+  // change-line
+  | Some({id, name, profilePicture}) =>
+    <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
+      ...
+      <Hovercard targetRef={hoverRef}>
+        // change-line
+        <PosterDetailsHovercardContents posterID={id} />
+      </Hovercard>
+    </div>
 }
 ```
 
@@ -265,15 +284,14 @@ Relay provides a feature called _preloaded queries_ that let us do this.
 
 Let’s modify the hovercard to use preloaded queries.
 
-### Step 1 — change use to usePreloaded
+### Step 1 — Change use to usePreloaded
 
 As a reminder, this is the `PosterDetailsHovercardContents` component that currently fetches the data lazily:
 
 ```rescript
 @react.component
 let make = (~posterID) => {
-  let variables = PosterDetailsHovercardContentsQuery.makeVariables(~posterID)
-  let data = PosterDetailsHovercardContentsQuery.use(~variables, ())
+  let data = HovercardQuery.use(~variables={posterID: posterID}, ())
   <div className="posterHovercard">
     {switch data.node {
     | None => React.null
@@ -292,7 +310,7 @@ Change the component as follows:
 // change-line
 let make = (~queryRef) => {
   // change-line
-  let data = PosterDetailsHovercardContentsQuery.usePreloaded(~queryRef, ())
+  let data = HovercardQuery.usePreloaded(~queryRef)
   <div className="posterHovercard">
     {switch data.node {
     | None => React.null
@@ -302,56 +320,47 @@ let make = (~queryRef) => {
 }
 ```
 
-### Step 2: Call useQueryLoader in the parent component
+### Step 2 — Call useLoader in the parent component
 
 Now that `PosterDetailsHovercardContents` expects a query ref, we need to create that query ref and pass it down from the parent component, which is `PosterByline`. We create the query ref using a hook called `useLoader`. This hook returns the query ref and a function that we call in our event handler to trigger the query fetch.
 
 ```rescript
 @react.component
 let make = (~poster) => {
-  ...
-
-  let name = switch data.name {
-  | None => "Failed to load name"
-  | Some(name) => name
-  }
+  let data = Fragment.use(poster)
+  let hoverRef = React.useRef(Js.Nullable.null)
 
   // change
   let (
     hovercardQueryRef,
     loadHoverCardQuery,
     _,
-  ) = PosterDetailsHovercardContents.PosterDetailsHovercardContentsQuery.useLoader()
+  ) = PosterDetailsHovercardContents.HovercardQuery.useLoader()
   // end-change
 
-  <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
-    {switch data.profilePicture {
-    | None => React.null
-    | Some(profilePicture) =>
+  switch data {
+  | None => React.null
+  | Some({id, name, profilePicture}) =>
+    <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
       <Image image={profilePicture.fragmentRefs} width={60} height={60} className="byline__image" />
-    }}
-    <div className="byline__name"> {name->React.string} </div>
-    <Hovercard targetRef={hoverRef}>
-      // change
-      {switch hovercardQueryRef {
-      | None => React.null
-      | Some(hovercardQueryRef) => <PosterDetailsHovercardContents queryRef={hovercardQueryRef} />
-      }}
-      // end-change
-    </Hovercard>
-  </div>
+      <div className="byline__name"> {name->React.string} </div>
+      <Hovercard targetRef={hoverRef}>
+        <PosterDetailsHovercardContents posterID={id} />
+      </Hovercard>
+    </div>
+  }
 }
 ```
 
-The `useLoader` hook returns three things, two of which we need:
+The `useLoader` hook returns a triple of which we need the first two elements. The triple consists of (with the names we have chosen):
 
 - `hovercardQueryRef` is an opaque piece of information that `usePreloaded` will use to retrieve the result of the query.
 - `loadHovercardQuery` is a function that will initiate the request.
-- Mention dispose?
+- `_` (we use the underscore to tell the compiler that we are deliberately ignoring the value), is a dispose function that you can call to cancel the request.
 
-### Step 4: Initiate the query in the event handler
+### Step 3 — Initiate the query in the event handler
 
-Finally, we need to call `loadHovercardQuery` in an event handler that when the card is shown. The `Hovercard` component has an `onBeginHover` handler that we can use:
+Finally, we want to call `loadHovercardQuery` on hover, so the query is fetched. The `Hovercard` component has an `onBeginHover` handler that we can use:
 
 ```rescript
 @react.component
@@ -364,40 +373,31 @@ let make = (~poster) => {
     _,
   ) = PosterDetailsHovercardContents.PosterDetailsHovercardContentsQuery.useLoader()
 
-  // change
-  let onBeginHover = () =>
-    loadHoverCardQuery(
-      ~variables=PosterDetailsHovercardContents.PosterDetailsHovercardContentsQuery.makeVariables(
-        ~posterID=data.id,
-      ),
-      (),
-  )
-  // end-change
-
-  <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
-    {switch data.profilePicture {
-    | None => React.null
-    | Some(profilePicture) =>
+  switch data {
+  | None => React.null
+  | Some({id, name, profilePicture}) =>
+    <div className="byline" ref={ReactDOM.Ref.domRef(hoverRef)}>
       <Image image={profilePicture.fragmentRefs} width={60} height={60} className="byline__image" />
-    }}
-    <div className="byline__name"> {name->React.string} </div>
-    // change-line
-    <Hovercard targetRef={hoverRef} onBeginHover>
-      {switch hovercardQueryRef {
-      | None => React.null
-      | Some(hovercardQueryRef) => <PosterDetailsHovercardContents queryRef={hovercardQueryRef} />
-      }}
-    </Hovercard>
-  </div>
+      <div className="byline__name"> {name->React.string} </div>
+      <Hovercard
+        // change-line
+        targetRef={hoverRef} onBeginHover={_ => loadHoverCardQuery(~variables={posterID: id}, ())}>
+        {switch hovercardQueryRef {
+        | None => React.null
+        | Some(queryRef) => <PosterDetailsHovercardContents queryRef />
+        }}
+      </Hovercard>
+    </div>
+  }
 }
 ```
 
-Note that the query variables are now passed in here where we initiate the request.
+Note that the query variables are now passed to the function that initiates the query.
 
 At this point, you should see the same behavior as before, but now it will be a little bit faster since Relay can get the query started earlier.
 
 :::tip
-Although we introduced queries using `useLazyLoadQuery` for simplicity, preloaded queries are always the preferred way to use queries in Relay because they can significantly improve performance in the real world. With the appropriate [integrations with your server and router system](https://github.com/relayjs/relay-examples/tree/main/issue-tracker-next-v13), you can even preload the main query for a webpage on the server side before you’ve even downloaded or run any client code.
+Although we introduced queries using `use` for simplicity, preloaded queries are always the preferred way to use queries in Relay because they can significantly improve performance in the real world. With the appropriate [integrations with your server and router system](https://github.com/relayjs/relay-examples/tree/main/issue-tracker-next-v13), you can preload the main query for a webpage on server side even before downloadeding or runing any client code.
 :::
 
 ---
@@ -409,4 +409,4 @@ Although we introduced queries using `useLazyLoadQuery` for simplicity, preloade
 - Query variables are used by passing them into field arguments.
 - Preloaded queries are always the best way to go. For user interaction queries, initiate the fetch in the event handler. For the initial query for your screen, initiate the fetch as early as possible in your specific routing system. Use lazy-loaded queries only for quick prototyping, or not at all.
 
-Next we'll briefly look at a way to enhance the hovercard by handling different types of posters differently. After that, we'll see how to handle situations where information that's part of the initial query also needs to be updated and refetched with different variables.
+Next we'll briefly look at a way to enhance the hovercard by handling different types of posters. After that, we'll see how to handle situations where information that's part of the initial query also needs to be updated and refetched with different variables.

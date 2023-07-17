@@ -4,10 +4,6 @@ title: Arrays and Lists
 sidebar_label: Arrays and Lists
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Arrays and Lists
 
 So far we’ve only dealt with components that have a single instance of the components they’re composed from. For example, we’re only showing a single Newsfeed story, and within that story there’s just a single author with a single profile picture. Let’s look at how to handle more than one of something.
@@ -16,7 +12,7 @@ GraphQL includes support for arrays, which in GraphQL are called _lists._ A fiel
 
 Request:
 
-```
+```graphql
 query MyQuery {
   viewer {
     contacts { // List of edges
@@ -29,7 +25,7 @@ query MyQuery {
 
 Response:
 
-```
+```graphql
 {
   viewer: {
     contacts: [ // array in response
@@ -67,20 +63,20 @@ module NewsfeedQuery = %relay(`
 
 ### Step 2 — Map over the list in the component
 
-In the `Newsfeed` component, `data.topStories` will now be an array of fragment refs, each of which can be passed to a `Story` child component to render that story:
+In the `Newsfeed` component, `data` no longer has a field `topStory`, but now instead a field `topStories`, which is an array of fragment refs. Each fragment ref can be used to render a story by passing it to a `Story`:
 
 ```rescript
 @react.component
 let make = () => {
   let data = NewsfeedQuery.use(~variables=(), ())
-  
-  switch topStories {
+
+  switch data.topStories {
   | None => React.null
-  | Some(stories) =>
+  | Some(topStories) =>
     <div className="newsfeed">
-      {stories
-      ->Belt.Array.keepMap(x => x)
-      ->Belt.Array.map(story => <Story story={story.fragmentRefs} />)
+      {topStories
+      ->Array.keepSome
+      ->Array.map(story => <Story story={story.fragmentRefs} />)
       ->React.array}
     </div>
   }
@@ -89,17 +85,17 @@ let make = () => {
 
 ### Step 3 — Add a React key based on the node ID
 
-At this point, you should see multiple stories on the screen! It's beginning to look like a proper newsfeed app.
+At this point, you should see multiple stories on the screen. It's beginning to look like a proper newsfeed app!
 
 ![Multiple stories](/img/docs/tutorial/arrays-top-stories-screenshot.png)
 
-However, we're also getting a React warning that we're rendering an array of components without [providing a key attribute](https://reactjs.org/docs/lists-and-keys.html).
+However, we're also getting a React warning that we're rendering an array of components without [providing a key attribute](https://react.dev/learn/rendering-lists).
 
 ![React missing key warning](/img/docs/tutorial/arrays-keys-warning-screenshot.png)
 
-It's always important to heed this warning, and more specifically to base keys on the identity of the things being displayed, rather than simply their indices in the array. This allows React to handle reordering and deleting items from the list correctly, since it knows which items are which even if their order changes.
+It's always important to heed this warning and to base keys on the identity of the things being displayed. This allows React to handle reordering and deleting items from the list correctly, since it knows which items are which even if their order changes.
 
-Luckily, GraphQL nodes generally have IDs. We can simply select the `id` field of `story` and use it as a key:
+Since GraphQL nodes generally have IDs, we can simply select the `id` field of `story` and use it as a key:
 
 ```rescript
 module NewsfeedQuery = %relay(`
@@ -121,16 +117,16 @@ let make = () => {
   | Some(stories) =>
     <div className="newsfeed">
       {stories
-      ->Belt.Array.keepMap(x => x)
+      ->Array.keepSome
       // change-line
-      ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+      ->Array.map(story => <Story key=story.id story={story.fragmentRefs} />)
       ->React.array}
     </div>
   }
 }
 ```
 
-With that, we've got a collection of Stories on the screen. It's worth pointing out that here we're mixing individual fields with fragment spreads in the same place in our query. This means that Newsfeed can read the fields it cares about (directly from `Newsfeed.use`) while Story can read the fields it cares about (via `StoryFragment.use`). The _same object_ both contains Newsfeed's selected field `id` and is also a fragment key for `StoryFragment`.
+With that, we've got a collection of Stories on the screen! It's worth pointing out that we're mixing individual fields with fragment spreads in the same place in our query. This means that Newsfeed can read the fields it cares about (directly from `Newsfeed.use`) while only Story can read the fields it cares about (via `Story_story.use`). The _same object_ contains both Newsfeed's selected field `id` and a fragment key for `Story_story`.
 
 :::tip
 GraphQL Lists are only the most basic way of dealing with collections of things. We’ll build on them to do pagination and infinite scrolling later in the tutorial, using a special system called Connections. You’ll want to use Connections in most situations where you have a collection of items — although you’ll still use GraphQL Lists as a building block.
