@@ -1,5 +1,7 @@
 # master
 
+# 2.0.1
+
 ## Bug fix
 
 - Proper import for `useBlockingPagination`. https://github.com/zth/rescript-relay/pull/459
