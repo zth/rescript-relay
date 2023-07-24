@@ -1,5 +1,9 @@
 # master
 
+## Bug fix
+
+- Proper import for `useBlockingPagination`. https://github.com/zth/rescript-relay/pull/459
+
 # 2.0.0
 
 RescriptRelay `2.0.0` is here! This isn't a large release really, but it's a major release just because it relies on functionality from ReScript `v11`. Meaning the lower bound of the required ReScript version is `>=11.0.0-beta.2`.
