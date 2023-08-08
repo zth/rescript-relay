@@ -89,8 +89,31 @@ module Fragment3 = %relay(`
   }
 `)
 
+module Fragment4 = %relay(`
+  fragment TestConnections4_user on Query 
+    @relay(plural: true)
+    @argumentDefinitions(
+      count: { type: "Int", defaultValue: 2 }
+      cursor: { type: "String", defaultValue: "" }
+    ) {
+    loggedInUser {
+      friendsConnection(
+        first: $count
+        after: $cursor
+      ) @connection(key: "TestConnectionsTest_user_user_friendsConnection") {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }
+  }
+`)
+
 let _test = Fragment2.getConnectionNodes
 let _test = Fragment3.getConnectionNodes
+let _test = Fragment4.getConnectionNodes
 
 module Query = %relay(`
   query TestConnectionsQuery($beforeDate: Datetime!) {
@@ -168,5 +191,7 @@ let test_connections = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }
