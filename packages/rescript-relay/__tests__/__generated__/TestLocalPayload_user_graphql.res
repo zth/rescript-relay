@@ -45,6 +45,10 @@ module Types = {
   type fragment = {
     avatarUrl: option<string>,
     firstName: string,
+    localStatus: option<[
+      | #Off
+      | #On
+    ]>,
     memberOf: option<array<option<fragment_memberOf>>>,
     memberOfSingular: option<fragment_memberOfSingular>,
     onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
@@ -139,6 +143,8 @@ external getFragmentRef:
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
+  external localStatus_input_toString: RelaySchemaAssets_graphql.enum_LocalStatus_input => string = "%identity"
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
@@ -265,6 +271,18 @@ return {
         (v3/*: any*/)
       ],
       "storageKey": null
+    },
+    {
+      "kind": "ClientExtension",
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "localStatus",
+          "storageKey": null
+        }
+      ]
     }
   ],
   "type": "User",

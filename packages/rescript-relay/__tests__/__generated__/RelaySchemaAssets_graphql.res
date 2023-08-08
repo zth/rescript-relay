@@ -23,6 +23,12 @@ type enum_RequiredFieldAction_input = [
 ]
 
 @live
+type enum_LocalStatus_input = [
+  | #On
+  | #Off
+]
+
+@live
 type rec input_InputA = {
   time: TestsUtils.Datetime.t,
   recursiveA: option<input_InputA>,
