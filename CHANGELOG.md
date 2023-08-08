@@ -1,5 +1,7 @@
 # master
 
+# 2.0.2
+
 ## Improvements
 
 - Local enums (schema extensions) are now always emitted as input enums (without requiring decoding), since they can assumed to be safe as they're local only.
