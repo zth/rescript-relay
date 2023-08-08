@@ -16,13 +16,6 @@ type enum_OnlineStatus_input = [
 ]
 
 @live
-type enum_RequiredFieldAction = private [>
-  | #NONE
-  | #LOG
-  | #THROW
-]
-
-@live
 type enum_RequiredFieldAction_input = [
   | #NONE
   | #LOG

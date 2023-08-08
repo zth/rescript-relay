@@ -1,5 +1,9 @@
 # master
 
+## Bug fix
+
+- Emit `getConnectionNodes` also for plural fragments.
+
 # 2.0.1
 
 ## Bug fix
