@@ -1,0 +1,8 @@
+enum LocalStatus {
+  On
+  Off
+}
+
+extend type User {
+  localStatus: LocalStatus
+}

@@ -2,6 +2,7 @@ module Query = %relay(`
     query TestLocalPayloadQuery @raw_response_type {
       loggedInUser {
         id
+        localStatus
         ...TestLocalPayload_user
       }
     }
@@ -24,6 +25,7 @@ module ViaNodeInterface = %relay(`
  */
 module Fragment = %relay(`
   fragment TestLocalPayload_user on User {
+    localStatus
     firstName
     avatarUrl
     onlineStatus
@@ -102,6 +104,7 @@ module Test = {
             ~payload={
               loggedInUser: {
                 id: data.loggedInUser.id,
+                localStatus: Some(#On),
                 onlineStatus: Some(#Online),
                 firstName: "AnotherFirst",
                 avatarUrl: None,
@@ -127,6 +130,7 @@ module Test = {
             ~payload={
               node: Some({
                 id: data.loggedInUser.id,
+                localStatus: Some(#On),
                 firstName: "AnotherFirst",
                 onlineStatus: Some(#Online),
                 avatarUrl: None,
@@ -170,5 +174,7 @@ let test_query = () => {
   )
   ()
 
-  <TestProviders.Wrapper environment> <Test /> </TestProviders.Wrapper>
+  <TestProviders.Wrapper environment>
+    <Test />
+  </TestProviders.Wrapper>
 }

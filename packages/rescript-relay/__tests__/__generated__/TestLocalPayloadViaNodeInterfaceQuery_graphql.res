@@ -67,6 +67,10 @@ module Types = {
     avatarUrl: option<string>,
     firstName: string,
     @live id: string,
+    localStatus: option<[
+      | #Off
+      | #On
+    ]>,
     memberOf: option<array<option<rawResponse_node_memberOf>>>,
     memberOfSingular: option<rawResponse_node_memberOfSingular>,
     onlineStatus: option<[
@@ -242,6 +246,8 @@ type queryRef
 module Utils = {
   @@ocaml.warning("-33")
   open Types
+  @live
+  external localStatus_input_toString: RelaySchemaAssets_graphql.enum_LocalStatus_input => string = "%identity"
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
@@ -453,6 +459,18 @@ return {
                   (v7/*: any*/)
                 ],
                 "storageKey": null
+              },
+              {
+                "kind": "ClientExtension",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "localStatus",
+                    "storageKey": null
+                  }
+                ]
               }
             ],
             "type": "User",

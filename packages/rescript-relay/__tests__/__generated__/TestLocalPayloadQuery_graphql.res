@@ -59,6 +59,10 @@ module Types = {
 
   type rec response_loggedInUser = {
     @live id: string,
+    localStatus: option<[
+      | #Off
+      | #On
+    ]>,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
   }
   @live
@@ -66,6 +70,10 @@ module Types = {
     avatarUrl: option<string>,
     firstName: string,
     @live id: string,
+    localStatus: option<[
+      | #Off
+      | #On
+    ]>,
     memberOf: option<array<option<rawResponse_loggedInUser_memberOf>>>,
     memberOfSingular: option<rawResponse_loggedInUser_memberOfSingular>,
     onlineStatus: option<[
@@ -232,6 +240,8 @@ module Utils = {
   @@ocaml.warning("-33")
   open Types
   @live
+  external localStatus_input_toString: RelaySchemaAssets_graphql.enum_LocalStatus_input => string = "%identity"
+  @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
   external onlineStatus_input_toString: RelaySchemaAssets_graphql.enum_OnlineStatus_input => string = "%identity"
@@ -262,35 +272,47 @@ var v0 = {
   "storageKey": null
 },
 v1 = {
+  "kind": "ClientExtension",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "localStatus",
+      "storageKey": null
+    }
+  ]
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
 },
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "kind": "InlineFragment",
   "selections": [
-    (v1/*: any*/)
+    (v2/*: any*/)
   ],
   "type": "User",
   "abstractKey": null
 },
-v5 = {
+v6 = {
   "kind": "InlineFragment",
   "selections": [
     (v0/*: any*/)
@@ -318,7 +340,8 @@ return {
             "args": null,
             "kind": "FragmentSpread",
             "name": "TestLocalPayload_user"
-          }
+          },
+          (v1/*: any*/)
         ],
         "storageKey": null
       }
@@ -341,7 +364,7 @@ return {
         "plural": false,
         "selections": [
           (v0/*: any*/),
-          (v1/*: any*/),
+          (v2/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -364,11 +387,11 @@ return {
             "name": "memberOf",
             "plural": true,
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -377,9 +400,9 @@ return {
                     "name": "topMember",
                     "plural": false,
                     "selections": [
-                      (v2/*: any*/),
-                      (v4/*: any*/),
-                      (v5/*: any*/)
+                      (v3/*: any*/),
+                      (v5/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -387,8 +410,8 @@ return {
                 "type": "Group",
                 "abstractKey": null
               },
-              (v4/*: any*/),
-              (v5/*: any*/)
+              (v5/*: any*/),
+              (v6/*: any*/)
             ],
             "storageKey": null
           },
@@ -400,20 +423,21 @@ return {
             "name": "memberOfSingular",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v3/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "type": "Group",
                 "abstractKey": null
               },
-              (v4/*: any*/),
-              (v5/*: any*/)
+              (v5/*: any*/),
+              (v6/*: any*/)
             ],
             "storageKey": null
-          }
+          },
+          (v1/*: any*/)
         ],
         "storageKey": null
       }

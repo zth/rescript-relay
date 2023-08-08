@@ -12,4 +12,5 @@ module.exports = {
   featureFlags: {
     enable_relay_resolver_transform: true,
   },
+  schemaExtensions: ["./__tests__"],
 };
