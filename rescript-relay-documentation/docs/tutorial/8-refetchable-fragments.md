@@ -3,11 +3,6 @@ id: tutorial-refetchable-fragments
 title: Refetchable Fragments
 sidebar_label: Refetchable Fragments
 ---
-
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Refetchable Fragments
 
 In this section, we'll look at how to fetch different data in response to user input.
@@ -59,17 +54,17 @@ You should now see a sidebar with a list of people at the top.
 Have a look at `ContactsList.res` and you’ll find this fragment, which is what selects the list of contacts:
 
 ```rescript
-module ContactsListFragment = %relay(`
-  fragment ContactsListFragment on Viewer {
+module Fragment = %relay(`
+  fragment ContactsList_viewer on Viewer {
     contacts {
       id
-      ...ContactRowFragment
+      ...ContactRow_actor
     }
   }
 `)
 ```
 
-As it happens, the `contacts` field accepts a `search` argument that filters the list. You can try it out by changing `contacts` in this fragment to `contacts(search: "S")`. If you refresh the page, you should see only those contacts that have the letter S in them.
+As it happens, the `contacts` field accepts a `search` argument that filters the list. You can try it out by changing `contacts` in this fragment to `contacts(search: "S")`. When the page refreshes with your new changes, you should see only those contacts that have the letter S in them.
 
 Our goal, then, will be to hook up a search input so that, when the input changes, we refetch _just this fragment_ with a new value for that `search` argument.
 
@@ -77,35 +72,19 @@ Our goal, then, will be to hook up a search input so that, when the input change
 As an optional exercise, try combining the queries of Sidebar and Newsfeed into a single query. There is no need for Sidebar to have its own query separate from Newsfeed; in a real app they would both have fragments and the _entire screen_ would have only a single query. We built it with a separate query to simplify the early examples in the tutorial.
 :::
 
-### Step 1 — Add a fragment argument
+### Step 1 — Add a fragment argument and pass it to search
 
 First we need to make this fragment accept an argument. With refetchable fragments, fragment arguments become query variables for the refetch query that Relay generates. (They also work like regular fragment arguments, so the parent query can pass in an initial value for the argument.)
 
 ```rescript
-module ContactsListFragment = %relay(`
-  fragment ContactsListFragment on Viewer
-  // change-line
+module Fragment = %relay(`
+  fragment ContactsList_viewer on Viewer
+  // change
   @argumentDefinitions(search: { type: "String", defaultValue: null }) {
-    contacts {
+  contacts(search: $search) {
+  // end-change
       id
-      ...ContactRowFragment
-    }
-  }
-`)
-```
-
-### Step 2 — Pass the fragment argument as a field argument
-
-Pass the fragment argument in as an argument to the `contacts` field.
-
-```rescript
-module ContactsListFragment = %relay(`
-  fragment ContactsListFragment on Viewer
-  @argumentDefinitions(search: { type: "String", defaultValue: null }) {
-    // change-line
-    contacts(search: $search) {
-      id
-      ...ContactRowFragment
+      ...ContactRow_actor
     }
   }
 `)
@@ -113,40 +92,40 @@ module ContactsListFragment = %relay(`
 
 Remember, the first `search` here is the name of the argument to `contacts`, while the second `$search` is the variable created by our fragment argument.
 
-### Step 3 — Add the @refetchable directive
+### Step 2 — Add the @refetchable directive
 
 Next we'll add a `@refetchable` directive. This tells Relay to generate the extra query for refetching it. You have to specify the name of the generated query — it's a good idea to base it on the name of the fragment.
 
 ```rescript
-module ContactsListFragment = %relay(`
-  fragment ContactsListFragment on Viewer
-  @refetchable(queryName: "ContactsListRefetchQuery")
+module Fragment = %relay(`
+  fragment ContactsList_viewer on Viewer
   // change-line
+  @refetchable(queryName: "ContactsListRefetchQuery")
   @argumentDefinitions(search: { type: "String", defaultValue: null }) {
-    contacts(search: $search) {
+  contacts(search: $search) {
       id
-      ...ContactRowFragment
+      ...ContactRow_actor
     }
   }
 `)
 ```
 
-### Step 4 — Add the search input
+### Step 3 — Add the search input
 
 Now we need to actually hook this up to our UI. Take a look at the `ContactsList` component:
 
 ```rescript
 @react.component
 let make = (~viewer) => {
-  let data = ContactsListFragment.use(viewer)
+  let data = Fragment.use(viewer)
   <Card dim={true}>
     <h3> {"Contacts"->React.string} </h3>
     {switch data.contacts {
     | None => React.null
     | Some(contacts) =>
       contacts
-      ->Belt.Array.keepMap(x => x)
-      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->Array.keepSome
+      ->Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
       ->React.array
     }}
   </Card>
@@ -154,12 +133,12 @@ let make = (~viewer) => {
 
 ```
 
-First we need to add a search field.
+First we need to add a search field and state.
 
 ```rescript
 @react.component
 let make = (~viewer) => {
-  let data = ContactsListFragment.use(viewer)
+  let data = Fragment.use(viewer)
   // change
   let (searchString, setSearchString) = React.useState(() => "")
   let onSearchStringChanged = value => setSearchString(_ => value)
@@ -167,34 +146,33 @@ let make = (~viewer) => {
 
   <Card dim={true}>
     <h3> {"Contacts"->React.string} </h3>
-    // change-line
     <SearchInput value={searchString} onChange={onSearchStringChanged} />
     {switch data.contacts {
     | None => React.null
     | Some(contacts) =>
       contacts
-      ->Belt.Array.keepMap(x => x)
-      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->Array.keepSome
+      ->Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
       ->React.array
     }}
   </Card>
 }
 ```
 
-### Step 5 — Call useRefetchable
+### Step 4 — Call useRefetchable
 
-Now to refetch the fragment when the string changes, we change `use` to `useRefetchable`. This hook returns the `data` as before and a `refetch` function which will refetch the fragment with the new variables.
+Now to refetch the fragment when the string changes, we change `use` to `useRefetchable`. This hook returns the `data` as before and a `refetch` function which will refetch the fragment with new variables.
 
 ```rescript
 @react.component
 let make = (~viewer) => {
   // change-line
-  let (data, refetch) = ContactsListFragment.useRefetchable(viewer)
+  let (data, refetch) = Fragment.useRefetchable(viewer)
   let (searchString, setSearchString) = React.useState(() => "")
   // change
   let onSearchStringChanged = value => {
     setSearchString(_ => value)
-    let variables = ContactsListFragment.makeRefetchVariables(~search=Some(value), ())
+    let variables = Fragment.makeRefetchVariables(~search=Some(value), ())
     refetch(~variables, ())->RescriptRelay.Disposable.ignore
   }
   // end-change
@@ -205,7 +183,7 @@ let make = (~viewer) => {
 
 You’ll notice that Relay gives us a callback for refetching, rather than accepting the new state variables as an argument to the hook and refetching when it is re-rendered with a different value. This means that the fetch begins as soon as the event takes place, saving some time versus waiting until React finishes re-rendering — the same principle we saw before with preloaded queries. It also gives us more control, for example if we wanted to debounce the refetch.
 
-### Step 6 — Control loading with useTransition
+### Step 5 — Control loading with useTransition
 
 At this point, when the fragment is refreshed, Relay uses Suspense while the new data is loading, so the entire component is replaced with a spinner! This makes the UI fairly unusable. We would rather just keep the current data on screen until the new data is available.
 
@@ -224,7 +202,7 @@ Transitions are marked by wrapping the state change in a call to a function prov
 ```rescript
 @react.component
 let make = (~viewer) => {
-  let (data, refetch) = ContactsListFragment.useRefetchable(viewer)
+  let (data, refetch) = Fragment.useRefetchable(viewer)
   let (searchString, setSearchString) = React.useState(() => "")
   // change-line
   let (isPending, startTransition) = ReactExperimental.useTransition()
@@ -232,7 +210,7 @@ let make = (~viewer) => {
     setSearchString(_ => value)
     // change
     startTransition(() => {
-      let variables = ContactsListFragment.makeRefetchVariables(~search=Some(value), ())
+      let variables = Fragment.makeRefetchVariables(~search=Some(value), ())
       refetch(~variables, ())->RescriptRelay.Disposable.ignore
     })
     // end-change
