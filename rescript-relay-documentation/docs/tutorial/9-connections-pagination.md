@@ -4,10 +4,6 @@ title: Connections & Pagination
 sidebar_label: Connections & Pagination
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Connections & Pagination
 
 In this section, we’ll see how to handle collections of many items, including paginated lists and infinite scrolling. In Relay, paginated and infinite-scrolled lists are handled using an abstraction known as a _Connection_.
@@ -89,9 +85,9 @@ let make = (~story) => {
   
   <Card>
     ...
-    <StorySummary summary={summary} />
+    <StorySummary summary={story.summary} />
     // change-line
-    <StoryCommentsSection story={data.fragmentRefs} />
+    <StoryCommentsSection story={story.fragmentRefs} />
   </Card>
 }
 ```
@@ -100,13 +96,13 @@ And add `StoryCommentsSection`’s fragment to `Story`’s fragment:
 
 ```rescript
 module StoryFragment = %relay(`
-  fragment StoryFragment on Story {
+  fragment Story_story on Story {
     ...
-    thumbnail {
-      ...ImageFragment @arguments(width: 400)
+    thumbnail @required(action: NONE) {
+      ...Image_image @arguments(width: 400)
     }
     // change-line
-    ...StoryCommentsSectionFragment
+    ...StoryCommentsSection_story
   }
 `)
 ```
@@ -118,17 +114,18 @@ At this point, you should see up to three comments on each story. Some stories h
 Now go to `StoryCommentsSection` and take a look:
 
 ```rescript
-module StoryCommentsSectionFragment = %relay(`
-  fragment StoryCommentsSectionFragment on Story {
+module Fragment = %relay(`
+  fragment StoryCommentsSection_story on Story {
     comments(first: 3) {
+      pageInfo {
+        startCursor
+        hasNextPage
+      }
       edges {
         node {
           id
-          ...CommentFragment
+          ...Comment_comment
         }
-      }
-      pageInfo {
-        hasNextPage
       }
     }
   }
@@ -136,7 +133,7 @@ module StoryCommentsSectionFragment = %relay(`
 
 @react.component
 let make = (~story) => {
-  let data = StoryCommentsSectionFragment.use(story)
+  let data = Fragment.use(story)
 
   <div>
     {switch data.comments {
@@ -161,7 +158,7 @@ let make = (~story) => {
 }
 ```
 
-Here we see that `StoryCommentsSection` is selecting the <span className="color1">first three comments</span> for each story using the Connection schema convention: the `comments` field accepts the page size as an argument, and for each comment there is an `edge` and within that a `node` containing the actual comment data — we’re spreading in `CommentFragment` here to retrieve the data needed to show an individual comment with the `Comment` component. It also uses the `pageInfo` field of the connection to decide whether to show a “Load More” button.
+Here we see that `StoryCommentsSection` is selecting the first three comments for each story using the Connection schema convention: the `comments` field accepts the page size as an argument, and for each comment there is an `edge` and within that a `node` containing the actual comment data — we’re spreading in `CommentFragment` here to retrieve the data needed to show an individual comment with the `Comment` component. It also uses the `pageInfo` field of the connection to decide whether to show a “Load More” button.
 
 Our task then is to make the “Load More” button actually load an additional page of comments. Relay handles the gritty details for us, but we do have to supply a few steps to set it up.
 
@@ -170,8 +167,8 @@ Our task then is to make the “Load More” button actually load an additional 
 Before we modify our component, the fragment itself needs three extra pieces of information. First, we need the fragment to accept the page size and cursor as fragment arguments rather than being hard-coded:
 
 ```rescript
-module StoryCommentsSectionFragment = %relay(`
-  fragment StoryCommentsSectionFragment on Story
+module Fragment = %relay(`
+  fragment StoryCommentsSection_story on Story 
   // change
   @argumentDefinitions(
     cursor: { type: "String" }
@@ -179,14 +176,15 @@ module StoryCommentsSectionFragment = %relay(`
   ) {
     comments(after: $cursor, first: $count) {
   // end-change
+      pageInfo {
+        startCursor
+        hasNextPage
+      }
       edges {
         node {
           id
-          ...CommentFragment
+          ...Comment_comment
         }
-      }
-      pageInfo {
-        hasNextPage
       }
     }
   }
@@ -196,8 +194,8 @@ module StoryCommentsSectionFragment = %relay(`
 Next, we need to make the fragment [refetchable](../refetchable-fragments), so that Relay will be able to fetch it again with new values for the arguments — namely, a new cursor for the `$cursor` argument:
 
 ```rescript
-module StoryCommentsSectionFragment = %relay(`
-  fragment StoryCommentsSectionFragment on Story
+module Fragment = %relay(`
+  fragment StoryCommentsSection_story on Story
   // change-line
   @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
   @argumentDefinitions(
@@ -208,11 +206,11 @@ module StoryCommentsSectionFragment = %relay(`
 Now there’s just one more change we need to make to the fragment. Relay needs to know _which field_ within the fragment represents the Connection that we’re going to paginate over. To do that, we mark it with a `@connection` directive:
 
 ```rescript
-module StoryCommentsSectionFragment = %relay(`
+module Fragment = %relay(`
     ...
     // change-line
     comments(after: $cursor, first: $count)
-      @connection(key: "StoryCommentsSectionFragment_comments") {
+      @connection(key: "StoryCommentsSection_story_comments") {
     ...
 `)
 
@@ -227,15 +225,17 @@ Now that we’ve got the fragment all souped up, we can modify our component to 
 Change this line at the top of the `StoryCommentsSection` component
 
 ```rescript
-let data = StoryCommentsSectionFragment.use(story)
+let data = Fragment.use(story)
 ```
 
 to
 
 ```rescript
-let {data, loadNext} = StoryCommentsSectionFragment.usePagination(story)
+let {data, loadNext} = Fragment.usePagination(story)
 let onLoadMore = () => loadNext(~count=3, ())->RescriptRelay.Disposable.ignore
 ```
+
+and pass `onLoadMore` to the button: `<LoadMoreCommentsButton onClick=onLoadMore />`
 
 Now the Load More button should cause another three comments to be loaded.
 
