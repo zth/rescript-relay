@@ -1,31 +1,40 @@
+let unsafeMergeJson: (. Js.Json.t, Js.Json.t) => Js.Json.t
+
 module GraphQLIncrementalResponse: {
-  type data = {.}
   type t<'a> = {incremental: array<'a>, hasNext: bool}
-  constraint 'a = {..}
-  let mapWithDefault: (.
-  Js.Json.t,
-  (. 'a) => array<'d>,
-  (. 'c) => array<'d>,
-) => array<Js.Json.t>
-  let fromJson: (. Js.Json.t) => t<{..}>
+}
+
+module GraphQLResponse: {
+  type data = {.}
+  type t<'a> =
+  | Incremental(GraphQLIncrementalResponse.t<'a>)
+  | Response('a)
+  let mapIncrementalWithDefault: (.
+  t<'a>,
+  (. GraphQLIncrementalResponse.t<'a>) => array<'b>,
+  (. 'a) => array<'b>,
+) => array<'b>
+  let fromIncremental: (. GraphQLIncrementalResponse.t<'a>) => t<'a>
+  let makeResponse: (. 'a) => t<'a>
+  let parse: 'a. (. Js.Json.t, (. Js.Json.t) => option<'a>) => option<
+  t<'a>,
+>
+  let fromJson: (. Js.Json.t) => t<Js.Json.t>
 }
 
 module RelayDeferResponse: {
-  type extension = {is_final: bool}
-  type t<'a> = 'a
-  constraint 'a = {..
-    "extensions": extension,
-    "hasNext": bool,
-  }
-  let fromIncrementalResponse: (.
-  GraphQLIncrementalResponse.t<
-    {.."extensions": extension, "hasNext": bool},
-  >,
-) => array<t<{.."extensions": extension, "hasNext": bool}>>
-  let toJson: (.
-  t<{.."extensions": extension, "hasNext": bool}>,
-) => Js.Json.t
+  type t<'a> = array<'a>
+  // Type safe conversion from a GraphQL spec response
+  let fromIncrementalResponse: (. GraphQLIncrementalResponse.t<{..}>) => t<{..}>
+
+  let toJson: (. 'a) => Js.Json.t
+
+  // Not type safe conversion due to use of Json.t and object merging
+  let fromJsonIncrementalResponse: (.
+  GraphQLIncrementalResponse.t<Js.Json.t>,
+) => array<Js.Json.t>
 }
 
-let adaptIncrementalResponseToRelay:
-(. Js.Json.t) => array<Js.Json.t>
+// Not type safe conversion of GraphQL spec defer response to Relay-compatible
+// version
+let adaptJsonIncrementalResponseToRelay: (. Js.Json.t) => array<Js.Json.t>
