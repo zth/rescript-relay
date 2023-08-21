@@ -16,7 +16,7 @@ module GraphQLResponse: {
 ) => array<'b>
   let fromIncremental: (. GraphQLIncrementalResponse.t<'a>) => t<'a>
   let makeResponse: (. 'a) => t<'a>
-  let parse: 'a. (. Js.Json.t, (. Js.Json.t) => option<'a>) => option<
+  let parse: (. Js.Json.t, (. Js.Json.t) => option<'a>) => option<
   t<'a>,
 >
   let fromJson: (. Js.Json.t) => t<Js.Json.t>
@@ -25,7 +25,7 @@ module GraphQLResponse: {
 module RelayDeferResponse: {
   type t<'a> = array<'a>
   // Type safe conversion from a GraphQL spec response
-  let fromIncrementalResponse: (. GraphQLIncrementalResponse.t<{..}>) => t<{..}>
+  let fromIncrementalResponse: (. GraphQLIncrementalResponse.t<{..} as 'a>) => t<{..} as 'a>
 
   let toJson: (. 'a) => Js.Json.t
 

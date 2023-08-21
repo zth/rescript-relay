@@ -1,10 +1,24 @@
-let unsafeMergeJson: (Js.Json.t, Js.Json.t) => Js.Json.t = %raw("function (a, b) {
-  return { ...a, ...b};
-}")
-
+external unsafeMergeJson: (@as(json`{}`) _, Js.Json.t, Js.Json.t) => Js.Json.t = "Object.assign"
 
 module GraphQLIncrementalResponse = {
   type t<'a> = {incremental: array<'a>, hasNext: bool}
+}
+
+module OptionArray = {
+  let sequence: array<option<'a>> => option<array<'a>> = xs => {
+    let results = xs->Array.reduce([], (acc, next) => {
+      switch next {
+      | Some(val) => acc->Array.concat([val])
+      | None => acc
+      }
+    })
+
+    if results->Array.length < xs->Array.length {
+      None
+    } else {
+      Some(results)
+    }
+  }
 }
 
 module GraphQLResponse = {
@@ -25,42 +39,46 @@ module GraphQLResponse = {
   let makeResponse = data => Response(data)
 
   // Use parser to parse fully type-safe response
-  let parse: type a. (Js.Json.t, Js.Json.t => option<a>) => option<t<a>> = (json, parseFn) =>
-    switch json->Js.Json.decodeObject {
-    | Some(dict) =>
-      switch dict->Js.Dict.get("incremental") {
-      | Some(data) =>
-        switch data->Js.Json.decodeArray {
-        | Some(arrayData) =>
-          Some(
-            Incremental({
-              incremental: arrayData->Array.map(parseFn)->Array.filterMap(x => x),
-              hasNext: dict
-              ->Js.Dict.get("hasNext")
-              ->Option.mapWithDefault(false, v =>
-                v->Js.Json.decodeBoolean->Option.mapWithDefault(false, v => v)
-              ),
-            }),
-          )
+  let parse:
+    type a. (Js.Json.t, Js.Json.t => option<a>) => option<t<a>> =
+    (json, parseFn) =>
+      switch json->Js.Json.decodeObject {
+      | Some(dict) =>
+        switch dict->Js.Dict.get("incremental") {
+        | Some(data) =>
+          switch data->Js.Json.decodeArray {
+          | Some(arrayData) =>
+            arrayData
+            ->Array.map(parseFn)
+            ->OptionArray.sequence
+            ->Option.flatMap(data => Some(
+              Incremental({
+                incremental: data,
+                hasNext: dict
+                ->Js.Dict.get("hasNext")
+                ->Option.mapWithDefault(false, v =>
+                  v->Js.Json.decodeBoolean->Option.mapWithDefault(false, v => v)
+                ),
+              }),
+            ))
+          | None => {
+              let data = parseFn(json)
+              switch data {
+              | Some(data) => Some(Response(data))
+              | None => None
+              }
+            }
+          }
         | None => {
-
-          let data = parseFn(json)
-          switch data {
+            let data = parseFn(json)
+            switch data {
             | Some(data) => Some(Response(data))
             | None => None
+            }
           }
         }
+      | None => None
       }
-      | None => {
-          let data = parseFn(json)
-          switch data {
-            | Some(data) => Some(Response(data))
-            | None => None
-          }
-        }
-      }
-    | None => None
-    }
 
   // Partially parse response
   let fromJson: Js.Json.t => t<'a> = json =>
