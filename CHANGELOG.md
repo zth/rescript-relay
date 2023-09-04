@@ -1,5 +1,11 @@
 # master
 
+# 2.0.3
+
+## Bug fix
+
+- Correct ARM binary.
+
 # 2.0.2
 
 ## Improvements
