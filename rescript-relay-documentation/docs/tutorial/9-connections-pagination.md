@@ -305,7 +305,7 @@ module NewsfeedQuery = %relay(`
   query NewsfeedQuery {
     topStories {
       id
-      ...StoryFragment
+      ...Story_story
     }
   }
 `)
@@ -324,7 +324,7 @@ module NewsfeedQuery = %relay(`
         edges @required(action: NONE) {
           node @required(action: NONE) {
             id
-            ...StoryFragment
+            ...Story_story
           }
         }
       }
@@ -347,8 +347,8 @@ let make = () => {
   | Some({newsfeedStories}) =>
     <div className="newsfeed">
       {newsfeedStories.edges
-      ->Belt.Array.keepMap(edge => edge)
-      ->Belt.Array.map(({node}) => <Story key={node.id} story={node.fragmentRefs} />)
+      ->Array.keepSome
+      ->Array.map(({node}) => <Story key=node.id story={node.fragmentRefs} />)
       ->React.array}
     </div>
   }
@@ -357,19 +357,19 @@ let make = () => {
 
 ### Step 3 - Lower the newsfeed into a fragment
 
-Relay’s pagination features only work with fragments, not entire queries. Although we could directly the query directly in this component, in real applications the query is generally issued at some high-level routing component, which would rarely be the same component that’s showing a paginated list.
+Relay’s pagination features only work with fragments, not entire queries. Although we could query directly in this component, in real applications the query is generally issued at some high-level routing component, which would rarely be the same component that’s showing a paginated list.
 
 We'll fetch the `newsfeedStories` in a fragment on `Viewer` that we'll render in a separate component. Create a new file `NewsfeedContent.res` with the following fragment
 
 ```rescript
-module NewsfeedContentFragment = %relay(`
-  fragment NewsfeedContentFragment on Viewer {
+module Fragment = %relay(`
+  fragment NewsfeedContent_viewer on Viewer {
     newsfeedStories(first: 3)
       @connection(key: "NewsfeedContentsFragment_newsfeedStories") {
       edges {
         node {
           id
-          ...StoryFragment
+          ...Story_story
         }
       }
     }
@@ -382,8 +382,8 @@ As in the previous example, use the fragment hook and the `getConnectionNodes` h
 ```rescript
 @react.component
 let make = (~viewer as viewerRef) => {
-  let contents = NewsfeedContentFragment.use(viewerRef)
-  let stories = NewsfeedContentFragment.getConnectionNodes(contents.newsfeedStories)
+  let contents = Fragment.use(viewerRef)
+  let stories = Fragment.getConnectionNodes(contents.newsfeedStories)
 
   <>
     {stories
@@ -429,21 +429,19 @@ Now that we’re using a Connection field for the stories and have ourselves a f
 You should end up with something like this:
 
 ```rescript
-module NewsfeedContentsFragment = %relay(`
-  fragment NewsfeedContentsFragment on Query
+module Fragment = %relay(`
+  fragment NewsfeedContent_viewer on Viewer
   @argumentDefinitions(
     cursor: { type: "String" }
     count: { type: "Int", defaultValue: 3 }
   )
-  @refetchable(queryName: "NewsfeedContentsRefetchQuery") {
-    viewer @required(action: NONE) {
-      newsfeedStories(after: $cursor, first: $count)
-        @connection(key: "NewsfeedContentsFragment_newsfeedStories") {
-        edges {
-          node {
-            id
-            ...StoryFragment
-          }
+  @refetchable(queryName: "NewsfeedContentRefetchQuery") {
+    newsfeedStories(after: $cursor, first: $count)
+      @connection(key: "NewsfeedContentsFragment_newsfeedStories") {
+      edges {
+        node {
+          id
+          ...Story_story
         }
       }
     }
@@ -458,9 +456,10 @@ Now we need to modify the `NewsfeedContents` component to call `usePagination`:
 ```rescript
 @react.component
 let make = (~viewer as viewerRef) => {
-  // change-line
+  // change
   let {data} = NewsfeedContentFragment.usePagination(viewerRef)
   let stories = NewsfeedContentFragment.getConnectionNodes(data.newsfeedStories)
+  // end-change
 
   <>
     {stories
@@ -478,8 +477,8 @@ We’ve prepared a component called `InfiniteScrollTrigger` that detects when th
 @react.component
 let make = (~viewer as viewerRef) => {
   // change-line
-  let {data, loadNext, hasNext, isLoadingNext} = NewsfeedContentFragment.usePagination(viewerRef)
-  let stories = NewsfeedContentFragment.getConnectionNodes(data.newsfeedStories)
+  let {data, loadNext, hasNext, isLoadingNext} = Fragment.usePagination(viewerRef)
+  let stories = Fragment.getConnectionNodes(data.newsfeedStories)
 
   // change-line
   let onEndReached = () => loadNext(~count=3, ())->ignore
