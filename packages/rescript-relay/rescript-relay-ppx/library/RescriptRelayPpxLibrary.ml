@@ -38,4 +38,4 @@ let commonExtension =
 let () =
   Driver.register_transformation
     ~extensions:[commonExtension; DeferredComp.lazyExtension]
-    ~preprocess_impl:Transform.structure_mapper "rescript-relay"
+    "rescript-relay"
