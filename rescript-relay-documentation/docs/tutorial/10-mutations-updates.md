@@ -4,10 +4,6 @@ title: Mutations & Updates
 sidebar_label: Mutations & Updates
 ---
 
-:::info
-This tutorial is forked from the [official Relay tutorial](https://relay.dev/docs/tutorial/intro/), and adapted to RescriptRelay. All the credit goes to the Relay team for writing the tutorial.
-:::
-
 # Mutations & Updates
 
 In this chapter we’ll learn how to update data on the server and client. We’ll go through two main examples:
@@ -48,20 +44,20 @@ Relay tries to make it as easy as possible to update data in response to a mutat
 Let’s dip our toes in the water by implementing the Like button for Newsfeed stories. Luckily we already have a Like button prepared, so open up `Story.res` and drop it in to the `Story` component, remembering to spread its fragment into Story’s fragment:
 
 ```rescript
-module StoryFragment = %relay(`
-  fragment StoryFragment on Story {
-    title
-    summary
-    createdAt
-    poster {
-      ...PosterBylineFragment
+module Fragment = %relay(`
+  fragment Story_story on Story {
+    title @required(action: NONE)
+    summary @required(action: NONE)
+    createdAt @required(action: NONE)
+    poster @required(action: NONE) {
+      ...PosterByline_actor
     }
-    thumbnail {
-      ...ImageFragment @arguments(width: 400)
+    thumbnail @required(action: NONE) {
+      ...Image_image @arguments(width: 400)
     }
     // change-line
-    ...StoryLikeButtonFragment
-    ...StoryCommentsSectionFragment
+    ...StoryLikeButton_story
+    ...StoryCommentsSection_story
   }
 `)
 
@@ -75,24 +71,24 @@ let make = (~story) => {
     ...
     <StorySummary summary={summary} />
     // change-line
-    <StoryLikeButton story={data.fragmentRefs} />
-    <StoryCommentsSection story={data.fragmentRefs} />
+    <StoryLikeButton story={story.fragmentRefs} />
+    <StoryCommentsSection story={story.fragmentRefs} />
   </Card>
 }
 ```
 
-Now let’s take a look at `StoryLikeButton.js`. Currently, it is a button that doesn’t do anything, along with a like count.
+Now let’s take a look at `StoryLikeButton.res`. Currently, it is a button that doesn’t do anything, along with a like count.
 
 ![Like button](/img/docs/tutorial/mutations-like-button.png)
 
 You can look at its fragment to see that it fetches a field `likeCount` for the like count and `doesViewerLike` to determine whether the Like button is highlighted (it’s highlighted if the viewer likes the story, i.e. if `doesViewerLike` is true):
 
 ```rescript
-module StoryLikeButtonFragment = %relay(`
-  fragment StoryLikeButtonFragment on Story {
+module Fragment = %relay(`
+  fragment StoryLikeButton_story on Story {
     id
-    likeCount
-    doesViewerLike
+    likeCount @required(action: NONE)
+    doesViewerLike @required(action: NONE)
   }
 `)
 ```
@@ -119,23 +115,6 @@ The only difference is that, in a mutation, selecting a field makes something ha
 
 ## The Like Mutation
 
-:::note
-Given that the tutorial seems to be written for peeps without much/any GraphQL experience, maybee we should flesh out these kind of sections? Perhaps in toggle-able sections?
-
-The mutation that we want to fire when the user clicks the like button is defined in the GraphQL schema
-
-```graphql
-type Mutation {
-  likeStory(id: ID!, doesLike: Boolean!): StoryMutationResponse
-}
-
-type StoryMutationResponse {
-  story: Story
-}
-```
-The `likeStory` mutation accepts two variables ()
-:::
-
 With that in mind, this is what our mutation is going to look like — go ahead and add this declaration to the file:
 
 ```rescript
@@ -157,7 +136,7 @@ This is a lot, let’s break it down:
 - The mutation declares variables (`$id`, `$doesLike`) with type (`ID!`, `Boolean!`). These are passed from the client to the server when the mutation is dispatched. The `!` after a type indicates that it is required.
 - The mutation selects a mutation field defined by the GraphQL schema. Each mutation field that the server defines corresponds to some action that the client can request of the server, such as liking a story. The mutation field accepts arguments (like any field can do). The mutation variables that we declared as the argument values are passed in. For example, the `doesLike` field argument is set to be the `$doesLike` mutation variable.
 - The `likeStory` field returns an edge to a node that represents the mutation response. We can select various fields in order to receive updated data. The fields that are available in the mutation response are specified by the GraphQL schema.
-- We select the `story` field, which is (an edge to - not correct. It's just the story) the Story that we just liked.
+- We select the `story` field, which is the Story that we just liked.
 - We select specific fields from within that Story to get updated data. These are the same fields that a query could select about a Story — in fact, the same fields we selected in our fragment.
 
 When we send the server this mutation, we’ll get a response that, just like with queries, matches the shape of the mutation that we sent. For example, the server might send this back to us:
@@ -181,39 +160,41 @@ But we’re getting ahead of ourselves — let’s make that button trigger the 
 ```rescript
 @react.component
 let make = (~story) => {
-  let data = StoryLikeButtonFragment.use(story)
-  let onLikeButtonClicked = () => {
-    // To be filled in
-    ()
+  let data = Fragment.use(story)
+  
+  switch data {
+  | None => React.null
+  | Some({likeCount, doesViewerLike}) =>
+    <div className="likeButton">
+      <LikeCount count={likeCount} />
+      <LikeButton doesViewerLike={doesViewerLike} onClick={onLikeButtonClicked} />
+    </div>
   }
-  <div className="likeButton">
-    <LikeCount count=?{data.likeCount} />
-    <LikeButton doesViewerLike=?{data.doesViewerLike} onClick={onLikeButtonClicked} />
-  </div>
 }
 ```
 
-To do that, we call the mutation's `use` hook:
+To do that, we call the mutation's `use` hook. Change the StoryLikeButton component to this:
 
 ```rescript
 @react.component
 let make = (~story) => {
-  let data = StoryLikeButtonFragment.use(story)
-  // change-line
+  let data = Fragment.use(story)
   let (commitMutation, isMutationInFlight) = StoryLikeButtonLikeMutation.use()
-  let onLikeButtonClicked = () => {
-    // change
-    let variables = StoryLikeButtonLikeMutation.makeVariables(
-      ~id=data.id,
-      ~doesLike=!(data.doesViewerLike->Belt.Option.getWithDefault(false)),
-    )
-    commitMutation(~variables, ())->RescriptRelay.Disposable.ignore
-    // end-change
+
+  switch data {
+  | None => React.null
+  | Some({id, likeCount, doesViewerLike}) => {
+      let onLikeButtonClicked = () => {
+        let variables = StoryLikeButtonLikeMutation.makeVariables(~id, ~doesLike=!doesViewerLike)
+        commitMutation(~variables, ())->RescriptRelay.Disposable.ignore
+        ()
+      }
+      <div className="likeButton">
+        <LikeCount count={likeCount} />
+        <LikeButton doesViewerLike={doesViewerLike} onClick={onLikeButtonClicked} />
+      </div>
+    }
   }
-  <div className="likeButton">
-    <LikeCount count=?{data.likeCount} />
-    <LikeButton doesViewerLike=?{data.doesViewerLike} onClick={onLikeButtonClicked} />
-  </div>
 }
 ```
 
@@ -223,9 +204,9 @@ The hook also returns a boolean flag that tells us when the mutation is in fligh
 
 ```rescript
   <div className="likeButton">
-    <LikeCount count=?{data.likeCount} />
+    <LikeCount count={likeCount} />
     <LikeButton
-      doesViewerLike=?{data.doesViewerLike}
+      doesViewerLike={doesViewerLike}
       onClick={onLikeButtonClicked}
       // change-line
       disabled=isMutationInFlight
@@ -238,8 +219,8 @@ The variables object can also be constructed manually, so the call to `commitMut
 ```rescript
     commitMutation(
       ~variables={
-        id: data.id, 
-        doesLike: !(data.doesViewerLike->Belt.Option.getWithDefault(false))
+        id: id, 
+        doesLike: doesViewerLike
       },
       (),
     )->RescriptRelay.Disposable.ignore
@@ -280,7 +261,7 @@ module StoryLikeButtonLikeMutation = %relay(`
     likeStory(id: $id, doesLike: $doesLike) {
       story {
         // change-line
-        ...StoryLikeButtonFragment
+        ...StoryLikeButton_story
       }
     }
   }
@@ -317,7 +298,7 @@ In Relay, there are two main ways to implement optimistic UI - updatable queries
 
 ### Step 1 — Prepare the mutation for optimistic updates
 
-Go to `StoryLikeButton` and add `@raw_response_type` to the mutation definition:
+Add `@raw_response_type` to the mutation definition:
 
 ```rescript
 module StoryLikeButtonLikeMutation = %relay(`
@@ -357,52 +338,51 @@ type rawResponse_likeStory_story = {
 }
 ```
 
-This looks verbose, but we when we are going to use this type, it'll look very much like the server response (apart from some wrapping `Some`s)
+This looks pretty verbose, but we when we are going to use this type, it'll look very much like the server response (apart from some wrapping `Some`s)
 
 ### Step 2 — Add the optimitic response to `commitMutation`
 
-:::warning
-After adding some more `@required` this might look very different, but making this work for now
-:::
-
-We only need to call `commitMutation` with the response we're expecting
+We only need to call `commitMutation` with the response we're expecting. If the user has not liked the story, we expect the mutation to return the same story id, a `likeCount` incremented by 1, and that `doesViewerLike` is true. If the user has liked the story, we (again) expect the same story id, `likeCount` decremented by 1, and that `doesViewerLike` is false. That's pretty easy to code and the Rescript and Relay compilers will make sure the optimistic response that we construct has the correct shape.
 
 ```rescript
-  let onLikeButtonClicked = () => {
-    // change-line
-    let {id, doesViewerLike, likeCount} = data
+  switch data {
+  | None => React.null
+  | Some({id, likeCount, doesViewerLike}) => {
+      let onLikeButtonClicked = () => {
+        let variables = StoryLikeButtonLikeMutation.makeVariables(~id, ~doesLike=!doesViewerLike)
 
-    let newDoesLike = !(doesViewerLike->Belt.Option.getWithDefault(false))
-
-    commitMutation(
-      ~variables={id, doesLike: newDoesLike},
-      // change
-      ~optimisticResponse={
-        let newLikeCount = Math.Int.max(
-          0,
-          likeCount->Belt.Option.getWithDefault(0) + (newDoesLike ? 1 : -1),
-        )
-
-        {
-          likeStory: Some({
-            story: Some({
-              id,
-              likeCount: Some(newLikeCount),
-              doesViewerLike: Some(newDoesLike),
+        commitMutation(
+          ~variables,
+          // begin-change
+          ~optimisticResponse={
+            likeStory: Some({
+              story: Some({
+                id,
+                likeCount: doesViewerLike ? Some(likeCount - 1) : Some(likeCount + 1),
+                doesViewerLike: Some(!doesViewerLike),
+              }),
             }),
-          }),
-        }
-      },
-      // end-change
-      (),
-    )->RescriptRelay.Disposable.ignore
+          },
+          // end-change
+          (),
+        )->RescriptRelay.Disposable.ignore
+      }
+      <div className="likeButton">
+        <LikeCount count={likeCount} />
+        <LikeButton
+          doesViewerLike={doesViewerLike}
+          onClick={onLikeButtonClicked}
+          disabled={isMutationInFlight}
+        />
+      </div>
+    }
   }
 ```
 
 That's it! When the mutation is fired the UI will update to show the result of updating the store with the optimistic response. If the mutation fails, the optimistic update will be rolled back. If the mutation succeeds, the optimistic update will be replaced with the final result. 
 
 :::tip 
-Try setting the like count to -1000 in the optimistic response to see how the mutation response from replaces the optimistic response.
+Try setting the like count to -1000 in the optimistic response to see how the mutation response from the server replaces the optimistic response.
 :::
 
 ## Adding Comments — Mutations on Connections
@@ -413,19 +393,24 @@ Let’s look at the case of Connections. We’ll implement the ability to post a
 
 The server’s mutation response only includes the newly-created comment. We have to tell Relay how to insert that story into the Connection between a story and its comments.
 
-Head back over to `StoryCommentsSection.res` and the add `StoryCommentsComposer` for posting a new comment, remembering to spread its fragment into our fragment:
+Head back over to `StoryCommentsSection.res` and add the `StoryCommentsComposer` for posting a new comment. As always, remember to spread its fragment:
 
 ```rescript
-module StoryCommentsSectionFragment = %relay(`
-  fragment StoryCommentsSectionFragment on Story
-  ...
-    {
+module Fragment = %relay(`
+  fragment StoryCommentsSection_story on Story
+  @refetchable(queryName: "StoryCommentsSectionPaginationQuery")
+  @argumentDefinitions(
+    cursor: { type: "String" }
+    count: { type: "Int", defaultValue: 3 }
+  ) {
+    // change-line
+    ...StoryCommentsComposerFragment
+    comments(after: $cursor, first: $count) 
+      @connection(key: "StoryCommentsSection_story_comments") {
       ...
     }
-    ...StoryCommentsComposerFragment
   }
 `)
-`
 
 @react.component
 let make = (~story) => {
@@ -475,7 +460,7 @@ module StoryCommentsComposerPostMutation = %relay(`
         commentEdge {
           node {
             id
-            text
+            ...Comment_comment
           }
         }
       }
@@ -523,11 +508,7 @@ Note that we are clearing the comment text regardless of whether the mutation wa
 
 `commitMutation` accepts a callback `onCompleted`, which is called when the mutation returns. `onCompleted` receives the mutation response as the first argument and any thrown GraphQL errors as the second argument. 
 
-:::warning
-Maybe link to somewhere that explains how developer land errors work in GraphQL and are different from e.g. network errors? Explaining is out of scope for the tutorial, I think.
-:::
-
-Here we will assume that posting the comment failed, if there is no `commentEdge` in the data in `onCompleted` or if `onError` is called at all.
+We will assume that posting the comment failed, if there is no `commentEdge` in the data in `onCompleted` or if `onError` is called.
 
 Make the following changes to `commitMutation`:
 ```rescript
@@ -555,17 +536,17 @@ let make = (~story) => {
 }
 ```
 
-If you disable the network connection in the your browsers devtools networks tab or if you open up `resovlers.mjs` and throw an exception in `resolvePostStoryCommentMutation` you can get the mutation to error. For the former, the `onError` handler is called immediately (since only the server is artifically slowed down) and the comment text is restored. If you do the latter, you'll see the comment text dissapear and then reappear when the mutation response comes back without a new comment edge.
+If you disable the network connection in the your browsers devtools networks tab or if you open up `resolvers.mjs` and throw an exception in `resolvePostStoryCommentMutation` you can get the mutation to error. For the former, the `onError` handler is called immediately (since only the server is artifically slowed down) and the comment text is restored. If you do the latter, you'll see the comment text dissapear and then reappear when the mutation response comes back without a new comment edge.
 
 :::tip
-There are different schools of though on how to design your API, but that's outside the scope of this tutorial. See somewhere for stuff...
+A deep dive on errors are beyond the scope of this tutorial. The thing to be aware of here is that errors that happen while resolving the GraphQL response will show up the arguments to `onComplete`, since the mutation actually completed! Errors that happen outside of that (e.g. network errors), will show up in `onError`.
 :::
 
 ### Step 3 — Add a Declarative Connection Handler
 
 Now the mutation has been hooked up, you can see in the network logs that clicking Post sends a mutation request to the server. If you refresh the page, you can see that the comment has been posted. However, nothing happens in the UI. We need to tell Relay to add the newly-created `commentEdge` to the comments Connection on the story.
 
-To do that we can use one of Relay's declarative directives to manipulate Connections. There are three edge directions, `@appendEdge`, `@prependEdge`, and `@deleteEdge` that you can use directly in the mutation definition. Then when the mutation is run, you pass in the ID(s) of the Connections that you want to modify. Relay will append, prepend, or delete the edge from those Connections as you specify.
+To do that we can use one of Relay's declarative directives to manipulate Connections. There are three edge directions, `@appendEdge`, `@prependEdge`, and `@deleteEdge` that you can use directly in the mutation definition. Then when the mutation is run, you pass in the ID(s) of the Connections that you want to modify. Relay will append, prepend, or delete the edge from those Connections as specified by you.
 
 We want the newly-created comment to appear at the top of the list, so we’ll use `@prependEdge`. Make the following additions to the mutation definition:
 
@@ -598,16 +579,12 @@ The `$connections` variable is only used as an argument to the `@prependEdge` di
 
 ### Step 4 — Pass in the Connection ID as a Mutation Variable
 
-We need to identify the Connection to add the new edge to. A Connections is identified with two pieces of information:
+We need to identify the Connection to add the new edge to. A Connection is identified with two pieces of information:
 
 - Which node it’s off of — in this case, the Story we’re posting a comment to.
-- The _key_ provided in the `@connection` directive, which lets us distinguish connections in case more than one connection is off of the same node.
+- The _key_ provided in the `@connection` directive, which lets us tell connections apart if there is more than one of the same node.
 
 We pass this information into the mutation variables using a special API provided by RescriptRelay called `ConnectionHandler`.
-
-:::warning
-Explain why we're using `__id` and not just `id`. See https://github.com/zth/rescript-relay/pull/144
-:::
 
 First add the `__id` field on the composers fragment and remove `id`.
 
@@ -619,6 +596,8 @@ module StoryCommentsComposerFragment = %relay(`
   }
 `)
 ```
+
+`__id` is a special type that Relay wants and not anything that you set up yourself. Where `id` is of type `string`, `__id` is of type `dataId`. Under the hood `dataId` _is_ a string, but using a separate type makes it harder to pass ids you've contructed yourself into places that want ids that Relay has created.
 
 ```rescript
 @react.component
@@ -632,7 +611,7 @@ let make = (~story) => {
     // change
     let connectionId = RescriptRelay.ConnectionHandler.getConnectionID(
       __id,
-      "StoryCommentsSectionFragment_comments",
+      "StoryCommentsSection_story_comments",
       (),
     )
     // end-change
@@ -655,9 +634,7 @@ let make = (~story) => {
 }
 ```
 
-The string `"StoryCommentsSectionFragment_comments"` that we pass to `getConnectionID` is the identifier that we used when fetching the connection in `StoryCommentSection`.
-
-Meanwhile, the argument `__id` is the ID of the specific story that we’re connecting off of.
+The string `"StoryCommentsSection_story_comments"` that we pass to `getConnectionID` is the identifier that we specicy for the connection in `StoryCommentSection`.
 
 With this change, we should see the comment appear in the list of comments once the mutation is complete.
 
@@ -682,7 +659,7 @@ module StoryCommentsComposerPostMutation = %relay(`
 `)
 ```
 
-Previously we knew the exact value of the response we expected from the server. For this mutation, however, we can't know before-hand which id the new comment node will have. For these situations, we use a helper function to generate a temporary node id that will let store update correctly for the optimistic UX. When the mutation returns with the actual node id, the optimistic changes to the store will be rolled back and the temporary node id replaced with the actual one.
+Previously we knew the exact value of the response we expected from the server. However, since this mutation creates a new node and edge we can't know the id before-hand. For these situations, we use a helper function to generate a temporary node id that will let store update for the optimistic UI. When the mutation returns with the actual node id, the optimistic changes to the store will be rolled back, the teporary node is discarded, and the real node inserted.
 
 Make the following changes to `commitMutation`:
 ```rescript
@@ -711,9 +688,7 @@ let make = (~story) => {
 }
 ```
 
-:::warning
-TADA!
-:::
+With a relatively modest amount of code, you have implemented robust mutations that handle optimistic updates and takes care of both successes and failures. Pretty cool, huh?!
 
 ---
 
