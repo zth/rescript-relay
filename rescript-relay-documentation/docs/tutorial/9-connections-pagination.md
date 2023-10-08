@@ -218,6 +218,34 @@ module Fragment = %relay(`
 
 The `@connection` directive requires a `key` argument which must be a unique string — here formed from the fragment name and field name. This key is used when editing the connection’s contents during mutations, as we’ll see in the next chapter.
 
+Now that we've added the `@connection` directive, we can use a `getConnectionNodes` helper to make accessing the nodes of the connection much cleaner.
+
+```rescript
+@react.component
+let make = (~story) => {
+  let data = Fragment.use(story)
+  // change
+  let comments = data.comments->Fragment.getConnectionNodes
+  let hasNextPage =
+    data.comments
+    ->Option.flatMap(c => c.pageInfo->Option.flatMap(p => p.hasNextPage))
+    ->Option.getWithDefault(false)
+  // end-change
+}
+```
+
+Instead of switching on edges and nodes, you can just do
+```rescript
+  {comments
+    ->Array.map(comment => <Comment key=comment.id comment=comment.fragmentRefs />)
+    ->React.array}
+  {switch hasNextPage {
+  | Some(true) => <LoadMoreCommentsButton onClick=ignore />
+  | Some(false) | None => React.null
+  }}
+```
+which looks much neater. You can also add some `@required`s if you like to avoid mapping over pageInfo to get `hasNextPage`
+
 ### The usePagination hook
 
 Now that we’ve got the fragment all souped up, we can modify our component to implement the Load More button.
@@ -253,6 +281,10 @@ let make = (~story) => {
   // change-line
   let (isPending, startTransition) = ReactExperimental.useTransition()
   let {data, loadNext, isLoadingNext} = StoryCommentsSectionFragment.usePagination(story)
+  let hasNextPage =
+    data.comments
+    ->Option.flatMap(c => c.pageInfo->Option.flatMap(p => p.hasNextPage))
+    ->Option.getWithDefault(false)
   // change
   let onLoadMore = () =>
     startTransition(() => {
@@ -261,34 +293,19 @@ let make = (~story) => {
   // end-change
   
   <div>
-    {switch data.comments {
-    | Some({edges: Some(edges), pageInfo: Some({hasNextPage})}) =>
-      <>
-        {edges
-        ->Array.filterMap(edge =>
-          switch edge {
-          | Some({node: Some(node)}) => Some(<Comment key=node.id comment=node.fragmentRefs />)
-          | _ => None
-          }
-        )
-        ->React.array}
-        {switch hasNextPage {
-        | Some(true) =>
-          <LoadMoreCommentsButton
-            // change-line
-            disabled={isLoadingNext || isPending} onClick={_ => onLoadMore()}
-          />
-        | Some(false) | None => React.null
-        }}
-        // change-line
-        {isLoadingNext || isPending ? <SmallSpinner /> : React.null}
-      </>
-    | _ => React.null
+    {comments
+    ->Array.map(comment => <Comment key=comment.id comment=comment.fragmentRefs />)
+    ->React.array}
+    {switch hasNextPage {
+    | false => React.null
+    // change-line
+    | true => <LoadMoreCommentsButton disabled={isLoadingNext || isPending} onClick={onLoadMore} />
     }}
+    // change-line
+    {isLoadingNext || isPending ? <SmallSpinner /> : React.null}
   </div>
 }
 ```
-
 
 ---
 
