@@ -1,5 +1,13 @@
 # master
 
+# 2.2.0
+
+This brings the supported Relay version to 16.
+
+## Upgrade versions
+
+- `react-relay` and `relay-runtime` to `>=16.0.0`
+
 # 2.1.0
 
 Look here if you're using `rescript >= 11.0.0-rc.4`. This fixes an issue with incompatible record field names that `rc.4` changed how they're handled.
