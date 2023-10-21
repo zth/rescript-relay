@@ -1,6 +1,16 @@
 # master
 
+**All work on version `2.x` is in the [2.x branch](https://github.com/zth/rescript-relay/tree/2.x).**
+
 # **Version 3**
+
+# 3.0.0-alpha.2
+
+This brings the supported Relay version to 16.
+
+## Upgrade versions
+
+- `react-relay` and `relay-runtime` to `>=16.0.0`
 
 # 3.0.0-alpha.1
 

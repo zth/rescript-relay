@@ -84,7 +84,10 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
         "node"
       ],
       "operation": rescript_graphql_node_TestRefetchingRefetchQuery,
-      "identifierField": "id"
+      "identifierInfo": {
+        "identifierField": "id",
+        "identifierQueryVariableName": "id"
+      }
     }
   },
   "name": "TestRefetching_user",
