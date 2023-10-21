@@ -15,6 +15,11 @@ module.exports = {
   organizationName: "zth", // Usually your GitHub org/user name.
   projectName: "rescript-relay", // Usually your repo name.
   themeConfig: {
+    algolia: {
+      appId: "WCPLH7S400",
+      apiKey: "ee0c85d6d6a37e46570064a293196cb1",
+      indexName: "rescript-relay-umentation",
+    },
     prism: {
       additionalLanguages: ["rescript"],
     },
