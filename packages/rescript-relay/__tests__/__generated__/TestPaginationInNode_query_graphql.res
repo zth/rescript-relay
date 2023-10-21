@@ -132,7 +132,10 @@ return {
         "node"
       ],
       "operation": rescript_graphql_node_TestPaginationInNodeRefetchQuery,
-      "identifierField": "id"
+      "identifierInfo": {
+        "identifierField": "id",
+        "identifierQueryVariableName": "id"
+      }
     }
   },
   "name": "TestPaginationInNode_query",
