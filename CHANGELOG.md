@@ -1,5 +1,13 @@
 # master
 
+# 2.1.0
+
+Look here if you're using `rescript >= 11.0.0-rc.4`. This fixes an issue with incompatible record field names that `rc.4` changed how they're handled.
+
+## Improvements
+
+- Object makers now have `@as()` annotations to control incompatible record field names.
+
 # 2.0.3
 
 ## Bug fix

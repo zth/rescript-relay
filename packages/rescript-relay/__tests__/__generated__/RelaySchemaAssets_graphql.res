@@ -157,7 +157,7 @@ external make_InputA: (
 external make_InputB: (
   ~time: TestsUtils.Datetime.t=?,
   ~usingA: input_InputA=?,
-  ~_constraint: bool=?,
+  @as("constraint") ~_constraint: bool=?,
   unit,
 ) => input_InputB = ""
 
@@ -176,7 +176,7 @@ external make_SomeInput: (
   ~int: int=?,
   ~datetime: TestsUtils.Datetime.t=?,
   ~recursive: input_SomeInput=?,
-  ~_private: bool=?,
+  @as("private") ~_private: bool=?,
   unit,
 ) => input_SomeInput = ""
 

@@ -85,7 +85,7 @@ module Utils = {
     ~datetime: TestsUtils.Datetime.t=?,
     ~float: float=?,
     ~int: int=?,
-    ~_private: bool=?,
+    @as("private") ~_private: bool=?,
     ~recursive: someInput=?,
     ~str: string=?,
     unit
