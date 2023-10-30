@@ -16,7 +16,12 @@
     }
   ],
   "suffix": ".bs.js",
-  "ppx-flags": ["rescript-relay/ppx"],
+  "ppx-flags": [
+    [
+      "rescript-relay/ppx",
+      "-uncurried"
+    ]
+  ],
   "namespace": true,
   "bs-dependencies": [
     "@rescript/react",
