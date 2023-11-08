@@ -1,5 +1,11 @@
 # master
 
+# 2.2.1
+
+## Improvements
+
+- Use an up-to-date `reanalyze` from the new `@rescript/tools` package, for powering the CLI.
+
 # 2.2.0
 
 This brings the supported Relay version to 16.
