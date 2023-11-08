@@ -4,6 +4,12 @@
 
 # **Version 3**
 
+# 3.0.0-alpha.3
+
+## Improvements
+
+- Use an up-to-date `reanalyze` from the new `@rescript/tools` package, for powering the CLI.
+
 # 3.0.0-alpha.2
 
 This brings the supported Relay version to 16.
