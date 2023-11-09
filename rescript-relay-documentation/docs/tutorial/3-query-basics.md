@@ -104,7 +104,7 @@ let make = () => {
 }
 ```
 
-`topStory` returned by the query has type `NewsfeedQuery_graphql.Types.response_topStory`. Since this is compatible with the type `Story.story` expected by the `story` prop, we can use `:>` is needed to convert `topStory` into the expected type. This is necessary because ReScript uses structural types. See the Deep Dive below for more.
+`topStory` returned by the query has type `NewsfeedQuery_graphql.Types.response_topStory`. Since this is compatible with the type `Story.story` expected by the `story` prop, we can use `:>` is needed to convert `topStory` into the expected type. This is necessary because ReScript uses nominal types. See the Deep Dive below for more.
 
 <details>
 <summary>Deep dive: Nominal vs Structural types</summary>
