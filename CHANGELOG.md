@@ -1,5 +1,9 @@
 # master
 
+# 2.3.0
+
+Fix compiler error. This should make upgrading from 2.1.0 work.
+
 # 2.2.1
 
 ## Improvements
