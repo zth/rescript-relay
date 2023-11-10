@@ -164,22 +164,22 @@ and
   Somewhere wanted: a
 ```
 
-If you instead do 
+Since every field that `a` has is also in `b` and `c`, `b` and `c` can safely be substituted for an `a`. You substitute using the coercion operator `:>`, so the following will compile without issue
 
 ```rescript
 acceptsA((valB :> a))
 acceptsA((valC :> a))
 ```
 
-Then your code will compile. "WHY?"
+If you're coming from Typescript it will probably feel annoying for a bit that you have to explicitly convert between types like this. A big upside is, that it forces you to be explicit and intentional about where your types are used and the compiler will have a much easier time giving you reasonable and understandable error messages when there are type errors. Nominal types pay off!
 </details>
 
-Even with `:>` you'll still compiler errors, because the placeholder data and the starting components do not take into account that the schema has all fields except `id` nullable.
+Even with `:>` you'll still get compiler errors, because the placeholder data and the starting components do not take into account that the schema has all fields except `id` nullable.
 
-While it is good schema design to make fields nullable by default, it can be tedioous to have to handle nulls everywhere. Relay has a `@required` _directive_ that handles this for you. You add it to fields in your query, specifying what Relay should do if the field is (unexpectedly) null. There are three different options. The one we will use here is `NONE`. If a `@required(action: NONE)` field is null, it's parent will be null.
+While it is good schema design to make fields nullable by default, it can be tedious to have to handle nulls everywhere. Relay has a `@required` _directive_ that handles this for you. You add it to fields in your query, specifying what Relay should do if the field is (unexpectedly) null. There are three different options. The one we will use here is `NONE`. If a `@required(action: NONE)` field is null, it's parent will be null.
 
 :::tip
-If and how to use the `@required` directive depends on your particular use cases. If a component can meaningfully display information when some of it's child components cannot get their data (e.g. due to auth or a backend error), you should (probably) not make the field required. If a componant cannot show something meaningful, then you (probably) _should_ make the field required. In this tutorial we will plaster `@required` on everything nullable
+If and how to use the `@required` directive depends on your particular use cases. If a component can meaningfully display information when some of it's child components cannot get their data (e.g. due to auth or a backend error), you should (probably) not make the field required. If a component cannot show something meaningful, then you (probably) _should_ make the field required. In this tutorial we will plaster `@required` on everything nullable
 :::
 
 :::tip
