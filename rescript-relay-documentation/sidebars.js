@@ -13,6 +13,18 @@ module.exports = {
       "vscode-extension",
       "rescript-relay-cli",
     ],
+    Tutorial: [
+      "tutorial/tutorial-intro",
+      "tutorial/tutorial-graphql",
+      "tutorial/tutorial-queries-1",
+      "tutorial/tutorial-fragments-1",
+      "tutorial/tutorial-arrays-lists",
+      "tutorial/tutorial-queries-2",
+      "tutorial/tutorial-interfaces-polymorphism",
+      "tutorial/tutorial-refetchable-fragments",
+      "tutorial/tutorial-connections-pagination",
+      "tutorial/tutorial-mutations-updates",
+    ],
     "Using RescriptRelay": [
       "making-queries",
       "using-fragments",
