@@ -118,7 +118,9 @@ Take a look inside `PosterDetailsHovercardContents.res`: you should see a query 
 ```rescript
 module PosterDetailsHovercardContentsQuery = %relay(`
   query PosterDetailsHovercardContentsQuery {
+    // change-line
     node(id: "1") {
+      // color2
       ... on Actor {
         ...PosterDetailsHovercardContents_actor
       }
