@@ -268,7 +268,7 @@ First, it allows Relay to generate type definitions for the results of the query
 
 Second, RescriptRelay connects the GraphQL string literal with an object that tells Relay what to do. This is much faster than using the GraphQL strings directly at runtime.
 
-Also, Relay’s compiler can be configured to [save queries to the server](/docs/guides/persisted-queries/) when you build your app, so that at runtime the client need only send a query ID instead of the query itself. This saves bundle size and network bandwidth, and can prevent attackers from writing malicious queries since only those your app was built with need be available.
+Also, Relay’s compiler can be configured to [save queries to the server](https://relay.dev/docs/guides/persisted-queries/) when you build your app, so that at runtime the client need only send a query ID instead of the query itself. This saves bundle size and network bandwidth, and can prevent attackers from writing malicious queries since only those your app was built with need be available.
 
 So when you have a GraphQL tagged string literal in your program...
 
@@ -300,7 +300,7 @@ module MyQuery = %relay(`
 }
 ```
 
-along with various other properties and information. These data structures are carefully designed to allow the JIT to run Relay’s payload processing code very quickly. If you’re curious, you can use the [Relay Compiler Explorer](/compiler-explorer) to play with it.
+along with various other properties and information. These data structures are carefully designed to allow the JIT to run Relay’s payload processing code very quickly. If you’re curious, you can use the [Relay Compiler Explorer](https://relay.dev/compiler-explorer) to play with it.
 
 </details>
 

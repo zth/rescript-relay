@@ -82,7 +82,7 @@ Take a look once more at the `Story` component. There’s a `StoryCommentsSectio
 @react.component
 let make = (~story) => {
   ...
-  
+
   <Card>
     ...
     <StorySummary summary={story.summary} />
@@ -168,7 +168,7 @@ Before we modify our component, the fragment itself needs three extra pieces of 
 
 ```rescript
 module Fragment = %relay(`
-  fragment StoryCommentsSection_story on Story 
+  fragment StoryCommentsSection_story on Story
   // change
   @argumentDefinitions(
     cursor: { type: "String" }
@@ -191,7 +191,7 @@ module Fragment = %relay(`
 `)
 ```
 
-Next, we need to make the fragment [refetchable](../refetchable-fragments), so that Relay will be able to fetch it again with new values for the arguments — namely, a new cursor for the `$cursor` argument:
+Next, we need to make the fragment [refetchable](./8-refetchable-fragments.md), so that Relay will be able to fetch it again with new values for the arguments — namely, a new cursor for the `$cursor` argument:
 
 ```rescript
 module Fragment = %relay(`
