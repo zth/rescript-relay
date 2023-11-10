@@ -16,6 +16,33 @@ module.exports = {
   projectName: "rescript-relay", // Usually your repo name.
   themeConfig: {
     prism: {
+      magicComments: [
+        {
+          className: "code-change",
+          line: "change-line",
+          block: {start: "change", end: "end-change"},
+        },
+        {
+          className: "color1",
+          line: "color1",
+        },
+        {
+          className: "color2",
+          line: "color2",
+        },
+        {
+          className: "color3",
+          line: "color3",
+        },
+        {
+          className: "color4",
+          line: "color4",
+        },
+        {
+          className: "color5",
+          line: "color5",
+        },
+      ],
       additionalLanguages: ["rescript"],
     },
     navbar: {
