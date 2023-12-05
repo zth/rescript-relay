@@ -4,6 +4,8 @@
 
 # **Version 3**
 
+# 3.0.0-alpha.4
+
 ## Improvements
 
 - Enums in input objects are now (properly) typed as their input variants.
