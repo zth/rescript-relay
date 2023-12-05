@@ -429,6 +429,10 @@ export const processReanalyzeOutput = (output: string) => {
 
     // Extract the target file names + actual unused fields (record names/patterns)
     .reduce((acc: Record<string, IRepresentation>, curr) => {
+      if (!curr.includes("is a record label never used to read a value")) {
+        return acc;
+      }
+      
       const type = curr.includes("Types.fragment") ? "fragment" : "query";
 
       const graphqlName = curr.match(graphqlNameRegexp)?.[0];

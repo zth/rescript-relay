@@ -10,6 +10,7 @@
 
 - Enums in input objects are now (properly) typed as their input variants.
 - Single item enums are now not emitted as `@unboxed`.
+- Remove unused fields CLI now properly account for only record fields.
 
 # 3.0.0-alpha.3
 
