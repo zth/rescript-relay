@@ -9,6 +9,10 @@ input InputA {
   usingB: InputB
 }
 
+enum SingleItemEnum {
+  IAmLonely
+}
+
 """
 A fine input.
 """

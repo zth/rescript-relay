@@ -9,6 +9,7 @@
 ## Improvements
 
 - Enums in input objects are now (properly) typed as their input variants.
+- Single item enums are now not emitted as `@unboxed`.
 
 # 3.0.0-alpha.3
 

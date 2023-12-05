@@ -2,6 +2,17 @@
 @@warning("-30")
 
 @live @unboxed
+type enum_SingleItemEnum = 
+  | IAmLonely
+  | FutureAddedValue(string)
+
+
+@live
+type enum_SingleItemEnum_input = 
+  | IAmLonely
+
+
+@live @unboxed
 type enum_OnlineStatus = 
   | Online
   | Idle
