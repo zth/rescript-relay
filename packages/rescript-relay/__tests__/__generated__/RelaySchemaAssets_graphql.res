@@ -80,7 +80,7 @@ and input_SomeInput = {
   datetime?: TestsUtils.Datetime.t,
   recursive?: input_SomeInput,
   @as("private") private_?: bool,
-  enum?: enum_OnlineStatus,
+  enum?: enum_OnlineStatus_input,
 }
 
 @live
@@ -92,7 +92,7 @@ and input_SomeInput_nullable = {
   datetime?: Js.Null.t<TestsUtils.Datetime.t>,
   recursive?: Js.Null.t<input_SomeInput_nullable>,
   @as("private") private_?: Js.Null.t<bool>,
-  enum?: Js.Null.t<enum_OnlineStatus>,
+  enum?: Js.Null.t<enum_OnlineStatus_input>,
 }
 
 @live
@@ -109,14 +109,14 @@ and input_RecursiveSetOnlineStatusInput_nullable = {
 
 @live
 and input_SetOnlineStatusInput = {
-  onlineStatus: enum_OnlineStatus,
+  onlineStatus: enum_OnlineStatus_input,
   someJsonValue: Js.Json.t,
   recursed?: input_RecursiveSetOnlineStatusInput,
 }
 
 @live
 and input_SetOnlineStatusInput_nullable = {
-  onlineStatus: enum_OnlineStatus,
+  onlineStatus: enum_OnlineStatus_input,
   someJsonValue: Js.Json.t,
   recursed?: Js.Null.t<input_RecursiveSetOnlineStatusInput_nullable>,
 }
