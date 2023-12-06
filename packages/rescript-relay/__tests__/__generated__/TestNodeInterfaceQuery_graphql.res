@@ -5,14 +5,14 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type response_node = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestNodeInterface_user]>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type response = {
     node: option<response_node>,

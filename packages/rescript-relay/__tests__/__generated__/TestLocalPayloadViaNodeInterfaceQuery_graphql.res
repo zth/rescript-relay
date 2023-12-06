@@ -5,16 +5,16 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type response_node = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type rawResponse_node_User_memberOf_Group_topMember = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         __isNode: [ | #User],
@@ -22,10 +22,10 @@ module Types = {
         @live id: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type rawResponse_node_User_memberOf = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         __isNode: [ | #Group],
@@ -34,7 +34,7 @@ module Types = {
         topMember: option<rawResponse_node_User_memberOf_Group_topMember>,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         __isNode: [ | #User],
@@ -42,10 +42,10 @@ module Types = {
         @live id: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type rawResponse_node_User_memberOfSingular = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         __isNode: [ | #Group],
@@ -53,7 +53,7 @@ module Types = {
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         __isNode: [ | #User],
@@ -61,10 +61,10 @@ module Types = {
         @live id: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type rawResponse_node = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         avatarUrl: option<string>,
@@ -75,7 +75,7 @@ module Types = {
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type response = {
     node: option<response_node>,

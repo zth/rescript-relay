@@ -6,6 +6,7 @@
 
 ## Improvements
 
+- Emit `@live` for union variant cases to prevent false positives in unions.
 - Set `@rescript/tools` version explicitly.
 
 # 3.0.0-alpha.4

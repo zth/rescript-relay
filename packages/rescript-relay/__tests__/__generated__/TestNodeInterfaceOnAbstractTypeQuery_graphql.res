@@ -5,19 +5,19 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type response_node = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         name: option<string>,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: option<string>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type response = {
     node: option<response_node>,

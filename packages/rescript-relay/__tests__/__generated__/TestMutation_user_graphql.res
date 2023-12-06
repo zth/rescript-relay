@@ -5,19 +5,19 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type fragment_memberOf = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     firstName: string,

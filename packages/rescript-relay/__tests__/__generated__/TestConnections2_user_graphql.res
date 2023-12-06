@@ -14,13 +14,13 @@ module Types = {
     edges: option<array<option<fragment_member_User_friendsConnection_edges>>>,
   }
   @tag("__typename") and fragment_member = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         friendsConnection: fragment_member_User_friendsConnection,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     member: option<fragment_member>,

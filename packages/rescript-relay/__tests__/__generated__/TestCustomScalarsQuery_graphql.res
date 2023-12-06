@@ -5,13 +5,13 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type response_member = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         createdAt: TestsUtils.Datetime.t,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_loggedInUser_friends = {
     createdAt: TestsUtils.Datetime.t,

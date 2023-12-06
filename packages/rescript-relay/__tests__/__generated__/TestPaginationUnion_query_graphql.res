@@ -15,7 +15,7 @@ module Types = {
     edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
   }
   @tag("__typename") and fragment_members_edges_node = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         adminsConnection: fragment_members_edges_node_Group_adminsConnection,
@@ -23,14 +23,14 @@ module Types = {
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         @live id: string,
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec fragment_members_edges = {
     node: option<fragment_members_edges_node>,

@@ -5,7 +5,7 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type rawResponse_setOnlineStatus_user_memberOf = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         __isNode: [ | #Group],
@@ -13,7 +13,7 @@ module Types = {
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         __isNode: [ | #User],
@@ -21,7 +21,7 @@ module Types = {
         @live id: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @live
   type rec response_setOnlineStatus_user = {

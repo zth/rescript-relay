@@ -5,44 +5,44 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type fragment_memberOf_Group_topMember = 
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type fragment_memberOf = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         name: string,
         topMember: option<fragment_memberOf_Group_topMember>,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type fragment_memberOfSingular = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     avatarUrl: option<string>,

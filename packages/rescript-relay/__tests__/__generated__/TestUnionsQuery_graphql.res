@@ -5,7 +5,7 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type response_members_edges_node_Group_members = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         avatarUrl: option<string>,
@@ -13,7 +13,7 @@ module Types = {
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
@@ -21,10 +21,10 @@ module Types = {
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @tag("__typename") type response_members_edges_node = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         avatarUrl: option<string>,
@@ -33,7 +33,7 @@ module Types = {
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
@@ -41,7 +41,7 @@ module Types = {
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_members_edges = {
     node: option<response_members_edges_node>,

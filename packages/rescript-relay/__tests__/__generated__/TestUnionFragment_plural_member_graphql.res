@@ -5,13 +5,13 @@ module Types = {
   @@warning("-30")
 
   @tag("__typename") type fragment_t = 
-    | Group(
+    | @live Group(
       {
         @live __typename: [ | #Group],
         name: string,
       }
     )
-    | User(
+    | @live User(
       {
         @live __typename: [ | #User],
         firstName: string,
@@ -19,7 +19,7 @@ module Types = {
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestUnionFragmentUser_user]>,
       }
     )
-    | @as("__unselected") UnselectedUnionMember(string)
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = array<fragment_t>
 }
