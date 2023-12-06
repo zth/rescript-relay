@@ -540,6 +540,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@rescript/tools@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@rescript/tools/-/tools-0.1.2.tgz#540f9bd4d678e7bae3df95bb60ccf8791855454f"
+  integrity sha512-slKy6cG5CowakGZB15ig+e1qG+klTdFhBE6QaonQ55RXORg6i5i2+OPmlcOfDiy3685Kqd84HXLhfTCOzspaKA==
+  dependencies:
+    rescript "^11.0.0-rc.4"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -2525,6 +2532,11 @@ require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
   integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
+
+rescript@^11.0.0-rc.4:
+  version "11.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-rc.6.tgz#07ee555f6c6944a8d4c7186d1a848be471273f56"
+  integrity sha512-2nqdpQxLgQGNp0Rb8AFn5cM3kwRTd54zLvchqCsK3iLOe1CJwdVW5nEF7lsJbFTqihl8W6Va1y7SbFxY3FNxOQ==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"

@@ -4,6 +4,10 @@
 
 # **Version 3**
 
+## Improvements
+
+- Set `@rescript/tools` version explicitly.
+
 # 3.0.0-alpha.4
 
 ## Improvements
