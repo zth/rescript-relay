@@ -206,6 +206,7 @@ type Query {
   ): UserConnection
   search(input: SearchInput!): String
   searchPesticie(input: PesticideListSearchInput!): String
+  findByLocation(location: Location!): String
 }
 
 type Mutation {
@@ -222,4 +223,17 @@ type Mutation {
 
 type Subscription {
   userUpdated(id: ID!): UserUpdatedPayload
+}
+
+input ByAddress {
+  city: String!
+}
+
+input ByLoc {
+  lat: Float!
+}
+
+input Location @oneOf {
+  byAddress: ByAddress
+  byLoc: ByLoc
 }

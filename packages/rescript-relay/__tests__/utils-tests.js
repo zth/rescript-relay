@@ -452,6 +452,35 @@ describe("conversion", () => {
     });
   });
 
+  it("handles input unions", () => {
+    expect(
+      traverser(
+        {
+          location: {
+            __$inputUnion: "byAddress",
+            _0: {
+              city: "City",
+            },
+          },
+        },
+        {
+          location: { byLoc: { r: "byLoc" }, byAddress: { r: "byAddress" } },
+          byAddress: {},
+          byLoc: {},
+          __root: { location: { r: "location" } },
+        },
+        {},
+        undefined
+      )
+    ).toEqual({
+      location: {
+        byAddress: {
+          city: "City",
+        },
+      },
+    });
+  });
+
   it("handles top level unions on fragments", () => {
     expect(
       traverser(
