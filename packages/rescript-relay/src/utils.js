@@ -59,7 +59,6 @@ function traverse(
       key.startsWith("__") &&
       key !== "__typename" &&
       key !== "__id" &&
-      key !== "__$inputUnion" &&
       !key.startsWith("__relay_internal")
     )
       continue;
