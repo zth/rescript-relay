@@ -21,7 +21,20 @@ describe("Query", () => {
       },
     });
 
+    queryMock.mockQuery({
+      name: "TestInputUnionQuery",
+      variables: {
+        location: {
+          byId: "<id>",
+        },
+      },
+      data: {
+        findByLocation: "Got ID",
+      },
+    });
+
     t.render(test_inputUnion());
     await t.screen.findByText("Got it");
+    await t.screen.findByText("Got ID");
   });
 });

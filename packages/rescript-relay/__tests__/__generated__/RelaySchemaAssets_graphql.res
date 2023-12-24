@@ -187,9 +187,11 @@ and input_ByLoc_nullable = {
 and input_Location = 
 | @as("byAddress") ByAddress(input_ByAddress)
 | @as("byLoc") ByLoc(input_ByLoc)
+| @as("byId") ById(string)
 
 @live
 @tag("__$inputUnion")
 and input_Location_nullable = 
 | @as("byAddress") ByAddress(input_ByAddress_nullable)
 | @as("byLoc") ByLoc(input_ByLoc_nullable)
+| @as("byId") ById(string)

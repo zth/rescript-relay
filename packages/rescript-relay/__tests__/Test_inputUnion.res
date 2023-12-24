@@ -13,7 +13,16 @@ module Test = {
       },
     )
 
-    <div> {React.string(data.findByLocation->Belt.Option.getWithDefault("-"))} </div>
+    let data2 = Query.use(
+      ~variables={
+        location: ById("<id>"),
+      },
+    )
+
+    <>
+      <div> {React.string(data.findByLocation->Belt.Option.getWithDefault("-"))} </div>
+      <div> {React.string(data2.findByLocation->Belt.Option.getWithDefault("-"))} </div>
+    </>
   }
 }
 
