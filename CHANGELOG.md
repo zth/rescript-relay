@@ -4,6 +4,8 @@
 
 # **Version 3**
 
+# 3.0.0-alpha.5
+
 ## Improvements
 
 - Emit `@live` for union variant cases to prevent false positives in unions.
