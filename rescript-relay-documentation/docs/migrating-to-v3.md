@@ -10,6 +10,8 @@ It does however contain some fairly large changes. This guide is intended to hel
 
 ## Migration
 
+> [Here's a commit upgrading the example to v3](https://github.com/zth/rescript-relay/commit/3e55b841610db3767616468ada190f2b29bb2f5b). It doesn't cover all changes, but gives a good impression of what has changed.
+
 Even though care has been taken to provide an as incremental migration path as possible, you're still recommended to do migration all in one go (not in one commit, but migrating everything before you ship to production).
 
 Also, remember that below is a _general guide_. You might hit issues you'll need to migrate that aren't detailed here, and that's expected. This should cover the majority of cases though.
