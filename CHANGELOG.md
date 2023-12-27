@@ -8,6 +8,7 @@
 
 - Emit `@live` for union variant cases to prevent false positives in unions.
 - Set `@rescript/tools` version explicitly.
+- First class support for input unions, leveraging the `@oneOf` directive.
 
 # 3.0.0-alpha.4
 

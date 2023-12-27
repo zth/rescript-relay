@@ -36,6 +36,7 @@ module.exports = {
       "unions",
       "interfaces",
       "input-objects",
+      "input-unions",
       "interacting-with-the-store",
     ],
     "API Reference": ["api-reference", "relay-environment"],

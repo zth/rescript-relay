@@ -16,6 +16,16 @@ function getTypename(v) {
   }
 }
 
+function unwrapInputUnion(obj) {
+  if (obj != null && typeof obj === "object" && "__$inputUnion" in obj) {
+    return {
+      [obj["__$inputUnion"]]: obj["_0"],
+    };
+  }
+
+  return obj;
+}
+
 /**
  * Runs on each object in the tree and follows the provided instructions
  * to apply transforms etc.
@@ -128,7 +138,7 @@ function traverse(
         }
         if (shouldConvertRootObj) {
           return traverser(
-            v,
+            unwrapInputUnion(v),
             fullInstructionMap,
             converters,
             nullableValue,
@@ -198,7 +208,7 @@ function traverse(
       if (shouldConvertRootObj) {
         newObj = getNewObj(newObj, currentObj);
         newObj[key] = traverser(
-          v,
+          unwrapInputUnion(v),
           fullInstructionMap,
           converters,
           nullableValue,

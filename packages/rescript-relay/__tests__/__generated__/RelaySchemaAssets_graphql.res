@@ -161,3 +161,37 @@ and input_PesticideListSearchInput_nullable = {
   skip: int,
   take: int,
 }
+
+@live
+and input_ByAddress = {
+  city: string,
+}
+
+@live
+and input_ByAddress_nullable = {
+  city: string,
+}
+
+@live
+and input_ByLoc = {
+  lat: float,
+}
+
+@live
+and input_ByLoc_nullable = {
+  lat: float,
+}
+
+@live
+@tag("__$inputUnion")
+and input_Location = 
+| @as("byAddress") ByAddress(input_ByAddress)
+| @as("byLoc") ByLoc(input_ByLoc)
+| @as("byId") ById(string)
+
+@live
+@tag("__$inputUnion")
+and input_Location_nullable = 
+| @as("byAddress") ByAddress(input_ByAddress_nullable)
+| @as("byLoc") ByLoc(input_ByLoc_nullable)
+| @as("byId") ById(string)
