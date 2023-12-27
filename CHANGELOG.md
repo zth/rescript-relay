@@ -4,6 +4,10 @@
 
 # **Version 3**
 
+# 3.0.0-rc.0
+
+- First RC version.
+
 # 3.0.0-alpha.5
 
 ## Improvements
