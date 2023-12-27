@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type updateTodoItemInput = RelaySchemaAssets_graphql.input_UpdateTodoItemInput
   @live
@@ -76,22 +76,8 @@ module Internal = {
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_updateTodoItemInput: (
-    ~clientMutationId: string=?,
-    ~completed: bool,
-    ~id: string,
-    ~text: string,
-    unit
-  ) => updateTodoItemInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~input: updateTodoItemInput,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode

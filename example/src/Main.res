@@ -43,7 +43,7 @@ let make = () => {
    * would control how Relay resolves the data, `cacheConfig` and so on. Please see the
    * documentation for more information.
    */
-  let query = Query.use(~variables=(), ())
+  let query = Query.use(~variables=())
 
   <div className="main-panel">
     <div className="content-wrapper">

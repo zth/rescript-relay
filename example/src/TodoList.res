@@ -46,29 +46,25 @@ let make = (~query as queryRef) => {
         onSubmit={ev => {
           ReactEvent.Form.preventDefault(ev)
 
-          let _ = {
-            open AddTodoMutation
-            addTodo(
-              ~variables=makeVariables(
-                ~connections=[todoListData.todosConnection.__id],
-                ~input=make_addTodoItemInput(~text=newTodoText, ()),
-              ),
-              ~onCompleted=(_, _) => setNewTodoText(_ => ""),
-              ~optimisticResponse={
-                addTodoItem: Some({
-                  addedTodoItem: Some({
-                    id: {
-                      open RescriptRelay
-                      generateUniqueClientID()->dataIdToString
-                    },
-                    text: newTodoText,
-                    completed: Some(false),
-                  }),
+          addTodo(
+            ~variables={
+              connections: [todoListData.todosConnection.__id],
+              input: {text: newTodoText},
+            },
+            ~onCompleted=(_, _) => setNewTodoText(_ => ""),
+            ~optimisticResponse={
+              addTodoItem: Some({
+                addedTodoItem: Some({
+                  id: {
+                    open RescriptRelay
+                    generateUniqueClientID()->dataIdToString
+                  },
+                  text: newTodoText,
+                  completed: Some(false),
                 }),
-              },
-              (),
-            )
-          }
+              }),
+            },
+          )->RescriptRelay.Disposable.ignore
         }}>
         <div className="add-items d-flex">
           <input

@@ -26,12 +26,12 @@ let make = (~ticket as ticketRef) => {
       {switch ticket.assignee {
       | Some(assignee) =>
         switch assignee {
-        | #User(user) => <Avatar user=user.fragmentRefs />
-        | #WorkingGroup(workingGroup) =>
+        | User(user) => <Avatar user=user.fragmentRefs />
+        | WorkingGroup(workingGroup) =>
           <React.Suspense fallback={<Loading />}>
             <SingleTicketWorkingGroup workingGroup=workingGroup.fragmentRefs />
           </React.Suspense>
-        | #UnselectedUnionMember(_) => <span> {React.string("-")} </span>
+        | UnselectedUnionMember(_) => <span> {React.string("-")} </span>
         }
       | None => <em> {React.string("Unassigned")} </em>
       }}

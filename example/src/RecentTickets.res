@@ -46,7 +46,7 @@ let make = (~query as queryRef) => {
           ? <button
               className="btn btn-gradient-primary font-weight-bold"
               id="add-task"
-              onClick={_ => loadNext(~count=2, ()) |> ignore}
+              onClick={_ => loadNext(~count=2)->ignore}
               disabled=isLoadingNext>
               {React.string("More")}
             </button>

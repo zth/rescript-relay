@@ -45,11 +45,7 @@ let make = (~workingGroup as wgRef) => {
           onClick={_ =>
             startTransition(() => {
               let _ = refetch(
-                ~variables=WorkingGroupFragment.makeRefetchVariables(
-                  ~includeMembers=Some(true),
-                  (),
-                ),
-                (),
+                ~variables=WorkingGroupFragment.makeRefetchVariables(~includeMembers=Some(true)),
               )
             })}>
           {React.string(isPending ? "Loading..." : "See members")}

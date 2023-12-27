@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type response = {
@@ -12,8 +12,8 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    after: option<string>,
-    first: option<int>,
+    after?: string,
+    first?: int,
   }
   @live
   type refetchVariables = {
@@ -23,7 +23,6 @@ module Types = {
   @live let makeRefetchVariables = (
     ~after=?,
     ~first=?,
-    ()
   ): refetchVariables => {
     after: after,
     first: first
@@ -83,15 +82,8 @@ module Internal = {
 type queryRef
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~after: string=?,
-    ~first: int=?,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode

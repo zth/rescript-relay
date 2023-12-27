@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type fragment = {
     currentVisitorsOnline: int,
@@ -34,7 +34,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TopCardsDisplayer_siteStatistics]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 

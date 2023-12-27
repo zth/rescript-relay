@@ -52,7 +52,6 @@ let make = (~siteStatistics as siteStatisticsRef) => {
           )
         | None => ()
         },
-      (),
     )
 
     Some(() => RescriptRelay.Disposable.dispose(subscription))

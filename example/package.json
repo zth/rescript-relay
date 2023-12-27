@@ -23,13 +23,13 @@
     "graphql-ws": "^5.8.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-relay": "15.0.0",
-    "relay-runtime": "15.0.0",
-    "rescript-relay": "2.2.0"
+    "react-relay": "16.1.0",
+    "relay-runtime": "16.1.0",
+    "rescript-relay": "3.0.0-rc.0"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
-    "rescript": "11.0.0-beta.2",
+    "rescript": "11.0.0-rc.8",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.9.0"

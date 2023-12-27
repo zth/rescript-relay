@@ -3324,16 +3324,16 @@ react-dom@18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-relay@15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-15.0.0.tgz#0014bea71611ae5cdbd3ef445aa13398fe3372d1"
-  integrity sha512-KWdeMMKMJanOL9LsGZYkyAekayYIi+Y4mbDM8VYbHVPgTWJWAQP6yJKS+V4D17qIMo1L84QJQjGaQWEG139p9Q==
+react-relay@16.1.0:
+  version "16.1.0"
+  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-16.1.0.tgz#de363f52d49bd01a8543c5d515cc034f97835483"
+  integrity sha512-qwm5PC+Vwy+qzs+Ob/PKs3YAWZOK2jm87GaMa44pHGR62ENS6xpFGXsANKAvFas1CUJ75yaexuGRO6z7RPnk8w==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^3.0.2"
     invariant "^2.2.4"
     nullthrows "^1.1.1"
-    relay-runtime "15.0.0"
+    relay-runtime "16.1.0"
 
 react@18.2.0:
   version "18.2.0"
@@ -3415,10 +3415,10 @@ relateurl@0.2.x:
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
   integrity sha1-VNvzd+UUQKypCkzSdGANP/LYiKk=
 
-relay-runtime@15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-15.0.0.tgz#e83315ea23925fae8f3317f0091f28924441576f"
-  integrity sha512-7AXkXLQo6gpJNBhk4Kii5b+Yat62HSDD1TgJBi021iSjT1muI8iYd4UZG4f/If209LmaVjkZt2HTNAlk6xtslw==
+relay-runtime@16.1.0:
+  version "16.1.0"
+  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-16.1.0.tgz#7ea5fa0e5964069f1bcfe802a41a20f92560e704"
+  integrity sha512-SM5MP4ETxTtYrXya5ceAEF3XuVzlku48+YyaxZkTnXG/FUvE2QfIxkZ5P2Q/j33Eo9tfrcl4UfZoSkx6IbQ37Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^3.0.2"
@@ -3465,17 +3465,17 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-rescript-relay@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-2.2.0.tgz#b5660442953d0d63487e98abc490765205940224"
-  integrity sha512-AvpYNseMmbCCHWEaNoQpCzhIERNK70G5LhyD1cbZA8dW10p93+MCjVA6dBDOzSoonj0+hWtmPP4X8yQ58prk7Q==
+rescript-relay@3.0.0-rc.0:
+  version "3.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/rescript-relay/-/rescript-relay-3.0.0-rc.0.tgz#a7423226bbbe4cd47410fa9d546ae1002e9d8e16"
+  integrity sha512-Nm7jglue0HEmyzzwLp3m5IobHhNV15wxAFhVyvRjLCj2CiXu2BEGAnXyVqX5GWPKBM8YLJ3okmF9R3VO50XNvw==
   dependencies:
     detect-libc "^2.0.1"
 
-rescript@11.0.0-beta.2:
-  version "11.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-beta.2.tgz#f8be07efcd4aa0f0ab2487e9bec12c0590985b65"
-  integrity sha512-Tcf72sR4EQ+eVMAwMWDSW5VPfg8YOS6bRJQ1Sf4u6jMy7Ui18mZyy0rusQmeq8vf2spgNulMcOw+HzQ9bEiz7g==
+rescript@11.0.0-rc.8:
+  version "11.0.0-rc.8"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.0.0-rc.8.tgz#60c94034731cb894e09feacf10f1adb20efc7fb1"
+  integrity sha512-KFeCeJ2tYtmSLD24o0WtWr7YLO22DflCWL31/L9Q8HGdHTLEhDNa+R0tnoyZ8B6wwm6bpNG8xosu1H4O+o7LGA==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

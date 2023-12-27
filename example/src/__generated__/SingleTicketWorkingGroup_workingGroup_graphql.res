@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_membersConnection_edges_node = {
     fullName: string,
@@ -44,7 +44,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #SingleTicketWorkingGroup_workingGroup]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 
@@ -78,7 +78,10 @@ return {
         "node"
       ],
       "operation": rescript_graphql_node_SingleTicketWorkingGroupRefetchQuery,
-      "identifierField": "id"
+      "identifierInfo": {
+        "identifierField": "id",
+        "identifierQueryVariableName": "id"
+      }
     }
   },
   "name": "SingleTicketWorkingGroup_workingGroup",

@@ -2,21 +2,22 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec fragment_assignee_User = {
-    @live __typename: [ | #User],
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>,
-  }
-  and fragment_assignee_WorkingGroup = {
-    @live __typename: [ | #WorkingGroup],
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
-  }
-  and fragment_assignee = [
-    | #User(fragment_assignee_User)
-    | #WorkingGroup(fragment_assignee_WorkingGroup)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type fragment_assignee = 
+    | @live User(
+      {
+        @live __typename: [ | #User],
+        fragmentRefs: RescriptRelay.fragmentRefs<[ | #Avatar_user]>,
+      }
+    )
+    | @live WorkingGroup(
+      {
+        @live __typename: [ | #WorkingGroup],
+        fragmentRefs: RescriptRelay.fragmentRefs<[ | #SingleTicketWorkingGroup_workingGroup]>,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     assignee: option<fragment_assignee>,
@@ -29,26 +30,9 @@ module Types = {
 }
 
 @live
-let unwrap_fragment_assignee: {. "__typename": string } => [
-  | #User(Types.fragment_assignee_User)
-  | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | "WorkingGroup" => #WorkingGroup(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_assignee: Types.fragment_assignee => Types.fragment_assignee = RescriptRelay_Internal.unwrapUnion(_, ["User", "WorkingGroup"])
 @live
-let wrap_fragment_assignee: [
-  | #User(Types.fragment_assignee_User)
-  | #WorkingGroup(Types.fragment_assignee_WorkingGroup)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #WorkingGroup(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_assignee: Types.fragment_assignee => Types.fragment_assignee = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   type fragmentRaw
@@ -74,7 +58,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #SingleTicket_ticket]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 

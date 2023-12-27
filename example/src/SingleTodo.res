@@ -51,7 +51,6 @@ let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
               ~environment=RelayEnv.environment,
               ~variables={
                 input: {
-                  clientMutationId: None,
                   id: todoItem.id,
                   completed: completed,
                   text: todoItem.text,
@@ -66,8 +65,7 @@ let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
                   }),
                 }),
               },
-              (),
-            ) |> ignore
+            )->ignore
           }}
         />
         {React.string(todoItem.text)}
@@ -79,7 +77,6 @@ let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
           ~environment=RelayEnv.environment,
           ~variables={
             input: {
-              clientMutationId: None,
               id: todoItem.id,
             },
             connections: [todosConnectionId],
@@ -87,8 +84,7 @@ let make = (~checked, ~todoItem as todoItemRef, ~todosConnectionId) => {
           ~optimisticResponse={
             deleteTodoItem: Some({deletedTodoItemId: Some(todoItem.id)}),
           },
-          (),
-        ) |> ignore}
+        )->ignore}
       role="button"
       className="remove mdi mdi-close-circle-outline"
     />

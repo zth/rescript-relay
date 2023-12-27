@@ -49,7 +49,7 @@ let wsClient = GraphQLWs.Client.make(
   GraphQLWs.Client.makeClientOptions(
     ~url="ws://localhost:4000/graphql",
     ~shouldRetry={
-      event => {
+      _event => {
         true
       }
     },
@@ -86,7 +86,6 @@ let subscriptionFunction: RescriptRelay.Network.subscribeFn = (
 let network = RescriptRelay.Network.makePromiseBased(
   ~fetchFunction=fetchQuery,
   ~subscriptionFunction,
-  (),
 )
 
 /**
@@ -101,6 +100,5 @@ let network = RescriptRelay.Network.makePromiseBased(
  */
 let environment = RescriptRelay.Environment.make(
   ~network,
-  ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make(), ()),
-  (),
+  ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
 )

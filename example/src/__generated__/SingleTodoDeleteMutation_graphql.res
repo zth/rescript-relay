@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type deleteTodoItemInput = RelaySchemaAssets_graphql.input_DeleteTodoItemInput
   @live
@@ -99,33 +99,8 @@ module Internal = {
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_deleteTodoItemInput: (
-    ~clientMutationId: string=?,
-    ~id: string,
-    unit
-  ) => deleteTodoItemInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~connections: array<RescriptRelay.dataId>,
-    ~input: deleteTodoItemInput,
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~deleteTodoItem: rawResponse_deleteTodoItem=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_deleteTodoItem: (
-    ~deletedTodoItemId: string=?,
-    unit
-  ) => rawResponse_deleteTodoItem = ""
-
-
 }
 
 type relayOperationNode

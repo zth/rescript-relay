@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type fragment = {
     status: RelaySchemaAssets_graphql.enum_TicketStatus,
@@ -32,7 +32,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TicketStatusBadge_ticket]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external ticketStatus_toString: RelaySchemaAssets_graphql.enum_TicketStatus => string = "%identity"
@@ -41,8 +41,8 @@ module Utils = {
   @live
   let ticketStatus_decode = (enum: RelaySchemaAssets_graphql.enum_TicketStatus): option<RelaySchemaAssets_graphql.enum_TicketStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_TicketStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live

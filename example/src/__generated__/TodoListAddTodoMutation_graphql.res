@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type addTodoItemInput = RelaySchemaAssets_graphql.input_AddTodoItemInput
   @live
@@ -111,41 +111,8 @@ module Internal = {
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_addTodoItemInput: (
-    ~clientMutationId: string=?,
-    ~text: string,
-    unit
-  ) => addTodoItemInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~connections: array<RescriptRelay.dataId>,
-    ~input: addTodoItemInput,
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~addTodoItem: rawResponse_addTodoItem=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_addTodoItem_addedTodoItem: (
-    ~completed: bool=?,
-    ~id: string,
-    ~text: string,
-    unit
-  ) => rawResponse_addTodoItem_addedTodoItem = ""
-
-
-  @live @obj external make_rawResponse_addTodoItem: (
-    ~addedTodoItem: rawResponse_addTodoItem_addedTodoItem=?,
-    unit
-  ) => rawResponse_addTodoItem = ""
-
-
 }
 
 type relayOperationNode
