@@ -804,6 +804,16 @@ type fetchQueryOptions = {
   fetchPolicy?: fetchPolicy,
 }
 
+type loadQueryConfig = {
+  fetchKey: option<string>,
+  fetchPolicy: option<fetchPolicy>,
+  networkCacheConfig: option<cacheConfig>,
+}
+
+@module("react-relay")
+external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
+  "loadQuery"
+
 module type MakeLoadQueryConfig = {
   type variables
   type loadedQueryRef

@@ -4,6 +4,8 @@
 
 # **Version 3**
 
+- Get rid of functor for creating `loadQuery`.
+
 # 3.0.0-rc.0
 
 - First RC version.
