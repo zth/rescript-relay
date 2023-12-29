@@ -54,21 +54,24 @@ let wrap_response_member: Types.response_member => Types.response_member = Rescr
 type queryRef
 
 module Internal = {
-  @live
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
-  )
-  @live
-  let variablesConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.Number": TestsUtils.Number.serialize,
+  module Variables = {
+    @live
+    let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+      json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
+    )
+    @live
+    let variablesConverterMap = {
+      "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+      "TestsUtils.Number": TestsUtils.Number.serialize,
+    }
+    @live
+    let convertVariables = v => v->RescriptRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined
+    )
   }
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    Js.undefined
-  )
+  let convertVariables = Variables.convertVariables
   @live
   type wrapResponseRaw
   @live
@@ -301,8 +304,13 @@ let load: (
   ~fetchPolicy: RescriptRelay.fetchPolicy=?,
   ~fetchKey: string=?,
   ~networkCacheConfig: RescriptRelay.cacheConfig=?,
-) => queryRef = 
-(~environment, ~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?) =>
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
   RescriptRelay.loadQuery(
     environment,
     node,

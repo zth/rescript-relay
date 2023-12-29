@@ -62,18 +62,21 @@ let unwrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlin
 @live
 let wrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.wrapUnion
 module Internal = {
-  @live
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    Js.undefined
-  )
+  module Variables = {
+    @live
+    let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+      json`{}`
+    )
+    @live
+    let variablesConverterMap = ()
+    @live
+    let convertVariables = v => v->RescriptRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined
+    )
+  }
+  let convertVariables = Variables.convertVariables
   @live
   type wrapResponseRaw
   @live

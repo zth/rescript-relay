@@ -23,18 +23,21 @@ module Types = {
 type queryRef
 
 module Internal = {
-  @live
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    Js.undefined
-  )
+  module Variables = {
+    @live
+    let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+      json`{}`
+    )
+    @live
+    let variablesConverterMap = ()
+    @live
+    let convertVariables = v => v->RescriptRelay.convertObj(
+      variablesConverter,
+      variablesConverterMap,
+      Js.undefined
+    )
+  }
+  let convertVariables = Variables.convertVariables
   @live
   type wrapResponseRaw
   @live
@@ -161,8 +164,13 @@ let load: (
   ~fetchPolicy: RescriptRelay.fetchPolicy=?,
   ~fetchKey: string=?,
   ~networkCacheConfig: RescriptRelay.cacheConfig=?,
-) => queryRef = 
-(~environment, ~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?) =>
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
   RescriptRelay.loadQuery(
     environment,
     node,
