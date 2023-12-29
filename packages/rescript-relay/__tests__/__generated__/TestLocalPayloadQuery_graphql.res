@@ -97,21 +97,18 @@ let wrap_rawResponse_loggedInUser_memberOfSingular: Types.rawResponse_loggedInUs
 type queryRef
 
 module Internal = {
-  module Variables = {
-    @live
-    let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-      json`{}`
-    )
-    @live
-    let variablesConverterMap = ()
-    @live
-    let convertVariables = v => v->RescriptRelay.convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined
-    )
-  }
-  let convertVariables = Variables.convertVariables
+  @live
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  @live
+  let variablesConverterMap = ()
+  @live
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   @live
   type wrapResponseRaw
   @live

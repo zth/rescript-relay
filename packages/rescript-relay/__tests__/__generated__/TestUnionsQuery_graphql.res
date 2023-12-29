@@ -73,21 +73,18 @@ let wrap_response_members_edges_node: Types.response_members_edges_node => Types
 type queryRef
 
 module Internal = {
-  module Variables = {
-    @live
-    let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-      json`{}`
-    )
-    @live
-    let variablesConverterMap = ()
-    @live
-    let convertVariables = v => v->RescriptRelay.convertObj(
-      variablesConverter,
-      variablesConverterMap,
-      Js.undefined
-    )
-  }
-  let convertVariables = Variables.convertVariables
+  @live
+  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+    json`{}`
+  )
+  @live
+  let variablesConverterMap = ()
+  @live
+  let convertVariables = v => v->RescriptRelay.convertObj(
+    variablesConverter,
+    variablesConverterMap,
+    Js.undefined
+  )
   @live
   type wrapResponseRaw
   @live
