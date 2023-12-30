@@ -5,6 +5,7 @@
 # **Version 3**
 
 - Get rid of functor for creating `loadQuery`.
+- Support for the `@preloadable` directive
 
 # 3.0.0-rc.0
 
