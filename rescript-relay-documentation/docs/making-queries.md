@@ -196,7 +196,7 @@ let renderer = Routes.SomeRoute.Route.makeRenderer(
 
 There! Now triggering the query is done by the `load` function, and at the route level, ensuring that both code and data is loaded in parallell.
 
-### The `@preloadable` directive
+### The `@preloadable` directive (available in v3+)
 
 > You're _required_ to use [persisted queries](https://relay.dev/docs/guides/persisted-queries/) for this to be available.
 
