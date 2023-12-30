@@ -11,7 +11,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     "http://graphql/",
     {
       method: #POST,
-      body: {"query": operation.text, "variables": variables}
+      body: {"query": operation.text, "id": operation.id, "variables": variables}
       ->Js.Json.stringifyAny
       ->Belt.Option.getExn
       ->Body.string,

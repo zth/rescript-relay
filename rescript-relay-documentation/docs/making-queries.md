@@ -65,9 +65,13 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 > Please read [this section of the Relay docs](https://relay.dev/docs/api-reference/use-preloaded-query) for a more thorough overview of preloaded queries.
 
-In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option(queryRef), loadQuery, disposeQuery)`.
+RescriptRelay lets you leverage preloading in 3 different ways, all suitable for different scenarios. Below we'll go through all 3.
 
-1. `option(queryRef)` - an option of a query reference. This query reference can be passed to `Query.usePreloaded`, like `let queryData = Query.usePreloaded(~queryRef=queryRef)`, to get the data for the query as soon as it's available.
+### The `useLoader` hook
+
+In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option<queryRef>, loadQuery, disposeQuery)`.
+
+1. `option<queryRef>` - an option of a query reference. This query reference can be passed to `Query.usePreloaded`, like `let queryData = Query.usePreloaded(~queryRef=queryRef)`, to get the data for the query as soon as it's available.
 2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
 3. `disposeQuery` - a function that disposes the query reference manually. Calling this would turn `option(queryRef)` into `None`.
 
@@ -111,7 +115,158 @@ Let's break down what's going on:
 1. We have a component called `<SomeComponent />` that has a query. However, that component won't make that query itself. Rather, it expects whatever parent that's rendering it to have started loading that query as soon as possible, rather than waiting until the component has actually rendered.
 2. `<SomeOtherComponent />` outputs a button that when pressed starts loading the query for `<SomeComponent />`. This means that query starts loading as soon as physically possible - right when the user clicks the button. No waiting for renders, state updates and what not. Data is requested as soon as possible.
 
-A very useful pattern that's encouraged over using the lazy approach. In short, use `Query.useLoader` as much as you can where it makes sense.
+`useLoader` is well suited for cases when you want to control when a query starts loading _conditionally from a component_. However, this means you'll need to both load code and render in React before you can use the `useLoader` hook.
+
+For cases where you want to start loading data even sooner, there are two other approaches, which we'll talk about below.
+
+### The `load` function on a query
+
+> Preloading with `load` is best done via some sort of router integration. [rescript-relay-router](https://github.com/zth/rescript-relay-router/blob/main/packages/rescript-relay-router/README.md) is specifically designed for this.
+
+Imagine the query code above again:
+
+```rescript
+/* SomeComponent.res */
+module Query = %relay(`
+  query SomeComponentQuery($userId: ID!) {
+    user(id: $userId) {
+      ...SomeUserComponent_user
+    }
+  }
+`)
+```
+
+For each `%relay` node, the Relay compiler generates a ReScript file containing types and build artifacts for that particular operation or fragment. This means that for the query above, there's a file called `SomeComponentQuery_graphql` that's automatically generated, that contains everything Relay needs to know to be able to execute and make use of the query `SomeComponentQuery`.
+
+This file is _separate_ from the file you define it in. The `%relay` node will automatically wire up a link to the generate file for you, so when you're using `Query.use` and other things related to the query defined, you're _actually_ using things from that generated file. This is opaque to you because you don't need to know or think about that the Relay compiler generates actual ReScript code for you.
+
+That is until you enter the wonderful world of preloading queries!
+
+#### Each generated query file has a `load` function
+
+You can start loading a query anywhere, at any time, by calling that query's `load` function, which exists _in the generated file_.
+
+So, for the `SomeComponentQuery` query above, this means that there's going to be a function available to you called `SomeComponentQuery_graphql.load`.
+
+Calling that `load` function will give you back a `queryRef`, just like with `useLoader`. You then feed that `queryRef` into `Query.usePreloaded`.
+
+Let's look at an example. This example uses [`rescript-relay-router`](https://github.com/zth/rescript-relay-router/blob/main/packages/rescript-relay-router/README.md), a router designed specficially for ReScript and Relay.
+
+First, we'll define our query:
+
+```rescript
+/* SomeComponent.res */
+module Query = %relay(`
+  query SomeComponentQuery($userId: ID!) {
+    user(id: $userId) {
+      ...SomeUserComponent_user
+    }
+  }
+`)
+
+@react.component
+let make = (~queryRef) => {
+  let queryData = Query.usePreloaded(~queryRef)
+
+  /* Use the data for the query here */
+}
+```
+
+Then, we'll start preloading the query as the route is prepared in the router, and pass the `queryRef` to the component when the router renders the route:
+
+```rescript
+module SomeComponent = %relay.deferredComponent(SomeComponent.make)
+
+let renderer = Routes.SomeRoute.Route.makeRenderer(
+  ~prepareCode=_ => [SomeComponentQuery.preload()],
+  ~prepare=({environment, userId}) => {
+    SomeComponentQuery_graphql.load(
+      ~environment,
+      ~variables={userId: userId},
+      ~fetchPolicy=StoreOrNetwork,
+    )
+  },
+  ~render=props => {
+    <SomeComponent queryRef=props.prepared />
+  },
+)
+```
+
+> There's plenty of new things in the code snippet above that has to do with how the router works. In short, both code and data is preloaded in parallell. Read more in the [router readme](https://github.com/zth/rescript-relay-router/blob/main/packages/rescript-relay-router/README.md).
+
+There! Now triggering the query is done by the `load` function, and at the route level, ensuring that both code and data is loaded in parallell.
+
+### The `@preloadable` directive (available in v3+)
+
+> You're _required_ to use [persisted queries](https://relay.dev/docs/guides/persisted-queries/) for this to be available.
+
+The `load` function approach above is going to be enough for many cases. But, there's an extra thing you can do when you want to squeeze out every last bit of performance from Relay - you can add the `@preloadable` directive to your query.
+
+Adding the `@preloadable` directive to your query make the following happen:
+
+- An additional file will be generated for your query, called `<queryName>_preloadable_graphql.res`.
+- This file will have the minimum possible code needed to _start_ loading your query.
+- It will also contain the `load` function (the regular `<queryName>_graphql.res` won't when the `@preloadable` directive is used).
+
+#### Why use `@preloadable`
+
+So, why do this instead of just using `load` without `@preloadable`?
+
+Relay generates instructions for how to write the result of each of your queries into the Relay store as efficiently as possible. This is a performance optimization that has been tuned and tweaked at Meta, in order to squeeze out as much performance as possible as large queries are written to the store.
+
+In queries that compose a lot of queries, the size of that generated code can be significant.
+
+Using this will ensure the minimum possible amount of code needs to be downloaded in order to start a query. This is beneficial to performance because you can load data and code in parallell without having to wait for code to load first just to be able to kick off your queries (aka a waterfall).
+
+This will make your app scale better as you build out views and components. You're recommended to always use `@preloadable`, as long as you're fine with also using persisted queries, which is a requirement.
+
+#### Updating the example
+
+Let's update the `load` example above to use the `@preloadable` directive:
+
+```rescript
+/* SomeComponent.res */
+module Query = %relay(`
+// color2
+  query SomeComponentQuery($userId: ID!) {
+// change-line
+  query SomeComponentQuery($userId: ID!) @preloadable {
+    user(id: $userId) {
+      ...SomeUserComponent_user
+    }
+  }
+`)
+
+@react.component
+let make = (~queryRef) => {
+  let queryData = Query.usePreloaded(~queryRef)
+
+  /* Use the data for the query here */
+}
+```
+
+```rescript
+module SomeComponent = %relay.deferredComponent(SomeComponent.make)
+
+let renderer = Routes.SomeRoute.Route.makeRenderer(
+  ~prepareCode=_ => [SomeComponentQuery.preload()],
+  ~prepare=({environment, userId}) => {
+    // color2
+    SomeComponentQuery_graphql.load(
+    // change-line
+    SomeComponentQuery_preloadable_graphql.load(
+      ~environment,
+      ~variables={userId: userId},
+      ~fetchPolicy=StoreOrNetwork,
+    )
+  },
+  ~render=props => {
+    <SomeComponent queryRef=props.prepared />
+  },
+)
+```
+
+So, notice the change is very small! But it can make a big difference in performance.
 
 ## API Reference
 

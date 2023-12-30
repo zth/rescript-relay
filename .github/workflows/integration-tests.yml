@@ -58,3 +58,9 @@ jobs:
         working-directory: packages/rescript-relay
         run: |
           yarn test:ci
+      - name: Integration tests (preloaded)
+        working-directory: packages/rescript-relay
+        env:
+          ENABLE_PERSISTING: true
+        run: |
+          yarn test:ci

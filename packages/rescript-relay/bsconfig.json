@@ -16,6 +16,11 @@
       "dir": "__tests__",
       "type": "dev",
       "subdirs": true
+    },
+    {
+      "dir": "__tests_preloaded__",
+      "type": "dev",
+      "subdirs": true
     }
   ],
   "package-specs": {

@@ -387,8 +387,13 @@ let load: (
   ~fetchPolicy: RescriptRelay.fetchPolicy=?,
   ~fetchKey: string=?,
   ~networkCacheConfig: RescriptRelay.cacheConfig=?,
-) => queryRef = 
-(~environment, ~variables, ~fetchPolicy=?, ~fetchKey=?, ~networkCacheConfig=?) =>
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
   RescriptRelay.loadQuery(
     environment,
     node,
