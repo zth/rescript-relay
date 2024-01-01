@@ -552,16 +552,18 @@ module Store = {
 }
 
 module RequiredFieldLogger = {
-  type kind = [#"missing_field.log" | #"missing_field.throw"]
+  @tag("kind")
+  type arg =
+    | @as("missing_field.log") MissingFieldLog({owner: string, fieldPath: string})
+    | @as("missing_field.throw") MissingFieldThrow({owner: string, fieldPath: string})
+    | @as("relay_resolver.error")
+    RelayResolverError({
+        owner: string,
+        fieldPath: string,
+        error: Js.Exn.t,
+      })
 
-  type arg = {"kind": kind, "owner": string, "fieldPath": string}
-
-  type js = arg => unit
-
-  type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
-
-  let toJs: t => js = f => arg =>
-    f(~kind=arg["kind"], ~owner=arg["owner"], ~fieldPath=arg["fieldPath"])
+  type t = arg => unit
 }
 
 module Environment = {
@@ -573,7 +575,7 @@ module Environment = {
     getDataID?: (~nodeObj: 'a, ~typeName: string) => string,
     treatMissingFieldsAsNull?: bool,
     missingFieldHandlers: array<MissingFieldHandler.t>,
-    requiredFieldLogger?: RequiredFieldLogger.js,
+    requiredFieldLogger?: RequiredFieldLogger.t,
     isServer?: bool,
   }
 
@@ -598,7 +600,7 @@ module Environment = {
       | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
       | None => [nodeInterfaceMissingFieldHandler]
       },
-      requiredFieldLogger: ?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
+      ?requiredFieldLogger,
       ?isServer,
     })
 

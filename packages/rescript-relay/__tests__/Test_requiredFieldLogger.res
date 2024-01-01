@@ -7,15 +7,16 @@ module Query = %relay(`
 `)
 
 module Logger = {
-  let loggedValue = ref((None: option<string>))
+  let loggedArg = ref((None: option<RescriptRelay.RequiredFieldLogger.arg>))
 
-  let log = (~kind, ~owner, ~fieldPath) => {
-    loggedValue := Some(`kind: ${kind->Obj.magic}, owner: ${owner}, filedPath:${fieldPath}`)
-  }
+  let mock: RescriptRelay.RequiredFieldLogger.t = arg => loggedArg := Some(arg)
 
-  let getLoggedValue = () => loggedValue.contents
+  let getLoggedArg = () => loggedArg.contents
 
-  let expectedValue = "kind: missing_field.log, owner: TestRequiredFieldLoggerQuery, filedPath:loggedInUser.firstName"
+  let expectedArg: RescriptRelay.RequiredFieldLogger.arg = MissingFieldLog({
+    owner: "TestRequiredFieldLoggerQuery",
+    fieldPath: "loggedInUser.firstName",
+  })
 }
 
 @live
@@ -25,9 +26,7 @@ let test_requiredFieldLogger = () => {
   let environment = RescriptRelay.Environment.make(
     ~network,
     ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
-    ~requiredFieldLogger={
-      Logger.log
-    },
+    ~requiredFieldLogger=Logger.mock,
   )
 
   Js.Promise.make((~resolve, ~reject as _) => {
@@ -35,6 +34,6 @@ let test_requiredFieldLogger = () => {
   })
 }
 
-let getLoggedValue = Logger.getLoggedValue
+let getLoggedArg = Logger.getLoggedArg
 
-let expectedValue = Logger.expectedValue
+let expectedArg = Logger.expectedArg

@@ -689,10 +689,19 @@ module Disposable: {
 
 /**A required field logger, which gets called when a field annotated with the @required directive was missing from the response*/
 module RequiredFieldLogger: {
-  type kind = [#"missing_field.log" | #"missing_field.throw"]
+  @tag("kind")
+  type arg =
+    | @as("missing_field.log") MissingFieldLog({owner: string, fieldPath: string})
+    | @as("missing_field.throw") MissingFieldThrow({owner: string, fieldPath: string})
+    | @as("relay_resolver.error")
+    RelayResolverError({
+        owner: string,
+        fieldPath: string,
+        error: Js.Exn.t,
+      })
 
   /**A required field logger, which gets called when a field annotated with the @required directive was missing from the response*/
-  type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
+  type t = arg => unit
 }
 
 /**Module representing the environment, which you'll need to use and pass to various functions. Takes a few configuration options like store and network layer.*/
