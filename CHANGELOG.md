@@ -1,5 +1,8 @@
 # master
 
+- Use zero cost tagged variants for `RequiredFieldLogger`.
+- Add support for the `relay_resolver.error` event kind.
+
 **All work on version `2.x` is in the [2.x branch](https://github.com/zth/rescript-relay/tree/2.x).**
 
 # **Version 3**
@@ -7,7 +10,7 @@
 # 3.0.0-rc.1
 
 - Get rid of functor for creating `loadQuery`.
-- Support for the `@preloadable` directive
+- Support for the `@preloadable` directive.
 
 # 3.0.0-rc.0
 
