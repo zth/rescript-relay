@@ -3,8 +3,8 @@ const queryMock = require("./queryMock");
 
 const {
   test_requiredFieldLogger,
-  getLoggedValue,
-  expectedValue,
+  getLoggedArg,
+  expectedArg,
 } = require("./Test_requiredFieldLogger.bs");
 
 describe("RequiredFieldLogger", () => {
@@ -22,6 +22,6 @@ describe("RequiredFieldLogger", () => {
 
     await test_requiredFieldLogger();
 
-    expect(getLoggedValue()).toBe(expectedValue);
+    expect(getLoggedArg()).toStrictEqual(expectedArg);
   });
 });
