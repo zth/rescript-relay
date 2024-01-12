@@ -1,11 +1,14 @@
 # master
 
-- Use zero cost tagged variants for `RequiredFieldLogger`.
-- Add support for the `relay_resolver.error` event kind.
-
 **All work on version `2.x` is in the [2.x branch](https://github.com/zth/rescript-relay/tree/2.x).**
 
 # **Version 3**
+
+# 3.0.0-rc.2
+
+- Depend on ReScript v11 and RescriptReact 0.12.0.
+- BREAKING: Use zero cost tagged variants for `RequiredFieldLogger`.
+- Add support for the `relay_resolver.error` event kind.
 
 # 3.0.0-rc.1
 

@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "3.0.0-rc.1",
+  "version": "3.0.0-rc.2",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",
-    "@rescript/react": "0.12.0-alpha.2",
+    "@rescript/react": "0.12.0",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
     "graphql-query-test-mock": "^0.12.1",
@@ -51,19 +51,15 @@
     "react-dom": "18.2.0",
     "react-relay": "16.0.0",
     "relay-runtime": "16.0.0",
-    "rescript": "^11.0.0-rc.4"
+    "rescript": "^11.0.0"
   },
   "peerDependencies": {
-    "@rescript/react": "^0.12.0-alpha.2 || next",
-    "react-relay": ">=15.0.0",
+    "@rescript/react": "^0.12.0",
+    "react-relay": ">=16.0.0",
     "relay-runtime": "*",
-    "rescript": "^11.0.0-alpha.0 || next"
+    "rescript": "^11.0.0"
   },
   "dependencies": {
     "detect-libc": "^2.0.1"
-  },
-  "resolutions": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
   }
 }

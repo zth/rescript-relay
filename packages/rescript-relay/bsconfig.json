@@ -32,8 +32,5 @@
   ],
   "bs-dependencies": ["@rescript/react"],
   "bs-dev-dependencies": ["@glennsl/rescript-fetch"],
-  "suffix": ".bs.js",
-  "warnings": {
-    "error": "+A+101"
-  }
+  "suffix": ".bs.js"
 }
