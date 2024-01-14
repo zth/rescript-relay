@@ -93,6 +93,10 @@ type User implements Node {
   ): UserConnection!
   memberOf: [Member]
   memberOfSingular: Member
+  intStrings: [IntString!]
+  intString: IntString
+  justStrings: [String!]
+  justString: String
 }
 
 type Group implements Node & HasName {
