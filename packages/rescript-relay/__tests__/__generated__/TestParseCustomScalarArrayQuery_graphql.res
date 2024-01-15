@@ -1,4 +1,4 @@
-/* @sourceLoc Test_arrayIntStringCustomScalars.res */
+/* @sourceLoc Test_parseCustomScalarArray.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -122,7 +122,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestArrayIntStringCustomScalarsQuery",
+    "name": "TestParseCustomScalarArrayQuery",
     "selections": [
       {
         "alias": null,
@@ -147,7 +147,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestArrayIntStringCustomScalarsQuery",
+    "name": "TestParseCustomScalarArrayQuery",
     "selections": [
       {
         "alias": null,
@@ -174,12 +174,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "749a433525ddbdff891d224d4da85a5c",
+    "cacheID": "bd3b50995ec1423e08d903c329508202",
     "id": null,
     "metadata": {},
-    "name": "TestArrayIntStringCustomScalarsQuery",
+    "name": "TestParseCustomScalarArrayQuery",
     "operationKind": "query",
-    "text": "query TestArrayIntStringCustomScalarsQuery {\n  loggedInUser {\n    intStrings\n    intString\n    justStrings\n    justString\n    id\n  }\n}\n"
+    "text": "query TestParseCustomScalarArrayQuery {\n  loggedInUser {\n    intStrings\n    intString\n    justStrings\n    justString\n    id\n  }\n}\n"
   }
 };
 })() `)

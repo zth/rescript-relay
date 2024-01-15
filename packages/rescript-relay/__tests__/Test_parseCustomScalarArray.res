@@ -1,5 +1,5 @@
 module Query = %relay(`
-  query TestArrayIntStringCustomScalarsQuery {
+  query TestParseCustomScalarArrayQuery {
     loggedInUser {
       intStrings
       intString
@@ -48,7 +48,7 @@ module Test = {
 }
 
 @live
-let test_arrayIntStringCustomScalars = () => {
+let test_parseCustomScalarArray = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
 
   let environment = RescriptRelay.Environment.make(

@@ -4,13 +4,13 @@ const React = require("react");
 const queryMock = require("./queryMock");
 
 const {
-  test_arrayIntStringCustomScalars,
-} = require("./Test_arrayIntStringCustomScalars.bs");
+  test_parseCustomScalarArray,
+} = require("./Test_parseCustomScalarArray.bs");
 
-describe("Array of Custom Scalar", () => {
-  test("array of a custom scalar defined as modules are automatically converted", async () => {
+describe("Parse Custom Scalar Array", () => {
+  test("array of a custom scalars defined as modules are automatically converted", async () => {
     queryMock.mockQuery({
-      name: "TestArrayIntStringCustomScalarsQuery",
+      name: "TestParseCustomScalarArrayQuery",
       data: {
         loggedInUser: {
           id: "user-2",
@@ -22,7 +22,7 @@ describe("Array of Custom Scalar", () => {
       },
     });
 
-    t.render(test_arrayIntStringCustomScalars());
+    t.render(test_parseCustomScalarArray());
     t.screen.debug();
     await t.screen.findByText("10, 20, 30");
     await t.screen.findByText("9");
