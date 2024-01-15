@@ -189,6 +189,10 @@ type RecursiveInputPayload {
   recursionIsCool: Boolean
 }
 
+type SerializeCustomScalarArrayPayload {
+  works: Boolean
+}
+
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
@@ -223,6 +227,9 @@ type Mutation {
   setOnlineStatus(onlineStatus: OnlineStatus!): SetOnlineStatusPayload
   setOnlineStatusComplex(input: SetOnlineStatusInput!): SetOnlineStatusPayload
   recursiveInput(input: InputA): RecursiveInputPayload
+  serializeCustomScalarArray(
+    input: [IntString!]!
+  ): SerializeCustomScalarArrayPayload
 }
 
 type Subscription {
