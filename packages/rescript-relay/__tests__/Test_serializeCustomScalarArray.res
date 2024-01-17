@@ -14,7 +14,7 @@ module Test = {
     <div>
       <button
         onClick={_ => {
-          mutate(~variables={input: [1, 2, 3]})->ignore
+          mutate(~variables={input: [97, 98, 99]})->ignore
         }}>
         {React.string("Fire mutation")}
       </button>

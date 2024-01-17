@@ -12,8 +12,11 @@ module Fragment = %relay(`
 
       # Custom scalar
       intStr: { type: "IntString!", provider: "ProvidedVariables.IntStr" }
+
+      # Custom scalar array
+      intStrArr: { type: "[IntString!]!", provider: "ProvidedVariables.IntStrArr" }
     ) {
-    someRandomArgField(bool: $bool, inputC: $inputC, inputCArr: $inputCArr, intStr: $intStr)
+    someRandomArgField(bool: $bool, inputC: $inputC, inputCArr: $inputCArr, intStr: $intStr, intStrArr: $intStrArr)
   }
 `)
 

@@ -78,6 +78,7 @@ type User implements Node {
     inputC: InputC
     inputCArr: [InputC!]
     intStr: IntString
+    intStrArr: [IntString!]
   ): String
   friends(beforeDate: Datetime, number: Number): [User!]!
   friendsConnection(

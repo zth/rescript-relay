@@ -42,7 +42,7 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_intStrings":{"c":"TestsUtils.IntString"},"loggedInUser_intString":{"c":"TestsUtils.IntString"}}}`
+    json`{"__root":{"loggedInUser_intStrings":{"ca":"TestsUtils.IntString"},"loggedInUser_intString":{"c":"TestsUtils.IntString"}}}`
   )
   @live
   let wrapResponseConverterMap = {
@@ -58,7 +58,7 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_intStrings":{"c":"TestsUtils.IntString"},"loggedInUser_intString":{"c":"TestsUtils.IntString"}}}`
+    json`{"__root":{"loggedInUser_intStrings":{"ca":"TestsUtils.IntString"},"loggedInUser_intString":{"c":"TestsUtils.IntString"}}}`
   )
   @live
   let responseConverterMap = {

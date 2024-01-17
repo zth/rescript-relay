@@ -57,6 +57,10 @@ let node: operationType = %raw(json` {
     {
       "kind": "RootArgument",
       "name": "__relay_internal__pv__ProvidedVariablesIntStr"
+    },
+    {
+      "kind": "RootArgument",
+      "name": "__relay_internal__pv__ProvidedVariablesIntStrArr"
     }
   ],
   "kind": "Fragment",
@@ -85,6 +89,11 @@ let node: operationType = %raw(json` {
           "kind": "Variable",
           "name": "intStr",
           "variableName": "__relay_internal__pv__ProvidedVariablesIntStr"
+        },
+        {
+          "kind": "Variable",
+          "name": "intStrArr",
+          "variableName": "__relay_internal__pv__ProvidedVariablesIntStrArr"
         }
       ],
       "kind": "ScalarField",

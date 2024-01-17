@@ -24,6 +24,7 @@ describe("Provided variables", () => {
           },
         ],
         __relay_internal__pv__ProvidedVariablesIntStr: "456",
+        __relay_internal__pv__ProvidedVariablesIntStrArr: ["456"],
       },
       data: {
         loggedInUser: {

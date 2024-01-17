@@ -23,7 +23,7 @@ module Types = {
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"input":{"c":"TestsUtils.IntString"}}}`
+    json`{"__root":{"input":{"ca":"TestsUtils.IntString"}}}`
   )
   @live
   let variablesConverterMap = {

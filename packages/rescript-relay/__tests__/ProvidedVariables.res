@@ -16,3 +16,7 @@ module InputCArr = {
 module IntStr = {
   let get = () => 456
 }
+
+module IntStrArr = {
+  let get = () => [456]
+}

@@ -23,7 +23,7 @@ describe("Parse Custom Scalar Array", () => {
     });
 
     t.render(test_parseCustomScalarArray());
-    t.screen.debug();
+
     await t.screen.findByText("10, 20, 30");
     await t.screen.findByText("9");
     await t.screen.findByText("99");

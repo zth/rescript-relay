@@ -26,7 +26,7 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"inputC":{"recursiveC":{"r":"inputC"},"intStr":{"c":"TestsUtils.IntString"}},"__root":{"__relay_internal__pv__ProvidedVariablesIntStr":{"c":"TestsUtils.IntString"},"__relay_internal__pv__ProvidedVariablesInputCArr":{"r":"inputC"},"__relay_internal__pv__ProvidedVariablesInputC":{"r":"inputC"}}}`
+    json`{"inputC":{"recursiveC":{"r":"inputC"},"intStr":{"c":"TestsUtils.IntString"}},"__root":{"__relay_internal__pv__ProvidedVariablesIntStrArr":{"ca":"TestsUtils.IntString"},"__relay_internal__pv__ProvidedVariablesIntStr":{"c":"TestsUtils.IntString"},"__relay_internal__pv__ProvidedVariablesInputCArr":{"r":"inputC"},"__relay_internal__pv__ProvidedVariablesInputC":{"r":"inputC"}}}`
   )
   @live
   let variablesConverterMap = {
@@ -85,6 +85,7 @@ type providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesInputC: providedVariable<RelaySchemaAssets_graphql.input_InputC>,
   __relay_internal__pv__ProvidedVariablesInputCArr: providedVariable<option<array<RelaySchemaAssets_graphql.input_InputC>>>,
   __relay_internal__pv__ProvidedVariablesIntStr: providedVariable<TestsUtils.IntString.t>,
+  __relay_internal__pv__ProvidedVariablesIntStrArr: providedVariable<array<TestsUtils.IntString.t>>,
 }
 let providedVariablesDefinition: providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesBool: {
@@ -102,6 +103,10 @@ let providedVariablesDefinition: providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesIntStr: {
     providedVariable: ProvidedVariables.IntStr.get,
     get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesIntStr", ProvidedVariables.IntStr.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__ProvidedVariablesIntStr"),
+  },
+  __relay_internal__pv__ProvidedVariablesIntStrArr: {
+    providedVariable: ProvidedVariables.IntStrArr.get,
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesIntStrArr", ProvidedVariables.IntStrArr.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__ProvidedVariablesIntStrArr"),
   },
 }
 
@@ -160,6 +165,11 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
         "defaultValue": null,
         "kind": "LocalArgument",
         "name": "__relay_internal__pv__ProvidedVariablesIntStr"
+      },
+      {
+        "defaultValue": null,
+        "kind": "LocalArgument",
+        "name": "__relay_internal__pv__ProvidedVariablesIntStrArr"
       }
     ],
     "kind": "Operation",
@@ -195,6 +205,11 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
                 "kind": "Variable",
                 "name": "intStr",
                 "variableName": "__relay_internal__pv__ProvidedVariablesIntStr"
+              },
+              {
+                "kind": "Variable",
+                "name": "intStrArr",
+                "variableName": "__relay_internal__pv__ProvidedVariablesIntStrArr"
               }
             ],
             "kind": "ScalarField",
@@ -214,12 +229,12 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
     ]
   },
   "params": {
-    "cacheID": "44f81e585858d9dcb82052f9c1ab2aac",
+    "cacheID": "089cd98a77f01b819f764cce3917652a",
     "id": null,
     "metadata": {},
     "name": "TestProvidedVariablesQuery",
     "operationKind": "query",
-    "text": "query TestProvidedVariablesQuery(\n  $__relay_internal__pv__ProvidedVariablesBool: Boolean!\n  $__relay_internal__pv__ProvidedVariablesInputC: InputC!\n  $__relay_internal__pv__ProvidedVariablesInputCArr: [InputC!]\n  $__relay_internal__pv__ProvidedVariablesIntStr: IntString!\n) {\n  loggedInUser {\n    ...TestProvidedVariables_user\n    id\n  }\n}\n\nfragment TestProvidedVariables_user on User {\n  someRandomArgField(bool: $__relay_internal__pv__ProvidedVariablesBool, inputC: $__relay_internal__pv__ProvidedVariablesInputC, inputCArr: $__relay_internal__pv__ProvidedVariablesInputCArr, intStr: $__relay_internal__pv__ProvidedVariablesIntStr)\n}\n",
+    "text": "query TestProvidedVariablesQuery(\n  $__relay_internal__pv__ProvidedVariablesBool: Boolean!\n  $__relay_internal__pv__ProvidedVariablesInputC: InputC!\n  $__relay_internal__pv__ProvidedVariablesInputCArr: [InputC!]\n  $__relay_internal__pv__ProvidedVariablesIntStr: IntString!\n  $__relay_internal__pv__ProvidedVariablesIntStrArr: [IntString!]!\n) {\n  loggedInUser {\n    ...TestProvidedVariables_user\n    id\n  }\n}\n\nfragment TestProvidedVariables_user on User {\n  someRandomArgField(bool: $__relay_internal__pv__ProvidedVariablesBool, inputC: $__relay_internal__pv__ProvidedVariablesInputC, inputCArr: $__relay_internal__pv__ProvidedVariablesInputCArr, intStr: $__relay_internal__pv__ProvidedVariablesIntStr, intStrArr: $__relay_internal__pv__ProvidedVariablesIntStrArr)\n}\n",
     "providedVariables": providedVariablesDefinition
   }
 }`)
