@@ -14,7 +14,11 @@ module Datetime = {
 module IntString = {
   type t = int
   @live let parse = Belt.Int.fromString
-  let serialize = Belt.Int.toString
+  let serialize = int => {
+    // This log is used for testing purposes - do not remove
+    Js.log2("serialize", int)
+    Belt.Int.toString(int)
+  }
 }
 
 type number = array<int>
