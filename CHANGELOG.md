@@ -4,6 +4,8 @@
 
 # **Version 3**
 
+- Fix issue with custom scalars in arrays not being autoconverted properly.
+
 # 3.0.0-rc.2
 
 - Depend on ReScript v11 and RescriptReact 0.12.0.
