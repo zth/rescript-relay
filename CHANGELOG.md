@@ -4,6 +4,8 @@
 
 # **Version 3**
 
+# 3.0.0-rc.3
+
 - Fix issue with custom scalars in arrays not being autoconverted properly.
 
 # 3.0.0-rc.2
