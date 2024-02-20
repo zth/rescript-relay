@@ -4,6 +4,10 @@
 
 # **Version 3**
 
+# 3.0.0-rc.4
+
+- Fix an error in postinstall.js when reinstalling rescript-relay dependency (https://github.com/zth/rescript-relay/pull/487)
+
 # 3.0.0-rc.3
 
 - Fix issue with custom scalars in arrays not being autoconverted properly.
