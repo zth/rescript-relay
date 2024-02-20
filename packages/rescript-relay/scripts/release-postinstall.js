@@ -99,20 +99,16 @@ function copyPlatformBinaries(platform) {
   /**
    * Copy the PPX
    */
-  fs.copyFileSync(
-    path.join(__dirname, "ppx-" + platform),
-    path.join(__dirname, "ppx")
-  );
-  fs.chmodSync(path.join(__dirname, "ppx"), 0777);
+  const ppxFinalFilename = platform === "windows-latest" ? "ppx.exe" : "ppx";
+  const ppxFinalPath = path.join(__dirname, ppxFinalFilename);
 
-  // Windows seems to need an .exe file as well.
-  if (platform === "windows-latest") {
+  if (!fs.existsSync(ppxFinalPath)){
     fs.copyFileSync(
       path.join(__dirname, "ppx-" + platform),
-      path.join(__dirname, "ppx.exe")
+      ppxFinalPath
     );
-    fs.chmodSync(path.join(__dirname, "ppx.exe"), 0777);
   }
+  fs.chmodSync(ppxFinalPath, 0777);
 
   /**
    * Copy the Relay compiler
@@ -120,15 +116,19 @@ function copyPlatformBinaries(platform) {
 
   var platformSuffix = getRelayCompilerPlatformSuffix();
 
-  fs.copyFileSync(
-    path.join(
-      __dirname,
-      "relay-compiler-" + platformSuffix,
-      platformSuffix === "win-x64" ? "relay.exe" : "relay"
-    ),
-    path.join(__dirname, "rescript-relay-compiler.exe")
-  );
-  fs.chmodSync(path.join(__dirname, "rescript-relay-compiler.exe"), 0777);
+  const rescriptRelayCompilerFinalPath = path.join(__dirname, "rescript-relay-compiler.exe");
+
+  if (!fs.existsSync(rescriptRelayCompilerFinalPath)){
+    fs.copyFileSync(
+      path.join(
+        __dirname,
+        "relay-compiler-" + platformSuffix,
+        platformSuffix === "win-x64" ? "relay.exe" : "relay"
+      ),
+      rescriptRelayCompilerFinalPath
+    );
+  }
+  fs.chmodSync(rescriptRelayCompilerFinalPath, 0777);
 }
 
 function removeInitialBinaries() {
