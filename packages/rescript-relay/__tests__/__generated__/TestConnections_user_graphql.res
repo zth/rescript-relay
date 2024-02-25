@@ -51,10 +51,11 @@ let connectionKey = "TestConnections_user_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus>=[Idle, Offline], ~beforeDate: TestsUtils.Datetime.t) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus>=[Idle, Offline], ~beforeDate: TestsUtils.Datetime.t, ~orderBy: array<RelaySchemaAssets_graphql.input_UserOrder>=Obj.magic({"direction": ASC, "field": FIRST_NAME})) => {
   let onlineStatuses = Some(onlineStatuses)
   let beforeDate = Some(TestsUtils.Datetime.serialize(beforeDate))
-  let args = {"statuses": onlineStatuses, "beforeDate": beforeDate}
+  let orderBy = Some(orderBy)
+  let args = {"statuses": onlineStatuses, "beforeDate": beforeDate, "orderBy": orderBy}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
@@ -109,6 +110,14 @@ let node: operationType = %raw(json` {
       "name": "onlineStatuses"
     },
     {
+      "defaultValue": {
+        "direction": "ASC",
+        "field": "FIRST_NAME"
+      },
+      "kind": "LocalArgument",
+      "name": "orderBy"
+    },
+    {
       "defaultValue": true,
       "kind": "LocalArgument",
       "name": "test"
@@ -141,6 +150,11 @@ let node: operationType = %raw(json` {
               "kind": "Variable",
               "name": "beforeDate",
               "variableName": "beforeDate"
+            },
+            {
+              "kind": "Variable",
+              "name": "orderBy",
+              "variableName": "orderBy"
             },
             {
               "kind": "Variable",
