@@ -85,28 +85,25 @@ let uncurriedMapper =
               :: expr.pexp_attributes;
           }
         | _ -> default_mapper.expr mapper expr);
-    structure =
-      (fun mapper structure ->
-        let handle_str_item item =
-          match item.pstr_desc with
-          | Pstr_value
-              (a1, [({pvb_expr = {pexp_desc = Pexp_fun _} as fn} as outerV)]) ->
-            {
-              (default_mapper.structure_item mapper item) with
-              pstr_desc =
-                Pstr_value
-                  ( a1,
-                    [
-                      {
-                        outerV with
-                        (* TODO: Should we care about actually figuring out the arity? *)
-                        pvb_expr = uncurriedFun ~loc:outerV.pvb_loc ~arity:1 fn;
-                      };
-                    ] );
-            }
-          | _ -> default_mapper.structure_item mapper item
-        in
-        List.map handle_str_item structure);
+    structure_item =
+      (fun mapper item ->
+        match item.pstr_desc with
+        | Pstr_value
+            (a1, [({pvb_expr = {pexp_desc = Pexp_fun _} as fn} as outerV)]) ->
+          {
+            (default_mapper.structure_item mapper item) with
+            pstr_desc =
+              Pstr_value
+                ( a1,
+                  [
+                    {
+                      outerV with
+                      (* TODO: Should we care about actually figuring out the arity? *)
+                      pvb_expr = uncurriedFun ~loc:outerV.pvb_loc ~arity:1 fn;
+                    };
+                  ] );
+          }
+        | _ -> default_mapper.structure_item mapper item);
   }
 
 let mapStructureItem str =
