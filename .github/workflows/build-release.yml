@@ -58,7 +58,11 @@ jobs:
   build-ppx:
     strategy:
       matrix:
-        platform: [macos-latest, windows-latest]
+        platform: [
+            macos-13, # x64
+            macos-14, # ARM,
+            windows-latest,
+          ]
 
     name: Build PPX for release
     runs-on: ${{ matrix.platform }}
@@ -202,13 +206,26 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: ppx-macos-latest
+          name: ppx-macos-13
+          path: binaries
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: ppx-macos-14
           path: binaries
 
       - uses: actions/download-artifact@v2
         with:
           name: ppx-windows-latest
           path: binaries
+
+      - name: Rename MacOS old binary
+        run: |
+          mv binaries/ppx-macos-13 binaries/ppx-macos-latest
+
+      - name: Rename MacOS ARM64 binary
+        run: |
+          mv binaries/ppx-macos-14 binaries/ppx-macos-arm64
 
       - name: Move binaries into release directory
         run: |
@@ -218,7 +235,8 @@ jobs:
         with:
           name: |
             ppx-linux
-            ppx-macos-latest
+            ppx-macos-13
+            ppx-macos-14
             ppx-windows-latest
             relay-compiler-linux-x64
             relay-compiler-macos-x64

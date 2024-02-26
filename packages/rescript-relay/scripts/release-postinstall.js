@@ -36,9 +36,6 @@ function getRelayCompilerPlatformSuffix() {
  */
 
 function ppxArch() {
-  /**
-   * Use Rosetta for ARM on macOS
-   */
   if (platform === "darwin" && process.arch === "arm64") {
     return "arm64";
   }
@@ -102,11 +99,8 @@ function copyPlatformBinaries(platform) {
   const ppxFinalFilename = platform === "windows-latest" ? "ppx.exe" : "ppx";
   const ppxFinalPath = path.join(__dirname, ppxFinalFilename);
 
-  if (!fs.existsSync(ppxFinalPath)){
-    fs.copyFileSync(
-      path.join(__dirname, "ppx-" + platform),
-      ppxFinalPath
-    );
+  if (!fs.existsSync(ppxFinalPath)) {
+    fs.copyFileSync(path.join(__dirname, "ppx-" + platform), ppxFinalPath);
   }
   fs.chmodSync(ppxFinalPath, 0777);
 
@@ -116,9 +110,12 @@ function copyPlatformBinaries(platform) {
 
   var platformSuffix = getRelayCompilerPlatformSuffix();
 
-  const rescriptRelayCompilerFinalPath = path.join(__dirname, "rescript-relay-compiler.exe");
+  const rescriptRelayCompilerFinalPath = path.join(
+    __dirname,
+    "rescript-relay-compiler.exe"
+  );
 
-  if (!fs.existsSync(rescriptRelayCompilerFinalPath)){
+  if (!fs.existsSync(rescriptRelayCompilerFinalPath)) {
     fs.copyFileSync(
       path.join(
         __dirname,
