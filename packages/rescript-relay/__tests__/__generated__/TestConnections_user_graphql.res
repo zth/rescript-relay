@@ -51,7 +51,7 @@ let connectionKey = "TestConnections_user_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus>=[Idle, Offline], ~beforeDate: TestsUtils.Datetime.t, ~orderBy: array<RelaySchemaAssets_graphql.input_UserOrder>=Obj.magic({"direction": ASC, "field": FIRST_NAME})) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: array<RelaySchemaAssets_graphql.enum_OnlineStatus>=[Idle, Offline], ~beforeDate: TestsUtils.Datetime.t, ~orderBy: array<RelaySchemaAssets_graphql.input_UserOrder>=[{direction: ASC, field: FIRST_NAME}]) => {
   let onlineStatuses = Some(onlineStatuses)
   let beforeDate = Some(TestsUtils.Datetime.serialize(beforeDate))
   let orderBy = Some(orderBy)
@@ -110,10 +110,12 @@ let node: operationType = %raw(json` {
       "name": "onlineStatuses"
     },
     {
-      "defaultValue": {
-        "direction": "ASC",
-        "field": "FIRST_NAME"
-      },
+      "defaultValue": [
+        {
+          "direction": "ASC",
+          "field": "FIRST_NAME"
+        }
+      ],
       "kind": "LocalArgument",
       "name": "orderBy"
     },

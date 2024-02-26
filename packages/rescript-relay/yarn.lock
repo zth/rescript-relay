@@ -521,10 +521,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@rescript/react@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.12.0.tgz#d72f0561ec9c4ae04c5db0a752087190ba7d3f40"
-  integrity sha512-EBLsf5rD7sJOjgfLLGwuLw/hONszc3UtYnIVgv7OdTyUNR41/m4deVm62PI0agvr3kWakXz4KchKRSd+19/bRA==
+"@rescript/react@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@rescript/react/-/react-0.12.1.tgz#7bddb957a1bc08b944c6597f28549ac410982d64"
+  integrity sha512-ZD7nhDr5FZgLYqRH9s4CNM+LRz/3IMuTb+LH12fd2Akk0xYkYUP+DZveB2VQUC2UohJnTf/c8yPSNsiFihVCCg==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
