@@ -4,14 +4,13 @@
 
 # **Version 3**
 
+# 3.0.0-rc.4
+
 - Set explicit peer dependencies: `@rescript/react >= 0.12.1`, `react-relay@16.0.0`, `relay-runtime@16.0.0`.
 - Clean up connection handler generators now that v3 let us use a better representation.
 - Fix issue with default args in connection id makers. https://github.com/zth/rescript-relay/pull/488
 - Fix issue with PPX not actually converting all functions to uncurried.
 - Rename `bsconfig.json` -> `rescript.json`.
-
-# 3.0.0-rc.4
-
 - Fix an error in postinstall.js when reinstalling rescript-relay dependency (https://github.com/zth/rescript-relay/pull/487)
 
 # 3.0.0-rc.3
