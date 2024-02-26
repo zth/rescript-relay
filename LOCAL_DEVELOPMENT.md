@@ -14,7 +14,7 @@ Any feature added or fix done should consider whether that case is covered in th
 
 `/packages/rescript-relay/src` contains all the _ReScript_ code shipped in the package. You build it by running `yarn build` in `/packages/rescript-relay`.
 
-`bsconfig.json` is only used for development, the actual `bsconfig.json` that'll be copied to the published package is located in `bsconfig.release.json`. This setup isn't great and it's likely that we'll move to using the same `bsconfig.json` for dev and release, with a script stripping unwanted things from the config before copying it to the release bundle.
+`rescript.json` is only used for development, the actual `rescript.json` that'll be copied to the published package is located in `rescript.release.json`. This setup isn't great and it's likely that we'll move to using the same `rescript.json` for dev and release, with a script stripping unwanted things from the config before copying it to the release bundle.
 
 ## The PPX
 

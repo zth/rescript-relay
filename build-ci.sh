@@ -32,7 +32,7 @@ sed -i 's/module\.exports \= /export /g' ../../_release/src/utils.mjs;
 
 # copy config files
 echo "Copying config files..."
-cp bsconfig.release.json ../../_release/bsconfig.json;
+cp rescript.release.json ../../_release/rescript.json;
 ./copyPackageJson.js ../../_release $INPUT_TAG_NAME
 cp yarn.lock ../../_release/;
 cp compiler.js ../../_release/;

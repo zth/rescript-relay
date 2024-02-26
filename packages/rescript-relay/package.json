@@ -32,7 +32,7 @@
     "rescript-relay-cli": "cli/cli.js"
   },
   "scripts": {
-    "build": "rescript build -with-deps",
+    "build": "rescript",
     "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler",
     "postinstall": "node postinstall.js",
     "test": "jest",
