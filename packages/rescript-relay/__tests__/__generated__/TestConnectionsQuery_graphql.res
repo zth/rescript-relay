@@ -120,10 +120,12 @@ v2 = [
   {
     "kind": "Literal",
     "name": "orderBy",
-    "value": {
-      "direction": "ASC",
-      "field": "FIRST_NAME"
-    }
+    "value": [
+      {
+        "direction": "ASC",
+        "field": "FIRST_NAME"
+      }
+    ]
   },
   {
     "kind": "Literal",
@@ -289,12 +291,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "50f3883f29e0f3212a4936331f80d098",
+    "cacheID": "289b5b258a2d73bef596bee127410b5e",
     "id": null,
     "metadata": {},
     "name": "TestConnectionsQuery",
     "operationKind": "query",
-    "text": "query TestConnectionsQuery(\n  $beforeDate: Datetime!\n) {\n  loggedInUser {\n    ...TestConnections_user_3xCS8w\n    id\n  }\n}\n\nfragment TestConnections_user_3xCS8w on User {\n  friendsConnection(statuses: [Idle, offline], first: 2, after: \"\", beforeDate: $beforeDate, orderBy: {direction: ASC, field: FIRST_NAME}) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query TestConnectionsQuery(\n  $beforeDate: Datetime!\n) {\n  loggedInUser {\n    ...TestConnections_user_3xCS8w\n    id\n  }\n}\n\nfragment TestConnections_user_3xCS8w on User {\n  friendsConnection(statuses: [Idle, offline], first: 2, after: \"\", beforeDate: $beforeDate, orderBy: [{direction: ASC, field: FIRST_NAME}]) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })() `)

@@ -8,7 +8,7 @@ module Fragment = %relay(`
       test: { type: "Boolean", defaultValue: true }
       orderBy: {
         type: "[UserOrder!]"
-        defaultValue: { direction: ASC, field: FIRST_NAME }
+        defaultValue: [{ direction: ASC, field: FIRST_NAME }]
       }
     ) {
     __id
