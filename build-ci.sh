@@ -19,9 +19,6 @@ cd packages/rescript-relay;
 echo "Build bindings...";
 yarn; yarn build;
 
-# copy prebuilt m1 ppx binary
-cp binaries/* ../../_release
-
 # copy bindings and readme
 echo "Copying bindings and assets..."
 cp -rf src ../../_release;
