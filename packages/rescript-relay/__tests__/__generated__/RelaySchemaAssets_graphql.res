@@ -28,6 +28,34 @@ type enum_OnlineStatus_input =
 
 
 @live @unboxed
+type enum_OrderDirection = 
+  | ASC
+  | DESC
+  | FutureAddedValue(string)
+
+
+@live @unboxed
+type enum_OrderDirection_input = 
+  | ASC
+  | DESC
+
+
+@live @unboxed
+type enum_UserOrderField = 
+  | ID
+  | CREATED_AT
+  | FIRST_NAME
+  | FutureAddedValue(string)
+
+
+@live @unboxed
+type enum_UserOrderField_input = 
+  | ID
+  | CREATED_AT
+  | FIRST_NAME
+
+
+@live @unboxed
 type enum_RequiredFieldAction = 
   | NONE
   | LOG
@@ -104,6 +132,18 @@ and input_SomeInput_nullable = {
   recursive?: Js.Null.t<input_SomeInput_nullable>,
   @as("private") private_?: Js.Null.t<bool>,
   enum?: Js.Null.t<enum_OnlineStatus_input>,
+}
+
+@live
+and input_UserOrder = {
+  direction: enum_OrderDirection_input,
+  field: enum_UserOrderField_input,
+}
+
+@live
+and input_UserOrder_nullable = {
+  direction: enum_OrderDirection_input,
+  field: enum_UserOrderField_input,
 }
 
 @live
