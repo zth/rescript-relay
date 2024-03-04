@@ -102,7 +102,7 @@ function copyPlatformBinaries(platform) {
   if (!fs.existsSync(ppxFinalPath)) {
     fs.copyFileSync(path.join(__dirname, "ppx-" + platform), ppxFinalPath);
   }
-  fs.chmodSync(ppxFinalPath, 0777);
+  fs.chmodSync(ppxFinalPath, 0o777);
 
   /**
    * Copy the Relay compiler
@@ -125,7 +125,7 @@ function copyPlatformBinaries(platform) {
       rescriptRelayCompilerFinalPath
     );
   }
-  fs.chmodSync(rescriptRelayCompilerFinalPath, 0777);
+  fs.chmodSync(rescriptRelayCompilerFinalPath, 0o777);
 }
 
 function removeInitialBinaries() {
