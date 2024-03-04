@@ -128,11 +128,17 @@ function copyPlatformBinaries(platform) {
   fs.chmodSync(rescriptRelayCompilerFinalPath, 0o777);
 }
 
+function unlinkIfNotExistsSync(path) {
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
+}
+
 function removeInitialBinaries() {
-  fs.unlinkSync(path.join(__dirname, "ppx-macos-arm64"));
-  fs.unlinkSync(path.join(__dirname, "ppx-macos-latest"));
-  fs.unlinkSync(path.join(__dirname, "ppx-windows-latest"));
-  fs.unlinkSync(path.join(__dirname, "ppx-linux"));
+  unlinkIfNotExistsSync(path.join(__dirname, "ppx-macos-arm64"));
+  unlinkIfNotExistsSync(path.join(__dirname, "ppx-macos-latest"));
+  unlinkIfNotExistsSync(path.join(__dirname, "ppx-windows-latest"));
+  unlinkIfNotExistsSync(path.join(__dirname, "ppx-linux"));
   fs.rmSync(path.join(__dirname, "relay-compiler-linux-x64"), {
     recursive: true,
     force: true,
