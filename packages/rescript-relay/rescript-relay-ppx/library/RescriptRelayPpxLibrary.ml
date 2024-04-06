@@ -14,6 +14,8 @@ let commonExtension =
         if Str.string_match endsWithRegexp fragmentName 0 then
           RelayResolverFragment.make ~loc
             ~moduleName:(op |> extractTheFragmentName ~loc)
+        else if Util.fragmentIsUpdatable op then
+          UpdatableFragment.make ~loc ~moduleName:(op |> extractTheFragmentName ~loc)
         else
           let refetchableQueryName =
             op |> extractFragmentRefetchableQueryName ~loc
