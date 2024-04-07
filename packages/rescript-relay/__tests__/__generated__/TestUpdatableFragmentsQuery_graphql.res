@@ -89,6 +89,13 @@ var v0 = {
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -150,22 +157,29 @@ return {
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "id",
+            "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "bestFriend",
+            "plural": false,
+            "selections": [
+              (v0/*: any*/),
+              (v1/*: any*/)
+            ],
             "storageKey": null
-          }
+          },
+          (v1/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "cadad640c8096fa8df30b9a6f820725b",
+    "cacheID": "f8b22f8b79b8d5f6e84755a46f99810d",
     "id": null,
     "metadata": {},
     "name": "TestUpdatableFragmentsQuery",
     "operationKind": "query",
-    "text": "query TestUpdatableFragmentsQuery {\n  ...TestUpdatableFragments_query\n  loggedInUser {\n    firstName\n    id\n  }\n}\n\nfragment TestUpdatableFragments_query on Query {\n  loggedInUser {\n    firstName\n    isOnline\n    __typename\n    id\n  }\n}\n"
+    "text": "query TestUpdatableFragmentsQuery {\n  ...TestUpdatableFragments_query\n  loggedInUser {\n    firstName\n    id\n  }\n}\n\nfragment TestUpdatableFragments_query on Query {\n  loggedInUser {\n    firstName\n    isOnline\n    __typename\n    bestFriend {\n      firstName\n      id\n    }\n    id\n  }\n}\n"
   }
 };
 })() `)

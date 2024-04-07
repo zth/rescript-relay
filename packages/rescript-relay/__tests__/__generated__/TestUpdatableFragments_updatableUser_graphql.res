@@ -4,9 +4,13 @@
 module Types = {
   @@warning("-30")
 
+  type rec fragment_bestFriend = {
+    mutable firstName: string,
+  }
   type fragment = {
     mutable firstName: string,
     mutable isOnline: Js.Nullable.t<bool>,
+    bestFriend: Js.Nullable.t<fragment_bestFriend>,
   }
 }
 
@@ -32,7 +36,7 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "firstName",
   "storageKey": null
 };
 return {
@@ -48,37 +52,16 @@ return {
       "name": "isOnline",
       "storageKey": null
     },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "firstName",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": null,
+      "concreteType": "User",
       "kind": "LinkedField",
-      "name": "memberOfSingular",
+      "name": "bestFriend",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            (v0/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "name",
-              "storageKey": null
-            }
-          ],
-          "type": "Group",
-          "abstractKey": null
-        }
+        (v0/*: any*/)
       ],
       "storageKey": null
     }

@@ -4,8 +4,12 @@
 module Types = {
   @@warning("-30")
 
-  type rec fragment_loggedInUser = {
-    @as("fragmentRefs") updatableFragmentRefs: RescriptRelay.updatableFragmentRefs<[ | #TestUpdatableFragments_updatableUser]>,
+  type rec fragment_loggedInUser_bestFriend = {
+    firstName: string,
+  }
+  and fragment_loggedInUser = {
+    updatableFragmentRefs: RescriptRelay.updatableFragmentRefs<[ | #TestUpdatableFragments_updatableUser]>,
+    bestFriend: option<fragment_loggedInUser_bestFriend>,
     firstName: string,
     isOnline: option<bool>,
   }
@@ -45,7 +49,15 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` {
+let node: operationType = %raw(json` (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -59,13 +71,7 @@ let node: operationType = %raw(json` {
       "name": "loggedInUser",
       "plural": false,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "firstName",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -77,6 +83,18 @@ let node: operationType = %raw(json` {
           "args": null,
           "kind": "FragmentSpread",
           "name": "TestUpdatableFragments_updatableUser"
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "User",
+          "kind": "LinkedField",
+          "name": "bestFriend",
+          "plural": false,
+          "selections": [
+            (v0/*: any*/)
+          ],
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -84,5 +102,6 @@ let node: operationType = %raw(json` {
   ],
   "type": "Query",
   "abstractKey": null
-} `)
+};
+})() `)
 

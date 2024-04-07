@@ -13,6 +13,9 @@ module Fragment = %relay(`
       firstName
       isOnline
       ...TestUpdatableFragments_updatableUser
+      bestFriend {
+        firstName
+      }
     }
   }
 `)
@@ -22,13 +25,20 @@ module Test = {
   let make = () => {
     let query = Query.use(~variables=())
     let environment = RescriptRelay.useEnvironmentFromContext()
-    let {loggedInUser: {firstName, isOnline, updatableFragmentRefs}} = Fragment.use(
+    let {loggedInUser: {firstName, isOnline, updatableFragmentRefs, bestFriend}} = Fragment.use(
       query.fragmentRefs,
     )
 
+    let bestFriendsName = switch bestFriend {
+    | None => "-"
+    | Some({firstName}) => firstName
+    }
+
     <div>
       {React.string(
-        `${firstName} is ${isOnline->Belt.Option.getWithDefault(false) ? "online" : "offline"}`,
+        `${firstName} is ${isOnline->Belt.Option.getWithDefault(false)
+            ? "online"
+            : "offline"} and best friends with ${bestFriendsName}`,
       )}
       <button
         onClick={_ => {
@@ -37,6 +47,9 @@ module Test = {
                 fragment TestUpdatableFragments_updatableUser on User @updatable {
                     isOnline
                     firstName
+                    bestFriend {
+                        firstName
+                    }
                 }
             `)
 
@@ -47,6 +60,11 @@ module Test = {
 
             updatableData.isOnline = Value(true)
             updatableData.firstName = "Mrmr"
+
+            switch updatableData.bestFriend {
+            | Value(bestFriend) => bestFriend.firstName = "Newton"
+            | Undefined | Null => ()
+            }
           })
         }}>
         {React.string("Change status")}

@@ -45,8 +45,10 @@ describe("conversion", () => {
       )
     ).toEqual({
       fragmentRefs: expect.any(Object),
+      updatableFragmentRefs: expect.any(Object),
       me: {
         fragmentRefs: expect.any(Object),
+        updatableFragmentRefs: expect.any(Object),
         name: "Name",
         age: undefined,
         nicknames: [undefined, "SomeName"],
@@ -55,6 +57,7 @@ describe("conversion", () => {
             someProp: undefined,
             otherProp: "Lars",
             fragmentRefs: expect.any(Object),
+            updatableFragmentRefs: expect.any(Object),
           },
           undefined,
         ],
@@ -288,15 +291,18 @@ describe("conversion", () => {
       )
     ).toEqual({
       fragmentRefs: expect.any(Object),
+      updatableFragmentRefs: expect.any(Object),
       someUnion: [
         123,
         {
           fragmentRefs: expect.any(Object),
+          updatableFragmentRefs: expect.any(Object),
           __typename: "User",
           firstName: "First",
           ageRange: 123,
           meta: {
             fragmentRefs: expect.any(Object),
+            updatableFragmentRefs: expect.any(Object),
             ageRange: 234,
             nullable: undefined,
           },
@@ -308,11 +314,13 @@ describe("conversion", () => {
           123,
           {
             fragmentRefs: expect.any(Object),
+            updatableFragmentRefs: expect.any(Object),
             __typename: "User",
             firstName: "First",
             ageRange: 123,
             meta: {
               fragmentRefs: expect.any(Object),
+              updatableFragmentRefs: expect.any(Object),
               ageRange: 234,
               nullable: undefined,
             },
@@ -322,11 +330,13 @@ describe("conversion", () => {
           123,
           {
             fragmentRefs: expect.any(Object),
+            updatableFragmentRefs: expect.any(Object),
             __typename: "Observer",
             name: undefined,
             ageRange: 345,
             meta: {
               fragmentRefs: expect.any(Object),
+              updatableFragmentRefs: expect.any(Object),
               ageRange: 456,
               nullable: undefined,
             },
@@ -336,11 +346,13 @@ describe("conversion", () => {
                 123,
                 {
                   fragmentRefs: expect.any(Object),
+                  updatableFragmentRefs: expect.any(Object),
                   __typename: "User",
                   firstName: "Second",
                   ageRange: 999,
                   meta: {
                     fragmentRefs: expect.any(Object),
+                    updatableFragmentRefs: expect.any(Object),
                     ageRange: 123,
                     nullable: undefined,
                   },
@@ -576,6 +588,7 @@ describe("conversion", () => {
         active: true,
         cost: {
           fragmentRefs: expect.any(Object),
+          updatableFragmentRefs: expect.any(Object),
           __fragments: {
             CurrencyValueDisplayer_value: true,
           },
