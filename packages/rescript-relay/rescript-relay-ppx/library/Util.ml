@@ -93,6 +93,13 @@ let fragmentIsUpdatable op =
     |> List.exists (fun (directive : Graphql_parser.directive) ->
            directive.name = "updatable")
   | _ -> false
+let queryIsUpdatable op =
+  match op with
+  | Graphql_parser.Operation {optype = Query; directives} ->
+    directives
+    |> List.exists (fun (directive : Graphql_parser.directive) ->
+           directive.name = "updatable")
+  | _ -> false
 type connectionConfig = {key: string}
 let extractFragmentConnectionInfo ~loc op =
   match op with

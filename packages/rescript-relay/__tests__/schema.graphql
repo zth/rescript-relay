@@ -215,6 +215,7 @@ type SerializeCustomScalarArrayPayload {
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
+  user(id: ID!): User
   member(id: ID!): Member
   members(
     groupId: ID!

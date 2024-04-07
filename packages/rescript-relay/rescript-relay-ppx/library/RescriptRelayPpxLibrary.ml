@@ -6,7 +6,7 @@ let endsWithRegexp = Str.regexp ".*Resolver$"
 let commonExtension =
   Extension.declare "relay" Extension.Context.module_expr
     (let open Ast_pattern in
-    single_expr_payload (estring __))
+     single_expr_payload (estring __))
     (fun ~loc ~path:_ operationStr ->
       let op = extractGraphQLOperation ~loc operationStr in
       match op with
@@ -15,7 +15,8 @@ let commonExtension =
           RelayResolverFragment.make ~loc
             ~moduleName:(op |> extractTheFragmentName ~loc)
         else if Util.fragmentIsUpdatable op then
-          UpdatableFragment.make ~loc ~moduleName:(op |> extractTheFragmentName ~loc)
+          UpdatableFragment.make ~loc
+            ~moduleName:(op |> extractTheFragmentName ~loc)
         else
           let refetchableQueryName =
             op |> extractFragmentRefetchableQueryName ~loc
@@ -27,10 +28,13 @@ let commonExtension =
             ~hasInlineDirective:(op |> fragmentHasInlineDirective ~loc)
             ~loc
       | Operation {optype = Query} ->
-        Query.make
-          ~moduleName:(op |> extractTheQueryName ~loc)
-          ~hasRawResponseType:(op |> queryHasRawResponseTypeDirective ~loc)
-          ~loc
+        if Util.queryIsUpdatable op then
+          UpdatableQuery.make ~loc ~moduleName:(op |> extractTheQueryName ~loc)
+        else
+          Query.make
+            ~moduleName:(op |> extractTheQueryName ~loc)
+            ~hasRawResponseType:(op |> queryHasRawResponseTypeDirective ~loc)
+            ~loc
       | Operation {optype = Mutation} ->
         Mutation.make ~moduleName:(op |> extractTheMutationName ~loc) ~loc
       | Operation {optype = Subscription} ->
