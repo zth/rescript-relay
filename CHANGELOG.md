@@ -4,6 +4,10 @@
 
 # **Version 3**
 
+# Unreleased
+
+- Support for Relay `@updatable` queries and fragments (https://relay.dev/docs/guided-tour/updating-data/imperatively-modifying-store-data/#optimistic-updaters-vs-updaters). https://github.com/zth/rescript-relay/pull/501
+
 # 3.0.0-rc.4
 
 - Set explicit peer dependencies: `@rescript/react >= 0.12.1`, `react-relay@16.0.0`, `relay-runtime@16.0.0`.

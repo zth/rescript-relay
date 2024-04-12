@@ -88,6 +88,7 @@ type User implements Node {
   nicknames: [String!]!
   createdAt: Datetime!
   private: Boolean
+  bestFriend: User
   someRandomArgField(
     bool: Boolean
     someInput: SomeInput
@@ -214,6 +215,7 @@ type SerializeCustomScalarArrayPayload {
 type Query {
   node(id: ID!): Node
   loggedInUser: User!
+  user(id: ID!): User
   member(id: ID!): Member
   members(
     groupId: ID!

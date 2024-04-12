@@ -9,6 +9,7 @@ type mutationNode<'node>
 type subscriptionNode<'node>
 
 type fragmentRefs<'fragments>
+type updatableFragmentRefs<'fragments>
 
 type dataId
 type recordSourceRecords = Js.Json.t
