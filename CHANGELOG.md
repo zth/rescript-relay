@@ -7,6 +7,7 @@
 # Unreleased
 
 - Support for Relay `@updatable` queries and fragments (https://relay.dev/docs/guided-tour/updating-data/imperatively-modifying-store-data/#optimistic-updaters-vs-updaters). https://github.com/zth/rescript-relay/pull/501
+- Attempt 2: Fix an error in postinstall.js when reinstalling rescript-relay dependency (https://github.com/zth/rescript-relay/pull/493)
 
 # 3.0.0-rc.4
 
