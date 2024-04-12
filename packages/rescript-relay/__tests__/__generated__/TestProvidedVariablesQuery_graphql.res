@@ -79,15 +79,15 @@ module Utils = {
   @@warning("-33")
   open Types
 }
-type providedVariable<'t> = { providedVariable: unit => 't, get: unit => 't }
-type providedVariablesType = {
+@live type providedVariable<'t> = { providedVariable: unit => 't, get: unit => 't }
+@live type providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesBool: providedVariable<bool>,
   __relay_internal__pv__ProvidedVariablesInputC: providedVariable<RelaySchemaAssets_graphql.input_InputC>,
   __relay_internal__pv__ProvidedVariablesInputCArr: providedVariable<option<array<RelaySchemaAssets_graphql.input_InputC>>>,
   __relay_internal__pv__ProvidedVariablesIntStr: providedVariable<TestsUtils.IntString.t>,
   __relay_internal__pv__ProvidedVariablesIntStrArr: providedVariable<array<TestsUtils.IntString.t>>,
 }
-let providedVariablesDefinition: providedVariablesType = {
+@live let providedVariablesDefinition: providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesBool: {
     providedVariable: ProvidedVariables.Bool.get,
     get: ProvidedVariables.Bool.get,
@@ -241,7 +241,7 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
 })
 let node: operationType = makeNode(providedVariablesDefinition)
 
-let load: (
+@live let load: (
   ~environment: RescriptRelay.Environment.t,
   ~variables: Types.variables,
   ~fetchPolicy: RescriptRelay.fetchPolicy=?,
@@ -264,12 +264,14 @@ let load: (
       networkCacheConfig,
     },
   )
-  
+
+@live
 let queryRefToObservable = token => {
   let raw = token->Internal.tokenToRaw
   raw.source->Js.Nullable.toOption
 }
   
+@live
 let queryRefToPromise = token => {
   Js.Promise.make((~resolve, ~reject as _) => {
     switch token->queryRefToObservable {

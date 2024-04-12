@@ -317,7 +317,7 @@ return {
 };
 })() `)
 
-let load: (
+@live let load: (
   ~environment: RescriptRelay.Environment.t,
   ~variables: Types.variables,
   ~fetchPolicy: RescriptRelay.fetchPolicy=?,
@@ -340,12 +340,14 @@ let load: (
       networkCacheConfig,
     },
   )
-  
+
+@live
 let queryRefToObservable = token => {
   let raw = token->Internal.tokenToRaw
   raw.source->Js.Nullable.toOption
 }
   
+@live
 let queryRefToPromise = token => {
   Js.Promise.make((~resolve, ~reject as _) => {
     switch token->queryRefToObservable {
