@@ -13,7 +13,6 @@ let lazyExtension =
     (fun ~loc ~path:_ ident ->
       match ident with
       | Ldot (Lident moduleName, "make") ->
-        let loc = Ppxlib.Location.none in
         let identAst = Ppxlib.Ast_helper.Exp.ident {loc; txt = ident} in
         Ast_helper.Mod.mk
           (Pmod_structure
