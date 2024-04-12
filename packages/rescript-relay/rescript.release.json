@@ -2,9 +2,6 @@
   "name": "rescript-relay",
   "version": "0.1.0",
   "namespace": false,
-  "reason": {
-    "react-jsx": 3
-  },
   "sources": [
     {
       "dir": "src"
@@ -18,6 +15,5 @@
   "suffix": ".bs.js",
   "warnings": {
     "error": "+101"
-  },
-  "refmt": 3
+  }
 }
