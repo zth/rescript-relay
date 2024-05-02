@@ -22,26 +22,31 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] ->
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
-              [%stri
-                let use fRef :
-                    [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                  RescriptRelay_Fragment.useFragment ~convertFragment
-                    ~fRef:
-                      (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let useOpt fRef :
-                    [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
-                  RescriptRelay_Fragment.useFragmentOpt ~convertFragment
-                    ~fRef:
-                      (match fRef with
-                      | Some fRef ->
-                        Some
-                          (fRef
-                          |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                      | None -> None)
-                    ~node:[%e valFromGeneratedModule ["node"]]];
             ];
+            (match hasInlineDirective with
+            | false ->
+              [
+                [%stri
+                  let use fRef :
+                      [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                    RescriptRelay_Fragment.useFragment ~convertFragment
+                      ~fRef:
+                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+                [%stri
+                  let useOpt fRef :
+                      [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
+                    RescriptRelay_Fragment.useFragmentOpt ~convertFragment
+                      ~fRef:
+                        (match fRef with
+                        | Some fRef ->
+                          Some
+                            (fRef
+                            |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                        | None -> None)
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+              ]
+            | true -> []);
             (match hasInlineDirective with
             | true ->
               [
