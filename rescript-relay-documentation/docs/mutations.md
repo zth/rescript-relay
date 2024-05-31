@@ -43,8 +43,7 @@ let make = () => {
             id: todoItem.id,
             text: newText,
           },
-        },
-        (),
+        }
       )}>
     {React.string(isMutating ? "Updating..." : "Update")}
   </button>
@@ -118,17 +117,13 @@ let make = (~user) => {
   // This creates an id for the connection above with `minimumCommonFriends` as 10, and `onlineStatuses` at its default value (which is `[Idle]`).
   // Notice that we use `__id` from the user - that's because `makeConnectionId` needs to know the _owner_ for the connection you're looking for. It doesn't need the field of the connection, just the owner itself.
   let connectionId =
-    user.__id->UserFriendsList_user_graphql.makeConnectionId(
-      ~minimumCommonFriends=10,
-      (),
-    )
+    user.__id->UserFriendsList_user_graphql.makeConnectionId(~minimumCommonFriends=10)
 
   // This creates an id with both `minimumCommonFriends` and `onlineStatuses` having explicit values.
   let connectionId2 =
     user.__id->UserFriendsList_user_graphql.makeConnectionId(
       ~minimumCommonFriends=10,
-      ~onlineStatuses=[#Online, #Idle],
-      (),
+      ~onlineStatuses=[#Online, #Idle]
     )
 
   // We can then use these connection ID:s to either pass into the `connections: [ID!]!` argument of the declarative updater directives, or we can use them to imperatively pull out a connection from the store like this:
@@ -173,7 +168,6 @@ mutate(
       updatedTodoItem: Some({"id": todoItem.id, "text": todoItem.text}),
     }),
   },
-  (),
 )
 
 ```
@@ -289,8 +283,6 @@ A React hook for running and keeping track of the mutation. Returns a tuple of `
 
 ##### Parameters
 
-_Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
-
 | Name                 | Type                                               | Required | Notes                                                                                                                                                                                                                                    |
 | -------------------- | -------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `variables`          | `'variables`                                       | _Yes_    | Variables derived from the GraphQL operation                                                                                                                                                                                             |
@@ -305,8 +297,6 @@ _Please note that this function must be called with an ending unit `()` if not a
 Commits the specified mutation to Relay and returns a `Disposable.t` that allow you to cancel listening for the mutation result if needed.
 
 ##### Parameters
-
-_Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
 
 | Name                 | Type                                                       | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | ---------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

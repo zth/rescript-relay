@@ -185,7 +185,7 @@ Since `Story.res` now expects a fragment key, we change the `make` funtion of `N
 ```rescript
 @react.component
 let make = () => {
-  let data = NewsfeedQuery.use(~variables=(), ())
+  let data = NewsfeedQuery.use(~variables=())
 
   switch data.topStory {
   | None => React.null

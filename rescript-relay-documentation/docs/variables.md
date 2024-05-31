@@ -26,10 +26,10 @@ module Mutation = %relay(`
 `)
 
 // All optional variables in this operation can now be `null`, which will be preserved and sent to your server.
-Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.null}, ())
+Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.null})
 
 // Or if you want to send a value:
-Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.Null.return("some-avatar-url")}, ())
+Mutation.commitMutation(~environment=RelayEnvironment.environment, ~variables={avatarUrl: Js.Null.return("some-avatar-url")})
 ```
 
 This works for:

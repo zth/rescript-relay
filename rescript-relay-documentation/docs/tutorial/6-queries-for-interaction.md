@@ -194,7 +194,7 @@ We’ll add a new prop to our component and pass its value in there:
 // change-line
 let make = (~posterID) => {
   // change-line
-  let data = HovercardQuery.use(~variables={posterID: posterID}, ())
+  let data = HovercardQuery.use(~variables={posterID: posterID})
   <div className="posterHovercard">
     {switch data.node {
     | None => React.null
@@ -293,7 +293,7 @@ As a reminder, this is the `PosterDetailsHovercardContents` component that curre
 ```rescript
 @react.component
 let make = (~posterID) => {
-  let data = HovercardQuery.use(~variables={posterID: posterID}, ())
+  let data = HovercardQuery.use(~variables={posterID: posterID})
   <div className="posterHovercard">
     {switch data.node {
     | None => React.null
@@ -383,7 +383,7 @@ let make = (~poster) => {
       <div className="byline__name"> {name->React.string} </div>
       <Hovercard
         // change-line
-        targetRef={hoverRef} onBeginHover={_ => loadHoverCardQuery(~variables={posterID: id}, ())}>
+        targetRef={hoverRef} onBeginHover={_ => loadHoverCardQuery(~variables={posterID: id})}>
         {switch hovercardQueryRef {
         | None => React.null
         | Some(queryRef) => <PosterDetailsHovercardContents queryRef />
