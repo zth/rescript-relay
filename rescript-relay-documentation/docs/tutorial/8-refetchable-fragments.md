@@ -224,7 +224,7 @@ let make = (~viewer) => {
     | None => React.null
     | Some(contacts) =>
       contacts
-      ->Array.keepMap(x => x)
+      ->Array.keepSome
       ->Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
       ->React.array
     }}
