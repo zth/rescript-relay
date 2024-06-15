@@ -1,4 +1,4 @@
-let enabled = ref false
+let enabled = ref true
 
 let arity_to_attributes ~loc arity : Parsetree.attribute list =
   [
