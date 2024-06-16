@@ -7,7 +7,7 @@ module.exports = {
     : "./__tests__/__generated__",
   src: PERSISTING ? "./__tests_preloaded__" : "./__tests__",
   language: "rescript",
-  customScalars: {
+  customScalarTypes: {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
     JSON: "Js.Json.t",

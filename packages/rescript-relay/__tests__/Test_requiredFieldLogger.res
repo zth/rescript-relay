@@ -7,13 +7,13 @@ module Query = %relay(`
 `)
 
 module Logger = {
-  let loggedArg = ref((None: option<RescriptRelay.RequiredFieldLogger.arg>))
+  let loggedArg = ref((None: option<RescriptRelay.RelayFieldLogger.arg>))
 
-  let mock: RescriptRelay.RequiredFieldLogger.t = arg => loggedArg := Some(arg)
+  let mock: RescriptRelay.RelayFieldLogger.t = arg => loggedArg := Some(arg)
 
   let getLoggedArg = () => loggedArg.contents
 
-  let expectedArg: RescriptRelay.RequiredFieldLogger.arg = MissingFieldLog({
+  let expectedArg: RescriptRelay.RelayFieldLogger.arg = MissingFieldLog({
     owner: "TestRequiredFieldLoggerQuery",
     fieldPath: "loggedInUser.firstName",
   })
@@ -26,7 +26,7 @@ let test_requiredFieldLogger = () => {
   let environment = RescriptRelay.Environment.make(
     ~network,
     ~store=RescriptRelay.Store.make(~source=RescriptRelay.RecordSource.make()),
-    ~requiredFieldLogger=Logger.mock,
+    ~relayFieldLogger=Logger.mock,
   )
 
   Js.Promise.make((~resolve, ~reject as _) => {

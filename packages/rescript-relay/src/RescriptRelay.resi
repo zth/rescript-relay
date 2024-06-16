@@ -691,7 +691,7 @@ module Disposable: {
 }
 
 /**A required field logger, which gets called when a field annotated with the @required directive was missing from the response*/
-module RequiredFieldLogger: {
+module RelayFieldLogger: {
   @tag("kind")
   type arg =
     | @as("missing_field.log") MissingFieldLog({owner: string, fieldPath: string})
@@ -722,7 +722,7 @@ module Environment: {
     ) => string=?,
     ~treatMissingFieldsAsNull: bool=?,
     ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
-    ~requiredFieldLogger: RequiredFieldLogger.t=?,
+    ~relayFieldLogger: RelayFieldLogger.t=?,
     ~isServer: bool=?,
   ) => t
 

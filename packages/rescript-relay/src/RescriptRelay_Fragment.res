@@ -148,7 +148,7 @@ let usePaginationFragment = (
   }
 }
 
-@module("react-relay/lib/relay-hooks/useBlockingPaginationFragment")
+@module("react-relay/lib/relay-hooks/legacy/useBlockingPaginationFragment")
 external useBlockingPaginationFragment_: (
   fragmentNode<'node>,
   'fragmentRef,

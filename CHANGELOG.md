@@ -6,6 +6,10 @@
 
 # Unreleased
 
+- **Upgrade versions**: `react-relay` and `relay-runtime` to `17.0.0`.
+- BREAKING: The `customScalars` option in the Relay config is now called `customScalarTypes`.
+- BREAKING: `requiredFieldLogger` in the `Environment` config is now called `relayFieldLogger`.
+
 # 3.0.0-rc.5
 
 - Support for Relay `@updatable` queries and fragments (https://relay.dev/docs/guided-tour/updating-data/imperatively-modifying-store-data/#optimistic-updaters-vs-updaters). https://github.com/zth/rescript-relay/pull/501

@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",
-    "@rescript/react": "0.12.1",
+    "@rescript/react": "0.12.2",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
     "graphql-query-test-mock": "^0.12.1",
@@ -49,13 +49,13 @@
     "node-fetch": "^2.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-relay": "16.0.0",
-    "relay-runtime": "16.0.0",
-    "rescript": "^11.0.0"
+    "react-relay": "17.0.0",
+    "relay-runtime": "17.0.0",
+    "rescript": "11.1.1"
   },
   "peerDependencies": {
     "@rescript/react": "^0.12.1",
-    "react-relay": "16.0.0",
+    "react-relay": "17.0.0",
     "relay-runtime": "*",
     "rescript": "^11.0.0"
   },

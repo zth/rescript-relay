@@ -1,8 +1,5 @@
 /**
- * @RelayResolver
- *
- * @onType User
- * @fieldName fullName
+ * @RelayResolver User.fullName:RelayResolverValue
  * @rootFragment TestRelayUserResolver
  *
  * A users full name.

@@ -155,7 +155,7 @@ let node: operationType = %raw(json` {
             },
             "kind": "RelayResolver",
             "storageKey": null,
-            "isOutputType": false
+            "isOutputType": true
           },
           {
             "alias": null,

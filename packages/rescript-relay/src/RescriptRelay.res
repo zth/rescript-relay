@@ -552,7 +552,7 @@ module Store = {
   @send external holdGC: t => unit = "holdGC"
 }
 
-module RequiredFieldLogger = {
+module RelayFieldLogger = {
   @tag("kind")
   type arg =
     | @as("missing_field.log") MissingFieldLog({owner: string, fieldPath: string})
@@ -576,7 +576,7 @@ module Environment = {
     getDataID?: (~nodeObj: 'a, ~typeName: string) => string,
     treatMissingFieldsAsNull?: bool,
     missingFieldHandlers: array<MissingFieldHandler.t>,
-    requiredFieldLogger?: RequiredFieldLogger.t,
+    relayFieldLogger?: RelayFieldLogger.t,
     isServer?: bool,
   }
 
@@ -589,7 +589,7 @@ module Environment = {
     ~getDataID=?,
     ~treatMissingFieldsAsNull=?,
     ~missingFieldHandlers=?,
-    ~requiredFieldLogger=?,
+    ~relayFieldLogger=?,
     ~isServer=?,
   ) =>
     make({
@@ -601,7 +601,7 @@ module Environment = {
       | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
       | None => [nodeInterfaceMissingFieldHandler]
       },
-      ?requiredFieldLogger,
+      ?relayFieldLogger,
       ?isServer,
     })
 
