@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "3.0.0-rc.5",
+  "version": "3.0.0-rc.6",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -56,7 +56,7 @@
   "peerDependencies": {
     "@rescript/react": "^0.12.1",
     "react-relay": "17.0.0",
-    "relay-runtime": "*",
+    "relay-runtime": "17.0.0",
     "rescript": "^11.0.0"
   },
   "dependencies": {

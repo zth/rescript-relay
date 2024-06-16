@@ -6,6 +6,8 @@
 
 # Unreleased
 
+# 3.0.0-rc.6
+
 - **Upgrade versions**: `react-relay` and `relay-runtime` to `17.0.0`.
 - BREAKING: The `customScalars` option in the Relay config is now called `customScalarTypes`.
 - BREAKING: `requiredFieldLogger` in the `Environment` config is now called `relayFieldLogger`.
