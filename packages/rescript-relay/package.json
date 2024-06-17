@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "3.0.0-rc.6",
+  "version": "3.0.0-rc.7",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",

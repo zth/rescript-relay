@@ -6,6 +6,10 @@
 
 # Unreleased
 
+# 3.0.0-rc.7
+
+- Fix for not deleting removed artifacts.
+
 # 3.0.0-rc.6
 
 - **Upgrade versions**: `react-relay` and `relay-runtime` to `17.0.0`.
