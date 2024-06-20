@@ -43,5 +43,6 @@ let commonExtension =
           ~loc)
 let () =
   Driver.register_transformation
+    ~preprocess_impl:RelayResolvers.structure_mapper
     ~extensions:[commonExtension; DeferredComp.lazyExtension]
     "rescript-relay"

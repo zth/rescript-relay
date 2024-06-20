@@ -1,14 +1,14 @@
 /**
  * @RelayResolver UserMeta.online: Boolean
  */
-let online: UserMeta_relayResolvers_graphql.onlineResolver = userMeta => {
+let online = userMeta => {
   userMeta.online->Some
 }
 
 /**
  * @RelayResolver LocalUser.meta: UserMeta
  */
-let meta: LocalUser_relayResolvers_graphql.metaResolver = user => {
+let meta = user => {
   Some({
     online: user.name === "Test User",
   })
@@ -17,14 +17,14 @@ let meta: LocalUser_relayResolvers_graphql.metaResolver = user => {
 /**
  * @RelayResolver LocalUser.name: String
  */
-let name: LocalUser_relayResolvers_graphql.nameResolver = user => {
+let name = user => {
   Some(user.name)
 }
 
 /**
  * @RelayResolver Query.localUser: LocalUser
  */
-let localUser: Query_relayResolvers_graphql.localUserResolver = () => {
+let localUser = () => {
   Some({
     id: "local-user-1"->RescriptRelay.makeDataId,
   })
