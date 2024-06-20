@@ -36,6 +36,19 @@ type updatableFragmentRefs<'fragments>
 /**The type of the id Relay uses to identify records in its store.*/
 type dataId
 
+type dataIdObject = {id: dataId}
+
+type liveStateCallback = unit => unit
+type liveStateUnsubscribeCallback = unit => unit
+
+type liveState<'value> = {
+  read: unit => 'value,
+  subscribe: liveStateCallback => liveStateUnsubscribeCallback,
+}
+
+@module("relay-runtime/experimental")
+external resolverDataInjector: ('a, 'b, 'c, 'd) => 'return = "resolverDataInjector"
+
 /**Turns a `dataId` into a `string`.*/
 external dataIdToString: dataId => string = "%identity"
 
@@ -346,6 +359,9 @@ module RecordSourceSelectorProxy: {
   /**Type type representing a `RecordSourceSelectorProxy`.*/
   type t
 
+  @send
+  external batchLiveStateUpdates: (t, unit => unit) => unit = "batchLiveStateUpdates"
+
   /**Creates a new `RecordProxy`.*/
   @send
   external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
@@ -655,6 +671,15 @@ module Store: {
 
   /**Creates a new `Store`.*/
   let make: (
+    ~source: RecordSource.t,
+    ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
+    int=?,
+    ~queryCacheExpirationTime: int=?,
+  ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
+  t
+
+  /**Creates a new `LiveStore`.*/
+  let makeLiveStore: (
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
     int=?,
