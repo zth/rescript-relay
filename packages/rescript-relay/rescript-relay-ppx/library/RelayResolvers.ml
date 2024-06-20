@@ -8,7 +8,7 @@ let extractResolverParts text =
   (* Join all lines into a single string *)
   let text = String.concat " " (Str.split (Str.regexp "[\r\n]+") text) in
   (* Define the regular expression *)
-  let re = Str.regexp ".*@RelayResolver \\([^\\.]+\\)\\.\\([^:]+\\):.*" in
+  let re = Str.regexp ".*@RelayResolver \\([^\\.]+\\)\\.\\([^(:]+\\).*:.*" in
   if Str.string_match re text 0 then
     let part1 = Str.matched_group 1 text in
     let part2 = Str.matched_group 2 text in

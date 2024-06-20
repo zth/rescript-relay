@@ -10,6 +10,7 @@ module Types = {
   and response_localUser = {
     meta: response_localUser_meta,
     name: option<string>,
+    nameRepeated: option<string>,
   }
   type response = {
     localUser: option<response_localUser>,
@@ -85,7 +86,7 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-%%private(let makeNode = (rescript_graphql_node_LocalUser__id, rescript_graphql_node_LocalUser____relay_model_instance, rescript_graphql_node_UserMeta____relay_model_instance, resolverDataInjector, rescript_module_RelayLocalUserModel_LocalUser, rescript_module_TestRelayResolvers_localUser, rescript_module_TestRelayResolvers_name, rescript_module_TestRelayResolvers_meta, rescript_module_TestRelayResolvers_online): operationType => {
+%%private(let makeNode = (rescript_graphql_node_LocalUser__id, rescript_graphql_node_LocalUser____relay_model_instance, rescript_graphql_node_UserMeta____relay_model_instance, resolverDataInjector, rescript_module_RelayLocalUserModel_LocalUser, rescript_module_TestRelayResolvers_localUser, rescript_module_TestRelayResolvers_name, rescript_module_TestRelayResolvers_nameRepeated, rescript_module_TestRelayResolvers_meta, rescript_module_TestRelayResolvers_online): operationType => {
   ignore(rescript_graphql_node_LocalUser__id)
   ignore(rescript_graphql_node_LocalUser____relay_model_instance)
   ignore(rescript_graphql_node_UserMeta____relay_model_instance)
@@ -93,6 +94,7 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
   ignore(rescript_module_RelayLocalUserModel_LocalUser)
   ignore(rescript_module_TestRelayResolvers_localUser)
   ignore(rescript_module_TestRelayResolvers_name)
+  ignore(rescript_module_TestRelayResolvers_nameRepeated)
   ignore(rescript_module_TestRelayResolvers_meta)
   ignore(rescript_module_TestRelayResolvers_online)
   %raw(json`(function(){
@@ -101,14 +103,21 @@ var v0 = {
   "kind": "FragmentSpread",
   "name": "LocalUser____relay_model_instance"
 },
-v1 = {
+v1 = [
+  {
+    "kind": "Literal",
+    "name": "times",
+    "value": 2
+  }
+],
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v2 = {
+v3 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -117,7 +126,7 @@ v2 = {
       "fragment": {
         "kind": "InlineFragment",
         "selections": [
-          (v1/*: any*/)
+          (v2/*: any*/)
         ],
         "type": "LocalUser",
         "abstractKey": null
@@ -182,6 +191,15 @@ return {
               "name": "name",
               "resolverModule": resolverDataInjector(rescript_graphql_node_LocalUser____relay_model_instance, rescript_module_TestRelayResolvers_name, '__relay_model_instance', true),
               "path": "localUser.name"
+            },
+            {
+              "alias": null,
+              "args": (v1/*: any*/),
+              "fragment": (v0/*: any*/),
+              "kind": "RelayResolver",
+              "name": "nameRepeated",
+              "resolverModule": resolverDataInjector(rescript_graphql_node_LocalUser____relay_model_instance, rescript_module_TestRelayResolvers_nameRepeated, '__relay_model_instance', true),
+              "path": "localUser.nameRepeated"
             },
             {
               "kind": "RequiredField",
@@ -266,9 +284,17 @@ return {
             {
               "name": "name",
               "args": null,
-              "fragment": (v2/*: any*/),
+              "fragment": (v3/*: any*/),
               "kind": "RelayResolver",
               "storageKey": null,
+              "isOutputType": true
+            },
+            {
+              "name": "nameRepeated",
+              "args": (v1/*: any*/),
+              "fragment": (v3/*: any*/),
+              "kind": "RelayResolver",
+              "storageKey": "nameRepeated(times:2)",
               "isOutputType": true
             },
             {
@@ -276,7 +302,7 @@ return {
               "backingField": {
                 "name": "meta",
                 "args": null,
-                "fragment": (v2/*: any*/),
+                "fragment": (v3/*: any*/),
                 "kind": "RelayResolver",
                 "storageKey": null,
                 "isOutputType": true
@@ -314,7 +340,7 @@ return {
                 "storageKey": null
               }
             },
-            (v1/*: any*/)
+            (v2/*: any*/)
           ],
           "storageKey": null
         }
@@ -332,7 +358,7 @@ return {
 };
 })()`)
 })
-let node: operationType = makeNode(LocalUser__id_graphql.node, LocalUser____relay_model_instance_graphql.node, UserMeta____relay_model_instance_graphql.node, RescriptRelay.resolverDataInjector, RelayLocalUserModel.localUser, TestRelayResolvers.localUser, TestRelayResolvers.name, TestRelayResolvers.meta, TestRelayResolvers.online)
+let node: operationType = makeNode(LocalUser__id_graphql.node, LocalUser____relay_model_instance_graphql.node, UserMeta____relay_model_instance_graphql.node, RescriptRelay.resolverDataInjector, RelayLocalUserModel.localUser, TestRelayResolvers.localUser, TestRelayResolvers.name, TestRelayResolvers.nameRepeated, TestRelayResolvers.meta, TestRelayResolvers.online)
 
 @live let load: (
   ~environment: RescriptRelay.Environment.t,

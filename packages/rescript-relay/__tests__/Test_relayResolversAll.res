@@ -2,6 +2,7 @@ module Query = %relay(`
   query TestRelayResolversAllQuery {
     localUser {
       name
+      nameRepeated(times: 2)
       meta @required(action: NONE) { 
         online
       }
@@ -16,8 +17,8 @@ module Test = {
 
     <div>
       {switch data.localUser {
-      | Some({meta: {online: Some(online)}, name: Some(name)}) =>
-        React.string(name ++ " is " ++ (online ? "online" : "offline"))
+      | Some({meta: {online: Some(online)}, name: Some(name), nameRepeated: Some(nameRepeated)}) =>
+        React.string(name ++ " is " ++ (online ? "online" : "offline") ++ ", " ++ nameRepeated)
       | _ => React.string("No user...")
       }}
     </div>

@@ -29,3 +29,10 @@ let localUser = () => {
     id: "local-user-1"->RescriptRelay.makeDataId,
   })
 }
+
+/**
+ * @RelayResolver LocalUser.nameRepeated(times: Int!): String
+ */
+let nameRepeated = (user, args) => {
+  user.name->Js.String2.repeat(args.times)->Some
+}
