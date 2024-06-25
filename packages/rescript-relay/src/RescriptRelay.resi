@@ -36,6 +36,25 @@ type updatableFragmentRefs<'fragments>
 /**The type of the id Relay uses to identify records in its store.*/
 type dataId
 
+type dataIdObject = {id: dataId}
+
+module SuspenseSentinel: {
+  type t
+
+  @module("relay-runtime") external suspend: t => 'any = "suspenseSentinel"
+}
+
+type liveStateCallback = unit => unit
+type liveStateUnsubscribeCallback = unit => unit
+
+type liveState<'value> = {
+  read: SuspenseSentinel.t => 'value,
+  subscribe: liveStateCallback => liveStateUnsubscribeCallback,
+}
+
+@module("relay-runtime/experimental")
+external resolverDataInjector: ('a, 'b, 'c, 'd) => 'return = "resolverDataInjector"
+
 /**Turns a `dataId` into a `string`.*/
 external dataIdToString: dataId => string = "%identity"
 
@@ -345,6 +364,9 @@ _Beware_ that this doesn't mean that queries using this record will refetch imme
 module RecordSourceSelectorProxy: {
   /**Type type representing a `RecordSourceSelectorProxy`.*/
   type t
+
+  @send
+  external batchLiveStateUpdates: (t, unit => unit) => unit = "batchLiveStateUpdates"
 
   /**Creates a new `RecordProxy`.*/
   @send
@@ -661,6 +683,21 @@ module Store: {
     ~queryCacheExpirationTime: int=?,
   ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
   t
+
+  /**Creates a new `LiveStore`.*/
+  let makeLiveStore: (
+    ~source: RecordSource.t,
+    ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
+    int=?,
+    ~queryCacheExpirationTime: int=?,
+  ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
+  t
+
+  let _makeLiveStoreCjs: (
+    ~source: RecordSource.t,
+    ~gcReleaseBufferSize: int=?,
+    ~queryCacheExpirationTime: int=?,
+  ) => t
 
   /**Gets the `RecordSource` for this `Store`.*/
   @send

@@ -1,11 +1,11 @@
+type t = string
+
 /**
  * @RelayResolver User.fullName:RelayResolverValue
  * @rootFragment TestRelayUserResolver
  *
  * A users full name.
  */
-type t = string
-
 module Fragment = %relay(`
   fragment TestRelayUserResolver on User {
     firstName
@@ -13,6 +13,6 @@ module Fragment = %relay(`
   }
 `)
 
-let default = Fragment.makeRelayResolver(user => {
+let fullName = Fragment.makeRelayResolver(user => {
   Some(`${user.firstName} ${user.lastName}`)
 })

@@ -60,28 +60,19 @@ type enum_RequiredFieldAction =
   | NONE
   | LOG
   | THROW
-  | FutureAddedValue(string)
 
 
-@live @unboxed
-type enum_RequiredFieldAction_input = 
-  | NONE
-  | LOG
-  | THROW
-
+@live
+type enum_RequiredFieldAction_input = enum_RequiredFieldAction
 
 @live @unboxed
 type enum_CatchFieldTo = 
   | NULL
   | RESULT
-  | FutureAddedValue(string)
 
 
-@live @unboxed
-type enum_CatchFieldTo_input = 
-  | NULL
-  | RESULT
-
+@live
+type enum_CatchFieldTo_input = enum_CatchFieldTo
 
 @live
 type rec input_InputA = {

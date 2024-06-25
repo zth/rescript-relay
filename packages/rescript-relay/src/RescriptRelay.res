@@ -12,14 +12,32 @@ type fragmentRefs<'fragments>
 type updatableFragmentRefs<'fragments>
 
 type dataId
+type dataIdObject = {id: dataId}
 type recordSourceRecords = Js.Json.t
 type uploadables
+
+module SuspenseSentinel = {
+  type t
+
+  @module("relay-runtime") external suspend: t => 'any = "suspenseSentinel"
+}
+
+type liveStateCallback = unit => unit
+type liveStateUnsubscribeCallback = unit => unit
+
+type liveState<'value> = {
+  read: SuspenseSentinel.t => 'value,
+  subscribe: liveStateCallback => liveStateUnsubscribeCallback,
+}
 
 external dataIdToString: dataId => string = "%identity"
 external makeDataId: string => dataId = "%identity"
 external makeArguments: {..} => arguments = "%identity"
 external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
 external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
+
+@module("relay-runtime/experimental")
+external resolverDataInjector: ('a, 'b, 'c, 'd) => 'return = "resolverDataInjector"
 
 @module("relay-runtime")
 external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?) => dataId =
@@ -266,6 +284,9 @@ module RecordProxy = {
 
 module RecordSourceSelectorProxy = {
   type t
+
+  @send
+  external batchLiveStateUpdates: (t, unit => unit) => unit = "batchLiveStateUpdates"
 
   @send
   external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
@@ -535,11 +556,36 @@ module Store = {
     queryCacheExpirationTime: option<int>,
   }
 
+  @module @new
+  external makeLiveStoreCjs: (RecordSource.t, storeConfig) => t =
+    "relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore"
+
+  @module("relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore") @new
+  external makeLiveStore: (RecordSource.t, storeConfig) => t = "default"
+
   @module("relay-runtime") @new
   external make: (RecordSource.t, storeConfig) => t = "Store"
 
   let make = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
     make(
+      source,
+      {
+        gcReleaseBufferSize,
+        queryCacheExpirationTime,
+      },
+    )
+
+  let makeLiveStore = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
+    makeLiveStore(
+      source,
+      {
+        gcReleaseBufferSize,
+        queryCacheExpirationTime,
+      },
+    )
+
+  let _makeLiveStoreCjs = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
+    makeLiveStoreCjs(
       source,
       {
         gcReleaseBufferSize,
