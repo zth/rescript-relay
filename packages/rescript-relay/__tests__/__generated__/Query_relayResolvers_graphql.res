@@ -1,5 +1,5 @@
 /* @generated */
 @@warning("-30")
 
-type localUserResolver = () => option<RescriptRelay.dataIdObject>
+type localUserResolver = () => RescriptRelay.dataIdObject
 

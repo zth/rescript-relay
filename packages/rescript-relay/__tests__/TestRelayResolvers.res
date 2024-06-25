@@ -2,39 +2,39 @@
  * @RelayResolver UserMeta.online: Boolean
  */
 let online = userMeta => {
-  userMeta.online->Some
+  userMeta.online
 }
 
 /**
  * @RelayResolver LocalUser.meta: UserMeta
  */
 let meta = user => {
-  Some({
+  {
     online: user.name === "Test User",
-  })
+  }
 }
 
 /**
  * @RelayResolver LocalUser.name: String
  */
 let name = user => {
-  Some(user.name)
+  user.name
 }
 
 /**
  * @RelayResolver Query.localUser: LocalUser
  */
 let localUser = () => {
-  Some({
+  {
     id: "local-user-1"->RescriptRelay.makeDataId,
-  })
+  }
 }
 
 /**
  * @RelayResolver LocalUser.nameRepeated(times: Int!): String
  */
 let nameRepeated = (user, args) => {
-  user.name->Js.String2.repeat(args.times)->Some
+  user.name->Js.String2.repeat(args.times)
 }
 
 /**
@@ -45,7 +45,7 @@ let hasBeenOnlineToday = user => {
   read: suspenseSentinel => {
     switch UserService.getUserStatus(user.id) {
     | Fetching => suspenseSentinel->RescriptRelay.SuspenseSentinel.suspend
-    | Value(v) => Some(v)
+    | Value(v) => v
     }
   },
   subscribe: cb => {
