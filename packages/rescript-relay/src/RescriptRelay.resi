@@ -38,11 +38,17 @@ type dataId
 
 type dataIdObject = {id: dataId}
 
+module SuspenseSentinel: {
+  type t
+
+  @module("relay-runtime") external suspend: t => 'any = "suspenseSentinel"
+}
+
 type liveStateCallback = unit => unit
 type liveStateUnsubscribeCallback = unit => unit
 
 type liveState<'value> = {
-  read: unit => 'value,
+  read: SuspenseSentinel.t => 'value,
   subscribe: liveStateCallback => liveStateUnsubscribeCallback,
 }
 
@@ -686,6 +692,12 @@ module Store: {
     ~queryCacheExpirationTime: int=?,
   ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
   t
+
+  let _makeLiveStoreCjs: (
+    ~source: RecordSource.t,
+    ~gcReleaseBufferSize: int=?,
+    ~queryCacheExpirationTime: int=?,
+  ) => t
 
   /**Gets the `RecordSource` for this `Store`.*/
   @send

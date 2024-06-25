@@ -16,11 +16,17 @@ type dataIdObject = {id: dataId}
 type recordSourceRecords = Js.Json.t
 type uploadables
 
+module SuspenseSentinel = {
+  type t
+
+  @module("relay-runtime") external suspend: t => 'any = "suspenseSentinel"
+}
+
 type liveStateCallback = unit => unit
 type liveStateUnsubscribeCallback = unit => unit
 
 type liveState<'value> = {
-  read: unit => 'value,
+  read: SuspenseSentinel.t => 'value,
   subscribe: liveStateCallback => liveStateUnsubscribeCallback,
 }
 
@@ -550,6 +556,10 @@ module Store = {
     queryCacheExpirationTime: option<int>,
   }
 
+  @module @new
+  external makeLiveStoreCjs: (RecordSource.t, storeConfig) => t =
+    "relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore"
+
   @module("relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore") @new
   external makeLiveStore: (RecordSource.t, storeConfig) => t = "default"
 
@@ -567,6 +577,15 @@ module Store = {
 
   let makeLiveStore = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
     makeLiveStore(
+      source,
+      {
+        gcReleaseBufferSize,
+        queryCacheExpirationTime,
+      },
+    )
+
+  let _makeLiveStoreCjs = (~source, ~gcReleaseBufferSize=?, ~queryCacheExpirationTime=?) =>
+    makeLiveStoreCjs(
       source,
       {
         gcReleaseBufferSize,

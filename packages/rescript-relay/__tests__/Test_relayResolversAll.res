@@ -6,6 +6,7 @@ module Query = %relay(`
       meta @required(action: NONE) { 
         online
       }
+      hasBeenOnlineToday
     }
   }
 `)
@@ -17,8 +18,24 @@ module Test = {
 
     <div>
       {switch data.localUser {
-      | Some({meta: {online: Some(online)}, name: Some(name), nameRepeated: Some(nameRepeated)}) =>
-        React.string(name ++ " is " ++ (online ? "online" : "offline") ++ ", " ++ nameRepeated)
+      | Some({
+          meta: {online: Some(online)},
+          name: Some(name),
+          nameRepeated: Some(nameRepeated),
+          hasBeenOnlineToday: Some(hasBeenOnlineToday),
+        }) =>
+        React.string(
+          name ++
+          " is " ++
+          (online ? "online" : "offline") ++
+          ", " ++
+          nameRepeated ++
+          " and has been online today: " ++
+          switch hasBeenOnlineToday {
+          | false => "false"
+          | true => "true"
+          },
+        )
       | _ => React.string("No user...")
       }}
     </div>
@@ -31,7 +48,7 @@ let test_relayResolversAll = () => {
 
   let environment = RescriptRelay.Environment.make(
     ~network,
-    ~store=RescriptRelay.Store.makeLiveStore(~source=RescriptRelay.RecordSource.make()),
+    ~store=RescriptRelay.Store._makeLiveStoreCjs(~source=RescriptRelay.RecordSource.make()),
   )
 
   RescriptRelay.relayFeatureFlags.enableRelayResolvers = true

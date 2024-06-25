@@ -36,3 +36,20 @@ let localUser = () => {
 let nameRepeated = (user, args) => {
   user.name->Js.String2.repeat(args.times)->Some
 }
+
+/**
+ * @RelayResolver LocalUser.hasBeenOnlineToday: Boolean
+ * @live
+ */
+let hasBeenOnlineToday = user => {
+  read: suspenseSentinel => {
+    switch UserService.getUserStatus(user.id) {
+    | Fetching => suspenseSentinel->RescriptRelay.SuspenseSentinel.suspend
+    | Value(v) => Some(v)
+    }
+  },
+  subscribe: cb => {
+    let id = UserService.subscribe(cb)
+    () => UserService.unsubscribe(id)
+  },
+}

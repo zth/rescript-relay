@@ -13,6 +13,8 @@ describe("Relay Resolvers all", () => {
     });
 
     t.render(test_relayResolversAll());
-    await t.screen.findByText("Test User is online, Test UserTest User");
+    await t.screen.findByText(
+      "Test User is online, Test UserTest User and has been online today: true"
+    );
   });
 });

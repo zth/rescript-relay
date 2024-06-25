@@ -10,3 +10,5 @@ type nameRepeatedResolverArgs = {
 }
 type nameRepeatedResolver = (RelayLocalUserModel.t, nameRepeatedResolverArgs) => option<string>
 
+type hasBeenOnlineTodayResolver = (RelayLocalUserModel.t, ) => RescriptRelay.liveState<option<bool>>
+

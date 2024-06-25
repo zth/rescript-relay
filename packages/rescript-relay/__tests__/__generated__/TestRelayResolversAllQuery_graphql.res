@@ -8,6 +8,7 @@ module Types = {
     online: option<bool>,
   }
   and response_localUser = {
+    hasBeenOnlineToday: option<bool>,
     meta: response_localUser_meta,
     name: option<string>,
     nameRepeated: option<string>,
@@ -86,7 +87,7 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-%%private(let makeNode = (rescript_graphql_node_LocalUser__id, rescript_graphql_node_LocalUser____relay_model_instance, rescript_graphql_node_UserMeta____relay_model_instance, resolverDataInjector, rescript_module_RelayLocalUserModel_LocalUser, rescript_module_TestRelayResolvers_localUser, rescript_module_TestRelayResolvers_name, rescript_module_TestRelayResolvers_nameRepeated, rescript_module_TestRelayResolvers_meta, rescript_module_TestRelayResolvers_online): operationType => {
+%%private(let makeNode = (rescript_graphql_node_LocalUser__id, rescript_graphql_node_LocalUser____relay_model_instance, rescript_graphql_node_UserMeta____relay_model_instance, resolverDataInjector, rescript_module_RelayLocalUserModel_LocalUser, rescript_module_TestRelayResolvers_localUser, rescript_module_TestRelayResolvers_name, rescript_module_TestRelayResolvers_nameRepeated, rescript_module_TestRelayResolvers_meta, rescript_module_TestRelayResolvers_online, rescript_module_TestRelayResolvers_hasBeenOnlineToday): operationType => {
   ignore(rescript_graphql_node_LocalUser__id)
   ignore(rescript_graphql_node_LocalUser____relay_model_instance)
   ignore(rescript_graphql_node_UserMeta____relay_model_instance)
@@ -97,6 +98,7 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
   ignore(rescript_module_TestRelayResolvers_nameRepeated)
   ignore(rescript_module_TestRelayResolvers_meta)
   ignore(rescript_module_TestRelayResolvers_online)
+  ignore(rescript_module_TestRelayResolvers_hasBeenOnlineToday)
   %raw(json`(function(){
 var v0 = {
   "args": null,
@@ -248,6 +250,15 @@ return {
               },
               "action": "NONE",
               "path": "localUser.meta"
+            },
+            {
+              "alias": null,
+              "args": null,
+              "fragment": (v0/*: any*/),
+              "kind": "RelayLiveResolver",
+              "name": "hasBeenOnlineToday",
+              "resolverModule": resolverDataInjector(rescript_graphql_node_LocalUser____relay_model_instance, rescript_module_TestRelayResolvers_hasBeenOnlineToday, '__relay_model_instance', true),
+              "path": "localUser.hasBeenOnlineToday"
             }
           ],
           "storageKey": null
@@ -340,6 +351,14 @@ return {
                 "storageKey": null
               }
             },
+            {
+              "name": "hasBeenOnlineToday",
+              "args": null,
+              "fragment": (v3/*: any*/),
+              "kind": "RelayResolver",
+              "storageKey": null,
+              "isOutputType": true
+            },
             (v2/*: any*/)
           ],
           "storageKey": null
@@ -358,7 +377,7 @@ return {
 };
 })()`)
 })
-let node: operationType = makeNode(LocalUser__id_graphql.node, LocalUser____relay_model_instance_graphql.node, UserMeta____relay_model_instance_graphql.node, RescriptRelay.resolverDataInjector, RelayLocalUserModel.localUser, TestRelayResolvers.localUser, TestRelayResolvers.name, TestRelayResolvers.nameRepeated, TestRelayResolvers.meta, TestRelayResolvers.online)
+let node: operationType = makeNode(LocalUser__id_graphql.node, LocalUser____relay_model_instance_graphql.node, UserMeta____relay_model_instance_graphql.node, RescriptRelay.resolverDataInjector, RelayLocalUserModel.localUser, TestRelayResolvers.localUser, TestRelayResolvers.name, TestRelayResolvers.nameRepeated, TestRelayResolvers.meta, TestRelayResolvers.online, TestRelayResolvers.hasBeenOnlineToday)
 
 @live let load: (
   ~environment: RescriptRelay.Environment.t,
