@@ -6,6 +6,8 @@
 
 # Unreleased
 
+# 3.0.0-rc.8
+
 - Initial implementation of more advanced Relay resolvers. More to come. https://github.com/zth/rescript-relay/pull/515
 - BREAKING: Relay resolvers using fragments should now be exported with a function name that matches the field name for the resolver, and not `default` like before.
 - BREAKING: Client extension enums are now (correctly) not emitted with a `FutureAddedValue` case.
