@@ -6,6 +6,8 @@
 
 # Unreleased
 
+- Fix client extension enums mixup with `FutureAddedValue`.
+
 # 3.0.0-rc.8
 
 - Initial implementation of more advanced Relay resolvers. More to come. https://github.com/zth/rescript-relay/pull/515
