@@ -161,7 +161,6 @@ But we’re getting ahead of ourselves — let’s make that button trigger the 
 @react.component
 let make = (~story) => {
   let data = Fragment.use(story)
-  
   switch data {
   | None => React.null
   | Some({likeCount, doesViewerLike}) =>
@@ -185,9 +184,7 @@ let make = (~story) => {
   | None => React.null
   | Some({id, likeCount, doesViewerLike}) => {
       let onLikeButtonClicked = () => {
-        let variables = StoryLikeButtonLikeMutation.makeVariables(~id, ~doesLike=!doesViewerLike)
-        commitMutation(~variables, ())->RescriptRelay.Disposable.ignore
-        ()
+        commitMutation(~variables={id, doesLike: !doesViewerLike})->RescriptRelay.Disposable.ignore
       }
       <div className="likeButton">
         <LikeCount count={likeCount} />
@@ -198,7 +195,7 @@ let make = (~story) => {
 }
 ```
 
-The mutations `use` hook returns a function to fire the mutation (here named `commitMutation`) and a boolean which is true when the mutation is in flight (here named... `isMutationInFlight`). When calling `commitMutation` we pass in a record called `variables`, created using the `makeVariables` helper. It accepts labelled parameters for the variables defined by the mutation, namely `id` and `doesViewerLike`. This tells the server which story we’re talking about and whether the we are liking or un-liking it. The `id` of the story we’ve read from the fragment, while whether we like it or unlike it comes from toggling whatever the current value that we rendered is.
+The mutations `use` hook returns a function to fire the mutation (here named `commitMutation`) and a boolean which is true when the mutation is in flight (here named... `isMutationInFlight`). When calling `commitMutation` we pass in a record called `variables`. It accepts labelled parameters for the variables defined by the mutation, namely `id` and `doesViewerLike`. This tells the server which story we’re talking about and whether the we are liking or un-liking it. The `id` of the story we’ve read from the fragment, while whether we like it or unlike it comes from toggling whatever the current value that we rendered is.
 
 The hook also returns a boolean flag that tells us when the mutation is in flight. We can use that to make the user experience nicer by disabling the button while the mutation is happening:
 
@@ -213,21 +210,6 @@ The hook also returns a boolean flag that tells us when the mutation is in fligh
     />
   </div>
 ```
-
-:::tip
-The variables object can also be constructed manually, so the call to `commitMutation` becomes 
-```rescript
-    commitMutation(
-      ~variables={
-        id: id, 
-        doesLike: doesViewerLike
-      },
-      (),
-    )->RescriptRelay.Disposable.ignore
-```
-For this particular case, whether you do it one way or the other only makes a stylistic difference. However, if a mutation accepts a nullable variable
-`makeVariables` is more convenient as it lets you construct the variables record without having to specify variables that you don't want to pass to the mutation.
-:::
 
 With this in place, we should now be able to like a story!
 
@@ -349,10 +331,8 @@ We only need to call `commitMutation` with the response we're expecting. If the 
   | None => React.null
   | Some({id, likeCount, doesViewerLike}) => {
       let onLikeButtonClicked = () => {
-        let variables = StoryLikeButtonLikeMutation.makeVariables(~id, ~doesLike=!doesViewerLike)
-
         commitMutation(
-          ~variables,
+          ~variables={id, doesLike: !doesViewerLike},
           // begin-change
           ~optimisticResponse={
             likeStory: Some({
@@ -362,9 +342,8 @@ We only need to call `commitMutation` with the response we're expecting. If the 
                 doesViewerLike: Some(!doesViewerLike),
               }),
             }),
-          },
+          }
           // end-change
-          (),
         )->RescriptRelay.Disposable.ignore
       }
       <div className="likeButton">
@@ -405,7 +384,7 @@ module Fragment = %relay(`
   ) {
     // change-line
     ...StoryCommentsComposerFragment
-    comments(after: $cursor, first: $count) 
+    comments(after: $cursor, first: $count)
       @connection(key: "StoryCommentsSection_story_comments") {
       ...
     }
@@ -489,8 +468,7 @@ let make = (~story) => {
       ~variables={
         id,
         text,
-      },
-      (),
+      }
     )->RescriptRelay.Disposable.ignore
     // end-change
   }
@@ -526,11 +504,8 @@ let make = (~story) => {
       },
       ~onError=_ => {
         setText(_ => text)
-      },
+      }
       // end-change
-      ()
-      },
-      (),
     )->RescriptRelay.Disposable.ignore
   }
 }
@@ -611,8 +586,7 @@ let make = (~story) => {
     // change
     let connectionId = RescriptRelay.ConnectionHandler.getConnectionID(
       __id,
-      "StoryCommentsSection_story_comments",
-      (),
+      "StoryCommentsSection_story_comments"
     )
     // end-change
     commitMutation(
@@ -623,8 +597,7 @@ let make = (~story) => {
         // change-line
         connections: [connectionId],
         ...
-      },
-      (),
+      }
     )->RescriptRelay.Disposable.ignore
   }
   <div className="commentsComposer">
@@ -678,11 +651,8 @@ let make = (~story) => {
             }),
           }),
         }),
-      },
+      }
       // end-change
-      ()
-      },
-      (),
     )->RescriptRelay.Disposable.ignore
   }
 }
@@ -701,6 +671,6 @@ Mutations let us ask the server to make changes.
 - Relay automatically merges nodes in the response to nodes in the Store with matching IDs.
 - The `onCompleted` and `onError` callbacks lets you trigger side-effects (such as restoring or clearing component state), when the mutation finishes.
 - The `@appendEdge`, `@prependEdge`, and `@deleteEdge` directives let us insert and remove items from the mutation response into Connections in the store.
-- We can get optimistic UI by using the `@raw_response_type` directive on the mutation and passing what we expect the mutation response to be  to `commitMutation`.
+- We can get optimistic UI by using the `@raw_response_type` directive on the mutation and passing what we expect the mutation response to be to `commitMutation`.
 - Updates to the store via Optimistic responses are rolled back when the mutation completes, so the actual response can be applied instead.
 

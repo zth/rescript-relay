@@ -172,8 +172,8 @@ let make = (~viewer) => {
   // change
   let onSearchStringChanged = value => {
     setSearchString(_ => value)
-    let variables = Fragment.makeRefetchVariables(~search=Some(value), ())
-    refetch(~variables, ())->RescriptRelay.Disposable.ignore
+    let variables = Fragment.makeRefetchVariables(~search=Some(value))
+    refetch(~variables)->RescriptRelay.Disposable.ignore
   }
   // end-change
 
@@ -210,8 +210,8 @@ let make = (~viewer) => {
     setSearchString(_ => value)
     // change
     startTransition(() => {
-      let variables = Fragment.makeRefetchVariables(~search=Some(value), ())
-      refetch(~variables, ())->RescriptRelay.Disposable.ignore
+      let variables = Fragment.makeRefetchVariables(~search=Some(value))
+      refetch(~variables)->RescriptRelay.Disposable.ignore
     })
     // end-change
   }
@@ -224,8 +224,8 @@ let make = (~viewer) => {
     | None => React.null
     | Some(contacts) =>
       contacts
-      ->Belt.Array.keepMap(x => x)
-      ->Belt.Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
+      ->Array.keepSome
+      ->Array.map(contact => <ContactRow key={contact.id} contact={contact.fragmentRefs} />)
       ->React.array
     }}
   </Card>

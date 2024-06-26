@@ -58,7 +58,7 @@ module Query = %relay(
 
 @react.component
 let make = (~roomId) => {
-  let queryData = Query.use(~variables={roomId: roomId}, ())
+  let queryData = Query.use(~variables={roomId: roomId})
 
   switch queryData.roomOwner {
   | Some(roomOwner) =>

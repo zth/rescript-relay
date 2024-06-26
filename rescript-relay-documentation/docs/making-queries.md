@@ -41,8 +41,7 @@ let make = (~userId) => {
   let queryData = Query.use(
     ~variables={
       userId: userId,
-    },
-    (),
+    }
   )
 
   switch queryData.userById {
@@ -72,7 +71,7 @@ RescriptRelay lets you leverage preloading in 3 different ways, all suitable for
 In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option<queryRef>, loadQuery, disposeQuery)`.
 
 1. `option<queryRef>` - an option of a query reference. This query reference can be passed to `Query.usePreloaded`, like `let queryData = Query.usePreloaded(~queryRef=queryRef)`, to get the data for the query as soon as it's available.
-2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?, ())`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
+2. `loadQuery` - a function that'll start loading the data for this query. You call it like `loadQuery(~variables={...}, ~fetchPolicy=?, ~networkCacheConfig=?)`. As soon as you've called this function, the `queryRef` (first item of the tuple) will be populated, and you can pass that `queryRef` to `usePreloaded`.
 3. `disposeQuery` - a function that disposes the query reference manually. Calling this would turn `option(queryRef)` into `None`.
 
 So, the typical way to preload a query would be like this:
@@ -102,7 +101,7 @@ let make = (~userId) => {
   switch queryRef {
   | Some(queryRef) => <SomeComponent queryRef />
   | None =>
-    <button onClick={_ => loadQuery(~variables={id: userId}, ())}>
+    <button onClick={_ => loadQuery(~variables={id: userId})}>
       {React.string("See full user")}
     </button>
   }
@@ -280,8 +279,6 @@ As shown in the snippet above, `Query.use` is a React hook that dispatches your 
 
 ##### Parameters
 
-_Please note that this function must be called with an ending unit `()` if not all arguments are supplied._
-
 | Name                 | Type                                         | Required | Notes                                                                                     |
 | -------------------- | -------------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
 | `variables`          | `'variables`                                 | _Yes_    | Variables derived from the GraphQL operation. `unit` if no variables are defined.         |
@@ -300,15 +297,14 @@ Query.fetch(~environment, ~variables=(), ~onResult=res =>
   switch res {
   | Ok(res) => Js.log(res)
   | Error(_) => Js.log("Error")
-  },
-  ()
+  }
 )
 
 ```
 
 Please note though that `fetch` does not necessarily retain data in the Relay store, meaning it's really only suitable for data you only need once at a particular point in time. For refetching data, please check out [refetching and loading more data](refetching-and-loading-more-data).
 
-The results are delivered through a `Belt.Result.t` in the `onResult` callback.
+The results are delivered through a `RescriptCore.Result.t` in the `onResult` callback.
 
 > `fetch` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/fetch-query).
 
@@ -329,7 +325,7 @@ The same as `fetch`, but returns a promise instead of using a callback.
 Using it looks something like this:
 
 ```rescript
-Query.fetchPromised(~environment, ~variables=(), ())
+Query.fetchPromised(~environment, ~variables=())
   ->Js.Promise.then_(res => {
     Js.log(res)
     Js.Promise.resolve()
@@ -362,7 +358,7 @@ Pass this `queryRef` to the `Query.usePreloaded` hook to get data for the query.
 
 A function that starts loading the query, populating `queryRef`. Signature looks like this:
 
-`let loadQuery: (~variables: queryVariables, ~fetchPolicy: fetchPolicy=?, ~networkCacheConfig: networkCacheConfig=?, ()) => unit;`
+`let loadQuery: (~variables: queryVariables, ~fetchPolicy: fetchPolicy=?, ~networkCacheConfig: networkCacheConfig=?) => unit;`
 
 Call this as soon as possible to start your query.
 

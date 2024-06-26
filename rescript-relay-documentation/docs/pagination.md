@@ -77,10 +77,10 @@ let make = (~query) => {
       <h4 className="card-title"> {React.string("Recent Tickets")} </h4>
       <div>
         {tickets
-        ->Belt.Array.map(ticket => <SingleTicket key=ticket.id ticket=ticket.fragmentRefs />)
+        ->Array.map(ticket => <SingleTicket key=ticket.id ticket=ticket.fragmentRefs />)
         ->React.array}
         {hasNext
-          ? <button onClick={_ => loadNext(~count=2, ()) |> ignore} disabled=isLoadingNext>
+          ? <button onClick={_ => loadNext(~count=2)->RescriptRelay.Disposable.ignore} disabled=isLoadingNext>
               {React.string(isLoadingNext ? "Loading..." : "More")}
             </button>
           : React.null}
@@ -128,13 +128,13 @@ As shown above, `usePagination` provides helpers for paginating your fragment/co
 | Name                | Type                                                                                                      | Note                                                                 |
 | ------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `data`              | `'fragmentData`                                                                                           | The data as defined by the fragment.                                 |
-| `loadNext`          | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;`                           | A function for loading the next `count` nodes of the connection.     |
-| `loadPrevious`      | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?, unit) => Disposable.t;`                           | A function for loading the previous `count` nodes of the connection. |
+| `loadNext`          | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?) => Disposable.t;`                           | A function for loading the next `count` nodes of the connection.     |
+| `loadPrevious`      | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?) => Disposable.t;`                           | A function for loading the previous `count` nodes of the connection. |
 | `hasNext`           | `bool`                                                                                                    | Are there more nodes forward in the connection to fetch?             |
 | `hasPrevious`       | `bool`                                                                                                    | Are there more nodes backwards in the connection to fetch?           |
 | `isLoadingNext`     | `bool`                                                                                                    |                                                                      |
 | `isLoadingPrevious` | `bool`                                                                                                    |                                                                      |
-| `refetch`           | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option(Js.Exn.t) => unit=?, unit) =>` | Refetch the entire connection with potentially new variables.        |
+| `refetch`           | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option(Js.Exn.t) => unit=?) =>` | Refetch the entire connection with potentially new variables.        |
 
 ### `useBlockingPagination`
 

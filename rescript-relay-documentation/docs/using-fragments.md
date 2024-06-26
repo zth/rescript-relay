@@ -117,8 +117,7 @@ let make = (~userId) => {
   let queryData = Query.use(
     ~variables={
       userId: userId,
-    },
-    (),
+    }
   )
 
   switch queryData.userById {
@@ -237,7 +236,6 @@ let logPurchase = user => {
   SomeLoggingService.log(
     ~customerId=userId.customerId,
     ~someOtherMetaDataProp=userId.someOtherMetaDataProp,
-    (),
   )
 }
 

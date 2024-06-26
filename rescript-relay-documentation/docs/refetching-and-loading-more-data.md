@@ -52,7 +52,7 @@ let make = (~user) => {
         <button
           type_="button"
           onClick={_ =>
-            refetch(~variables=UserFragment.makeRefetchVariables(~bioMaxLength=Some(500), ()), ())}>
+            refetch(~variables=UserFragment.makeRefetchVariables(~bioMaxLength=Some(500)))}>
           {React.string("Show full bio text")}
         </button>
         <div> {React.string("Age: " ++ string_of_int(bio.age))} </div>
@@ -61,7 +61,7 @@ let make = (~user) => {
       <button
         type_="button"
         onClick={_ =>
-          refetch(~variables=UserFragment.makeRefetchVariables(~includeFullBio=Some(true), ()), ())}>
+          refetch(~variables=UserFragment.makeRefetchVariables(~includeFullBio=Some(true)))}>
         {React.string("Show bio")}
       </button>
     }}
@@ -85,9 +85,9 @@ Let's dive into `makeRefetchVariables`, because this can be a bit tricky to unde
 
 In the example above we have variables `$includeFullBio` and `$bioMaxLength`. Let's say this fragment gets rendered with `$includeFullBio = true` and `$bioMaxLength` not set yet.
 
-- If I want to refetch the fragment with `$includeFullBio` changed to `false`, I'd do `makeRefetchVariables(~includeFullBio=Some(false), ())`. `Some(false)` here tells Relay that "I want to change `$includeFullBio` in the refetch to `false`. Use the last value for all other variables".
-- If I want to set `$bioMaxLength` to something, I'd do `makeRefetchVariables(~bioMaxLength=Some(200), ())`. This tells Relay "set `bioMaxLength`, leave everything else as is".
-- If I have `bioMaxLength` set and I want to refetch data with it _not set at all_ (equivalent of passing `null`), I'd do `makeRefetchVariables(~bioMaxLength=None, ())`.
+- If I want to refetch the fragment with `$includeFullBio` changed to `false`, I'd do `makeRefetchVariables(~includeFullBio=Some(false))`. `Some(false)` here tells Relay that "I want to change `$includeFullBio` in the refetch to `false`. Use the last value for all other variables".
+- If I want to set `$bioMaxLength` to something, I'd do `makeRefetchVariables(~bioMaxLength=Some(200))`. This tells Relay "set `bioMaxLength`, leave everything else as is".
+- If I have `bioMaxLength` set and I want to refetch data with it _not set at all_ (equivalent of passing `null`), I'd do `makeRefetchVariables(~bioMaxLength=None)`.
 
 So, notice how `Some(value)` means "set this value", `None` means "unset this value", and leaving out the variable all together from `makeRefetchVariables` means "don't change this variable, reuse the last value".
 

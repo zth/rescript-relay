@@ -68,7 +68,7 @@ In the `Newsfeed` component, `data` no longer has a field `topStory`, but now in
 ```rescript
 @react.component
 let make = () => {
-  let data = NewsfeedQuery.use(~variables=(), ())
+  let data = NewsfeedQuery.use(~variables=())
 
   switch data.topStories {
   | None => React.null
@@ -110,7 +110,7 @@ module NewsfeedQuery = %relay(`
 
 @react.component
 let make = () => {
-  let {topStories} = NewsfeedQuery.use(~variables=(), ())
+  let {topStories} = NewsfeedQuery.use(~variables=())
 
   switch topStories {
   | None => React.null
