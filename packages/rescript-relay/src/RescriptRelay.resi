@@ -30,6 +30,9 @@ type subscriptionNode<'node>
 /**This type shows all of the fragments that has been spread on this particular object.*/
 type fragmentRefs<'fragments>
 
+/**This type shows the Relay resolver fragment that has been spread on this particular object.*/
+type resolverFragmentRefs<'fragments>
+
 /**This type shows all of the updatable fragments that has been spread on this particular object.*/
 type updatableFragmentRefs<'fragments>
 

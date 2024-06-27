@@ -9,6 +9,7 @@ type mutationNode<'node>
 type subscriptionNode<'node>
 
 type fragmentRefs<'fragments>
+type resolverFragmentRefs<'fragments>
 type updatableFragmentRefs<'fragments>
 
 type dataId

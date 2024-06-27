@@ -8,3 +8,11 @@ let internal_nullableToOptionalExnHandler: option<option<'b> => 'a> => option<
 
 let unwrapUnion: ('a, array<string>) => 'a
 let wrapUnion: 'a => 'a
+
+external internal_resolverFragmentRefsToFragmentRefs: RescriptRelay.resolverFragmentRefs<
+  'a,
+> => RescriptRelay.fragmentRefs<'a> = "%identity"
+
+external internal_resolverFragmentRefsToFragmentRefsPlural: RescriptRelay.resolverFragmentRefs<
+  'a,
+> => array<RescriptRelay.fragmentRefs<'a>> = "%identity"

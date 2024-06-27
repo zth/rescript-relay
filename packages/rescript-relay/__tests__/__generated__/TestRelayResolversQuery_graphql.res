@@ -81,7 +81,29 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` {
+let node: operationType = %raw(json` (function(){
+var v0 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "lastName",
+      "storageKey": null
+    }
+  ],
+  "type": "User",
+  "abstractKey": null
+};
+return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
@@ -132,29 +154,23 @@ let node: operationType = %raw(json` {
           {
             "name": "fullName",
             "args": null,
-            "fragment": {
-              "kind": "InlineFragment",
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "firstName",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "lastName",
-                  "storageKey": null
-                }
-              ],
-              "type": "User",
-              "abstractKey": null
-            },
+            "fragment": (v0/*: any*/),
             "kind": "RelayResolver",
             "storageKey": null,
+            "isOutputType": true
+          },
+          {
+            "name": "fullName2",
+            "args": [
+              {
+                "kind": "Literal",
+                "name": "maxLength",
+                "value": 2
+              }
+            ],
+            "fragment": (v0/*: any*/),
+            "kind": "RelayResolver",
+            "storageKey": "fullName2(maxLength:2)",
             "isOutputType": true
           },
           {
@@ -170,14 +186,15 @@ let node: operationType = %raw(json` {
     ]
   },
   "params": {
-    "cacheID": "f1931c3327fbb966e46860c167aab18d",
+    "cacheID": "fc699ed75840880919543f5be5cbe28e",
     "id": null,
     "metadata": {},
     "name": "TestRelayResolversQuery",
     "operationKind": "query",
-    "text": "query TestRelayResolversQuery {\n  loggedInUser {\n    ...TestRelayResolvers_user\n    id\n  }\n}\n\nfragment TestRelayResolvers_user on User {\n  isOnline\n  ...TestRelayUserResolver\n}\n\nfragment TestRelayUserResolver on User {\n  firstName\n  lastName\n}\n"
+    "text": "query TestRelayResolversQuery {\n  loggedInUser {\n    ...TestRelayResolvers_user\n    id\n  }\n}\n\nfragment TestRelayResolvers_user on User {\n  isOnline\n  ...TestRelayUserResolver\n  ...TestRelayUserResolver2\n}\n\nfragment TestRelayUserResolver on User {\n  firstName\n  lastName\n}\n\nfragment TestRelayUserResolver2 on User {\n  firstName\n  lastName\n}\n"
   }
-} `)
+};
+})() `)
 
 @live let load: (
   ~environment: RescriptRelay.Environment.t,

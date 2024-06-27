@@ -18,6 +18,12 @@ let readInlineData: (
   ~fRef: 'b,
 ) => 'fragment
 
+let read: (
+  ~node: fragmentNode<'a>,
+  ~convertFragment: 'fragment => 'fragment,
+  ~fRef: 'b,
+) => 'fragment
+
 type paginationLoadMoreOptions = {onComplete?: Js.Nullable.t<Js.Exn.t> => unit}
 
 type paginationLoadMoreFn = (~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t

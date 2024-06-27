@@ -20,6 +20,6 @@ describe("Relay Resolvers", () => {
     });
 
     t.render(test_relayResolvers());
-    await t.screen.findByText("First Last is online");
+    await t.screen.findByText("First Last Fi is online");
   });
 });

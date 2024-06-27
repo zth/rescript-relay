@@ -113,6 +113,16 @@ let fragmentHasInlineDirective ~loc op =
     |> List.exists (fun (directive : Graphql_parser.directive) ->
            directive.name = "inline")
   | _ -> false
+
+let fragmentIsPlural ~loc op =
+  match op with
+  | Graphql_parser.Fragment {name = _; directives} ->
+    directives
+    |> List.exists (fun (directive : Graphql_parser.directive) ->
+           directive.name = "relay"
+           && directive.arguments
+              |> List.exists (fun (n, v) -> n = "plural" && v = `Bool true))
+  | _ -> false
 let getGraphQLModuleName opName = String.capitalize_ascii opName ^ "_graphql"
 
 let rec longidentFromStrings = function

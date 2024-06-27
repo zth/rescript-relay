@@ -26,6 +26,7 @@ let commonExtension =
             ~refetchableQueryName
             ~extractedConnectionInfo:(op |> extractFragmentConnectionInfo ~loc)
             ~hasInlineDirective:(op |> fragmentHasInlineDirective ~loc)
+            ~isPlural:(op |> fragmentIsPlural ~loc)
             ~loc
       | Operation {optype = Query} ->
         if Util.queryIsUpdatable op then

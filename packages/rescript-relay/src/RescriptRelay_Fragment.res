@@ -52,6 +52,16 @@ let readInlineData = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) =>
   (readInlineData_(node, fRef)->convertFragment)
 }
 
+@module("relay-runtime/lib/store/ResolverFragments")
+external read_: (fragmentNode<'node>, 'fragmentRef) => 'fragment = "readFragment"
+
+let read = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) => {
+  /** This lets you get the data for this fragment _outside \
+                       of React's render_. Useful for letting functions with \
+                       with fragments too, for things like logging etc.*/
+  (read_(node, fRef)->convertFragment)
+}
+
 type refetchableFnOpts = {
   fetchPolicy?: fetchPolicy,
   onComplete?: Js.Nullable.t<Js.Exn.t> => unit,

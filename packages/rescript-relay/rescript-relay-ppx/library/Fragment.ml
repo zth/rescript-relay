@@ -2,7 +2,7 @@ open Ppxlib
 open Util
 
 let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
-    ~hasInlineDirective =
+    ~hasInlineDirective ~isPlural =
   let typeFromGeneratedModule = makeTypeAccessor ~loc ~moduleName in
   let valFromGeneratedModule = makeExprAccessor ~loc ~moduleName in
   let moduleIdentFromGeneratedModule = makeModuleIdent ~loc ~moduleName in
@@ -35,7 +35,8 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                       ~node:[%e valFromGeneratedModule ["node"]]];
                 [%stri
                   let useOpt fRef :
-                      [%t typeFromGeneratedModule ["Types"; "fragment"]] option =
+                      [%t typeFromGeneratedModule ["Types"; "fragment"]] option
+                      =
                     RescriptRelay_Fragment.useFragmentOpt ~convertFragment
                       ~fRef:
                         (match fRef with
@@ -45,6 +46,34 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                             |. [%e valFromGeneratedModule ["getFragmentRef"]])
                         | None -> None)
                       ~node:[%e valFromGeneratedModule ["node"]]];
+                (if isPlural then
+                   [%stri
+                     let readResolverFragment fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       let fRef =
+                         fRef
+                         |. RescriptRelay_Internal
+                            .internal_resolverFragmentRefsToFragmentRefsPlural
+                       in
+                       RescriptRelay_Fragment.read ~convertFragment
+                         ~fRef:
+                           (fRef
+                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]
+                 else
+                   [%stri
+                     let readResolverFragment fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       let fRef =
+                         fRef
+                         |. RescriptRelay_Internal
+                            .internal_resolverFragmentRefsToFragmentRefs
+                       in
+                       RescriptRelay_Fragment.read ~convertFragment
+                         ~fRef:
+                           (fRef
+                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]);
               ]
             | true -> []);
             (match hasInlineDirective with
@@ -73,8 +102,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                   let makeRefetchVariables =
                     [%e
                       valFromRefetchableModule ["Types"; "makeRefetchVariables"]]
-                    [@@ocaml.doc "A helper to make refetch variables. "]
-                    [@@live]];
+                  [@@ocaml.doc "A helper to make refetch variables. "] [@@live]];
                 [%stri
                   let convertRefetchVariables :
                       [%t

@@ -12,6 +12,7 @@ module Fragment = %relay(`
     fragment TestRelayResolvers_user on User {
       isOnline
       fullName
+      fullName2(maxLength: 2)
     }
 `)
 
@@ -23,8 +24,8 @@ module Test = {
 
     <div>
       {switch data {
-      | {isOnline: Some(isOnline), fullName: Some(fullName)} =>
-        React.string(`${fullName} is ${isOnline ? "online" : "offline"}`)
+      | {isOnline: Some(isOnline), fullName: Some(fullName), fullName2: Some(fullName2)} =>
+        React.string(`${fullName} ${fullName2} is ${isOnline ? "online" : "offline"}`)
       | _ => React.string("-")
       }}
     </div>

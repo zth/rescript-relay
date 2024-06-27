@@ -6,6 +6,7 @@ module Types = {
 
   type fragment = {
     fullName: option<TestRelayUserResolver.t>,
+    fullName2: option<string>,
     isOnline: option<bool>,
   }
 }
@@ -41,9 +42,10 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(let makeNode = (resolverDataInjector, rescript_module_TestRelayUserResolver_fullName): operationType => {
+%%private(let makeNode = (resolverDataInjector, rescript_module_TestRelayUserResolver_fullName, rescript_module_TestRelayUserResolver2_fullName2): operationType => {
   ignore(resolverDataInjector)
   ignore(rescript_module_TestRelayUserResolver_fullName)
+  ignore(rescript_module_TestRelayUserResolver2_fullName2)
   %raw(json`{
   "argumentDefinitions": [],
   "kind": "Fragment",
@@ -69,11 +71,30 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
       "name": "fullName",
       "resolverModule": rescript_module_TestRelayUserResolver_fullName,
       "path": "fullName"
+    },
+    {
+      "alias": null,
+      "args": [
+        {
+          "kind": "Literal",
+          "name": "maxLength",
+          "value": 2
+        }
+      ],
+      "fragment": {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "TestRelayUserResolver2"
+      },
+      "kind": "RelayResolver",
+      "name": "fullName2",
+      "resolverModule": rescript_module_TestRelayUserResolver2_fullName2,
+      "path": "fullName2"
     }
   ],
   "type": "User",
   "abstractKey": null
 }`)
 })
-let node: operationType = makeNode(RescriptRelay.resolverDataInjector, TestRelayUserResolver.fullName)
+let node: operationType = makeNode(RescriptRelay.resolverDataInjector, TestRelayUserResolver.fullName, TestRelayUserResolver2.fullName2)
 
