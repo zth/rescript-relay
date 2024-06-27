@@ -6,6 +6,8 @@
 
 # Unreleased
 
+# 3.0.0-rc.9
+
 - Fix client extension enums mixup with `FutureAddedValue`.
 
 # 3.0.0-rc.8
