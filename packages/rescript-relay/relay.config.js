@@ -15,6 +15,9 @@ module.exports = {
   },
   featureFlags: {
     enable_relay_resolver_transform: true,
+    enable_fragment_aliases: {
+      kind: "enabled",
+    },
   },
   persistConfig: PERSISTING
     ? {
