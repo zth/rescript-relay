@@ -55,3 +55,17 @@ external internal_resolverFragmentRefsToFragmentRefs: RescriptRelay.resolverFrag
 external internal_resolverFragmentRefsToFragmentRefsPlural: RescriptRelay.resolverFragmentRefs<
   'a,
 > => array<RescriptRelay.fragmentRefs<'a>> = "%identity"
+
+let applyCodesplitMetadata: ('node, array<(string, unit => unit)>) => 'node = %raw(`
+  function applyCodesplitMetadata(node, meta) {
+    if (node != null && node.params != null) {
+      let metadata = node.params.metadata;
+      if (metadata == null) {
+        node.params.metadata = {codesplits: meta}
+      } else if (typeof metadata === "object") {
+        node.params.metadata.codesplits = meta
+      }
+    }
+    return node;
+  }
+`)

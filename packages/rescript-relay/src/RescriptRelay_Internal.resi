@@ -16,3 +16,5 @@ external internal_resolverFragmentRefsToFragmentRefs: RescriptRelay.resolverFrag
 external internal_resolverFragmentRefsToFragmentRefsPlural: RescriptRelay.resolverFragmentRefs<
   'a,
 > => array<RescriptRelay.fragmentRefs<'a>> = "%identity"
+
+let applyCodesplitMetadata: ('node, array<(string, unit => unit)>) => 'node

@@ -2,7 +2,7 @@ open Ppxlib
 open Util
 
 let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
-    ~hasInlineDirective ~isPlural =
+    ~hasInlineDirective ~isPlural ~hasAutocodesplitDirective =
   let typeFromGeneratedModule = makeTypeAccessor ~loc ~moduleName in
   let valFromGeneratedModule = makeExprAccessor ~loc ~moduleName in
   let moduleIdentFromGeneratedModule = makeModuleIdent ~loc ~moduleName in
@@ -23,6 +23,15 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
             ];
+            (match hasAutocodesplitDirective with
+            | true ->
+              [
+                [%stri
+                  module CodesplitComponents =
+                    [%m
+                    moduleIdentFromGeneratedModule ["CodesplitComponents"]]];
+              ]
+            | false -> []);
             (match hasInlineDirective with
             | false ->
               [

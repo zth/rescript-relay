@@ -22,17 +22,21 @@ let commonExtension =
             op |> extractFragmentRefetchableQueryName ~loc
           in
           Fragment.make
+            ~hasAutocodesplitDirective:
+              (selection_set |> Util.hasAutocodesplitDirective)
             ~moduleName:(op |> extractTheFragmentName ~loc)
             ~refetchableQueryName
             ~extractedConnectionInfo:(op |> extractFragmentConnectionInfo ~loc)
             ~hasInlineDirective:(op |> fragmentHasInlineDirective ~loc)
             ~isPlural:(op |> fragmentIsPlural ~loc)
             ~loc
-      | Operation {optype = Query} ->
+      | Operation {optype = Query; selection_set} ->
         if Util.queryIsUpdatable op then
           UpdatableQuery.make ~loc ~moduleName:(op |> extractTheQueryName ~loc)
         else
           Query.make
+            ~hasAutocodesplitDirective:
+              (selection_set |> Util.hasAutocodesplitDirective)
             ~moduleName:(op |> extractTheQueryName ~loc)
             ~hasRawResponseType:(op |> queryHasRawResponseTypeDirective ~loc)
             ~loc

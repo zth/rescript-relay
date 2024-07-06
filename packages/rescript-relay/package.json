@@ -35,7 +35,7 @@
     "build": "rescript",
     "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler",
     "postinstall": "node postinstall.js",
-    "test": "jest",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
     "test:ci": "jest --ci --runInBand"
   },
   "devDependencies": {
