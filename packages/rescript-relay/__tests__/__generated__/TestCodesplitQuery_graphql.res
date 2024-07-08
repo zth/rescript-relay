@@ -336,10 +336,10 @@ return {
 })() `)
 
 let node = RescriptRelay_Internal.applyCodesplitMetadata(node, [
-  ("member.$$i$$HasName", () => {Js.import(HasNameComponent.make)->ignore}), 
-  ("member.$$u$$User", () => {Js.import(UserAvatar.make)->ignore; Js.import(UserName.make)->ignore}), 
-  ("member.$$u$$User.description", () => {Js.import(RichContent.make)->ignore}), 
-  ("member.$$u$$Group", () => {Js.import(GroupAvatar.make)->ignore}), 
+  ("member.$$i$$HasName", (_variables: dict<Js.Json.t>) => {Js.import(HasNameComponent.make)->ignore}), 
+  ("member.$$u$$User", (_variables: dict<Js.Json.t>) => {Js.import(UserAvatar.make)->ignore; Js.import(UserName.make)->ignore}), 
+  ("member.$$u$$User.description", (_variables: dict<Js.Json.t>) => {Js.import(RichContent.make)->ignore}), 
+  ("member.$$u$$Group", (_variables: dict<Js.Json.t>) => {Js.import(GroupAvatar.make)->ignore}), 
 ])
 @live let load: (
   ~environment: RescriptRelay.Environment.t,

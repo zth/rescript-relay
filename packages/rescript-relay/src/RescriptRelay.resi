@@ -662,7 +662,7 @@ module Network: {
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
 
-  let preloadResources: (operation, Js.Json.t) => unit
+  let preloadResources: (~operation: operation, ~variables: Js.Json.t, ~response: Js.Json.t) => unit
 }
 
 /**RecordSource is the source of records used by the store. Can be initiated with or without prior records; eg. hydrating the store with prior data.*/

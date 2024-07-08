@@ -24,7 +24,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
 
   if Response.ok(resp) {
     let json = await Response.json(resp)
-    RescriptRelay.Network.preloadResources(operation, json)
+    RescriptRelay.Network.preloadResources(~operation, ~variables, ~response=json)
     json
   } else {
     raise(Graphql_error("Request failed: " ++ Response.statusText(resp)))

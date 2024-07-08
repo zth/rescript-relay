@@ -544,8 +544,12 @@ module Network = {
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
 
-  let preloadResources: (operation, Js.Json.t) => unit = %raw(`
-function preloadResources(operation, response) {
+  let preloadResources: (
+    ~operation: operation,
+    ~variables: Js.Json.t,
+    ~response: Js.Json.t,
+  ) => unit = %raw(`
+function preloadResources(operation, variables, response) {
   let metadata = operation.metadata;
   if (metadata == null) return;
   let codesplits = metadata.codesplits;
@@ -598,7 +602,7 @@ function preloadResources(operation, response) {
       let path = instruction[0];
       let func = instruction[1];
       if (pathExists(data, path.split("."))) {
-        func();
+        func(variables);
       }
     }
   }

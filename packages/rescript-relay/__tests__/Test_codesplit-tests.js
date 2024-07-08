@@ -30,23 +30,23 @@ describe("Autocodesplits", () => {
   beforeEach(() => {
     // Very hacky way to check if the preload functions has run
     preloadUserFn = query.node.params.metadata.codesplits[targetUserIndex][1];
-    query.node.params.metadata.codesplits[targetUserIndex][1] = () => {
+    query.node.params.metadata.codesplits[targetUserIndex][1] = (v) => {
       preloadUserHasRun = true;
-      return preloadUserFn();
+      return preloadUserFn(v);
     };
 
     preloadHasNameFn =
       query.node.params.metadata.codesplits[targetHasNameIndex][1];
-    query.node.params.metadata.codesplits[targetHasNameIndex][1] = () => {
+    query.node.params.metadata.codesplits[targetHasNameIndex][1] = (v) => {
       preloadHasNameHasRun = true;
-      return preloadHasNameFn();
+      return preloadHasNameFn(v);
     };
 
     preloadLinkedFieldFn =
       query.node.params.metadata.codesplits[targetLinkedFieldIndex][1];
-    query.node.params.metadata.codesplits[targetLinkedFieldIndex][1] = () => {
+    query.node.params.metadata.codesplits[targetLinkedFieldIndex][1] = (v) => {
       preloadLinkedFieldHasRun = true;
-      return preloadLinkedFieldFn();
+      return preloadLinkedFieldFn(v);
     };
   });
 
