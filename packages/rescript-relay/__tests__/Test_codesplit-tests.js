@@ -27,6 +27,13 @@ describe("Autocodesplits", () => {
       ([p, _]) => p === "member.$$u$$User.description"
     );
 
+  let preloadBestFriendDescriptionHasRun = false;
+  let preloadBestFriendDescriptionFn;
+  const targetBestFriendDescriptionIndex =
+    query.node.params.metadata.codesplits.findIndex(
+      ([p, _]) => p === "member.$$u$$User.bestFriend.description"
+    );
+
   beforeEach(() => {
     // Very hacky way to check if the preload functions has run
     preloadUserFn = query.node.params.metadata.codesplits[targetUserIndex][1];
@@ -48,6 +55,18 @@ describe("Autocodesplits", () => {
       preloadLinkedFieldHasRun = true;
       return preloadLinkedFieldFn(v);
     };
+
+    preloadBestFriendDescriptionFn =
+      query.node.params.metadata.codesplits[
+        targetBestFriendDescriptionIndex
+      ][1];
+    query.node.params.metadata.codesplits[targetBestFriendDescriptionIndex][1] =
+      (v) => {
+        if (v.includeBestFriendDescription) {
+          preloadBestFriendDescriptionHasRun = true;
+          return preloadBestFriendDescriptionFn(v);
+        }
+      };
   });
 
   afterEach(() => {
@@ -61,11 +80,18 @@ describe("Autocodesplits", () => {
     query.node.params.metadata.codesplits[targetLinkedFieldIndex][1] =
       preloadLinkedFieldFn;
     preloadLinkedFieldHasRun = false;
+
+    query.node.params.metadata.codesplits[targetBestFriendDescriptionIndex][1] =
+      preloadBestFriendDescriptionFn;
+    preloadBestFriendDescriptionHasRun = false;
   });
 
   test("preload runs when query response matches", async () => {
     queryMock.mockQuery({
       name: "TestCodesplitQuery",
+      variables: {
+        includeBestFriendDescription: true,
+      },
       data: {
         member: {
           __typename: "User",
@@ -76,6 +102,13 @@ describe("Autocodesplits", () => {
           description: {
             content: "Rich content!",
           },
+          bestFriend: {
+            __typename: "User",
+            id: "user-2",
+            description: {
+              content: "Rich content?",
+            },
+          },
         },
       },
     });
@@ -84,6 +117,7 @@ describe("Autocodesplits", () => {
     expect(preloadUserHasRun).toBe(false);
     expect(preloadHasNameHasRun).toBe(false);
     expect(preloadLinkedFieldHasRun).toBe(false);
+    expect(preloadBestFriendDescriptionHasRun).toBe(false);
 
     t.render(test_codesplit());
 
@@ -93,6 +127,7 @@ describe("Autocodesplits", () => {
     expect(preloadUserHasRun).toBe(true);
     expect(preloadHasNameHasRun).toBe(false);
     expect(preloadLinkedFieldHasRun).toBe(true);
+    expect(preloadBestFriendDescriptionHasRun).toBe(true);
 
     ReactTestUtils.act(() => {
       t.fireEvent.click(t.screen.getByText("Render"));
@@ -101,11 +136,59 @@ describe("Autocodesplits", () => {
     await t.screen.findByText("User avatarUrl: avatar-here");
     await t.screen.findByText("User name: First Last");
     await t.screen.findByText("Rich content: Rich content!");
+    await t.screen.findByText("Rich content: Rich content?");
+  });
+
+  test("handles when conditionals exclude but the underlying content matches", async () => {
+    queryMock.mockQuery({
+      name: "TestCodesplitQuery",
+      variables: {
+        includeBestFriendDescription: false,
+      },
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-1",
+          firstName: "First",
+          lastName: "Last",
+          avatarUrl: "avatar-here",
+          description: {
+            content: "Rich content!",
+          },
+          bestFriend: {
+            __typename: "User",
+            id: "user-2",
+            description: {
+              content: "Rich content?",
+            },
+          },
+        },
+      },
+    });
+
+    // No preload yet
+    expect(preloadBestFriendDescriptionHasRun).toBe(false);
+
+    t.render(test_codesplit(false));
+
+    await t.screen.findByText("Render");
+
+    // Preloads as soon as data has loaded
+    expect(preloadBestFriendDescriptionHasRun).toBe(false);
+
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Render"));
+    });
+
+    await t.screen.findByText("User avatarUrl: avatar-here");
   });
 
   test("preload does not run when linked field does not match", async () => {
     queryMock.mockQuery({
       name: "TestCodesplitQuery",
+      variables: {
+        includeBestFriendDescription: true,
+      },
       data: {
         member: {
           __typename: "User",
@@ -114,6 +197,7 @@ describe("Autocodesplits", () => {
           lastName: "Last",
           avatarUrl: "avatar-here",
           description: null,
+          bestFriend: null,
         },
       },
     });
@@ -142,6 +226,9 @@ describe("Autocodesplits", () => {
   test("preload runs for interface", async () => {
     queryMock.mockQuery({
       name: "TestCodesplitQuery",
+      variables: {
+        includeBestFriendDescription: true,
+      },
       data: {
         member: {
           __typename: "Group",

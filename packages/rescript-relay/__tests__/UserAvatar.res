@@ -1,7 +1,7 @@
 module Fragment = %relay(`
   fragment UserAvatar_user on User {
     avatarUrl
-    ...UserName_user @autoCodesplit
+    ...UserName_user @autoCodesplit @alias
   }
 `)
 
@@ -15,6 +15,6 @@ let make = (~user: RescriptRelay.fragmentRefs<[#UserAvatar_user]>) => {
     <div>
       {React.string("User avatarUrl: " ++ user.avatarUrl->Belt.Option.getWithDefault("-"))}
     </div>
-    <UserName user=user.fragmentRefs />
+    <UserName user=user.userName_user.fragmentRefs />
   </>
 }

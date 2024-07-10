@@ -4,9 +4,12 @@
 module Types = {
   @@warning("-30")
 
-  type fragment = {
-    avatarUrl: option<string>,
+  type rec fragment_UserName_user = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #UserName_user]>,
+  }
+  type fragment = {
+    @as("UserName_user") userName_user: fragment_UserName_user,
+    avatarUrl: option<string>,
   }
 }
 
@@ -15,7 +18,7 @@ module Internal = {
   type fragmentRaw
   @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"":{"f":""}}}`
+    json`{"__root":{"UserName_user":{"f":""}}}`
   )
   @live
   let fragmentConverterMap = ()
@@ -62,9 +65,15 @@ let node: operationType = %raw(json` {
       "storageKey": null
     },
     {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "UserName_user"
+      "fragment": {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "UserName_user"
+      },
+      "kind": "AliasedFragmentSpread",
+      "name": "UserName_user",
+      "type": "User",
+      "abstractKey": null
     }
   ],
   "type": "User",
