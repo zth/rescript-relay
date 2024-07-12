@@ -1,21 +1,21 @@
 module Query = %relay(`
     query TestCodesplitQuery($includeBestFriendDescription: Boolean!) {
       member(id: "1") {
-        ...HasNameComponent_hasName @autoCodesplit @alias
+        ...HasNameComponent_hasName @codesplit @alias
         ... on User {
-          ...UserAvatar_user @autoCodesplit @alias
+          ...UserAvatar_user @codesplit @alias
           description {
-            ...RichContent_content @autoCodesplit @alias
+            ...RichContent_content @codesplit @alias
           }
           bestFriend {
-            ...UserAvatar_user @autoCodesplit @alias @skip(if: $includeBestFriendDescription)
+            ...UserAvatar_user @codesplit @alias @skip(if: $includeBestFriendDescription)
             description {
-              ...RichContent_content @autoCodesplit @alias @include(if: $includeBestFriendDescription)
+              ...RichContent_content @codesplit @alias @include(if: $includeBestFriendDescription)
             }
           }
         }
         ... on Group {
-          ...GroupAvatar_group @autoCodesplit @alias
+          ...GroupAvatar_group @codesplit @alias
         }
       }
     }

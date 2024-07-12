@@ -1,7 +1,7 @@
 module Fragment = %relay(`
   fragment UserAvatar_user on User {
     avatarUrl
-    ...UserName_user @autoCodesplit @alias
+    ...UserName_user @codesplit @alias
   }
 `)
 

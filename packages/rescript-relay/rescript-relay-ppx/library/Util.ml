@@ -164,7 +164,7 @@ let rec hasAutocodesplitDirective selections =
                directives
                |> List.find_opt (fun (dir : Graphql_parser.directive) ->
                       match dir with
-                      | {name = "autoCodesplit"} -> true
+                      | {name = "codesplit"} -> true
                       | _ -> false)
              with
              | Some _ -> true
