@@ -157,13 +157,6 @@ jobs:
           node-version: 20
         env:
           CI: true
-      - name: Install esy
-        run: npm install -g esy
-      - name: Build PPX
-        uses: esy/github-action@v1
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay/rescript-relay-ppx
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
