@@ -42,18 +42,16 @@ module Test = {
       <div>
         {switch member {
         | {hasNameComponent_hasName: Some(hasNameComponent_hasName)} =>
-          <HasNameComponent hasName=hasNameComponent_hasName.fragmentRefs />
+          <HasNameComponent hasName=hasNameComponent_hasName />
         | _ => React.null
         }}
         {switch member {
-        | {groupAvatar_group: Some(groupAvatar_group)} =>
-          <GroupAvatar group=groupAvatar_group.fragmentRefs />
+        | {groupAvatar_group: Some(groupAvatar_group)} => <GroupAvatar group=groupAvatar_group />
         | {userAvatar_user: Some(userAvatar_user), description, bestFriend} =>
           <>
-            <UserAvatar user=userAvatar_user.fragmentRefs />
+            <UserAvatar user=userAvatar_user />
             {switch description {
-            | Some({richContent_content}) =>
-              <RichContent content=richContent_content.fragmentRefs />
+            | Some({richContent_content}) => <RichContent content=richContent_content />
             | None => React.null
             }}
             {switch bestFriend {
@@ -63,10 +61,10 @@ module Test = {
               }) =>
               <>
                 {switch userAvatar_user {
-                | Some(userAvatar_user) => <UserAvatar user=userAvatar_user.fragmentRefs />
+                | Some(userAvatar_user) => <UserAvatar user=userAvatar_user />
                 | None => React.null
                 }}
-                <RichContent content=richContent_content.fragmentRefs />
+                <RichContent content=richContent_content />
               </>
             | _ => React.null
             }}

@@ -15,6 +15,6 @@ let make = (~user: RescriptRelay.fragmentRefs<[#UserAvatar_user]>) => {
     <div>
       {React.string("User avatarUrl: " ++ user.avatarUrl->Belt.Option.getWithDefault("-"))}
     </div>
-    <UserName user=user.userName_user.fragmentRefs />
+    <UserName user=user.userName_user />
   </>
 }

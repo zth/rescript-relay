@@ -4,15 +4,9 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_loggedInUser_TestAliasedFragments_userFirstName = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestAliasedFragments_userFirstName]>,
-  }
-  and response_loggedInUser_TestAliasedFragments_userLastName = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestAliasedFragments_userLastName]>,
-  }
-  and response_loggedInUser = {
-    @as("TestAliasedFragments_userFirstName") testAliasedFragments_userFirstName: response_loggedInUser_TestAliasedFragments_userFirstName,
-    @as("TestAliasedFragments_userLastName") testAliasedFragments_userLastName: option<response_loggedInUser_TestAliasedFragments_userLastName>,
+  type rec response_loggedInUser = {
+    @as("TestAliasedFragments_userFirstName") testAliasedFragments_userFirstName: RescriptRelay.fragmentRefs<[ | #TestAliasedFragments_userFirstName]>,
+    @as("TestAliasedFragments_userLastName") testAliasedFragments_userLastName: option<RescriptRelay.fragmentRefs<[ | #TestAliasedFragments_userLastName]>>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
@@ -55,7 +49,7 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_TestAliasedFragments_userLastName":{"f":""},"loggedInUser_TestAliasedFragments_userFirstName":{"f":""}}}`
+    json`{}`
   )
   @live
   let wrapResponseConverterMap = ()
@@ -69,7 +63,7 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"loggedInUser_TestAliasedFragments_userLastName":{"f":""},"loggedInUser_TestAliasedFragments_userFirstName":{"f":""}}}`
+    json`{}`
   )
   @live
   let responseConverterMap = ()

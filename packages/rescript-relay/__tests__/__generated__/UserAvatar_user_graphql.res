@@ -4,11 +4,8 @@
 module Types = {
   @@warning("-30")
 
-  type rec fragment_UserName_user = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #UserName_user]>,
-  }
   type fragment = {
-    @as("UserName_user") userName_user: fragment_UserName_user,
+    @as("UserName_user") userName_user: RescriptRelay.fragmentRefs<[ | #UserName_user]>,
     avatarUrl: option<string>,
   }
 }
@@ -18,7 +15,7 @@ module Internal = {
   type fragmentRaw
   @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"UserName_user":{"f":""}}}`
+    json`{}`
   )
   @live
   let fragmentConverterMap = ()

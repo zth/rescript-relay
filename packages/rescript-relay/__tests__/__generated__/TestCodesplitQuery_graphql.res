@@ -4,39 +4,21 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_member_GroupAvatar_group = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #GroupAvatar_group]>,
-  }
-  and response_member_HasNameComponent_hasName = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #HasNameComponent_hasName]>,
-  }
-  and response_member_UserAvatar_user = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #UserAvatar_user]>,
-  }
-  and response_member_bestFriend_UserAvatar_user = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #UserAvatar_user]>,
-  }
-  and response_member_bestFriend_description_RichContent_content = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RichContent_content]>,
-  }
-  and response_member_bestFriend_description = {
-    @as("RichContent_content") richContent_content: option<response_member_bestFriend_description_RichContent_content>,
+  type rec response_member_bestFriend_description = {
+    @as("RichContent_content") richContent_content: option<RescriptRelay.fragmentRefs<[ | #RichContent_content]>>,
   }
   and response_member_bestFriend = {
-    @as("UserAvatar_user") userAvatar_user: option<response_member_bestFriend_UserAvatar_user>,
+    @as("UserAvatar_user") userAvatar_user: option<RescriptRelay.fragmentRefs<[ | #UserAvatar_user]>>,
     description: option<response_member_bestFriend_description>,
   }
-  and response_member_description_RichContent_content = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #RichContent_content]>,
-  }
   and response_member_description = {
-    @as("RichContent_content") richContent_content: response_member_description_RichContent_content,
+    @as("RichContent_content") richContent_content: RescriptRelay.fragmentRefs<[ | #RichContent_content]>,
   }
   and response_member = {
     @live __typename: string,
-    @as("GroupAvatar_group") groupAvatar_group: option<response_member_GroupAvatar_group>,
-    @as("HasNameComponent_hasName") hasNameComponent_hasName: option<response_member_HasNameComponent_hasName>,
-    @as("UserAvatar_user") userAvatar_user: option<response_member_UserAvatar_user>,
+    @as("GroupAvatar_group") groupAvatar_group: option<RescriptRelay.fragmentRefs<[ | #GroupAvatar_group]>>,
+    @as("HasNameComponent_hasName") hasNameComponent_hasName: option<RescriptRelay.fragmentRefs<[ | #HasNameComponent_hasName]>>,
+    @as("UserAvatar_user") userAvatar_user: option<RescriptRelay.fragmentRefs<[ | #UserAvatar_user]>>,
     bestFriend: option<response_member_bestFriend>,
     description: option<response_member_description>,
   }
@@ -81,7 +63,7 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"member_description_RichContent_content":{"f":""},"member_bestFriend_description_RichContent_content":{"f":""},"member_bestFriend_UserAvatar_user":{"f":""},"member_UserAvatar_user":{"f":""},"member_HasNameComponent_hasName":{"f":""},"member_GroupAvatar_group":{"f":""}}}`
+    json`{}`
   )
   @live
   let wrapResponseConverterMap = ()
@@ -95,7 +77,7 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"member_description_RichContent_content":{"f":""},"member_bestFriend_description_RichContent_content":{"f":""},"member_bestFriend_UserAvatar_user":{"f":""},"member_UserAvatar_user":{"f":""},"member_HasNameComponent_hasName":{"f":""},"member_GroupAvatar_group":{"f":""}}}`
+    json`{}`
   )
   @live
   let responseConverterMap = ()
