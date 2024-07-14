@@ -78,12 +78,17 @@ interface HasName {
   name: String!
 }
 
+type RichContent {
+  content: String!
+}
+
 type User implements Node {
   id: ID!
   firstName: String!
   lastName: String!
   avatarUrl: String
   isOnline: Boolean
+  description: RichContent
   onlineStatus: OnlineStatus
   nicknames: [String!]!
   createdAt: Datetime!

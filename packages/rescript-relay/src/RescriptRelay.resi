@@ -611,6 +611,10 @@ module Observable: {
 
 /**Represents the network layer.*/
 module Network: {
+  type codesplitsMetadata = (string, unit => unit)
+
+  type operationMetadata = {codesplits?: array<codesplitsMetadata>}
+
   /**The type representing an instantiated `NetworkLayer`.*/
   type t
 
@@ -620,6 +624,7 @@ module Network: {
     text: string,
     name: string,
     operationKind: string,
+    metadata: Js.Nullable.t<operationMetadata>,
   }
 
   /**The shape of the function Relay expects for creating a subscription.*/
@@ -656,6 +661,8 @@ module Network: {
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
+
+  let preloadResources: (~operation: operation, ~variables: Js.Json.t, ~response: Js.Json.t) => unit
 }
 
 /**RecordSource is the source of records used by the store. Can be initiated with or without prior records; eg. hydrating the store with prior data.*/

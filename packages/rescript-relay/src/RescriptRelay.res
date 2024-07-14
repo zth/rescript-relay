@@ -504,11 +504,16 @@ module Observable = {
 module Network = {
   type t
 
+  type codesplitsMetadata = (string, unit => unit)
+
+  type operationMetadata = {codesplits?: array<codesplitsMetadata>}
+
   type operation = {
     id: string,
     text: string,
     name: string,
     operationKind: string,
+    metadata: Js.Nullable.t<operationMetadata>,
   }
 
   type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
@@ -538,6 +543,79 @@ module Network = {
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
+
+  let preloadResources: (
+    ~operation: operation,
+    ~variables: Js.Json.t,
+    ~response: Js.Json.t,
+  ) => unit = %raw(`
+function preloadResources(operation, variables, response) {
+  let metadata = operation.metadata;
+  if (metadata == null) return;
+  let codesplits = metadata.codesplits;
+  if (codesplits == null) return;
+  let data = response.data;
+
+  function pathExists(obj, path) {
+    let current = obj;
+
+    for (let i = 0; i < path.length; i++) {
+      let segment = path[i];
+
+      if (Array.isArray(current)) {
+        return current.some((item) => pathExists(item, path.slice(i)));
+      } else if (current != null && current.hasOwnProperty(segment)) {
+        current = current[segment];
+      } else if (current != null && (segment.startsWith("$$u$$") || segment.startsWith("$$i$$"))) {
+        let isInterface = segment.startsWith("$$i$$");
+        let expectedTypename = segment.slice(5);
+        if (
+          (
+            !isInterface &&
+            current.hasOwnProperty("__typename") &&
+            current.__typename === expectedTypename) || 
+          (
+            isInterface &&
+            current.hasOwnProperty("__is" + expectedTypename) &&
+            current["__is" + expectedTypename] != null
+          )
+        ) {
+          if (i + 1 === path.length) {
+            // End
+            return true;
+          } else {
+            continue;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+
+    return current != null;
+  }
+
+  function run() {
+    for (let instruction of codesplits) {
+      let path = instruction[0];
+      let func = instruction[1];
+      if (pathExists(data, path.split("."))) {
+        func(variables);
+      }
+    }
+  }
+
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(run);
+  } else {
+    setTimeout(() => {
+      Promise.resolve().then(run);
+    }, 1);
+  }
+}
+`)
 }
 
 module RecordSource = {

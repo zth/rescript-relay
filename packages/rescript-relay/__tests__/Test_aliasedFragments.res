@@ -23,12 +23,8 @@ module Test = {
   @react.component
   let make = () => {
     let query = Query.use(~variables={skipThing: false})
-    let firstNameData = FragmentFirstName.use(
-      query.loggedInUser.testAliasedFragments_userFirstName.fragmentRefs,
-    )
-    let lastNameData = FragmentLastName.useOpt(
-      query.loggedInUser.testAliasedFragments_userLastName->Belt.Option.map(f => f.fragmentRefs),
-    )
+    let firstNameData = FragmentFirstName.use(query.loggedInUser.testAliasedFragments_userFirstName)
+    let lastNameData = FragmentLastName.useOpt(query.loggedInUser.testAliasedFragments_userLastName)
 
     <div>
       {React.string(

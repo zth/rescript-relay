@@ -1,7 +1,7 @@
 open Ppxlib
 open Util
 
-let make ~loc ~moduleName ~hasRawResponseType =
+let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
   let typeFromGeneratedModule = makeTypeAccessor ~loc ~moduleName in
   let valFromGeneratedModule = makeExprAccessor ~loc ~moduleName in
   let moduleIdentFromGeneratedModule = makeModuleIdent ~loc ~moduleName in
@@ -76,5 +76,14 @@ let make ~loc ~moduleName ~hasRawResponseType =
                       ~node:[%e valFromGeneratedModule ["node"]]]
               | false -> [%stri ()]);
             ];
+            (match hasAutocodesplitDirective with
+            | true ->
+              [
+                [%stri
+                  module CodesplitComponents =
+                    [%m
+                    moduleIdentFromGeneratedModule ["CodesplitComponents"]]];
+              ]
+            | false -> []);
           ]
        |> List.map UncurriedUtils.mapStructureItem))

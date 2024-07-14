@@ -153,3 +153,26 @@ let makeModuleIdent ~loc ~moduleName path =
   let gqlModuleName = getGraphQLModuleName moduleName in
   let path = gqlModuleName :: path |> List.rev in
   Ppxlib.Ast_helper.Mod.ident ~loc {txt = longidentFromStrings path; loc}
+
+let rec hasAutocodesplitDirective selections =
+  match
+    selections
+    |> List.find_opt (fun sel ->
+           match sel with
+           | Graphql_parser.FragmentSpread {directives} -> (
+             match
+               directives
+               |> List.find_opt (fun (dir : Graphql_parser.directive) ->
+                      match dir with
+                      | {name = "codesplit"} -> true
+                      | _ -> false)
+             with
+             | Some _ -> true
+             | None -> false)
+           | Graphql_parser.Field {selection_set} ->
+             hasAutocodesplitDirective selection_set
+           | InlineFragment {selection_set} ->
+             hasAutocodesplitDirective selection_set)
+  with
+  | Some _ -> true
+  | None -> false
