@@ -58,16 +58,15 @@ let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables
 
 let network = RescriptRelay.Network.makePromiseBased(
   ~fetchFunction=fetchQuery(token),
-  ~subscriptionFunction,
-  (),
+  ~subscriptionFunction
 )
 
 let store = {
   open RescriptRelay
-  Store.make(~source=RecordSource.make(), ())
+  Store.make(~source=RecordSource.make())
 }
 
-let environment = RescriptRelay.Environment.make(~network, ~store, ())
+let environment = RescriptRelay.Environment.make(~network, ~store)
 
 ```
 
@@ -112,11 +111,10 @@ module TicketStatusSubscription = %relay(
 @react.component
 let make = (~ticketId) => {
   let environment = RescriptRelay.useEnvironmentFromContext()
-  React.useEffect2(() => {
+  React.useEffect(() => {
     let subscription = TicketStatusSubscription.subscribe(
       ~environment,
-      ~variables={id: ticketId},
-      (),
+      ~variables={id: ticketId}
     )
     Some(() => RescriptRelay.Disposable.dispose(subscription))
   }, (ticketId, environment))

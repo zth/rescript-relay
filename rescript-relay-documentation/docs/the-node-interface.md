@@ -34,8 +34,7 @@ let make = (~id: string) => {
   let queryData = Query.use(
     ~variables={
       id: id,
-    },
-    (),
+    }
   )
 
   {switch queryData.node {
@@ -91,8 +90,7 @@ let make = (~id: string) => {
   let queryData = Query.use(
     ~variables={
       id: id,
-    },
-    (),
+    }
   )
 
   {switch queryData.node {

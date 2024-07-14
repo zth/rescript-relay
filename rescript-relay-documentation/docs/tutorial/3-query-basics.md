@@ -92,7 +92,7 @@ Turn back to the `Newsfeed` component and start by deleting the placeholder data
 ```rescript
 @react.component
 let make = () => {
-  let data = NewsfeedQuery.use(~variables=(), ())
+  let data = NewsfeedQuery.use(~variables=())
 
   switch data.topStory {
   | None => React.null
@@ -218,17 +218,17 @@ The object that `NewsfeedQuery.use` returns has the same shape as the query. For
 
 ```json
 {
-  topStory: {
-    title: "Local Yak Named Yak of the Year",
-    summary: "The annual Yak of the Year awards ceremony ...",
-    poster: {
-      name: "Baller Bovine Board",
-      profilePic: {
-        url: '/images/baller_bovine_board.jpg',
-      },
+  "topStory": {
+    "title": "Local Yak Named Yak of the Year",
+    "summary": "The annual Yak of the Year awards ceremony ...",
+    "poster": {
+      "name": "Baller Bovine Board",
+      "profilePic": {
+        "url": "/images/baller_bovine_board.jpg"
+      }
     },
-    thumbnail: {
-      url: '/images/max_the_yak.jpg',
+    "thumbnail": {
+      "url": "/images/max_the_yak.jpg"
     }
   }
 }

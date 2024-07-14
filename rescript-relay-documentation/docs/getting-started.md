@@ -30,7 +30,7 @@ You will have the absolute best experience using RescriptRelay in concurrent mod
 
 Not all new APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
 
-This means that you'll need React 18 (in `rc` at the time of writing) and ReactDOM.
+This means that you'll need React 18 and ReactDOM.
 
 #### A short note on the workflow of using Relay
 
@@ -49,22 +49,31 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript >= 10.1`, `@rescript/react >= 0.11.0`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
+RescriptRelay requires `rescript >= 11.0.0`, `@rescript/react >= 0.12.0`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
 
-```bash
+```bash title="Terminal"
 # Add React 18
 yarn add react@18 react-dom@18
 
 # Add rescript-relay and dependencies to the project
-# We currently depend on Relay version 15, so install that exact version
-yarn add rescript-relay relay-runtime@15.0.0 react-relay@15.0.0
+# We currently depend on Relay version 16, so install that exact version
+yarn add rescript-relay relay-runtime@16.0.0 react-relay@16.0.0
 ```
 
-After you've installed the packages above, setup ReScript through your `bsconfig.json` like this:
+After you've installed the packages above, setup ReScript through your `rescript.json` (previously known as `bsconfig.json`) like this on _**MacOS**_ or _**Linux**_:
 
-```json
+```json title="rescript.json"
 ...
-"ppx-flags": ["rescript-relay/ppx"],
+"ppx-flags": [["rescript-relay/ppx", "-uncurried"]],
+"bs-dependencies": ["@rescript/react", "rescript-relay"],
+...
+```
+
+or like this on _**Windows**_:
+
+```json title="rescript.json"
+...
+"ppx-flags": [["rescript-relay/ppx.exe", "-uncurried"]],
 "bs-dependencies": ["@rescript/react", "rescript-relay"],
 ...
 ```
@@ -80,7 +89,7 @@ Ensure that only the new React 18 versions are used by doing the following:
 1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `18.0.0` - copy that version number.
 2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
 
-```json
+```json title="package.json"
 ...
 "resolutions": {
     "react": "18.0.0",
@@ -93,8 +102,7 @@ Ensure that only the new React 18 versions are used by doing the following:
 
 Add a `relay.config.js` to your project root with the following in it:
 
-```js
-// relay.config.js
+```js title="relay.config.js"
 module.exports = {
   src: "./src", // Path to the folder containing your ReScript files
   schema: "./schema.graphql", // Path to the schema.graphql you've exported from your API. Don't know what this is? It's a saved introspection of what your schema looks like. You can run `npx get-graphql-schema http://path/to/my/graphql/server > schema.graphql` in your root to generate it
@@ -120,8 +128,7 @@ Please note that RescriptRelay enforces two things that regular Relay does not:
 
 We'll also add a script to our `package.json` to run the Relay compiler:
 
-```json
-// package.json
+```json title="package.json"
 ...
 "scripts": {
   "relay": "rescript-relay-compiler",
@@ -143,10 +150,11 @@ The Relay compiler is really awesome. If you're interested there's plenty more t
 
 Finally time for some actual code. Next thing is setting up the Relay environment. The Relay environment consists of a network layer responsible for dispatching your GraphQL queries, and a store responsible for storing data and supplying it to your components.
 
-You're encouraged to put this in a separate file like `RelayEnv.re` or similar. Setting it up looks like this (using `@glennsl/rescript-fetch` for fetching, which you can find [installation instructions for here](https://github.com/glennsl/rescript-fetch)):
+You're encouraged to put this in a separate file like `RelayEnv.res` or similar. Setting it up looks like this (using `@glennsl/rescript-fetch` for fetching, which you can find [installation instructions for here](https://github.com/glennsl/rescript-fetch)):
 
-```rescript
-/* RelayEnv.res */
+```rescript title="RelayEnv.res"
+/* This is a Rescript's standard library, typically opened globally in rescript.json */
+open RescriptCore
 
 /* This is just a custom exception to indicate that something went wrong. */
 exception Graphql_error(string)
@@ -167,8 +175,8 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     {
       method: #POST,
       body: {"query": operation.text, "variables": variables}
-      ->Js.Json.stringifyAny
-      ->Belt.Option.getExn
+      ->JSON.stringifyAny
+      ->Option.getExn
       ->Body.string,
       headers: Headers.fromObject({
         "content-type": "application/json",
@@ -184,16 +192,14 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
   }
 }
 
-let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=fetchQuery, ())
+let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=fetchQuery)
 
 let environment = RescriptRelay.Environment.make(
   ~network,
   ~store=RescriptRelay.Store.make(
     ~source=RescriptRelay.RecordSource.make(),
-    ~gcReleaseBufferSize=10, /* This sets the query cache size to 10 */
-    (),
-  ),
-  (),
+    ~gcReleaseBufferSize=10 /* This sets the query cache size to 10 */
+  )
 )
 ```
 
@@ -205,8 +211,7 @@ There, we now have a Relay environment! We only have two more things to fix befo
 
 Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<RescriptRelay.Context.Provider />`:
 
-```rescript
-/* Index.res */
+```rescript title="Index.res"
 ReactDOMExperimental.renderConcurrentRootAtElementWithId(
   <RescriptRelay.Context.Provider environment=MyModuleWithTheRelayEnvironment.environment>
     <App />

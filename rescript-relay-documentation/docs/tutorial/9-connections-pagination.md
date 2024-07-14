@@ -260,7 +260,7 @@ to
 
 ```rescript
 let {data, loadNext} = Fragment.usePagination(story)
-let onLoadMore = () => loadNext(~count=3, ())->RescriptRelay.Disposable.ignore
+let onLoadMore = () => loadNext(~count=3)->RescriptRelay.Disposable.ignore
 ```
 
 and pass `onLoadMore` to the button: `<LoadMoreCommentsButton onClick=onLoadMore />`
@@ -288,7 +288,7 @@ let make = (~story) => {
   // change
   let onLoadMore = () =>
     startTransition(() => {
-      loadNext(~count=3, ())->ignore
+      loadNext(~count=3)->RescriptRelay.Disposable.ignore
     })
   // end-change
   
@@ -357,7 +357,7 @@ We’ve replaced `topStories` with `viewer`’s `newsfeedStories`, adding a `fir
 ```rescript
 @react.component
 let make = () => {
-  let {viewer} = NewsfeedQuery.use(~variables=(), ())
+  let {viewer} = NewsfeedQuery.use(~variables=())
 
   switch viewer {
   | None => React.null
@@ -404,7 +404,7 @@ let make = (~viewer as viewerRef) => {
 
   <>
     {stories
-    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
     ->React.array}
   </>
 }
@@ -424,7 +424,7 @@ module NewsfeedQuery = %relay(`
 
 @react.component
 let make = () => {
-  let {viewer} = NewsfeedQuery.use(~variables=(), ())
+  let {viewer} = NewsfeedQuery.use(~variables=())
 
   <div className="newsfeed">
     {switch viewer {
@@ -480,7 +480,7 @@ let make = (~viewer as viewerRef) => {
 
   <>
     {stories
-    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
     ->React.array}
   </>
 }
@@ -498,11 +498,11 @@ let make = (~viewer as viewerRef) => {
   let stories = Fragment.getConnectionNodes(data.newsfeedStories)
 
   // change-line
-  let onEndReached = () => loadNext(~count=3, ())->ignore
+  let onEndReached = () => loadNext(~count=3)->RescriptRelay.Disposable.ignore
 
   <>
     {stories
-    ->Belt.Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
+    ->Array.map(story => <Story key={story.id} story={story.fragmentRefs} />)
     ->React.array}
     // change-line
     <InfiniteScrollTrigger onEndReached hasNext isLoadingNext />

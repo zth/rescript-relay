@@ -150,7 +150,7 @@ yarn rescript build
 Migrating is just about removing all object maker function usage and using regular records instead:
 
 ```rescript
-let doLogin = React.useCallback5(() => {
+let doLogin = React.useCallback(() => {
     let _ = login(
       // color2
       ~variables=LoginMutation.makeVariables(~username=state.username, ~password=state.password),

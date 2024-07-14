@@ -79,7 +79,7 @@ let (newStatus, setNewStatus) = React.useState(() => ticket.status)
 // Uh-oh, we can't do this because we can't guarantee that `ticket.status` above,
 // which is assigned to `newStatus`, is the values we expect it to be, since
 // the server might've changed the enum members after we've deployed.
-setTicketStatus(~variables={id: ticket.id, newStatus: newStatus}, ()))
+setTicketStatus(~variables={id: ticket.id, newStatus: newStatus})
 ```
 
 Luckily, RescriptRelay gives you utils to deal with this situation. Whenever you want to move between the _unsafe_ enum coming directly from the server, and a _safe_ version of that enum that you know is correct, you can use `<enumName>_decode`. This will validate that the enum that came from the server is in fact in the shape you expect. The same example as above, but now ensuring that the enum in the state is actually what we want it to be:
@@ -93,7 +93,7 @@ let (newStatus, setNewStatus) = React.useState(() =>
   // sets a default value instead.
   ticket.status
     ->TicketFragment.ticketStatus_decode
-    ->Belt.Option.getWithDefault(#OnHold)
+    ->Option.getOr(#OnHold)
   )
 
 // Yay, `newStatus` is now safe to use like we expect it to be!

@@ -185,7 +185,7 @@ Use it like this: `makeArguments({ "someArgument": someValue, "anotherArgument":
 ## [generateClientID](#generateclientid)
 
 ```rescript
-let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?, unit) => dataId
+let generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?) => dataId
 ```
 
 > Read more about: [dataId](#dataid)
@@ -320,8 +320,7 @@ Read the following section on working with the Relay store: https://relay.dev/do
 let getLinkedRecords: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => option<array<option<t>>>
 ```
 
@@ -352,7 +351,7 @@ Gets the [dataId](#dataid) for a particular record.
 ### [RecordProxy.getLinkedRecord](#recordproxygetlinkedrecord)
 
 ```rescript
-let getLinkedRecord: (t, ~name: string, ~arguments: arguments=?, unit) => option<t>
+let getLinkedRecord: (t, ~name: string, ~arguments: arguments=?) => option<t>
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -366,8 +365,7 @@ let getOrCreateLinkedRecord: (
     t,
     ~name: string,
     ~typeName: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -388,7 +386,7 @@ Returns the `__typename` of this particular record.
 ### [RecordProxy.getValueString](#recordproxygetvaluestring)
 
 ```rescript
-let getValueString: (t, ~name: string, ~arguments: arguments=?, unit) => option<string>
+let getValueString: (t, ~name: string, ~arguments: arguments=?) => option<string>
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -401,8 +399,7 @@ Returns a field value, expecting it to be a string.
 let getValueStringArray: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => option<array<option<string>>>
 ```
 
@@ -413,7 +410,7 @@ Returns a field value, expecting it to be an array of strings.
 ### [RecordProxy.getValueInt](#recordproxygetvalueint)
 
 ```rescript
-let getValueInt: (t, ~name: string, ~arguments: arguments=?, unit) => option<int>
+let getValueInt: (t, ~name: string, ~arguments: arguments=?) => option<int>
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -426,8 +423,7 @@ Returns a field value, expecting it to be an int.
 let getValueIntArray: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => option<array<option<int>>>
 ```
 
@@ -438,7 +434,7 @@ Returns a field value, expecting it to be an array of ints.
 ### [RecordProxy.getValueFloat](#recordproxygetvaluefloat)
 
 ```rescript
-let getValueFloat: (t, ~name: string, ~arguments: arguments=?, unit) => option<float>
+let getValueFloat: (t, ~name: string, ~arguments: arguments=?) => option<float>
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -451,8 +447,7 @@ Returns a field value, expecting it to be a float.
 let getValueFloatArray: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => option<array<option<float>>>
 ```
 
@@ -463,7 +458,7 @@ Returns a field value, expecting it to be an array of floats.
 ### [RecordProxy.getValueBool](#recordproxygetvaluebool)
 
 ```rescript
-let getValueBool: (t, ~name: string, ~arguments: arguments=?, unit) => option<bool>
+let getValueBool: (t, ~name: string, ~arguments: arguments=?) => option<bool>
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -476,8 +471,7 @@ Returns a field value, expecting it to be a boolean.
 let getValueBoolArray: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => option<array<option<bool>>>
 ```
 
@@ -488,7 +482,7 @@ Returns a field value, expecting it to be an array of booleans.
 ### [RecordProxy.setLinkedRecord](#recordproxysetlinkedrecord)
 
 ```rescript
-let setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?, unit) => t
+let setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?) => t
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -502,8 +496,7 @@ let setLinkedRecords: (
     t,
     ~records: array<option<t>>,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -514,7 +507,7 @@ Sets an array of [RecordProxy.t](#recordproxyt) as the linked records for a part
 ### [RecordProxy.setValueString](#recordproxysetvaluestring)
 
 ```rescript
-let setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?, unit) => t
+let setValueString: (t, ~value: string, ~name: string, ~arguments: arguments=?) => t
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -528,8 +521,7 @@ let setValueStringArray: (
     t,
     ~value: array<string>,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -540,7 +532,7 @@ Sets an array of strings as field value.
 ### [RecordProxy.setValueInt](#recordproxysetvalueint)
 
 ```rescript
-let setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?, unit) => t
+let setValueInt: (t, ~value: int, ~name: string, ~arguments: arguments=?) => t
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -554,8 +546,7 @@ let setValueIntArray: (
     t,
     ~value: array<int>,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -566,7 +557,7 @@ Sets an array of ints as field value.
 ### [RecordProxy.setValueFloat](#recordproxysetvaluefloat)
 
 ```rescript
-let setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?, unit) => t
+let setValueFloat: (t, ~value: float, ~name: string, ~arguments: arguments=?) => t
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -580,8 +571,7 @@ let setValueFloatArray: (
     t,
     ~value: array<float>,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -592,7 +582,7 @@ Sets an array of floats as field value.
 ### [RecordProxy.setValueBool](#recordproxysetvaluebool)
 
 ```rescript
-let setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?, unit) => t
+let setValueBool: (t, ~value: bool, ~name: string, ~arguments: arguments=?) => t
 ```
 
 > Read more about: [RecordProxy.t](#recordproxyt), [arguments](#arguments)
@@ -606,8 +596,7 @@ let setValueBoolArray: (
     t,
     ~value: array<bool>,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -621,8 +610,7 @@ Sets an array of booleans as field value.
 let setValueToUndefined: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -636,8 +624,7 @@ Sets the field value to `undefined` (meaning Relay will treat it as missing data
 let setValueToNull: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -651,8 +638,7 @@ Sets the field value to `null`.
 let setLinkedRecordToUndefined: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -666,8 +652,7 @@ Sets this linked record to `undefined` (meaning Relay will treat it as missing d
 let setLinkedRecordToNull: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -681,8 +666,7 @@ Sets this linked record to `null`.
 let setLinkedRecordsToUndefined: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -696,8 +680,7 @@ Sets the field holding these linked records to `undefined` (meaning Relay will t
 let setLinkedRecordsToNull: (
     t,
     ~name: string,
-    ~arguments: arguments=?,
-    unit,
+    ~arguments: arguments=?
   ) => t
 ```
 
@@ -811,8 +794,7 @@ Read the Relay docs section on [ConnectionHandler](https://relay.dev/docs/en/rel
 let getConnection: (
     ~record: RecordProxy.t,
     ~key: string,
-    ~filters: arguments=?,
-    unit,
+    ~filters: arguments=?
   ) => option<RecordProxy.t>
 ```
 
@@ -841,8 +823,7 @@ Creates an edge for a particular connection.
 let insertEdgeBefore: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
-    ~cursor: string=?,
-    unit,
+    ~cursor: string=?
   ) => unit
 ```
 
@@ -856,8 +837,7 @@ Inserts an edge into a connection _before_ the provided cursor. If no cursor is 
 let insertEdgeAfter: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
-    ~cursor: string=?,
-    unit,
+    ~cursor: string=?
   ) => unit
 ```
 
@@ -898,8 +878,7 @@ let makeObserver: (
     ~next: 'response => unit=?,
     ~error: Js.Exn.t => unit=?,
     ~complete: unit => unit=?,
-    ~unsubscribe: subscription => unit=?,
-    unit,
+    ~unsubscribe: subscription => unit=?
   ) => observer<'response>
 ```
 
@@ -1001,8 +980,7 @@ The type representing an instantiated `NetworkLayer`.
 ```rescript
 let makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
-    ~subscriptionFunction: subscribeFn=?,
-    unit,
+    ~subscriptionFunction: subscribeFn=?
   ) => t
 ```
 
@@ -1015,8 +993,7 @@ The type representing an instantiated `NetworkLayer`.
 ```rescript
 let makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
-    ~subscriptionFunction: subscribeFn=?,
-    unit,
+    ~subscriptionFunction: subscribeFn=?
   ) => t
 ```
 
@@ -1075,8 +1052,7 @@ let make: (
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
     int=?,
-    ~queryCacheExpirationTime: int /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */=?,
-    unit,
+    ~queryCacheExpirationTime: int /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */=?
   ) => t
 ```
 
@@ -1114,7 +1090,7 @@ let make = (~serializedRecords: RescriptRelay.recordSourceRecords) => {
   let environment = RescriptRelay.useEnvironmentFromContext()
 
   /* Make sure we only run this once */
-  React.useEffect2(() => {
+  React.useEffect(() => {
     /* This will publish the records to the existing store */
     environment->RescriptRelay.Store.publish(serializedRecords)
     None
@@ -1218,8 +1194,7 @@ let make: (
       ~typeName: string,
     ) => string=?,
     ~treatMissingFieldsAsNull: bool=?,
-    ~missingFieldHandlers: array<MissingFieldHandler.t>=?,
-    unit,
+    ~missingFieldHandlers: array<MissingFieldHandler.t>=?
   ) => t
 ```
 
