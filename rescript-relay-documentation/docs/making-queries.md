@@ -66,6 +66,8 @@ Using the `Query.use()` hook is _lazy_, meaning Relay won't start fetching your 
 
 RescriptRelay lets you leverage preloading in 3 different ways, all suitable for different scenarios. Below we'll go through all 3.
 
+> Check out the [`rescript-relay-router`](https://github.com/zth/rescript-relay-router/blob/main/packages/rescript-relay-router/README.md), a router 100% dedicated to RescriptRelay, tailored to leverage preloaded queries.
+
 ### The `useLoader` hook
 
 In RescriptRelay, every `%relay()` node containing a query automatically generates a `useLoader` hook. That hook returns a tuple of 3 things: `(option<queryRef>, loadQuery, disposeQuery)`.
@@ -295,8 +297,8 @@ Using it looks something like this:
 ```rescript
 Query.fetch(~environment, ~variables=(), ~onResult=res =>
   switch res {
-  | Ok(res) => Js.log(res)
-  | Error(_) => Js.log("Error")
+  | Ok(res) => Console.log(res)
+  | Error(_) => Console.log("Error")
   }
 )
 
@@ -327,7 +329,7 @@ Using it looks something like this:
 ```rescript
 Query.fetchPromised(~environment, ~variables=())
   ->Js.Promise.then_(res => {
-    Js.log(res)
+    Console.log(res)
     Js.Promise.resolve()
   }, _)
 

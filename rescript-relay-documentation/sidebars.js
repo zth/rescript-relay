@@ -31,6 +31,7 @@ module.exports = {
       "mutations",
       "refetching-and-loading-more-data",
       "pagination",
+      "variables",
       "subscriptions",
       "enums",
       "unions",
@@ -38,6 +39,8 @@ module.exports = {
       "input-objects",
       "input-unions",
       "interacting-with-the-store",
+      "client-schema-extensions",
+      "relay-resolvers",
     ],
     "API Reference": ["api-reference", "relay-environment"],
     Guides: [

@@ -23,7 +23,7 @@ Custom scalars are defined in the project's `relay.config.js` ([you can read mor
 ```js
 // relay.config.js
 module.exports = {
-  customScalars: {
+  customScalarTypes: {
     // This just maps all `Color` scalars to `string`.
     // This is useful _when you know it's in fact a string_, and
     // when you know you'll want to interact with the custom scalar
@@ -96,7 +96,7 @@ But, if we were to add the following definitions for the custom scalars:
 // relay.config.js
 module.exports = {
   ...
-  customScalars: {
+  customScalarTypes: {
     Color: "string",
     Datetime: "Utils.Datetime"
   }

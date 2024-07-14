@@ -109,24 +109,24 @@ let make = () => {
 <details>
 <summary>Deep dive: Nominal vs Structural types</summary>
 
-We add the `:>` operator, to convert the type returned by the query into the type `Story.story`. We do this because ReScript has what is called nominal types. Typescript, which you may be familiar with, uses structural types. 
+We add the `:>` operator, to convert the type returned by the query into the type `Story.story`. We do this because ReScript has what is called nominal types. Typescript, which you may be familiar with, uses structural types.
 
 ```typescript
-type A = { name: string }
-type B = { name: string }
-type C = A & { age: number }
+type A = { name: string };
+type B = { name: string };
+type C = A & { age: number };
 
 const acceptsA = (arg: A) => {
-  console.log(arg.name)
-}
+  console.log(arg.name);
+};
 
-const valA: A = { name: 'Jean Valjean' }
-const valB: B = { name: 'Jean Valjean' }
-const valC: C = { name: 'Jean Valjean', age: 64 }
+const valA: A = { name: "Jean Valjean" };
+const valB: B = { name: "Jean Valjean" };
+const valC: C = { name: "Jean Valjean", age: 64 };
 
-acceptsA(valA)
-acceptsA(valB)
-acceptsA(valC)
+acceptsA(valA);
+acceptsA(valB);
+acceptsA(valC);
 ```
 
 This, on the other hand, is _not_ valid ReScript
@@ -137,7 +137,7 @@ type b = {name: string}
 type c = {...a, age: int}
 
 let acceptsA = (arg: a) => {
-  Js.log(arg.name)
+  Console.log(arg.name)
 }
 
 let valA: a = {name: "Jean Valjean"}
@@ -149,14 +149,17 @@ acceptsA(valB)
 acceptsA(valC)
 ```
 
-and will give you compile errors at 
+and will give you compile errors at
+
 ```
 45 │ acceptsA(valB)
 
   This has type: b
   Somewhere wanted: a
 ```
+
 and
+
 ```
  46 │ acceptsA(valC)
 
@@ -172,6 +175,7 @@ acceptsA((valC :> a))
 ```
 
 If you're coming from Typescript it will probably feel annoying for a bit that you have to explicitly convert between types like this. A big upside is, that it forces you to be explicit and intentional about where your types are used and the compiler will have a much easier time giving you reasonable and understandable error messages when there are type errors. Nominal types pay off!
+
 </details>
 
 Even with `:>` you'll still get compiler errors, because the placeholder data and the starting components do not take into account that the schema has all fields except `id` nullable.

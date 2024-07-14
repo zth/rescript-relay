@@ -139,6 +139,10 @@ Any object (it's actually a ReScript record, but I'll call it object here) where
 
 Phew! That's a lot to break down. It's really not that complicated to use though.
 
+### `@alias`
+
+TODO
+
 ### Fragments in fragments
 
 Yup, you read that right, you can _spread fragments on other fragments_. Remember, a fragment _at some point_ must end up in a query to be usable, but it doesn't mean that each fragment must be spread on a query.
@@ -210,6 +214,10 @@ Let's distill it:
 - The `provider` argument points to a _ReScript module_. This module should define a `get` function that takes `unit` and returns the same type as is defined inside `type` of the argument. So for the example above, that is `let get: unit => float`. The compiler will enforce that you get the types right.
 - Relay will then automatically wire together `MyProvidedVariables.PixelRatio` with the fragment.
 
+## Conditional fragments
+
+TODO
+
 ## Using fragments outside of React's render phase
 
 You can also use fragments outside of React's render phase (read: without using hooks). In addition to `Fragment.use`, each fragment will autogenerate a function called `Fragment.readInline` _if your fragment is annotated with `@inline`_.`@inline` tells Relay you'll want to read this fragment outside of React's render phase.
@@ -264,6 +272,7 @@ Before we move on to the next thing, there's a few things that's worth keeping i
 - A component can use any number of fragments, not just one
 - A fragment can use other fragments
 - Any object where a fragment has been spread will have a prop called `fragmentRefs`. This contains references for all fragments that have been spread on that object. You pass that `fragmentReferences` prop to the respective fragment's `use` hooks.
+- @alias TODO
 
 With that in mind, Let's jump in to [mutations](mutations).
 

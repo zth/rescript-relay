@@ -8,6 +8,7 @@
 
 - Support `@alias` fragments.
 - Experimental support for `@codesplit`, a RescriptRelay exclusive directive that's essentially a client side version of [Relay data-driven dependencies (3D)](https://relay.dev/docs/glossary/#3d).
+- Remove `ReactExperimental` module since all APIs now ship in the official bindings.
 
 # 3.0.0-rc.9
 

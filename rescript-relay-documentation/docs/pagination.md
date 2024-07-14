@@ -102,15 +102,6 @@ Whew, plenty more to break down:
 
 There, basic pagination! Relay really does all the heavy lifting for us here, which is great. Continue reading for some advanced pagination concepts and a full API reference, or move on to [subscriptions](subscriptions).
 
-## Two types of pagination
-
-Relay provides two types of pagination by default;
-
-1. _"Normal"_ pagination, which we saw above using `usePagination`. This type of pagination is _not integrated with suspense_, and will give you two flags `isLoadingNext` and `isLoadingPrevious` to indicate whether a request is in flight.
-2. _Blocking_ pagination, which is done via `useBlockingPagination` and _is integrated with suspense_. This is more suitable for a "load all"-type of pagination.
-
-You're encouraged to read more in the [official Relay documentation on pagination](https://relay.dev/docs/guided-tour/list-data/pagination) for more information on the two types of pagination.
-
 ## API Reference
 
 A `%relay()` which is annotated with a `@refetchable` directive, and which contains a `@connection` directive somewhere, has the following functions added to it's module, in addition to everything mentioned in [using fragments](using-fragments):
@@ -125,21 +116,13 @@ As shown above, `usePagination` provides helpers for paginating your fragment/co
 
 `usePagination` returns a record with the following properties.
 
-| Name                | Type                                                                                                      | Note                                                                 |
-| ------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `data`              | `'fragmentData`                                                                                           | The data as defined by the fragment.                                 |
+| Name                | Type                                                                                                | Note                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `data`              | `'fragmentData`                                                                                     | The data as defined by the fragment.                                 |
 | `loadNext`          | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?) => Disposable.t;`                           | A function for loading the next `count` nodes of the connection.     |
 | `loadPrevious`      | `(~count: int, ~onComplete: option(Js.Exn.t) => unit=?) => Disposable.t;`                           | A function for loading the previous `count` nodes of the connection. |
-| `hasNext`           | `bool`                                                                                                    | Are there more nodes forward in the connection to fetch?             |
-| `hasPrevious`       | `bool`                                                                                                    | Are there more nodes backwards in the connection to fetch?           |
-| `isLoadingNext`     | `bool`                                                                                                    |                                                                      |
-| `isLoadingPrevious` | `bool`                                                                                                    |                                                                      |
+| `hasNext`           | `bool`                                                                                              | Are there more nodes forward in the connection to fetch?             |
+| `hasPrevious`       | `bool`                                                                                              | Are there more nodes backwards in the connection to fetch?           |
+| `isLoadingNext`     | `bool`                                                                                              |                                                                      |
+| `isLoadingPrevious` | `bool`                                                                                              |                                                                      |
 | `refetch`           | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option(Js.Exn.t) => unit=?) =>` | Refetch the entire connection with potentially new variables.        |
-
-### `useBlockingPagination`
-
-Integrated with _suspense_, meaning it will suspend the component if used.
-
-##### Parameters
-
-`useBlockingPagination` returns a record with the same properties as [usePagination](#usepagination), _excluding_ `isLoadingNext` and `isLoadingPrevious`, as that is handled by suspense.

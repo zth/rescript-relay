@@ -10,7 +10,7 @@ sidebar_label: Interfaces
 
 ## Interfaces in RescriptRelay
 
-In RescriptRelay, depending on how you ask for the fields, **interfaces** are either unwrapped to a polymorphic variant or a record with type specific fields being optional.
+In RescriptRelay, depending on how you ask for the fields, **interfaces** are either unwrapped to a variant or a record with type specific fields being optional.
 
 Let's clarify this with an example. Imagine this GraphQL schema:
 
@@ -35,7 +35,7 @@ type ColoringBook implements Book {
 
 Here we have an interface `Book`, which has `title` and `author` fields and `Textbook` and `ColoringBook` types which implements the `Book` interface. Both types have one specific field, `Textbook` - `courses` and `ColoringBook` - `colors`.
 
-If all the fields we ask for are within inline fragments of the types which implement the interface, the result will be a polymorphic variant:
+If all the fields we ask for are within inline fragments of the types which implement the interface, the result will be a variant:
 
 ```rescript
 /* UserBook.res */
@@ -56,18 +56,20 @@ module BookFragment = %relay(`
 let make = (~book) => {
   let book = BookFragment.use(book)
   // `book` would roughly be:
-  // type fragment = [
-  //   | #Textbook({ title: string, courses: array<string> })
-  //   | #ColoringBook({ title: string, colors: array<string> })
-  //   | #UnselectedUnionMember(string)
+  // type fragment =
+  //   | Textbook({ title: string, courses: array<string> })
+  //   | ColoringBook({ title: string, colors: array<string> })
+  //   | UnselectedUnionMember(string)
   // ]
 
   switch book {
-    | #Textbook({ title, courses }) => <Textbook title courses />
-    | #ColoringBook({ title, colors }) => <ColoringBook title colors />
-    | #UnselectedUnionMember(typename) => ("Unselected member type: " ++ typename)->React.string
+  | Textbook({title, courses}) => <Textbook title courses />
+  | ColoringBook({title, colors}) => <ColoringBook title colors />
+  | UnselectedUnionMember(typename) =>
+    ("Unselected member type: " ++ typename)->React.string
   }
 }
+
 ```
 
 You could notice that in fragment definition we asked for `title` field twice, which is unnecessary since it is a common field coming from the interface. We could instead specify it only once, above inline fragment spreads, on the `Book` itself. This will produce a different result, a record type with type specific fields as optional values:

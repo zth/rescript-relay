@@ -11,7 +11,7 @@ sidebar_label: Enums
 
 ## Enums in RescriptRelay
 
-Enums are modelled as polymorphic variants in RescriptRelay. Here's an example. Imagine the following GraphQL schema:
+Enums are modelled as variants in RescriptRelay. Here's an example. Imagine the following GraphQL schema:
 
 ```graphql
 enum TicketStatus {
@@ -44,16 +44,16 @@ let make = (~ticket) => {
 
   <div>
     {switch ticket.status {
-    | #Rejected => React.string("Ticket is rejected")
-    | #Done | #Progress | #OnHold => React.string("Ticket is not rejected")
-    | _ => React.null
+    | Rejected => React.string("Ticket is rejected")
+    | Done | Progress | OnHold => React.string("Ticket is not rejected")
+    | FutureAddedValue(_) => React.null
     }}
   </div>
 }
 
 ```
 
-Notice the catch all case `_ => React.null` - the way the enum type is shaped in ReScript ensures that we're enforced to add that catch all case. This will help you protect your app against runtime errors if there's a new value added to the enum before you have a chance to update your app.
+Notice the catch all case `FutureAddedValue(_) => React.null` - this is where any future added enum value will end up until you have a chance to update and deploy code handling the new enum value. The way the enum type is shaped in ReScript ensures that we're enforced to add that catch all case. This will help you protect your app against runtime errors if there's a new value added to the enum before you have a chance to update your app.
 
 ## Enums coming from the server are unsafe
 
@@ -93,11 +93,15 @@ let (newStatus, setNewStatus) = React.useState(() =>
   // sets a default value instead.
   ticket.status
     ->TicketFragment.ticketStatus_decode
-    ->Option.getOr(#OnHold)
+    ->Option.getOr(OnHold)
   )
 
 // Yay, `newStatus` is now safe to use like we expect it to be!
 ```
+
+#### Client extension enums are always considered safe
+
+Any enum you add to your schema as a local schema extension (and therefore only exists on the client, not on the server) is considered safe, and won't have a catch all case emitted.
 
 #### Opting out of safety
 
@@ -119,8 +123,8 @@ In addition to the utils listed above, there's also a function available for tak
 
 ```rescript
 switch TicketFragment.ticketStatus_fromString(someString) {
-  | None => Js.log("Nope, this wasn't valid...")
-  | Some(validEnum) => Js.log(validEnum)
+| None => Console.log("Nope, this wasn't valid...")
+| Some(validEnum) => Console.log(validEnum)
 }
 ```
 

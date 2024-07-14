@@ -18,7 +18,7 @@ Sometimes you'll want to refresh or refetch data in specific parts of your views
 
 ## Making a fragment refetchable
 
-You can make a fragment refetchable by adding the `@refetchable(queryName: "")` directive to it. Let's look at an example of making a fragment refetchable and refetching it with. Here's a component showing some information about a user, and then rendering a "Show bio"-button to refetch the fragment it uses, but include more information about the user:
+You can make a fragment refetchable by adding the `@refetchable(queryName: "<queryName>")` directive to it. Let's look at an example of making a fragment refetchable and refetching it with. Here's a component showing some information about a user, and then rendering a "Show bio"-button to refetch the fragment it uses, but include more information about the user:
 
 ```rescript
 /* UserProfileHeader.res */
@@ -92,6 +92,10 @@ In the example above we have variables `$includeFullBio` and `$bioMaxLength`. Le
 So, notice how `Some(value)` means "set this value", `None` means "unset this value", and leaving out the variable all together from `makeRefetchVariables` means "don't change this variable, reuse the last value".
 
 This allows us to refetch data in response to parameters changing, without having to keep track of all the current variable values, if we know they haven't changed. Pretty neat!
+
+### Conditional fragments
+
+TODO: Link to conditional fragments
 
 ### Summing up
 

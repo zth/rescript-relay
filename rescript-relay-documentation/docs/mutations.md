@@ -146,6 +146,10 @@ Let's highlight a few things here:
 
 The type safe connection id maker will make life _much_ easier when selecting and using the connection's `__id` isn't feasible, like when you want to add or remove the new node/edge from several connections at once, or to the same connection but with multiple configs.
 
+### Updatable fragments
+
+TODO
+
 ### Imperative updates
 
 All mutation functions you use take an optional prop called `updater`. `updater` is a function that receives the Relay store (`RecordSourceSelectorProxy.t`) and the `'response` from the mutation. It lets you apply any updates to the store in response to a mutation.
@@ -179,6 +183,10 @@ So, what's going on here?
 3. Relay will take the `optimisticResponse` and apply it as it's sending the mutation request, which in turn will make the UI update right away.
 
 There, now we have a basic optimistic update set up! Instead of waiting for the mutation to complete, Relay will update all parts of the UI using that particular todo item's `text` field right away, and it'll roll back to the old value appropriately if the mutation fails.
+
+### Using updatable fragments for optimistic updates
+
+TODO
 
 ### `@raw_response_type` - getting exactly what Relay expects from the server
 

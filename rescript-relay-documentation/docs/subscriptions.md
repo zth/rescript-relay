@@ -83,11 +83,11 @@ enum TicketStatus {
 type Ticket implements Node {
   id: ID!
   status: TicketStatus!
-  title: string!
+  title: String!
 }
 ```
 
-Then in your `Ticket.re` module we can subscribe to changes to the ticket status. Fragments in relay automatically subscribe to updates for the fragment data, see [Relay docs](https://relay.dev/docs/guided-tour/rendering/fragments). So when we receive an event that the ticket status updated the fragments referencing the data will receive an update and re-render the new state.
+Then in your `Ticket.res` module we can subscribe to changes to the ticket status. Fragments in relay automatically subscribe to updates for the fragment data, see [Relay docs](https://relay.dev/docs/guided-tour/rendering/fragments). So when we receive an event that the ticket status updated the fragments referencing the data will receive an update and re-render the new state.
 
 ```rescript
 /* Ticket.res */

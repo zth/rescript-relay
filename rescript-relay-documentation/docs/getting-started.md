@@ -22,16 +22,6 @@ You're encouraged to follow along this walkthrough and play with the concepts th
 
 Let's get started!
 
-#### Concurrent Mode is encouraged
-
-You will have the absolute best experience using RescriptRelay in concurrent mode, so you can enjoy the full benefits of the new React and Relay APIs. However, _everything will work_ without concurrent mode too.
-
-##### Extra bindings for experimental APIs with no official bindings yet
-
-Not all new APIs from React are currently bound in the official `@rescript/react` bindings. RescriptRelay therefore ships `ReactExperimental` and `ReactDOMExperimental`, modules with a few bindings to suspense and concurrent mode-related React API's with no official bindings yet. You're encouraged to use this until there's an official alternative.
-
-This means that you'll need React 18 and ReactDOM.
-
 #### A short note on the workflow of using Relay
 
 You can view Relay as being made up of two parts:
@@ -49,22 +39,24 @@ You really don't need to care about the generated artifacts though, RescriptRela
 
 ## Installation
 
-RescriptRelay requires `rescript >= 11.0.0`, `@rescript/react >= 0.12.0`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). Let's start by installing the dependencies:
+> There's a [starter repo for RescriptRelay](https://github.com/zth/rescript-relay-starter) that you're encouraged to use if you're starting completely fresh.
+
+RescriptRelay requires `rescript >= 11.0.0`, `@rescript/react >= 0.12.0`, and as mentioned [here](#concurrent-mode-is-encouraged), it works best with React 18 (`react@18 react-dom@18`). It also **requires running ReScript in uncurried mode**. Let's start by installing the dependencies:
 
 ```bash title="Terminal"
 # Add React 18
 yarn add react@18 react-dom@18
 
 # Add rescript-relay and dependencies to the project
-# We currently depend on Relay version 16, so install that exact version
-yarn add rescript-relay relay-runtime@16.0.0 react-relay@16.0.0
+# We currently depend on Relay version 17, so install that exact version
+yarn add rescript-relay relay-runtime@17.0.0 react-relay@17.0.0
 ```
 
 After you've installed the packages above, setup ReScript through your `rescript.json` (previously known as `bsconfig.json`) like this on _**MacOS**_ or _**Linux**_:
 
 ```json title="rescript.json"
 ...
-"ppx-flags": [["rescript-relay/ppx", "-uncurried"]],
+"ppx-flags": ["rescript-relay/ppx"],
 "bs-dependencies": ["@rescript/react", "rescript-relay"],
 ...
 ```
@@ -73,30 +65,12 @@ or like this on _**Windows**_:
 
 ```json title="rescript.json"
 ...
-"ppx-flags": [["rescript-relay/ppx.exe", "-uncurried"]],
+"ppx-flags": ["rescript-relay/ppx.exe"],
 "bs-dependencies": ["@rescript/react", "rescript-relay"],
 ...
 ```
 
 > Are you using VSCode? Make sure you install and use our [dedicated VSCode extension](vscode-extension). It'll make your life using RescriptRelay _much_ smoother.
-
-#### Using React 18
-
-You may need to tell `yarn` to prefer the React 18 versions of React and ReactDOM by adding an entry to `resolutions` in `package.json`. This is because `@rescript/react` (and possibly other dependencies in your project) will depend on a stable React version, and we want to force _everyone_ to use the experimental React versions, or you might start getting nasty bugs and weird errors about conflicting React versions.
-
-Ensure that only the new React 18 versions are used by doing the following:
-
-1. Open `package.json` and look for `react` and `react-dom`. In the versions field you'll see something like `18.0.0` - copy that version number.
-2. Add an entry for both `react` and `react-dom` with that version number to your `resolutions`. The final configuration should look something like this:
-
-```json title="package.json"
-...
-"resolutions": {
-    "react": "18.0.0",
-    "react-dom": "18.0.0"
-  }
-}
-```
 
 ## Configuring Relay
 
@@ -110,7 +84,7 @@ module.exports = {
 
   // You can add type definitions for custom scalars here.
   // Whenever a custom scalar is encountered, the type emitted will correspond to the definition defined here. You can then deal with the type as needed when accessing the data.
-  customScalars: {
+  customScalarTypes: {
     Datetime: "string",
     Color: "Color.t",
   },
@@ -121,10 +95,7 @@ module.exports = {
 
 > Read more about [custom scalars here.](custom-scalars)
 
-Please note that RescriptRelay enforces two things that regular Relay does not:
-
-1. You must provide an `artifactDirectory`.
-2. You cannot provide your own language plugin.
+Please note that RescriptRelay enforces that you provide an `artifactDirectory`.
 
 We'll also add a script to our `package.json` to run the Relay compiler:
 
@@ -142,8 +113,6 @@ Now you have two scripts set up; one for running the compiler once, and one for 
 
 You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a separate terminal. _Please note that you'll need to be aware of the output from the compiler_ as it will tell you when there are issues you'll need to fix.
 
-> Using VSCode? Our [dedicated VSCode extension](vscode-extension) will run the Relay compiler for you automatically. Check it out!
-
 The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how RescriptRelay uses it [here](the-compiler).
 
 ## Setting up the Relay environment
@@ -155,9 +124,6 @@ You're encouraged to put this in a separate file like `RelayEnv.res` or similar.
 ```rescript title="RelayEnv.res"
 /* This is a Rescript's standard library, typically opened globally in rescript.json */
 open RescriptCore
-
-/* This is just a custom exception to indicate that something went wrong. */
-exception Graphql_error(string)
 
 /**
  * A standard fetch that sends our operation and variables to the
@@ -188,7 +154,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
   if Response.ok(resp) {
     await Response.json(resp)
   } else {
-    raise(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+    panic("Request failed: " ++ Response.statusText(resp))
   }
 }
 
@@ -207,7 +173,7 @@ let environment = RescriptRelay.Environment.make(
 
 There, we now have a Relay environment! We only have two more things to fix before we can start making queries.
 
-##### 1. Adding our Relay environment to React's context
+##### Adding our Relay environment to React's context
 
 Your Relay environment needs to be available in React's context in your app. To fix that, wrap your app in a `<RescriptRelay.Context.Provider />`:
 
@@ -220,10 +186,6 @@ ReactDOMExperimental.renderConcurrentRootAtElementWithId(
 )
 
 ```
-
-##### 2. Rendering your app in Concurrent Mode
-
-We also have to render the app in concurrent mode. Check out how the example app is rendered above; we're using `ReactDOMExperimental.renderConcurrentRootAtElementWithId`. As mentioned in [this section](#concurrent-mode-is-encouraged), you have to render your app in [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) for RescriptRelay to work as intended. To simplify things before the API's are officially released, `ReactDOMExperimental` ships with a function `renderConcurrentRootAtElementWithId` that takes `(React.element, string)`, where `React.element` is your app, and `string` is the ID of the DOM node you want to render into.
 
 ## Time to make your first query
 
