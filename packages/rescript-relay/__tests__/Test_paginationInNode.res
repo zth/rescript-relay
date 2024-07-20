@@ -59,7 +59,7 @@ module UserDisplayer = {
 module UserNodeDisplayer = {
   @react.component
   let make = (~queryRef) => {
-    let (_, startTransition) = ReactExperimental.useTransition()
+    let (_, startTransition) = React.useTransition()
     let {data, hasNext, loadNext, isLoadingNext, refetch} = Fragment.usePagination(queryRef)
 
     <div>

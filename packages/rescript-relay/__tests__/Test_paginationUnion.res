@@ -73,7 +73,7 @@ module Test = {
     let groupId = "123"
     let query = Query.use(~variables={groupId: groupId})
 
-    let (_, startTransition) = ReactExperimental.useTransition()
+    let (_, startTransition) = React.useTransition()
 
     let {data, hasNext, loadNext, isLoadingNext, refetch} = Fragment.usePagination(
       query.fragmentRefs,

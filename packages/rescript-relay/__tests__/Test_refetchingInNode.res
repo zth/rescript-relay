@@ -28,7 +28,7 @@ module UserDisplayer = {
   let make = (~queryRef) => {
     let (data, refetch) = Fragment.useRefetchable(queryRef)
 
-    let (_, startTransition) = ReactExperimental.useTransition()
+    let (_, startTransition) = React.useTransition()
 
     <div>
       {React.string(
