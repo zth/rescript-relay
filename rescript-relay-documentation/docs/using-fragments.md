@@ -139,9 +139,64 @@ Any object (it's actually a ReScript record, but I'll call it object here) where
 
 Phew! That's a lot to break down. It's really not that complicated to use though.
 
-### `@alias`
+### Conditional fragments and more with the `@alias` directive
 
-TODO
+> Recommended background reading: https://relay.dev/docs/guides/alias-directive/
+
+Notice that by default _all_ fragment references on the same object are nested within the same `fragmentRefs` property. This is convenient because you can pass that `fragmentRefs` to any component that expects fragment data on that object, without having to care about pulling out that specific fragment's data.
+
+However, there are a few scenarios where this causes problems:
+
+1. Conditional fragments `...SomeComponent_someFragment @include(if: $someVariable)`. There's no way to figure out if this fragment was actually included or not without also knowing the value of `$someVariable`.
+2. Abstract types and fragment spreads. [Read more in the Relay docs](https://relay.dev/docs/guides/alias-directive/#abstract-types).
+
+`@alias` solves these problems by putting each fragment with `@alias` _on its own property_. So, for the `SomeComponent_someFragment` example above, instead of referencing `fragmentRefs` to access the fragment reference for `SomeComponent_someFragment`, you'd find it under a property called `someComponent_someFragment`. And _that_ property will be optional and not present if the fragment is not included.
+
+This solves a major safety issue in Relay, as well as enable things like easy conditional fragments.
+
+A full example of what it looks like in RescriptRelay:
+
+```rescript
+/* UserProfileHeader.res */
+module UserFragment = %relay(
+  `
+  fragment UserProfileHeader_user on User {
+    firstName
+    lastName
+    ...Avatar_user @alias
+  }
+`
+)
+
+@react.component
+let make = (~user) => {
+  let user = UserFragment.use(user)
+
+  <div>
+    <Avatar user=user.avatar_user /> {React.string(user.firstName ++ " " ++ user.lastName)}
+  </div>
+}
+
+```
+
+There's more fancy stuff you can do with `@alias`, including controlling what the property name for the fragment ends up as in the types. You're encouraged to read the [official Relay docs](https://relay.dev/docs/guides/alias-directive) to learn more.
+
+Also, please note you'll need to enable `@alias` in your Relay config:
+
+```javascript
+// relay.config.js
+module.exports = {
+  schema: "./schema.graphql",
+  artifactDirectory: "./src/__generated__",
+  src: "./src",
+  featureFlags: {
+    enable_relay_resolver_transform: true,
+    enable_fragment_aliases: {
+      kind: "enabled",
+    },
+  },
+};
+```
 
 ### Fragments in fragments
 
@@ -166,7 +221,7 @@ let make = (~user) => {
   let user = UserFragment.use(user)
 
   <div>
-    <Avatar user=user.fragmentRefs /> {React.string(user.firstName ++ (" " ++ user.lastName))}
+    <Avatar user=user.fragmentRefs /> {React.string(user.firstName ++ " " ++ user.lastName)}
   </div>
 }
 
@@ -213,10 +268,6 @@ Let's distill it:
 - We're defining a `pixelRatio` argument for our fragment, and give it a `provider`.
 - The `provider` argument points to a _ReScript module_. This module should define a `get` function that takes `unit` and returns the same type as is defined inside `type` of the argument. So for the example above, that is `let get: unit => float`. The compiler will enforce that you get the types right.
 - Relay will then automatically wire together `MyProvidedVariables.PixelRatio` with the fragment.
-
-## Conditional fragments
-
-TODO
 
 ## Using fragments outside of React's render phase
 
@@ -272,7 +323,7 @@ Before we move on to the next thing, there's a few things that's worth keeping i
 - A component can use any number of fragments, not just one
 - A fragment can use other fragments
 - Any object where a fragment has been spread will have a prop called `fragmentRefs`. This contains references for all fragments that have been spread on that object. You pass that `fragmentReferences` prop to the respective fragment's `use` hooks.
-- @alias TODO
+- `@alias` let's you know for sure whether a fragment has been included (and matches) or not.
 
 With that in mind, Let's jump in to [mutations](mutations).
 

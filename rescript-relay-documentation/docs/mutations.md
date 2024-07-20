@@ -148,7 +148,7 @@ The type safe connection id maker will make life _much_ easier when selecting an
 
 ### Updatable fragments
 
-TODO
+[Updatable fragments](interacting-with-the-store.md#updatable-fragments) can be a great way of modifying the store after a mutation is done.
 
 ### Imperative updates
 
@@ -186,7 +186,23 @@ There, now we have a basic optimistic update set up! Instead of waiting for the 
 
 ### Using updatable fragments for optimistic updates
 
-TODO
+Similarly, if you're not creating new data but just modifying existing data in the store, you can use an updatable fragment for applying optimistic updates:
+
+```rescript
+mutate(
+  ~variables={
+    input: {
+      clientMutationId: None,
+      id: todoItem.id,
+      text: newText,
+    },
+  },
+  ~optimisticUpdater=(store) => {
+    // TODO
+  },
+)
+
+```
 
 ### `@raw_response_type` - getting exactly what Relay expects from the server
 

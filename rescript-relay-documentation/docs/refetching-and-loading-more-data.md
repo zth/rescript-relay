@@ -95,7 +95,7 @@ This allows us to refetch data in response to parameters changing, without havin
 
 ### Conditional fragments
 
-TODO: Link to conditional fragments
+Conditionally including entire fragments is easy. Please refer to the [`@alias` fragment spread directive](using-fragments#conditional-fragments-and-more-with-the-alias-directive).
 
 ### Summing up
 
