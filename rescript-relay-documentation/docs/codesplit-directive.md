@@ -133,7 +133,7 @@ let make = (~blogPostId) => {
 }
 ```
 
-> Read more about the [`@alias` directive here](docs/alias). Using it is not required when not using `@codesplit`, but it's used here to make the next diff easier to understand.
+> Read more about the [`@alias` directive here](using-fragments.md#conditional-fragments-and-more-with-the-alias-directive). Using it is not required when not using `@codesplit`, but it's used here to make the next diff easier to understand.
 
 There, we're rendering a blog post! However, we have a problem here. The `<BlogPostMarkdownRenderer />` is heavy code-wise, since it ships an entire markdown parser and renderer. We don't want to load that code unless the content for that blog post is actually markdown.
 
