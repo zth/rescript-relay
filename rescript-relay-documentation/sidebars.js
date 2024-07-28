@@ -41,6 +41,7 @@ module.exports = {
       "interacting-with-the-store",
       "client-schema-extensions",
       "relay-resolvers",
+      "codesplit-directive",
     ],
     "API Reference": ["api-reference", "relay-environment"],
     Guides: [
