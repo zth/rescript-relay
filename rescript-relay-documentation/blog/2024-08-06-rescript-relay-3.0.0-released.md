@@ -114,7 +114,7 @@ let make = (~lat, ~lng) => {
 }
 ```
 
-This can make a world of difference for how easy to use and understandable an API is, and we're really happy this has landed in RescriptRelay. Read more in the [docs on input unions](docs/input-unions).
+This can make a world of difference for how easy to use and understandable an API is, and we're really happy this has landed in RescriptRelay. Read more in the [docs on input unions](/docs/input-unions).
 
 ### Updatable queries and fragments
 
@@ -167,7 +167,7 @@ The [`@preloadable`](https://relay.dev/docs/glossary/#preloadable) directive in 
 
 RescriptRelayRouter already helps you separate loading data and code efficiently to eliminate waterfalls and ensure your network performance is efficient by default. `@preloadable` is another tool in the network performance toolbox, especially efficient for large queries.
 
-Read more in the [docs on `@preloadable` in RescriptRelay](docs/making-queries#the-preloadable-directive-available-in-v3).
+Read more in the [docs on `@preloadable` in RescriptRelay](/docs/making-queries#the-preloadable-directive-available-in-v3).
 
 ### Easy and efficient data-driven codesplitting with @codesplit (RescriptRelay exclusive feature)
 
@@ -224,7 +224,7 @@ let make = (~blogPostId) => {
 
 That's all it takes! `<BlogPostMarkdownRenderer />` is now codesplit, and the code for it will be downloaded if it matches as soon as the server response comes back, not when the codesplit component is first rendered, like with vanilla `React.lazy`.
 
-Check out the [`@codesplit` documentation](docs/codesplit-directive) for more information and how to start using it.
+Check out the [`@codesplit` documentation](/docs/codesplit-directive) for more information and how to start using it.
 
 > Another good example is something like Facebook's news feed, where there are potentially hundreds of different components that might be needed depending on what type of news feed items are returned from the server. You want to codesplit all of these so you only load code to render the actual stories you get back, but you won't know what components to load until you get the actual server response back. `@codesplit` helps you do this easily and with great performance.
 
@@ -232,7 +232,7 @@ Check out the [`@codesplit` documentation](docs/codesplit-directive) for more in
 
 Relay uses the fragment model, which is one of the most powerful things about GraphQL. However, it has traditionally been really difficult to figure out if a fragment was actually fetched or not.
 
-With the [`@alias`](docs/using-fragments#conditional-fragments-and-more-with-the-alias-directive) directive, this has now become possible, and easy! An example:
+With the [`@alias`](/docs/using-fragments#conditional-fragments-and-more-with-the-alias-directive) directive, this has now become possible, and easy! An example:
 
 ```rescript
 module Query = %relay(`
@@ -290,10 +290,10 @@ This makes working with conditional fragments easier and safer.
 
 ## Going from V2 to V3
 
-Since V3 has a lot of changes, you'll need to take some manual steps to migrate from prior versions to V3. Check out the [migration doc](docs/migrating-to-v3) for more information.
+Since V3 has a lot of changes, you'll need to take some manual steps to migrate from prior versions to V3. Check out the [migration doc](/docs/migrating-to-v3) for more information.
 
 ## Wrapping up
 
 Thank you for reading, and we hope you're as excited as we are for RescriptRelay v3!
 
-Oh, and also, if you haven't already, you should check out the [tutorial on RescriptRelay](docs/tutorial/tutorial-intro). And of course, the new [Relay video series](/docs/relay-video-series).
+Oh, and also, if you haven't already, you should check out the [tutorial on RescriptRelay](/docs/tutorial/tutorial-intro). And of course, the new [Relay video series](/docs/relay-video-series).
