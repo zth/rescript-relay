@@ -9,6 +9,18 @@ sidebar_label: Using Fragments
 - [Fragments in GraphQL](https://graphql.org/learn/queries/#fragments)
 - [A Guided Tour of Relay: Fragments](https://relay.dev/docs/guided-tour/rendering/fragments)
 
+Videos from the Relay video series covering fragments:
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/W3fcG239i-I"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
+
 ## Using Fragments
 
 One of the main things that make Relay so powerful is using _GraphQL fragments_ to co-locate the data-demands of your components with your actual component code. This leads to well-isolated components that are very portable and easy to maintain.

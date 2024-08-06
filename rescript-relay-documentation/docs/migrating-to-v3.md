@@ -249,7 +249,29 @@ In addition to this you might occasionally need to explicitly pattern match the 
 We're almost there! Now we can upgrade to an actual `alpha` version of RescriptRelay, and upgrade Relay to v16:
 
 ```bash
-yarn install rescript-relay@3.0.0-alpha.5 relay-runtime@latest react-relay@latest &&
+yarn install rescript-relay@3.0.0 relay-runtime@17 react-relay@17
+```
+
+If you have custom scalars set up and mapped, you'll need to change the `customScalars` prop name to `customScalarTypes` in your `relay.config.js`:
+
+```js title="relay.config.js"
+module.exports = {
+  src: "./src",
+  schema: "./schema.graphql",
+  artifactDirectory: "./src/__generated__",
+// color2
+  customScalars: {
+// change-line
+  customScalarTypes: {
+    Datetime: "string",
+    Color: "Color.t",
+  },
+};
+```
+
+Now you should be able to build:
+
+```bash
 yarn rescript-relay-compiler &&
 yarn rescript build
 ```

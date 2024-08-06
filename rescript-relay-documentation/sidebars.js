@@ -45,6 +45,7 @@ module.exports = {
     ],
     "API Reference": ["api-reference", "relay-environment"],
     Guides: [
+      "relay-video-series",
       "codebase-health-considerations",
       "editor-support-and-development-environment",
       "custom-scalars",

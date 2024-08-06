@@ -11,6 +11,18 @@ sidebar_label: Pagination
 - [The Relay server specification: Connections](https://relay.dev/docs/en/graphql-server-specification.html#connections)
 - [React documentation: Suspense for Data Fetching](https://reactjs.org/docs/concurrent-mode-suspense.html)
 
+Videos from the Relay video series covering pagination:
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/QM0UkgRxQ2E"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
+
 ## Pagination in Relay
 
 > The features outlined on this page requires that your schema follow the [Relay specification](https://relay.dev/docs/guides/graphql-server-specification). Read more about using RescriptRelay with schemas that don't conform to the Relay specification [here](using-with-schemas-that-dont-conform-to-the-relay-spec).

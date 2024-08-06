@@ -10,6 +10,18 @@ sidebar_label: Making Queries
 - [A Guided Tour of Relay: Queries](https://relay.dev/docs/guided-tour/rendering/queries)
 - [React documentation: Suspense for Data Fetching](https://reactjs.org/docs/concurrent-mode-suspense.html)
 
+Videos from the Relay video series covering queries:
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/pd9cX2nZnSk"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
+
 ## Making Queries
 
 Let's make our first query!
