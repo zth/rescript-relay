@@ -92,16 +92,19 @@ This will produce the following variant for `location`:
 
 ```rescript
 type input_ByAddress = {
+  streetAddress: string,
+  postalCode: string,
   city: string,
 }
 
-type input_ByLoc = {
+type input_ByCoordinates = {
   lat: float,
+  lng: float,
 }
 
 type input_Location =
 | ByAddress(input_ByAddress)
-| ByLoc(input_ByLoc)
+| ByCoordinates(input_ByCoordinates)
 | ById(string)
 ```
 
