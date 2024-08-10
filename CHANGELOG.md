@@ -1,8 +1,6 @@
 # master
 
-**All work on version `2.x` is in the [2.x branch](https://github.com/zth/rescript-relay/tree/2.x).**
-
-# **Version 3**
+- Add `Environment.findAllConnectionIds` for finding all IDs of all connection instances for a specific connection, regardless of what configs that connection has been fetched (and cached) with.
 
 # 3.0.0 stable
 

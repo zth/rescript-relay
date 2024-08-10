@@ -785,6 +785,9 @@ module Environment: {
 You should use the generated `Query.retain` function on your queries instead of using this directly.*/
   @send
   external retain: (t, operationDescriptor) => Disposable.t = "retain"
+
+  /**Find all connection IDs for a specific connection and on a specific object. Useful together with `@deleteEdge` and similar where you want to remove something from all connection configurations. */
+  let findAllConnectionIds: (t, ~connectionKey: string, ~parentId: dataId) => array<dataId>
 }
 
 /**fetchPolicy controls how you want Relay to resolve your data.*/

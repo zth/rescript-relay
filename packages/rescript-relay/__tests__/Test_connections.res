@@ -138,6 +138,24 @@ module Test = {
     let user = Fragment.use(query.loggedInUser.fragmentRefs)
     let friends = user.friendsConnection->Fragment.getConnectionNodes
     let (addFriend, _isAddingFriend) = AddFriendMutation.use()
+    let environment = RescriptRelay.useEnvironmentFromContext()
+    let addFriend = useFindAllConnectionIds =>
+      addFriend(
+        ~variables={
+          connections: {
+            if useFindAllConnectionIds {
+              environment->RescriptRelay.Environment.findAllConnectionIds(
+                ~connectionKey=TestConnections_user_graphql.connectionKey,
+                ~parentId=user.__id,
+              )
+            } else {
+              open TestConnections_user_graphql
+              [user.__id->makeConnectionId(~beforeDate=makeDate())]
+            }
+          },
+          friendId: "123",
+        },
+      )
 
     <div>
       {friends
@@ -145,17 +163,15 @@ module Test = {
       ->React.array}
       <button
         onClick={_ => {
-          addFriend(
-            ~variables={
-              connections: {
-                open TestConnections_user_graphql
-                [user.__id->makeConnectionId(~beforeDate=makeDate())]
-              },
-              friendId: "123",
-            },
-          )->RescriptRelay.Disposable.ignore
+          addFriend(false)->RescriptRelay.Disposable.ignore
         }}>
         {React.string("Add friend")}
+      </button>
+      <button
+        onClick={_ => {
+          addFriend(false)->RescriptRelay.Disposable.ignore
+        }}>
+        {React.string("Add friend with findAllConnectionIds")}
       </button>
     </div>
   }

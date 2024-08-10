@@ -734,6 +734,27 @@ module Environment = {
   @send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
   @send external retain: (t, operationDescriptor) => Disposable.t = "retain"
+
+  @send external mapGet: (Js.Map.t<'key, 'value>, 'key) => option<'value> = "get"
+
+  type recordValue = {__ref: dataId}
+  @get external _records: RecordSource.t => Js.Map.t<string, Js.Dict.t<recordValue>> = "_records"
+
+  let findAllConnectionIds = (environment: t, ~connectionKey: string, ~parentId: dataId) => {
+    let ids = []
+    switch environment->getStore->Store.getSource->_records->mapGet(parentId->dataIdToString) {
+    | Some(value) =>
+      value
+      ->Js.Dict.entries
+      ->Js.Array2.forEach(((key, v)) => {
+        if key->Js.String2.startsWith("__" ++ connectionKey ++ "_connection") {
+          let _ = ids->Js.Array2.push(v.__ref)
+        }
+      })
+    | _ => ()
+    }
+    ids
+  }
 }
 
 module Context = {
