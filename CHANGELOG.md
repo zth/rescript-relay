@@ -1,6 +1,7 @@
 # master
 
 - Add `Environment.findAllConnectionIds` for finding all IDs of all connection instances for a specific connection, regardless of what configs that connection has been fetched (and cached) with.
+- Add `RecordSourceSelectorProxy.invalidateRecordsByIds` for invalidating multilple records at the same time.
 
 # 3.0.0 stable
 

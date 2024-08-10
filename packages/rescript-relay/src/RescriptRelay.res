@@ -312,6 +312,12 @@ module RecordSourceSelectorProxy = {
     getPluralRootField(t, ~fieldName)->optArrayOfNullableToOptArrayOfOpt
 
   @send external invalidateStore: t => unit = "invalidateStore"
+
+  let invalidateRecordsByIds: (t, array<dataId>) => unit = (store, recordIds) => {
+    recordIds->Js.Array2.forEach(dataId => {
+      store->get(~dataId)->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+    })
+  }
 }
 
 module ReadOnlyRecordSourceProxy = {
@@ -735,6 +741,10 @@ module Environment = {
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
   @send external retain: (t, operationDescriptor) => Disposable.t = "retain"
 
+  @module("relay-runtime")
+  external commitLocalUpdate: (t, ~updater: RecordSourceSelectorProxy.t => unit) => unit =
+    "commitLocalUpdate"
+
   @send external mapGet: (Js.Map.t<'key, 'value>, 'key) => option<'value> = "get"
 
   type recordValue = {__ref: dataId}
@@ -754,6 +764,18 @@ module Environment = {
     | _ => ()
     }
     ids
+  }
+
+  let invalidateAllOfConnection = (environment: t, ~connectionKey: string, ~parentId: dataId) => {
+    environment->commitLocalUpdate(~updater=store => {
+      environment
+      ->findAllConnectionIds(~connectionKey, ~parentId)
+      ->Js.Array2.forEach(dataId => {
+        store
+        ->RecordSourceSelectorProxy.get(~dataId)
+        ->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+      })
+    })
   }
 }
 

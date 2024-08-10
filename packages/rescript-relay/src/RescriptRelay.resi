@@ -399,6 +399,9 @@ module RecordSourceSelectorProxy: {
   /**Invalidates the entire store. This means that _at the next render_, the entire store will be treated as empty, meaning Relay will refetch everything it needs to show the view it's to show.*/
   @send
   external invalidateStore: t => unit = "invalidateStore"
+
+  /**Invalidates each of the provided records by their ID, if they exist. */
+  let invalidateRecordsByIds: (t, array<dataId>) => unit
 }
 
 /**ReadOnlyRecordSourceProxy is the store, but in read-only mode.*/
@@ -788,6 +791,9 @@ You should use the generated `Query.retain` function on your queries instead of 
 
   /**Find all connection IDs for a specific connection and on a specific object. Useful together with `@deleteEdge` and similar where you want to remove something from all connection configurations. */
   let findAllConnectionIds: (t, ~connectionKey: string, ~parentId: dataId) => array<dataId>
+
+  /**Invalidates all connection configurations of `connectionKey` on `parentId`.*/
+  let invalidateAllOfConnection: (t, ~connectionKey: string, ~parentId: dataId) => unit
 }
 
 /**fetchPolicy controls how you want Relay to resolve your data.*/
