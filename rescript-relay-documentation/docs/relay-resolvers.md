@@ -8,6 +8,47 @@ RescriptRelay supports Relay Resolvers, a somewhat new concept in Relay that let
 
 You're encouraged to read the [official Relay documentation on resolvers](https://relay.dev/docs/guides/relay-resolvers/introduction/) first. This part of the docs will not re-introduce Relay resolvers, but rather talk about how they work in RescriptRelay.
 
+## Setup
+
+In order to use Relay resolvers, you need to do a little bit of setup:
+
+First, you need to enable the Relay resolvers feature flag for the compiler in your `relay.config.js`:
+
+```js title="relay.config.js"
+module.exports = {
+  src: "./src",
+  schema: "./schema.graphql",
+  artifactDirectory: "./src/__generated__",
+  featureFlags: {
+    enable_relay_resolver_transform: true,
+  },
+};
+```
+
+You then need to enable the Relay resolver feature in runtime as well. Finally, you need to create a "live store" instead of a regular store when setting up the Relay store.
+
+Here's how you can do the above easily when setting up your environment:
+
+```rescript
+// change-line
+RescriptRelay.relayFeatureFlags.enableRelayResolvers = true
+
+let environment = RescriptRelay.Environment.make(
+  ~network,
+// color2
+  ~store=RescriptRelay.Store.make(
+// change-line
+  ~store=RescriptRelay.Store.makeLiveStore(
+    ~source=RescriptRelay.RecordSource.make(),
+    ~gcReleaseBufferSize=10
+  )
+)
+```
+
+> This works if you're using esmodules in your project. If you use commonjs, you might need to use `_makeLiveStoreCjs` instead.
+
+## Using Relay resolvers
+
 Using Relay resolvers in RescriptRelay is very similar to stock Relay. However, there are a few differences:
 
 1. One important thing to keep in mind is that _you don't need to annotate your function arguments_ in RescriptRelay. Types for your resolver functions will be automatically generated, and injected into your resolver code.
