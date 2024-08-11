@@ -72,6 +72,21 @@ let make = (~shopLocationId) => {
 
 This brings all of the power of variants also to inputs.
 
+### Input unions without server support
+
+If you for some reason cannot setup `@oneOf` on your server, but still have input objects in the schema you'd like to use as input unions, you can configure those input objects to be treated as input unions by adding the name of them to `inputUnions` in `relay.config.js`:
+
+```js title="relay.config.js"
+module.exports = {
+  src: "./src",
+  schema: "./schema.graphql",
+  artifactDirectory: "./src/__generated__",
+  inputUnions: ["SomeInputObjectName", "AnotherInputObjectName"],
+};
+```
+
+The compiler will check that the input object is elgible to use as input union (all fields are optional) but outside of that, all bets are off. This is an escape hatch and should be treated as such. Prefer to use real support via `@oneOf` on your server as much as possible.
+
 ## Summary
 
 Here's all you need to remember about input unions in RescriptRelay:
