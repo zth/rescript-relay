@@ -108,4 +108,37 @@ let make = (~book) => {
 
 This way, we used the benefits of interfaces, but ended up having a bit harder time using its result.
 
-> Note: Currently, this can't be improved much since these types are coming directly from the Relay compiler, so it's Relay itself that is a bit opinionated here in what types they output. It can get much more complex by adding more type specific fields, so as a workaround we recommend duplicating all field selections in inline fragment spread even if it removes most of the interface benefits. You can see more info on it [here](https://github.com/zth/rescript-relay/issues/315#issuecomment-1078739792).
+Using the `@alias` directive together with a inline fragment spread, we can get the benefits of both of the approaches above:
+
+```rescript
+module BookFragment = %relay(`
+  fragment MyComponent_book on Book {
+    title
+    ... @alias(as: "byType") {
+      __typename # You need to select this as well to get a variant back
+      ... on Textbook {
+        courses
+      }
+      ... on ColoringBook {
+        colors
+      }
+    }
+  }
+`)
+
+@react.component
+let make = (~book) => {
+  let book = BookFragment.use(book)
+
+  // This exists directly on the object
+  let title = book.title
+
+  // Can switch on `byType` to get the rest
+  switch book.byType {
+  | Textbook({courses}) => <Textbook title courses />
+  | ColoringBook({colors}) => <ColoringBook title colors />
+  | UnselectedUnionMember(typename) =>
+    ("Unselected member type: " ++ typename)->React.string
+  }
+}
+```
