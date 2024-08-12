@@ -3,6 +3,7 @@
 - Add `Environment.findAllConnectionIds` for finding all IDs of all connection instances for a specific connection, regardless of what configs that connection has been fetched (and cached) with.
 - Add `RecordSourceSelectorProxy.invalidateRecordsByIds` for invalidating multilple records at the same time.
 - Allow configuring input unions via `inputUnions` in `relay.config.js` as an escape hatch for when `@oneOf` support on your server is tricky to set up.
+- Move `@rescript/react` to `>=0.13.0`.
 
 # 3.0.0 stable
 
