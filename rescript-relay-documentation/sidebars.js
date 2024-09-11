@@ -52,7 +52,7 @@ module.exports = {
       "using-with-hasura",
       "using-with-schemas-that-dont-conform-to-the-relay-spec",
       "migrating-from-javascript-typescript-incrementally",
-      "experimental-router",
+      "router",
       "migrating-to-v3",
     ],
     Misc: ["the-compiler", "quirks-of-rescript-relay", "examples"],
