@@ -21,8 +21,8 @@ jobs:
     container:
       image: alexfedoseev/alpine-node-yarn-esy:0.0.9
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20.x
         env:
@@ -67,8 +67,8 @@ jobs:
     name: Build PPX for release
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20.x
         env:
@@ -125,7 +125,7 @@ jobs:
             artifact-name: relay-compiler-win-x64
     runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: "true"
       - uses: actions-rs/toolchain@v1
@@ -151,8 +151,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-ppx, build-ppx-linux, build-compiler]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
         env:
