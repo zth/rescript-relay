@@ -48,7 +48,7 @@ jobs:
         run: |
           strip ppx-linux
       - name: Upload PPX artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ppx-${{ matrix.platform }}
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
@@ -80,7 +80,7 @@ jobs:
         run: |
           strip _build/default/bin/RescriptRelayPpxApp.exe
       - name: Upload PPX artifact ${{ matrix.platform }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ppx-${{ matrix.platform }}
           path: packages/rescript-relay/rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe
