@@ -145,26 +145,36 @@ v2 = {
 },
 v3 = {
   "fragment": {
-    "args": null,
-    "kind": "FragmentSpread",
-    "name": "UserAvatar_user"
+    "kind": "InlineFragment",
+    "selections": [
+      {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "UserAvatar_user"
+      }
+    ],
+    "type": "User",
+    "abstractKey": null
   },
-  "kind": "AliasedFragmentSpread",
-  "name": "UserAvatar_user",
-  "type": "User",
-  "abstractKey": null
+  "kind": "AliasedInlineFragmentSpread",
+  "name": "UserAvatar_user"
 },
 v4 = [
   {
     "fragment": {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "RichContent_content"
+      "kind": "InlineFragment",
+      "selections": [
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "RichContent_content"
+        }
+      ],
+      "type": "RichContent",
+      "abstractKey": null
     },
-    "kind": "AliasedFragmentSpread",
-    "name": "RichContent_content",
-    "type": "RichContent",
-    "abstractKey": null
+    "kind": "AliasedInlineFragmentSpread",
+    "name": "RichContent_content"
   }
 ],
 v5 = [
@@ -231,14 +241,19 @@ return {
           (v2/*: any*/),
           {
             "fragment": {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "HasNameComponent_hasName"
+              "kind": "InlineFragment",
+              "selections": [
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "HasNameComponent_hasName"
+                }
+              ],
+              "type": "HasName",
+              "abstractKey": "__isHasName"
             },
-            "kind": "AliasedFragmentSpread",
-            "name": "HasNameComponent_hasName",
-            "type": "HasName",
-            "abstractKey": "__isHasName"
+            "kind": "AliasedInlineFragmentSpread",
+            "name": "HasNameComponent_hasName"
           },
           {
             "kind": "InlineFragment",
@@ -299,14 +314,19 @@ return {
             "selections": [
               {
                 "fragment": {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "GroupAvatar_group"
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "GroupAvatar_group"
+                    }
+                  ],
+                  "type": "Group",
+                  "abstractKey": null
                 },
-                "kind": "AliasedFragmentSpread",
-                "name": "GroupAvatar_group",
-                "type": "Group",
-                "abstractKey": null
+                "kind": "AliasedInlineFragmentSpread",
+                "name": "GroupAvatar_group"
               }
             ],
             "type": "Group",

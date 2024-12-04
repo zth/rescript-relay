@@ -13,7 +13,7 @@ module Logger = {
 
   let getLoggedArg = () => loggedArg.contents
 
-  let expectedArg: RescriptRelay.RelayFieldLogger.arg = MissingFieldLog({
+  let expectedArg: RescriptRelay.RelayFieldLogger.arg = MissingRequiredFieldLog({
     owner: "TestRequiredFieldLoggerQuery",
     fieldPath: "loggedInUser.firstName",
   })

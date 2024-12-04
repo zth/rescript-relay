@@ -107,8 +107,7 @@ return {
           {
             "kind": "RequiredField",
             "field": (v0/*: any*/),
-            "action": "LOG",
-            "path": "loggedInUser.firstName"
+            "action": "LOG"
           }
         ],
         "storageKey": null

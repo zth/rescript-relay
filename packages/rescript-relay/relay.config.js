@@ -13,12 +13,6 @@ module.exports = {
     JSON: "Js.Json.t",
     Number: "TestsUtils.Number",
   },
-  featureFlags: {
-    enable_relay_resolver_transform: true,
-    enable_fragment_aliases: {
-      kind: "enabled",
-    },
-  },
   persistConfig: PERSISTING
     ? {
         file: "./persistedQueries.json",

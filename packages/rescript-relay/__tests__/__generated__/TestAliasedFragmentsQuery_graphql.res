@@ -116,14 +116,19 @@ return {
         "selections": [
           {
             "fragment": {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "TestAliasedFragments_userFirstName"
+              "kind": "InlineFragment",
+              "selections": [
+                {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "TestAliasedFragments_userFirstName"
+                }
+              ],
+              "type": "User",
+              "abstractKey": null
             },
-            "kind": "AliasedFragmentSpread",
-            "name": "TestAliasedFragments_userFirstName",
-            "type": "User",
-            "abstractKey": null
+            "kind": "AliasedInlineFragmentSpread",
+            "name": "TestAliasedFragments_userFirstName"
           },
           {
             "condition": "skipThing",
@@ -132,14 +137,19 @@ return {
             "selections": [
               {
                 "fragment": {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "TestAliasedFragments_userLastName"
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "TestAliasedFragments_userLastName"
+                    }
+                  ],
+                  "type": "User",
+                  "abstractKey": null
                 },
-                "kind": "AliasedFragmentSpread",
-                "name": "TestAliasedFragments_userLastName",
-                "type": "User",
-                "abstractKey": null
+                "kind": "AliasedInlineFragmentSpread",
+                "name": "TestAliasedFragments_userLastName"
               }
             ]
           }

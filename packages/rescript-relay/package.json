@@ -49,14 +49,14 @@
     "node-fetch": "^2.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-relay": "17.0.0",
-    "relay-runtime": "17.0.0",
+    "react-relay": "18.2.0",
+    "relay-runtime": "18.2.0",
     "rescript": "11.1.1"
   },
   "peerDependencies": {
     "@rescript/react": ">=0.13.0",
-    "react-relay": "17.0.0",
-    "relay-runtime": "17.0.0",
+    "react-relay": "18.2.0",
+    "relay-runtime": "18.2.0",
     "rescript": "^11.0.0"
   },
   "dependencies": {

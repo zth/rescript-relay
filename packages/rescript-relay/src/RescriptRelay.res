@@ -643,9 +643,9 @@ module Store = {
 
   @module @new
   external makeLiveStoreCjs: (RecordSource.t, storeConfig) => t =
-    "relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore"
+    "relay-runtime/lib/store/live-resolvers/LiveResolverStore"
 
-  @module("relay-runtime/lib/store/experimental-live-resolvers/LiveResolverStore") @new
+  @module("relay-runtime/lib/store/live-resolvers/LiveResolverStore") @new
   external makeLiveStore: (RecordSource.t, storeConfig) => t = "default"
 
   @module("relay-runtime") @new
@@ -686,8 +686,19 @@ module Store = {
 module RelayFieldLogger = {
   @tag("kind")
   type arg =
-    | @as("missing_field.log") MissingFieldLog({owner: string, fieldPath: string})
-    | @as("missing_field.throw") MissingFieldThrow({owner: string, fieldPath: string})
+    | @as("missing_required_field.log") MissingRequiredFieldLog({owner: string, fieldPath: string})
+    | @as("missing_required_field.throw")
+    MissingRequiredFieldThrow({
+        owner: string,
+        fieldPath: string,
+      })
+    | @as("missing_expected_data.log") MissingExpectedData({owner: string, fieldPath: string})
+    | @as("missing_expected_data.throw")
+    MissingExpectedDataThrow({
+        owner: string,
+        fieldPath: string,
+        handled: bool,
+      })
     | @as("relay_resolver.error")
     RelayResolverError({
         owner: string,
