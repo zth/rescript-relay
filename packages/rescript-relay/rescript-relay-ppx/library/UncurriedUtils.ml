@@ -41,6 +41,11 @@ let uncurriedType ~loc ~arity tArg =
 open Parsetree
 open Ast_mapper
 
+let rec findArity ?(arity = 0) exp =
+  match exp.Parsetree.pexp_desc with
+  | Pexp_fun (_, _, _, nextExpr) -> findArity ~arity:(arity + 1) nextExpr
+  | _ -> arity
+
 let wrapAsUncurriedFn ~arity item =
   match item.pstr_desc with
   | Pstr_value (a1, [({pvb_expr = {pexp_desc = Pexp_fun _} as fn} as outerV)])
@@ -53,8 +58,8 @@ let wrapAsUncurriedFn ~arity item =
             [
               {
                 outerV with
-                (* TODO: Should we care about actually figuring out the arity? *)
-                pvb_expr = uncurriedFun ~loc:outerV.pvb_loc ~arity fn;
+                pvb_expr =
+                  uncurriedFun ~loc:outerV.pvb_loc ~arity:(findArity fn) fn;
               };
             ] );
     }
@@ -98,8 +103,9 @@ let uncurriedMapper =
                   [
                     {
                       outerV with
-                      (* TODO: Should we care about actually figuring out the arity? *)
-                      pvb_expr = uncurriedFun ~loc:outerV.pvb_loc ~arity:1 fn;
+                      pvb_expr =
+                        uncurriedFun ~loc:outerV.pvb_loc ~arity:(findArity fn)
+                          fn;
                     };
                   ] );
           }

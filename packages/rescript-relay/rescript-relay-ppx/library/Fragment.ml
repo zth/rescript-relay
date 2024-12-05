@@ -43,6 +43,13 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
                       ~node:[%e valFromGeneratedModule ["node"]]];
                 [%stri
+                  let waitForFragmentData ~environment fRef =
+                    RescriptRelay_Fragment.waitForFragmentData ~environment
+                      ~convertFragment
+                      ~fRef:
+                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+                [%stri
                   let useOpt fRef :
                       [%t typeFromGeneratedModule ["Types"; "fragment"]] option
                       =

@@ -241,3 +241,20 @@ let useRefetchableFragment = (
     ),
   )
 }
+
+@module("relay-runtime/experimental")
+external waitForFragmentData_: (
+  Environment.t,
+  fragmentNode<'node>,
+  'fragmentRef,
+) => promise<'fragment> = "waitForFragmentData"
+
+let waitForFragmentData = async (
+  ~environment,
+  ~node,
+  ~convertFragment: 'fragment => 'fragment,
+  ~fRef,
+) => {
+  let fragmentData = await waitForFragmentData_(environment, node, fRef)
+  convertFragment(fragmentData)
+}
