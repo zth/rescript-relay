@@ -1,5 +1,10 @@
 # master
 
+# 3.1.0
+
+- **Upgrade versions**: `react-relay` and `relay-runtime` to `18.2.0`.
+- Add support for `Fragment.waitForFragmentData`, a new API in Relay 18.2 that lets you wait for fragment data outside of React.
+
 # 3.0.1
 
 - Add `Environment.findAllConnectionIds` for finding all IDs of all connection instances for a specific connection, regardless of what configs that connection has been fetched (and cached) with.
