@@ -4,6 +4,7 @@
 
 - **Upgrade versions**: `react-relay` and `relay-runtime` to `18.2.0`.
 - Add support for `Fragment.waitForFragmentData`, a new API in Relay 18.2 that lets you wait for fragment data outside of React.
+- Experimental: Add a "non React" mode to the PPX, which makes sure only APIs that don't rely on React directly are exposed. This is intended to be a way to simplify using RescriptRelay without React. Activate by passing `-non-react` to the PPX, like `"ppx-flags": [["rescript-relay/ppx", "-non-react"]]`.
 
 # 3.0.1
 
