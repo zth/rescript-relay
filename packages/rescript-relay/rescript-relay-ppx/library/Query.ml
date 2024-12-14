@@ -40,50 +40,58 @@ let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
                 external mkQueryRef :
                   [%t typeFromGeneratedModule ["queryRef"]] ->
                   [%t typeFromGeneratedModule ["queryRef"]] = "%identity"];
-              [%stri
-                let use =
-                  RescriptRelay_Query.useQuery ~convertVariables
-                    ~convertResponse
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let useLoader =
-                  RescriptRelay_Query.useLoader ~convertVariables
-                    ~mkQueryRef:mkQueryRefOpt
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let usePreloaded =
-                  RescriptRelay_Query.usePreloaded ~convertResponse ~mkQueryRef
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let fetch =
-                  RescriptRelay_Query.fetch ~convertResponse ~convertVariables
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let fetchPromised =
-                  RescriptRelay_Query.fetchPromised ~convertResponse
-                    ~convertVariables
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              [%stri
-                let retain =
-                  RescriptRelay_Query.retain ~convertVariables
-                    ~node:[%e valFromGeneratedModule ["node"]]];
-              (match hasRawResponseType with
-              | true ->
+            ]
+            @ (if not !NonReactUtils.enabled then
+                 [
+                   [%stri
+                     let use =
+                       RescriptRelay_Query.useQuery ~convertVariables
+                         ~convertResponse
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let useLoader =
+                       RescriptRelay_Query.useLoader ~convertVariables
+                         ~mkQueryRef:mkQueryRefOpt
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let usePreloaded =
+                       RescriptRelay_Query.usePreloaded ~convertResponse
+                         ~mkQueryRef
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                 ]
+               else [])
+            @ [
                 [%stri
-                  let commitLocalPayload =
-                    RescriptRelay_Query.commitLocalPayload ~convertVariables
-                      ~convertWrapRawResponse
-                      ~node:[%e valFromGeneratedModule ["node"]]]
-              | false -> [%stri ()]);
-            ];
-            (match hasAutocodesplitDirective with
-            | true ->
+                  let fetch =
+                    RescriptRelay_Query.fetch ~convertResponse ~convertVariables
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+                [%stri
+                  let fetchPromised =
+                    RescriptRelay_Query.fetchPromised ~convertResponse
+                      ~convertVariables
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+                [%stri
+                  let retain =
+                    RescriptRelay_Query.retain ~convertVariables
+                      ~node:[%e valFromGeneratedModule ["node"]]];
+                (match hasRawResponseType with
+                | true ->
+                  [%stri
+                    let commitLocalPayload =
+                      RescriptRelay_Query.commitLocalPayload ~convertVariables
+                        ~convertWrapRawResponse
+                        ~node:[%e valFromGeneratedModule ["node"]]]
+                | false -> [%stri ()]);
+              ];
+            (match (!NonReactUtils.enabled, hasAutocodesplitDirective) with
+            | true, _ -> []
+            | false, true ->
               [
                 [%stri
                   module CodesplitComponents =
                     [%m
                     moduleIdentFromGeneratedModule ["CodesplitComponents"]]];
               ]
-            | false -> []);
+            | false, false -> []);
           ]
        |> List.map UncurriedUtils.mapStructureItem))

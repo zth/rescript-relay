@@ -83,3 +83,10 @@ let useRefetchableFragment: (
     ~onComplete: option<Js.Exn.t> => unit=?,
   ) => Disposable.t,
 )
+
+let waitForFragmentData: (
+  ~environment: Environment.t,
+  ~node: fragmentNode<'a>,
+  ~convertFragment: 'fragment => 'fragment,
+  ~fRef: 'b,
+) => promise<'fragment>

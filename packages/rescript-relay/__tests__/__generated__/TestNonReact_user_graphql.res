@@ -1,13 +1,13 @@
-/* @sourceLoc Test_fragment_required.res */
+/* @sourceLoc Test_nonReact.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@warning("-30")
 
-  type fragment_t = {
-    onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus,
+  type fragment = {
+    firstName: string,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
   }
-  type fragment = array<option<fragment_t>>
 }
 
 module Internal = {
@@ -30,7 +30,7 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  array<RescriptRelay.fragmentRefs<[> | #TestFragmentRequiredPlural_user]>> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #TestNonReact_user]> => fragmentRef = "%identity"
 
 module Utils = {
   @@warning("-33")
@@ -59,21 +59,22 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 let node: operationType = %raw(json` {
   "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": {
-    "plural": true
-  },
-  "name": "TestFragmentRequiredPlural_user",
+  "metadata": null,
+  "name": "TestNonReact_user",
   "selections": [
     {
-      "kind": "RequiredField",
-      "field": {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "onlineStatus",
-        "storageKey": null
-      },
-      "action": "NONE"
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "firstName",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "onlineStatus",
+      "storageKey": null
     }
   ],
   "type": "User",

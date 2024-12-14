@@ -63,14 +63,19 @@ let node: operationType = %raw(json` {
     },
     {
       "fragment": {
-        "args": null,
-        "kind": "FragmentSpread",
-        "name": "UserName_user"
+        "kind": "InlineFragment",
+        "selections": [
+          {
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "UserName_user"
+          }
+        ],
+        "type": "User",
+        "abstractKey": null
       },
-      "kind": "AliasedFragmentSpread",
-      "name": "UserName_user",
-      "type": "User",
-      "abstractKey": null
+      "kind": "AliasedInlineFragmentSpread",
+      "name": "UserName_user"
     }
   ],
   "type": "User",

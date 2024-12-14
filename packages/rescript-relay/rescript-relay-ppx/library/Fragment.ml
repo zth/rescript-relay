@@ -23,17 +23,28 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
             ];
-            (match hasAutocodesplitDirective with
-            | true ->
+            (match (!NonReactUtils.enabled, hasAutocodesplitDirective) with
+            | true, _ -> []
+            | false, true ->
               [
                 [%stri
                   module CodesplitComponents =
                     [%m
                     moduleIdentFromGeneratedModule ["CodesplitComponents"]]];
               ]
-            | false -> []);
-            (match hasInlineDirective with
-            | false ->
+            | false, false -> []);
+            [
+              [%stri
+                let waitForFragmentData ~environment fRef =
+                  RescriptRelay_Fragment.waitForFragmentData ~environment
+                    ~convertFragment
+                    ~fRef:
+                      (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                    ~node:[%e valFromGeneratedModule ["node"]]];
+            ];
+            (match (!NonReactUtils.enabled, hasInlineDirective) with
+            | true, _ -> []
+            | false, false ->
               [
                 [%stri
                   let use fRef :
@@ -55,6 +66,11 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                             |. [%e valFromGeneratedModule ["getFragmentRef"]])
                         | None -> None)
                       ~node:[%e valFromGeneratedModule ["node"]]];
+              ]
+            | false, true -> []);
+            (match hasInlineDirective with
+            | false ->
+              [
                 (if isPlural then
                    [%stri
                      let readResolverFragment fRef :
@@ -85,8 +101,9 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                          ~node:[%e valFromGeneratedModule ["node"]]]);
               ]
             | true -> []);
-            (match hasInlineDirective with
-            | true ->
+            (match (!NonReactUtils.enabled, hasInlineDirective) with
+            | true, _ -> []
+            | false, true ->
               [
                 [%stri
                   let readInline fRef :
@@ -96,10 +113,10 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
                       ~node:[%e valFromGeneratedModule ["node"]]];
               ]
-            | false -> []);
-            (match refetchableQueryName with
-            | None -> []
-            | Some refetchableQueryName ->
+            | false, false -> []);
+            (match (!NonReactUtils.enabled, refetchableQueryName) with
+            | true, _ | false, None -> []
+            | false, Some refetchableQueryName ->
               let typeFromRefetchableModule =
                 makeTypeAccessor ~loc ~moduleName:refetchableQueryName
               in

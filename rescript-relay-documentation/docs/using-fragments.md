@@ -193,7 +193,7 @@ let make = (~user) => {
 
 There's more fancy stuff you can do with `@alias`, including controlling what the property name for the fragment ends up as in the types. You're encouraged to read the [official Relay docs](https://relay.dev/docs/guides/alias-directive) to learn more.
 
-Also, please note you'll need to enable `@alias` in your Relay config:
+Also, please note that if you're under version `3.1.0` of RescriptRelay you'll need to enable `@alias` in your Relay config:
 
 ```javascript
 // relay.config.js

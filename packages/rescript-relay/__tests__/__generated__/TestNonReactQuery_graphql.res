@@ -1,4 +1,4 @@
-/* @sourceLoc Test_requiredFieldLogger.res */
+/* @sourceLoc Test_nonReact.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -6,9 +6,10 @@ module Types = {
 
   type rec response_loggedInUser = {
     firstName: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestNonReact_user]>,
   }
   type response = {
-    loggedInUser: option<response_loggedInUser>,
+    loggedInUser: response_loggedInUser,
   }
   @live
   type rawResponse = response
@@ -39,7 +40,7 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"loggedInUser":{"f":""}}}`
   )
   @live
   let wrapResponseConverterMap = ()
@@ -53,7 +54,7 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"loggedInUser":{"f":""}}}`
   )
   @live
   let responseConverterMap = ()
@@ -94,7 +95,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestRequiredFieldLoggerQuery",
+    "name": "TestNonReactQuery",
     "selections": [
       {
         "alias": null,
@@ -104,10 +105,11 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
-            "kind": "RequiredField",
-            "field": (v0/*: any*/),
-            "action": "LOG"
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "TestNonReact_user"
           }
         ],
         "storageKey": null
@@ -120,7 +122,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestRequiredFieldLoggerQuery",
+    "name": "TestNonReactQuery",
     "selections": [
       {
         "alias": null,
@@ -135,6 +137,13 @@ return {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "onlineStatus",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "id",
             "storageKey": null
           }
@@ -144,12 +153,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2c336e01aca4db2f2e69aeb496c7ea4f",
+    "cacheID": "d5f8ad416242fa091016dc4827700a34",
     "id": null,
     "metadata": {},
-    "name": "TestRequiredFieldLoggerQuery",
+    "name": "TestNonReactQuery",
     "operationKind": "query",
-    "text": "query TestRequiredFieldLoggerQuery {\n  loggedInUser {\n    firstName\n    id\n  }\n}\n"
+    "text": "query TestNonReactQuery {\n  loggedInUser {\n    firstName\n    ...TestNonReact_user\n    id\n  }\n}\n\nfragment TestNonReact_user on User {\n  firstName\n  onlineStatus\n}\n"
   }
 };
 })() `)
