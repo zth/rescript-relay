@@ -48,8 +48,8 @@ RescriptRelay requires `rescript >= 11.0.0`, `@rescript/react >= 0.12.0`, and as
 yarn add react@18 react-dom@18
 
 # Add rescript-relay and dependencies to the project
-# We currently depend on Relay version 17, so install that exact version
-yarn add rescript-relay relay-runtime@17.0.0 react-relay@17.0.0
+# We currently depend on Relay version 18.2, so install that exact version
+yarn add rescript-relay relay-runtime@18.2.0 react-relay@18.2.0
 ```
 
 After you've installed the packages above, setup ReScript through your `rescript.json` (previously known as `bsconfig.json`) like this on _**MacOS**_ or _**Linux**_:

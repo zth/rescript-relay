@@ -12,7 +12,7 @@ You're encouraged to read the [official Relay documentation on resolvers](https:
 
 In order to use Relay resolvers, you need to do a little bit of setup:
 
-First, you need to enable the Relay resolvers feature flag for the compiler in your `relay.config.js`:
+First, if you're on lower than version `3.1.0` of RescriptRelay then you need to enable the Relay resolvers feature flag for the compiler in your `relay.config.js`:
 
 ```js title="relay.config.js"
 module.exports = {
@@ -25,13 +25,15 @@ module.exports = {
 };
 ```
 
-You then need to enable the Relay resolver feature in runtime as well. Finally, you need to create a "live store" instead of a regular store when setting up the Relay store.
+You also then need to enable the Relay resolver feature in runtime as well.
+
+Finally, you need to create a "live store" instead of a regular store when setting up the Relay store, regardless of the RescriptRelay version you're using.
 
 Here's how you can do the above easily when setting up your environment:
 
 ```rescript
 // change-line
-RescriptRelay.relayFeatureFlags.enableRelayResolvers = true
+RescriptRelay.relayFeatureFlags.enableRelayResolvers = true // If on a version lower than 3.1.0
 
 let environment = RescriptRelay.Environment.make(
   ~network,
