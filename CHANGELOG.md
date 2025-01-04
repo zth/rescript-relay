@@ -1,5 +1,7 @@
 # master
 
+- Add support for the new Relay `@catch` directive. https://github.com/zth/rescript-relay/pull/549
+
 # 3.1.0
 
 This brings the Relay version to `18.2.0`.
