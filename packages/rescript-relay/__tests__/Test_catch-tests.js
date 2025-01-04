@@ -20,7 +20,7 @@ describe("Catch", () => {
     });
 
     t.render(test_catch("TestLoggedInUserProp"));
-    await t.screen.findByText("Got createdAt: 1735707600000");
+    await t.screen.findByText("Got createdAt: 2025-01-01");
   });
 
   test("logged in user prop - fail", async () => {
@@ -51,7 +51,7 @@ describe("Catch", () => {
     });
 
     t.render(test_catch("TestLoggedInUserPropFragmentData"));
-    await t.screen.findByText("Got createdAt: 1735707600000");
+    await t.screen.findByText("Got createdAt: 2025-01-01");
   });
 
   test("logged in user prop from fragment - fail", async () => {
@@ -83,9 +83,7 @@ describe("Catch", () => {
     });
 
     t.render(test_catch("TestMember"));
-    await t.screen.findByText(
-      "Got user id: user-1, and createdAt: 1735707600000"
-    );
+    await t.screen.findByText("Got user id: user-1, and createdAt: 2025-01-01");
   });
 
   test("member prop - fail", async () => {
@@ -118,9 +116,7 @@ describe("Catch", () => {
     });
 
     t.render(test_catch("TestMemberNested"));
-    await t.screen.findByText(
-      "Got user id: user-1, and createdAt: 1735707600000"
-    );
+    await t.screen.findByText("Got user id: user-1, and createdAt: 2025-01-01");
   });
 
   test("member prop - fail nested", async () => {
@@ -182,7 +178,7 @@ describe("Catch", () => {
 
     t.render(test_catch("TestMembers"));
     await t.screen.findByText(
-      "User: user-1 - 1735707600000, Error!, User: user-3 - 1735707600000"
+      "User: user-1 - 2025-01-01, Error!, User: user-3 - 2025-01-01"
     );
   });
 });

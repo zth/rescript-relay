@@ -2,7 +2,9 @@ exception Malformed_date
 exception Malformed_number
 
 module Datetime = {
+  @editor.completeFrom(Js.Date)
   type t = Js.Date.t
+
   let parse = t =>
     switch t->Js.Json.decodeString {
     | None => raise(Malformed_date)

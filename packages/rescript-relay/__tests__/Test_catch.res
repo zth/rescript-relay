@@ -21,7 +21,9 @@ module TestLoggedInUserProp = {
     switch query.loggedInUser.createdAt {
     | Ok({value: createdAt}) =>
       <div>
-        {React.string("Got createdAt: " ++ createdAt->Js.Date.getTime->Belt.Float.toString)}
+        {React.string(
+          "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+        )}
       </div>
     | Error(_) => <div> {React.string("Error!")} </div>
     }
@@ -37,7 +39,9 @@ module TestLoggedInUserPropFragmentData = {
     switch fragmentData {
     | Ok({value: {createdAt}}) =>
       <div>
-        {React.string("Got createdAt: " ++ createdAt->Js.Date.getTime->Belt.Float.toString)}
+        {React.string(
+          "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+        )}
       </div>
     | Error(_) => <div> {React.string("Error!")} </div>
     }
@@ -67,7 +71,7 @@ module TestMember = {
           "Got user id: " ++
           id ++
           ", and createdAt: " ++
-          createdAt->Js.Date.getTime->Belt.Float.toString,
+          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
         )}
       </div>
     | Error(_) => <div> {React.string("Error!")} </div>
@@ -104,7 +108,7 @@ module TestMemberNested = {
           "Got user id: " ++
           id ++
           ", and createdAt: " ++
-          createdAt->Js.Date.getTime->Belt.Float.toString,
+          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
         )}
       </div>
     | Some(User({memberOfSingular: Error(_)})) => <div> {React.string("Error nested!")} </div>
@@ -143,7 +147,7 @@ module TestMembers = {
     ->Js.Array2.map(r =>
       switch r {
       | Ok({value: User({id, createdAt})}) =>
-        `User: ${id} - ${createdAt->Js.Date.getTime->Belt.Float.toString}`
+        `User: ${id} - ${createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10)}`
       | _ => "Error!"
       }
     )
