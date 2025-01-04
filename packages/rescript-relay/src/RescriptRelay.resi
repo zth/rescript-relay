@@ -41,6 +41,24 @@ type dataId
 
 type dataIdObject = {id: dataId}
 
+/** A module for results originating from the @catch directive. */
+module CatchResult: {
+  /** The shape of an error caught via @catch. */
+  type catchError = Js.Json.t
+
+  /** The result type for @catch. */
+  @tag("ok")
+  type t<'value> =
+    | @as(true) Ok({value: 'value})
+    | @as(false) Error({errors: array<catchError>})
+
+  /** Convert a @catch result to option. */
+  let toOption: t<'value> => option<'value>
+
+  /** Convert a @catch result to result. */
+  let toResult: t<'value> => result<'value, array<catchError>>
+}
+
 module SuspenseSentinel: {
   type t
 

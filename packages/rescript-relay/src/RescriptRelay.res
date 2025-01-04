@@ -17,6 +17,25 @@ type dataIdObject = {id: dataId}
 type recordSourceRecords = Js.Json.t
 type uploadables
 
+module CatchResult = {
+  type catchError = Js.Json.t
+
+  @tag("ok")
+  type t<'value> = | @as(true) Ok({value: 'value}) | @as(false) Error({errors: array<catchError>})
+
+  let toOption = (t: t<'value>) =>
+    switch t {
+    | Ok({value}) => Some(value)
+    | Error(_) => None
+    }
+
+  let toResult = (t: t<'value>): result<'value, array<catchError>> =>
+    switch t {
+    | Ok({value}) => Ok(value)
+    | Error({errors}) => Error(errors)
+    }
+}
+
 module SuspenseSentinel = {
   type t
 
