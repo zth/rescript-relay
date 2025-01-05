@@ -6,6 +6,7 @@ module Types = {
 
   type rec response_loggedInUser = {
     createdAt: RescriptRelay.CatchResult.t<TestsUtils.Datetime.t>,
+    isOnline: RescriptRelay.CatchResult.t<option<bool>>,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestCatchUser_user]>,
   }
   type response = {
@@ -93,6 +94,13 @@ var v0 = {
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isOnline",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -112,6 +120,11 @@ return {
           {
             "kind": "CatchField",
             "field": (v0/*: any*/),
+            "to": "RESULT"
+          },
+          {
+            "kind": "CatchField",
+            "field": (v1/*: any*/),
             "to": "RESULT"
           },
           {
@@ -141,6 +154,7 @@ return {
         "plural": false,
         "selections": [
           (v0/*: any*/),
+          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -154,12 +168,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3f1f4cf7afa2f93882110139d958809c",
+    "cacheID": "67277f94c4cd55e0c08e24700cef65d9",
     "id": null,
     "metadata": {},
     "name": "TestCatchLoggedInUserPropQuery",
     "operationKind": "query",
-    "text": "query TestCatchLoggedInUserPropQuery {\n  loggedInUser {\n    createdAt\n    ...TestCatchUser_user\n    id\n  }\n}\n\nfragment TestCatchUser_user on User {\n  createdAt\n}\n"
+    "text": "query TestCatchLoggedInUserPropQuery {\n  loggedInUser {\n    createdAt\n    isOnline\n    ...TestCatchUser_user\n    id\n  }\n}\n\nfragment TestCatchUser_user on User {\n  createdAt\n}\n"
   }
 };
 })() `)

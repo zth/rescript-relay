@@ -15,6 +15,7 @@ describe("Catch", () => {
         loggedInUser: {
           id: "user-1",
           createdAt: date.toISOString(),
+          isOnline: null,
         },
       },
     });
@@ -30,6 +31,7 @@ describe("Catch", () => {
         loggedInUser: {
           id: "user-1",
           createdAt: null,
+          isOnline: null,
         },
       },
       graphqlErrors: [{ path: ["loggedInUser", "createdAt"] }],
@@ -37,6 +39,22 @@ describe("Catch", () => {
 
     t.render(test_catch("TestLoggedInUserProp"));
     await t.screen.findByText("Error!");
+  });
+
+  test("logged in user prop - success but null", async () => {
+    queryMock.mockQuery({
+      name: "TestCatchLoggedInUserPropQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          createdAt: date.toISOString(),
+          isOnline: null,
+        },
+      },
+    });
+
+    t.render(test_catch("TestLoggedInUserProp"));
+    await t.screen.findByText("Got isOnline: null");
   });
 
   test("logged in user prop from fragment - success", async () => {

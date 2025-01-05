@@ -2,6 +2,7 @@ module QueryLoggedInUserProp = %relay(`
   query TestCatchLoggedInUserPropQuery {
     loggedInUser {
       createdAt @catch
+      isOnline @catch
       ...TestCatchUser_user
     }
   }
@@ -18,15 +19,31 @@ module TestLoggedInUserProp = {
   let make = () => {
     let query = QueryLoggedInUserProp.use(~variables=())
 
-    switch query.loggedInUser.createdAt {
-    | Ok({value: createdAt}) =>
-      <div>
-        {React.string(
-          "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
-        )}
-      </div>
-    | Error(_) => <div> {React.string("Error!")} </div>
-    }
+    <>
+      {switch query.loggedInUser.createdAt {
+      | Ok({value: createdAt}) =>
+        <div>
+          {React.string(
+            "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+          )}
+        </div>
+      | Error(_) => <div> {React.string("Error!")} </div>
+      }}
+      {switch query.loggedInUser.isOnline {
+      | Ok({value: isOnline}) =>
+        <div>
+          {React.string(
+            "Got isOnline: " ++
+            switch isOnline {
+            | Some(true) => "true"
+            | Some(false) => "false"
+            | None => "null"
+            },
+          )}
+        </div>
+      | Error(_) => <div> {React.string("Error isOnline!")} </div>
+      }}
+    </>
   }
 }
 
@@ -65,7 +82,7 @@ module TestMember = {
     let query = QueryMember.use(~variables=())
 
     switch query.member {
-    | Ok({value: User({id, createdAt})}) =>
+    | Ok({value: Some(User({id, createdAt}))}) =>
       <div>
         {React.string(
           "Got user id: " ++
@@ -102,7 +119,7 @@ module TestMemberNested = {
     let query = QueryMemberNested.use(~variables=())
 
     switch query.member {
-    | Some(User({id, memberOfSingular: Ok({value: User({createdAt})})})) =>
+    | Some(User({id, memberOfSingular: Ok({value: Some(User({createdAt}))})})) =>
       <div>
         {React.string(
           "Got user id: " ++
@@ -146,7 +163,7 @@ module TestMembers = {
     members
     ->Js.Array2.map(r =>
       switch r {
-      | Ok({value: User({id, createdAt})}) =>
+      | Ok({value: Some(User({id, createdAt}))}) =>
         `User: ${id} - ${createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10)}`
       | _ => "Error!"
       }

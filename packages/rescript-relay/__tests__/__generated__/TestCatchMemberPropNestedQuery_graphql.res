@@ -19,7 +19,7 @@ module Types = {
       {
         @live __typename: [ | #User],
         @live id: string,
-        memberOfSingular: RescriptRelay.CatchResult.t<response_member_User_memberOfSingular_value>,
+        memberOfSingular: RescriptRelay.CatchResult.t<option<response_member_User_memberOfSingular_value>>,
       }
     )
     | @live @as("__unselected") UnselectedUnionMember(string)

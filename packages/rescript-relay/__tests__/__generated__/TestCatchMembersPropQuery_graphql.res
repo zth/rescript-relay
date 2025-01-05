@@ -15,7 +15,7 @@ module Types = {
     | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_members_edges = {
-    node: RescriptRelay.CatchResult.t<response_members_edges_node_value>,
+    node: RescriptRelay.CatchResult.t<option<response_members_edges_node_value>>,
   }
   and response_members = {
     edges: option<array<option<response_members_edges>>>,
