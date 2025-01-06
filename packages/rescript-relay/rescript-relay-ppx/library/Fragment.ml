@@ -1,12 +1,12 @@
 open Ppxlib
 open Util
 
-let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
-    ~hasInlineDirective ~isPlural ~hasAutocodesplitDirective =
+let make ~loc ~moduleName ~refetchableQueryName
+    ~(connectionInfo : connectionInfo option) ~hasInlineDirective ~isPlural
+    ~hasAutocodesplitDirective =
   let typeFromGeneratedModule = makeTypeAccessor ~loc ~moduleName in
   let valFromGeneratedModule = makeExprAccessor ~loc ~moduleName in
   let moduleIdentFromGeneratedModule = makeModuleIdent ~loc ~moduleName in
-  let hasConnection = extractedConnectionInfo in
   Ast_helper.Mod.mk
     (Pmod_structure
        (List.concat
@@ -116,7 +116,7 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
             | false, false -> []);
             (match (!NonReactUtils.enabled, refetchableQueryName) with
             | true, _ | false, None -> []
-            | false, Some refetchableQueryName ->
+            | false, Some refetchableQueryName -> (
               let typeFromRefetchableModule =
                 makeTypeAccessor ~loc ~moduleName:refetchableQueryName
               in
@@ -147,7 +147,8 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                       ~node:[%e valFromGeneratedModule ["node"]]];
               ]
               @
-              if hasConnection then
+              match connectionInfo with
+              | Some {prefetchable_pagination = false} ->
                 [
                   [%stri
                     let usePagination fRef =
@@ -157,15 +158,35 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                           (fRef
                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
                         ~node:[%e valFromGeneratedModule ["node"]]];
+                ]
+              | Some {prefetchable_pagination = true} ->
+                let edgesModuleName = moduleName ^ "__edges" in
+                let typeFromEdgesModule =
+                  makeTypeAccessor ~loc ~moduleName:edgesModuleName
+                in
+                let valFromEdgesModule =
+                  makeExprAccessor ~loc ~moduleName:edgesModuleName
+                in
+
+                [
                   [%stri
-                    let useBlockingPagination fRef =
-                      RescriptRelay_Fragment.useBlockingPaginationFragment
-                        ~convertFragment ~convertRefetchVariables
+                    let convertEdges :
+                        [%t typeFromEdgesModule ["Types"; "fragment"]] ->
+                        [%t typeFromEdgesModule ["Types"; "fragment"]] =
+                      [%e valFromEdgesModule ["Internal"; "convertFragment"]]];
+                  [%stri
+                    let usePrefetchableForwardPagination ~bufferSize
+                        ?initialSize ?prefetchingLoadMoreOptions
+                        ?minimumFetchSize fRef =
+                      RescriptRelay_Fragment.usePrefetchableForwardPagination
+                        ~convertFragment ~convertEdges ~convertRefetchVariables
                         ~fRef:
                           (fRef
                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                        ~node:[%e valFromGeneratedModule ["node"]]];
+                        ~node:[%e valFromGeneratedModule ["node"]]
+                        ~bufferSize ?initialSize ?prefetchingLoadMoreOptions
+                        ?minimumFetchSize];
                 ]
-              else []);
+              | None -> []));
           ]
        |> List.map UncurriedUtils.mapStructureItem))

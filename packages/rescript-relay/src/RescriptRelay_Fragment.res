@@ -84,18 +84,6 @@ type paginationFragmentReturnRaw<'fragment, 'refetchVariables> = {
   isLoadingPrevious: bool,
   refetch: ('refetchVariables, refetchableFnOpts) => Disposable.t,
 }
-type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
-  data: 'fragment,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch: (
-    ~variables: 'refetchVariables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
-  ) => Disposable.t,
-}
 type paginationFragmentReturn<'fragment, 'refetchVariables> = {
   data: 'fragment,
   loadNext: paginationLoadMoreFn,
@@ -117,10 +105,7 @@ external usePaginationFragment_: (
   'fragmentRef,
 ) => paginationFragmentReturnRaw<'fragment, 'refetchVariables> = "usePaginationFragment"
 
-/** React hook for paginating a fragment. Paginating with \
-                       this hook will _not_ cause your component to suspend. \
-                       If you want pagination to trigger suspense, look into \
-                       using `Fragment.useBlockingPagination`.*/
+/** React hook for paginating a fragment. Paginating with this hook will _not_ cause your component to suspend. */
 let usePaginationFragment = (
   ~node,
   ~fRef,
@@ -158,39 +143,71 @@ let usePaginationFragment = (
   }
 }
 
-@module("react-relay/lib/relay-hooks/legacy/useBlockingPaginationFragment")
-external useBlockingPaginationFragment_: (
+type prefetchableForwardPaginationFragmentReturnRaw<'fragment, 'edges, 'refetchVariables> = {
+  data: 'fragment,
+  edges: 'edges,
+  loadNext: (int, paginationLoadMoreOptions) => Disposable.t,
+  hasNext: bool,
+  isLoadingNext: bool,
+  refetch: ('refetchVariables, refetchableFnOpts) => Disposable.t,
+}
+type prefetchableForwardPaginationFragmentReturn<'fragment, 'edges, 'refetchVariables> = {
+  data: 'fragment,
+  edges: 'edges,
+  loadNext: paginationLoadMoreFn,
+  hasNext: bool,
+  isLoadingNext: bool,
+  refetch: (
+    ~variables: 'refetchVariables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option<Js.Exn.t> => unit=?,
+  ) => Disposable.t,
+}
+
+@module("react-relay")
+external usePrefetchableForwardPaginationFragment_: (
   fragmentNode<'node>,
   'fragmentRef,
-) => paginationFragmentReturnRaw<'fragment, 'refetchVariables> = "default"
+  ~bufferSize: int,
+  ~initialSize: int=?,
+  ~prefetchingLoadMoreOptions: paginationLoadMoreOptions=?,
+  ~minimumFetchSize: int=?,
+) => prefetchableForwardPaginationFragmentReturnRaw<'fragment, 'edges, 'refetchVariables> =
+  "usePrefetchableForwardPaginationFragment_EXPERIMENTAL"
 
-/** Like `Fragment.usePagination`, but calling the \
-                       pagination function will trigger suspense. Useful for \
-                       all-at-once pagination.*/
-let useBlockingPaginationFragment = (
+/** React hook for paginating a fragment. Paginating with this hook will _not_ cause your component to suspend. */
+let usePrefetchableForwardPagination = (
   ~node,
   ~fRef,
+  ~convertEdges: 'edges => 'edges,
   ~convertFragment: 'fragment => 'fragment,
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
+  ~bufferSize: int,
+  ~initialSize: option<int>=?,
+  ~prefetchingLoadMoreOptions: option<paginationLoadMoreOptions>=?,
+  ~minimumFetchSize: option<int>=?,
 ) => {
-  let p = useBlockingPaginationFragment_(node, fRef)
+  let p = usePrefetchableForwardPaginationFragment_(
+    node,
+    fRef,
+    ~bufferSize,
+    ~initialSize?,
+    ~prefetchingLoadMoreOptions?,
+    ~minimumFetchSize?,
+  )
   let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, p.data)
+  let edges = RescriptRelay_Internal.internal_useConvertedValue(convertEdges, p.edges)
   {
     data,
+    edges,
     loadNext: React.useMemo1(() => (~count, ~onComplete=?) => {
       p.loadNext(
         count,
         {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
       )
     }, [p.loadNext]),
-    loadPrevious: React.useMemo1(() => (~count, ~onComplete=?) => {
-      p.loadPrevious(
-        count,
-        {onComplete: ?onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler},
-      )
-    }, [p.loadPrevious]),
     hasNext: p.hasNext,
-    hasPrevious: p.hasPrevious,
+    isLoadingNext: p.isLoadingNext,
     refetch: React.useMemo1(() => (~variables, ~fetchPolicy=?, ~onComplete=?) => {
       p.refetch(
         RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(

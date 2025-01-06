@@ -28,19 +28,6 @@ type paginationLoadMoreOptions = {onComplete?: Js.Nullable.t<Js.Exn.t> => unit}
 
 type paginationLoadMoreFn = (~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t
 
-type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
-  data: 'fragment,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch: (
-    ~variables: 'refetchVariables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
-  ) => Disposable.t,
-}
-
 type paginationFragmentReturn<'fragment, 'refetchVariables> = {
   data: 'fragment,
   loadNext: paginationLoadMoreFn,
@@ -63,12 +50,30 @@ let usePaginationFragment: (
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
 ) => paginationFragmentReturn<'fragment, 'refetchVariables>
 
-let useBlockingPaginationFragment: (
+type prefetchableForwardPaginationFragmentReturn<'fragment, 'edges, 'refetchVariables> = {
+  data: 'fragment,
+  edges: 'edges,
+  loadNext: paginationLoadMoreFn,
+  hasNext: bool,
+  isLoadingNext: bool,
+  refetch: (
+    ~variables: 'refetchVariables,
+    ~fetchPolicy: fetchPolicy=?,
+    ~onComplete: option<Js.Exn.t> => unit=?,
+  ) => Disposable.t,
+}
+
+let usePrefetchableForwardPagination: (
   ~node: fragmentNode<'a>,
   ~fRef: 'b,
+  ~convertEdges: 'edges => 'edges,
   ~convertFragment: 'fragment => 'fragment,
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
-) => paginationBlockingFragmentReturn<'fragment, 'refetchVariables>
+  ~bufferSize: int,
+  ~initialSize: int=?,
+  ~prefetchingLoadMoreOptions: paginationLoadMoreOptions=?,
+  ~minimumFetchSize: int=?,
+) => prefetchableForwardPaginationFragmentReturn<'fragment, 'edges, 'refetchVariables>
 
 let useRefetchableFragment: (
   ~node: fragmentNode<'a>,

@@ -22,12 +22,12 @@ let commonExtension =
           let refetchableQueryName =
             op |> extractFragmentRefetchableQueryName ~loc
           in
+          let connectionInfo = op |> extractFragmentConnectionInfo ~loc in
           Fragment.make
             ~hasAutocodesplitDirective:
               (selection_set |> Util.hasAutocodesplitDirective)
             ~moduleName:(op |> extractTheFragmentName ~loc)
-            ~refetchableQueryName
-            ~extractedConnectionInfo:(op |> extractFragmentConnectionInfo ~loc)
+            ~refetchableQueryName ~connectionInfo
             ~hasInlineDirective:(op |> fragmentHasInlineDirective ~loc)
             ~isPlural:(op |> fragmentIsPlural ~loc)
             ~loc
