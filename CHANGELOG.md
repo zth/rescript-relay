@@ -2,6 +2,7 @@
 
 - Add support for the new Relay `@catch` directive. https://github.com/zth/rescript-relay/pull/549
 - Add support for `usePrefetchableForwardPagination`. https://github.com/zth/rescript-relay/pull/551
+- Remove `useBlockingPagination` since it's being removed from Relay.
 
 # 3.1.0
 
