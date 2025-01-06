@@ -58,27 +58,30 @@ let extractFragmentRefetchableQueryName ~loc op =
            | _ -> ());
     !refetchableQueryName
   | _ -> None
-let rec selectionSetHasConnection selections =
-  match
-    selections
-    |> List.find_opt (fun sel ->
-           match sel with
-           | Graphql_parser.Field {directives; selection_set} -> (
-             match
-               directives
-               |> List.find_opt (fun (dir : Graphql_parser.directive) ->
-                      match dir with
-                      | {name = "connection"} -> true
-                      | _ -> false)
-             with
-             | Some _ -> true
-             | None -> selectionSetHasConnection selection_set)
-           | InlineFragment {selection_set} ->
-             selectionSetHasConnection selection_set
-           | _ -> false)
-  with
-  | Some _ -> true
-  | None -> false
+type connectionInfo = {prefetchable_pagination: bool}
+let rec findConnectionInfo selections =
+  selections
+  |> List.find_map (fun sel ->
+         match sel with
+         | Graphql_parser.Field {directives; selection_set} -> (
+           match
+             directives
+             |> List.find_opt (fun (dir : Graphql_parser.directive) ->
+                    match dir with
+                    | {name = "connection"} -> true
+                    | _ -> false)
+           with
+           | Some connectionDirective ->
+             Some
+               {
+                 prefetchable_pagination =
+                   connectionDirective.arguments
+                   |> List.exists (fun (n, v) ->
+                          n = "prefetchable_pagination" && v = `Bool true);
+               }
+           | None -> findConnectionInfo selection_set)
+         | InlineFragment {selection_set} -> findConnectionInfo selection_set
+         | _ -> None)
 let queryHasRawResponseTypeDirective ~loc op =
   match op with
   | Graphql_parser.Operation {optype = Query; name = Some _; directives} ->
@@ -100,12 +103,11 @@ let queryIsUpdatable op =
     |> List.exists (fun (directive : Graphql_parser.directive) ->
            directive.name = "updatable")
   | _ -> false
-type connectionConfig = {key: string}
 let extractFragmentConnectionInfo ~loc op =
   match op with
   | Graphql_parser.Fragment {name = _; selection_set} ->
-    selectionSetHasConnection selection_set
-  | _ -> false
+    findConnectionInfo selection_set
+  | _ -> None
 let fragmentHasInlineDirective ~loc op =
   match op with
   | Graphql_parser.Fragment {name = _; directives} ->
