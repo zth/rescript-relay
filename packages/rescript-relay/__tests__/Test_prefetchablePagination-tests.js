@@ -53,7 +53,7 @@ describe("Prefetchable pagination", () => {
       data: {
         node: {
           __typename: "User",
-          id: "user-3",
+          id: "user-1",
           friendsConnection: {
             pageInfo: {
               endCursor: "4",

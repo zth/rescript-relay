@@ -1,6 +1,7 @@
 # master
 
 - Add support for the new Relay `@catch` directive. https://github.com/zth/rescript-relay/pull/549
+- Add support for `usePrefetchableForwardPagination`. https://github.com/zth/rescript-relay/pull/551
 
 # 3.1.0
 

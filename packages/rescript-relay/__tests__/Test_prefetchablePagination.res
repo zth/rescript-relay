@@ -35,8 +35,6 @@ module Test = {
       ~bufferSize=2,
     )
 
-    Js.log(edges)
-
     <div>
       <div>
         {edges
