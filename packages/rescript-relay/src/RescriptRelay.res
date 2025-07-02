@@ -796,14 +796,21 @@ module Environment = {
     ids
   }
 
-  let invalidateAllOfConnection = (environment: t, ~connectionKey: string, ~parentId: dataId) => {
+  let invalidateAllOfConnection = (
+    environment: t,
+    ~connectionKey: string,
+    ~parentId: dataId,
+    ~excludedIds=[],
+  ) => {
     environment->commitLocalUpdate(~updater=store => {
       environment
       ->findAllConnectionIds(~connectionKey, ~parentId)
       ->Js.Array2.forEach(dataId => {
-        store
-        ->RecordSourceSelectorProxy.get(~dataId)
-        ->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+        if !(excludedIds->Js.Array2.includes(dataId)) {
+          store
+          ->RecordSourceSelectorProxy.get(~dataId)
+          ->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+        }
       })
     })
   }

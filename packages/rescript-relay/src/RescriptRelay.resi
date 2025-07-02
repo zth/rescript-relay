@@ -821,8 +821,46 @@ You should use the generated `Query.retain` function on your queries instead of 
   /**Find all connection IDs for a specific connection and on a specific object. Useful together with `@deleteEdge` and similar where you want to remove something from all connection configurations. */
   let findAllConnectionIds: (t, ~connectionKey: string, ~parentId: dataId) => array<dataId>
 
-  /**Invalidates all connection configurations of `connectionKey` on `parentId`.*/
-  let invalidateAllOfConnection: (t, ~connectionKey: string, ~parentId: dataId) => unit
+  /**
+  Invalidates all connection configurations of `connectionKey` on `parentId`.
+
+  This function invalidates all cached data for connections with the specified key on the given parent record.
+  When connections are invalidated, any queries that depend on this connection data will be considered stale
+  and will need to be refetched the next time they are accessed.
+
+  ## Parameters
+  - `environment`: The Relay environment
+  - `connectionKey`: The connection key used in the `@connection(key: "...")` directive
+  - `parentId`: The data ID of the parent record that holds the connection
+  - `excludedIds`: Optional array of connection data IDs to exclude from invalidation
+
+  ## Examples
+
+  ### Basic Usage
+  ```rescript
+  // Invalidate all connections for a user's friends
+  environment->RescriptRelay.Environment.invalidateAllOfConnection(
+    ~connectionKey=UserProfile_friends_graphql.connectionKey,
+    ~parentId=user.__id,
+  )
+  ```
+
+  ### With Excluded IDs
+  ```rescript
+  environment->RescriptRelay.Environment.invalidateAllOfConnection(
+    ~connectionKey=UserProfile_friends_graphql.connectionKey, 
+    ~parentId=user.__id,
+    // Invalidate all of this connection except for the currently rendered one.
+    ~excludedIds=[currentConnection.__id],
+  )
+  ```
+  */
+  let invalidateAllOfConnection: (
+    t,
+    ~connectionKey: string,
+    ~parentId: dataId,
+    ~excludedIds: array<dataId>=?,
+  ) => unit
 }
 
 /**fetchPolicy controls how you want Relay to resolve your data.*/

@@ -1,6 +1,7 @@
 # master
 
-- Add supprot for top level `@catch` on fragments on unions.
+- Add support for top level `@catch` on fragments on unions.
+- Add parameter `excludedIds: array<dataId>` to `invalidateRecordsByIds` to allow excluding a list of connection IDs from invalidation.
 
 # 3.2.0
 
