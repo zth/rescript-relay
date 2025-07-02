@@ -32,7 +32,7 @@ jobs:
         id: print_esy_cache
         run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
       - name: Try to restore dependencies cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: deps-cache
         with:
           path: ${{ steps.print_esy_cache.outputs.esy_cache }}
