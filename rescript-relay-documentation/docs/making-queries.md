@@ -322,6 +322,8 @@ The results are delivered through a `RescriptCore.Result.t` in the `onResult` ca
 
 > `fetch` uses Relay's `fetchQuery` under the hood, which you can [read more about here](https://relay.dev/docs/api-reference/fetch-query).
 
+> For more robust error handling within your GraphQL operations, consider using the [`@catch` directive](catch-directive) to handle field-level errors explicitly in your query data.
+
 ##### Parameters
 
 | Name                 | Type                                         | Required | Notes                                                                             |
