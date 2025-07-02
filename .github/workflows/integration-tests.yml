@@ -24,16 +24,30 @@ jobs:
           toolchain: 1.76.0
           override: true
       - name: Install esy
-        run: npm install -g esy
-      - uses: esy/github-action@6863524ed7748e7882e317e31ac2b8b107011744
+        run: npm install -g esy@latest
+      - name: Install PPX dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: esy install
+      - name: Print esy cache
+        id: print_esy_cache
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
+      - name: Try to restore PPX dependencies cache
+        uses: actions/cache@v4
+        id: deps-cache
         with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay/rescript-relay-ppx
+          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
+          key: macos-latest---esy-v2---${{ hashFiles('packages/rescript-relay/rescript-relay-ppx/**/index.json') }}
+          restore-keys: |
+            macos-latest---esy-v2---
+            macos-latest---esy-v1---
+      - name: Build PPX dependencies
+        if: steps.deps-cache.outputs.cache-hit != 'true'
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: esy build-dependencies
       - name: Build PPX
-        uses: esy/github-action@6863524ed7748e7882e317e31ac2b8b107011744
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay/rescript-relay-ppx
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: esy build
       - name: Install - bindings
         working-directory: packages/rescript-relay
         run: |
