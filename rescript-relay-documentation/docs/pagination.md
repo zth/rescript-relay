@@ -138,3 +138,114 @@ As shown above, `usePagination` provides helpers for paginating your fragment/co
 | `isLoadingNext`     | `bool`                                                                                              |                                                                      |
 | `isLoadingPrevious` | `bool`                                                                                              |                                                                      |
 | `refetch`           | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option(Js.Exn.t) => unit=?) =>` | Refetch the entire connection with potentially new variables.        |
+
+### `usePrefetchableForwardPagination`
+
+> **Experimental Feature**: This is an experimental API and may be subject to change.
+
+`usePrefetchableForwardPagination` is similar to `usePagination` but adds automatic prefetching capabilities for improved pagination performance. It only supports forward pagination and requires the `prefetchable_pagination: true` option in your `@connection` directive.
+
+This hook automatically prefetches a configurable number of items (the "buffer") in the background, so when users click "load more", the additional items are served instantly from the buffer rather than requiring a network request.
+
+#### Setting up for prefetchable pagination
+
+Your fragment must include `prefetchable_pagination: true` in the `@connection` directive:
+
+```rescript
+module Fragment = %relay(
+  `
+  fragment UserFriends_user on User
+    @refetchable(queryName: "UserFriendsRefetchQuery")
+    @argumentDefinitions(
+      count: {type: "Int!", defaultValue: 10},
+      cursor: {type: "String!", defaultValue: ""}
+    ) {
+    friendsConnection(first: $count, after: $cursor)
+      @connection(key: "UserFriends_friendsConnection", prefetchable_pagination: true)
+    {
+      edges {
+        node {
+          id
+          name
+          ...SingleFriend_friend
+        }
+      }
+    }
+  }
+`
+)
+```
+
+#### Usage in a component
+
+```rescript
+@react.component
+let make = (~user) => {
+  let {data, edges, hasNext, isLoadingNext, loadNext} = Fragment.usePrefetchableForwardPagination(
+    user.fragmentRefs,
+    ~bufferSize=5, // Prefetch 5 items ahead
+    ~initialSize=10, // Load 10 items initially (optional)
+  )
+
+  <div className="friends-list">
+    <h4> {React.string(`Friends of ${data.name}`)} </h4>
+    <div>
+      {edges
+      ->Array.filterMap(({node}) => node)
+      ->Array.map(friend =>
+        <SingleFriend key=friend.id friend=friend.fragmentRefs />
+      )
+      ->React.array}
+
+      {hasNext
+        ? <button
+            onClick={_ => loadNext(~count=5)->RescriptRelay.Disposable.ignore}
+            disabled=isLoadingNext>
+            {React.string(isLoadingNext ? "Loading..." : "Load more")}
+          </button>
+        : React.null}
+    </div>
+  </div>
+}
+```
+
+#### Key differences from `usePagination`
+
+1. **Forward-only pagination**: Only provides `loadNext`, `hasNext`, and `isLoadingNext`. No backward pagination support.
+2. **Direct edge access**: Returns `edges` directly.
+3. **Prefetching**: Automatically prefetches items based on `bufferSize` for instant pagination.
+4. **Schema requirement**: Requires `prefetchable_pagination: true` in the `@connection` directive.
+
+#### Parameters
+
+`usePrefetchableForwardPagination` accepts the following parameters:
+
+| Name                          | Type                        | Required | Description                                                          |
+| ----------------------------- | --------------------------- | -------- | -------------------------------------------------------------------- |
+| `fragmentRef`                 | Fragment reference          | Yes      | The fragment reference from your parent component                    |
+| `~bufferSize`                 | `int`                       | Yes      | Number of items to prefetch ahead of the current position            |
+| `~initialSize`                | `int`                       | No       | Number of items to load initially (overrides fragment's default)     |
+| `~prefetchingLoadMoreOptions` | `paginationLoadMoreOptions` | No       | Options for prefetching behavior                                     |
+| `~minimumFetchSize`           | `int`                       | No       | Minimum number of items to fetch in a single request (defaults to 1) |
+
+#### Return value
+
+`usePrefetchableForwardPagination` returns a record with the following properties:
+
+| Name            | Type                                                                                             | Description                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `data`          | `'fragmentData`                                                                                  | The data as defined by the fragment                          |
+| `edges`         | `array<{node: option<'nodeType>, cursor: string}>`                                               | Array of edges from the connection, directly accessible      |
+| `loadNext`      | `(~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t`                         | Function to load the next `count` items                      |
+| `hasNext`       | `bool`                                                                                           | Whether there are more items to load                         |
+| `isLoadingNext` | `bool`                                                                                           | Whether a load operation is currently in progress            |
+| `refetch`       | `(~variables: 'variables, ~fetchPolicy: fetchPolicy=?, ~onComplete: option<Js.Exn.t> => unit=?)` | Refetch the entire connection with potentially new variables |
+
+#### Performance benefits
+
+The prefetching mechanism provides significant performance improvements:
+
+- **Instant pagination**: When users click "load more", items are served instantly from the prefetched buffer
+- **Optimistic loading**: The buffer is refilled in the background as users paginate
+- **Reduced loading states**: Users see fewer loading indicators during pagination
+- **Better UX**: Smoother, more responsive pagination experience
