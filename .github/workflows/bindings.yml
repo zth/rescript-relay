@@ -22,26 +22,9 @@ jobs:
           CI: true
       - name: Install esy
         run: npm install -g esy@latest
-      - name: Install PPX dependencies
+      - name: Install and build PPX dependencies
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: esy install
-      - name: Print esy cache
-        id: print_esy_cache
-        working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
-      - name: Try to restore PPX dependencies cache
-        uses: actions/cache@v4
-        id: deps-cache
-        with:
-          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
-          key: ubuntu-latest---esy-v2---${{ hashFiles('packages/rescript-relay/rescript-relay-ppx/**/index.json') }}
-          restore-keys: |
-            ubuntu-latest---esy-v2---
-            ubuntu-latest---esy-v1---
-      - name: Build PPX dependencies
-        if: steps.deps-cache.outputs.cache-hit != 'true'
-        working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: esy build-dependencies
       - name: Build PPX
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: esy build

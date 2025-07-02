@@ -72,23 +72,8 @@ jobs:
           CI: true
       - name: Install esy
         run: npm install -g esy@latest
-      - name: Install dependencies
+      - name: Install and build dependencies
         run: esy install
-      - name: Print esy cache
-        id: print_esy_cache
-        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
-      - name: Try to restore dependencies cache
-        uses: actions/cache@v4
-        id: deps-cache
-        with:
-          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
-          key: ${{ matrix.platform }}---esy-v2---${{ hashFiles('**/index.json') }}
-          restore-keys: |
-            ${{ matrix.platform }}---esy-v2---
-            ${{ matrix.platform }}---esy-v1---
-      - name: Build dependencies
-        if: steps.deps-cache.outputs.cache-hit != 'true'
-        run: esy build-dependencies
       - name: Build PPX
         run: esy build
       - name: Strip PPX binary
