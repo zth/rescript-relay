@@ -24,16 +24,13 @@ jobs:
           toolchain: 1.76.0
           override: true
       - name: Install esy
-        run: npm install -g esy
-      - uses: esy/github-action@6863524ed7748e7882e317e31ac2b8b107011744
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: npm install -g esy@latest
+      - name: Install and build PPX dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: esy install
       - name: Build PPX
-        uses: esy/github-action@6863524ed7748e7882e317e31ac2b8b107011744
-        with:
-          cache-key: ${{ hashFiles('esy.lock/index.json') }}
-          working-directory: packages/rescript-relay/rescript-relay-ppx
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: esy build
       - name: Install - bindings
         working-directory: packages/rescript-relay
         run: |
