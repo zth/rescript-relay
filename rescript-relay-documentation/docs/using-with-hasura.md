@@ -38,7 +38,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = (operation, variabl
     RequestInit.make(
       ~method_=Post,
       ~body=Js.Dict.fromList(list{
-        ("query", Js.Json.string(operation.text)),
+        ("query", Js.Json.string(operation.text->Js.Nullable.toOption->Belt.Option.getWithDefault(""))),
         ("variables", variables),
       })
       |> Js.Json.object_

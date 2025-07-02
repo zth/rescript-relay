@@ -60,9 +60,13 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     "https://your.server/graphql",
     {
       method: #POST,
-      body: {"query": operation.text, "id": operation.id, "variables": variables}
-      ->Js.Json.stringifyAny
-      ->Belt.Option.getExn
+      body: {
+        "query": operation.text->Nullable.getOr(""),
+        "id": operation.id->Nullable.getOr(""),
+        "variables": variables
+      }
+      ->JSON.stringifyAny
+      ->Option.getExn
       ->Body.string,
       headers: Headers.fromObject({
         "content-type": "application/json",

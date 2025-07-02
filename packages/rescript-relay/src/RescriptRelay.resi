@@ -1017,10 +1017,15 @@ module Network: {
     - `metadata`: Optional operation metadata
   */
   type operation = {
-    id: string,
-    text: string,
+    /** The operation ID. Set if persisted queries are enabled, otherwise not set. */
+    id: Js.Nullable.t<string>,
+    /** The operation text. Not set for persisted queries, or if this is a client-only query that will not make a network request. */
+    text: Js.Nullable.t<string>,
+    /** The operation name. */
     name: string,
+    /** The operation kind. */
     operationKind: string,
+    /** Optional operation metadata. */
     metadata: Js.Nullable.t<operationMetadata>,
   }
 

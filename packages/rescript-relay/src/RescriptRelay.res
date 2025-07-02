@@ -534,8 +534,8 @@ module Network = {
   type operationMetadata = {codesplits?: array<codesplitsMetadata>}
 
   type operation = {
-    id: string,
-    text: string,
+    id: Js.Nullable.t<string>,
+    text: Js.Nullable.t<string>,
     name: string,
     operationKind: string,
     metadata: Js.Nullable.t<operationMetadata>,

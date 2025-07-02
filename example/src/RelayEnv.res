@@ -22,7 +22,10 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     "http://localhost:4000/graphql",
     {
       method: #POST,
-      body: {"query": operation.text, "variables": variables}
+      body: {
+        "query": operation.text->Js.Nullable.toOption->Belt.Option.getWithDefault(""),
+        "variables": variables,
+      }
       ->Js.Json.stringifyAny
       ->Belt.Option.getExn
       ->Body.string,
@@ -64,15 +67,15 @@ let subscriptionFunction: RescriptRelay.Network.subscribeFn = (
 ) => {
   let subscriptionQuery: GraphQLWs.Client.subscribeOptions = {
     operationName: operation.name,
-    query: operation.text,
-    variables: variables,
+    query: operation.text->Js.Nullable.toOption->Belt.Option.getWithDefault(""),
+    variables,
   }
 
   RescriptRelay.Observable.make(sink => {
     let unsubscribe = GraphQLWs.Client.subscribe(wsClient, subscriptionQuery, sink)
 
     Some({
-      unsubscribe: unsubscribe,
+      unsubscribe,
       closed: false,
     })
   })

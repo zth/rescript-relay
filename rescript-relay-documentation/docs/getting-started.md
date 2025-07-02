@@ -140,7 +140,10 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     "http://localhost:4000/graphql",
     {
       method: #POST,
-      body: {"query": operation.text, "variables": variables}
+      body: {
+        "query": operation.text->Nullable.getOr(""),
+        "variables": variables
+      }
       ->JSON.stringifyAny
       ->Option.getExn
       ->Body.string,

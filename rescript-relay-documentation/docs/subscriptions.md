@@ -43,7 +43,7 @@ let subscriptionClient = SubscriptionsTransportWs.createSubscriptionClient(
 )
 
 let subscriptionFunction: RescriptRelay.Network.subscribeFn = (config, variables, _cacheConfig) => {
-  let query = config.text
+  let query = config.text->Nullable.getOr("")
   let subscriptionQuery: SubscriptionsTransportWs.operationOptions = {
     query: query,
     variables: variables,

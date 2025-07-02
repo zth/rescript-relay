@@ -920,14 +920,14 @@ Represents the network layer.
 
 ```rescript
 type operation = {
-    id: string,
-    text: string,
+    id: Nullable.t<string>,
+    text: Nullable.t<string>,
     name: string,
     operationKind: string,
   }
 ```
 
-The operation fed to the `NetworkLayer` when Relay wants to make a request. Please note that if you're using persisted queries, `id` will exist but `text` won't, and vice versa when not using persisted queries.
+The operation fed to the `NetworkLayer` when Relay wants to make a request. Please note that if you're using persisted queries, `id` will exist but `text` will be null, and vice versa when not using persisted queries.
 
 ### [Network.subscribeFn](#networksubscribefn)
 
