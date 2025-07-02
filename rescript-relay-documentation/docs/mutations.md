@@ -154,6 +154,39 @@ The type safe connection id maker will make life _much_ easier when selecting an
 
 All mutation functions you use take an optional prop called `updater`. `updater` is a function that receives the Relay store (`RecordSourceSelectorProxy.t`) and the `'response` from the mutation. It lets you apply any updates to the store in response to a mutation.
 
+### Bulk connection operations in mutations
+
+When working with mutations that affect connections, you often need to update multiple connection instances. RescriptRelay provides utility functions that make these operations efficient:
+
+```rescript
+// Using findAllConnectionIds to add a new item to all connection instances
+AddPostMutation.commitMutation(
+  ~environment,
+  ~variables={
+    input: newPostData,
+    connections: environment->RescriptRelay.Environment.findAllConnectionIds(
+      ~connectionKey=UserProfile_user_postsConnection_graphql.connectionKey,
+      ~parentId=userId
+    )
+  }
+)
+
+// Using invalidateRecordsByIds to invalidate multiple connections after a mutation
+DeletePostMutation.commitMutation(
+  ~environment,
+  ~variables={postId: deletedPostId},
+  ~updater=(store, _response) => {
+    let connectionIds = environment->RescriptRelay.Environment.findAllConnectionIds(
+      ~connectionKey=UserProfile_user_postsConnection_graphql.connectionKey,
+      ~parentId=userId
+    )
+    store->RescriptRelay.RecordSourceSelectorProxy.invalidateRecordsByIds(connectionIds)
+  }
+)
+```
+
+> For more details on these functions, see [Bulk connection operations](interacting-with-the-store#bulk-connection-operations) and the [API Reference](api-reference#environmentfindallconnectionids).
+
 ## Declarative, optimistic updates
 
 Optimistically updating your UI can do wonders for UX, and Relay provides all the primitives you need to do both simple and more advanced optimistic updates. Let's add a simple optimistic update to this mutation by giving Relay the response that we expect the server to return right away:

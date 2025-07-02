@@ -209,6 +209,82 @@ A good strategy is to use `commitLocalPayload` to insert new entites, and then m
 
 > Note: You must use `@raw_response_type` to get access to `commitLocalPayload`. RescriptRelay won't expose it unless you use that directive.
 
+## Bulk connection operations
+
+When working with connections, you often need to perform operations that affect multiple connection instances at once. RescriptRelay provides utility functions that make these operations easier and more efficient.
+
+### Finding all connection instances with `findAllConnectionIds`
+
+`Environment.findAllConnectionIds` helps you find all cached instances of a specific connection, regardless of what filters or arguments were used when fetching them. This is particularly useful when you want to update all instances of a connection after a mutation.
+
+```rescript
+// Find all instances of a user's posts connection
+let connectionIds = environment->RescriptRelay.Environment.findAllConnectionIds(
+  ~connectionKey="UserProfile_user_postsConnection",
+  ~parentId=userId
+)
+
+// connectionIds now contains data IDs for all cached instances:
+// - UserProfile_user_postsConnection({"category": "tech"})
+// - UserProfile_user_postsConnection({"category": "personal"})
+// - UserProfile_user_postsConnection({}) // no filters
+// etc.
+```
+
+### Bulk record invalidation with `invalidateRecordsByIds`
+
+When you need to invalidate many records at once, `RecordSourceSelectorProxy.invalidateRecordsByIds` is more efficient than calling `invalidateRecord` on each record individually.
+
+```rescript
+RescriptRelay.commitLocalUpdate(~environment, ~updater=store => {
+  // Find all connection instances
+  let connectionIds = environment->RescriptRelay.Environment.findAllConnectionIds(
+    ~connectionKey=UserProfile_user_postsConnection_graphql.connectionKey,
+    ~parentId=userId
+  )
+
+  // Invalidate all of them at once
+  store->RescriptRelay.RecordSourceSelectorProxy.invalidateRecordsByIds(connectionIds)
+})
+```
+
+### Common patterns
+
+These functions work great together for common scenarios:
+
+**Invalidating all connection instances after a mutation:**
+
+```rescript
+// After deleting a post, invalidate all posts connections for that user
+CreatePostMutation.commitMutation(
+  ~environment,
+  ~variables={...},
+  ~updater=(store, _response) => {
+    let connectionIds = environment->RescriptRelay.Environment.findAllConnectionIds(
+      ~connectionKey=UserProfile_user_postsConnection_graphql.connectionKey,
+      ~parentId=userId
+    )
+    store->RescriptRelay.RecordSourceSelectorProxy.invalidateRecordsByIds(connectionIds)
+  }
+)
+```
+
+**Adding a new item to all connection instances:**
+
+```rescript
+// Add new post to all cached connection instances
+CreatePostMutation.commitMutation(
+  ~environment,
+  ~variables={
+    input: newPostData,
+    connections: environment->RescriptRelay.Environment.findAllConnectionIds(
+      ~connectionKey=UserProfile_user_postsConnection_graphql.connectionKey,
+      ~parentId=userId
+    )
+  }
+)
+```
+
 ## Imperative updates
 
 > Using imperative store updates has its place, but avoid it for as long as you can.
