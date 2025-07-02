@@ -94,12 +94,56 @@ external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
 /**Unwraps `uploadables` into a Js.Dict.t with your expected file type, so you can use that dict to attach the provided files to your request.*/
 external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
 
-/**This generates a `dataId` for use on the _client_ side. However, this is farily low level, and what you're probably really looking for is `generateUniqueClientID` that'll let you generate a new, unique `dataId` that you can use for client side only records (like when doing optimistic updates).*/
+/**
+  Generates a client-side `dataId` derived from an existing record.
+
+  This is a low-level function for creating deterministic client IDs. For most use cases,
+  prefer `generateUniqueClientID` which creates globally unique identifiers.
+
+  ## Parameters
+  - `dataId`: The base record ID to derive from
+  - `storageKey`: A unique key for this derived record
+  - `index`: Optional index for array-like derived records
+
+  ## Examples
+
+  ```rescript
+  // Create a client ID for a cached query result
+  let derivedId = RescriptRelay.generateClientID(
+    ~dataId=user.__id,
+    ~storageKey="cached_search_results",
+  )
+  ```
+*/
 @module("relay-runtime")
 external generateClientID: (~dataId: dataId, ~storageKey: string, ~index: int=?) => dataId =
   "generateClientID"
 
-/**This generates a unique `dataId` that's safe to use on the _client_ side. Useful when doing optimistic updates and you need to create IDs that the optimistic update can use.*/
+/**
+  Generates a globally unique client-side `dataId`.
+
+  Creates a new unique identifier safe for client-side records. Primarily used for
+  optimistic updates where you need temporary IDs before server confirmation.
+
+  ## Examples
+
+  ```rescript
+  // Use in optimistic response
+  mutate(
+    ~variables={...},
+    ~optimisticResponse={
+      userCreated: Some({
+        user: {
+          id: RescriptRelay.generateUniqueClientID(),
+          name: "New User",
+          __typename: #User,
+        }
+      })
+    }
+  )
+  
+  ```
+*/
 @module("relay-runtime")
 external generateUniqueClientID: unit => dataId = "generateUniqueClientID"
 
@@ -171,15 +215,70 @@ module RecordProxy: {
   /**Read the following section on working with the Relay store: https://relay.dev/docs/en/relay-store*/
   type t
 
-  /**Copies all fields from one `RecordProxy` to another.*/
+  /**
+    Copies all fields from a source record to the current record.
+
+    Performs a shallow copy of all field values from the source record to the target record.
+    Useful for duplicating record data or applying bulk updates.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `sourceRecord`: The record to copy fields from
+
+    ## Examples
+
+    ```rescript
+    // Copy from newUser to existing user record
+    userRecord->RescriptRelay.RecordProxy.copyFieldsFrom(~sourceRecord=newUser)
+    ```
+  */
   @send
   external copyFieldsFrom: (t, ~sourceRecord: t) => unit = "copyFieldsFrom"
 
-  /**Gets the `dataId` for a particular record.*/
+  /**
+    Gets the unique identifier for this record.
+
+    Returns the `dataId` that Relay uses to identify this record in the store.
+    Every record in Relay has a unique `dataId`.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Examples
+
+    ```rescript
+    let userId = userRecord->RescriptRelay.RecordProxy.getDataId
+    Console.log("User ID: " ++ RescriptRelay.dataIdToString(userId))
+    ```
+  */
   @send
   external getDataId: t => dataId = "getDataID"
 
-  /**Gets a single linked record. A linked record is another object in the store, and not a scalar field like an int or float.*/
+  /**
+    Gets a linked record (object) field.
+
+    Retrieves another record that is linked from this record. Returns `None` if
+    the field doesn't exist or is null.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `name`: The field name to retrieve
+    - `arguments`: Optional arguments for parameterized fields
+
+    ## Examples
+
+    ```rescript
+    // Get user's profile
+    let profile = userRecord->RescriptRelay.RecordProxy.getLinkedRecord(~name="profile")
+    
+    // Get user's post with specific ID
+    let post = userRecord->RescriptRelay.RecordProxy.getLinkedRecord(
+      ~name="post",
+      ~arguments=RescriptRelay.makeArguments({"id": postId})
+    )
+    ```
+  */
   @send
   @return(nullable)
   external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?) => option<t> =
@@ -258,12 +357,56 @@ module RecordProxy: {
     ~arguments: arguments=?,
   ) => option<array<option<bool>>> = "getValue"
 
-  /**Sets a `RecordProxy.t` as the linked record for a particular field.*/
+  /**
+    Sets a linked record for a field.
+
+    Links another record to this record at the specified field. The linked record
+    must already exist in the store.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `record`: The record to link
+    - `name`: The field name to set
+    - `arguments`: Optional arguments for parameterized fields
+
+    ## Examples
+
+    ```rescript
+    // Link a profile to a user
+    let _ = userRecord->RescriptRelay.RecordProxy.setLinkedRecord(
+      ~record=profileRecord,
+      ~name="profile"
+    )
+    ```
+  */
   @send
   external setLinkedRecord: (t, ~record: t, ~name: string, ~arguments: arguments=?) => t =
     "setLinkedRecord"
 
-  /**Sets an array of `RecordProxy.t` as the linked records for a particular field.*/
+  /**
+    Sets an array of linked records for a field.
+
+    Links multiple records to this record at the specified field. Use `None` for
+    null entries in the array.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `records`: Array of records to link (with optional null entries)
+    - `name`: The field name to set
+    - `arguments`: Optional arguments for parameterized fields
+
+    ## Examples
+
+    ```rescript
+    // Set user's posts
+    let _ = userRecord->RescriptRelay.RecordProxy.setLinkedRecords(
+      ~records=[Some(post1), None, Some(post3)],
+      ~name="posts"
+    )
+    ```
+  */
   @send
   external setLinkedRecords: (
     t,
@@ -389,15 +532,78 @@ module RecordSourceSelectorProxy: {
   @send
   external batchLiveStateUpdates: (t, unit => unit) => unit = "batchLiveStateUpdates"
 
-  /**Creates a new `RecordProxy`.*/
+  /**
+    Creates a new record in the store.
+
+    Creates a new record with the specified ID and type. The record will be empty
+    initially - use `RecordProxy` methods to populate its fields.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `dataId`: Unique identifier for the new record
+    - `typeName`: GraphQL type name for the record
+
+    ## Examples
+
+    ```rescript
+    // Create optimistic user record
+    let newUser = store->RescriptRelay.RecordSourceSelectorProxy.create(
+      ~dataId=RescriptRelay.generateUniqueClientID(),
+      ~typeName="User"
+    )
+    
+    let _ = newUser->RescriptRelay.RecordProxy.setValueString(~value="John Doe", ~name="name")
+    ```
+  */
   @send
   external create: (t, ~dataId: dataId, ~typeName: string) => RecordProxy.t = "create"
 
-  /**Deletes the `RecordProxy` with the provided `dataId`.*/
+  /**
+    Deletes a record from the store.
+
+    Removes the record with the specified ID from the store. Any references to
+    this record from other records will become null.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `dataId`: The ID of the record to delete
+
+    ## Examples
+
+    ```rescript
+    // Delete a user record
+    store->RescriptRelay.RecordSourceSelectorProxy.delete(~dataId=userId)
+    ```
+  */
   @send
   external delete: (t, ~dataId: dataId) => unit = "delete"
 
-  /**Returns the `RecordProxy` with the provided `dataId`, if it exists.*/
+  /**
+    Gets a record from the store by ID.
+
+    Retrieves an existing record from the store. Returns `None` if the record
+    doesn't exist.
+
+    ⚠️ **Note**: This is a low-level, non-type-safe API. Use with caution and prefer higher-level operations when possible.
+
+    ## Parameters
+    - `dataId`: The ID of the record to retrieve
+
+    ## Examples
+
+    ```rescript
+    switch store->RescriptRelay.RecordSourceSelectorProxy.get(~dataId=userId) {
+    | Some(userRecord) => 
+      // Work with the user record
+      let _ = userRecord->RescriptRelay.RecordProxy.setValueBool(~value=true, ~name="isActive")
+    | None => 
+      // Record doesn't exist
+      ()
+    }
+    ```
+  */
   @send
   @return(nullable)
   external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
@@ -523,9 +729,37 @@ module MissingFieldHandler: {
   ) => t
 }
 
-/**Read the Relay docs section on [ConnectionHandler](https://relay.dev/docs/en/relay-store#connectionhandler)*/
+/**
+  Utilities for working with Relay connections.
+
+  Connections are Relay's way of handling paginated lists. These utilities help you
+  manipulate connection data in the store, such as adding/removing edges and getting
+  connection records.
+
+  Read the [Relay ConnectionHandler docs](https://relay.dev/docs/en/relay-store#connectionhandler) for more details.
+*/
 module ConnectionHandler: {
-  /**For a `RecordProxy`, returns the `RecordProxy` that is at the connection config provided.*/
+  /**
+    Gets a connection record from a parent record.
+
+    Retrieves the connection record for a specific connection key and optional filters.
+    Returns `None` if the connection doesn't exist.
+
+    ## Parameters
+    - `record`: The parent record containing the connection
+    - `key`: The connection key (from `@connection(key: "...")`)
+    - `filters`: Optional filter arguments used in the connection
+
+    ## Examples
+
+    ```rescript
+    // Get user's friends connection
+    let friendsConnection = RescriptRelay.ConnectionHandler.getConnection(
+      ~record=userRecord,
+      ~key=UserFriends_user_graphql.connectionKey,
+    )
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   @return(nullable)
@@ -535,7 +769,32 @@ module ConnectionHandler: {
     ~filters: arguments=?,
   ) => option<RecordProxy.t> = "getConnection"
 
-  /**Creates an edge for a particular connection.*/
+  /**
+    Creates an edge record for a connection.
+
+    Creates a new edge that can be inserted into a connection. The edge wraps
+    a node and provides cursor information for pagination.
+
+    💡 **Tip**: For most cases, prefer using declarative directives like `@appendNode` or `@prependNode` in your mutations instead of manually managing edges.
+
+    ## Parameters
+    - `store`: The store to create the edge in
+    - `connection`: The connection this edge belongs to
+    - `node`: The node (record) to wrap in this edge
+    - `edgeType`: The GraphQL type name for the edge
+
+    ## Examples
+
+    ```rescript
+    // Create edge for new friend
+    let newEdge = RescriptRelay.ConnectionHandler.createEdge(
+      ~store,
+      ~connection=friendsConnection,
+      ~node=newFriendRecord,
+      ~edgeType="UserEdge"
+    )
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   external createEdge: (
@@ -545,7 +804,36 @@ module ConnectionHandler: {
     ~edgeType: string,
   ) => RecordProxy.t = "createEdge"
 
-  /**Inserts an edge into a connection _before_ the provided cursor. If no cursor is provided, it inserts the edge at the start of the connection list.*/
+  /**
+    Inserts an edge before a specific cursor or at the beginning.
+
+    Adds an edge to the connection before the specified cursor position.
+    If no cursor is provided, the edge is inserted at the start of the list.
+
+    💡 **Tip**: For most cases, prefer using declarative directives like `@prependEdge` in your mutations instead of manually inserting edges.
+
+    ## Parameters
+    - `connection`: The connection to insert into
+    - `newEdge`: The edge to insert
+    - `cursor`: Optional cursor to insert before
+
+    ## Examples
+
+    ```rescript
+    // Insert at beginning
+    RescriptRelay.ConnectionHandler.insertEdgeBefore(
+      ~connection=friendsConnection,
+      ~newEdge=friendEdge
+    )
+    
+    // Insert before specific cursor
+    RescriptRelay.ConnectionHandler.insertEdgeBefore(
+      ~connection=friendsConnection,
+      ~newEdge=friendEdge,
+      ~cursor="cursor123"
+    )
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   external insertEdgeBefore: (
@@ -554,7 +842,29 @@ module ConnectionHandler: {
     ~cursor: string=?,
   ) => unit = "insertEdgeBefore"
 
-  /**Inserts an edge into a connection _after_ the provided cursor. If no cursor is provided, it inserts the edge at the end of the connection list.*/
+  /**
+    Inserts an edge after a specific cursor or at the end.
+
+    Adds an edge to the connection after the specified cursor position.
+    If no cursor is provided, the edge is inserted at the end of the list.
+
+    💡 **Tip**: For most cases, prefer using declarative directives like `@appendEdge` in your mutations instead of manually inserting edges.
+
+    ## Parameters
+    - `connection`: The connection to insert into
+    - `newEdge`: The edge to insert
+    - `cursor`: Optional cursor to insert after
+
+    ## Examples
+
+    ```rescript
+    // Insert at end
+    RescriptRelay.ConnectionHandler.insertEdgeAfter(
+      ~connection=friendsConnection,
+      ~newEdge=friendEdge
+    )
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   external insertEdgeAfter: (
@@ -563,12 +873,59 @@ module ConnectionHandler: {
     ~cursor: string=?,
   ) => unit = "insertEdgeAfter"
 
-  /**Deletes any edge from the connection where the node of the edge has the provided `dataId`. Please not that this _will not_ remove the actual node from the store. Use `RecordSourceSelectorProxy.delete` for that.*/
+  /**
+    Removes a node from a connection by its ID.
+
+    Deletes any edge from the connection where the edge's node has the specified ID.
+    Note: This only removes the edge, not the actual node record from the store.
+
+    💡 **Tip**: For most cases, prefer using declarative directives like `@deleteEdge` in your mutations instead of manually removing edges.
+
+    ## Parameters
+    - `connection`: The connection to remove from
+    - `nodeId`: The ID of the node to remove
+
+    ## Examples
+
+    ```rescript
+    // Remove friend from connection
+    RescriptRelay.ConnectionHandler.deleteNode(
+      ~connection=friendsConnection,
+      ~nodeId=friendId
+    )
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
 
-  /**Constructs a `dataId` targeting a specific connection at a specific parent. Note that the generated module for every fragment with a `@connection` will have a `<moduleName>.Utils.connectionKey` representing the connection key of that particular `@connection`, that you should use with this.*/
+  /**
+    Generates a connection's unique data ID.
+
+    Constructs the internal ID that Relay uses to identify a specific connection
+    on a specific parent with specific filters.
+
+    💡 **Tip**: For connections with arguments, the generated fragment module includes a type-safe `getConnectionId` function. For example, `UserPosts_user_graphql.getConnectionId(~status="PUBLISHED")`.
+
+    ## Parameters
+    - Parent record's data ID
+    - Connection key string
+    - Filter arguments object
+
+    ## Examples
+
+    ```rescript
+    // Get connection ID for user's filtered posts
+    let connectionId = RescriptRelay.ConnectionHandler.getConnectionID(
+      userId,
+      UserPosts_user_graphql.connectionKey,
+      {"status": "PUBLISHED"}
+    )
+    
+    // A type-safe version is also available for each fragment defined. Prefer using that.
+    let connectionId = UserPosts_user_graphql.getConnectionId(~status=PUBLISHED)
+    ```
+  */
   @module("relay-runtime")
   @scope("ConnectionHandler")
   external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
@@ -630,16 +987,35 @@ module Observable: {
   /**Ignore this subscription.*/ external ignoreSubscription: subscription => unit = "%ignore"
 }
 
-/**Represents the network layer.*/
+/**
+  Network layer configuration for Relay.
+
+  The network layer defines how Relay makes requests to your GraphQL server.
+  You must provide fetch and optionally subscription functions to handle
+  queries, mutations, and subscriptions.
+*/
 module Network: {
   type codesplitsMetadata = (string, unit => unit)
 
   type operationMetadata = {codesplits?: array<codesplitsMetadata>}
 
-  /**The type representing an instantiated `NetworkLayer`.*/
+  /**The type representing an instantiated network layer.*/
   type t
 
-  /**The operation fed to the `NetworkLayer` when Relay wants to make a request. Please note that if you're using persisted queries, `id` will exist but `text` won't, and vice versa when not using persisted queries.*/
+  /**
+    Information about a GraphQL operation being executed.
+
+    Contains the operation details that your fetch function will receive.
+    For persisted queries, `id` exists but `text` is empty. For regular queries,
+    `text` contains the query string but `id` is empty.
+
+    ## Fields
+    - `id`: Persisted query ID (if using persisted queries)
+    - `text`: GraphQL query text (if not using persisted queries)
+    - `name`: Operation name
+    - `operationKind`: "query", "mutation", or "subscription"
+    - `metadata`: Optional operation metadata
+  */
   type operation = {
     id: string,
     text: string,
@@ -648,10 +1024,31 @@ module Network: {
     metadata: Js.Nullable.t<operationMetadata>,
   }
 
-  /**The shape of the function Relay expects for creating a subscription.*/
+  /**
+    Function signature for handling GraphQL subscriptions.
+
+    ## Parameters
+    - `operation`: The subscription operation details
+    - `variables`: JSON variables for the subscription
+    - `cacheConfig`: Cache configuration options
+
+    ## Returns
+    Observable that emits subscription data over time
+  */
   type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
 
-  /**The shape of the function responsible for fetching data if you want to return a promise rather than an `Observable`.*/
+  /**
+    Function signature for fetching data using promises.
+
+    ## Parameters
+    - `operation`: The operation details
+    - `variables`: JSON variables for the operation
+    - `cacheConfig`: Cache configuration options
+    - `uploadables`: Optional file uploads
+
+    ## Returns
+    Promise that resolves to the GraphQL response
+  */
   type fetchFunctionPromise = (
     operation,
     Js.Json.t,
@@ -659,7 +1056,18 @@ module Network: {
     Js.Nullable.t<uploadables>,
   ) => Js.Promise.t<Js.Json.t>
 
-  /**The shape of the function responsible for fetching data if you want to return an `Observable`.*/
+  /**
+    Function signature for fetching data using observables.
+
+    ## Parameters
+    - `operation`: The operation details
+    - `variables`: JSON variables for the operation
+    - `cacheConfig`: Cache configuration options
+    - `uploadables`: Optional file uploads
+
+    ## Returns
+    Observable that emits the GraphQL response
+  */
   type fetchFunctionObservable = (
     operation,
     Js.Json.t,
@@ -667,7 +1075,16 @@ module Network: {
     Js.Nullable.t<uploadables>,
   ) => Observable.t<Js.Json.t>
 
-  /**Create a new `NetworkLayer` using a fetch function that returns a promise.*/
+  /**
+    Creates a network layer using a promise-based fetch function.
+
+    Most common way to create a network layer. Your fetch function should
+    make HTTP requests to your GraphQL endpoint and return promises.
+
+    ## Parameters
+    - `fetchFunction`: Function that returns promises for GraphQL requests
+    - `subscriptionFunction`: Optional function for handling subscriptions
+  */
   @module("relay-runtime")
   @scope("Network")
   external makePromiseBased: (
@@ -675,7 +1092,16 @@ module Network: {
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
 
-  /**Create a new `NetworkLayer` using a fetch function that returns an `Observable`.*/
+  /**
+    Creates a network layer using an observable-based fetch function.
+
+    Use this when you need more control over the request lifecycle or want to
+    handle streaming responses like `@defer` and `@stream`.
+
+    ## Parameters
+    - `observableFunction`: Function that returns observables for GraphQL requests
+    - `subscriptionFunction`: Optional function for handling subscriptions
+  */
   @module("relay-runtime")
   @scope("Network")
   external makeObservableBased: (
@@ -683,62 +1109,200 @@ module Network: {
     ~subscriptionFunction: subscribeFn=?,
   ) => t = "create"
 
+  /**
+    Preloads resources based on operation response.
+
+    Internal function for resource preloading. Used by Relay's code splitting
+    and resource preloading features.
+  */
   let preloadResources: (~operation: operation, ~variables: Js.Json.t, ~response: Js.Json.t) => unit
 }
 
-/**RecordSource is the source of records used by the store. Can be initiated with or without prior records; eg. hydrating the store with prior data.*/
+/**
+  The RecordSource - storage for normalized GraphQL records.
+
+  RecordSource is the underlying storage mechanism that holds normalized GraphQL
+  records. It can be initialized empty or with existing data for hydration scenarios
+  like SSR. The store uses a RecordSource to persist and retrieve cached data.
+*/
 module RecordSource: {
-  /**The type representing an instantiated `RecordSource`.*/
+  /**The type representing a RecordSource instance.*/
   type t
 
-  /**Create a new `RecordSource`. Here's where you pass an existing `recordSourceRecords` if you have existing records you want to hydrate the store with, when doing SSR or similar.*/
+  /**
+    Creates a new RecordSource.
+
+    Can be initialized empty or with existing record data for hydration.
+    When doing SSR, you'll typically create an empty RecordSource on the server,
+    populate it with data, serialize it, and then recreate it on the client.
+
+    ## Parameters
+    - `records`: Optional existing records to initialize with
+
+    ## Examples
+
+    ```rescript
+    // Create empty RecordSource
+    let source = RescriptRelay.RecordSource.make()
+
+    // Create RecordSource with existing data (e.g., from SSR)
+    let hydratedSource = RescriptRelay.RecordSource.make(
+      ~records=serverSideRecords
+    )
+    ```
+  */
   @module("relay-runtime")
   @new
   external make: (~records: recordSourceRecords=?) => t = "RecordSource"
 
-  /**Serializes the `RecordSource` into `recordSourceRecords` that you can use to rehydrate another store. Typically used for SSR.*/
+  /**
+    Serializes the RecordSource to JSON.
+
+    Converts all records in the source to a JSON representation that can be
+    transmitted or stored. Commonly used for SSR to send server-side cached
+    data to the client.
+
+    ## Returns
+    JSON object containing all normalized records
+
+    ## Examples
+
+    ```rescript
+    // Serialize for SSR
+    let serverRecords = recordSource->RescriptRelay.RecordSource.toJSON
+    
+    // Send to client or store in localStorage
+    let serialized = Js.Json.stringify(serverRecords)
+    ```
+  */
   @send
   external toJSON: t => recordSourceRecords = "toJSON"
 }
 
-/**The actual store module, with configuration for the store.*/
+/**
+  The Relay Store - manages normalized GraphQL data caching.
+
+  The Store handles data normalization, caching, garbage collection, and provides
+  interfaces for reading and writing data. It works with a RecordSource to persist
+  the actual record data.
+*/
 module Store: {
-  /**The type representing an instantiated `Store`.*/
+  /**The type representing a Relay store instance.*/
   type t
 
-  /**Creates a new `Store`.*/
+  /**
+    Creates a new standard Relay store.
+
+    The store manages normalized data and provides caching with configurable
+    garbage collection and TTL settings.
+
+    ## Parameters
+    - `source`: RecordSource containing the initial data
+    - `gcReleaseBufferSize`: Number of queries to keep cached (default: 10)
+    - `queryCacheExpirationTime`: TTL in milliseconds for cached queries (default: no TTL)
+
+    ## Examples
+
+    ```rescript
+    let store = RescriptRelay.Store.make(
+      ~source=RescriptRelay.RecordSource.make(),
+      ~gcReleaseBufferSize=20,  // Keep 20 queries cached
+      ~queryCacheExpirationTime=5 * 60 * 1000,  // 5 minute TTL
+    )
+    ```
+  */
   let make: (
     ~source: RecordSource.t,
-    ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
-    int=?,
+    ~gcReleaseBufferSize: int=?,
     ~queryCacheExpirationTime: int=?,
-  ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
-  t
+  ) => t
 
-  /**Creates a new `LiveStore`.*/
+  /**
+    Creates a new live store with real-time capabilities.
+
+    Similar to the standard store but with enhanced support for live queries
+    and real-time data updates. Only needed if you're using Relay Resolvers.
+
+    ℹ️ **Note**: Use this only when you need Relay Resolvers. For most applications, the standard `make` function is sufficient.
+
+    ## Parameters
+    - `source`: RecordSource containing the initial data
+    - `gcReleaseBufferSize`: Number of queries to keep cached (default: 10)
+    - `queryCacheExpirationTime`: TTL in milliseconds for cached queries (default: no TTL)
+
+    ## Examples
+
+    ```rescript
+    let liveStore = RescriptRelay.Store.makeLiveStore(
+      ~source=RescriptRelay.RecordSource.make(),
+      ~gcReleaseBufferSize=15,
+    )
+    ```
+  */
   let makeLiveStore: (
     ~source: RecordSource.t,
-    ~gcReleaseBufferSize: /* `gcReleaseBufferSize` controls how many queries are allowed to be cached by default. Increase this to increase the size of the cache. */
-    int=?,
+    ~gcReleaseBufferSize: int=?,
     ~queryCacheExpirationTime: int=?,
-  ) => /* `queryCacheExpirationTime` sets a TTL (time to live) for all queries. If that time passes, the data is considered stale and is evicted from the store. Default is no TTL. */
-  t
+  ) => t
 
+  /**Internal CommonJS version of makeLiveStore. Use `makeLiveStore` instead.*/
   let _makeLiveStoreCjs: (
     ~source: RecordSource.t,
     ~gcReleaseBufferSize: int=?,
     ~queryCacheExpirationTime: int=?,
   ) => t
 
-  /**Gets the `RecordSource` for this `Store`.*/
+  /**
+    Gets the RecordSource from this store.
+
+    Provides access to the underlying record source for advanced operations
+    like serialization or direct record access.
+
+    ## Examples
+
+    ```rescript
+    let source = store->RescriptRelay.Store.getSource
+    let serialized = source->RescriptRelay.RecordSource.toJSON
+    ```
+  */
   @send
   external getSource: t => RecordSource.t = "getSource"
 
-  /**Publishes _new_ records to this store. This is useful in particular with frameworks like Next.js where routes could preload data needed and then serialize that (using `RecordSource.toJSON`) and send it over the wire, but you already have a store instantiated client side. This will then allow you to publish those records into your existing store.*/
+  /**
+    Publishes new records to the store.
+
+    Merges new record data into the existing store. Particularly useful for
+    SSR scenarios where you need to hydrate client-side stores with server data.
+
+    ## Parameters
+    - `source`: RecordSource containing new records to publish
+
+    ## Examples
+
+    ```rescript
+    // Hydrate client store with server data
+    let serverRecords = RescriptRelay.RecordSource.make(~records=serverData)
+    store->RescriptRelay.Store.publish(serverRecords)
+    ```
+  */
   @send
   external publish: (t, RecordSource.t) => unit = "publish"
 
-  /**Informes the store to stop its normal garbage collection processes. This prevents data being lost between calling relay's `fetchQuery` any serialization process (eg: toJSON)*/
+  /**
+    Temporarily disables garbage collection.
+
+    Prevents the store from cleaning up cached data. Useful when you need to
+    ensure data persistence during operations like serialization.
+
+    ## Examples
+
+    ```rescript
+    // Hold GC during serialization
+    store->RescriptRelay.Store.holdGC
+    let serialized = store->RescriptRelay.Store.getSource->RescriptRelay.RecordSource.toJSON
+    // GC will resume automatically
+    ```
+  */
   @send
   external holdGC: t => unit = "holdGC"
 }
@@ -786,12 +1350,45 @@ module RelayFieldLogger: {
   type t = arg => unit
 }
 
-/**Module representing the environment, which you'll need to use and pass to various functions. Takes a few configuration options like store and network layer.*/
+/**
+  The Relay Environment - the central hub for Relay operations.
+
+  The Environment coordinates between the network layer, store, and other Relay
+  components. It manages data fetching, caching, and normalization. You typically
+  create one Environment per application and pass it to Relay components.
+*/
 module Environment: {
-  /**The type representing an instantiated `Environment`.*/
+  /**The type representing a Relay environment instance.*/
   type t
 
-  /**Create a new `Environment`.*/
+  /**
+    Creates a new Relay Environment.
+
+    The Environment requires a network layer and store at minimum. Additional
+    configuration options allow you to customize caching, error handling,
+    and data normalization behavior.
+
+    ## Parameters
+    - `network`: Network layer for making GraphQL requests
+    - `store`: Store for caching normalized data
+    - `getDataID`: Optional custom function for generating record IDs
+    - `treatMissingFieldsAsNull`: Whether missing fields should be treated as null
+    - `missingFieldHandlers`: Array of handlers for filling in missing data
+    - `relayFieldLogger`: Optional logger for field-level events
+    - `isServer`: Whether this environment is running on the server
+
+    ## Examples
+
+    ```rescript
+    let environment = RescriptRelay.Environment.make(
+      ~network=myNetworkLayer,
+      ~store=RescriptRelay.Store.make(
+        ~source=RescriptRelay.RecordSource.make()
+      ),
+      ~treatMissingFieldsAsNull=false,
+    )
+    ```
+  */
   let make: (
     ~network: Network.t,
     ~store: Store.t,
@@ -805,20 +1402,76 @@ module Environment: {
     ~isServer: bool=?,
   ) => t
 
-  /**Get the `Store` for this `Environment`.*/
+  /**
+    Gets the store instance from this environment.
+
+    Provides access to the underlying store for advanced store operations
+    like publishing records or holding garbage collection.
+
+    ## Examples
+
+    ```rescript
+    let store = environment->RescriptRelay.Environment.getStore
+    store->RescriptRelay.Store.holdGC  // Prevent garbage collection
+    ```
+  */
   @send
   external getStore: t => Store.t = "getStore"
 
-  /**Given an `operationDescriptor`, commits the corresponding payload.*/
+  /**
+    Commits a GraphQL response payload to the store.
+
+    Low-level function for manually committing operation results. Most users
+    should use higher-level APIs like queries and mutations instead.
+
+    ## Parameters
+    - `operationDescriptor`: The operation that produced this payload
+    - `payload`: The GraphQL response data to commit
+  */
   @send
   external commitPayload: (t, operationDescriptor, 'payload) => unit = "commitPayload"
 
-  /**Given an `operationDescriptor`, retains the corresponding operation so any data referenced by it isn't garbage collected.
-You should use the generated `Query.retain` function on your queries instead of using this directly.*/
+  /**
+    Retains an operation to prevent garbage collection.
+
+    Keeps the data for an operation in the store by preventing Relay's garbage
+    collector from cleaning it up. Returns a disposable that releases the retain
+    when disposed.
+
+    Note: Use the generated `Query.retain` functions instead of calling this directly.
+
+    ## Parameters
+    - `operationDescriptor`: The operation to retain
+
+    ## Returns
+    Disposable that releases the retain when disposed
+  */
   @send
   external retain: (t, operationDescriptor) => Disposable.t = "retain"
 
-  /**Find all connection IDs for a specific connection and on a specific object. Useful together with `@deleteEdge` and similar where you want to remove something from all connection configurations. */
+  /**
+    Finds all connection IDs for a specific connection key on a parent record.
+
+    Useful for operations that need to affect all instances of a connection,
+    such as when using `@deleteEdge` or bulk connection updates.
+
+    ## Parameters
+    - `connectionKey`: The connection key to search for
+    - `parentId`: The parent record containing the connections
+
+    ## Returns
+    Array of connection data IDs
+
+    ## Examples
+
+    ```rescript
+    // Find all friend list connections for a user
+    let connectionIds = environment->RescriptRelay.Environment.findAllConnectionIds(
+      ~connectionKey=UserFriends_user_graphql.connectionKey,
+      ~parentId=userId
+    )
+    ```
+  */
   let findAllConnectionIds: (t, ~connectionKey: string, ~parentId: dataId) => array<dataId>
 
   /**
@@ -921,14 +1574,72 @@ let useEnvironmentFromContext: unit => Environment.t
 
 /**An exception detailing that a mutation failed.*/ exception Mutation_failed(array<mutationError>)
 
-/**A way of committing a local update to the store.*/
+/**
+  Commits a local update to the Relay store.
+
+  Performs imperative updates to the store without triggering network requests.
+  Use this for client-side only changes like toggling UI state or updating
+  local fields that don't need server synchronization.
+
+  ## Parameters
+  - `environment`: The Relay environment
+  - `updater`: Function that receives the store and performs updates
+
+  ## Examples
+
+  ```rescript
+  // Toggle a local UI state
+  RescriptRelay.commitLocalUpdate(
+    ~environment,
+    ~updater=store => {
+      let user = store->RescriptRelay.RecordSourceSelectorProxy.get(~dataId=userId)
+      switch user {
+      | Some(userRecord) => 
+        let _ = userRecord->RescriptRelay.RecordProxy.setValueBool(
+          ~value=!isExpanded,
+          ~name="isExpanded"
+        )
+      | None => ()
+      }
+    }
+  )
+  ```
+*/
 @module("relay-runtime")
 external commitLocalUpdate: (
   ~environment: Environment.t,
   ~updater: RecordSourceSelectorProxy.t => unit,
 ) => unit = "commitLocalUpdate"
 
-/**Allows you to subscribe to when a record, connection, or even the store itself is invalidated, and then react to that.*/
+/**
+  Subscribes to invalidation events for specific records.
+
+  Executes a callback whenever any of the specified records are invalidated.
+  Useful for triggering refetches or UI updates when cached data becomes stale.
+
+  ## Parameters
+  - Array of `dataId`s to watch for invalidation
+  - Callback function executed when any watched record is invalidated
+
+  ## Examples
+
+  ```rescript
+  // Watch for user invalidation and refetch
+  let disposable = RescriptRelay.useSubscribeToInvalidationState(
+    [user.__id],
+    () => {
+      // Refetch user data when invalidated
+      UserQuery.fetchPromised(~environment, ~variables={id: user.id})
+      ->Promise.done
+    }
+  )
+
+  // Clean up subscription
+  React.useEffect1(() => {
+    Some(() => disposable->RescriptRelay.Disposable.dispose)
+  }, [disposable])
+  ```
+*/
 @module("react-relay")
 external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
   "useSubscribeToInvalidationState"
