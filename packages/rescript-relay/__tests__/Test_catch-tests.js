@@ -199,4 +199,53 @@ describe("Catch", () => {
       "User: user-1 - 2025-01-01, Error!, User: user-3 - 2025-01-01"
     );
   });
+
+  test("union member fragment - success user", async () => {
+    queryMock.mockQuery({
+      name: "TestCatchUnionMemberQuery",
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-1",
+          createdAt: date.toISOString(),
+        },
+      },
+    });
+
+    t.render(test_catch("TestUnionMember"));
+    await t.screen.findByText("Got user id: user-1, and createdAt: 2025-01-01");
+  });
+
+  test("union member fragment - success group", async () => {
+    queryMock.mockQuery({
+      name: "TestCatchUnionMemberQuery",
+      data: {
+        member: {
+          __typename: "Group",
+          id: "group-1",
+          name: "Test Group",
+        },
+      },
+    });
+
+    t.render(test_catch("TestUnionMember"));
+    await t.screen.findByText("Got group id: group-1, and name: Test Group");
+  });
+
+  test("union member fragment - fail", async () => {
+    queryMock.mockQuery({
+      name: "TestCatchUnionMemberQuery",
+      data: {
+        member: {
+          __typename: "User",
+          id: "user-1",
+          createdAt: null,
+        },
+      },
+      graphqlErrors: [{ path: ["member", "createdAt"] }],
+    });
+
+    t.render(test_catch("TestUnionMember"));
+    await t.screen.findByText("Error from union fragment!");
+  });
 });

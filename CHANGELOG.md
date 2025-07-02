@@ -1,5 +1,7 @@
 # master
 
+- Add supprot for top level `@catch` on fragments on unions.
+
 # 3.2.0
 
 - Add support for the new Relay `@catch` directive. https://github.com/zth/rescript-relay/pull/549

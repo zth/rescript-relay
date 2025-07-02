@@ -173,6 +173,53 @@ module TestMembers = {
   }
 }
 
+module UnionMemberFragment = %relay(`
+  fragment TestCatchUnionMember_member on Member @catch {
+    ... on User {
+      id
+      createdAt
+    }
+    ... on Group {
+      id
+      name
+    }
+  }
+`)
+
+module QueryUnionMember = %relay(`
+  query TestCatchUnionMemberQuery {
+    member(id: "123") {
+      ...TestCatchUnionMember_member
+    }
+  }
+`)
+
+module TestUnionMember = {
+  @react.component
+  let make = () => {
+    let query = QueryUnionMember.use(~variables=())
+    let fragmentData = UnionMemberFragment.useOpt(
+      query.member->Belt.Option.map(r => r.fragmentRefs),
+    )
+
+    switch fragmentData {
+    | Some(Ok({value: User({id, createdAt})})) =>
+      <div>
+        {React.string(
+          "Got user id: " ++
+          id ++
+          ", and createdAt: " ++
+          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+        )}
+      </div>
+    | Some(Ok({value: Group({id, name})})) =>
+      <div> {React.string("Got group id: " ++ id ++ ", and name: " ++ name)} </div>
+    | Some(Error(_)) => <div> {React.string("Error from union fragment!")} </div>
+    | _ => React.null
+    }
+  }
+}
+
 @live
 let test_catch = testName => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
@@ -189,6 +236,7 @@ let test_catch = testName => {
     | "TestMember" => <TestMember />
     | "TestMemberNested" => <TestMemberNested />
     | "TestMembers" => <TestMembers />
+    | "TestUnionMember" => <TestUnionMember />
     | _ => React.null
     }}
   </TestProviders.Wrapper>
