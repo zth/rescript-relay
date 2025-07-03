@@ -10,7 +10,7 @@ homepage: "https://github.com/zth/rescript-relay"
 bug-reports: "https://github.com/zth/rescript-relay/issues"
 dev-repo: "git+https://github.com/zth/rescript-relay.git"
 depends: [
-  "ocaml" {= "4.14.0"}
+  "ocaml" {>= "4.14.0" & < "5.0.0"}
   "dune" {>= "3.3.1"}
   "ppxlib"
   "graphql_parser" {>= "0.12.2"}

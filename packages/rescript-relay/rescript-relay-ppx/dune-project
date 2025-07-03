@@ -7,7 +7,9 @@
  (synopsis "PPX for ReScript Relay GraphQL bindings")
  (depends
   (ocaml
-   (= 4.14.0))
+   (and
+    (>= 4.14.0)
+    (< 5.0.0)))
   (dune
    (>= 3.3.1))
   ppxlib
