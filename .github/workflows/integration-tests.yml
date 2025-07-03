@@ -49,6 +49,8 @@ jobs:
           echo "::set-output name=status::$( git status --porcelain )"
       - name: Exit if files modified
         run: |
+          echo "Files have been modified during the build process:"
+          echo "${{ steps.git_status.outputs.status }}"
           exit 1
         if: steps.git_status.outputs.status
       - name: Build - bindings
