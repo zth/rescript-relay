@@ -12,47 +12,34 @@ jobs:
       matrix:
         platform: [ubuntu-latest]
 
-    name: PPX
+    name: PPX Linux
     runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay/rescript-relay-ppx
-    container:
-      image: alexfedoseev/alpine-node-yarn-esy:0.0.9
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
         with:
-          node-version: 20.x
-        env:
-          CI: true
-      - name: Esy install
-        run: esy install
-      - name: Print esy cache
-        id: print_esy_cache
-        run: node $GITHUB_WORKSPACE/.github/workflows/print_esy_cache.js
-      - name: Try to restore dependencies cache
-        uses: actions/cache@v4
-        id: deps-cache
-        with:
-          path: ${{ steps.print_esy_cache.outputs.esy_cache }}
-          key: ${{ matrix.platform }}---v1${{ hashFiles('**/index.json') }}
-          restore-keys: |
-            ${{ matrix.platform }}---v1
+          ocaml-compiler: "4.14"
+          dune-cache: true
+          cache-prefix: "v1"
+      - name: Install dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam install . --deps-only
       - name: Build PPX
-        run: esy linux-release-static
-      - name: Copy built PPX file
+        working-directory: packages/rescript-relay/rescript-relay-ppx
         run: |
+          opam exec -- dune build --profile release-static bin/RescriptRelayPpxApp.exe
           cp _build/default/bin/RescriptRelayPpxApp.exe ppx-linux
       - name: Strip binary
-        run: |
-          strip ppx-linux
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: strip ppx-linux
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v4
         with:
           name: ppx-${{ matrix.platform }}
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
+
   ppx:
     strategy:
       matrix:
@@ -60,26 +47,24 @@ jobs:
 
     name: PPX
     runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
         with:
-          node-version: 20.x
-        env:
-          CI: true
-      - name: Install esy
-        run: npm install -g esy@latest
-      - name: Install and build dependencies
-        run: esy install
+          ocaml-compiler: "4.14"
+          dune-cache: true
+          cache-prefix: "v1"
+      - name: Install dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam install . --deps-only
       - name: Build PPX
-        run: esy build
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
       - name: Strip PPX binary
         if: runner.os != 'Windows'
-        run: |
-          strip _build/default/bin/RescriptRelayPpxApp.exe
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: strip _build/default/bin/RescriptRelayPpxApp.exe
       - name: Upload PPX artifact ${{ matrix.platform }}
         uses: actions/upload-artifact@v4
         with:

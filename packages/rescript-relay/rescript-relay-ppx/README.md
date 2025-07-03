@@ -1,55 +1,95 @@
-# rescript-relay-ppx
+# ReScript Relay PPX
 
-A project which demonstrates a Reason workflow with [Esy][].
+A preprocessor for GraphQL in ReScript Relay projects.
 
-[esy]: https://github.com/esy/esy
+## Quick Start
 
-## Usage
+The easiest way to work with this project is using the provided Makefile:
 
-You need Esy, you can install the beta using [npm](https://npmjs.com):
+```bash
+# First time setup (installs OCaml 4.14 + dependencies)
+make dev-setup
 
-    % npm install -g esy@latest
+# Build the PPX binary (same as before with esy)
+make build
 
-> NOTE: Make sure `esy --version` returns at least `0.5.8` for this project to build.
+# Check everything is working
+make check
 
-Then run the `esy` command from this project root to install and build depenencies.
+# See all available commands
+make help
+```
 
-    % esy
+**The binary is built at `_build/default/bin/RescriptRelayPpxApp.exe` - exactly the same location and name as before with esy.**
 
-Now you can run your editor within the environment (which also includes merlin):
+## Development Setup
 
-    % esy $EDITOR
-    % esy vim
+This project uses standard OCaml tooling with opam instead of esy, but produces the exact same binary at the same location.
 
-Alternatively you can try [vim-reasonml](https://github.com/jordwalke/vim-reasonml)
-which loads esy project environments automatically.
+### Prerequisites
 
-After you make some changes to source code, you can re-run project's build
-again with the same simple `esy` command.
+- OCaml 4.14.0 or later
+- opam 2.0 or later
+- dune 3.3.1 or later
 
-    % esy
+### Available Make Commands
 
-And test compiled executable (runs `scripts.tests` specified in
-`package.json`):
+| Command              | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| `make build`         | Build the PPX executable (default - same as `make`)        |
+| `make rebuild`       | Clean and build from scratch                               |
+| `make clean`         | Clean build artifacts                                      |
+| `make dev-setup`     | Set up development environment (OCaml 4.14 + dependencies) |
+| `make deps`          | Install project dependencies only                          |
+| `make build-release` | Build with release profile                                 |
+| `make check`         | Verify binary builds and works                             |
+| `make env`           | Show current OCaml environment                             |
+| `make help`          | Show all available commands                                |
 
-    % esy test
+### Manual Building (if you prefer opam directly)
 
-Documentation for the libraries in the project can be generated with:
+```bash
+# Install dependencies
+opam install . --deps-only
 
-    % esy doc
-    % open-cli `esy echo '#{self.target_dir}/default/_doc/_html/index.html'`
+# Build the PPX (produces _build/default/bin/RescriptRelayPpxApp.exe)
+opam exec -- dune build bin/RescriptRelayPpxApp.exe
 
-This assumes you have a command like [open-cli](https://github.com/sindresorhus/open-cli) installed on your system.
+# Build for release (with static linking on Linux)
+opam exec -- dune build --profile release-static bin/RescriptRelayPpxApp.exe
+```
 
-Shell into environment:
+### Development Workflow
 
-    % esy shell
+```bash
+# Quick development cycle
+make rebuild      # clean + build
 
-## Create Prebuilt Release:
+# Build in watch mode (manual)
+opam exec -- dune build --watch
 
-`esy` allows creating prebuilt binary packages for your current platform, with
-no dependencies.
+# Run tests (if any)
+make test
+```
 
-    % esy npm-release
-    % cd _release
-    % npm publish
+### Binary Location
+
+The PPX binary is built at **`_build/default/bin/RescriptRelayPpxApp.exe`** - exactly the same location and filename as the original esy setup. No installation required.
+
+### CI
+
+The project uses GitHub Actions with `setup-ocaml` for reliable cross-platform builds with automatic caching. The setup supports:
+
+- Linux (with static linking)
+- macOS
+- Windows
+
+## Dependencies
+
+- **ppxlib**: PPX framework
+- **graphql_parser**: GraphQL parsing
+- **dune**: Build system
+
+## Migration from esy
+
+This project was migrated from esy to standard opam tooling for better CI reliability and ecosystem compatibility. **The functionality and binary location remain exactly the same** - only the build tooling changed.

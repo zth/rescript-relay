@@ -1,0 +1,38 @@
+opam-version: "2.0"
+name: "rescript-relay-ppx"
+version: "1.0.0"
+synopsis: "PPX for ReScript Relay GraphQL bindings"
+description: "A preprocessor for GraphQL in ReScript Relay projects"
+maintainer: "maintainer@example.com"
+authors: ["ReScript Relay Team"]
+license: "MIT"
+homepage: "https://github.com/zth/rescript-relay"
+bug-reports: "https://github.com/zth/rescript-relay/issues"
+dev-repo: "git+https://github.com/zth/rescript-relay.git"
+depends: [
+  "ocaml" {= "4.14.0"}
+  "dune" {>= "3.3.1"}
+  "ppxlib"
+  "graphql_parser" {>= "0.12.2"}
+]
+pin-depends: [
+  ["ppxlib.dev" "git+https://github.com/zth/ppxlib.git#32f83395fb89693a873541298b6367449f23bc4a"]
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+install: [
+  ["dune" "install" "-p" name "--create-install-files" name]
+]

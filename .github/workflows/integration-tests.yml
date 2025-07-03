@@ -23,14 +23,18 @@ jobs:
         with:
           toolchain: 1.76.0
           override: true
-      - name: Install esy
-        run: npm install -g esy@latest
-      - name: Install and build PPX dependencies
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "4.14"
+          dune-cache: true
+          cache-prefix: "v1"
+      - name: Install PPX dependencies
         working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: esy install
+        run: opam install . --deps-only
       - name: Build PPX
         working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: esy build
+        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
       - name: Install - bindings
         working-directory: packages/rescript-relay
         run: |

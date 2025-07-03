@@ -17,7 +17,6 @@ let extractResolverParts text =
 
 open Ppxlib
 open Ast_helper
-open Util
 
 let extractRelayDocBlockComment (attributes : Parsetree.attributes) =
   attributes

@@ -1,9 +1,10 @@
 .merlin
 node_modules/
 _build
-_esy
-_release
+_opam
 *.byte
 *.native
 *.install
 **/.merlin
+# Built binaries
+ppx-*
