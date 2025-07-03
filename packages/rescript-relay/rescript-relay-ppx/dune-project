@@ -1,2 +1,17 @@
-(lang dune 1.2)
+(lang dune 3.3)
+
 (name rescript-relay-ppx)
+
+(package
+ (name rescript-relay-ppx)
+ (synopsis "PPX for ReScript Relay GraphQL bindings")
+ (depends
+  (ocaml
+   (and
+    (>= 4.14.0)
+    (< 5.0.0)))
+  (dune
+   (>= 3.3.1))
+  ppxlib
+  (graphql_parser
+   (>= 0.12.2))))
