@@ -32,7 +32,9 @@ jobs:
           cp _build/default/bin/RescriptRelayPpxApp.exe ppx-linux
       - name: Strip binary
         working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: strip ppx-linux
+        run: |
+          chmod +w ppx-linux
+          strip ppx-linux
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v4
         with:
@@ -64,7 +66,9 @@ jobs:
       - name: Strip PPX binary
         if: runner.os != 'Windows'
         working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: strip _build/default/bin/RescriptRelayPpxApp.exe
+        run: |
+          chmod +w _build/default/bin/RescriptRelayPpxApp.exe
+          strip _build/default/bin/RescriptRelayPpxApp.exe
       - name: Upload PPX artifact ${{ matrix.platform }}
         uses: actions/upload-artifact@v4
         with:
