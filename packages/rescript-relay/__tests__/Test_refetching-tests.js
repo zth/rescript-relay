@@ -10,6 +10,7 @@ describe("Fragment", () => {
   test("refetching works", async () => {
     queryMock.mockQuery({
       name: "TestRefetchingQuery",
+      variables: { beforeDate: "2023-01-01T00:00:00.000Z" },
       data: {
         loggedInUser: {
           id: "user-1",
@@ -18,6 +19,11 @@ describe("Fragment", () => {
           friendsConnection: {
             totalCount: 20,
           },
+          friends: [
+            {
+              id: "user-2",
+            },
+          ],
         },
       },
     });
@@ -33,6 +39,7 @@ describe("Fragment", () => {
         id: "user-1",
         showOnlineStatus: true,
         friendsOnlineStatuses: ["Online", "offline"],
+        beforeDate: null,
       },
       data: {
         node: {
@@ -43,6 +50,14 @@ describe("Fragment", () => {
           friendsConnection: {
             totalCount: 10,
           },
+          friends: [
+            {
+              id: "user-2",
+            },
+            {
+              id: "user-3",
+            },
+          ],
         },
       },
     });

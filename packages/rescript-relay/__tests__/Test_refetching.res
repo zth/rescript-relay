@@ -1,7 +1,9 @@
 module Query = %relay(`
-    query TestRefetchingQuery {
+    query TestRefetchingQuery($beforeDate: Datetime) {
       loggedInUser {
-        ...TestRefetching_user
+        ...TestRefetching_user @arguments(
+          beforeDate: $beforeDate
+        )
       }
     }
 `)
@@ -12,11 +14,15 @@ module Fragment = %relay(`
       @argumentDefinitions(
         friendsOnlineStatuses: { type: "[OnlineStatus!]" }
         showOnlineStatus: { type: "Boolean", defaultValue: false }
+        beforeDate: { type: "Datetime" }
       ) {
       firstName
       onlineStatus @include(if: $showOnlineStatus)
       friendsConnection(statuses: $friendsOnlineStatuses) {
         totalCount
+      }
+      friends(beforeDate: $beforeDate) {
+        id
       }
     }
 `)
@@ -34,7 +40,11 @@ module FragmentWithNoArgs = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables=())
+    let query = Query.use(
+      ~variables={
+        beforeDate: Js.Date.fromString("2023-01-01T00:00:00.000Z"),
+      },
+    )
 
     let (data, refetch) = Fragment.useRefetchable(query.loggedInUser.fragmentRefs)
 
@@ -57,6 +67,7 @@ module Test = {
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=Some([Online, Offline]),
+                ~beforeDate=None,
               ),
             )->RescriptRelay.Disposable.ignore
           })
