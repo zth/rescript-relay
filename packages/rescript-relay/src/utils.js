@@ -79,6 +79,12 @@ function traverse(
       continue;
     }
 
+    if (currentObj[key] && currentObj[key].BS_PRIVATE_NESTED_SOME_NONE >= 0) {
+      newObj = getNewObj(newObj, currentObj);
+      newObj[key] = currentObj[key];
+      continue;
+    }
+
     var shouldConvertRootObj =
       typeof instructions["r"] === "string" &&
       fullInstructionMap[instructions["r"]];
