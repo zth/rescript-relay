@@ -32,7 +32,7 @@
     "rescript": "11.0.0-rc.8",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^5.2.1"
   },
   "author": "bootstrapdash",
   "url": "http://www.bootstrapdash.com/",
