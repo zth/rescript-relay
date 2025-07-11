@@ -13,10 +13,19 @@ module Types = {
   @live
   type rawResponse = response
   @live
-  type variables = unit
+  type variables = {
+    beforeDate?: TestsUtils.Datetime.t,
+  }
   @live
-  type refetchVariables = unit
-  @live let makeRefetchVariables = () => ()
+  type refetchVariables = {
+    beforeDate: option<option<TestsUtils.Datetime.t>>,
+  }
+  @live let makeRefetchVariables = (
+    ~beforeDate=?,
+  ): refetchVariables => {
+    beforeDate: beforeDate
+  }
+
 }
 
 
@@ -25,10 +34,12 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
   @live
-  let variablesConverterMap = ()
+  let variablesConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+  }
   @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
@@ -81,9 +92,31 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` {
+let node: operationType = %raw(json` (function(){
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "beforeDate"
+  }
+],
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "beforeDate",
+    "variableName": "beforeDate"
+  }
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestRefetchingQuery",
@@ -97,7 +130,7 @@ let node: operationType = %raw(json` {
         "plural": false,
         "selections": [
           {
-            "args": null,
+            "args": (v1/*: any*/),
             "kind": "FragmentSpread",
             "name": "TestRefetching_user"
           }
@@ -110,7 +143,7 @@ let node: operationType = %raw(json` {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "TestRefetchingQuery",
     "selections": [
@@ -149,25 +182,32 @@ let node: operationType = %raw(json` {
           },
           {
             "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
+            "args": (v1/*: any*/),
+            "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "friends",
+            "plural": true,
+            "selections": [
+              (v2/*: any*/)
+            ],
             "storageKey": null
-          }
+          },
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "0a7445625d0b3447562da87481fa549f",
+    "cacheID": "c6ca14e8318dbc1d7e27af6e2cef078f",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingQuery {\n  loggedInUser {\n    ...TestRefetching_user\n    id\n  }\n}\n\nfragment TestRefetching_user on User {\n  firstName\n  friendsConnection {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    ...TestRefetching_user_3xCS8w\n    id\n  }\n}\n\nfragment TestRefetching_user_3xCS8w on User {\n  firstName\n  friendsConnection {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate) {\n    id\n  }\n  id\n}\n"
   }
-} `)
+};
+})() `)
 
 @live let load: (
   ~environment: RescriptRelay.Environment.t,

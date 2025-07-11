@@ -4,11 +4,15 @@
 module Types = {
   @@warning("-30")
 
-  type rec fragment_friendsConnection = {
+  type rec fragment_friends = {
+    @live id: string,
+  }
+  and fragment_friendsConnection = {
     totalCount: int,
   }
   type fragment = {
     firstName: string,
+    friends: array<fragment_friends>,
     friendsConnection: fragment_friendsConnection,
     @live id: string,
     onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
@@ -63,8 +67,21 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 %%private(let makeNode = (rescript_graphql_node_TestRefetchingRefetchQuery): operationType => {
   ignore(rescript_graphql_node_TestRefetchingRefetchQuery)
-  %raw(json`{
+  %raw(json`(function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "beforeDate"
+    },
     {
       "defaultValue": null,
       "kind": "LocalArgument",
@@ -139,15 +156,28 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
     },
     {
       "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "beforeDate",
+          "variableName": "beforeDate"
+        }
+      ],
+      "concreteType": "User",
+      "kind": "LinkedField",
+      "name": "friends",
+      "plural": true,
+      "selections": [
+        (v0/*: any*/)
+      ],
       "storageKey": null
-    }
+    },
+    (v0/*: any*/)
   ],
   "type": "User",
   "abstractKey": null
-}`)
+};
+})()`)
 })
 let node: operationType = makeNode(TestRefetchingRefetchQuery_graphql.node)
 
