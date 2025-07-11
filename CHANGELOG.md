@@ -1,5 +1,7 @@
 # master
 
+# 3.3.0
+
 - Add support for top level `@catch` on fragments on unions.
 - Add parameter `excludedIds: array<dataId>` to `invalidateRecordsByIds` to allow excluding a list of connection IDs from invalidation.
 - **BREAKING:** `operation.text` and `operation.id` are now nullable, which better reflects what values they can actually have in runtime.
