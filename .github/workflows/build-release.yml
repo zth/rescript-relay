@@ -236,7 +236,7 @@ jobs:
         run: |
           mv binaries/* _release/
       - name: Remove artifacts
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: |
             ppx-linux
