@@ -1,5 +1,7 @@
 # master
 
+- Add support for `@exhaustive` - a directive to trigger exhaustiveness checks for unions at the GraphQL operation level.
+
 # 3.3.0
 
 - Add support for top level `@catch` on fragments on unions.
