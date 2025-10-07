@@ -173,7 +173,7 @@ external usePrefetchableForwardPaginationFragment_: (
   ~prefetchingLoadMoreOptions: paginationLoadMoreOptions=?,
   ~minimumFetchSize: int=?,
 ) => prefetchableForwardPaginationFragmentReturnRaw<'fragment, 'edges, 'refetchVariables> =
-  "usePrefetchableForwardPaginationFragment_EXPERIMENTAL"
+  "usePrefetchableForwardPaginationFragment"
 
 /** React hook for paginating a fragment. Paginating with this hook will _not_ cause your component to suspend. */
 let usePrefetchableForwardPagination = (

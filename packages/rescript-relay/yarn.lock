@@ -2652,16 +2652,16 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-relay@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-18.2.0.tgz#c18dca79c0b88f1bea2787939c4c25c8e7543c26"
-  integrity sha512-/yHlv4pj3IQQPtDzYLfVk6P4wrOSvYPu/5ySPcRp4xV3pn9xoVOHVczSLcZkRVf72lJu8CIjoT8rn3roaGoFyQ==
+react-relay@20.1.1:
+  version "20.1.1"
+  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-20.1.1.tgz#b46ad03a8f67f203cc0134726af090e800b7b350"
+  integrity sha512-pwl7wHHXCOx32dOg4TVNkhVojgGVvOBMo9pcMGeM1BIFYvmwGauKTtBB+qr5buXHGooCL8TXjMVg+ZLizIsbeQ==
   dependencies:
     "@babel/runtime" "^7.25.0"
     fbjs "^3.0.2"
     invariant "^2.2.4"
     nullthrows "^1.1.1"
-    relay-runtime "18.2.0"
+    relay-runtime "20.1.1"
 
 react@18.2.0:
   version "18.2.0"
@@ -2697,10 +2697,10 @@ regexp.prototype.flags@^1.2.0:
     define-properties "^1.1.3"
     functions-have-names "^1.2.2"
 
-relay-runtime@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-18.2.0.tgz#36e2c88be6e13dcdf987d32a3063e3e491aafa43"
-  integrity sha512-r4FYWlx1dPwFW+KQnuF1ugwVKR4toIFduCGheEf2paRc6nEEcCIgd2p2Jx2gRF+4niO3mCbRZvqdCoKaznUDzg==
+relay-runtime@20.1.1:
+  version "20.1.1"
+  resolved "https://registry.yarnpkg.com/relay-runtime/-/relay-runtime-20.1.1.tgz#e1217a56af7739c8ae8d67db811ed471fd9af895"
+  integrity sha512-N98ZkkyuIHdXmHaPuljihM1QbFYXATF0gxA0CESFphszsQzXs9A/zZloVfzdOI/xg3B3CfM/5nozvIoeTDIcfw==
   dependencies:
     "@babel/runtime" "^7.25.0"
     fbjs "^3.0.2"

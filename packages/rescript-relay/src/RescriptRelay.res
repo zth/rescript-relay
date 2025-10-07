@@ -705,24 +705,37 @@ module Store = {
 module RelayFieldLogger = {
   @tag("kind")
   type arg =
-    | @as("missing_required_field.log") MissingRequiredFieldLog({owner: string, fieldPath: string})
+    | @as("missing_required_field.log")
+    MissingRequiredFieldLog({
+        owner: string,
+        fieldPath: string,
+        uiContext: option<Js.Json.t>,
+      })
     | @as("missing_required_field.throw")
     MissingRequiredFieldThrow({
         owner: string,
         fieldPath: string,
+        uiContext: option<Js.Json.t>,
       })
-    | @as("missing_expected_data.log") MissingExpectedData({owner: string, fieldPath: string})
+    | @as("missing_expected_data.log")
+    MissingExpectedData({
+        owner: string,
+        fieldPath: string,
+        uiContext: option<Js.Json.t>,
+      })
     | @as("missing_expected_data.throw")
     MissingExpectedDataThrow({
         owner: string,
         fieldPath: string,
         handled: bool,
+        uiContext: option<Js.Json.t>,
       })
     | @as("relay_resolver.error")
     RelayResolverError({
         owner: string,
         fieldPath: string,
         error: Js.Exn.t,
+        uiContext: option<Js.Json.t>,
       })
 
   type t = arg => unit

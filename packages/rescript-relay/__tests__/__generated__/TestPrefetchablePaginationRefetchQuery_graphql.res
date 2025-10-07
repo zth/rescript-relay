@@ -296,12 +296,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "10c72bc33721e51cf118fdf91004b9de",
+    "cacheID": "ba4a767581895326f3dc4798399a8733",
     "id": null,
     "metadata": {},
     "name": "TestPrefetchablePaginationRefetchQuery",
     "operationKind": "query",
-    "text": "query TestPrefetchablePaginationRefetchQuery(\n  $count: Int = 2\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestPrefetchablePagination_user_1G22uz\n    id\n  }\n}\n\nfragment TestPrefetchablePagination_user_1G22uz on User {\n  friendsConnection(first: $count, after: $cursor) {\n    edges {\n      ...TestPrefetchablePagination_user__edges\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPrefetchablePagination_user__edges on UserEdge {\n  node {\n    id\n    __typename\n  }\n  cursor\n}\n"
+    "text": "query TestPrefetchablePaginationRefetchQuery(\n  $count: Int = 2\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestPrefetchablePagination_user_1G22uz\n    id\n  }\n}\n\nfragment TestPrefetchablePagination_user_1G22uz on User {\n  friendsConnection(first: $count, after: $cursor) {\n    edges {\n      ...TestPrefetchablePagination_user__edges_1G22uz\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPrefetchablePagination_user__edges_1G22uz on UserEdge {\n  node {\n    id\n    __typename\n  }\n  cursor\n}\n"
   }
 };
 })() `)

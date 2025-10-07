@@ -47,7 +47,18 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
 let node: operationType = %raw(json` {
-  "argumentDefinitions": [],
+  "argumentDefinitions": [
+    {
+      "defaultValue": 2,
+      "kind": "LocalArgument",
+      "name": "count"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "cursor"
+    }
+  ],
   "kind": "Fragment",
   "metadata": {
     "plural": true

@@ -1,5 +1,11 @@
 # master
 
+- Move underlying Relay compiler version to `20.1.1`.
+
+## Upgrade versions
+
+- `react-relay` and `relay-runtime` to `20.1.1`
+
 # 3.4.0
 
 - Add support for `@exhaustive` - a directive to trigger exhaustiveness checks for unions at the GraphQL operation level.

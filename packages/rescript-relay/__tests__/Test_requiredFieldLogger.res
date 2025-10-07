@@ -16,6 +16,7 @@ module Logger = {
   let expectedArg: RescriptRelay.RelayFieldLogger.arg = MissingRequiredFieldLog({
     owner: "TestRequiredFieldLoggerQuery",
     fieldPath: "loggedInUser.firstName",
+    uiContext: None,
   })
 }
 

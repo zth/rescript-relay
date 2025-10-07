@@ -226,12 +226,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "51afb9846e52cc8eb683cb4382261e77",
+    "cacheID": "89821e2b6391b04cb65a39f7005e1bd7",
     "id": null,
     "metadata": {},
     "name": "TestPrefetchablePaginationQuery",
     "operationKind": "query",
-    "text": "query TestPrefetchablePaginationQuery {\n  loggedInUser {\n    ...TestPrefetchablePagination_user\n    id\n  }\n}\n\nfragment TestPrefetchablePagination_user on User {\n  friendsConnection(first: 2) {\n    edges {\n      ...TestPrefetchablePagination_user__edges\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPrefetchablePagination_user__edges on UserEdge {\n  node {\n    id\n    __typename\n  }\n  cursor\n}\n"
+    "text": "query TestPrefetchablePaginationQuery {\n  loggedInUser {\n    ...TestPrefetchablePagination_user\n    id\n  }\n}\n\nfragment TestPrefetchablePagination_user on User {\n  friendsConnection(first: 2) {\n    edges {\n      ...TestPrefetchablePagination_user__edges_1AcwhQ\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment TestPrefetchablePagination_user__edges_1AcwhQ on UserEdge {\n  node {\n    id\n    __typename\n  }\n  cursor\n}\n"
   }
 };
 })() `)

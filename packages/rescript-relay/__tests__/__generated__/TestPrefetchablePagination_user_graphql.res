@@ -121,7 +121,18 @@ return {
           "plural": true,
           "selections": [
             {
-              "args": null,
+              "args": [
+                {
+                  "kind": "Variable",
+                  "name": "count",
+                  "variableName": "count"
+                },
+                {
+                  "kind": "Variable",
+                  "name": "cursor",
+                  "variableName": "cursor"
+                }
+              ],
               "kind": "FragmentSpread",
               "name": "TestPrefetchablePagination_user__edges"
             }
