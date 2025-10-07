@@ -1,5 +1,7 @@
 # master
 
+# 3.5.0
+
 - Move underlying Relay compiler version to `20.1.1`.
 
 ## Upgrade versions
