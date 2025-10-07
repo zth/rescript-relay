@@ -7,13 +7,11 @@ module Types = {
   @tag("__typename") type response_node = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         name: option<string>,
       }
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: option<string>,
       }
     )

@@ -110,7 +110,6 @@ module Test = {
                   Group({
                     name: "Another Group",
                     id: "group-2",
-                    __typename: #Group,
                     __isNode: #Group,
                   }),
                 ),
@@ -131,20 +130,17 @@ module Test = {
                   firstName: "AnotherFirst",
                   onlineStatus: Some(Online),
                   avatarUrl: None,
-                  __typename: #User,
                   memberOfSingular: None,
                   memberOf: Some([
                     Some(
                       Group({
                         name: "Some Group",
-                        __typename: #Group,
                         __isNode: #Group,
                         id: "group-1",
                         topMember: Some(
                           User({
                             firstName: "Some User",
                             id: "user-2",
-                            __typename: #User,
                             __isNode: #User,
                           }),
                         ),

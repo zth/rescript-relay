@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type response_node = 
     | @live User(
       {
-        @live __typename: [ | #User],
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
       }
     )
@@ -16,7 +15,6 @@ module Types = {
   @tag("__typename") type rawResponse_node_User_memberOf_Group_topMember = 
     | @live User(
       {
-        @live __typename: [ | #User],
         __isNode: [ | #User],
         firstName: string,
         @live id: string,
@@ -27,7 +25,6 @@ module Types = {
   @tag("__typename") type rawResponse_node_User_memberOf = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         __isNode: [ | #Group],
         @live id: string,
         name: string,
@@ -36,7 +33,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         __isNode: [ | #User],
         firstName: string,
         @live id: string,
@@ -47,7 +43,6 @@ module Types = {
   @tag("__typename") type rawResponse_node_User_memberOfSingular = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         __isNode: [ | #Group],
         @live id: string,
         name: string,
@@ -55,7 +50,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         __isNode: [ | #User],
         firstName: string,
         @live id: string,
@@ -66,7 +60,6 @@ module Types = {
   @tag("__typename") type rawResponse_node = 
     | @live User(
       {
-        @live __typename: [ | #User],
         avatarUrl: option<string>,
         firstName: string,
         @live id: string,

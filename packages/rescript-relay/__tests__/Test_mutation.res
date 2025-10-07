@@ -135,7 +135,6 @@ module Test = {
                   memberOf: Some([
                     Some(
                       User({
-                        __typename: #User,
                         firstName: "test",
                         id: "123",
                         __isNode: #User,

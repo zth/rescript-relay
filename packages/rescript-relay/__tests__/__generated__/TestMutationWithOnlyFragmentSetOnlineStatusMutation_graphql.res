@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type rawResponse_setOnlineStatus_user_memberOf = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         __isNode: [ | #Group],
         @live id: string,
         name: string,
@@ -15,7 +14,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         __isNode: [ | #User],
         firstName: string,
         @live id: string,

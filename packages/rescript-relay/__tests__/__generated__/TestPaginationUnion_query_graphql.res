@@ -17,7 +17,6 @@ module Types = {
   @tag("__typename") and fragment_members_edges_node = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         adminsConnection: fragment_members_edges_node_Group_adminsConnection,
         @live id: string,
         name: string,
@@ -25,7 +24,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         @live id: string,
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>,
       }

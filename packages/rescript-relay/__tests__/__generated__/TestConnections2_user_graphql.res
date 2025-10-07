@@ -16,7 +16,6 @@ module Types = {
   @tag("__typename") and fragment_member = 
     | @live User(
       {
-        @live __typename: [ | #User],
         friendsConnection: fragment_member_User_friendsConnection,
       }
     )

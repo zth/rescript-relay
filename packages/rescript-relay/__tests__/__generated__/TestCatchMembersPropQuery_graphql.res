@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type response_members_edges_node_value = 
     | @live User(
       {
-        @live __typename: [ | #User],
         createdAt: TestsUtils.Datetime.t,
         @live id: string,
       }

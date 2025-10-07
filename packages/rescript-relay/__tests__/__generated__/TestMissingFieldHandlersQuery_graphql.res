@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type response_node = 
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
       }
     )

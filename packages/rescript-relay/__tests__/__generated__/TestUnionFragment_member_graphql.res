@@ -7,13 +7,11 @@ module Types = {
   @tag("__typename") type fragment = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         name: string,
       }
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
         fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestUnionFragmentUser_user]>,

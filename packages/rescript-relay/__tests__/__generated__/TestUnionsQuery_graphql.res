@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type response_members_edges_node_Group_members = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         avatarUrl: option<string>,
         @live id: string,
         name: string,
@@ -15,7 +14,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
         @live id: string,
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
@@ -26,7 +24,6 @@ module Types = {
   @tag("__typename") type response_members_edges_node = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         avatarUrl: option<string>,
         @live id: string,
         members: option<array<option<response_members_edges_node_Group_members>>>,
@@ -35,7 +32,6 @@ module Types = {
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
         @live id: string,
         onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,

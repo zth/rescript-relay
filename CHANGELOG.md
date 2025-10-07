@@ -1,6 +1,7 @@
 # master
 
 - Add support for `@exhaustive` - a directive to trigger exhaustiveness checks for unions at the GraphQL operation level.
+- Drop `__typename` in inline records, since that conflicts with using `@tag("__typename")` in ReScript v12.
 
 # 3.3.0
 

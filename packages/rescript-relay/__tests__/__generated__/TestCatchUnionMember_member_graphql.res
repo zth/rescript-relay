@@ -7,14 +7,12 @@ module Types = {
   @tag("__typename") type fragment_t = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         @live id: string,
         name: string,
       }
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         createdAt: TestsUtils.Datetime.t,
         @live id: string,
       }

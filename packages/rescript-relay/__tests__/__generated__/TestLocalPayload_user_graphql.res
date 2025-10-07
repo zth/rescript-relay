@@ -7,7 +7,6 @@ module Types = {
   @tag("__typename") type fragment_memberOf_Group_topMember = 
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
       }
     )
@@ -16,14 +15,12 @@ module Types = {
   @tag("__typename") type fragment_memberOf = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         name: string,
         topMember: option<fragment_memberOf_Group_topMember>,
       }
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
       }
     )
@@ -32,13 +29,11 @@ module Types = {
   @tag("__typename") type fragment_memberOfSingular = 
     | @live Group(
       {
-        @live __typename: [ | #Group],
         name: string,
       }
     )
     | @live User(
       {
-        @live __typename: [ | #User],
         firstName: string,
       }
     )
