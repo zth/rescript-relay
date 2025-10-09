@@ -13,6 +13,16 @@ jobs:
     container:
       image: debian:bullseye
     steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            ca-certificates \
+            git \
+            unzip \
+            bubblewrap
       - uses: actions/checkout@v4
       - name: Set up OCaml
         uses: ocaml/setup-ocaml@v3
