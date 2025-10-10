@@ -1,5 +1,7 @@
 # master
 
+- Build Linux PPX binary in Debian 11 (bullseye) container to improve compatibility with older glibc versions. The binary now requires glibc 2.31 instead of 2.39, supporting Amazon Linux 2023 (Vercel), Ubuntu 20.04+, Debian 11+, and RHEL 9+.
+
 # 3.5.0
 
 - Move underlying Relay compiler version to `20.1.1`.
