@@ -4,6 +4,17 @@
 module Types = {
   @@warning("-30")
 
+  @tag("__typename") type response__testExhaustiveInterface = 
+    | @live Group(
+      {
+      }
+    )
+    | @live User(
+      {
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
+
   @tag("__typename") type response_node = 
     | @live User(
       {
@@ -14,6 +25,7 @@ module Types = {
     | @live @as("__unselected") UnselectedUnionMember(string)
 
   type response = {
+    _testExhaustiveInterface: option<response__testExhaustiveInterface>,
     node: option<response_node>,
   }
   @live
@@ -25,6 +37,10 @@ module Types = {
   @live let makeRefetchVariables = () => ()
 }
 
+@live
+let unwrap_response__testExhaustiveInterface: Types.response__testExhaustiveInterface => Types.response__testExhaustiveInterface = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
+@live
+let wrap_response__testExhaustiveInterface: Types.response__testExhaustiveInterface => Types.response__testExhaustiveInterface = RescriptRelay_Internal.wrapUnion
 @live
 let unwrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
@@ -49,10 +65,11 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"},"_testExhaustiveInterface":{"u":"response__testExhaustiveInterface"}}}`
   )
   @live
   let wrapResponseConverterMap = {
+    "response__testExhaustiveInterface": wrap_response__testExhaustiveInterface,
     "response_node": wrap_response_node,
   }
   @live
@@ -65,10 +82,11 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
+    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"},"_testExhaustiveInterface":{"u":"response__testExhaustiveInterface"}}}`
   )
   @live
   let responseConverterMap = {
+    "response__testExhaustiveInterface": unwrap_response__testExhaustiveInterface,
     "response_node": unwrap_response_node,
   }
   @live
@@ -116,6 +134,16 @@ v2 = {
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
+},
+v3 = [
+  (v1/*: any*/)
+],
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -148,6 +176,30 @@ return {
           }
         ],
         "storageKey": "node(id:\"123\")"
+      },
+      {
+        "alias": "_testExhaustiveInterface",
+        "args": (v0/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": (v3/*: any*/),
+            "type": "User",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": (v3/*: any*/),
+            "type": "Group",
+            "abstractKey": null
+          }
+        ],
+        "storageKey": "node(id:\"123\")"
       }
     ],
     "type": "Query",
@@ -176,25 +228,32 @@ return {
             "type": "User",
             "abstractKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          }
+          (v4/*: any*/)
+        ],
+        "storageKey": "node(id:\"123\")"
+      },
+      {
+        "alias": "_testExhaustiveInterface",
+        "args": (v0/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v4/*: any*/)
         ],
         "storageKey": "node(id:\"123\")"
       }
     ]
   },
   "params": {
-    "cacheID": "f0b7abdb1b2bf066f00270ab776575e5",
+    "cacheID": "45a362fa21af5d57a410f3e00ba11486",
     "id": null,
     "metadata": {},
     "name": "TestNodeInterfaceQuery",
     "operationKind": "query",
-    "text": "query TestNodeInterfaceQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n      ...TestNodeInterface_user\n    }\n    id\n  }\n}\n\nfragment TestNodeInterface_user on User {\n  firstName\n}\n"
+    "text": "query TestNodeInterfaceQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n      ...TestNodeInterface_user\n    }\n    id\n  }\n  _testExhaustiveInterface: node(id: \"123\") {\n    __typename\n    ... on User {\n      __typename\n    }\n    ... on Group {\n      __typename\n    }\n    id\n  }\n}\n\nfragment TestNodeInterface_user on User {\n  firstName\n}\n"
   }
 };
 })() `)

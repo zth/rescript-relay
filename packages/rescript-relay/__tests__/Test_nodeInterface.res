@@ -12,6 +12,15 @@ module Query = %relay(`
           ...TestNodeInterface_user
         }
       }
+
+      _testExhaustiveInterface: node(id: "123") @exhaustive {
+        ... on User {
+          __typename
+        }
+        ... on Group {
+          __typename
+        }
+      }
     }
 `)
 

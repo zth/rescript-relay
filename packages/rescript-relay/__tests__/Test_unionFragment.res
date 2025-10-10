@@ -28,7 +28,7 @@ module UserFragment = %relay(`
 `)
 
 module PluralFragment = %relay(`
-    fragment TestUnionFragment_plural_member on Member @relay(plural: true) {
+    fragment TestUnionFragment_plural_member on Member @relay(plural: true) @exhaustive {
       ... on User {
         firstName
         onlineStatus
