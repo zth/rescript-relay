@@ -8,20 +8,28 @@ on:
 
 jobs:
   ppx_linux:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-
     name: PPX Linux
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bullseye
     steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            ca-certificates \
+            git \
+            unzip \
+            bubblewrap
       - uses: actions/checkout@v4
       - name: Set up OCaml
         uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: "4.14"
           dune-cache: true
-          cache-prefix: "v1"
+          cache-prefix: "v2-bullseye"
       - name: Install dependencies
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: opam install . --deps-only
@@ -38,7 +46,7 @@ jobs:
       - name: Upload PPX artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ppx-${{ matrix.platform }}
+          name: ppx-linux
           path: packages/rescript-relay/rescript-relay-ppx/ppx-*
           if-no-files-found: error
 
