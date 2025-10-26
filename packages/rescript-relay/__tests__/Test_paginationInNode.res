@@ -65,7 +65,7 @@ module UserNodeDisplayer = {
     <div>
       {data.friendsConnection
       ->Fragment.getConnectionNodes
-      ->Belt.Array.map(user =>
+      ->Array.map(user =>
         <div key=user.id>
           <UserDisplayer user=user.fragmentRefs />
         </div>

@@ -82,7 +82,7 @@ module Test = {
     <div>
       {data.members
       ->Fragment.getConnectionNodes
-      ->Belt.Array.mapWithIndex((i, member) =>
+      ->Array.mapWithIndex((member, i) =>
         switch member {
         | User(user) =>
           <div key=user.id>
@@ -95,8 +95,8 @@ module Test = {
               (group.name ++
               (" with " ++
               (group.adminsConnection.edges
-              ->Belt.Option.getWithDefault([])
-              ->Belt.Array.length
+              ->Option.getOr([])
+              ->Array.length
               ->Int.toString ++
               " admins"))),
             )}

@@ -72,9 +72,9 @@ module Test = {
       <div>
         {React.string(
           `Member of: ${switch user.memberOf
-            ->Belt.Option.getWithDefault([])
-            ->Belt.Array.keepMap(v => v)
-            ->Belt.Array.get(0) {
+            ->Option.getOr([])
+            ->Array.filterMap(v => v)
+            ->Array.get(0) {
             | Some(Group({name, topMember})) =>
               `Group ${name}, top member: ${switch topMember {
                 | Some(User({firstName})) => firstName

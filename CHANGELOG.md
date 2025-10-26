@@ -2,6 +2,7 @@
 
 - Support `@exhaustive` on interfaces as well.
 - Remove `ReactDOMExperimental` module, since everything needed is in the official RescriptReact bindings now.
+- Move fully to ReScript v12. From `4.x`, only v12 is supported.
 
 # 3.5.1
 

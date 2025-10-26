@@ -117,7 +117,7 @@ let optArrayOfNullableToOptArrayOfOpt: option<array<Nullable.t<'a>>> => option<
 > = x =>
   switch x {
   | None => None
-  | Some(arr) => Some(arr->Belt.Array.map(Nullable.toOption))
+  | Some(arr) => Some(arr->Array.map(Nullable.toOption))
   }
 
 @module("relay-runtime") external storeRootId: dataId = "ROOT_ID"
@@ -332,7 +332,7 @@ module RecordSourceSelectorProxy = {
 
   let invalidateRecordsByIds: (t, array<dataId>) => unit = (store, recordIds) => {
     recordIds->Array.forEach(dataId => {
-      store->get(~dataId)->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+      store->get(~dataId)->Option.forEach(r => r->RecordProxy.invalidateRecord)
     })
   }
 }
@@ -770,7 +770,7 @@ module Environment = {
       ?getDataID,
       ?treatMissingFieldsAsNull,
       missingFieldHandlers: switch missingFieldHandlers {
-      | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
+      | Some(handlers) => handlers->Array.concat([nodeInterfaceMissingFieldHandler])
       | None => [nodeInterfaceMissingFieldHandler]
       },
       ?relayFieldLogger,
@@ -820,7 +820,7 @@ module Environment = {
         if !(excludedIds->Array.includes(dataId)) {
           store
           ->RecordSourceSelectorProxy.get(~dataId)
-          ->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+          ->Option.forEach(r => r->RecordProxy.invalidateRecord)
         }
       })
     })

@@ -38,8 +38,8 @@ module Test = {
     <div>
       <div>
         {edges
-        ->Belt.Array.keepMap(({node}) => node)
-        ->Belt.Array.map(friend => friend.id)
+        ->Array.filterMap(({node}) => node)
+        ->Array.map(friend => friend.id)
         ->Array.joinUnsafe(", ")
         ->React.string}
       </div>

@@ -18,7 +18,7 @@ module TestPreloaded = {
     let query = Query.usePreloaded(~queryRef)
     let users = switch query {
     | {users: Some({edges: Some(edges)})} =>
-      edges->Belt.Array.keepMap(edge =>
+      edges->Array.filterMap(edge =>
         switch edge {
         | Some({node}) => node
         | _ => None
@@ -29,7 +29,7 @@ module TestPreloaded = {
 
     <div>
       {users
-      ->Belt.Array.map(user =>
+      ->Array.map(user =>
         <div key=user.id>
           {React.string(
             "Preloaded " ++
@@ -62,7 +62,7 @@ module Test = {
     let collectUsers = (res: Query.Types.response) =>
       switch res {
       | {users: Some({edges: Some(edges)})} =>
-        edges->Belt.Array.keepMap(edge =>
+        edges->Array.filterMap(edge =>
           switch edge {
           | Some({node}) => node
           | _ => None
@@ -76,7 +76,7 @@ module Test = {
 
     <div>
       {users
-      ->Belt.Array.map(user =>
+      ->Array.map(user =>
         <div key=user.id>
           {React.string(
             user.firstName ++

@@ -97,7 +97,7 @@ let fetch = (
 ) => {
   /**\n\
                 This fetches the query in a one-off fashion, and returns a \
-                `Belt.Result.t` in a callback for convenience. Use \
+                `result` in a callback for convenience. Use \
                 `Query.fetchPromised` if you need this but with promises.\n\n\
                 Please *avoid* using `Query.fetch` unless you really need it, \
                 since the data you fetch here isn't guaranteed to stick around \

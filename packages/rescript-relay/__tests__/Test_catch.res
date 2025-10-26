@@ -156,9 +156,9 @@ module TestMembers = {
 
     let members =
       query.members
-      ->Belt.Option.flatMap(v => v.edges)
-      ->Belt.Option.getWithDefault([])
-      ->Belt.Array.keepMap(x => x->Belt.Option.map(r => r.node))
+      ->Option.flatMap(v => v.edges)
+      ->Option.getOr([])
+      ->Array.filterMap(x => x->Option.map(r => r.node))
 
     members
     ->Array.map(r =>
@@ -198,9 +198,7 @@ module TestUnionMember = {
   @react.component
   let make = () => {
     let query = QueryUnionMember.use(~variables=())
-    let fragmentData = UnionMemberFragment.useOpt(
-      query.member->Belt.Option.map(r => r.fragmentRefs),
-    )
+    let fragmentData = UnionMemberFragment.useOpt(query.member->Option.map(r => r.fragmentRefs))
 
     switch fragmentData {
     | Some(Ok({value: User({id, createdAt})})) =>

@@ -25,7 +25,7 @@ module Test = {
     let data = query.loggedInUser
 
     <div>
-      {React.string("Avatar url is " ++ data.avatarUrl->Belt.Option.getWithDefault("-"))}
+      {React.string("Avatar url is " ++ data.avatarUrl->Option.getOr("-"))}
       <button
         onClick={_ => {
           Mutation.commitMutation(

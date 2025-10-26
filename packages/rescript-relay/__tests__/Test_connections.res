@@ -158,7 +158,7 @@ module Test = {
 
     <div>
       {friends
-      ->Belt.Array.map(friend => <div key=friend.id> {React.string(friend.id)} </div>)
+      ->Array.map(friend => <div key=friend.id> {React.string(friend.id)} </div>)
       ->React.array}
       <button
         onClick={_ => {

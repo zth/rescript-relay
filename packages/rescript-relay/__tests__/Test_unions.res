@@ -51,7 +51,7 @@ module Test = {
     <div>
       {switch query {
       | {members: Some({edges: Some(edges)})} =>
-        edges->Belt.Array.keepMap(edge =>
+        edges->Array.filterMap(edge =>
           switch edge {
           | Some({node: Some(node)}) => Some(node)
           | _ => None
@@ -59,7 +59,7 @@ module Test = {
         )
       | _ => []
       }
-      ->Belt.Array.map(x =>
+      ->Array.map(x =>
         switch x {
         | User(user) =>
           <div key=user.id>
@@ -70,11 +70,11 @@ module Test = {
             {React.string(
               "First level: " ++
               (group.name ++
-              (" with avatarUrl " ++ group.avatarUrl->Belt.Option.getWithDefault("[no avatar]"))),
+              (" with avatarUrl " ++ group.avatarUrl->Option.getOr("[no avatar]"))),
             )}
             {group.members
-            ->Belt.Option.getWithDefault([])
-            ->Belt.Array.map(x =>
+            ->Option.getOr([])
+            ->Array.map(x =>
               switch x {
               | Some(User(user)) =>
                 <div key=user.id>
@@ -85,9 +85,7 @@ module Test = {
                   {React.string(
                     group.name ++
                     (" - Second level: " ++
-                    (g.name ++
-                    (" with avatarUrl " ++
-                    g.avatarUrl->Belt.Option.getWithDefault("[no avatar]")))),
+                    (g.name ++ (" with avatarUrl " ++ g.avatarUrl->Option.getOr("[no avatar]")))),
                   )}
                 </div>
               | Some(UnselectedUnionMember(_)) | None => React.null

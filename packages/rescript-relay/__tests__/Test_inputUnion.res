@@ -20,8 +20,8 @@ module Test = {
     )
 
     <>
-      <div> {React.string(data.findByLocation->Belt.Option.getWithDefault("-"))} </div>
-      <div> {React.string(data2.findByLocation->Belt.Option.getWithDefault("-"))} </div>
+      <div> {React.string(data.findByLocation->Option.getOr("-"))} </div>
+      <div> {React.string(data2.findByLocation->Option.getOr("-"))} </div>
     </>
   }
 }

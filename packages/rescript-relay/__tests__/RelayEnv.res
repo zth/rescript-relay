@@ -13,7 +13,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
       method: #POST,
       body: {"query": operation.text, "id": operation.id, "variables": variables}
       ->JSON.stringifyAny
-      ->Belt.Option.getExn
+      ->Option.getOrThrow
       ->Body.string,
       headers: Headers.fromObject({
         "content-type": "application/json",

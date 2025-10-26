@@ -1,7 +1,7 @@
 let internal_keepMapFieldsRaw = (record, f) =>
   record
   ->Obj.magic
-  ->Belt.Option.map(obj => obj->Dict.toArray->Belt.Array.keepMap(f)->Dict.fromArray)
+  ->Option.map(obj => obj->Dict.toArray->Array.filterMap(f)->Dict.fromArray)
   ->Obj.magic
 
 // we need to do this until we can use @obj on record types
