@@ -8,7 +8,7 @@ let subscribe: (
   ~environment: Environment.t,
   ~variables: 'variables,
   ~onCompleted: unit => unit=?,
-  ~onError: Js.Exn.t => unit=?,
+  ~onError: JsExn.t => unit=?,
   ~onNext: 'response => unit=?,
   ~updater: (RecordSourceSelectorProxy.t, 'response) => unit=?,
 ) => Disposable.t

@@ -61,7 +61,7 @@ module TestPlural = {
 
     <div>
       {allUsers
-      ->Belt.Array.map(user =>
+      ->Array.map(user =>
         <div key=user.id>
           {React.string(
             user.firstName ++
@@ -105,7 +105,7 @@ module Test = {
 
     let users = switch query {
     | {users: Some({edges: Some(edges)})} =>
-      edges->Belt.Array.keepMap(edge =>
+      edges->Array.filterMap(edge =>
         switch edge {
         | Some({node: Some(node)}) => Some(node.fragmentRefs)
         | _ => None
@@ -123,7 +123,7 @@ module Test = {
         | _ => "-"
         }),
       )}
-      {switch users->Belt.Array.length {
+      {switch users->Array.length {
       | 0 => React.null
       | _ => <TestPlural users />
       }}
@@ -140,13 +140,14 @@ module Test = {
         <div>
           {("Inline data: " ++
           {"firstName": data.InlineFragment.Types.firstName, "onlineStatus": data.onlineStatus}
-          ->Js.Json.stringifyAny
-          ->Belt.Option.getWithDefault(""))->React.string}
+          ->JSON.stringifyAny
+          ->Option.getOr(""))->React.string}
         </div>
       }}
       <button
         onClick={_ =>
-          setDataViaInline(_ => Some(InlineFragment.readInline(query.loggedInUser.fragmentRefs)))}>
+          setDataViaInline(_ => Some(InlineFragment.readInline(query.loggedInUser.fragmentRefs)))}
+      >
         {React.string("Set data via inline")}
       </button>
     </div>

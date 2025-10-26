@@ -12,9 +12,7 @@ let make = (~user: RescriptRelay.fragmentRefs<[#UserAvatar_user]>) => {
   open Fragment.Operation.CodesplitComponents
 
   <>
-    <div>
-      {React.string("User avatarUrl: " ++ user.avatarUrl->Belt.Option.getWithDefault("-"))}
-    </div>
+    <div> {React.string("User avatarUrl: " ++ user.avatarUrl->Option.getOr("-"))} </div>
     <UserName user=user.userName_user />
   </>
 }

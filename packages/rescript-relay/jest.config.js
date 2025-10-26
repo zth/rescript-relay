@@ -10,4 +10,8 @@ module.exports = {
     ? ["<rootDir>/__tests_preloaded__"]
     : ["<rootDir>/__tests__"],
   setupFilesAfterEnv: ["<rootDir>/__tests__/jestSetup.js"],
+  transform: {
+    "^.+\\.js$": "babel-jest",
+  },
+  transformIgnorePatterns: ["/node_modules/"],
 };

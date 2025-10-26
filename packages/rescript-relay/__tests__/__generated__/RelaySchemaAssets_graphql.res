@@ -93,8 +93,8 @@ type rec input_InputA = {
 @live
 and input_InputA_nullable = {
   time: TestsUtils.Datetime.t,
-  recursiveA?: Js.Null.t<input_InputA_nullable>,
-  usingB?: Js.Null.t<input_InputB_nullable>,
+  recursiveA?: Null.t<input_InputA_nullable>,
+  usingB?: Null.t<input_InputB_nullable>,
 }
 
 @live
@@ -106,9 +106,9 @@ and input_InputB = {
 
 @live
 and input_InputB_nullable = {
-  time?: Js.Null.t<TestsUtils.Datetime.t>,
-  usingA?: Js.Null.t<input_InputA_nullable>,
-  @as("constraint") constraint_?: Js.Null.t<bool>,
+  time?: Null.t<TestsUtils.Datetime.t>,
+  usingA?: Null.t<input_InputA_nullable>,
+  @as("constraint") constraint_?: Null.t<bool>,
 }
 
 @live
@@ -120,7 +120,7 @@ and input_InputC = {
 @live
 and input_InputC_nullable = {
   intStr: TestsUtils.IntString.t,
-  recursiveC?: Js.Null.t<input_InputC_nullable>,
+  recursiveC?: Null.t<input_InputC_nullable>,
 }
 
 @live
@@ -137,14 +137,14 @@ and input_SomeInput = {
 
 @live
 and input_SomeInput_nullable = {
-  str?: Js.Null.t<string>,
-  bool?: Js.Null.t<bool>,
-  float?: Js.Null.t<float>,
-  int?: Js.Null.t<int>,
-  datetime?: Js.Null.t<TestsUtils.Datetime.t>,
-  recursive?: Js.Null.t<input_SomeInput_nullable>,
-  @as("private") private_?: Js.Null.t<bool>,
-  enum?: Js.Null.t<enum_OnlineStatus_input>,
+  str?: Null.t<string>,
+  bool?: Null.t<bool>,
+  float?: Null.t<float>,
+  int?: Null.t<int>,
+  datetime?: Null.t<TestsUtils.Datetime.t>,
+  recursive?: Null.t<input_SomeInput_nullable>,
+  @as("private") private_?: Null.t<bool>,
+  enum?: Null.t<enum_OnlineStatus_input>,
 }
 
 @live
@@ -168,21 +168,21 @@ and input_RecursiveSetOnlineStatusInput = {
 @live
 and input_RecursiveSetOnlineStatusInput_nullable = {
   someValue: TestsUtils.IntString.t,
-  setOnlineStatus?: Js.Null.t<input_SetOnlineStatusInput_nullable>,
+  setOnlineStatus?: Null.t<input_SetOnlineStatusInput_nullable>,
 }
 
 @live
 and input_SetOnlineStatusInput = {
   onlineStatus: enum_OnlineStatus_input,
-  someJsonValue: Js.Json.t,
+  someJsonValue: JSON.t,
   recursed?: input_RecursiveSetOnlineStatusInput,
 }
 
 @live
 and input_SetOnlineStatusInput_nullable = {
   onlineStatus: enum_OnlineStatus_input,
-  someJsonValue: Js.Json.t,
-  recursed?: Js.Null.t<input_RecursiveSetOnlineStatusInput_nullable>,
+  someJsonValue: JSON.t,
+  recursed?: Null.t<input_RecursiveSetOnlineStatusInput_nullable>,
 }
 
 @live
@@ -194,9 +194,9 @@ and input_SearchInput = {
 
 @live
 and input_SearchInput_nullable = {
-  names?: Js.Null.t<array<Js.Null.t<string>>>,
+  names?: Null.t<array<Null.t<string>>>,
   id: int,
-  someOtherId?: Js.Null.t<float>,
+  someOtherId?: Null.t<float>,
 }
 
 @live
@@ -209,8 +209,8 @@ and input_PesticideListSearchInput = {
 
 @live
 and input_PesticideListSearchInput_nullable = {
-  companyName?: Js.Null.t<array<string>>,
-  pesticideIds?: Js.Null.t<array<int>>,
+  companyName?: Null.t<array<string>>,
+  pesticideIds?: Null.t<array<int>>,
   skip: int,
   take: int,
 }

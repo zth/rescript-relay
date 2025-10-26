@@ -14,11 +14,11 @@ type updatableFragmentRefs<'fragments>
 
 type dataId
 type dataIdObject = {id: dataId}
-type recordSourceRecords = Js.Json.t
+type recordSourceRecords = JSON.t
 type uploadables
 
 module CatchResult = {
-  type catchError = Js.Json.t
+  type catchError = JSON.t
 
   @tag("ok")
   type t<'value> = | @as(true) Ok({value: 'value}) | @as(false) Error({errors: array<catchError>})
@@ -53,8 +53,8 @@ type liveState<'value> = {
 external dataIdToString: dataId => string = "%identity"
 external makeDataId: string => dataId = "%identity"
 external makeArguments: {..} => arguments = "%identity"
-external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
-external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
+external makeUploadables: dict<'file> => uploadables = "%identity"
+external unwrapUploadables: uploadables => dict<'file> = "%identity"
 
 @module("relay-runtime/experimental")
 external resolverDataInjector: ('a, 'b, 'c, 'd) => 'return = "resolverDataInjector"
@@ -110,14 +110,14 @@ type featureFlags = {
 external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
 @module("./utils")
-external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
+external convertObj: ('a, dict<dict<dict<string>>>, 'b, 'c) => 'd = "traverser"
 
-let optArrayOfNullableToOptArrayOfOpt: option<array<Js.Nullable.t<'a>>> => option<
+let optArrayOfNullableToOptArrayOfOpt: option<array<Nullable.t<'a>>> => option<
   array<option<'a>>,
 > = x =>
   switch x {
   | None => None
-  | Some(arr) => Some(arr->Belt.Array.map(Js.Nullable.toOption))
+  | Some(arr) => Some(arr->Array.map(Nullable.toOption))
   }
 
 @module("relay-runtime") external storeRootId: dataId = "ROOT_ID"
@@ -136,7 +136,7 @@ module RecordProxy = {
     "getLinkedRecord"
 
   @send @return(nullable)
-  external getLinkedRecords: (t, string, option<arguments>) => option<array<Js.Nullable.t<t>>> =
+  external getLinkedRecords: (t, string, option<arguments>) => option<array<Nullable.t<t>>> =
     "getLinkedRecords"
 
   let getLinkedRecords = (t, ~name, ~arguments=?): option<array<option<t>>> =>
@@ -322,10 +322,8 @@ module RecordSourceSelectorProxy = {
   external getRootField: (t, ~fieldName: string) => option<RecordProxy.t> = "getRootField"
 
   @send @return(nullable)
-  external getPluralRootField: (
-    t,
-    ~fieldName: string,
-  ) => option<array<Js.Nullable.t<RecordProxy.t>>> = "getPluralRootField"
+  external getPluralRootField: (t, ~fieldName: string) => option<array<Nullable.t<RecordProxy.t>>> =
+    "getPluralRootField"
 
   let getPluralRootField = (t, ~fieldName): option<array<option<RecordProxy.t>>> =>
     getPluralRootField(t, ~fieldName)->optArrayOfNullableToOptArrayOfOpt
@@ -333,8 +331,8 @@ module RecordSourceSelectorProxy = {
   @send external invalidateStore: t => unit = "invalidateStore"
 
   let invalidateRecordsByIds: (t, array<dataId>) => unit = (store, recordIds) => {
-    recordIds->Js.Array2.forEach(dataId => {
-      store->get(~dataId)->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+    recordIds->Array.forEach(dataId => {
+      store->get(~dataId)->Option.forEach(r => r->RecordProxy.invalidateRecord)
     })
   }
 }
@@ -356,20 +354,20 @@ module MissingFieldHandler = {
 
   type rec normalizationListValueArgument = {
     name: string,
-    items: array<Js.Nullable.t<normalizationArgumentWrapped>>,
+    items: array<Nullable.t<normalizationArgumentWrapped>>,
   }
   and normalizationLiteralArgument = {
     name: string,
-    @as("type") type_: Js.Nullable.t<string>,
-    value: Js.Json.t,
+    @as("type") type_: Nullable.t<string>,
+    value: JSON.t,
   }
   and normalizationObjectValueArgument = {
     name: string,
-    fields: Js.Nullable.t<array<normalizationArgumentWrapped>>,
+    fields: Nullable.t<array<normalizationArgumentWrapped>>,
   }
   and normalizationVariableArgument = {
     name: string,
-    @as("type") type_: Js.Nullable.t<string>,
+    @as("type") type_: Nullable.t<string>,
     variableName: string,
   }
 
@@ -388,10 +386,10 @@ module MissingFieldHandler = {
     }
 
   type normalizationScalarField = {
-    alias: Js.Nullable.t<string>,
+    alias: Nullable.t<string>,
     name: string,
-    args: Js.Nullable.t<array<normalizationArgumentWrapped>>,
-    storageKey: Js.Nullable.t<string>,
+    args: Nullable.t<array<normalizationArgumentWrapped>>,
+    storageKey: Nullable.t<string>,
   }
 
   let makeScalarMissingFieldHandler = handle =>
@@ -401,13 +399,13 @@ module MissingFieldHandler = {
     })
 
   type normalizationLinkedField = {
-    alias: Js.Nullable.t<string>,
+    alias: Nullable.t<string>,
     name: string,
-    storageKey: Js.Nullable.t<string>,
-    args: Js.Nullable.t<array<normalizationArgument>>,
-    concreteType: Js.Nullable.t<string>,
+    storageKey: Nullable.t<string>,
+    args: Nullable.t<array<normalizationArgument>>,
+    concreteType: Nullable.t<string>,
     plural: bool,
-    selections: array<Js.Json.t>,
+    selections: array<JSON.t>,
   }
 
   let makeLinkedMissingFieldHandler = handle =>
@@ -430,7 +428,7 @@ let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFiel
   args,
   _store,
 ) =>
-  switch (Js.Nullable.toOption(record), field["name"], Js.Nullable.toOption(args["id"])) {
+  switch (Nullable.toOption(record), field["name"], Nullable.toOption(args["id"])) {
   | (Some(record), "node", argsId) if record->RecordProxy.getType == storeRootType => argsId
   | _ => None
   }
@@ -499,7 +497,7 @@ module Observable = {
 
   type sink<'response> = {
     next: 'response => unit,
-    error: Js.Exn.t => unit,
+    error: JsExn.t => unit,
     complete: unit => unit,
     closed: bool,
   }
@@ -510,7 +508,7 @@ module Observable = {
   external makeObserver: (
     ~start: subscription => unit=?,
     ~next: 'response => unit=?,
-    ~error: Js.Exn.t => unit=?,
+    ~error: JsExn.t => unit=?,
     ~complete: unit => unit=?,
     ~unsubscribe: subscription => unit=?,
   ) => observer<'response> = ""
@@ -521,7 +519,7 @@ module Observable = {
   @send
   external subscribe: (t<'response>, observer<'response>) => subscription = "subscribe"
 
-  @send external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+  @send external toPromise: t<'t> => promise<'t> = "toPromise"
 
   external ignoreSubscription: subscription => unit = "%ignore"
 }
@@ -534,28 +532,28 @@ module Network = {
   type operationMetadata = {codesplits?: array<codesplitsMetadata>}
 
   type operation = {
-    id: Js.Nullable.t<string>,
-    text: Js.Nullable.t<string>,
+    id: Nullable.t<string>,
+    text: Nullable.t<string>,
     name: string,
     operationKind: string,
-    metadata: Js.Nullable.t<operationMetadata>,
+    metadata: Nullable.t<operationMetadata>,
   }
 
-  type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
+  type subscribeFn = (operation, JSON.t, cacheConfig) => Observable.t<JSON.t>
 
   type fetchFunctionPromise = (
     operation,
-    Js.Json.t,
+    JSON.t,
     cacheConfig,
-    Js.Nullable.t<uploadables>,
-  ) => Js.Promise.t<Js.Json.t>
+    Nullable.t<uploadables>,
+  ) => promise<JSON.t>
 
   type fetchFunctionObservable = (
     operation,
-    Js.Json.t,
+    JSON.t,
     cacheConfig,
-    Js.Nullable.t<uploadables>,
-  ) => Observable.t<Js.Json.t>
+    Nullable.t<uploadables>,
+  ) => Observable.t<JSON.t>
 
   @module("relay-runtime") @scope("Network")
   external makePromiseBased: (
@@ -571,8 +569,8 @@ module Network = {
 
   let preloadResources: (
     ~operation: operation,
-    ~variables: Js.Json.t,
-    ~response: Js.Json.t,
+    ~variables: JSON.t,
+    ~response: JSON.t,
   ) => unit = %raw(`
 function preloadResources(operation, variables, response) {
   let metadata = operation.metadata;
@@ -709,33 +707,33 @@ module RelayFieldLogger = {
     MissingRequiredFieldLog({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_required_field.throw")
     MissingRequiredFieldThrow({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_expected_data.log")
     MissingExpectedData({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_expected_data.throw")
     MissingExpectedDataThrow({
         owner: string,
         fieldPath: string,
         handled: bool,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("relay_resolver.error")
     RelayResolverError({
         owner: string,
         fieldPath: string,
-        error: Js.Exn.t,
-        uiContext: option<Js.Json.t>,
+        error: JsExn.t,
+        uiContext: option<JSON.t>,
       })
 
   type t = arg => unit
@@ -772,7 +770,7 @@ module Environment = {
       ?getDataID,
       ?treatMissingFieldsAsNull,
       missingFieldHandlers: switch missingFieldHandlers {
-      | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
+      | Some(handlers) => handlers->Array.concat([nodeInterfaceMissingFieldHandler])
       | None => [nodeInterfaceMissingFieldHandler]
       },
       ?relayFieldLogger,
@@ -788,20 +786,20 @@ module Environment = {
   external commitLocalUpdate: (t, ~updater: RecordSourceSelectorProxy.t => unit) => unit =
     "commitLocalUpdate"
 
-  @send external mapGet: (Js.Map.t<'key, 'value>, 'key) => option<'value> = "get"
+  @send external mapGet: (Map.t<'key, 'value>, 'key) => option<'value> = "get"
 
   type recordValue = {__ref: dataId}
-  @get external _records: RecordSource.t => Js.Map.t<string, Js.Dict.t<recordValue>> = "_records"
+  @get external _records: RecordSource.t => Map.t<string, dict<recordValue>> = "_records"
 
   let findAllConnectionIds = (environment: t, ~connectionKey: string, ~parentId: dataId) => {
     let ids = []
     switch environment->getStore->Store.getSource->_records->mapGet(parentId->dataIdToString) {
     | Some(value) =>
       value
-      ->Js.Dict.entries
-      ->Js.Array2.forEach(((key, v)) => {
-        if key->Js.String2.startsWith("__" ++ connectionKey ++ "_connection") {
-          let _ = ids->Js.Array2.push(v.__ref)
+      ->Dict.toArray
+      ->Array.forEach(((key, v)) => {
+        if key->String.startsWith("__" ++ connectionKey ++ "_connection") {
+          let _ = ids->Array.push(v.__ref)
         }
       })
     | _ => ()
@@ -818,11 +816,11 @@ module Environment = {
     environment->commitLocalUpdate(~updater=store => {
       environment
       ->findAllConnectionIds(~connectionKey, ~parentId)
-      ->Js.Array2.forEach(dataId => {
-        if !(excludedIds->Js.Array2.includes(dataId)) {
+      ->Array.forEach(dataId => {
+        if !(excludedIds->Array.includes(dataId)) {
           store
           ->RecordSourceSelectorProxy.get(~dataId)
-          ->Belt.Option.forEach(r => r->RecordProxy.invalidateRecord)
+          ->Option.forEach(r => r->RecordProxy.invalidateRecord)
         }
       })
     })
@@ -853,7 +851,7 @@ let useEnvironmentFromContext = () => {
 
   switch context {
   | Some(ctx) => ctx["environment"]
-  | None => raise(EnvironmentNotFoundInContext)
+  | None => throw(EnvironmentNotFoundInContext)
   }
 }
 
@@ -916,16 +914,16 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
       },
     )
 
-  type rawPreloadToken<'response> = {source: Js.Nullable.t<Observable.t<'response>>}
+  type rawPreloadToken<'response> = {source: Nullable.t<Observable.t<'response>>}
   external tokenToRaw: C.loadedQueryRef => rawPreloadToken<C.response> = "%identity"
 
   let queryRefToObservable = token => {
     let raw = token->tokenToRaw
-    raw.source->Js.Nullable.toOption
+    raw.source->Nullable.toOption
   }
 
   let queryRefToPromise = token => {
-    Js.Promise.make((~resolve, ~reject as _) => {
+    Promise.make((resolve, _) => {
       switch token->queryRefToObservable {
       | None => resolve(Error())
       | Some(o) =>

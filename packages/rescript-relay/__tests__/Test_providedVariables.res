@@ -34,7 +34,7 @@ module Test = {
     let query = Query.use(~variables=())
     let user = Fragment.use(query.loggedInUser.fragmentRefs)
 
-    <div> {React.string(user.someRandomArgField->Belt.Option.getWithDefault("-"))} </div>
+    <div> {React.string(user.someRandomArgField->Option.getOr("-"))} </div>
   }
 }
 

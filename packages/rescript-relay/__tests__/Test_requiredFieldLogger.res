@@ -30,7 +30,7 @@ let test_requiredFieldLogger = () => {
     ~relayFieldLogger=Logger.mock,
   )
 
-  Js.Promise.make((~resolve, ~reject as _) => {
+  Promise.make((resolve, _) => {
     Query.fetch(~environment, ~variables=(), ~onResult=res => resolve(res))
   })
 }

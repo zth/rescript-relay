@@ -34,7 +34,7 @@ module Internal = {
   @live
   type fragmentRaw
   @live
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let fragmentConverter: dict<dict<dict<string>>> = %raw(
     json`{"__root":{"memberOf":{"u":"fragment_memberOf"}}}`
   )
   @live
@@ -45,7 +45,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 

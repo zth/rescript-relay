@@ -44,7 +44,7 @@ type dataIdObject = {id: dataId}
 /** A module for results originating from the @catch directive. */
 module CatchResult: {
   /** The shape of an error caught via @catch. */
-  type catchError = Js.Json.t
+  type catchError = JSON.t
 
   /** The result type for @catch. */
   @tag("ok")
@@ -89,10 +89,10 @@ Use it like this: `makeArguments({ "someArgument": someValue, "anotherArgument":
 external makeArguments: {..} => arguments = "%identity"
 
 /**Construct an `uploadables` object from a `Js.Dict` with your desired file format, that you can use for uploads via Relay.*/
-external makeUploadables: Js.Dict.t<'file> => uploadables = "%identity"
+external makeUploadables: dict<'file> => uploadables = "%identity"
 
 /**Unwraps `uploadables` into a Js.Dict.t with your expected file type, so you can use that dict to attach the provided files to your request.*/
-external unwrapUploadables: uploadables => Js.Dict.t<'file> = "%identity"
+external unwrapUploadables: uploadables => dict<'file> = "%identity"
 
 /**
   Generates a client-side `dataId` derived from an existing record.
@@ -196,7 +196,7 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 /**Representing all records in the store serialized to JSON in a way that you can use to re-hydrate the store. 
 
 See `RecordSource.toJSON` for how to produce it.*/
-type recordSourceRecords = Js.Json.t
+type recordSourceRecords = JSON.t
 
 /**The `dataId` for the Relay store's root. Useful when for example referencing the `parentID` of a connection that's on the store root.*/
 @module("relay-runtime")
@@ -208,7 +208,7 @@ external storeRootType: string = "ROOT_TYPE"
 
 /**Internal, do not use.*/
 @module("./utils")
-external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
+external convertObj: ('a, dict<dict<dict<string>>>, 'b, 'c) => 'd = "traverser"
 
 /**Read the following section on working with the Relay store: https://relay.dev/docs/en/relay-store*/
 module RecordProxy: {
@@ -279,8 +279,7 @@ module RecordProxy: {
     )
     ```
   */
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getLinkedRecord: (t, ~name: string, ~arguments: arguments=?) => option<t> =
     "getLinkedRecord"
 
@@ -301,14 +300,12 @@ module RecordProxy: {
   external getType: t => string = "getType"
 
   /**Returns a field value, expecting it to be a string.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueString: (t, ~name: string, ~arguments: arguments=?) => option<string> =
     "getValue"
 
   /**Returns a field value, expecting it to be an array of strings.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueStringArray: (
     t,
     ~name: string,
@@ -316,13 +313,11 @@ module RecordProxy: {
   ) => option<array<option<string>>> = "getValue"
 
   /**Returns a field value, expecting it to be an int.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueInt: (t, ~name: string, ~arguments: arguments=?) => option<int> = "getValue"
 
   /**Returns a field value, expecting it to be an array of ints.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueIntArray: (
     t,
     ~name: string,
@@ -330,13 +325,11 @@ module RecordProxy: {
   ) => option<array<option<int>>> = "getValue"
 
   /**Returns a field value, expecting it to be a float.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueFloat: (t, ~name: string, ~arguments: arguments=?) => option<float> = "getValue"
 
   /**Returns a field value, expecting it to be an array of floats.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueFloatArray: (
     t,
     ~name: string,
@@ -344,13 +337,11 @@ module RecordProxy: {
   ) => option<array<option<float>>> = "getValue"
 
   /**Returns a field value, expecting it to be a boolean.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueBool: (t, ~name: string, ~arguments: arguments=?) => option<bool> = "getValue"
 
   /**Returns a field value, expecting it to be an array of booleans.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getValueBoolArray: (
     t,
     ~name: string,
@@ -604,8 +595,7 @@ module RecordSourceSelectorProxy: {
     }
     ```
   */
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
 
   /**Returns the _root_ `RecordProxy`, meaning the `RecordProxy` holding your top level fields.*/
@@ -613,8 +603,7 @@ module RecordSourceSelectorProxy: {
   external getRoot: t => RecordProxy.t = "getRoot"
 
   /**Returns the `RecordProxy` for the `fieldName` at root. You should prefer using `RecordSourceSelectorProxy.getRoot()` and traverse from there if you need access to root fields rather than use this.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external getRootField: (t, ~fieldName: string) => option<RecordProxy.t> = "getRootField"
 
   /**Plural version of `RecordSourceSelectorProxy.getRootField`.*/
@@ -634,8 +623,7 @@ module ReadOnlyRecordSourceProxy: {
   type t
 
   /**Returns the `RecordProxy` with the provided `dataId`, if it exists.*/
-  @send
-  @return(nullable)
+  @send @return(nullable)
   external get: (t, ~dataId: dataId) => option<RecordProxy.t> = "get"
 
   /**Returns the _root_ `RecordProxy`, meaning the `RecordProxy` holding your top level fields.*/
@@ -656,20 +644,20 @@ module MissingFieldHandler: {
 
   type rec normalizationListValueArgument = {
     name: string,
-    items: array<Js.Nullable.t<normalizationArgumentWrapped>>,
+    items: array<Nullable.t<normalizationArgumentWrapped>>,
   }
   and normalizationLiteralArgument = {
     name: string,
-    @as("type") type_: Js.Nullable.t<string>,
-    value: Js.Json.t,
+    @as("type") type_: Nullable.t<string>,
+    value: JSON.t,
   }
   and normalizationObjectValueArgument = {
     name: string,
-    fields: Js.Nullable.t<array<normalizationArgumentWrapped>>,
+    fields: Nullable.t<array<normalizationArgumentWrapped>>,
   }
   and normalizationVariableArgument = {
     name: string,
-    @as("type") type_: Js.Nullable.t<string>,
+    @as("type") type_: Nullable.t<string>,
     variableName: string,
   }
 
@@ -682,50 +670,50 @@ module MissingFieldHandler: {
   let unwrapNormalizationArgument: normalizationArgumentWrapped => normalizationArgument
 
   type normalizationScalarField = {
-    alias: Js.Nullable.t<string>,
+    alias: Nullable.t<string>,
     name: string,
-    args: Js.Nullable.t<array<normalizationArgumentWrapped>>,
-    storageKey: Js.Nullable.t<string>,
+    args: Nullable.t<array<normalizationArgumentWrapped>>,
+    storageKey: Nullable.t<string>,
   }
 
   /**Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `Js.null` (to indicate that data exists but is null), `Js.undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
   let makeScalarMissingFieldHandler: (
     (
       normalizationScalarField,
-      Js.Nullable.t<'record>,
+      Nullable.t<'record>,
       'args,
       ReadOnlyRecordSourceProxy.t,
     ) => 'scalarValue
   ) => t
 
   type normalizationLinkedField = {
-    alias: Js.Nullable.t<string>,
+    alias: Nullable.t<string>,
     name: string,
-    storageKey: Js.Nullable.t<string>,
-    args: Js.Nullable.t<array<normalizationArgument>>,
-    concreteType: Js.Nullable.t<string>,
+    storageKey: Nullable.t<string>,
+    args: Nullable.t<array<normalizationArgument>>,
+    concreteType: Nullable.t<string>,
     plural: bool,
-    selections: array<Js.Json.t>,
+    selections: array<JSON.t>,
   }
 
   /**Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
   let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Js.Nullable.t<RecordProxy.t>,
+      Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => Js.Nullable.t<dataId>
+    ) => Nullable.t<dataId>
   ) => t
 
   /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or an array of `Js.Nullable.t<dataId>` where the `dataId`'s are the linked records/objects.*/
   let makePluralLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Js.Nullable.t<RecordProxy.t>,
+      Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => Js.Nullable.t<array<Js.Nullable.t<dataId>>>
+    ) => Nullable.t<array<Nullable.t<dataId>>>
   ) => t
 }
 
@@ -760,9 +748,7 @@ module ConnectionHandler: {
     )
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
-  @return(nullable)
+  @module("relay-runtime") @scope("ConnectionHandler") @return(nullable)
   external getConnection: (
     ~record: RecordProxy.t,
     ~key: string,
@@ -795,8 +781,7 @@ module ConnectionHandler: {
     )
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external createEdge: (
     ~store: RecordSourceSelectorProxy.t,
     ~connection: RecordProxy.t,
@@ -834,8 +819,7 @@ module ConnectionHandler: {
     )
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external insertEdgeBefore: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -865,8 +849,7 @@ module ConnectionHandler: {
     )
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external insertEdgeAfter: (
     ~connection: RecordProxy.t,
     ~newEdge: RecordProxy.t,
@@ -895,8 +878,7 @@ module ConnectionHandler: {
     )
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external deleteNode: (~connection: RecordProxy.t, ~nodeId: dataId) => unit = "deleteNode"
 
   /**
@@ -926,8 +908,7 @@ module ConnectionHandler: {
     let connectionId = UserPosts_user_graphql.getConnectionId(~status=PUBLISHED)
     ```
   */
-  @module("relay-runtime")
-  @scope("ConnectionHandler")
+  @module("relay-runtime") @scope("ConnectionHandler")
   external getConnectionID: (dataId, string, 'filters) => dataId = "getConnectionID"
 }
 
@@ -947,7 +928,7 @@ module Observable: {
   /**This sink can be used to give the observable new data.*/
   type sink<'response> = {
     next: 'response => unit,
-    error: Js.Exn.t => unit,
+    error: JsExn.t => unit,
     complete: unit => unit,
     closed: bool,
   }
@@ -966,14 +947,13 @@ module Observable: {
   external makeObserver: (
     ~start: subscription => unit=?,
     ~next: 'response => unit=?,
-    ~error: Js.Exn.t => unit=?,
+    ~error: JsExn.t => unit=?,
     ~complete: unit => unit=?,
     ~unsubscribe: subscription => unit=?,
   ) => observer<'response> = ""
 
   /**Create a new observable, getting fed an `Observable.sink` for interacting with the observable, and optionally returning a `Observable.subscription` if you have things you want to unsubscribe from as the observable closes.*/
-  @module("relay-runtime")
-  @scope("Observable")
+  @module("relay-runtime") @scope("Observable")
   external make: (sink<'t> => option<subscription>) => t<'t> = "create"
 
   /**Subscribe to the `Observable.t` using an observer.*/
@@ -982,9 +962,10 @@ module Observable: {
 
   /**Turns an `Observable` into a promise. _Beware_ that reading the response in the resulting promise is currently _not safe_ due to some internals of how ReScript Relay works. This will be resolved in the future.*/
   @send
-  external toPromise: t<'t> => Js.Promise.t<'t> = "toPromise"
+  external toPromise: t<'t> => promise<'t> = "toPromise"
 
-  /**Ignore this subscription.*/ external ignoreSubscription: subscription => unit = "%ignore"
+  /**Ignore this subscription.*/
+  external ignoreSubscription: subscription => unit = "%ignore"
 }
 
 /**
@@ -1018,15 +999,15 @@ module Network: {
   */
   type operation = {
     /** The operation ID. Set if persisted queries are enabled, otherwise not set. */
-    id: Js.Nullable.t<string>,
+    id: Nullable.t<string>,
     /** The operation text. Not set for persisted queries, or if this is a client-only query that will not make a network request. */
-    text: Js.Nullable.t<string>,
+    text: Nullable.t<string>,
     /** The operation name. */
     name: string,
     /** The operation kind. */
     operationKind: string,
     /** Optional operation metadata. */
-    metadata: Js.Nullable.t<operationMetadata>,
+    metadata: Nullable.t<operationMetadata>,
   }
 
   /**
@@ -1040,7 +1021,7 @@ module Network: {
     ## Returns
     Observable that emits subscription data over time
   */
-  type subscribeFn = (operation, Js.Json.t, cacheConfig) => Observable.t<Js.Json.t>
+  type subscribeFn = (operation, JSON.t, cacheConfig) => Observable.t<JSON.t>
 
   /**
     Function signature for fetching data using promises.
@@ -1056,10 +1037,10 @@ module Network: {
   */
   type fetchFunctionPromise = (
     operation,
-    Js.Json.t,
+    JSON.t,
     cacheConfig,
-    Js.Nullable.t<uploadables>,
-  ) => Js.Promise.t<Js.Json.t>
+    Nullable.t<uploadables>,
+  ) => promise<JSON.t>
 
   /**
     Function signature for fetching data using observables.
@@ -1075,10 +1056,10 @@ module Network: {
   */
   type fetchFunctionObservable = (
     operation,
-    Js.Json.t,
+    JSON.t,
     cacheConfig,
-    Js.Nullable.t<uploadables>,
-  ) => Observable.t<Js.Json.t>
+    Nullable.t<uploadables>,
+  ) => Observable.t<JSON.t>
 
   /**
     Creates a network layer using a promise-based fetch function.
@@ -1090,8 +1071,7 @@ module Network: {
     - `fetchFunction`: Function that returns promises for GraphQL requests
     - `subscriptionFunction`: Optional function for handling subscriptions
   */
-  @module("relay-runtime")
-  @scope("Network")
+  @module("relay-runtime") @scope("Network")
   external makePromiseBased: (
     ~fetchFunction: fetchFunctionPromise,
     ~subscriptionFunction: subscribeFn=?,
@@ -1107,8 +1087,7 @@ module Network: {
     - `observableFunction`: Function that returns observables for GraphQL requests
     - `subscriptionFunction`: Optional function for handling subscriptions
   */
-  @module("relay-runtime")
-  @scope("Network")
+  @module("relay-runtime") @scope("Network")
   external makeObservableBased: (
     ~observableFunction: fetchFunctionObservable,
     ~subscriptionFunction: subscribeFn=?,
@@ -1120,7 +1099,7 @@ module Network: {
     Internal function for resource preloading. Used by Relay's code splitting
     and resource preloading features.
   */
-  let preloadResources: (~operation: operation, ~variables: Js.Json.t, ~response: Js.Json.t) => unit
+  let preloadResources: (~operation: operation, ~variables: JSON.t, ~response: JSON.t) => unit
 }
 
 /**
@@ -1156,8 +1135,7 @@ module RecordSource: {
     )
     ```
   */
-  @module("relay-runtime")
-  @new
+  @module("relay-runtime") @new
   external make: (~records: recordSourceRecords=?) => t = "RecordSource"
 
   /**
@@ -1324,7 +1302,8 @@ module Disposable: {
   @send
   external dispose: t => unit = "dispose"
 
-  /**Ignore this disposable.*/ external ignore: t => unit = "%ignore"
+  /**Ignore this disposable.*/
+  external ignore: t => unit = "%ignore"
 }
 
 /**A required field logger, which gets called when a field annotated with the @required directive was missing from the response*/
@@ -1335,33 +1314,33 @@ module RelayFieldLogger: {
     MissingRequiredFieldLog({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_required_field.throw")
     MissingRequiredFieldThrow({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_expected_data.log")
     MissingExpectedData({
         owner: string,
         fieldPath: string,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("missing_expected_data.throw")
     MissingExpectedDataThrow({
         owner: string,
         fieldPath: string,
         handled: bool,
-        uiContext: option<Js.Json.t>,
+        uiContext: option<JSON.t>,
       })
     | @as("relay_resolver.error")
     RelayResolverError({
         owner: string,
         fieldPath: string,
-        error: Js.Exn.t,
-        uiContext: option<Js.Json.t>,
+        error: JsExn.t,
+        uiContext: option<JSON.t>,
       })
 
   /**A required field logger, which gets called when a field annotated with the @required directive was missing from the response*/
@@ -1536,27 +1515,21 @@ module Environment: {
 
 /**fetchPolicy controls how you want Relay to resolve your data.*/
 type fetchPolicy =
-  | /** will only reuse locally cached data, and will never send a network request to fetch the query. In this case, the responsibility of fetching the query falls to the caller, but this policy could also be used to read and operate on data that is entirely local. */
-  @as("store-only")
-  StoreOnly
-  | /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
-  @as("store-or-network")
-  StoreOrNetwork
-  | /** will reuse locally cached data and will always send a network request, regardless of whether any data was missing or stale in the store. */
-  @as("store-and-network")
-  StoreAndNetwork
-  | /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
-  @as("network-only")
-  NetworkOnly
+  /** will only reuse locally cached data, and will never send a network request to fetch the query. In this case, the responsibility of fetching the query falls to the caller, but this policy could also be used to read and operate on data that is entirely local. */
+  | @as("store-only") StoreOnly
+  /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
+  | @as("store-or-network") StoreOrNetwork
+  /** will reuse locally cached data and will always send a network request, regardless of whether any data was missing or stale in the store. */
+  | @as("store-and-network") StoreAndNetwork
+  /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
+  | @as("network-only") NetworkOnly
 
 /**The fetch policies allowed for fetching a query outside of React's render (as in `Query.fetch`).*/
 type fetchQueryFetchPolicy =
-  | /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
-  @as("network-only")
-  NetworkOnly
-  | /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
-  @as("store-or-network")
-  StoreOrNetwork
+  /** will not reuse locally cached data, and will always send a network request to fetch the query, ignoring any data that might be locally cached and whether it's missing or stale. */
+  | @as("network-only") NetworkOnly
+  /** (default) will reuse locally cached data, and will only send a network request if any data for the query is missing or stale. If the query is fully cached, a network request will not be made.*/
+  | @as("store-or-network") StoreOrNetwork
 
 /**An error from a mutation.*/
 type mutationError = {message: string}
@@ -1590,7 +1563,8 @@ exception EnvironmentNotFoundInContext
 /**Hook for getting the current environment from context.*/
 let useEnvironmentFromContext: unit => Environment.t
 
-/**An exception detailing that a mutation failed.*/ exception Mutation_failed(array<mutationError>)
+/**An exception detailing that a mutation failed.*/
+exception Mutation_failed(array<mutationError>)
 
 /**
   Commits a local update to the Relay store.
@@ -1698,5 +1672,5 @@ module MakeLoadQuery: (C: MakeLoadQueryConfig) =>
   ) => C.loadedQueryRef
 
   let queryRefToObservable: C.loadedQueryRef => option<Observable.t<C.response>>
-  let queryRefToPromise: C.loadedQueryRef => Js.Promise.t<Belt.Result.t<unit, unit>>
+  let queryRefToPromise: C.loadedQueryRef => promise<Belt.Result.t<unit, unit>>
 }

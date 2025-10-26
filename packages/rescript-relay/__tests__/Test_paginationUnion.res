@@ -62,7 +62,7 @@ module UserDisplayer = {
     React.string(
       "User " ++
       (data.firstName ++
-      (" has " ++ (data.friendsConnection.totalCount->string_of_int ++ " friends"))),
+      (" has " ++ (data.friendsConnection.totalCount->Int.toString ++ " friends"))),
     )
   }
 }
@@ -82,7 +82,7 @@ module Test = {
     <div>
       {data.members
       ->Fragment.getConnectionNodes
-      ->Belt.Array.mapWithIndex((i, member) =>
+      ->Array.mapWithIndex((member, i) =>
         switch member {
         | User(user) =>
           <div key=user.id>
@@ -95,14 +95,14 @@ module Test = {
               (group.name ++
               (" with " ++
               (group.adminsConnection.edges
-              ->Belt.Option.getWithDefault([])
-              ->Belt.Array.length
-              ->string_of_int ++
+              ->Option.getOr([])
+              ->Array.length
+              ->Int.toString ++
               " admins"))),
             )}
           </div>
         | UnselectedUnionMember(_) =>
-          <div key={i->string_of_int}> {React.string("Unknown type")} </div>
+          <div key={i->Int.toString}> {React.string("Unknown type")} </div>
         }
       )
       ->React.array}
@@ -121,7 +121,8 @@ module Test = {
               ),
             )->RescriptRelay.Disposable.ignore
           })
-        }}>
+        }}
+      >
         {React.string("Refetch connection")}
       </button>
     </div>

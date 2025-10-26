@@ -39,7 +39,7 @@ module UserDisplayer = {
         | _ => "-"
         }),
       )}
-      <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->string_of_int)} </div>
+      <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->Int.toString)} </div>
       <button
         onClick={_ => {
           startTransition(() => {
@@ -50,7 +50,8 @@ module UserDisplayer = {
               ),
             )->RescriptRelay.Disposable.ignore
           })
-        }}>
+        }}
+      >
         {React.string("Fetch online status")}
       </button>
     </div>

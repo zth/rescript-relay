@@ -4,20 +4,20 @@ let subscribers = []
 let subscribe = cb => {
   let count = subCounter.contents
   subCounter := count + 1
-  subscribers->Js.Array2.push((count, cb))->ignore
+  subscribers->Array.push((count, cb))->ignore
   count
 }
 
 let unsubscribe = id => {
-  switch subscribers->Js.Array2.findIndex(((itemId, _)) => itemId === id) {
+  switch subscribers->Array.findIndex(((itemId, _)) => itemId === id) {
   | -1 => ()
-  | idx => subscribers->Js.Array2.spliceInPlace(~add=[], ~pos=idx, ~remove=1)->ignore
+  | idx => subscribers->Array.splice(~start=idx, ~remove=1, ~insert=[])->ignore
   }
 }
 
 let wait = duration =>
-  Js.Promise2.make((~resolve, ~reject as _) => {
-    let _ = Js.Global.setTimeout(() => {
+  Promise.make((resolve, _) => {
+    let _ = setTimeout(() => {
       resolve()
     }, duration)
   })
@@ -25,23 +25,23 @@ let wait = duration =>
 @unboxed
 type userStatusValue = Fetching | Value(bool)
 
-let userStatuses = Js.Dict.empty()
+let userStatuses = Dict.make()
 
-let readUserStatus = userId => userStatuses->Js.Dict.get(userId)
+let readUserStatus = userId => userStatuses->Dict.get(userId)
 
 let getUserStatus = async userId => {
-  userStatuses->Js.Dict.set(userId, Fetching)
+  userStatuses->Dict.set(userId, Fetching)
 
   await wait(200)
-  subscribers->Js.Array2.forEach(((_, cb)) => {
+  subscribers->Array.forEach(((_, cb)) => {
     cb()
   })
-  userStatuses->Js.Dict.set(userId, Value(true))
+  userStatuses->Dict.set(userId, Value(true))
   true
 }
 
 let getUserStatus = userId => {
-  switch userStatuses->Js.Dict.get(userId) {
+  switch userStatuses->Dict.get(userId) {
   | None =>
     getUserStatus(userId)->ignore
     Fetching

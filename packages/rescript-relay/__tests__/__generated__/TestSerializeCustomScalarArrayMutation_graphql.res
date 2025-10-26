@@ -22,7 +22,7 @@ module Types = {
 
 module Internal = {
   @live
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let variablesConverter: dict<dict<dict<string>>> = %raw(
     json`{"__root":{"input":{"ca":"TestsUtils.IntString"}}}`
   )
   @live
@@ -33,12 +33,12 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
     json`{}`
   )
   @live
@@ -47,12 +47,12 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    null
   )
   @live
   type responseRaw
   @live
-  let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let responseConverter: dict<dict<dict<string>>> = %raw(
     json`{}`
   )
   @live
@@ -61,7 +61,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live

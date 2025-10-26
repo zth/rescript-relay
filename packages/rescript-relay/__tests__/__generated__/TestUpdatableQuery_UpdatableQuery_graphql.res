@@ -9,11 +9,11 @@ module Types = {
   }
   and response_user = {
     mutable firstName: string,
-    mutable isOnline: Js.Nullable.t<bool>,
-    bestFriend: Js.Nullable.t<response_user_bestFriend>,
+    mutable isOnline: Nullable.t<bool>,
+    bestFriend: Nullable.t<response_user_bestFriend>,
   }
   type response = {
-    user: Js.Nullable.t<response_user>,
+    user: Nullable.t<response_user>,
   }
   @live
   type variables = {
@@ -26,7 +26,7 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let variablesConverter: dict<dict<dict<string>>> = %raw(
     json`{}`
   )
   @live
@@ -35,7 +35,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
 }
 

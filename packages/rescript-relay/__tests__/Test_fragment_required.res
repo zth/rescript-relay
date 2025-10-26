@@ -33,7 +33,7 @@ module Test = {
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let users = switch query {
     | {users: Some({edges: Some(edges)})} =>
-      edges->Belt.Array.keepMap(edge =>
+      edges->Array.filterMap(edge =>
         switch edge {
         | Some({node: Some(node)}) => Some(node.fragmentRefs)
         | _ => None
@@ -43,10 +43,8 @@ module Test = {
     }
 
     let dataPlural = FragmentPlural.use(users)
-    let pluralNonNullCount =
-      dataPlural->Belt.Array.keep(item => item->Belt.Option.isSome)->Belt.Array.length
-    let pluralNullCount =
-      dataPlural->Belt.Array.keep(item => item->Belt.Option.isNone)->Belt.Array.length
+    let pluralNonNullCount = dataPlural->Array.filter(item => item->Option.isSome)->Array.length
+    let pluralNullCount = dataPlural->Array.filter(item => item->Option.isNone)->Array.length
 
     <div>
       <div className="plain">
@@ -65,13 +63,13 @@ module Test = {
         }}
       </div>
       <div className="plural">
-        <div> {React.string("Non null count: " ++ Js.Int.toString(pluralNonNullCount))} </div>
-        <div> {React.string("Null count: " ++ Js.Int.toString(pluralNullCount))} </div>
+        <div> {React.string("Non null count: " ++ Int.toString(pluralNonNullCount))} </div>
+        <div> {React.string("Null count: " ++ Int.toString(pluralNullCount))} </div>
         <div>
           {React.string(
             "Users: " ++
             dataPlural
-            ->Belt.Array.keepMap(item =>
+            ->Array.filterMap(item =>
               switch item {
               | None => None
               | Some(user) =>
@@ -85,7 +83,7 @@ module Test = {
                 )
               }
             )
-            ->Js.Array2.joinWith(", "),
+            ->Array.joinUnsafe(", "),
           )}
         </div>
       </div>

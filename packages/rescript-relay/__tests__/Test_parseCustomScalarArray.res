@@ -16,32 +16,32 @@ module Test = {
       Query.use(~variables=())
     }
 
-    let intStrings = query.loggedInUser.intStrings->Belt.Option.getWithDefault([])
+    let intStrings = query.loggedInUser.intStrings->Option.getOr([])
     let intString = query.loggedInUser.intString
-    let justStrings = query.loggedInUser.justStrings->Belt.Option.getWithDefault([])
+    let justStrings = query.loggedInUser.justStrings->Option.getOr([])
     let justString = query.loggedInUser.justString
 
     <>
       <div>
         {intStrings
-        ->Belt.Array.map(Belt.Int.toString(_))
-        ->Js.Array2.joinWith(", ")
+        ->Array.map(v => v->Int.toString)
+        ->Array.joinUnsafe(", ")
         ->React.string}
       </div>
       <div>
         {intString
-        ->Belt.Option.map(React.int(_))
-        ->Belt.Option.getWithDefault(React.null)}
+        ->Option.map(v => v->React.int)
+        ->Option.getOr(React.null)}
       </div>
       <div>
         {justStrings
-        ->Js.Array2.joinWith(", ")
+        ->Array.joinUnsafe(", ")
         ->React.string}
       </div>
       <div>
         {justString
-        ->Belt.Option.map(React.string(_))
-        ->Belt.Option.getWithDefault(React.null)}
+        ->Option.map(v => v->React.string)
+        ->Option.getOr(React.null)}
       </div>
     </>
   }

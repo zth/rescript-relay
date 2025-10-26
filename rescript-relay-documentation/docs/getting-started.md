@@ -11,6 +11,8 @@ sidebar_label: Getting Started
 
 [**Join our Discord**](https://discord.gg/wzj4EN8XDc)
 
+> Compatibility: RescriptRelay 4.x requires ReScript v12+. For ReScript v11 and below, use RescriptRelay 3.x (or earlier).
+
 #### Want to follow along with code?
 
 You're encouraged to follow along this walkthrough and play with the concepts through actual code if you can. The easiest way to get started is to use the example that's available in the RescriptRelay repository. Do the following:

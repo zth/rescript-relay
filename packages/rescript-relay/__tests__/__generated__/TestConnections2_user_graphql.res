@@ -34,7 +34,7 @@ module Internal = {
   @live
   type fragmentRaw
   @live
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let fragmentConverter: dict<dict<dict<string>>> = %raw(
     json`{"__root":{"member":{"u":"fragment_member"}}}`
   )
   @live
@@ -45,7 +45,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -64,13 +64,13 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Js.null<TestsUtils.Datetime.t>=Js.null, ~flt: Js.null<float>=Js.null, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t) => {
-  let datetime = datetime->Js.Null.toOption
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Null.t<TestsUtils.Datetime.t>=Null.null, ~flt: Null.t<float>=Null.null, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t) => {
+  let datetime = datetime->Null.toOption
   let datetime = switch datetime { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
-  let flt = flt->Js.Null.toOption
+  let flt = flt->Null.toOption
   let datetime2 = switch datetime2 { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
   let datetime3 = Some(TestsUtils.Datetime.serialize(datetime3))
-  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "enum": Some("offline"), "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
+  let args = {"statuses": Some(null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "enum": Some("offline"), "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
@@ -82,7 +82,7 @@ module Utils = {
     switch connection.edges {
       | None => []
       | Some(edges) => edges
-        ->Belt.Array.keepMap(edge => switch edge {
+        ->Array.filterMap(edge => switch edge {
           | None => None
           | Some(edge) => edge.node
         })

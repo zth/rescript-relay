@@ -24,7 +24,7 @@ module TestLoggedInUserProp = {
       | Ok({value: createdAt}) =>
         <div>
           {React.string(
-            "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+            "Got createdAt: " ++ createdAt->Date.toISOString->String.slice(~start=0, ~end=10),
           )}
         </div>
       | Error(_) => <div> {React.string("Error!")} </div>
@@ -57,7 +57,7 @@ module TestLoggedInUserPropFragmentData = {
     | Ok({value: {createdAt}}) =>
       <div>
         {React.string(
-          "Got createdAt: " ++ createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+          "Got createdAt: " ++ createdAt->Date.toISOString->String.slice(~start=0, ~end=10),
         )}
       </div>
     | Error(_) => <div> {React.string("Error!")} </div>
@@ -88,7 +88,7 @@ module TestMember = {
           "Got user id: " ++
           id ++
           ", and createdAt: " ++
-          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+          createdAt->Date.toISOString->String.slice(~start=0, ~end=10),
         )}
       </div>
     | Error(_) => <div> {React.string("Error!")} </div>
@@ -125,7 +125,7 @@ module TestMemberNested = {
           "Got user id: " ++
           id ++
           ", and createdAt: " ++
-          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+          createdAt->Date.toISOString->String.slice(~start=0, ~end=10),
         )}
       </div>
     | Some(User({memberOfSingular: Error(_)})) => <div> {React.string("Error nested!")} </div>
@@ -156,19 +156,19 @@ module TestMembers = {
 
     let members =
       query.members
-      ->Belt.Option.flatMap(v => v.edges)
-      ->Belt.Option.getWithDefault([])
-      ->Belt.Array.keepMap(x => x->Belt.Option.map(r => r.node))
+      ->Option.flatMap(v => v.edges)
+      ->Option.getOr([])
+      ->Array.filterMap(x => x->Option.map(r => r.node))
 
     members
-    ->Js.Array2.map(r =>
+    ->Array.map(r =>
       switch r {
       | Ok({value: Some(User({id, createdAt}))}) =>
-        `User: ${id} - ${createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10)}`
+        `User: ${id} - ${createdAt->Date.toISOString->String.slice(~start=0, ~end=10)}`
       | _ => "Error!"
       }
     )
-    ->Js.Array2.joinWith(", ")
+    ->Array.joinUnsafe(", ")
     ->React.string
   }
 }
@@ -198,9 +198,7 @@ module TestUnionMember = {
   @react.component
   let make = () => {
     let query = QueryUnionMember.use(~variables=())
-    let fragmentData = UnionMemberFragment.useOpt(
-      query.member->Belt.Option.map(r => r.fragmentRefs),
-    )
+    let fragmentData = UnionMemberFragment.useOpt(query.member->Option.map(r => r.fragmentRefs))
 
     switch fragmentData {
     | Some(Ok({value: User({id, createdAt})})) =>
@@ -209,7 +207,7 @@ module TestUnionMember = {
           "Got user id: " ++
           id ++
           ", and createdAt: " ++
-          createdAt->Js.Date.toISOString->Js.String2.slice(~from=0, ~to_=10),
+          createdAt->Date.toISOString->String.slice(~start=0, ~end=10),
         )}
       </div>
     | Some(Ok({value: Group({id, name})})) =>

@@ -5,7 +5,7 @@ type subscriptionConfig<'node, 'variables, 'response> = {
   subscription: subscriptionNode<'node>,
   variables: 'variables,
   onCompleted?: unit => unit,
-  onError?: Js.Exn.t => unit,
+  onError?: JsExn.t => unit,
   onNext?: 'response => unit,
   updater?: updaterFn<'response>,
 }

@@ -120,14 +120,13 @@ module Test = {
   @react.component
   let make = () => {
     let makeDate = () =>
-      Js.Date.makeWithYMDHMS(
-        ~date=1.,
-        ~hours=1.,
-        ~minutes=0.,
-        ~month=0.,
-        ~seconds=0.,
-        ~year=2022.,
-        (),
+      Date.makeWithYMDHMS(
+        ~year=Float.toInt(2022.),
+        ~month=Float.toInt(0.),
+        ~day=Float.toInt(1.),
+        ~hours=Float.toInt(1.),
+        ~minutes=Float.toInt(0.),
+        ~seconds=Float.toInt(0.),
       )
 
     let query = Query.use(
@@ -159,18 +158,20 @@ module Test = {
 
     <div>
       {friends
-      ->Belt.Array.map(friend => <div key=friend.id> {React.string(friend.id)} </div>)
+      ->Array.map(friend => <div key=friend.id> {React.string(friend.id)} </div>)
       ->React.array}
       <button
         onClick={_ => {
           addFriend(false)->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string("Add friend")}
       </button>
       <button
         onClick={_ => {
           addFriend(false)->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string("Add friend with findAllConnectionIds")}
       </button>
     </div>

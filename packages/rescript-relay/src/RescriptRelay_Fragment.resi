@@ -24,9 +24,9 @@ let read: (
   ~fRef: 'b,
 ) => 'fragment
 
-type paginationLoadMoreOptions = {onComplete?: Js.Nullable.t<Js.Exn.t> => unit}
+type paginationLoadMoreOptions = {onComplete?: Nullable.t<JsExn.t> => unit}
 
-type paginationLoadMoreFn = (~count: int, ~onComplete: option<Js.Exn.t> => unit=?) => Disposable.t
+type paginationLoadMoreFn = (~count: int, ~onComplete: option<JsExn.t> => unit=?) => Disposable.t
 
 type paginationFragmentReturn<'fragment, 'refetchVariables> = {
   data: 'fragment,
@@ -39,7 +39,7 @@ type paginationFragmentReturn<'fragment, 'refetchVariables> = {
   refetch: (
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
+    ~onComplete: option<JsExn.t> => unit=?,
   ) => Disposable.t,
 }
 
@@ -59,7 +59,7 @@ type prefetchableForwardPaginationFragmentReturn<'fragment, 'edges, 'refetchVari
   refetch: (
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
+    ~onComplete: option<JsExn.t> => unit=?,
   ) => Disposable.t,
 }
 
@@ -85,7 +85,7 @@ let useRefetchableFragment: (
   (
     ~variables: 'refetchVariables,
     ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
+    ~onComplete: option<JsExn.t> => unit=?,
   ) => Disposable.t,
 )
 

@@ -14,7 +14,7 @@ module Internal = {
   @live
   type fragmentRaw
   @live
-  let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
+  let fragmentConverter: dict<dict<dict<string>>> = %raw(
     json`{}`
   )
   @live
@@ -23,7 +23,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -44,7 +44,7 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 module CodesplitComponents = {
   module UserName = {
-    let make = React.lazy_(() => Js.import(UserName.make))
+    let make = React.lazy_(() => import(UserName.make))
   }
 }
 

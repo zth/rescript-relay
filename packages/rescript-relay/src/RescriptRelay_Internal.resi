@@ -1,9 +1,7 @@
 let internal_useConvertedValue: ('a => 'a, 'a) => 'a
 let internal_cleanObjectFromUndefinedRaw: 't => 't
 let internal_removeUndefinedAndConvertNullsRaw: 't => 't
-let internal_nullableToOptionalExnHandler: option<option<'b> => 'a> => option<
-  Js.Nullable.t<'b> => 'a,
->
+let internal_nullableToOptionalExnHandler: option<option<'b> => 'a> => option<Nullable.t<'b> => 'a>
 @live @unboxed type rec arg = Arg(_): arg
 
 let unwrapUnion: ('a, array<string>) => 'a
@@ -17,4 +15,4 @@ external internal_resolverFragmentRefsToFragmentRefsPlural: RescriptRelay.resolv
   'a,
 > => array<RescriptRelay.fragmentRefs<'a>> = "%identity"
 
-let applyCodesplitMetadata: ('node, array<(string, dict<Js.Json.t> => unit)>) => 'node
+let applyCodesplitMetadata: ('node, array<(string, dict<JSON.t> => unit)>) => 'node

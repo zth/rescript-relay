@@ -24,7 +24,7 @@ module Test = {
       }
       <div>
         {React.string(
-          `${firstName} is ${isOnline->Belt.Option.getWithDefault(false)
+          `${firstName} is ${isOnline->Option.getOr(false)
               ? "online"
               : "offline"} and best friends with ${bestFriendsName}`,
         )}
@@ -55,7 +55,8 @@ module Test = {
               | Null | Undefined => ()
               }
             })
-          }}>
+          }}
+        >
           {React.string("Change status")}
         </button>
       </div>

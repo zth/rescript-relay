@@ -19,7 +19,7 @@ let lazyExtension =
              (List.concat
                 [
                   [
-                    [%stri let loadComponent () = Js.import [%e identAst]]
+                    [%stri let loadComponent () = import [%e identAst]]
                     |> UncurriedUtils.wrapAsUncurriedFn ~arity:1;
                     [%stri let preload () = ignore (loadComponent ())]
                     |> UncurriedUtils.wrapAsUncurriedFn ~arity:1;

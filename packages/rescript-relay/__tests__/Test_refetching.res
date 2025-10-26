@@ -42,7 +42,7 @@ module Test = {
   let make = () => {
     let query = Query.use(
       ~variables={
-        beforeDate: Js.Date.fromString("2023-01-01T00:00:00.000Z"),
+        beforeDate: Date.fromString("2023-01-01T00:00:00.000Z"),
       },
     )
 
@@ -59,7 +59,7 @@ module Test = {
         | _ => "-"
         }),
       )}
-      <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->string_of_int)} </div>
+      <div> {React.string("Friends: " ++ data.friendsConnection.totalCount->Int.toString)} </div>
       <button
         onClick={_ => {
           startTransition(() => {
@@ -71,7 +71,8 @@ module Test = {
               ),
             )->RescriptRelay.Disposable.ignore
           })
-        }}>
+        }}
+      >
         {React.string("Fetch online status")}
       </button>
     </div>
