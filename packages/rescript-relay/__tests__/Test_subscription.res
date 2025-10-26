@@ -98,14 +98,14 @@ let test_subscription = () => {
   let subscriptionFns = ref([])
 
   let subscribeToOnNext = nextFn => {
-    let _ = subscriptionFns.contents->Js.Array2.push(nextFn)
+    let _ = subscriptionFns.contents->Array.push(nextFn)
 
     () => {
-      subscriptionFns.contents = subscriptionFns.contents->Js.Array2.filter(fn => fn !== nextFn)
+      subscriptionFns.contents = subscriptionFns.contents->Array.filter(fn => fn !== nextFn)
     }
   }
 
-  let pushNext = next => subscriptionFns.contents->Js.Array2.forEach(fn => fn(next))
+  let pushNext = next => subscriptionFns.contents->Array.forEach(fn => fn(next))
 
   let subscriptionFunction = (_, _, _) => {
     RescriptRelay.Observable.make(sink => {

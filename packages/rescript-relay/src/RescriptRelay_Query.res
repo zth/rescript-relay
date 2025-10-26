@@ -31,7 +31,7 @@ let useQuery = (
         ?fetchPolicy,
         ?networkCacheConfig,
       },
-    )->(RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _))
+    )->RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _)
   }
 }
 
@@ -42,7 +42,7 @@ type useQueryLoaderOptions = {
 
 @module("react-relay")
 external useQueryLoader: queryNode<'node> => (
-  Js.Nullable.t<'queryRef>,
+  Nullable.t<'queryRef>,
   ('variables, useQueryLoaderOptions) => unit,
   unit => unit,
 ) = "useQueryLoader"
@@ -55,11 +55,12 @@ let useLoader = (
   () => {
     let (nullableQueryRef, loadQueryFn, disposableFn) = useQueryLoader(node)
     let loadQuery = React.useMemo1(
-      () => (~variables, ~fetchPolicy=?, ~networkCacheConfig=?) =>
-        loadQueryFn(variables->convertVariables, {?fetchPolicy, ?networkCacheConfig}),
+      () =>
+        (~variables, ~fetchPolicy=?, ~networkCacheConfig=?) =>
+          loadQueryFn(variables->convertVariables, {?fetchPolicy, ?networkCacheConfig}),
       [loadQueryFn],
     )
-    (nullableQueryRef->Js.Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
+    (nullableQueryRef->Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
   }
 }
 
@@ -70,14 +71,16 @@ let usePreloaded = (
   ~node,
   ~convertResponse: 'response => 'response,
   ~mkQueryRef: 'queryRef => 'queryRef,
-) => /** Combine this with `Query.useLoader` or \
+) =>
+  /** Combine this with `Query.useLoader` or \
                 `YourQueryName_graphql.load()` to use a query you've started \
                 preloading before rendering. */
-(~queryRef: 'queryRef) => {
-  usePreloadedQuery(node, queryRef->mkQueryRef)->(
-    RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _)
-  )
-}
+  (~queryRef: 'queryRef) => {
+    usePreloadedQuery(
+      node,
+      queryRef->mkQueryRef,
+    )->RescriptRelay_Internal.internal_useConvertedValue(convertResponse, _)
+  }
 
 @module("react-relay")
 external fetchQuery: (
@@ -139,7 +142,7 @@ let fetchPromised = (
       Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->Observable.toPromise
-    ->Js.Promise2.then(res => res->convertResponse->Js.Promise2.resolve)
+    ->Promise.then(res => res->convertResponse->Promise.resolve)
   }
 }
 

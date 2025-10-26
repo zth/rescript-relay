@@ -69,7 +69,7 @@ let make = (~user) => {
     <div>
       <p>
         {React.string(
-          userData.firstName ++ (" has " ++ (userData.friendCount->string_of_int ++ " friends.")),
+          userData.firstName ++ (" has " ++ (userData.friendCount->Int.toString ++ " friends.")),
         )}
       </p>
     </div>

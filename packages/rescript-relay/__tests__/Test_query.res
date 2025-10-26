@@ -101,24 +101,27 @@ module Test = {
         onClick={_ =>
           setQueryRefFromModule(_ => Some(
             TestQuery_graphql.load(~environment, ~variables={status: Idle}),
-          ))}>
+          ))}
+      >
         {React.string("Test preloaded from raw module")}
       </button>
       <button
         onClick={_ => {
           let queryRef = TestQuery_graphql.load(~environment, ~variables={status: Idle})
 
-          let _ = queryRef->TestQuery_graphql.queryRefToPromise->(Js.Promise.then_(res => {
-                switch res {
-                | Ok() => setHasWaitedForPreload(_ => true)
-                | Error() => ()
-                }
-
-                Js.Promise.resolve()
-              }, _))
+          let _ =
+            queryRef
+            ->TestQuery_graphql.queryRefToPromise
+            ->Promise.thenResolve(res => {
+              switch res {
+              | Ok() => setHasWaitedForPreload(_ => true)
+              | Error() => ()
+              }
+            })
 
           setQueryRefFromModule(_ => Some(queryRef))
-        }}>
+        }}
+      >
         {React.string("Test wait for preload")}
       </button>
       <button
@@ -128,19 +131,20 @@ module Test = {
             | Ok(res) => setFetchedResult(_ => Some(collectUsers(res)))
             | Error(_) => ()
             }
-          )}>
+          )}
+      >
         {React.string("Test fetch")}
       </button>
       <button
         onClick={_ => {
-          let _ =
-            Query.fetchPromised(~environment, ~variables={status: Online})->(
-              Js.Promise.then_(res => {
-                setFetchedResult(_ => Some(collectUsers(res)))
-                Js.Promise.resolve()
-              }, _)
-            )
-        }}>
+          let _ = Query.fetchPromised(
+            ~environment,
+            ~variables={status: Online},
+          )->Promise.thenResolve(res => {
+            setFetchedResult(_ => Some(collectUsers(res)))
+          })
+        }}
+      >
         {React.string("Test fetch promised")}
       </button>
       <button onClick={_ => loadQuery(~variables={status: Idle})}>

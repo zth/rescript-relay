@@ -34,7 +34,7 @@ let localUser = () => {
  * @RelayResolver LocalUser.nameRepeated(times: Int!): String
  */
 let nameRepeated = (user, args) => {
-  user.name->Js.String2.repeat(args.times)
+  user.name->String.repeat(args.times)
 }
 
 /**

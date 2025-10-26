@@ -1,6 +1,6 @@
 @live
 let test_subscription: unit => {
-  "pushNext": Js.Json.t => unit,
+  "pushNext": JSON.t => unit,
   "render": unit => React.element,
-  "subscriptionFunction": ('b, 'c, 'd) => RescriptRelay.Observable.t<Js.Json.t>,
+  "subscriptionFunction": ('b, 'c, 'd) => RescriptRelay.Observable.t<JSON.t>,
 }

@@ -31,13 +31,14 @@ module Test = {
           Mutation.commitMutation(
             ~environment,
             ~variables={
-              avatarUrl: Js.null,
-              someInput: Js.Null.return({
-                RelaySchemaAssets_graphql.int: Js.null,
+              avatarUrl: Null.null,
+              someInput: Null.make({
+                RelaySchemaAssets_graphql.int: Null.null,
               }),
             },
           )->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string("Change avatar URL")}
       </button>
     </div>

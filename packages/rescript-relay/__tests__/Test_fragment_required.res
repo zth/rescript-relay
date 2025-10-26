@@ -65,8 +65,8 @@ module Test = {
         }}
       </div>
       <div className="plural">
-        <div> {React.string("Non null count: " ++ Js.Int.toString(pluralNonNullCount))} </div>
-        <div> {React.string("Null count: " ++ Js.Int.toString(pluralNullCount))} </div>
+        <div> {React.string("Non null count: " ++ Int.toString(pluralNonNullCount))} </div>
+        <div> {React.string("Null count: " ++ Int.toString(pluralNullCount))} </div>
         <div>
           {React.string(
             "Users: " ++
@@ -85,7 +85,7 @@ module Test = {
                 )
               }
             )
-            ->Js.Array2.joinWith(", "),
+            ->Array.joinUnsafe(", "),
           )}
         </div>
       </div>

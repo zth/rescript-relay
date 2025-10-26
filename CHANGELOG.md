@@ -1,6 +1,7 @@
 # master
 
 - Support `@exhaustive` on interfaces as well.
+- Remove `ReactDOMExperimental` module, since everything needed is in the official RescriptReact bindings now.
 
 # 3.5.1
 

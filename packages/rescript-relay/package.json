@@ -35,8 +35,8 @@
     "build": "rescript",
     "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler && ENABLE_PERSISTING=true ./rescript-relay-compiler && rm ./__tests_preloaded__/__generated__/RelaySchemaAssets_graphql.res",
     "postinstall": "node postinstall.js",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
-    "test:ci": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --ci --runInBand"
+    "test": "jest",
+    "test:ci": "jest --ci --runInBand"
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",
@@ -45,6 +45,11 @@
     "@testing-library/react": "^13.0.0-alpha.6",
     "graphql-query-test-mock": "^0.12.1",
     "jest": "^27.2.4",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "babel-jest": "^27.2.4",
+    "babel-plugin-dynamic-import-node": "^2.3.3",
     "nock": "^11.7.0",
     "node-fetch": "^2.6.0",
     "react": "18.2.0",

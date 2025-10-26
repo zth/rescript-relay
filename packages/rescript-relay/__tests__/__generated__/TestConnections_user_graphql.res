@@ -70,7 +70,7 @@ module Utils = {
         switch connection.edges {
           | None => []
           | Some(edges) => edges
-            ->Belt.Array.keepMap(edge => switch edge {
+            ->Array.filterMap(edge => switch edge {
               | None => None
               | Some(edge) => edge.node
             })

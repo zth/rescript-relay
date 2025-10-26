@@ -25,7 +25,7 @@ module Test = {
       <div>
         {intStrings
         ->Belt.Array.map(Belt.Int.toString(_))
-        ->Js.Array2.joinWith(", ")
+        ->Array.joinUnsafe(", ")
         ->React.string}
       </div>
       <div>
@@ -35,7 +35,7 @@ module Test = {
       </div>
       <div>
         {justStrings
-        ->Js.Array2.joinWith(", ")
+        ->Array.joinUnsafe(", ")
         ->React.string}
       </div>
       <div>

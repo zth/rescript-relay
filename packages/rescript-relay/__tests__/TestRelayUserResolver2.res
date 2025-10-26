@@ -13,5 +13,5 @@ module Fragment = %relay(`
  */
 let fullName2 = (user, args) => {
   let user = Fragment.readResolverFragment(user)
-  `${user.firstName} ${user.lastName}`->Js.String2.slice(~from=0, ~to_=args.maxLength)
+  `${user.firstName} ${user.lastName}`->String.slice(~start=0, ~end=args.maxLength)
 }

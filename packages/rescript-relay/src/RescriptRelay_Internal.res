@@ -1,7 +1,7 @@
 let internal_keepMapFieldsRaw = (record, f) =>
   record
   ->Obj.magic
-  ->Belt.Option.map(obj => obj->Js.Dict.entries->Belt.Array.keepMap(f)->Js.Dict.fromArray)
+  ->Belt.Option.map(obj => obj->Dict.toArray->Belt.Array.keepMap(f)->Dict.fromArray)
   ->Obj.magic
 
 // we need to do this until we can use @obj on record types
@@ -20,8 +20,8 @@ let internal_cleanObjectFromUndefinedRaw = record =>
 let internal_removeUndefinedAndConvertNullsRaw = record =>
   internal_keepMapFieldsRaw(record, ((key, value)) => {
     switch (value, value == Some(None)) {
-    | (Some(value), _) => Some((key, Js.Nullable.return(value)))
-    | (_, true) => Some((key, Js.Nullable.null))
+    | (Some(value), _) => Some((key, Nullable.make(value)))
+    | (_, true) => Some((key, Nullable.null))
     | (None, _) => None
     }
   })
@@ -31,7 +31,7 @@ let internal_useConvertedValue = (convert, v) => React.useMemo1(() => convert(v)
 let internal_nullableToOptionalExnHandler = x =>
   switch x {
   | None => None
-  | Some(handler) => Some(maybeExn => maybeExn->Js.Nullable.toOption->handler)
+  | Some(handler) => Some(maybeExn => maybeExn->Nullable.toOption->handler)
   }
 
 @live @unboxed type rec arg = Arg(_): arg
@@ -56,7 +56,7 @@ external internal_resolverFragmentRefsToFragmentRefsPlural: RescriptRelay.resolv
   'a,
 > => array<RescriptRelay.fragmentRefs<'a>> = "%identity"
 
-let applyCodesplitMetadata: ('node, array<(string, dict<Js.Json.t> => unit)>) => 'node = %raw(`
+let applyCodesplitMetadata: ('node, array<(string, dict<JSON.t> => unit)>) => 'node = %raw(`
   function applyCodesplitMetadata(node, meta) {
     if (node != null && node.params != null) {
       let metadata = node.params.metadata;

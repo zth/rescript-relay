@@ -34,7 +34,7 @@ let fetch: (
 ) => (
   ~environment: Environment.t,
   ~variables: 'variables,
-  ~onResult: result<'response, Js.Exn.t> => unit,
+  ~onResult: result<'response, JsExn.t> => unit,
   ~networkCacheConfig: cacheConfig=?,
   ~fetchPolicy: fetchPolicy=?,
 ) => unit

@@ -21,7 +21,7 @@ module Test = {
     let query = {
       Query.use(
         ~variables={
-          beforeDate: Js.Date.fromFloat(1514764800000.),
+          beforeDate: Date.fromTime(1514764800000.),
           number: [2],
         },
       )
@@ -30,14 +30,13 @@ module Test = {
     <>
       <div>
         {React.string(
-          "loggedInUser createdAt: " ++
-          query.loggedInUser.createdAt->Js.Date.getTime->Js.Float.toString,
+          "loggedInUser createdAt: " ++ query.loggedInUser.createdAt->Date.getTime->Float.toString,
         )}
       </div>
       <div>
         {switch query.member {
         | Some(User(user)) =>
-          React.string("member createdAt: " ++ user.createdAt->Js.Date.getTime->Js.Float.toString)
+          React.string("member createdAt: " ++ user.createdAt->Date.getTime->Float.toString)
         | Some(UnselectedUnionMember(_)) | None => React.null
         }}
       </div>

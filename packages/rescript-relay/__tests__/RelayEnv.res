@@ -12,7 +12,7 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     {
       method: #POST,
       body: {"query": operation.text, "id": operation.id, "variables": variables}
-      ->Js.Json.stringifyAny
+      ->JSON.stringifyAny
       ->Belt.Option.getExn
       ->Body.string,
       headers: Headers.fromObject({
@@ -27,6 +27,6 @@ let fetchQuery: RescriptRelay.Network.fetchFunctionPromise = async (
     RescriptRelay.Network.preloadResources(~operation, ~variables, ~response=json)
     json
   } else {
-    raise(Graphql_error("Request failed: " ++ Response.statusText(resp)))
+    throw(Graphql_error("Request failed: " ++ Response.statusText(resp)))
   }
 }

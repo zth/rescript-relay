@@ -51,7 +51,7 @@ module UserDisplayer = {
     React.string(
       "User " ++
       (data.firstName ++
-      (" has " ++ (data.friendsConnection.totalCount->string_of_int ++ " friends"))),
+      (" has " ++ (data.friendsConnection.totalCount->Int.toString ++ " friends"))),
     )
   }
 }
@@ -77,11 +77,12 @@ module UserNodeDisplayer = {
               ignore(
                 loadNext(~count=2, ~onComplete=x =>
                   switch x {
-                  | Some(e) => Js.Console.error(e)
+                  | Some(e) => Console.error(e)
                   | None => ()
                   }
                 ),
-              )}>
+              )}
+          >
             {React.string(isLoadingNext ? "Loading..." : "Load more")}
           </button>
         : React.null}
@@ -92,7 +93,8 @@ module UserNodeDisplayer = {
               ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([Online, Idle])),
             )->RescriptRelay.Disposable.ignore
           })
-        }}>
+        }}
+      >
         {React.string("Refetch connection")}
       </button>
     </div>

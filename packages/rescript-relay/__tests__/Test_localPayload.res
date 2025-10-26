@@ -115,7 +115,8 @@ module Test = {
                 ),
               },
             },
-          )}>
+          )}
+      >
         {React.string("Update locally")}
       </button>
       <button
@@ -150,7 +151,8 @@ module Test = {
                 }),
               ),
             },
-          )}>
+          )}
+      >
         {React.string("Update locally via Node interface")}
       </button>
     </div>

@@ -174,14 +174,14 @@ and input_RecursiveSetOnlineStatusInput_nullable = {
 @live
 and input_SetOnlineStatusInput = {
   onlineStatus: enum_OnlineStatus_input,
-  someJsonValue: Js.Json.t,
+  someJsonValue: JSON.t,
   recursed?: input_RecursiveSetOnlineStatusInput,
 }
 
 @live
 and input_SetOnlineStatusInput_nullable = {
   onlineStatus: enum_OnlineStatus_input,
-  someJsonValue: Js.Json.t,
+  someJsonValue: JSON.t,
   recursed?: Null.t<input_RecursiveSetOnlineStatusInput_nullable>,
 }
 

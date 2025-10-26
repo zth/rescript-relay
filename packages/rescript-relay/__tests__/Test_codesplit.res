@@ -32,7 +32,8 @@ module Test = {
       <button
         onClick={_ => {
           setShouldRender(_ => true)
-        }}>
+        }}
+      >
         {React.string("Render")}
       </button>
     | (true, None) => React.string("not found")

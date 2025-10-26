@@ -86,17 +86,20 @@ module Test = {
     let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
     let someJsonValue =
       [
-        ("foo", Js.Json.null),
+        ("foo", JSON.Encode.null),
         (
           "bar",
-          Js.Json.array([
-            Js.Json.array([Js.Json.string("Boz"), Js.Json.array([Js.Json.string("other text")])]),
+          JSON.Encode.array([
+            JSON.Encode.array([
+              JSON.Encode.string("Boz"),
+              JSON.Encode.array([JSON.Encode.string("other text")]),
+            ]),
           ]),
         ),
-        ("baz", Js.Json.string("some string")),
+        ("baz", JSON.Encode.string("some string")),
       ]
-      ->Js.Dict.fromArray
-      ->Js.Json.object_
+      ->Dict.fromArray
+      ->JSON.Encode.object
 
     <div>
       {React.string(
@@ -117,7 +120,8 @@ module Test = {
             open Mutation
             commitMutation(~environment, ~variables={onlineStatus: Idle})
           }
-        }}>
+        }}
+      >
         {React.string("Change online status")}
       </button>
       <button
@@ -146,7 +150,8 @@ module Test = {
               }),
             },
           )->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string("Change online status with only fragment")}
       </button>
       <button
@@ -171,13 +176,15 @@ module Test = {
             | _ => ignore()
             }
           })->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string("Change online status with inline fragment")}
       </button>
       <button
         onClick={_ => {
           mutate(~variables={onlineStatus: Idle})->RescriptRelay.Disposable.ignore
-        }}>
+        }}
+      >
         {React.string(isMutating ? "Mutating..." : "Change online status via useMutation hook")}
       </button>
       <button
@@ -204,7 +211,8 @@ module Test = {
               },
             )
           }
-        }}>
+        }}
+      >
         {React.string("Change online status, complex")}
       </button>
       <button
@@ -227,7 +235,8 @@ module Test = {
               },
             )
           }
-        }}>
+        }}
+      >
         {React.string("Change online status with optimistic update")}
       </button>
       <button
@@ -255,10 +264,11 @@ module Test = {
                 },
               )
               ->ignore
-            | _ => Js.log("Error!")
+            | _ => Console.log("Error!")
             }
           )
-        }}>
+        }}
+      >
         {React.string("Change online status with updater")}
       </button>
     </div>

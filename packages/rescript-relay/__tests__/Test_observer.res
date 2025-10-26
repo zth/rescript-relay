@@ -20,10 +20,10 @@ let test_observer = () => {
   let network = RescriptRelay.Network.makeObservableBased(~observableFunction=(_, _, _, _) => {
     RescriptRelay.Observable.make(sink => {
       try {
-        Js.Exn.raiseError("Some error")
+        JsError.throwWithMessage("Some error")
       } catch {
       | Js.Exn.Error(obj) =>
-        sink.error(obj)
+        sink.error(obj->Obj.magic)
         sink.complete()
       }
 

@@ -66,7 +66,8 @@ module Test = {
             | Undefined | Null => ()
             }
           })
-        }}>
+        }}
+      >
         {React.string("Change status")}
       </button>
     </div>

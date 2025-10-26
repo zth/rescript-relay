@@ -40,7 +40,7 @@ module Test = {
         {edges
         ->Belt.Array.keepMap(({node}) => node)
         ->Belt.Array.map(friend => friend.id)
-        ->Js.Array2.joinWith(", ")
+        ->Array.joinUnsafe(", ")
         ->React.string}
       </div>
       {hasNext

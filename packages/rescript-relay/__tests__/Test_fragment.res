@@ -140,13 +140,14 @@ module Test = {
         <div>
           {("Inline data: " ++
           {"firstName": data.InlineFragment.Types.firstName, "onlineStatus": data.onlineStatus}
-          ->Js.Json.stringifyAny
+          ->JSON.stringifyAny
           ->Belt.Option.getWithDefault(""))->React.string}
         </div>
       }}
       <button
         onClick={_ =>
-          setDataViaInline(_ => Some(InlineFragment.readInline(query.loggedInUser.fragmentRefs)))}>
+          setDataViaInline(_ => Some(InlineFragment.readInline(query.loggedInUser.fragmentRefs)))}
+      >
         {React.string("Set data via inline")}
       </button>
     </div>
