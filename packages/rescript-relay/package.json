@@ -1,6 +1,6 @@
 {
   "name": "rescript-relay",
-  "version": "3.5.1",
+  "version": "4.0.0",
   "main": "src/RescriptRelay.res",
   "license": "MIT",
   "author": "Gabriel Nordeborn",
@@ -62,7 +62,7 @@
     "@rescript/react": ">=0.13.0",
     "react-relay": "20.1.1",
     "relay-runtime": "20.1.1",
-    "rescript": "^11.0.0"
+    "rescript": "^12.0.0-0"
   },
   "dependencies": {
     "detect-libc": "^2.0.1"

@@ -100,11 +100,21 @@ let make = () => {
 
 ## Note about versioning
 
-There's plenty of work ongoing to bring RescriptRelay to full ReScript v11 support, including uncurried mode. Here's the versioning scheme that'll be followed going forward:
+RescriptRelay has moved through a few major lines with different ReScript baselines. Use the compatibility guide below to pick the right versions:
+
+### Compatibility
+
+| RescriptRelay | Required ReScript |
+| ------------- | ----------------- |
+| 4.x and newer | v12.x (or newer)  |
+| 3.x and below | v11.x (or older)  |
+
+Additional context on historical focus areas:
 
 - 1.x will receive critical bug fixes etc, but new features won't be added
-- 2.x will focus on compatibility with ReScript v11, and uncurried mode (uncurried mode will be optional). This is intended to make the transition to v11+ smooth
-- 3.x is fully embracing uncurried mode (no curried mode available), and adds a bunch of new stuff + change existing APIs to make them better and more ergonomic
+- 2.x focuses on compatibility with ReScript v11, and uncurried mode (uncurried mode can be optional). This is intended to make the transition to v11+ smooth
+- 3.x fully embraces uncurried mode (no curried mode available), and adds a bunch of new stuff + changes existing APIs to make them better and more ergonomic
+- 4.x focuses exclusively on ReScript v12+.
 
 ## Examples
 
