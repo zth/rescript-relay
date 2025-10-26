@@ -19,11 +19,12 @@ module Datetime = {
 
 module IntString = {
   type t = int
-  @live let parse = Belt.Int.fromString
+  @live let parse = v => v->Int.fromString(~radix=10)
+
   let serialize = int => {
     // This log is used for testing purposes - do not remove
     Console.log2("serialize", int)
-    Belt.Int.toString(int)
+    Int.toString(int)
   }
 }
 
@@ -31,8 +32,7 @@ type number = array<int>
 
 module Number = {
   type t = number
-  let serialize = t =>
-    JSON.Encode.float(Belt.Float.fromInt(t->Belt.Array.reduce(0, (x, y) => y + x)))
+  let serialize = t => JSON.Encode.float(Float.fromInt(t->Array.reduce(0, (x, y) => y + x)))
 
   let parse = t =>
     switch t->JSON.Decode.float {
