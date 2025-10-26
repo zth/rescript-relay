@@ -10,7 +10,7 @@ module InputC = {
 }
 
 module InputCArr = {
-  let get = (): option<array<RelaySchemaAssets_graphql.input_InputC>> => Some([{intStr: 123}])
+  let get = () => Some([({intStr: 123}: RelaySchemaAssets_graphql.input_InputC)])
 }
 
 module IntStr = {

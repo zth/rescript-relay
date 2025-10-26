@@ -33,14 +33,14 @@
   },
   "scripts": {
     "build": "rescript",
-    "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler",
+    "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler && ENABLE_PERSISTING=true ./rescript-relay-compiler && rm ./__tests_preloaded__/__generated__/RelaySchemaAssets_graphql.res",
     "postinstall": "node postinstall.js",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
     "test:ci": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --ci --runInBand"
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",
-    "@rescript/react": "0.12.2",
+    "@rescript/react": "0.14.0",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.0.0-alpha.6",
     "graphql-query-test-mock": "^0.12.1",
@@ -51,7 +51,7 @@
     "react-dom": "18.2.0",
     "react-relay": "20.1.1",
     "relay-runtime": "20.1.1",
-    "rescript": "11.1.1"
+    "rescript": "12.0.0-rc.3"
   },
   "peerDependencies": {
     "@rescript/react": ">=0.13.0",

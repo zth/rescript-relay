@@ -9,8 +9,8 @@ module Types = {
   }
   type fragment = {
     mutable firstName: string,
-    mutable isOnline: Js.Nullable.t<bool>,
-    bestFriend: Js.Nullable.t<fragment_bestFriend>,
+    mutable isOnline: Nullable.t<bool>,
+    bestFriend: Nullable.t<fragment_bestFriend>,
   }
 }
 

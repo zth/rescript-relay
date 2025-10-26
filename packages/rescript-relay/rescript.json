@@ -1,7 +1,6 @@
 {
   "name": "rescript-relay",
   "version": "0.1.0",
-  "uncurried": true,
   "namespace": false,
   "jsx": {
     "mode": "automatic",
@@ -27,10 +26,10 @@
     "module": "commonjs",
     "in-source": true
   },
-  "ppx-flags": [
-    "./rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe -uncurried"
+  "compiler-flags": [
+    "-ppx ../../rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe"
   ],
-  "bs-dependencies": ["@rescript/react"],
-  "bs-dev-dependencies": ["@glennsl/rescript-fetch"],
+  "dependencies": ["@rescript/react"],
+  "dev-dependencies": ["@glennsl/rescript-fetch"],
   "suffix": ".bs.js"
 }
