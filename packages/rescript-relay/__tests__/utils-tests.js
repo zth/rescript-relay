@@ -896,8 +896,8 @@ describe("conversion", () => {
         },
           {
             __root: {
-              os1s:  { c: "TestsUtils.ObjectScalar1" },
-              os2:  { c: "TestsUtils.ObjectScalar2" }
+              os2:{c:"TestsUtils.ObjectScalar2"},
+              os1s:{ca:"TestsUtils.ObjectScalar1"}
             },
           },
         {

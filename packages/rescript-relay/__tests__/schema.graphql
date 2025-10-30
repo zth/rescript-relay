@@ -255,6 +255,9 @@ type Mutation {
   serializeCustomScalarArray(
     input: [IntString!]!
   ): SerializeCustomScalarArrayPayload
+  serializeMultipleCustomScalars(
+    input: SerializeMultipleCustomScalars!
+  ): Boolean
 }
 
 type Subscription {
