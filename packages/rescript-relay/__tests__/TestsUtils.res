@@ -43,11 +43,16 @@ module Number = {
 
 type s = {
   a: string,
-  b: ?string,
-  c: ?string
+  b?: string,
+  c?: string
 }
-module Number = {
+module ObjectScalar1 = {
   type t = s
-  let serialize = _ => Json.Encode.string("serialized")
-  let parse = _ => {a: "a", b: None, c: None}
+  let serialize = _ => JSON.Encode.string("serialized1")
+  let parse = _ => {a: "a"}
+}
+module ObjectScalar2 = {
+  type t = s
+  let serialize = _ => JSON.Encode.string("serialized2")
+  let parse = _ => {a: "a"}
 }

@@ -902,15 +902,15 @@ describe("conversion", () => {
             },
           },
         {
-          "TestsUtils.ObjectScalar1": _ => "serialized",
-          "TestsUtils.ObjectScalar2": _ => "serialized",
+          "TestsUtils.ObjectScalar1": _ => "serialized1",
+          "TestsUtils.ObjectScalar2": _ => "serialized2",
         },
         undefined
       )
     ).toEqual({
       input: {
-        os1s: ["serialized"],
-        os2: "serialized",
+        os1s: ["serialized1"],
+        os2: "serialized2",
       },
     });
   });
