@@ -274,3 +274,11 @@ input Location @oneOf {
   byLoc: ByLoc
   byId: ID
 }
+
+scalar ObjectScalar1
+scalar ObjectScalar2
+
+input SerializeMultipleCustomScalars {
+  os1s: [ObjectScalar1!]!
+  os2: ObjectScalar2
+}

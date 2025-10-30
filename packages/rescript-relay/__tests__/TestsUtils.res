@@ -40,3 +40,14 @@ module Number = {
     | Some(_) => []
     }
 }
+
+type s = {
+  a: string,
+  b: ?string,
+  c: ?string
+}
+module Number = {
+  type t = s
+  let serialize = _ => Json.Encode.string("serialized")
+  let parse = _ => {a: "a", b: None, c: None}
+}
