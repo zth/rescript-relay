@@ -255,6 +255,9 @@ type Mutation {
   serializeCustomScalarArray(
     input: [IntString!]!
   ): SerializeCustomScalarArrayPayload
+  serializeMultipleCustomScalars(
+    input: SerializeMultipleCustomScalars!
+  ): Boolean
 }
 
 type Subscription {
@@ -273,4 +276,12 @@ input Location @oneOf {
   byAddress: ByAddress
   byLoc: ByLoc
   byId: ID
+}
+
+scalar ObjectScalar1
+scalar ObjectScalar2
+
+input SerializeMultipleCustomScalars {
+  os1s: [ObjectScalar1!]!
+  os2: ObjectScalar2
 }

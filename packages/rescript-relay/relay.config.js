@@ -10,6 +10,8 @@ module.exports = {
   customScalarTypes: {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
+    ObjectScalar1: "TestsUtils.ObjectScalar1",
+    ObjectScalar2: "TestsUtils.ObjectScalar2",
     JSON: "JSON.t",
     Number: "TestsUtils.Number",
   },
