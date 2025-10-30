@@ -883,22 +883,21 @@ describe("conversion", () => {
     expect(
       traverser(
         {
-          input: {
-            os1s: [
-              {
-                a: "a",
-                b: "b",
-              }
-            ],
-            os2: {
+          os1s: [
+            {
               a: "a",
-              c: "c",
+              b: "b",
             }
-          },
+          ],
+          os2: {
+            a: "a",
+            c: "c",
+          }
         },
           {
             __root: {
-              // TODO
+              os1s:  { c: "TestsUtils.ObjectScalar1" },
+              os2:  { c: "TestsUtils.ObjectScalar2" }
             },
           },
         {
@@ -908,10 +907,8 @@ describe("conversion", () => {
         undefined
       )
     ).toEqual({
-      input: {
-        os1s: ["serialized1"],
-        os2: "serialized2",
-      },
+      os1s: ["serialized1"],
+      os2: "serialized2",
     });
   });
 });
