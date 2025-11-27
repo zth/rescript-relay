@@ -18,12 +18,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    location: option<location>,
+    location?: location,
   }
   @live let makeRefetchVariables = (
     ~location=?,
   ): refetchVariables => {
-    location: location
+    location: ?location
   }
 
 }
