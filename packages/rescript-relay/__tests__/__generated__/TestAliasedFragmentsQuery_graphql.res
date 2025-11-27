@@ -19,12 +19,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    skipThing: option<bool>,
+    skipThing?: bool,
   }
   @live let makeRefetchVariables = (
     ~skipThing=?,
   ): refetchVariables => {
-    skipThing: skipThing
+    skipThing: ?skipThing
   }
 
 }
