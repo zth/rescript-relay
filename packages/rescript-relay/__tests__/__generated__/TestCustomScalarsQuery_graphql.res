@@ -32,15 +32,15 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    beforeDate: option<option<TestsUtils.Datetime.t>>,
-    number: option<TestsUtils.Number.t>,
+    beforeDate?: option<TestsUtils.Datetime.t>,
+    number?: TestsUtils.Number.t,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
     ~number=?,
   ): refetchVariables => {
-    beforeDate: beforeDate,
-    number: number
+    beforeDate: ?beforeDate,
+    number: ?number
   }
 
 }

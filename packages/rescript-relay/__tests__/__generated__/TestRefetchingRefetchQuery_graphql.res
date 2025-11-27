@@ -24,10 +24,10 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    beforeDate: option<option<TestsUtils.Datetime.t>>,
-    friendsOnlineStatuses: option<option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>>,
-    @live id: option<string>,
-    showOnlineStatus: option<option<bool>>,
+    beforeDate?: option<TestsUtils.Datetime.t>,
+    friendsOnlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
+    @live id?: string,
+    showOnlineStatus?: option<bool>,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
@@ -35,10 +35,10 @@ module Types = {
     ~id=?,
     ~showOnlineStatus=?,
   ): refetchVariables => {
-    beforeDate: beforeDate,
-    friendsOnlineStatuses: friendsOnlineStatuses,
-    id: id,
-    showOnlineStatus: showOnlineStatus
+    beforeDate: ?beforeDate,
+    friendsOnlineStatuses: ?friendsOnlineStatuses,
+    id: ?id,
+    showOnlineStatus: ?showOnlineStatus
   }
 
 }
