@@ -33,12 +33,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    includeBestFriendDescription: option<bool>,
+    includeBestFriendDescription?: bool,
   }
   @live let makeRefetchVariables = (
     ~includeBestFriendDescription=?,
   ): refetchVariables => {
-    includeBestFriendDescription: includeBestFriendDescription
+    includeBestFriendDescription: ?includeBestFriendDescription
   }
 
 }

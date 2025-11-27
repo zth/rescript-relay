@@ -23,18 +23,18 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    friendsOnlineStatuses: option<option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>>,
-    @live id: option<string>,
-    showOnlineStatus: option<option<bool>>,
+    friendsOnlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
+    @live id?: string,
+    showOnlineStatus?: option<bool>,
   }
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
     ~id=?,
     ~showOnlineStatus=?,
   ): refetchVariables => {
-    friendsOnlineStatuses: friendsOnlineStatuses,
-    id: id,
-    showOnlineStatus: showOnlineStatus
+    friendsOnlineStatuses: ?friendsOnlineStatuses,
+    id: ?id,
+    showOnlineStatus: ?showOnlineStatus
   }
 
 }

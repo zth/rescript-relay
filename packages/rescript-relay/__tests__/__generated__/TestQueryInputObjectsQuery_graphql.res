@@ -16,12 +16,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    input: option<searchInput>,
+    input?: searchInput,
   }
   @live let makeRefetchVariables = (
     ~input=?,
   ): refetchVariables => {
-    input: input
+    input: ?input
   }
 
 }

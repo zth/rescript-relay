@@ -83,12 +83,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    @live id: option<string>,
+    @live id?: string,
   }
   @live let makeRefetchVariables = (
     ~id=?,
   ): refetchVariables => {
-    id: id
+    id: ?id
   }
 
 }

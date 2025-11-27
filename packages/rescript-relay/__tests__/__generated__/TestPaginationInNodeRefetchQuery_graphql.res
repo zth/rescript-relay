@@ -24,10 +24,10 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    count: option<option<int>>,
-    cursor: option<option<string>>,
-    @live id: option<string>,
-    onlineStatuses: option<option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>>,
+    count?: option<int>,
+    cursor?: option<string>,
+    @live id?: string,
+    onlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,
@@ -35,10 +35,10 @@ module Types = {
     ~id=?,
     ~onlineStatuses=?,
   ): refetchVariables => {
-    count: count,
-    cursor: cursor,
-    id: id,
-    onlineStatuses: onlineStatuses
+    count: ?count,
+    cursor: ?cursor,
+    id: ?id,
+    onlineStatuses: ?onlineStatuses
   }
 
 }
