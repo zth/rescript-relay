@@ -40,3 +40,19 @@ module Number = {
     | Some(_) => []
     }
 }
+
+type s = {
+  a: string,
+  b?: string,
+  c?: string
+}
+module ObjectScalar1 = {
+  type t = s
+  let serialize = _ => JSON.Encode.string("serialized1")
+  let parse = _ => {a: "a"}
+}
+module ObjectScalar2 = {
+  type t = s
+  let serialize = _ => JSON.Encode.string("serialized2")
+  let parse = _ => {a: "a"}
+}

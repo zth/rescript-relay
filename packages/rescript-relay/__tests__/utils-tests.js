@@ -878,4 +878,37 @@ describe("conversion", () => {
       });
     });
   });
+
+  describe("multi scalar encoding", () => {
+    expect(
+      traverser(
+        {
+          os1s: [
+            {
+              a: "a",
+              b: "b",
+            }
+          ],
+          os2: {
+            a: "a",
+            c: "c",
+          }
+        },
+          {
+            __root: {
+              os2:{c:"TestsUtils.ObjectScalar2"},
+              os1s:{ca:"TestsUtils.ObjectScalar1"}
+            },
+          },
+        {
+          "TestsUtils.ObjectScalar1": _ => "serialized1",
+          "TestsUtils.ObjectScalar2": _ => "serialized2",
+        },
+        undefined
+      )
+    ).toEqual({
+      os1s: ["serialized1"],
+      os2: "serialized2",
+    });
+  });
 });

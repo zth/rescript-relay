@@ -26,10 +26,8 @@
     "module": "commonjs",
     "in-source": true
   },
-  "compiler-flags": [
-    "-ppx ../../rescript-relay-ppx/_build/default/bin/RescriptRelayPpxApp.exe"
-  ],
   "dependencies": ["@rescript/react"],
   "dev-dependencies": ["@glennsl/rescript-fetch"],
+  "ppx-flags": [["rescript-relay/ppx", "-uncurried"]],
   "suffix": ".bs.js"
 }
