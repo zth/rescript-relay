@@ -1,5 +1,7 @@
 # master
 
+- Add support for `autoExhaustiveTypes` config and a `@nonExhaustive` directive to control automatic exhaustive checks for unions/interfaces.
+
 # 4.0.0
 
 - Support `@exhaustive` on interfaces as well.

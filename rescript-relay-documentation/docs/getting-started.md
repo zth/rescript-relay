@@ -87,6 +87,9 @@ module.exports = {
   // Enable this if you want mutations that return unions to always force selecting all union members. Read more in the docs on unions.
   autoExhaustiveMutations: true,
 
+  // Make these unions/interfaces exhaustive everywhere without adding @exhaustive manually.
+  autoExhaustiveTypes: ["UserNameRenderer"],
+
   // You can add type definitions for custom scalars here.
   // Whenever a custom scalar is encountered, the type emitted will correspond to the definition defined here. You can then deal with the type as needed when accessing the data.
   customScalarTypes: {

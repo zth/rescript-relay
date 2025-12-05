@@ -156,6 +156,29 @@ roomOwner(roomId: $roomId) @exhaustive(disabled: true) {
 
 You can also configure RescriptRelay to automatically apply exhaustiveness checking to mutation fields that return unions. Add `autoExhaustiveMutations: true` to your Relay configuration to enable this behavior for any top-level mutation field that returns a union type.
 
+### Project-wide Exhaustive Types
+
+If there are unions or interfaces you always want to handle exhaustively, list them in `autoExhaustiveTypes` in your `relay.config.js`:
+
+```js
+module.exports = {
+  // ...
+  autoExhaustiveTypes: ["UserNameRenderer", "NameRenderable"],
+};
+```
+
+Any field or fragment returning those types will be treated as if it had `@exhaustive` applied. When you need to opt out for a specific selection, add `@nonExhaustive`:
+
+```graphql
+fragment UserName on User {
+  nameRenderer @nonExhaustive {
+    ... on PlainUserNameRenderer { __typename }
+  }
+}
+```
+
+`@nonExhaustive` also disables automatic checks on mutations when `autoExhaustiveMutations` is enabled.
+
 ## Wrapping up
 
 And that's that! Keep the following in mind about unions and everything will be fine:
