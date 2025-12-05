@@ -56,7 +56,7 @@
     "react-dom": "18.2.0",
     "react-relay": "20.1.1",
     "relay-runtime": "20.1.1",
-    "rescript": "12.0.0-rc.3"
+    "rescript": "12.0.0"
   },
   "peerDependencies": {
     "@rescript/react": ">=0.13.0",
