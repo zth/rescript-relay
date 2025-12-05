@@ -50,7 +50,7 @@ module TestPreloaded = {
 module Test = {
   @react.component
   let make = () => {
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
 
     let (status, setStatus) = React.useState(() => Some(RelaySchemaAssets_graphql.Online))
     let (queryRefFromModule, setQueryRefFromModule) = React.useState(() => None)

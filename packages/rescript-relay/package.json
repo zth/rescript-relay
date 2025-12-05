@@ -64,6 +64,14 @@
     "relay-runtime": "20.1.1",
     "rescript": "^12.0.0-0"
   },
+  "peerDependenciesMeta": {
+    "@rescript/react": {
+      "optional": true
+    },
+    "react-relay": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "detect-libc": "^2.0.1"
   }

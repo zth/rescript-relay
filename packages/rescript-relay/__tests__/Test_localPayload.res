@@ -54,7 +54,7 @@ module Fragment = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
     let data = Query.use(~variables=())
     let user = Fragment.use(data.loggedInUser.fragmentRefs)
 

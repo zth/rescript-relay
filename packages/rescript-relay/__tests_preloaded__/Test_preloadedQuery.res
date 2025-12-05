@@ -73,7 +73,7 @@ module Test = {
   @react.component
   let make = () => {
     let (queryRef, setQueryRef) = React.useState(() => None)
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
 
     React.useEffect0(() => {
       setQueryRef(_ => Some(

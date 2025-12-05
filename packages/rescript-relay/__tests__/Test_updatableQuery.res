@@ -14,7 +14,7 @@ module Test = {
   @react.component
   let make = () => {
     let query = Query.use(~variables={id: "user-1"})
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
 
     switch query.user {
     | Some({firstName, isOnline, bestFriend}) =>

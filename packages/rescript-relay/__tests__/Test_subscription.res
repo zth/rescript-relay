@@ -30,7 +30,7 @@ module UserUpdatedSubscription = %relay(`
 module Test = {
   @react.component
   let make = () => {
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
     let query = Query.use(~variables=())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (ready, setReady) = React.useState(() => false)

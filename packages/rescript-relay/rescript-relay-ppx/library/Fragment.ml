@@ -23,7 +23,9 @@ let make ~loc ~moduleName ~refetchableQueryName
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
             ];
-            (match (!NonReactUtils.enabled, hasAutocodesplitDirective) with
+            (match
+               (NonReactUtils.enabled.contents, hasAutocodesplitDirective)
+             with
             | true, _ -> []
             | false, true ->
               [
@@ -34,15 +36,24 @@ let make ~loc ~moduleName ~refetchableQueryName
               ]
             | false, false -> []);
             [
-              [%stri
-                let waitForFragmentData ~environment fRef =
-                  RescriptRelay_Fragment.waitForFragmentData ~environment
-                    ~convertFragment
-                    ~fRef:
-                      (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    ~node:[%e valFromGeneratedModule ["node"]]];
+              (if NonReactUtils.enabled.contents then
+                 [%stri
+                   let waitForFragmentData ~environment fRef =
+                     RescriptRelay_FragmentNonReact.waitForFragmentData
+                       ~environment ~convertFragment
+                       ~fRef:
+                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                       ~node:[%e valFromGeneratedModule ["node"]]]
+               else
+                 [%stri
+                   let waitForFragmentData ~environment fRef =
+                     RescriptRelay_Fragment.waitForFragmentData ~environment
+                       ~convertFragment
+                       ~fRef:
+                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                       ~node:[%e valFromGeneratedModule ["node"]]]);
             ];
-            (match (!NonReactUtils.enabled, hasInlineDirective) with
+            (match (NonReactUtils.enabled.contents, hasInlineDirective) with
             | true, _ -> []
             | false, false ->
               [
@@ -72,15 +83,44 @@ let make ~loc ~moduleName ~refetchableQueryName
             | false ->
               [
                 (if isPlural then
+                   if NonReactUtils.enabled.contents then
+                     [%stri
+                       let readResolverFragment fRef :
+                           [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                         let fRef =
+                           fRef
+                           |. RescriptRelay_Internal
+                              .internal_resolverFragmentRefsToFragmentRefsPlural
+                         in
+                         RescriptRelay_FragmentNonReact.read ~convertFragment
+                           ~fRef:
+                             (fRef
+                             |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                           ~node:[%e valFromGeneratedModule ["node"]]]
+                   else
+                     [%stri
+                       let readResolverFragment fRef :
+                           [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                         let fRef =
+                           fRef
+                           |. RescriptRelay_Internal
+                              .internal_resolverFragmentRefsToFragmentRefsPlural
+                         in
+                         RescriptRelay_Fragment.read ~convertFragment
+                           ~fRef:
+                             (fRef
+                             |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                           ~node:[%e valFromGeneratedModule ["node"]]]
+                 else if NonReactUtils.enabled.contents then
                    [%stri
                      let readResolverFragment fRef :
                          [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                        let fRef =
                          fRef
                          |. RescriptRelay_Internal
-                            .internal_resolverFragmentRefsToFragmentRefsPlural
+                            .internal_resolverFragmentRefsToFragmentRefs
                        in
-                       RescriptRelay_Fragment.read ~convertFragment
+                       RescriptRelay_FragmentNonReact.read ~convertFragment
                          ~fRef:
                            (fRef
                            |. [%e valFromGeneratedModule ["getFragmentRef"]])
@@ -101,20 +141,32 @@ let make ~loc ~moduleName ~refetchableQueryName
                          ~node:[%e valFromGeneratedModule ["node"]]]);
               ]
             | true -> []);
-            (match (!NonReactUtils.enabled, hasInlineDirective) with
+            (match (NonReactUtils.enabled.contents, hasInlineDirective) with
             | true, _ -> []
             | false, true ->
               [
-                [%stri
-                  let readInline fRef :
-                      [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                    RescriptRelay_Fragment.readInlineData ~convertFragment
-                      ~fRef:
-                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                      ~node:[%e valFromGeneratedModule ["node"]]];
+                (if NonReactUtils.enabled.contents then
+                   [%stri
+                     let readInline fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       RescriptRelay_FragmentNonReact.readInlineData_
+                         ~convertFragment
+                         ~fRef:
+                           (fRef
+                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]
+                 else
+                   [%stri
+                     let readInline fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       RescriptRelay_Fragment.readInlineData ~convertFragment
+                         ~fRef:
+                           (fRef
+                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]);
               ]
             | false, false -> []);
-            (match (!NonReactUtils.enabled, refetchableQueryName) with
+            (match (NonReactUtils.enabled.contents, refetchableQueryName) with
             | true, _ | false, None -> []
             | false, Some refetchableQueryName -> (
               let typeFromRefetchableModule =

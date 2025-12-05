@@ -24,7 +24,7 @@ module Test = {
   @react.component
   let make = () => {
     let query = Query.use(~variables=())
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
     let {loggedInUser: {firstName, isOnline, updatableFragmentRefs, bestFriend}} = Fragment.use(
       query.fragmentRefs,
     )

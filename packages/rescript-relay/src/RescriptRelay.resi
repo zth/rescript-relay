@@ -1534,34 +1534,7 @@ type fetchQueryFetchPolicy =
 /**An error from a mutation.*/
 type mutationError = {message: string}
 
-/**Context provider for the Relay environment.*/
-module Context: {
-  /**Type representing the context.*/
-  type t
-
-  /**The expected shape of the context.*/
-  type contextShape = {"environment": Environment.t}
-
-  /**The actual React context coming from Relay.*/
-  @module("react-relay")
-  external context: React.Context.t<option<contextShape>> = "ReactRelayContext"
-
-  /**The context provider you wrap your app in and pass your `Environment` for Relay to work.*/
-  module Provider: {
-    /**The React component you wrap your app in and pass your `Environment` for Relay to work.*/
-    type props<'environment, 'children> = {
-      environment: 'environment,
-      children: 'children,
-    }
-    let make: props<Environment.t, React.element> => React.element
-  }
-}
-
-/**An exception saying that the environment could not be found in the context. Means you forgot to wrap your app in `<RescriptRelay.Context.Provider environment=RelayEnv.environment>`*/
-exception EnvironmentNotFoundInContext
-
-/**Hook for getting the current environment from context.*/
-let useEnvironmentFromContext: unit => Environment.t
+/* React Context moved to RescriptRelayReact */
 
 /**An exception detailing that a mutation failed.*/
 exception Mutation_failed(array<mutationError>)
@@ -1603,38 +1576,7 @@ external commitLocalUpdate: (
   ~updater: RecordSourceSelectorProxy.t => unit,
 ) => unit = "commitLocalUpdate"
 
-/**
-  Subscribes to invalidation events for specific records.
-
-  Executes a callback whenever any of the specified records are invalidated.
-  Useful for triggering refetches or UI updates when cached data becomes stale.
-
-  ## Parameters
-  - Array of `dataId`s to watch for invalidation
-  - Callback function executed when any watched record is invalidated
-
-  ## Examples
-
-  ```rescript
-  // Watch for user invalidation and refetch
-  let disposable = RescriptRelay.useSubscribeToInvalidationState(
-    [user.__id],
-    () => {
-      // Refetch user data when invalidated
-      UserQuery.fetchPromised(~environment, ~variables={id: user.id})
-      ->Promise.done
-    }
-  )
-
-  // Clean up subscription
-  React.useEffect1(() => {
-    Some(() => disposable->RescriptRelay.Disposable.dispose)
-  }, [disposable])
-  ```
-*/
-@module("react-relay")
-external useSubscribeToInvalidationState: (array<dataId>, unit => unit) => Disposable.t =
-  "useSubscribeToInvalidationState"
+/* React invalidation subscribe moved to RescriptRelayReact */
 
 /**Options valid when fetching a query outside of React's render method (like when using `Query.fetch`).*/
 type fetchQueryOptions = {
@@ -1642,35 +1584,4 @@ type fetchQueryOptions = {
   fetchPolicy?: fetchPolicy,
 }
 
-type loadQueryConfig = {
-  fetchKey: option<string>,
-  fetchPolicy: option<fetchPolicy>,
-  networkCacheConfig: option<cacheConfig>,
-}
-
-@module("react-relay")
-external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
-  "loadQuery"
-
-module type MakeLoadQueryConfig = {
-  type variables
-  type loadedQueryRef
-  type response
-  type node
-  let query: queryNode<node>
-  let convertVariables: variables => variables
-}
-
-module MakeLoadQuery: (C: MakeLoadQueryConfig) =>
-{
-  let load: (
-    ~environment: Environment.t,
-    ~variables: C.variables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~fetchKey: string=?,
-    ~networkCacheConfig: cacheConfig=?,
-  ) => C.loadedQueryRef
-
-  let queryRefToObservable: C.loadedQueryRef => option<Observable.t<C.response>>
-  let queryRefToPromise: C.loadedQueryRef => promise<Belt.Result.t<unit, unit>>
-}
+/* React loadQuery helpers moved to RescriptRelayReact */
