@@ -32,17 +32,22 @@ let make ~loc ~moduleName =
                    [%e
                      valFromGeneratedModule
                        ["Internal"; "convertWrapRawResponse"]]];
-               [%stri
-                 let commitMutation =
-                   (if !NonReactUtils.enabled then
+               (if NonReactUtils.enabled.contents then
+                  [%stri
+                    let commitMutation =
                       RescriptRelay_MutationNonReact.commitMutation
-                    else RescriptRelay_Mutation.commitMutation)
-                     ~convertVariables ~convertResponse
-                     ~convertWrapRawResponse
-                     ~node:[%e valFromGeneratedModule ["node"]]];
+                        ~convertVariables ~convertResponse
+                        ~convertWrapRawResponse
+                        ~node:[%e valFromGeneratedModule ["node"]]]
+                else
+                  [%stri
+                    let commitMutation =
+                      RescriptRelay_Mutation.commitMutation ~convertVariables
+                        ~convertResponse ~convertWrapRawResponse
+                        ~node:[%e valFromGeneratedModule ["node"]]]);
              ]
             @
-            if not !NonReactUtils.enabled then
+            if not NonReactUtils.enabled.contents then
               [
                 [%stri
                   let use =

@@ -12,7 +12,8 @@ let make ~loc ~moduleName =
               [%stri
                 module Types = [%m moduleIdentFromGeneratedModule ["Types"]]];
               [%stri
-                let readUpdatableFragment = [%e valFromGeneratedModule ["readUpdatableFragment"]]];
+                let readUpdatableFragment =
+                  [%e valFromGeneratedModule ["readUpdatableFragment"]]];
             ];
           ]
        |> List.map UncurriedUtils.mapStructureItem))

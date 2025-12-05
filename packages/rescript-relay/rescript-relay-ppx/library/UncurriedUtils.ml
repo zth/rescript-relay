@@ -113,4 +113,5 @@ let uncurriedMapper =
   }
 
 let mapStructureItem str =
-  if !enabled then uncurriedMapper.structure_item uncurriedMapper str else str
+  if enabled.contents then uncurriedMapper.structure_item uncurriedMapper str
+  else str
