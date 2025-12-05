@@ -1,6 +1,6 @@
 /* React-free Mutation runtime: commitMutation only */
 
-type mutationNode<'node>
+type mutationNode<'node> = RescriptRelay.mutationNode<'node>
 
 @obj
 external makeConfig: (
@@ -9,14 +9,15 @@ external makeConfig: (
   ~onCompleted: ('response, option<JSON.t>) => unit=?,
   ~onError: JsExn.t => unit=?,
   ~optimisticResponse: 'rawResponse=?,
-  ~optimisticUpdater: (RescriptRelay.RecordSourceSelectorProxy.t => unit)=?,
-  ~updater: ((RescriptRelay.RecordSourceSelectorProxy.t, 'response) => unit)=?,
+  ~optimisticUpdater: RescriptRelay.RecordSourceSelectorProxy.t => unit=?,
+  ~updater: (RescriptRelay.RecordSourceSelectorProxy.t, 'response) => unit=?,
   ~uploadables: RescriptRelay.uploadables=?,
   unit,
 ) => 'config = ""
 
 @module("relay-runtime")
-external commitMutation: (RescriptRelay.Environment.t, 'config) => unit = "commitMutation"
+external commitMutation: (RescriptRelay.Environment.t, 'config) => RescriptRelay.Disposable.t =
+  "commitMutation"
 
 let commitMutation = (
   ~convertVariables: 'variables => 'variables,
@@ -40,14 +41,16 @@ let commitMutation = (
         ~mutation=node,
         ~variables=variables->convertVariables,
         ~onCompleted=?switch onCompleted {
-          | Some(f) => Some((res, err) => f(res->convertResponse, err))
-          | None => None
+        | Some(f) => Some((res, err) => f(res->convertResponse, err))
+        | None => None
         },
-        ~onError=?onError,
+        ~onError?,
         ~optimisticResponse=?optimisticResponse->Option.map(convertWrapRawResponse),
-        ~optimisticUpdater=?optimisticUpdater,
-        ~updater=?updater->Option.map(u => (store, response) => u(store, response->convertResponse)),
-        ~uploadables=?uploadables,
+        ~optimisticUpdater?,
+        ~updater=?updater->Option.map(u =>
+          (store, response) => u(store, response->convertResponse)
+        ),
+        ~uploadables?,
         (),
       ),
     )

@@ -4,7 +4,7 @@ type subscription
 type observable<'a>
 type operationDescriptor
 
-type queryNode<'node>
+type queryNode<'node> = RescriptRelay.queryNode<'node>
 
 @module("relay-runtime")
 external fetchQuery: (
@@ -68,7 +68,12 @@ let fetchPromised = (
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,
 ) => {
-  (~environment: RescriptRelay.Environment.t, ~variables: 'variables, ~networkCacheConfig=?, ~fetchPolicy=?) =>
+  (
+    ~environment: RescriptRelay.Environment.t,
+    ~variables: 'variables,
+    ~networkCacheConfig=?,
+    ~fetchPolicy=?,
+  ) =>
     fetchQuery(
       environment,
       node,
@@ -79,7 +84,9 @@ let fetchPromised = (
     ->Promise.then(res => res->convertResponse->Promise.resolve)
 }
 
-@send external retain_: (RescriptRelay.Environment.t, operationDescriptor) => RescriptRelay.Disposable.t = "retain"
+@send
+external retain_: (RescriptRelay.Environment.t, operationDescriptor) => RescriptRelay.Disposable.t =
+  "retain"
 @send
 external commitPayload: (RescriptRelay.Environment.t, operationDescriptor, 'payload) => unit =
   "commitPayload"
