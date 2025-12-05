@@ -1,6 +1,7 @@
 # master
 
 - Simplify `missingFieldHandlers`. https://github.com/zth/rescript-relay/pull/589
+- Fix behavior of `refetchVariables` on optional variables. https://github.com/zth/rescript-relay/pull/588
 
 # 4.1.0
 
