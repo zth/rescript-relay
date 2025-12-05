@@ -20,8 +20,8 @@ let internal_cleanObjectFromUndefinedRaw = record =>
 let internal_removeUndefinedAndConvertNullsRaw = record =>
   internal_keepMapFieldsRaw(record, ((key, value)) => {
     switch (value, value == Some(None)) {
-    | (Some(value), _) => Some((key, Nullable.make(value)))
     | (_, true) => Some((key, Nullable.null))
+    | (Some(value), _) => Some((key, Nullable.make(value)))
     | (None, _) => None
     }
   })

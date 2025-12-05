@@ -1,5 +1,6 @@
 # master
 
+- Fix behavior of `refetchVariables` on optional variables. https://github.com/zth/rescript-relay/pull/588
 - Add support for `autoExhaustiveTypes` config and a `@nonExhaustive` directive to control automatic exhaustive checks for unions/interfaces.
 
 - Add React-free mode support and split React APIs into `RescriptRelayReact`.

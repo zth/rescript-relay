@@ -88,6 +88,11 @@ return {
       "name": "friendsOnlineStatuses"
     },
     {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "number"
+    },
+    {
       "defaultValue": false,
       "kind": "LocalArgument",
       "name": "showOnlineStatus"
@@ -161,6 +166,11 @@ return {
           "kind": "Variable",
           "name": "beforeDate",
           "variableName": "beforeDate"
+        },
+        {
+          "kind": "Variable",
+          "name": "number",
+          "variableName": "number"
         }
       ],
       "concreteType": "User",
