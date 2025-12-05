@@ -470,7 +470,7 @@ let node = RescriptRelay_Internal.applyCodesplitMetadata(node, [
   ~fetchKey=?,
   ~networkCacheConfig=?,
 ) =>
-  RescriptRelay.loadQuery(
+  RescriptRelayReact.loadQuery(
     environment,
     node,
     variables->Internal.convertVariables,

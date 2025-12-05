@@ -34,8 +34,11 @@ let make ~loc ~moduleName =
                        ["Internal"; "convertWrapRawResponse"]]];
                [%stri
                  let commitMutation =
-                   RescriptRelay_Mutation.commitMutation ~convertVariables
-                     ~convertResponse ~convertWrapRawResponse
+                   (if !NonReactUtils.enabled then
+                      RescriptRelay_MutationNonReact.commitMutation
+                    else RescriptRelay_Mutation.commitMutation)
+                     ~convertVariables ~convertResponse
+                     ~convertWrapRawResponse
                      ~node:[%e valFromGeneratedModule ["node"]]];
              ]
             @

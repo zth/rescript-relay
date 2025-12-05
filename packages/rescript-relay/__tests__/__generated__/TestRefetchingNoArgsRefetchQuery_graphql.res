@@ -144,7 +144,7 @@ let node: operationType = %raw(json` {
   ~fetchKey=?,
   ~networkCacheConfig=?,
 ) =>
-  RescriptRelay.loadQuery(
+  RescriptRelayReact.loadQuery(
     environment,
     node,
     variables->Internal.convertVariables,

@@ -137,7 +137,7 @@ module Test = {
     let user = Fragment.use(query.loggedInUser.fragmentRefs)
     let friends = user.friendsConnection->Fragment.getConnectionNodes
     let (addFriend, _isAddingFriend) = AddFriendMutation.use()
-    let environment = RescriptRelay.useEnvironmentFromContext()
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
     let addFriend = useFindAllConnectionIds =>
       addFriend(
         ~variables={

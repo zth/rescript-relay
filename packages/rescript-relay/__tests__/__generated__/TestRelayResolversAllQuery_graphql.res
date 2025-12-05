@@ -391,7 +391,7 @@ let node: operationType = makeNode(LocalUser__id_graphql.node, LocalUser____rela
   ~fetchKey=?,
   ~networkCacheConfig=?,
 ) =>
-  RescriptRelay.loadQuery(
+  RescriptRelayReact.loadQuery(
     environment,
     node,
     variables->Internal.convertVariables,

@@ -387,7 +387,7 @@ return {
   ~fetchKey=?,
   ~networkCacheConfig=?,
 ) =>
-  RescriptRelay.loadQuery(
+  RescriptRelayReact.loadQuery(
     environment,
     node,
     variables->Internal.convertVariables,

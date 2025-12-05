@@ -60,29 +60,55 @@ let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
                          ~node:[%e valFromGeneratedModule ["node"]]];
                  ]
                else [])
-            @ [
-                [%stri
-                  let fetch =
-                    RescriptRelay_Query.fetch ~convertResponse ~convertVariables
-                      ~node:[%e valFromGeneratedModule ["node"]]];
-                [%stri
-                  let fetchPromised =
-                    RescriptRelay_Query.fetchPromised ~convertResponse
-                      ~convertVariables
-                      ~node:[%e valFromGeneratedModule ["node"]]];
-                [%stri
-                  let retain =
-                    RescriptRelay_Query.retain ~convertVariables
-                      ~node:[%e valFromGeneratedModule ["node"]]];
-                (match hasRawResponseType with
-                | true ->
-                  [%stri
-                    let commitLocalPayload =
-                      RescriptRelay_Query.commitLocalPayload ~convertVariables
-                        ~convertWrapRawResponse
-                        ~node:[%e valFromGeneratedModule ["node"]]]
-                | false -> [%stri ()]);
-              ];
+            @ (if !NonReactUtils.enabled then
+                 [
+                   [%stri
+                     let fetch =
+                       RescriptRelay_QueryNonReact.fetch ~convertResponse
+                         ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let fetchPromised =
+                       RescriptRelay_QueryNonReact.fetchPromised ~convertResponse
+                         ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let retain =
+                       RescriptRelay_QueryNonReact.retain ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   (match hasRawResponseType with
+                   | true ->
+                     [%stri
+                       let commitLocalPayload =
+                         RescriptRelay_QueryNonReact.commitLocalPayload
+                           ~convertVariables ~convertWrapRawResponse
+                           ~node:[%e valFromGeneratedModule ["node"]]]
+                   | false -> [%stri ()]);
+                 ]
+               else
+                 [
+                   [%stri
+                     let fetch =
+                       RescriptRelay_Query.fetch ~convertResponse ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let fetchPromised =
+                       RescriptRelay_Query.fetchPromised ~convertResponse
+                         ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   [%stri
+                     let retain =
+                       RescriptRelay_Query.retain ~convertVariables
+                         ~node:[%e valFromGeneratedModule ["node"]]];
+                   (match hasRawResponseType with
+                   | true ->
+                     [%stri
+                       let commitLocalPayload =
+                         RescriptRelay_Query.commitLocalPayload
+                           ~convertVariables ~convertWrapRawResponse
+                           ~node:[%e valFromGeneratedModule ["node"]]]
+                   | false -> [%stri ()]);
+                 ]);
             (match (!NonReactUtils.enabled, hasAutocodesplitDirective) with
             | true, _ -> []
             | false, true ->

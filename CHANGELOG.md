@@ -2,6 +2,23 @@
 
 - Add support for `autoExhaustiveTypes` config and a `@nonExhaustive` directive to control automatic exhaustive checks for unions/interfaces.
 
+- Add React-free mode support and split React APIs into `RescriptRelayReact`.
+
+  - New compiler config: `rescriptRelayMode: "Default" | "NonReact"` (defaults to `"Default"`).
+  - PPX `-non-react`
+  - Mark `@rescript/react` and `react-relay` as optional peer deps so non‑React usage does not require them.
+
+- BREAKING: Move all React-specific APIs out of `RescriptRelay` into `RescriptRelayReact`.
+
+  - `RescriptRelay.Context.Provider` -> `RescriptRelayReact.Context.Provider`
+  - `RescriptRelay.useEnvironmentFromContext` -> `RescriptRelayReact.useEnvironmentFromContext`
+  - `RescriptRelay.useSubscribeToInvalidationState` -> `RescriptRelayReact.useSubscribeToInvalidationState`
+
+  Migration:
+
+  - Update imports/usages in app code to reference `RescriptRelayReact` for the APIs listed above.
+  - For non‑React usage, set `rescriptRelayMode: "NonReact"` in `relay.config.js` and pass `-non-react` to the PPX.
+
 # 4.0.0
 
 - Support `@exhaustive` on interfaces as well.

@@ -34,13 +34,22 @@ let make ~loc ~moduleName ~refetchableQueryName
               ]
             | false, false -> []);
             [
-              [%stri
-                let waitForFragmentData ~environment fRef =
-                  RescriptRelay_Fragment.waitForFragmentData ~environment
-                    ~convertFragment
-                    ~fRef:
-                      (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                    ~node:[%e valFromGeneratedModule ["node"]]];
+              (if !NonReactUtils.enabled then
+                 [%stri
+                   let waitForFragmentData ~environment fRef =
+                     RescriptRelay_FragmentNonReact.waitForFragmentData
+                       ~environment ~convertFragment
+                       ~fRef:
+                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                       ~node:[%e valFromGeneratedModule ["node"]]]
+               else
+                 [%stri
+                   let waitForFragmentData ~environment fRef =
+                     RescriptRelay_Fragment.waitForFragmentData ~environment
+                       ~convertFragment
+                       ~fRef:
+                         (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                       ~node:[%e valFromGeneratedModule ["node"]]]);
             ];
             (match (!NonReactUtils.enabled, hasInlineDirective) with
             | true, _ -> []
@@ -72,46 +81,85 @@ let make ~loc ~moduleName ~refetchableQueryName
             | false ->
               [
                 (if isPlural then
-                   [%stri
-                     let readResolverFragment fRef :
-                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                       let fRef =
-                         fRef
-                         |. RescriptRelay_Internal
-                            .internal_resolverFragmentRefsToFragmentRefsPlural
-                       in
-                       RescriptRelay_Fragment.read ~convertFragment
-                         ~fRef:
-                           (fRef
-                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                         ~node:[%e valFromGeneratedModule ["node"]]]
+                   (if !NonReactUtils.enabled then
+                      [%stri
+                        let readResolverFragment fRef :
+                            [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                          let fRef =
+                            fRef
+                            |. RescriptRelay_Internal
+                               .internal_resolverFragmentRefsToFragmentRefsPlural
+                          in
+                          RescriptRelay_FragmentNonReact.read ~convertFragment
+                            ~fRef:
+                              (fRef
+                              |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                            ~node:[%e valFromGeneratedModule ["node"]]]
+                    else
+                      [%stri
+                        let readResolverFragment fRef :
+                            [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                          let fRef =
+                            fRef
+                            |. RescriptRelay_Internal
+                               .internal_resolverFragmentRefsToFragmentRefsPlural
+                          in
+                          RescriptRelay_Fragment.read ~convertFragment
+                            ~fRef:
+                              (fRef
+                              |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                            ~node:[%e valFromGeneratedModule ["node"]]] )
                  else
-                   [%stri
-                     let readResolverFragment fRef :
-                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                       let fRef =
-                         fRef
-                         |. RescriptRelay_Internal
-                            .internal_resolverFragmentRefsToFragmentRefs
-                       in
-                       RescriptRelay_Fragment.read ~convertFragment
-                         ~fRef:
-                           (fRef
-                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                         ~node:[%e valFromGeneratedModule ["node"]]]);
+                   (if !NonReactUtils.enabled then
+                      [%stri
+                        let readResolverFragment fRef :
+                            [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                          let fRef =
+                            fRef
+                            |. RescriptRelay_Internal
+                               .internal_resolverFragmentRefsToFragmentRefs
+                          in
+                          RescriptRelay_FragmentNonReact.read ~convertFragment
+                            ~fRef:
+                              (fRef
+                              |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                            ~node:[%e valFromGeneratedModule ["node"]]]
+                    else
+                      [%stri
+                        let readResolverFragment fRef :
+                            [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                          let fRef =
+                            fRef
+                            |. RescriptRelay_Internal
+                               .internal_resolverFragmentRefsToFragmentRefs
+                          in
+                          RescriptRelay_Fragment.read ~convertFragment
+                            ~fRef:
+                              (fRef
+                              |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                            ~node:[%e valFromGeneratedModule ["node"]]]));
               ]
             | true -> []);
             (match (!NonReactUtils.enabled, hasInlineDirective) with
             | true, _ -> []
             | false, true ->
               [
-                [%stri
-                  let readInline fRef :
-                      [%t typeFromGeneratedModule ["Types"; "fragment"]] =
-                    RescriptRelay_Fragment.readInlineData ~convertFragment
-                      ~fRef:
-                        (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                      ~node:[%e valFromGeneratedModule ["node"]]];
+                (if !NonReactUtils.enabled then
+                   [%stri
+                     let readInline fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       RescriptRelay_FragmentNonReact.readInlineData_ ~convertFragment
+                         ~fRef:
+                           (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]
+                 else
+                   [%stri
+                     let readInline fRef :
+                         [%t typeFromGeneratedModule ["Types"; "fragment"]] =
+                       RescriptRelay_Fragment.readInlineData ~convertFragment
+                         ~fRef:
+                           (fRef |. [%e valFromGeneratedModule ["getFragmentRef"]])
+                         ~node:[%e valFromGeneratedModule ["node"]]]);
               ]
             | false, false -> []);
             (match (!NonReactUtils.enabled, refetchableQueryName) with
