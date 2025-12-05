@@ -635,85 +635,88 @@ module ReadOnlyRecordSourceProxy: {
 
 Feed a list of missing field handlers into `Environment.make` if you want to use them.*/
 module MissingFieldHandler: {
-  @@warning("-30")
-
-  /**A missing field handler, which is a way of teaching Relay more about the relations in your schema, so it can fulfill more things from the cache. Read more [in this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).*/
-  type t
-
-  type normalizationArgumentWrapped = {kind: [#ListValue | #Literal | #ObjectValue | #Variable]}
-
-  type rec normalizationListValueArgument = {
-    name: string,
-    items: array<Nullable.t<normalizationArgumentWrapped>>,
-  }
-  and normalizationLiteralArgument = {
-    name: string,
-    @as("type") type_: Nullable.t<string>,
-    value: JSON.t,
-  }
-  and normalizationObjectValueArgument = {
-    name: string,
-    fields: Nullable.t<array<normalizationArgumentWrapped>>,
-  }
-  and normalizationVariableArgument = {
-    name: string,
-    @as("type") type_: Nullable.t<string>,
-    variableName: string,
-  }
-
-  type normalizationArgument =
-    | ListValue(normalizationListValueArgument)
-    | Literal(normalizationLiteralArgument)
-    | ObjectValue(normalizationObjectValueArgument)
-    | Variable(normalizationVariableArgument)
-
-  let unwrapNormalizationArgument: normalizationArgumentWrapped => normalizationArgument
+  @tag("kind")
+  type rec normalizationArgument =
+    | ListValue({name: string, items: array<null<normalizationArgument>>})
+    | Literal({name: string, @as("type") type_: nullable<string>, value: JSON.t})
+    | ObjectValue({name: string, fields: array<normalizationArgument>})
+    | Variable({name: string, @as("type") type_: nullable<string>, variableName: string})
 
   type normalizationScalarField = {
-    alias: Nullable.t<string>,
+    alias: nullable<string>,
     name: string,
-    args: Nullable.t<array<normalizationArgumentWrapped>>,
-    storageKey: Nullable.t<string>,
+    args: nullable<array<normalizationArgument>>,
+    storageKey: nullable<string>,
   }
+
+  type normalizationLinkedField = {
+    alias: nullable<string>,
+    name: string,
+    storageKey: nullable<string>,
+    args: nullable<array<normalizationArgument>>,
+    concreteType: nullable<string>,
+    plural: bool,
+    selections: array<JSON.t>,
+  }
+
+  @tag("kind")
+  type rec t =
+    | @as("scalar")
+    Scalar({
+        handle: (
+          normalizationScalarField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => 'scalarValue,
+      }): t
+    | @as("linked")
+    Linked({
+        handle: (
+          normalizationLinkedField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => option<dataId>,
+      }): t
+    | @as("pluralLinked")
+    PluralLinked({
+        handle: (
+          normalizationLinkedField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => array<dataId>,
+      }): t
 
   /**Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `Js.null` (to indicate that data exists but is null), `Js.undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
   let makeScalarMissingFieldHandler: (
     (
       normalizationScalarField,
-      Nullable.t<'record>,
+      nullable<'record>,
       'args,
       ReadOnlyRecordSourceProxy.t,
     ) => 'scalarValue
   ) => t
 
-  type normalizationLinkedField = {
-    alias: Nullable.t<string>,
-    name: string,
-    storageKey: Nullable.t<string>,
-    args: Nullable.t<array<normalizationArgument>>,
-    concreteType: Nullable.t<string>,
-    plural: bool,
-    selections: array<JSON.t>,
-  }
-
   /**Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
   let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Nullable.t<RecordProxy.t>,
+      nullable<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => Nullable.t<dataId>
+    ) => option<dataId>
   ) => t
 
   /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or an array of `Js.Nullable.t<dataId>` where the `dataId`'s are the linked records/objects.*/
   let makePluralLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      Nullable.t<RecordProxy.t>,
+      nullable<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => Nullable.t<array<Nullable.t<dataId>>>
+    ) => array<dataId>
   ) => t
 }
 
