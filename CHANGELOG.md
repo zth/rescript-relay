@@ -1,5 +1,7 @@
 # master
 
+# 4.1.0
+
 - Add support for `autoExhaustiveTypes` config and a `@nonExhaustive` directive to control automatic exhaustive checks for unions/interfaces.
 
 - Add React-free mode support and split React APIs into `RescriptRelayReact`.
