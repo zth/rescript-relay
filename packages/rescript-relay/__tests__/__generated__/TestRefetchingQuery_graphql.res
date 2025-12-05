@@ -15,15 +15,23 @@ module Types = {
   @live
   type variables = {
     beforeDate?: TestsUtils.Datetime.t,
+    number?: TestsUtils.Number.t,
+    showOnlineStatus: bool,
   }
   @live
   type refetchVariables = {
     beforeDate?: option<TestsUtils.Datetime.t>,
+    number?: option<TestsUtils.Number.t>,
+    showOnlineStatus?: bool,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
+    ~number=?,
+    ~showOnlineStatus=?,
   ): refetchVariables => {
-    beforeDate: ?beforeDate
+    beforeDate: ?beforeDate,
+    number: ?number,
+    showOnlineStatus: ?showOnlineStatus
   }
 
 }
@@ -34,11 +42,12 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime"}}}`
+    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
   @live
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.Number": TestsUtils.Number.serialize,
   }
   @live
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -98,16 +107,29 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "beforeDate"
-  }
-],
-v1 = [
+  },
   {
-    "kind": "Variable",
-    "name": "beforeDate",
-    "variableName": "beforeDate"
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "number"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "showOnlineStatus"
   }
 ],
+v1 = {
+  "kind": "Variable",
+  "name": "beforeDate",
+  "variableName": "beforeDate"
+},
 v2 = {
+  "kind": "Variable",
+  "name": "number",
+  "variableName": "number"
+},
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -130,7 +152,15 @@ return {
         "plural": false,
         "selections": [
           {
-            "args": (v1/*: any*/),
+            "args": [
+              (v1/*: any*/),
+              (v2/*: any*/),
+              {
+                "kind": "Variable",
+                "name": "showOnlineStatus",
+                "variableName": "showOnlineStatus"
+              }
+            ],
             "kind": "FragmentSpread",
             "name": "TestRefetching_user"
           }
@@ -163,6 +193,20 @@ return {
             "storageKey": null
           },
           {
+            "condition": "showOnlineStatus",
+            "kind": "Condition",
+            "passingValue": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "onlineStatus",
+                "storageKey": null
+              }
+            ]
+          },
+          {
             "alias": null,
             "args": null,
             "concreteType": "UserConnection",
@@ -182,29 +226,32 @@ return {
           },
           {
             "alias": null,
-            "args": (v1/*: any*/),
+            "args": [
+              (v1/*: any*/),
+              (v2/*: any*/)
+            ],
             "concreteType": "User",
             "kind": "LinkedField",
             "name": "friends",
             "plural": true,
             "selections": [
-              (v2/*: any*/)
+              (v3/*: any*/)
             ],
             "storageKey": null
           },
-          (v2/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "c6ca14e8318dbc1d7e27af6e2cef078f",
+    "cacheID": "3bd1e8bddc99b7cc3c3a34d21038c550",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingQuery(\n  $beforeDate: Datetime\n) {\n  loggedInUser {\n    ...TestRefetching_user_3xCS8w\n    id\n  }\n}\n\nfragment TestRefetching_user_3xCS8w on User {\n  firstName\n  friendsConnection {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate) {\n    id\n  }\n  id\n}\n"
+    "text": "query TestRefetchingQuery(\n  $beforeDate: Datetime\n  $number: Number\n  $showOnlineStatus: Boolean!\n) {\n  loggedInUser {\n    ...TestRefetching_user_1LqbfJ\n    id\n  }\n}\n\nfragment TestRefetching_user_1LqbfJ on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate, number: $number) {\n    id\n  }\n  id\n}\n"
   }
 };
 })() `)

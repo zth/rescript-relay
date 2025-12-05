@@ -1,8 +1,10 @@
 module Query = %relay(`
-    query TestRefetchingQuery($beforeDate: Datetime) {
+    query TestRefetchingQuery($beforeDate: Datetime, $number: Number, $showOnlineStatus: Boolean!) {
       loggedInUser {
         ...TestRefetching_user @arguments(
           beforeDate: $beforeDate
+          number: $number
+          showOnlineStatus: $showOnlineStatus
         )
       }
     }
@@ -15,13 +17,14 @@ module Fragment = %relay(`
         friendsOnlineStatuses: { type: "[OnlineStatus!]" }
         showOnlineStatus: { type: "Boolean", defaultValue: false }
         beforeDate: { type: "Datetime" }
+        number: { type: "Number" }
       ) {
       firstName
       onlineStatus @include(if: $showOnlineStatus)
       friendsConnection(statuses: $friendsOnlineStatuses) {
         totalCount
       }
-      friends(beforeDate: $beforeDate) {
+      friends(beforeDate: $beforeDate, number: $number) {
         id
       }
     }
@@ -43,6 +46,8 @@ module Test = {
     let query = Query.use(
       ~variables={
         beforeDate: Date.fromString("2023-01-01T00:00:00.000Z"),
+        showOnlineStatus: true,
+        number: [10],
       },
     )
 
@@ -65,7 +70,6 @@ module Test = {
           startTransition(() => {
             refetch(
               ~variables=Fragment.makeRefetchVariables(
-                ~showOnlineStatus=Some(true),
                 ~friendsOnlineStatuses=Some([Online, Offline]),
                 ~beforeDate=None,
               ),

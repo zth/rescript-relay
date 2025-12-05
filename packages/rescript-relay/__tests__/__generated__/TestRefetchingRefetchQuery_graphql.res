@@ -20,6 +20,7 @@ module Types = {
     beforeDate?: TestsUtils.Datetime.t,
     friendsOnlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
     @live id: string,
+    number?: TestsUtils.Number.t,
     showOnlineStatus?: bool,
   }
   @live
@@ -27,17 +28,20 @@ module Types = {
     beforeDate?: option<TestsUtils.Datetime.t>,
     friendsOnlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
     @live id?: string,
+    number?: option<TestsUtils.Number.t>,
     showOnlineStatus?: option<bool>,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
     ~friendsOnlineStatuses=?,
     ~id=?,
+    ~number=?,
     ~showOnlineStatus=?,
   ): refetchVariables => {
     beforeDate: ?beforeDate,
     friendsOnlineStatuses: ?friendsOnlineStatuses,
     id: ?id,
+    number: ?number,
     showOnlineStatus: ?showOnlineStatus
   }
 
@@ -49,11 +53,12 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"beforeDate":{"c":"TestsUtils.Datetime"}}}`
+    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
   @live
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.Number": TestsUtils.Number.serialize,
   }
   @live
   let convertVariables = v => v->RescriptRelay.convertObj(
@@ -139,30 +144,40 @@ v2 = {
   "name": "id"
 },
 v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "number"
+},
+v4 = {
   "defaultValue": false,
   "kind": "LocalArgument",
   "name": "showOnlineStatus"
 },
-v4 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "kind": "Variable",
   "name": "beforeDate",
   "variableName": "beforeDate"
 },
-v7 = {
+v8 = {
+  "kind": "Variable",
+  "name": "number",
+  "variableName": "number"
+},
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -175,7 +190,8 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v2/*: any*/),
-      (v3/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -183,21 +199,22 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
+          (v6/*: any*/),
           {
             "args": [
-              (v6/*: any*/),
+              (v7/*: any*/),
               {
                 "kind": "Variable",
                 "name": "friendsOnlineStatuses",
                 "variableName": "friendsOnlineStatuses"
               },
+              (v8/*: any*/),
               {
                 "kind": "Variable",
                 "name": "showOnlineStatus",
@@ -220,6 +237,7 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v3/*: any*/),
+      (v4/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -227,14 +245,14 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
-          (v7/*: any*/),
+          (v6/*: any*/),
+          (v9/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -272,14 +290,15 @@ return {
               {
                 "alias": null,
                 "args": [
-                  (v6/*: any*/)
+                  (v7/*: any*/),
+                  (v8/*: any*/)
                 ],
                 "concreteType": "User",
                 "kind": "LinkedField",
                 "name": "friends",
                 "plural": true,
                 "selections": [
-                  (v7/*: any*/)
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -307,12 +326,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "96b532bc34e59747ed5f0218df680f03",
+    "cacheID": "b9df0a6da4d2b173b69055029ae0e779",
     "id": null,
     "metadata": {},
     "name": "TestRefetchingRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingRefetchQuery(\n  $beforeDate: Datetime\n  $friendsOnlineStatuses: [OnlineStatus!]\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetching_user_1E7e32\n    id\n  }\n}\n\nfragment TestRefetching_user_1E7e32 on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate) {\n    id\n  }\n  id\n}\n"
+    "text": "query TestRefetchingRefetchQuery(\n  $beforeDate: Datetime\n  $friendsOnlineStatuses: [OnlineStatus!]\n  $number: Number\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetching_user_2VpWUn\n    id\n  }\n}\n\nfragment TestRefetching_user_2VpWUn on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate, number: $number) {\n    id\n  }\n  id\n}\n"
   }
 };
 })() `)
