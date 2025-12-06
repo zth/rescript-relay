@@ -659,8 +659,10 @@ module MissingFieldHandler: {
     selections: array<JSON.t>,
   }
 
+  /**A missing field handler, which is a way of teaching Relay more about the relations in your schema, so it can fulfill more things from the cache. Read more [in this section of the Relay docs](https://relay.dev/docs/guided-tour/reusing-cached-data/filling-in-missing-data/).*/
   @tag("kind")
   type rec t =
+    /** a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `null` (to indicate that data exists but is null), `undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
     | @as("scalar")
     Scalar({
         handle: (
@@ -670,6 +672,7 @@ module MissingFieldHandler: {
           ReadOnlyRecordSourceProxy.t,
         ) => nullable<'scalarValue>,
       }): t
+    /** a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `null` (to indicate that the link exists but the linked record is null), `undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
     | @as("linked")
     Linked({
         handle: (
@@ -679,6 +682,7 @@ module MissingFieldHandler: {
           ReadOnlyRecordSourceProxy.t,
         ) => nullable<dataId>,
       }): t
+    /** a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `null` (to indicate that the link exists but the linked array of records is null), `undefined` (to indicate data is still missing), or an array of `nullable<dataId>` where the `dataId`'s are the linked records/objects.*/
     | @as("pluralLinked")
     PluralLinked({
         handle: (
@@ -689,7 +693,7 @@ module MissingFieldHandler: {
         ) => nullable<array<nullable<dataId>>>,
       }): t
 
-  /**Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `Js.null` (to indicate that data exists but is null), `Js.undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
+  /**Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `null` (to indicate that data exists but is null), `undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
   let makeScalarMissingFieldHandler: (
     (
       normalizationScalarField,
@@ -699,7 +703,7 @@ module MissingFieldHandler: {
     ) => Nullable.t<'scalarValue>
   ) => t
 
-  /**Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
+  /**Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `null` (to indicate that the link exists but the linked record is null), `undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
   let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
@@ -709,7 +713,7 @@ module MissingFieldHandler: {
     ) => Nullable.t<dataId>
   ) => t
 
-  /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `None` (to indicate data is missing), or an array of `nullable<dataId>` where the `dataId`'s are the linked records/objects or `None` when they are missing.*/
+  /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `null` (to indicate that the link exists but the linked array of records is null), `undefined` (to indicate data is still missing), or an array of `nullable<dataId>` where the `dataId`'s are the linked records/objects.*/
   let makePluralLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
