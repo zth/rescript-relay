@@ -380,7 +380,7 @@ module MissingFieldHandler = {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => 'scalarValue,
+        ) => nullable<'scalarValue>,
       }): t
     | @as("linked")
     Linked({
@@ -389,7 +389,7 @@ module MissingFieldHandler = {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => option<dataId>,
+        ) => nullable<dataId>,
       }): t
     | @as("pluralLinked")
     PluralLinked({
@@ -398,7 +398,7 @@ module MissingFieldHandler = {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => array<dataId>,
+        ) => nullable<array<nullable<dataId>>>,
       }): t
 
   let makeScalarMissingFieldHandler = handle => Scalar({handle: handle})
@@ -417,7 +417,7 @@ let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFiel
 ) =>
   switch (record, field.name, args["id"]) {
   | (Value(record), "node", argsId) if record->RecordProxy.getType == storeRootType => argsId
-  | _ => None
+  | _ => undefined
   }
 )
 

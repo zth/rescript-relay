@@ -668,7 +668,7 @@ module MissingFieldHandler: {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => 'scalarValue,
+        ) => nullable<'scalarValue>,
       }): t
     | @as("linked")
     Linked({
@@ -677,7 +677,7 @@ module MissingFieldHandler: {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => option<dataId>,
+        ) => nullable<dataId>,
       }): t
     | @as("pluralLinked")
     PluralLinked({
@@ -686,37 +686,37 @@ module MissingFieldHandler: {
           nullable<'record>,
           'args,
           ReadOnlyRecordSourceProxy.t,
-        ) => array<dataId>,
+        ) => nullable<array<nullable<dataId>>>,
       }): t
 
   /**Make a `MissingFieldHandler.t` for scalar fields. Give this a handler function that returns `Js.null` (to indicate that data exists but is null), `Js.undefined` (to indicate data is still missing), or a scalar value (to indicate that the value exists even though it's not in the cache, and is the value you send back).*/
   let makeScalarMissingFieldHandler: (
     (
       normalizationScalarField,
-      nullable<'record>,
+      Nullable.t<'record>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => 'scalarValue
+    ) => Nullable.t<'scalarValue>
   ) => t
 
   /**Make a `MissingFieldHandler.t` for linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or a `dataId` of the record that is linked at this field.*/
   let makeLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      nullable<RecordProxy.t>,
+      Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => option<dataId>
+    ) => Nullable.t<dataId>
   ) => t
 
-  /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `Js.null` (to indicate that the link exists but the linked record is null), `Js.undefined` (to indicate data is still missing), or an array of `Js.Nullable.t<dataId>` where the `dataId`'s are the linked records/objects.*/
+  /**Make a `MissingFieldHandler.t` for lists of linked fields (other objects/records). Give this a handler function that returns `None` (to indicate data is missing), or an array of `nullable<dataId>` where the `dataId`'s are the linked records/objects or `None` when they are missing.*/
   let makePluralLinkedMissingFieldHandler: (
     (
       normalizationLinkedField,
-      nullable<RecordProxy.t>,
+      Nullable.t<RecordProxy.t>,
       'args,
       ReadOnlyRecordSourceProxy.t,
-    ) => array<dataId>
+    ) => Nullable.t<array<Nullable.t<dataId>>>
   ) => t
 }
 
