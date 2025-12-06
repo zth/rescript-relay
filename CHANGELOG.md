@@ -1,5 +1,7 @@
 # master
 
+- Simplify `missingFieldHandlers`. https://github.com/zth/rescript-relay/pull/589
+
 # 4.1.0
 
 - Add support for `autoExhaustiveTypes` config and a `@nonExhaustive` directive to control automatic exhaustive checks for unions/interfaces.
