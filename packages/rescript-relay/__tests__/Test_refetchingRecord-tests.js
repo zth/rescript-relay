@@ -1,0 +1,73 @@
+require("@testing-library/jest-dom/extend-expect");
+const t = require("@testing-library/react");
+const React = require("react");
+const queryMock = require("./queryMock");
+const ReactTestUtils = require("react-dom/test-utils");
+
+const { test_refetching } = require("./Test_refetchingRecord.bs");
+
+describe("Fragment", () => {
+  test("refetching works when using a record for refetchVariables", async () => {
+    queryMock.mockQuery({
+      name: "TestRefetchingRecordQuery",
+      variables: { beforeDate: "2023-01-01T00:00:00.000Z", showOnlineStatus: true, number: 10 },
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          onlineStatus: "offline",
+          friendsConnection: {
+            totalCount: 20,
+          },
+          friends: [
+            {
+              id: "user-2",
+            },
+          ],
+        },
+      },
+    });
+
+    t.render(test_refetching());
+
+    await t.screen.findByText("First is -");
+    await t.screen.findByText("Friends: 20");
+
+    queryMock.mockQuery({
+      name: "TestRefetchingRecordRefetchQuery",
+      variables: {
+        id: "user-1",
+        showOnlineStatus: true,
+        friendsOnlineStatuses: ["Online", "offline"],
+        beforeDate: null,
+        number:10,
+      },
+      data: {
+        node: {
+          __typename: "User",
+          id: "user-1",
+          firstName: "First",
+          onlineStatus: "Online",
+          friendsConnection: {
+            totalCount: 10,
+          },
+          friends: [
+            {
+              id: "user-2",
+            },
+            {
+              id: "user-3",
+            },
+          ],
+        },
+      },
+    });
+
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(t.screen.getByText("Fetch online status"));
+    });
+
+    await t.screen.findByText("First is online");
+    await t.screen.findByText("Friends: 10");
+  });
+});
