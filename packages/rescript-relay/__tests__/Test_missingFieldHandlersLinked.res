@@ -1,5 +1,5 @@
 module Query = %relay(`
-    query TestMissingFieldHandlersQuery {
+    query TestMissingFieldHandlersLinkedQuery {
       node(id: "123") {
         ... on User {
           firstName
@@ -9,7 +9,7 @@ module Query = %relay(`
 `)
 
 module MeQuery = %relay(`
-    query TestMissingFieldHandlersMeQuery {
+    query TestMissingFieldHandlersLinkedMeQuery {
       loggedInUser {
         firstName
       }

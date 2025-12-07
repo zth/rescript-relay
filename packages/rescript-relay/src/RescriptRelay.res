@@ -347,78 +347,65 @@ module ReadOnlyRecordSourceProxy = {
 }
 
 module MissingFieldHandler = {
-  @@warning("-30")
-  type t
-
-  type normalizationArgumentWrapped = {kind: [#ListValue | #Literal | #ObjectValue | #Variable]}
-
-  type rec normalizationListValueArgument = {
-    name: string,
-    items: array<Nullable.t<normalizationArgumentWrapped>>,
-  }
-  and normalizationLiteralArgument = {
-    name: string,
-    @as("type") type_: Nullable.t<string>,
-    value: JSON.t,
-  }
-  and normalizationObjectValueArgument = {
-    name: string,
-    fields: Nullable.t<array<normalizationArgumentWrapped>>,
-  }
-  and normalizationVariableArgument = {
-    name: string,
-    @as("type") type_: Nullable.t<string>,
-    variableName: string,
-  }
-
-  type normalizationArgument =
-    | ListValue(normalizationListValueArgument)
-    | Literal(normalizationLiteralArgument)
-    | ObjectValue(normalizationObjectValueArgument)
-    | Variable(normalizationVariableArgument)
-
-  let unwrapNormalizationArgument = wrapped =>
-    switch wrapped.kind {
-    | #ListValue => ListValue(Obj.magic(wrapped))
-    | #Literal => Literal(Obj.magic(wrapped))
-    | #ObjectValue => ObjectValue(Obj.magic(wrapped))
-    | #Variable => Variable(Obj.magic(wrapped))
-    }
+  @tag("kind")
+  type rec normalizationArgument =
+    | ListValue({name: string, items: array<null<normalizationArgument>>})
+    | Literal({name: string, @as("type") type_: nullable<string>, value: JSON.t})
+    | ObjectValue({name: string, fields: array<normalizationArgument>})
+    | Variable({name: string, @as("type") type_: nullable<string>, variableName: string})
 
   type normalizationScalarField = {
-    alias: Nullable.t<string>,
+    alias: nullable<string>,
     name: string,
-    args: Nullable.t<array<normalizationArgumentWrapped>>,
-    storageKey: Nullable.t<string>,
+    args: nullable<array<normalizationArgument>>,
+    storageKey: nullable<string>,
   }
 
-  let makeScalarMissingFieldHandler = handle =>
-    Obj.magic({
-      "kind": #scalar,
-      "handle": handle,
-    })
-
   type normalizationLinkedField = {
-    alias: Nullable.t<string>,
+    alias: nullable<string>,
     name: string,
-    storageKey: Nullable.t<string>,
-    args: Nullable.t<array<normalizationArgument>>,
-    concreteType: Nullable.t<string>,
+    storageKey: nullable<string>,
+    args: nullable<array<normalizationArgument>>,
+    concreteType: nullable<string>,
     plural: bool,
     selections: array<JSON.t>,
   }
 
-  let makeLinkedMissingFieldHandler = handle =>
-    Obj.magic({
-      "kind": #linked,
-      "handle": handle,
-    })
+  @tag("kind")
+  type rec t =
+    | @as("scalar")
+    Scalar({
+        handle: (
+          normalizationScalarField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => nullable<'scalarValue>,
+      }): t
+    | @as("linked")
+    Linked({
+        handle: (
+          normalizationLinkedField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => nullable<dataId>,
+      }): t
+    | @as("pluralLinked")
+    PluralLinked({
+        handle: (
+          normalizationLinkedField,
+          nullable<'record>,
+          'args,
+          ReadOnlyRecordSourceProxy.t,
+        ) => nullable<array<nullable<dataId>>>,
+      }): t
 
-  let makePluralLinkedMissingFieldHandler = handle =>
-    Obj.magic({
-      "kind": #pluralLinked,
-      "handle": handle,
-    })
+  let makeScalarMissingFieldHandler = handle => Scalar({handle: handle})
+
+  let makeLinkedMissingFieldHandler = handle => Linked({handle: handle})
+
+  let makePluralLinkedMissingFieldHandler = handle => PluralLinked({handle: handle})
 }
 
 // This handler below enables automatic resolution of all cached items through the Node interface
@@ -428,9 +415,9 @@ let nodeInterfaceMissingFieldHandler = MissingFieldHandler.makeLinkedMissingFiel
   args,
   _store,
 ) =>
-  switch (Nullable.toOption(record), field["name"], Nullable.toOption(args["id"])) {
-  | (Some(record), "node", argsId) if record->RecordProxy.getType == storeRootType => argsId
-  | _ => None
+  switch (record, field.name, args["id"]) {
+  | (Value(record), "node", argsId) if record->RecordProxy.getType == storeRootType => argsId
+  | _ => undefined
   }
 )
 

@@ -1,4 +1,4 @@
-/* @sourceLoc Test_missingFieldHandlers.res */
+/* @sourceLoc Test_missingFieldHandlersLinked.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -128,7 +128,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestMissingFieldHandlersLinkedQuery",
     "selections": [
       {
         "alias": null,
@@ -151,7 +151,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestMissingFieldHandlersLinkedQuery",
     "selections": [
       {
         "alias": null,
@@ -176,12 +176,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1c1b2e4bd56f7774118884e1e522f7ba",
+    "cacheID": "9c1e77d5e8e6a088a624d2b972f59182",
     "id": null,
     "metadata": {},
-    "name": "TestMissingFieldHandlersQuery",
+    "name": "TestMissingFieldHandlersLinkedQuery",
     "operationKind": "query",
-    "text": "query TestMissingFieldHandlersQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n    }\n    id\n  }\n}\n"
+    "text": "query TestMissingFieldHandlersLinkedQuery {\n  node(id: \"123\") {\n    __typename\n    ... on User {\n      firstName\n    }\n    id\n  }\n}\n"
   }
 };
 })() `)
