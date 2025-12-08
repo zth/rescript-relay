@@ -5,3 +5,4 @@ src/Dummy.re*
 .bsb.lock
 *.log
 relay-compiler
+__tests_preloaded__/__generated__/RelaySchemaAssets_graphql.res
