@@ -4,12 +4,12 @@ const React = require("react");
 const queryMock = require("./queryMock");
 const ReactTestUtils = require("react-dom/test-utils");
 
-const { test_refetching } = require("./Test_refetching.bs");
+const { test_refetching } = require("./Test_refetchingRecord.bs");
 
 describe("Fragment", () => {
-  test("refetching works", async () => {
+  test("refetching works when using a record for refetchVariables", async () => {
     queryMock.mockQuery({
-      name: "TestRefetchingQuery",
+      name: "TestRefetchingRecordQuery",
       variables: { beforeDate: "2023-01-01T00:00:00.000Z", showOnlineStatus: true, number: 10 },
       data: {
         loggedInUser: {
@@ -34,7 +34,7 @@ describe("Fragment", () => {
     await t.screen.findByText("Friends: 20");
 
     queryMock.mockQuery({
-      name: "TestRefetchingRefetchQuery",
+      name: "TestRefetchingRecordRefetchQuery",
       variables: {
         id: "user-1",
         showOnlineStatus: true,

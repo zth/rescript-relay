@@ -23,18 +23,18 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    count: option<option<int>>,
-    cursor: option<option<string>>,
-    @live id: option<string>,
+    count?: option<int>,
+    cursor?: option<string>,
+    @live id?: string,
   }
   @live let makeRefetchVariables = (
     ~count=?,
     ~cursor=?,
     ~id=?,
   ): refetchVariables => {
-    count: count,
-    cursor: cursor,
-    id: id
+    count: ?count,
+    cursor: ?cursor,
+    id: ?id
   }
 
 }

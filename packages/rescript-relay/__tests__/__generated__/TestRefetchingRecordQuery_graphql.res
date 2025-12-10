@@ -1,11 +1,11 @@
-/* @sourceLoc Test_refetching.res */
+/* @sourceLoc Test_refetchingRecord.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@warning("-30")
 
   type rec response_loggedInUser = {
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetching_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingRecord_user]>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
@@ -141,7 +141,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestRefetchingQuery",
+    "name": "TestRefetchingRecordQuery",
     "selections": [
       {
         "alias": null,
@@ -162,7 +162,7 @@ return {
               }
             ],
             "kind": "FragmentSpread",
-            "name": "TestRefetching_user"
+            "name": "TestRefetchingRecord_user"
           }
         ],
         "storageKey": null
@@ -175,7 +175,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "TestRefetchingQuery",
+    "name": "TestRefetchingRecordQuery",
     "selections": [
       {
         "alias": null,
@@ -246,12 +246,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3bd1e8bddc99b7cc3c3a34d21038c550",
+    "cacheID": "40d124e59b4851cddc342ab87b9064bc",
     "id": null,
     "metadata": {},
-    "name": "TestRefetchingQuery",
+    "name": "TestRefetchingRecordQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingQuery(\n  $beforeDate: Datetime\n  $number: Number\n  $showOnlineStatus: Boolean!\n) {\n  loggedInUser {\n    ...TestRefetching_user_1LqbfJ\n    id\n  }\n}\n\nfragment TestRefetching_user_1LqbfJ on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate, number: $number) {\n    id\n  }\n  id\n}\n"
+    "text": "query TestRefetchingRecordQuery(\n  $beforeDate: Datetime\n  $number: Number\n  $showOnlineStatus: Boolean!\n) {\n  loggedInUser {\n    ...TestRefetchingRecord_user_1LqbfJ\n    id\n  }\n}\n\nfragment TestRefetchingRecord_user_1LqbfJ on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate, number: $number) {\n    id\n  }\n  id\n}\n"
   }
 };
 })() `)

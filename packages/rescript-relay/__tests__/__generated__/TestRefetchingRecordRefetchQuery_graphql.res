@@ -1,17 +1,15 @@
-/* @sourceLoc Test_refetchingInNode.res */
+/* @sourceLoc Test_refetchingRecord.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@warning("-30")
 
-  @tag("__typename") type response_node = 
-    | @live User(
-      {
-        fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>,
-      }
-    )
-    | @live @as("__unselected") UnselectedUnionMember(string)
-
+  @live
+  type rec response_node = {
+    @live __typename: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingRecord_user]>,
+  }
+  @live
   type response = {
     node: option<response_node>,
   }
@@ -19,38 +17,49 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
+    beforeDate?: TestsUtils.Datetime.t,
     friendsOnlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
-    userId: string,
+    @live id: string,
+    number?: TestsUtils.Number.t,
+    showOnlineStatus?: bool,
   }
   @live
   type refetchVariables = {
+    beforeDate?: option<TestsUtils.Datetime.t>,
     friendsOnlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
-    userId?: string,
+    @live id?: string,
+    number?: option<TestsUtils.Number.t>,
+    showOnlineStatus?: option<bool>,
   }
   @live let makeRefetchVariables = (
+    ~beforeDate=?,
     ~friendsOnlineStatuses=?,
-    ~userId=?,
+    ~id=?,
+    ~number=?,
+    ~showOnlineStatus=?,
   ): refetchVariables => {
+    beforeDate: ?beforeDate,
     friendsOnlineStatuses: ?friendsOnlineStatuses,
-    userId: ?userId
+    id: ?id,
+    number: ?number,
+    showOnlineStatus: ?showOnlineStatus
   }
 
 }
 
-@live
-let unwrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.unwrapUnion(_, ["User"])
-@live
-let wrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.wrapUnion
 
 type queryRef
 
 module Internal = {
   @live
   let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
   )
   @live
-  let variablesConverterMap = ()
+  let variablesConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.Number": TestsUtils.Number.serialize,
+  }
   @live
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
@@ -61,12 +70,10 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
+    json`{"__root":{"node":{"f":""}}}`
   )
   @live
-  let wrapResponseConverterMap = {
-    "response_node": wrap_response_node,
-  }
+  let wrapResponseConverterMap = ()
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
@@ -77,12 +84,10 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
+    json`{"__root":{"node":{"f":""}}}`
   )
   @live
-  let responseConverterMap = {
-    "response_node": unwrap_response_node,
-  }
+  let responseConverterMap = ()
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
@@ -126,63 +131,98 @@ let node: operationType = %raw(json` (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "friendsOnlineStatuses"
+  "name": "beforeDate"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "userId"
+  "name": "friendsOnlineStatuses"
 },
-v2 = [
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "number"
+},
+v4 = {
+  "defaultValue": false,
+  "kind": "LocalArgument",
+  "name": "showOnlineStatus"
+},
+v5 = [
   {
     "kind": "Variable",
     "name": "id",
-    "variableName": "userId"
+    "variableName": "id"
   }
 ],
-v3 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v7 = {
+  "kind": "Variable",
+  "name": "beforeDate",
+  "variableName": "beforeDate"
+},
+v8 = {
+  "kind": "Variable",
+  "name": "number",
+  "variableName": "number"
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestRefetchingInNodeQuery",
+    "name": "TestRefetchingRecordRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v6/*: any*/),
           {
-            "kind": "InlineFragment",
-            "selections": [
+            "args": [
+              (v7/*: any*/),
               {
-                "args": [
-                  {
-                    "kind": "Variable",
-                    "name": "friendsOnlineStatuses",
-                    "variableName": "friendsOnlineStatuses"
-                  }
-                ],
-                "kind": "FragmentSpread",
-                "name": "TestRefetchingInNode_user"
+                "kind": "Variable",
+                "name": "friendsOnlineStatuses",
+                "variableName": "friendsOnlineStatuses"
+              },
+              (v8/*: any*/),
+              {
+                "kind": "Variable",
+                "name": "showOnlineStatus",
+                "variableName": "showOnlineStatus"
               }
             ],
-            "type": "User",
-            "abstractKey": null
+            "kind": "FragmentSpread",
+            "name": "TestRefetchingRecord_user"
           }
         ],
         "storageKey": null
@@ -194,28 +234,25 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
+      (v0/*: any*/),
       (v1/*: any*/),
-      (v0/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Operation",
-    "name": "TestRefetchingInNodeQuery",
+    "name": "TestRefetchingRecordRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
+          (v6/*: any*/),
+          (v9/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -249,6 +286,35 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": [
+                  (v7/*: any*/),
+                  (v8/*: any*/)
+                ],
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "friends",
+                "plural": true,
+                "selections": [
+                  (v9/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "condition": "showOnlineStatus",
+                "kind": "Condition",
+                "passingValue": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "onlineStatus",
+                    "storageKey": null
+                  }
+                ]
               }
             ],
             "type": "User",
@@ -260,12 +326,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d84a2530c9a2a6effabea58320339901",
+    "cacheID": "2d68c9862ef4512ede22a8a0d64b1058",
     "id": null,
     "metadata": {},
-    "name": "TestRefetchingInNodeQuery",
+    "name": "TestRefetchingRecordRefetchQuery",
     "operationKind": "query",
-    "text": "query TestRefetchingInNodeQuery(\n  $userId: ID!\n  $friendsOnlineStatuses: [OnlineStatus!]\n) {\n  node(id: $userId) {\n    __typename\n    ... on User {\n      ...TestRefetchingInNode_user_4itqcE\n    }\n    id\n  }\n}\n\nfragment TestRefetchingInNode_user_4itqcE on User {\n  firstName\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  id\n}\n"
+    "text": "query TestRefetchingRecordRefetchQuery(\n  $beforeDate: Datetime\n  $friendsOnlineStatuses: [OnlineStatus!]\n  $number: Number\n  $showOnlineStatus: Boolean = false\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...TestRefetchingRecord_user_2VpWUn\n    id\n  }\n}\n\nfragment TestRefetchingRecord_user_2VpWUn on User {\n  firstName\n  onlineStatus @include(if: $showOnlineStatus)\n  friendsConnection(statuses: $friendsOnlineStatuses) {\n    totalCount\n  }\n  friends(beforeDate: $beforeDate, number: $number) {\n    id\n  }\n  id\n}\n"
   }
 };
 })() `)

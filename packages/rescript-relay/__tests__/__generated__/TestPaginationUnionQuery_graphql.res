@@ -15,12 +15,12 @@ module Types = {
   }
   @live
   type refetchVariables = {
-    groupId: option<string>,
+    groupId?: string,
   }
   @live let makeRefetchVariables = (
     ~groupId=?,
   ): refetchVariables => {
-    groupId: groupId
+    groupId: ?groupId
   }
 
 }

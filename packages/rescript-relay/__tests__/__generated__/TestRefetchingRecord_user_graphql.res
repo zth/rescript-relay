@@ -1,4 +1,4 @@
-/* @sourceLoc Test_refetching.res */
+/* @sourceLoc Test_refetchingRecord.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
@@ -39,7 +39,7 @@ module Internal = {
 type t
 type fragmentRef
 external getFragmentRef:
-  RescriptRelay.fragmentRefs<[> | #TestRefetching_user]> => fragmentRef = "%identity"
+  RescriptRelay.fragmentRefs<[> | #TestRefetchingRecord_user]> => fragmentRef = "%identity"
 
 module Utils = {
   @@warning("-33")
@@ -65,8 +65,8 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(let makeNode = (rescript_graphql_node_TestRefetchingRefetchQuery): operationType => {
-  ignore(rescript_graphql_node_TestRefetchingRefetchQuery)
+%%private(let makeNode = (rescript_graphql_node_TestRefetchingRecordRefetchQuery): operationType => {
+  ignore(rescript_graphql_node_TestRefetchingRecordRefetchQuery)
   %raw(json`(function(){
 var v0 = {
   "alias": null,
@@ -105,14 +105,14 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": rescript_graphql_node_TestRefetchingRefetchQuery,
+      "operation": rescript_graphql_node_TestRefetchingRecordRefetchQuery,
       "identifierInfo": {
         "identifierField": "id",
         "identifierQueryVariableName": "id"
       }
     }
   },
-  "name": "TestRefetching_user",
+  "name": "TestRefetchingRecord_user",
   "selections": [
     {
       "alias": null,
@@ -189,5 +189,5 @@ return {
 };
 })()`)
 })
-let node: operationType = makeNode(TestRefetchingRefetchQuery_graphql.node)
+let node: operationType = makeNode(TestRefetchingRecordRefetchQuery_graphql.node)
 

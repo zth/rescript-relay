@@ -1,31 +1,20 @@
-/* @sourceLoc Test_inputUnion.res */
+/* @sourceLoc Test_refetchingRecord.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@warning("-30")
 
-  @live type location = RelaySchemaAssets_graphql.input_Location
-  @live type byAddress = RelaySchemaAssets_graphql.input_ByAddress
-  @live type byLoc = RelaySchemaAssets_graphql.input_ByLoc
+  @live
   type response = {
-    findByLocation: option<string>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingRecordNoArgs_query]>,
   }
   @live
   type rawResponse = response
   @live
-  type variables = {
-    location: location,
-  }
+  type variables = unit
   @live
-  type refetchVariables = {
-    location?: location,
-  }
-  @live let makeRefetchVariables = (
-    ~location=?,
-  ): refetchVariables => {
-    location: ?location
-  }
-
+  type refetchVariables = unit
+  @live let makeRefetchVariables = () => ()
 }
 
 
@@ -34,7 +23,7 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"location":{"byLoc":{"r":"byLoc"},"byAddress":{"r":"byAddress"}},"byAddress":{},"byLoc":{},"__root":{"location":{"r":"location"}}}`
+    json`{}`
   )
   @live
   let variablesConverterMap = ()
@@ -48,7 +37,7 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"":{"f":""}}}`
   )
   @live
   let wrapResponseConverterMap = ()
@@ -62,7 +51,7 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+    json`{"__root":{"":{"f":""}}}`
   )
   @live
   let responseConverterMap = ()
@@ -90,56 +79,57 @@ type relayOperationNode
 type operationType = RescriptRelay.queryNode<relayOperationNode>
 
 
-let node: operationType = %raw(json` (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "location"
-  }
-],
-v1 = [
-  {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "location",
-        "variableName": "location"
-      }
-    ],
-    "kind": "ScalarField",
-    "name": "findByLocation",
-    "storageKey": null
-  }
-];
-return {
+let node: operationType = %raw(json` {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestInputUnionQuery",
-    "selections": (v1/*: any*/),
+    "name": "TestRefetchingRecordNoArgsRefetchQuery",
+    "selections": [
+      {
+        "args": null,
+        "kind": "FragmentSpread",
+        "name": "TestRefetchingRecordNoArgs_query"
+      }
+    ],
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "TestInputUnionQuery",
-    "selections": (v1/*: any*/)
+    "name": "TestRefetchingRecordNoArgsRefetchQuery",
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "loggedInUser",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "53a5a8069244d58a20a58e55c9f98f2e",
+    "cacheID": "a54c3435e7d0f924531f3bfe73265447",
     "id": null,
     "metadata": {},
-    "name": "TestInputUnionQuery",
+    "name": "TestRefetchingRecordNoArgsRefetchQuery",
     "operationKind": "query",
-    "text": "query TestInputUnionQuery(\n  $location: Location!\n) {\n  findByLocation(location: $location)\n}\n"
+    "text": "query TestRefetchingRecordNoArgsRefetchQuery {\n  ...TestRefetchingRecordNoArgs_query\n}\n\nfragment TestRefetchingRecordNoArgs_query on Query {\n  loggedInUser {\n    id\n  }\n}\n"
   }
-};
-})() `)
+} `)
 
 @live let load: (
   ~environment: RescriptRelay.Environment.t,

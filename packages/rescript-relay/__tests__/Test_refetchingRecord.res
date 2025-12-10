@@ -1,7 +1,7 @@
 module Query = %relay(`
-    query TestRefetchingQuery($beforeDate: Datetime, $number: Number, $showOnlineStatus: Boolean!) {
+    query TestRefetchingRecordQuery($beforeDate: Datetime, $number: Number, $showOnlineStatus: Boolean!) {
       loggedInUser {
-        ...TestRefetching_user @arguments(
+        ...TestRefetchingRecord_user @arguments(
           beforeDate: $beforeDate
           number: $number
           showOnlineStatus: $showOnlineStatus
@@ -11,8 +11,8 @@ module Query = %relay(`
 `)
 
 module Fragment = %relay(`
-    fragment TestRefetching_user on User
-      @refetchable(queryName: "TestRefetchingRefetchQuery")
+    fragment TestRefetchingRecord_user on User
+      @refetchable(queryName: "TestRefetchingRecordRefetchQuery")
       @argumentDefinitions(
         friendsOnlineStatuses: { type: "[OnlineStatus!]" }
         showOnlineStatus: { type: "Boolean", defaultValue: false }
@@ -31,8 +31,8 @@ module Fragment = %relay(`
 `)
 
 module FragmentWithNoArgs = %relay(`
-    fragment TestRefetchingNoArgs_query on Query
-      @refetchable(queryName: "TestRefetchingNoArgsRefetchQuery")
+    fragment TestRefetchingRecordNoArgs_query on Query
+      @refetchable(queryName: "TestRefetchingRecordNoArgsRefetchQuery")
       {
       loggedInUser {
         id
@@ -69,10 +69,10 @@ module Test = {
         onClick={_ => {
           startTransition(() => {
             refetch(
-              ~variables=Fragment.makeRefetchVariables(
-                ~friendsOnlineStatuses=Some([Online, Offline]),
-                ~beforeDate=None,
-              ),
+              ~variables={
+                friendsOnlineStatuses: Some([Online, Offline]),
+                beforeDate: None,
+              },
             )->RescriptRelay.Disposable.ignore
           })
         }}
