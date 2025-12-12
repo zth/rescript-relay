@@ -1,4 +1,4 @@
 [submodule "rescript-relay-compiler"]
 	path = packages/relay
 	url = git@github.com:zth/relay.git
-	branch = rescript-relay
+	branch = rescriptrelay-2.0
