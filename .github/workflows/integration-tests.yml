@@ -46,7 +46,9 @@ jobs:
       - name: git status
         id: git_status
         run: |
-          echo "status=$( git status --porcelain )" >> $GITHUB_OUTPUT
+          echo 'status<<EOF' >> $GITHUB_OUTPUT
+          git status --porcelain >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
       - name: Exit if files modified
         run: |
           echo "Files have been modified during the build process:"
