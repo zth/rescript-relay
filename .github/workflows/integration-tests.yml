@@ -46,7 +46,7 @@ jobs:
       - name: git status
         id: git_status
         run: |
-          echo "::set-output name=status::$( git status --porcelain )"
+          echo "status=$( git status --porcelain )" >> $GITHUB_OUTPUT
       - name: Exit if files modified
         run: |
           echo "Files have been modified during the build process:"
