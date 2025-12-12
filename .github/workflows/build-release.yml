@@ -53,8 +53,8 @@ jobs:
     strategy:
       matrix:
         platform: [
-            macos-13, # x64
-            macos-14, # ARM,
+            macos-15-intel, # x64
+            macos-15, # ARM,
             windows-latest,
           ]
 
@@ -211,12 +211,12 @@ jobs:
 
       - uses: actions/download-artifact@v4.1.7
         with:
-          name: ppx-macos-13
+          name: ppx-macos-15-intel
           path: binaries
 
       - uses: actions/download-artifact@v4.1.7
         with:
-          name: ppx-macos-14
+          name: ppx-macos-15
           path: binaries
 
       - uses: actions/download-artifact@v4.1.7
@@ -226,11 +226,11 @@ jobs:
 
       - name: Rename MacOS old binary
         run: |
-          mv binaries/ppx-macos-13 binaries/ppx-macos-latest
+          mv binaries/ppx-macos-15-intel binaries/ppx-macos-latest
 
       - name: Rename MacOS ARM64 binary
         run: |
-          mv binaries/ppx-macos-14 binaries/ppx-macos-arm64
+          mv binaries/ppx-macos-15 binaries/ppx-macos-arm64
 
       - name: Move binaries into release directory
         run: |
@@ -240,8 +240,8 @@ jobs:
         with:
           name: |
             ppx-linux
-            ppx-macos-13
-            ppx-macos-14
+            ppx-macos-15-intel
+            ppx-macos-15
             ppx-windows-latest
             relay-compiler-linux-x64
             relay-compiler-macos-x64
