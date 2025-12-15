@@ -4,6 +4,7 @@
 
 - Simplify `missingFieldHandlers`. https://github.com/zth/rescript-relay/pull/589
 - Fix behavior of `refetchVariables` on optional variables. https://github.com/zth/rescript-relay/pull/588
+- Support `@exhaustive` on inline fragments.
 
 # 4.1.0
 
