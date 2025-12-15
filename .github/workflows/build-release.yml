@@ -7,6 +7,10 @@ on:
         description: "Optional tag name"
         required: false
 
+permissions:
+  id-token: write  # Required for OIDC for publishing to npm
+  contents: read
+
 jobs:
   build-ppx-linux:
     strategy:
