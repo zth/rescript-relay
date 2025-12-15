@@ -253,14 +253,11 @@ jobs:
         with:
           name: release-build
           path: _release/
-      - uses: JS-DevTools/npm-publish@v1
+      - name: Publish to npm with tag ${{ github.event.inputs.tag_name }}
         if: ${{ github.event.inputs.tag_name }}
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./_release/package.json
-          tag: ${{ github.event.inputs.tag_name }}
-      - uses: JS-DevTools/npm-publish@v1
+        working-directory: _release
+        run: yarn publish --tag ${{ github.event.inputs.tag_name }}
+      - name: Publish to npm with tag latest
         if: ${{ !github.event.inputs.tag_name }}
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./_release/package.json
+        working-directory: _release
+        run: yarn publish
