@@ -257,11 +257,13 @@ jobs:
         with:
           name: release-build
           path: _release/
+      - name: Update npm
+        run: npm install -g npm@latest
       - name: Publish to npm with tag ${{ github.event.inputs.tag_name }}
         if: ${{ github.event.inputs.tag_name }}
         working-directory: _release
-        run: yarn publish --tag ${{ github.event.inputs.tag_name }}
+        run: npm publish --tag ${{ github.event.inputs.tag_name }}
       - name: Publish to npm with tag latest
         if: ${{ !github.event.inputs.tag_name }}
         working-directory: _release
-        run: yarn publish
+        run: npm publish
