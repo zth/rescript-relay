@@ -26,6 +26,7 @@ jobs:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
       - name: Install system dependencies
+        working-directory: /
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
