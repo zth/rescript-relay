@@ -19,10 +19,22 @@ jobs:
 
     name: Build PPX for release
     runs-on: ${{ matrix.platform }}
+    container:
+      image: debian:bullseye
     defaults:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
     steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            ca-certificates \
+            git \
+            unzip \
+            bubblewrap
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -34,11 +46,12 @@ jobs:
         with:
           ocaml-compiler: "4.14"
           dune-cache: true
-          cache-prefix: "v1"
+          cache-prefix: "v2-bullseye"
       - name: Install PPX dependencies
         run: opam install . --deps-only
       - name: Build PPX
-        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
+        run: |
+          opam exec -- dune build --profile release-static bin/RescriptRelayPpxApp.exe
       - name: Copy built PPX file
         run: |
           cp _build/default/bin/RescriptRelayPpxApp.exe ppx-linux
@@ -161,18 +174,6 @@ jobs:
           node-version: 23
         env:
           CI: true
-      - name: Set up OCaml
-        uses: ocaml/setup-ocaml@v3
-        with:
-          ocaml-compiler: "4.14"
-          dune-cache: true
-          cache-prefix: "v1"
-      - name: Install PPX dependencies
-        working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: opam install . --deps-only
-      - name: Build PPX
-        working-directory: packages/rescript-relay/rescript-relay-ppx
-        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}

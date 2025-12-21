@@ -1,5 +1,9 @@
 # master
 
+# 4.2.1
+
+- Actually apply fix for lowering the glibc requirement from the PR in 3.5.1, to the release. This was not applied to the actual release until now.
+
 # 4.2.0
 
 - Simplify `missingFieldHandlers`. https://github.com/zth/rescript-relay/pull/589
