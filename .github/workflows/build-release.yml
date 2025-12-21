@@ -175,6 +175,18 @@ jobs:
           node-version: 23
         env:
           CI: true
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "4.14"
+          dune-cache: true
+          cache-prefix: "v1"
+      - name: Install PPX dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam install . --deps-only
+      - name: Build PPX
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
       - name: Build assets
         env:
           INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
