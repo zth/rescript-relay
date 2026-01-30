@@ -17,12 +17,19 @@ let internal_cleanObjectFromUndefinedRaw = record =>
   | Some(v) => v
   }
 
+let internal_isSomeNone: 'any => bool = %raw(`value => value != null && value.BS_PRIVATE_NESTED_SOME_NONE === 0`)
+
 let internal_removeUndefinedAndConvertNullsRaw = record =>
   internal_keepMapFieldsRaw(record, ((key, value)) => {
-    switch (value, value == Some(None)) {
-    | (_, true) => Some((key, Nullable.null))
-    | (Some(value), _) => Some((key, Nullable.make(value)))
-    | (None, _) => None
+    let rawValue = value
+    switch value {
+    | Some(value) =>
+      if internal_isSomeNone(rawValue) {
+        Some((key, Nullable.null))
+      } else {
+        Some((key, Nullable.make(value)))
+      }
+    | None => None
     }
   })
 
