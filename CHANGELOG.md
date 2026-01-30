@@ -1,5 +1,7 @@
 # master
 
+- Fix issue with empty arrays and refetch variables. https://github.com/zth/rescript-relay/pull/601
+
 # 4.2.1
 
 - Actually apply fix for lowering the glibc requirement from the PR in 3.5.1, to the release. This was not applied to the actual release until now.
