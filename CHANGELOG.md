@@ -1,5 +1,7 @@
 # master
 
+# 4.2.3
+
 - Actually wire up `autoExhaustiveTypes`.
 
 # 4.2.2
