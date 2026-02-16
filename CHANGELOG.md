@@ -1,5 +1,7 @@
 # master
 
+- Actually wire up `autoExhaustiveTypes`.
+
 # 4.2.2
 
 - Fix issue with empty arrays and refetch variables. https://github.com/zth/rescript-relay/pull/601
