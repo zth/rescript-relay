@@ -142,3 +142,12 @@ let make = (~book) => {
   }
 }
 ```
+
+## Safety and Exhaustiveness
+
+Interfaces follow the same future-proofing model as unions when they are emitted as variants:
+
+- By default, generated interface variants include `UnselectedUnionMember(string)`.
+- You can use `@exhaustive`, `@nonExhaustive`, `autoExhaustiveMutations`, and `autoExhaustiveTypes` just like for unions.
+
+For more on those controls, see the [unions docs](unions).

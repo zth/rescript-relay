@@ -1,5 +1,8 @@
 # master
 
+- Respect `noFutureProofEnums` in generated ReScript enum types, disabling `FutureAddedValue(...)` when configured.
+- Fix issue with the non-React mode.
+
 # 4.2.3
 
 - Actually wire up `autoExhaustiveTypes`.

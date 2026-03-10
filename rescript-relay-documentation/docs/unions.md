@@ -172,7 +172,9 @@ Any field or fragment returning those types will be treated as if it had `@exhau
 ```graphql
 fragment UserName on User {
   nameRenderer @nonExhaustive {
-    ... on PlainUserNameRenderer { __typename }
+    ... on PlainUserNameRenderer {
+      __typename
+    }
   }
 }
 ```

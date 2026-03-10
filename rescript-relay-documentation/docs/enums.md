@@ -117,6 +117,8 @@ module Fragment = %relay(`
 `)
 ```
 
+> If you want to disable `FutureAddedValue(...)` project-wide, set `noFutureProofEnums: true` in `relay.config.js`. This removes the catch-all enum constructor from generated response enums everywhere. But you're strongly encouraged to keep it on, for safer code.
+
 ### Mapping strings to your enum
 
 In addition to the utils listed above, there's also a function available for taking a string and mapping it to your enum, if it's valid. An example:
