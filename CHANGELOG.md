@@ -1,5 +1,7 @@
 # master
 
+# 4.3.0
+
 - Respect `noFutureProofEnums` in generated ReScript enum types, disabling `FutureAddedValue(...)` when configured.
 - Fix issue with the non-React mode.
 
