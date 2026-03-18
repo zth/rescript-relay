@@ -1,5 +1,7 @@
 # master
 
+# 4.4.0
+
 - Introduce `rescript-relay-compiler tools`, exposing Relay analysis commands like `definition-audit`, `find-schema-references`, `fragment-dependents`, and `print-operation`.
 
 # 4.3.0
