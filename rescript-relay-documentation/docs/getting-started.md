@@ -102,7 +102,7 @@ module.exports = {
 };
 ```
 
-> All configuration options can be seen by running `yarn relay-compiler --help` in your project.
+> All configuration options can be seen by running `yarn rescript-relay-compiler --help` in your project.
 
 > Read more about [custom scalars here.](custom-scalars)
 
@@ -125,6 +125,13 @@ Now you have two scripts set up; one for running the compiler once, and one for 
 You can go ahead and start it in watch mode right away (`yarn relay:watch`) in a separate terminal. _Please note that you'll need to be aware of the output from the compiler_ as it will tell you when there are issues you'll need to fix.
 
 The Relay compiler is really awesome. If you're interested there's plenty more to read about the compiler and how RescriptRelay uses it [here](the-compiler).
+
+## Tools and utils
+
+RescriptRelay ships two CLIs that are useful to know about:
+
+- `rescript-relay-compiler` for running the compiler itself, plus Relay compiler tools like `yarn relay tools --help` or `yarn relay tools definition-audit --min-selection-lines 40`. These `tools` commands are especially useful for agents and automation, because they can introspect the Relay parts of your codebase directly.
+- `rescript-relay-cli` for RescriptRelay-specific utilities like `yarn rescript-relay-cli remove-unused-fields` and `yarn rescript-relay-cli format-all-graphql`.
 
 ## Setting up the Relay environment
 

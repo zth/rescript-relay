@@ -6,6 +6,28 @@ sidebar_label: RescriptRelay CLI
 
 `rescript-relay-cli` is a CLI for making life using RescriptRelay just a tiny bit easier. It's automatically included with every release of `rescript-relay`.
 
+There are two different CLIs worth knowing about:
+
+- `rescript-relay-cli` for RescriptRelay-specific maintenance commands like removing unused fields and formatting GraphQL.
+- `rescript-relay-compiler` for the Relay compiler itself, including the `tools` analysis commands.
+
+At some point, these two will likely be merged into one, but for now they're separate.
+
+## RescriptRelay compiler tools
+
+The RescriptRelay compiler tools ship through `rescript-relay-compiler`, not `rescript-relay-cli`.
+
+Examples:
+
+```bash
+rescript-relay-compiler tools --help
+rescript-relay-compiler tools definition-audit --min-selection-lines 40
+rescript-relay-compiler tools find-schema-references User.name
+rescript-relay-compiler tools fragment-dependents UserCard_user --transitive
+```
+
+Use these compiler tools for codebase audits, impact analysis, and mechanical Relay refactors. Keep using `rescript-relay-cli` for the commands below. They're especially useful for code agents.
+
 ## Commands
 
 ### remove-unused-fields
