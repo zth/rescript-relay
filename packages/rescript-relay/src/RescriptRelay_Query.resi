@@ -27,7 +27,7 @@ let usePreloaded: (
   ~mkQueryRef: 'queryRef => 'queryRef,
 ) => (~queryRef: 'queryRef) => 'response
 
-let fetch: (
+let fetch_: (
   ~node: queryNode<'a>,
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,
