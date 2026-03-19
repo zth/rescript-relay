@@ -66,7 +66,7 @@ let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
               [
                 [%stri
                   let fetch =
-                    RescriptRelay_QueryNonReact.fetch ~convertResponse
+                    RescriptRelay_QueryNonReact.fetch_ ~convertResponse
                       ~convertVariables
                       ~node:[%e valFromGeneratedModule ["node"]]];
                 [%stri
@@ -91,7 +91,7 @@ let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
               [
                 [%stri
                   let fetch =
-                    RescriptRelay_Query.fetch ~convertResponse ~convertVariables
+                    RescriptRelay_Query.fetch_ ~convertResponse ~convertVariables
                       ~node:[%e valFromGeneratedModule ["node"]]];
                 [%stri
                   let fetchPromised =
