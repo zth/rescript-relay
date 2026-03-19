@@ -90,7 +90,7 @@ external fetchQuery: (
   option<fetchQueryOptions>,
 ) => Observable.t<'response> = "fetchQuery"
 
-let fetch = (
+let fetch_ = (
   ~node,
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,

@@ -35,7 +35,7 @@ external toPromise: observable<'a> => promise<'a> = "toPromise"
 
 external ignoreSubscription: subscription => unit = "%ignore"
 
-let fetch = (
+let fetch_ = (
   ~node,
   ~convertResponse: 'response => 'response,
   ~convertVariables: 'variables => 'variables,
