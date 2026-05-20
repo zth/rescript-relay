@@ -28,13 +28,84 @@ module Query = %relay(`
     }
 `)
 
+module TestPreloaded = {
+  @react.component
+  let make = (~queryRef) => {
+    let query = Query.usePreloaded(~queryRef)
+    let user = Fragment.use(query.loggedInUser.fragmentRefs)
+
+    <div>
+      {React.string(
+        "Preloaded provided variable: " ++ user.someRandomArgField->Option.getOr("-"),
+      )}
+    </div>
+  }
+}
+
 module Test = {
   @react.component
   let make = () => {
+    let environment = RescriptRelayReact.useEnvironmentFromContext()
     let query = Query.use(~variables=())
     let user = Fragment.use(query.loggedInUser.fragmentRefs)
+    let (queryRefFromModule, setQueryRefFromModule) = React.useState(() => None)
+    let (fetchedStatus, setFetchedStatus) = React.useState(() => "-")
+    let (retainedStatus, setRetainedStatus) = React.useState(() => "-")
+    let (loadedQueryRef, loadQuery, _dispose) = Query.useLoader()
 
-    <div> {React.string(user.someRandomArgField->Option.getOr("-"))} </div>
+    <div>
+      <div> {React.string(user.someRandomArgField->Option.getOr("-"))} </div>
+      <div> {React.string("Provided variable fetch status: " ++ fetchedStatus)} </div>
+      <div> {React.string("Provided variable retain status: " ++ retainedStatus)} </div>
+      <button
+        onClick={_ =>
+          setQueryRefFromModule(_ => Some(
+            TestProvidedVariablesQuery_graphql.load(
+              ~environment,
+              ~variables=(),
+              ~fetchPolicy=NetworkOnly,
+            ),
+          ))}
+      >
+        {React.string("Test provided variable raw load")}
+      </button>
+      <button onClick={_ => loadQuery(~variables=(), ~fetchPolicy=NetworkOnly)}>
+        {React.string("Test provided variable query loader")}
+      </button>
+      <button
+        onClick={_ =>
+          Query.fetch(~environment, ~variables=(), ~onResult=result =>
+            switch result {
+            | Ok(_) => setFetchedStatus(_ => "fetch")
+            | Error(_) => setFetchedStatus(_ => "fetch error")
+            }
+          )}
+      >
+        {React.string("Test provided variable fetch")}
+      </button>
+      <button
+        onClick={_ => {
+          let _ =
+            Query.fetchPromised(~environment, ~variables=())->Promise.thenResolve(_ =>
+              setFetchedStatus(_ => "fetch promised")
+            )
+        }}
+      >
+        {React.string("Test provided variable fetch promised")}
+      </button>
+      <button
+        onClick={_ => {
+          Query.retain(~environment, ~variables=())->RescriptRelay.Disposable.dispose
+          setRetainedStatus(_ => "retained")
+        }}
+      >
+        {React.string("Test provided variable retain")}
+      </button>
+      {switch (queryRefFromModule, loadedQueryRef) {
+      | (_, Some(queryRef)) | (Some(queryRef), _) => <TestPreloaded queryRef />
+      | _ => React.null
+      }}
+    </div>
   }
 }
 

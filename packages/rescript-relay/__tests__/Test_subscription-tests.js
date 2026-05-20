@@ -78,4 +78,51 @@ describe("Subscription", () => {
 
     await t.screen.findByText("Ready - User First is offline");
   });
+
+  test("subscription with no variables can spread a provided variable fragment", async () => {
+    queryMock.mockQuery({
+      name: "TestSubscriptionQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          avatarUrl: null,
+          onlineStatus: "Online",
+        },
+      },
+    });
+
+    const testAssets = test_subscription();
+
+    t.render(testAssets.render());
+    await t.screen.findByText("Ready - User First is online");
+
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Subscribe with provided variable fragment")
+      );
+    });
+
+    expect(testAssets.getLastSubscriptionVariables()).toEqual({
+      __relay_internal__pv__ProvidedVariablesBool: true,
+    });
+
+    ReactTestUtils.act(() => {
+      testAssets.pushNext({
+        data: {
+          userUpdated: {
+            user: {
+              id: "user-1",
+              onlineStatus: "Online",
+              someRandomArgField: "provided variable value",
+            },
+          },
+        },
+      });
+    });
+
+    await t.screen.findByText(
+      "Provided variable subscription status: received"
+    );
+  });
 });
