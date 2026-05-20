@@ -50,7 +50,7 @@ let fetch_ = (
     fetchQuery(
       environment,
       node,
-      variables->convertVariables,
+      variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->subscribe(
@@ -77,7 +77,7 @@ let fetchPromised = (
     fetchQuery(
       environment,
       node,
-      variables->convertVariables,
+      variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->toPromise
@@ -93,7 +93,12 @@ external commitPayload: (RescriptRelay.Environment.t, operationDescriptor, 'payl
 
 let retain = (~node, ~convertVariables: 'variables => 'variables) => {
   (~environment: RescriptRelay.Environment.t, ~variables: 'variables) =>
-    environment->retain_(createOperationDescriptor(node, variables->convertVariables))
+    environment->retain_(
+      createOperationDescriptor(
+        node,
+        variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+      ),
+    )
 }
 
 let commitLocalPayload = (
@@ -103,6 +108,9 @@ let commitLocalPayload = (
 ) =>
   (~environment: RescriptRelay.Environment.t, ~variables: 'variables, ~payload: 'rawResponse) =>
     environment->commitPayload(
-      createOperationDescriptor(node, variables->convertVariables),
+      createOperationDescriptor(
+        node,
+        variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+      ),
       payload->convertWrapRawResponse,
     )

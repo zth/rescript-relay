@@ -90,7 +90,7 @@ let commitMutation = (
         | None => None
         },
         ?uploadables,
-        variables: variables->convertVariables,
+        variables: variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       },
     )
   }
@@ -136,7 +136,7 @@ let useMutation = (
             | None => None
             },
             ?uploadables,
-            variables: variables->convertVariables,
+            variables: variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
           })
         }
       }, [mutate]), mutating)

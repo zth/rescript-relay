@@ -39,7 +39,7 @@ let commitMutation = (
       environment,
       makeConfig(
         ~mutation=node,
-        ~variables=variables->convertVariables,
+        ~variables=variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
         ~onCompleted=?switch onCompleted {
         | Some(f) => Some((res, err) => f(res->convertResponse, err))
         | None => None

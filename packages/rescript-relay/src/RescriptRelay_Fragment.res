@@ -259,7 +259,7 @@ let useRefetchableFragment = (
           refetchFn(
             RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
               variables->convertRefetchVariables,
-            ),
+            )->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
             internal_makeRefetchableFnOpts(~fetchPolicy?, ~onComplete?, ()),
           ),
       [refetchFn],

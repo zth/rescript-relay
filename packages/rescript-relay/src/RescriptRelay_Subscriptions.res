@@ -34,7 +34,7 @@ let subscribe = (
       {
         ?onCompleted,
         subscription: node,
-        variables: variables->convertVariables,
+        variables: variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
         ?onError,
         onNext: ?switch onNext {
         | Some(onNext) => Some(response => onNext(response->convertResponse))

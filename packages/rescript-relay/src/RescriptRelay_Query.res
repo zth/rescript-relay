@@ -57,7 +57,10 @@ let useLoader = (
     let loadQuery = React.useMemo1(
       () =>
         (~variables, ~fetchPolicy=?, ~networkCacheConfig=?) =>
-          loadQueryFn(variables->convertVariables, {?fetchPolicy, ?networkCacheConfig}),
+          loadQueryFn(
+            variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+            {?fetchPolicy, ?networkCacheConfig},
+          ),
       [loadQueryFn],
     )
     (nullableQueryRef->Nullable.toOption->mkQueryRef, loadQuery, disposableFn)
@@ -115,7 +118,7 @@ let fetch_ = (
     fetchQuery(
       environment,
       node,
-      variables->convertVariables,
+      variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->subscribe(
@@ -138,7 +141,7 @@ let fetchPromised = (
     fetchQuery(
       environment,
       node,
-      variables->convertVariables,
+      variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       Some({?networkCacheConfig, ?fetchPolicy}),
     )
     ->Observable.toPromise
@@ -159,7 +162,12 @@ let retain = (~node, ~convertVariables: 'variables => 'variables) => {
                 store regardless of what happens (like it not being used by \
                 any view and therefore potentially garbage collected).*/
   (~environment: Environment.t, ~variables: 'variables) => {
-    environment->Environment.retain(createOperationDescriptor(node, variables->convertVariables))
+    environment->Environment.retain(
+      createOperationDescriptor(
+        node,
+        variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+      ),
+    )
   }
 }
 
@@ -174,7 +182,10 @@ let commitLocalPayload = (
                   hit the server for. */
   (~environment: Environment.t, ~variables: 'variables, ~payload: 'rawResponse) =>
     environment->Environment.commitPayload(
-      createOperationDescriptor(node, variables->convertVariables),
+      createOperationDescriptor(
+        node,
+        variables->convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+      ),
       payload->convertWrapRawResponse,
     )
 }
