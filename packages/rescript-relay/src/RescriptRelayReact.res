@@ -61,7 +61,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
     loadQuery(
       environment,
       C.query,
-      variables->C.convertVariables,
+      variables->C.convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
       {
         fetchKey,
         fetchPolicy,

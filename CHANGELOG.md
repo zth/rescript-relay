@@ -1,5 +1,7 @@
 # master
 
+- Fix operations with no user supplied variables crashing when they include provided variables.
+
 # 4.4.1
 
 - Change name on internal fetch fn to avoid accidental shadowing.

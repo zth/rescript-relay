@@ -159,6 +159,47 @@ describe("Mutation", () => {
     await t.screen.findByText("First is idle");
   });
 
+  test("mutation with no variables can spread a provided variable fragment", async () => {
+    queryMock.mockQuery({
+      name: "TestMutationQuery",
+      data: {
+        loggedInUser: {
+          id: "user-1",
+          firstName: "First",
+          lastName: "Name",
+          onlineStatus: "Online",
+          memberOf,
+        },
+      },
+    });
+
+    t.render(test_mutation());
+    await t.screen.findByText("Provided variable mutation status: -");
+
+    queryMock.mockQuery({
+      name: "TestMutationWithProvidedVariableFragmentMutation",
+      variables: {
+        __relay_internal__pv__ProvidedVariablesBool: true,
+      },
+      data: {
+        updateUserAvatar: {
+          user: {
+            id: "user-1",
+            someRandomArgField: "provided variable value",
+          },
+        },
+      },
+    });
+
+    ReactTestUtils.act(() => {
+      t.fireEvent.click(
+        t.screen.getByText("Run mutation with provided variable fragment")
+      );
+    });
+
+    await t.screen.findByText("Provided variable mutation status: completed");
+  });
+
   test("optimistic response works", async () => {
     queryMock.mockQuery({
       name: "TestMutationQuery",

@@ -29,6 +29,16 @@ module ComplexMutation = %relay(`
     }
 `)
 
+module MutationWithProvidedVariableFragment = %relay(`
+    mutation TestMutationWithProvidedVariableFragmentMutation {
+      updateUserAvatar {
+        user {
+          ...TestMutationProvidedVariable_user
+        }
+      }
+    }
+`)
+
 module MutationWithOnlyFragment = %relay(`
     mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation($onlineStatus: OnlineStatus!) @raw_response_type {
       setOnlineStatus(onlineStatus: $onlineStatus) {
@@ -54,6 +64,15 @@ module Fragment = %relay(`
           name
         }
       }
+    }
+`)
+
+module ProvidedVariableFragment = %relay(`
+    fragment TestMutationProvidedVariable_user on User
+      @argumentDefinitions(
+        bool: { type: "Boolean!", provider: "ProvidedVariables.Bool" }
+      ) {
+      someRandomArgField(bool: $bool)
     }
 `)
 
@@ -84,6 +103,9 @@ module Test = {
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (mutate, isMutating) = Mutation.use()
     let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
+    let (providedVariableMutationStatus, setProvidedVariableMutationStatus) = React.useState(_ =>
+      "-"
+    )
     let someJsonValue =
       [
         ("foo", JSON.Encode.null),
@@ -114,6 +136,11 @@ module Test = {
         }),
       )}
       <div> {React.string("Inline status: " ++ inlineStatus)} </div>
+      <div>
+        {React.string(
+          "Provided variable mutation status: " ++ providedVariableMutationStatus,
+        )}
+      </div>
       <button
         onClick={_ => {
           let _ = {
@@ -214,6 +241,20 @@ module Test = {
         }}
       >
         {React.string("Change online status, complex")}
+      </button>
+      <button
+        onClick={_ => {
+          open MutationWithProvidedVariableFragment
+          commitMutation(~environment, ~variables=(), ~onCompleted=(response, _) => {
+            switch response {
+            | {updateUserAvatar: Some({user: Some(_)})} =>
+              setProvidedVariableMutationStatus(_ => "completed")
+            | _ => setProvidedVariableMutationStatus(_ => "missing user")
+            }
+          })->RescriptRelay.Disposable.ignore
+        }}
+      >
+        {React.string("Run mutation with provided variable fragment")}
       </button>
       <button
         onClick={_ => {
