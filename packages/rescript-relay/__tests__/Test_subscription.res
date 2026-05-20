@@ -27,6 +27,27 @@ module UserUpdatedSubscription = %relay(`
   }
 `)
 
+module SubscriptionWithProvidedVariableFragment = %relay(`
+  subscription TestSubscriptionWithProvidedVariableFragmentSubscription {
+    userUpdated(id: "user-1") {
+      user {
+        id
+        onlineStatus
+        ...TestSubscriptionProvidedVariable_user
+      }
+    }
+  }
+`)
+
+module ProvidedVariableFragment = %relay(`
+  fragment TestSubscriptionProvidedVariable_user on User
+    @argumentDefinitions(
+      bool: { type: "Boolean!", provider: "ProvidedVariables.Bool" }
+    ) {
+    someRandomArgField(bool: $bool)
+  }
+`)
+
 module Test = {
   @react.component
   let make = () => {
@@ -34,6 +55,8 @@ module Test = {
     let query = Query.use(~variables=())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (ready, setReady) = React.useState(() => false)
+    let (providedVariableSubscriptionStatus, setProvidedVariableSubscriptionStatus) =
+      React.useState(() => "-")
 
     React.useEffect0(() => {
       let disposable = UserUpdatedSubscription.subscribe(
@@ -89,6 +112,27 @@ module Test = {
       | Some(avatarUrl) => <img alt="avatar" src=avatarUrl />
       | None => React.null
       }}
+      <div>
+        {React.string(
+          "Provided variable subscription status: " ++ providedVariableSubscriptionStatus,
+        )}
+      </div>
+      <button
+        onClick={_ => {
+          SubscriptionWithProvidedVariableFragment.subscribe(
+            ~environment,
+            ~variables=(),
+            ~onNext=response =>
+              switch response {
+              | {userUpdated: Some({user: Some(_)})} =>
+                setProvidedVariableSubscriptionStatus(_ => "received")
+              | _ => setProvidedVariableSubscriptionStatus(_ => "missing user")
+              },
+          )->RescriptRelay.Disposable.ignore
+        }}
+      >
+        {React.string("Subscribe with provided variable fragment")}
+      </button>
     </div>
   }
 }
@@ -96,6 +140,7 @@ module Test = {
 @live
 let test_subscription = () => {
   let subscriptionFns = ref([])
+  let subscriptionVariables = ref(([]: array<JSON.t>))
 
   let subscribeToOnNext = nextFn => {
     let _ = subscriptionFns.contents->Array.push(nextFn)
@@ -107,7 +152,9 @@ let test_subscription = () => {
 
   let pushNext = next => subscriptionFns.contents->Array.forEach(fn => fn(next))
 
-  let subscriptionFunction = (_, _, _) => {
+  let subscriptionFunction = (_, variables, _) => {
+    let _ = subscriptionVariables.contents->Array.push(variables)
+
     RescriptRelay.Observable.make(sink => {
       let unsubscribe = subscribeToOnNext(next => sink.next(next))
       Some({
@@ -130,6 +177,13 @@ let test_subscription = () => {
   {
     "pushNext": pushNext,
     "subscriptionFunction": subscriptionFunction,
+    "getLastSubscriptionVariables": () => {
+      let len = subscriptionVariables.contents->Array.length
+
+      len > 0
+        ? subscriptionVariables.contents->Array.getUnsafe(len - 1)
+        : JSON.Encode.object(dict{})
+    },
     "render": () =>
       <TestProviders.Wrapper environment>
         <Test />

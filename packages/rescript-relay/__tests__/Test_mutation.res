@@ -102,6 +102,7 @@ module Test = {
     let query = Query.use(~variables=())
     let data = Fragment.use(query.loggedInUser.fragmentRefs)
     let (mutate, isMutating) = Mutation.use()
+    let (mutateWithProvidedVariableFragment, _) = MutationWithProvidedVariableFragment.use()
     let (inlineStatus, setInlineStatus) = React.useState(_ => "-")
     let (providedVariableMutationStatus, setProvidedVariableMutationStatus) = React.useState(_ =>
       "-"
@@ -255,6 +256,19 @@ module Test = {
         }}
       >
         {React.string("Run mutation with provided variable fragment")}
+      </button>
+      <button
+        onClick={_ => {
+          mutateWithProvidedVariableFragment(~variables=(), ~onCompleted=(response, _) => {
+            switch response {
+            | {updateUserAvatar: Some({user: Some(_)})} =>
+              setProvidedVariableMutationStatus(_ => "hook completed")
+            | _ => setProvidedVariableMutationStatus(_ => "hook missing user")
+            }
+          })->RescriptRelay.Disposable.ignore
+        }}
+      >
+        {React.string("Run mutation hook with provided variable fragment")}
       </button>
       <button
         onClick={_ => {

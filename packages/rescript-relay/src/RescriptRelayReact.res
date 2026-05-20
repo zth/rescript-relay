@@ -32,8 +32,16 @@ type loadQueryConfig = {
 }
 
 @module("react-relay")
-external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
+external loadQuery_: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
   "loadQuery"
+
+let loadQuery = (environment, query, variables, config) =>
+  loadQuery_(
+    environment,
+    query,
+    variables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+    config,
+  )
 
 module type MakeLoadQueryConfig = {
   type variables
@@ -61,7 +69,7 @@ module MakeLoadQuery = (C: MakeLoadQueryConfig) => {
     loadQuery(
       environment,
       C.query,
-      variables->C.convertVariables->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+      variables->C.convertVariables,
       {
         fetchKey,
         fetchPolicy,
