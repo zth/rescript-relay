@@ -1,21 +1,26 @@
 let make = (fragmentName: string, data: 'fragment): 'fragmentRefs => {
   ignore(fragmentName)
   ignore(data)
-  %raw(`({__rescriptRelaySyntheticFragmentRef: true, fragmentName, data})`)
-}
+  %raw(`
+    (() => {
+      const makeSingular = data => ({
+        __rescriptRelaySyntheticFragmentRef: true,
+        fragmentName,
+        data
+      });
 
-let makePlural = (fragmentName: string, data: array<'fragment>): array<'fragmentRefs> => {
-  ignore(fragmentName)
-  let fragmentRefs = data->Array.map(fragment => make(fragmentName, fragment))
-  ignore(
-    %raw(`
+      if (Array.isArray(data)) {
+        const fragmentRefs = data.map(makeSingular);
       Object.defineProperties(fragmentRefs, {
         __rescriptRelaySyntheticFragmentRef: {value: true},
         fragmentName: {value: fragmentName}
-      })
-    `),
-  )
-  fragmentRefs
+        });
+        return fragmentRefs;
+      }
+
+      return makeSingular(data);
+    })()
+  `)
 }
 
 let getDataForNode = (node: 'node, fragmentRef: 'fragmentRef): option<'fragment> => {

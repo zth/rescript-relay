@@ -22,26 +22,14 @@ let make ~loc ~moduleName ~refetchableQueryName
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] ->
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
-              (if isPlural then
-               [%stri
-                 module Test = struct
-                     let fromData
-                         (data :
-                           [%t typeFromGeneratedModule ["Types"; "fragment"]])
-                         =
-                       RescriptRelay_TestFragmentRef.makePlural
-                         [%e makeStringExpr ~loc moduleName] data
-                   end]
-               else
-               [%stri
-                 module Test = struct
-                     let fromData
-                         (data :
-                           [%t typeFromGeneratedModule ["Types"; "fragment"]])
-                         =
-                       RescriptRelay_TestFragmentRef.make
-                         [%e makeStringExpr ~loc moduleName] data
-                   end]);
+              [%stri
+                module Test = struct
+                  let fromData
+                      (data :
+                        [%t typeFromGeneratedModule ["Types"; "fragment"]]) =
+                    RescriptRelay_TestFragmentRef.make
+                      [%e makeStringExpr ~loc moduleName] data
+                end];
             ];
             (match
                (NonReactUtils.enabled.contents, hasAutocodesplitDirective)

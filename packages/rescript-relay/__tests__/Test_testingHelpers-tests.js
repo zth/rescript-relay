@@ -44,7 +44,7 @@ describe("Testing helpers", () => {
     const users = [
       { id: "synthetic-user-4", firstName: "Copied Synthetic", onlineStatus: "Online" },
     ];
-    const copiedRef = TestFragmentRef.makePlural(
+    const copiedRef = TestFragmentRef.make(
       "TestTestingHelpers_plural_user",
       users
     ).slice();
