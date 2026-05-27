@@ -40,6 +40,20 @@ describe("Testing helpers", () => {
     expect(TestFragmentRef.getDataForNode(PluralFragmentArtifact.node, [])).toBeUndefined();
   });
 
+  test("copied non-empty synthetic plural fragment ref arrays remain synthetic", () => {
+    const users = [
+      { id: "synthetic-user-4", firstName: "Copied Synthetic", onlineStatus: "Online" },
+    ];
+    const copiedRef = TestFragmentRef.makePlural(
+      "TestTestingHelpers_plural_user",
+      users
+    ).slice();
+
+    expect(TestFragmentRef.getDataForNode(PluralFragmentArtifact.node, copiedRef)).toEqual(
+      users
+    );
+  });
+
   test("typed query test helpers resolve a mock environment operation", async () => {
     const relayEnvironment = environment();
     t.render(queryHelpers(relayEnvironment));

@@ -27,8 +27,11 @@ let getDataForNode = (node: 'node, fragmentRef: 'fragmentRef): option<'fragment>
 
       if (Array.isArray(fragmentRef)) {
         if (
-          fragmentRef.__rescriptRelaySyntheticFragmentRef !== true ||
-          fragmentRef.fragmentName !== fragmentName
+          fragmentRef.length === 0 &&
+          (
+            fragmentRef.__rescriptRelaySyntheticFragmentRef !== true ||
+            fragmentRef.fragmentName !== fragmentName
+          )
         ) {
           return undefined;
         }
