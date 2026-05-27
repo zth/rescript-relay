@@ -299,7 +299,7 @@ let queryRefToObservable = token => {
   let raw = token->Internal.tokenToRaw
   raw.source->Nullable.toOption
 }
-
+  
 @live
 let queryRefToPromise = token => {
   Promise.make((resolve, _reject) => {
