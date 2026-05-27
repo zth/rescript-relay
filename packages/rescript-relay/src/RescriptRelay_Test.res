@@ -18,5 +18,5 @@ let resolveMostRecentOperation = (
 ) => {
   ignore(environment)
   ignore(payload)
-  ignore(%raw(`environment.mock.resolveMostRecentOperation({data: payload})`))
+  ignore(%raw(`environment.mock.resolveMostRecentOperation(() => ({data: payload}))`))
 }

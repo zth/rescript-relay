@@ -1,6 +1,7 @@
 require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const ReactTestUtils = require("react-dom/test-utils");
+const RescriptRelayTest = require("../src/RescriptRelay_Test.bs");
 const TestFragmentRef = require("../src/RescriptRelay_TestFragmentRef.bs");
 const { InlineFragment } = require("./Test_fragment.bs");
 const PluralFragmentArtifact = require("./__generated__/TestTestingHelpers_plural_user_graphql.bs");
@@ -57,6 +58,16 @@ describe("Testing helpers", () => {
 
   test("inline fragments do not expose synthetic data helpers", () => {
     expect(InlineFragment.Test).toBeUndefined();
+  });
+
+  test("resolveMostRecentOperation passes Relay a payload resolver", () => {
+    const payload = { loggedInUser: { firstName: "Resolved" } };
+    const mock = { resolveMostRecentOperation: jest.fn() };
+
+    RescriptRelayTest.resolveMostRecentOperation({ mock }, payload);
+
+    expect(mock.resolveMostRecentOperation).toHaveBeenCalledWith(expect.any(Function));
+    expect(mock.resolveMostRecentOperation.mock.calls[0][0]()).toEqual({ data: payload });
   });
 
   test("typed query test helpers resolve a mock environment operation", async () => {
