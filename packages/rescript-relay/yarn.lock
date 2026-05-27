@@ -3770,6 +3770,16 @@ relay-runtime@20.1.1:
     fbjs "^3.0.2"
     invariant "^2.2.4"
 
+relay-test-utils@20.1.1:
+  version "20.1.1"
+  resolved "https://registry.yarnpkg.com/relay-test-utils/-/relay-test-utils-20.1.1.tgz#7dbb7cdd3439ad1278ee1ce217ebdfbe75e9568a"
+  integrity sha512-9E6+smojY43XmBi7un5l+8xWpqq1AgJtNEJZHDOLbdF8NIOzxI1n/HF2zZeGbqVQWjpvl/EyqegL6LLrIIJpcA==
+  dependencies:
+    "@babel/runtime" "^7.25.0"
+    fbjs "^3.0.2"
+    invariant "^2.2.4"
+    relay-runtime "20.1.1"
+
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
