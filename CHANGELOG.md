@@ -1,4 +1,4 @@
-# master
+# 4.5.0
 
 - Add typed testing helpers for Relay tests:
   - `Fragment.Test.fromData` for rendering non-inline fragment components with typed data in tests, Storybook, and local examples.
