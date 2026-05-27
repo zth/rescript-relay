@@ -2,6 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const ReactTestUtils = require("react-dom/test-utils");
 const TestFragmentRef = require("../src/RescriptRelay_TestFragmentRef.bs");
+const { InlineFragment } = require("./Test_fragment.bs");
 const PluralFragmentArtifact = require("./__generated__/TestTestingHelpers_plural_user_graphql.bs");
 
 const {
@@ -52,6 +53,10 @@ describe("Testing helpers", () => {
     expect(TestFragmentRef.getDataForNode(PluralFragmentArtifact.node, copiedRef)).toEqual(
       users
     );
+  });
+
+  test("inline fragments do not expose synthetic data helpers", () => {
+    expect(InlineFragment.Test).toBeUndefined();
   });
 
   test("typed query test helpers resolve a mock environment operation", async () => {

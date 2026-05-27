@@ -10,7 +10,7 @@ RescriptRelay provides a small set of helpers for rendering fragment components 
 
 ## Rendering fragment components with data
 
-Every fragment module exposes `Test.fromData`. It takes the generated fragment data type and returns something that can be passed anywhere that fragment's ref type is expected.
+Every non-inline fragment module exposes `Test.fromData`. It takes the generated fragment data type and returns something that can be passed anywhere that fragment's ref type is expected.
 
 This is useful when you want to render a fragment component directly in tests, Storybook, or local examples without wrapping it in a Relay environment and executing a query.
 
