@@ -137,6 +137,9 @@ let syntheticPlural = () =>
   />
 
 @live
+let syntheticEmptyPlural = () => <SyntheticPlural users={PluralFragment.Test.fromData([])} />
+
+@live
 let environment = () => RescriptRelay_Test.createMockEnvironment()
 
 @live

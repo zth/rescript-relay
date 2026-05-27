@@ -1,11 +1,14 @@
 require("@testing-library/jest-dom/extend-expect");
 const t = require("@testing-library/react");
 const ReactTestUtils = require("react-dom/test-utils");
+const TestFragmentRef = require("../src/RescriptRelay_TestFragmentRef.bs");
+const PluralFragmentArtifact = require("./__generated__/TestTestingHelpers_plural_user_graphql.bs");
 
 const {
   synthetic,
   syntheticOpt,
   syntheticPlural,
+  syntheticEmptyPlural,
   environment,
   queryHelpers,
   interleaved,
@@ -26,6 +29,15 @@ describe("Testing helpers", () => {
   test("synthetic plural fragment refs render without a Relay provider", async () => {
     t.render(syntheticPlural());
     await t.screen.findByText("Plural Synthetic is online");
+  });
+
+  test("empty synthetic plural fragment refs render without a Relay provider", () => {
+    const { container } = t.render(syntheticEmptyPlural());
+    expect(container.firstChild).toBeEmptyDOMElement();
+  });
+
+  test("empty real plural fragment ref arrays are not treated as synthetic", () => {
+    expect(TestFragmentRef.getDataForNode(PluralFragmentArtifact.node, [])).toBeUndefined();
   });
 
   test("typed query test helpers resolve a mock environment operation", async () => {
