@@ -89,6 +89,13 @@ let queryHasRawResponseTypeDirective ~loc op =
     |> List.exists (fun (directive : Graphql_parser.directive) ->
            directive.name = "raw_response_type")
   | _ -> false
+let queryHasRelayTestOperationDirective ~loc op =
+  match op with
+  | Graphql_parser.Operation {optype = Query; name = Some _; directives} ->
+    directives
+    |> List.exists (fun (directive : Graphql_parser.directive) ->
+           directive.name = "relay_test_operation")
+  | _ -> false
 let fragmentIsUpdatable op =
   match op with
   | Graphql_parser.Fragment {directives} ->

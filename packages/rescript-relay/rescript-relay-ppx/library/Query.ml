@@ -1,7 +1,8 @@
 open Ppxlib
 open Util
 
-let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
+let make ~loc ~moduleName ~hasRawResponseType ~hasRelayTestOperation
+    ~hasAutocodesplitDirective =
   let typeFromGeneratedModule = makeTypeAccessor ~loc ~moduleName in
   let valFromGeneratedModule = makeExprAccessor ~loc ~moduleName in
   let moduleIdentFromGeneratedModule = makeModuleIdent ~loc ~moduleName in
@@ -111,6 +112,25 @@ let make ~loc ~moduleName ~hasRawResponseType ~hasAutocodesplitDirective =
                         ~node:[%e valFromGeneratedModule ["node"]]]
                 | false -> [%stri ()]);
               ]);
+            (match (hasRawResponseType, hasRelayTestOperation) with
+            | true, true ->
+              [
+                [%stri
+                  module Test = struct
+                    let queuePendingOperation ~environment ~variables =
+                      RescriptRelay_Test.queuePendingOperation ~environment
+                        ~node:[%e valFromGeneratedModule ["node"]]
+                        ~variables:
+                          (RescriptRelay_Internal
+                           .internal_cleanObjectFromUndefinedRaw
+                             (convertVariables variables))
+
+                    let resolveMostRecentOperation ~environment ~payload =
+                      RescriptRelay_Test.resolveMostRecentOperation ~environment
+                        ~payload:(convertWrapRawResponse payload)
+                  end];
+              ]
+            | _ -> []);
             (match
                (NonReactUtils.enabled.contents, hasAutocodesplitDirective)
              with

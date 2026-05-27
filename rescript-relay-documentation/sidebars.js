@@ -32,6 +32,7 @@ module.exports = {
       "refetching-and-loading-more-data",
       "pagination",
       "variables",
+      "testing",
       "subscriptions",
       "enums",
       "unions",

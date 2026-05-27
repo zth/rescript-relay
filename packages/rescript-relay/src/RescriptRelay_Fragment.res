@@ -15,7 +15,11 @@ let useFragment = (~node, ~convertFragment: 'fragment => 'fragment, ~fRef) => {
                      User @inline {...}`) and then use `Fragment.readInline`. \
                      This will allow you to get the fragment data, but outside \
                      of React's render.*/
-  (useFragment_(node, fRef)->RescriptRelay_Internal.internal_useConvertedValue(convertFragment, _))
+  switch RescriptRelay_TestFragmentRef.getDataForNode(node, fRef) {
+  | Some(data) => data
+  | None =>
+    useFragment_(node, fRef)->RescriptRelay_Internal.internal_useConvertedValue(convertFragment, _)
+  }
 }
 
 @module("react-relay")
@@ -29,14 +33,28 @@ let useFragmentOpt = (~fRef, ~node, ~convertFragment: 'fragment => 'fragment) =>
                      `option<fragmentRefs>` and get `option<'fragmentData>` \
                      back. Useful for scenarios where you don't have the \
                      fragmentRefs yet.*/
-  let data =
-    useFragmentOpt_(node, fRef)->Nullable.toOption
-  React.useMemo1(() => {
-    switch data {
-    | Some(data) => Some(convertFragment(data))
-    | None => None
+  switch fRef {
+  | Some(fRef) =>
+    switch RescriptRelay_TestFragmentRef.getDataForNode(node, fRef) {
+    | Some(data) => Some(data)
+    | None =>
+      let data = useFragmentOpt_(node, Some(fRef))->Nullable.toOption
+      React.useMemo1(() => {
+        switch data {
+        | Some(data) => Some(convertFragment(data))
+        | None => None
+        }
+      }, [data])
     }
-  }, [data])
+  | None =>
+    let data = useFragmentOpt_(node, None)->Nullable.toOption
+    React.useMemo1(() => {
+      switch data {
+      | Some(data) => Some(convertFragment(data))
+      | None => None
+      }
+    }, [data])
+  }
 }
 
 @module("react-relay")

@@ -40,6 +40,8 @@ let commonExtension =
               (selection_set |> Util.hasAutocodesplitDirective)
             ~moduleName:(op |> extractTheQueryName ~loc)
             ~hasRawResponseType:(op |> queryHasRawResponseTypeDirective ~loc)
+            ~hasRelayTestOperation:
+              (op |> queryHasRelayTestOperationDirective ~loc)
             ~loc
       | Operation {optype = Mutation} ->
         Mutation.make ~moduleName:(op |> extractTheMutationName ~loc) ~loc

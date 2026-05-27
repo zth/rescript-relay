@@ -23,6 +23,19 @@ let make ~loc ~moduleName ~refetchableQueryName
                     [%t typeFromGeneratedModule ["Types"; "fragment"]] =
                   [%e valFromGeneratedModule ["Internal"; "convertFragment"]]];
             ];
+            (match hasInlineDirective with
+            | false ->
+              [
+                [%stri
+                  module Test = struct
+                    let fromData
+                        (data :
+                          [%t typeFromGeneratedModule ["Types"; "fragment"]]) =
+                      RescriptRelay_TestFragmentRef.make
+                        [%e makeStringExpr ~loc moduleName] data
+                  end];
+              ]
+            | true -> []);
             (match
                (NonReactUtils.enabled.contents, hasAutocodesplitDirective)
              with

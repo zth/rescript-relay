@@ -1,5 +1,9 @@
 # master
 
+- Add typed testing helpers for Relay tests:
+  - `Fragment.Test.fromData` for rendering non-inline fragment components with typed data in tests, Storybook, and local examples.
+  - `RescriptRelay_Test.createMockEnvironment` plus generated query helpers for operations using both `@relay_test_operation` and `@raw_response_type`.
+
 # 4.4.2
 
 - Fix operations with no user supplied variables crashing when they include provided variables.
