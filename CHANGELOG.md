@@ -1,3 +1,7 @@
+# master
+
+- Fix `traverse` exiting after a custom-scalar array field, leaving subsequent nullable scalars on the same parent uncoerced and surfacing the raw `null` from the Relay store in the typed output.
+
 # 4.5.0
 
 - Add typed testing helpers for Relay tests:
