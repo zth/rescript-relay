@@ -109,7 +109,7 @@ function traverse(
     if (shouldConvertCustomFieldArray && Array.isArray(currentObj[key])) {
       newObj = getNewObj(newObj, currentObj);
       newObj[key] = currentObj[key].map(converters[instructions["ca"]]);
-      return newObj;
+      continue;
     }
 
     var shouldBlockTraversal = typeof instructions["b"] === "string";
@@ -134,7 +134,7 @@ function traverse(
     if (shouldConvertCustomField && Array.isArray(currentObj[key])) {
       newObj = getNewObj(newObj, currentObj);
       newObj[key] = converters[instructions["c"]](originalValue);
-      return newObj;
+      continue;
     }
 
     if (Array.isArray(currentObj[key])) {

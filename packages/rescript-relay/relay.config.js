@@ -13,6 +13,8 @@ module.exports = {
     IntString: "TestsUtils.IntString",
     JSON: "JSON.t",
     Number: "TestsUtils.Number",
+    ObjectScalar1: "TestsUtils.ObjectScalar1",
+    ObjectScalar2: "TestsUtils.ObjectScalar2",
   },
   persistConfig: PERSISTING
     ? {

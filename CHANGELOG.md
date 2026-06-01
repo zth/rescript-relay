@@ -1,3 +1,7 @@
+# master
+
+- Fix `traverse` exiting after a custom-scalar field (single array-backed `c`, or `ca`), leaving subsequent fields on the same parent uncoerced. Surfaced as raw `null` for nullable response fields, raw ReScript values for unserialized variables, and (in nested input objects) silently skipped converters. Closes #582; extends #434's #407 fix so trailing fields are preserved.
+
 # 4.5.0
 
 - Add typed testing helpers for Relay tests:

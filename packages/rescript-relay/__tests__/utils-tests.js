@@ -878,4 +878,384 @@ describe("conversion", () => {
       });
     });
   });
+
+  // `c` and `ca` are emitted identically for all four GraphQL array
+  // nullability variants (`[T!]!` / `[T!]` / `[T]!` / `[T]`) — only
+  // `found_in_array` (relay-typegen/src/rescript.rs) is encoded. The
+  // cells below cover each wire-payload shape `traverse` may see.
+  describe("custom scalar instructions (c, ca)", () => {
+    const SCALAR = "TestsUtils.FakeScalar";
+    // `parse` is shaped so an accidental `parse(null)` shows up in the
+    // assertion as `"parsed:null"` rather than something innocuous.
+    const parse = (v) => `parsed:${String(v)}`;
+    const serialize = (v) => ({ serialized: v });
+    const someNoneMarker = { BS_PRIVATE_NESTED_SOME_NONE: 0 };
+
+    describe("c — single custom scalar, read (nullableValue: undefined)", () => {
+      test("present value runs through `parse` and is the only sibling untouched", () => {
+        expect(
+          traverser(
+            { x: "raw" },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ x: "parsed:raw" });
+      });
+
+      test("null wire value becomes `undefined` and `parse` is never called", () => {
+        const spy = jest.fn(parse);
+        expect(
+          traverser(
+            { x: null },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: spy },
+            undefined
+          )
+        ).toEqual({ x: undefined });
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("BS_PRIVATE_NESTED_SOME_NONE marker passes through unchanged", () => {
+        const spy = jest.fn(parse);
+        const out = traverser(
+          { x: someNoneMarker },
+          { __root: { x: { c: SCALAR } } },
+          { [SCALAR]: spy },
+          undefined
+        );
+        expect(out.x).toBe(someNoneMarker);
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("c sibling with a null neighbour — null neighbour decodes to undefined", () => {
+        expect(
+          traverser(
+            { x: "raw", y: null },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ x: "parsed:raw", y: undefined });
+      });
+    });
+
+    describe("c — single custom scalar, write (nullableValue: null)", () => {
+      test("present value runs through `serialize`", () => {
+        expect(
+          traverser(
+            { x: 7 },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({ x: { serialized: 7 } });
+      });
+
+      test("null encodes to null and `serialize` is never called", () => {
+        const spy = jest.fn(serialize);
+        expect(
+          traverser(
+            { x: null },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: spy },
+            null
+          )
+        ).toEqual({ x: null });
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("c sibling followed by another c — both converters run", () => {
+        const out = traverser(
+          { a: 1, b: 2 },
+          { __root: { a: { c: SCALAR }, b: { c: SCALAR } } },
+          { [SCALAR]: serialize },
+          null
+        );
+        expect(out).toEqual({
+          a: { serialized: 1 },
+          b: { serialized: 2 },
+        });
+      });
+    });
+
+    describe("ca — custom scalar array, read (nullableValue: undefined)", () => {
+      test("[T!]! / [T!] — non-null elements, present array: parse runs per element", () => {
+        expect(
+          traverser(
+            { xs: ["a", "b"] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ xs: ["parsed:a", "parsed:b"] });
+      });
+
+      test("[T!]! / [T]! — empty array stays empty, parse is never called", () => {
+        const spy = jest.fn(parse);
+        expect(
+          traverser(
+            { xs: [] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: spy },
+            undefined
+          )
+        ).toEqual({ xs: [] });
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("[T!] / [T] — array-level null decodes to undefined", () => {
+        const spy = jest.fn(parse);
+        expect(
+          traverser(
+            { xs: null },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: spy },
+            undefined
+          )
+        ).toEqual({ xs: undefined });
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("[T]! / [T] — array contains a null element: CURRENT BEHAVIOR calls parse(null)", () => {
+        // Locks in current behavior. utils.js:109-113 maps `converter`
+        // over every element with no per-element null check, so a wire
+        // null reaches user code as `parse(null)`. A future fix should
+        // produce `[parse("a"), undefined, parse("b")]` — out of scope
+        // for this PR.
+        expect(
+          traverser(
+            { xs: ["a", null, "b"] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ xs: ["parsed:a", "parsed:null", "parsed:b"] });
+      });
+
+      test("BS_PRIVATE_NESTED_SOME_NONE on a ca field passes through unchanged", () => {
+        const spy = jest.fn(parse);
+        const out = traverser(
+          { xs: someNoneMarker },
+          { __root: { xs: { ca: SCALAR } } },
+          { [SCALAR]: spy },
+          undefined
+        );
+        expect(out.xs).toBe(someNoneMarker);
+        expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("ca — custom scalar array, write (nullableValue: null)", () => {
+      test("[T!]! / [T!] — present array: serialize runs per element", () => {
+        expect(
+          traverser(
+            { xs: [10, 20] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          xs: [{ serialized: 10 }, { serialized: 20 }],
+        });
+      });
+
+      test("[T!] / [T] — null array encodes to null, serialize never called", () => {
+        const spy = jest.fn(serialize);
+        expect(
+          traverser(
+            { xs: null },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: spy },
+            null
+          )
+        ).toEqual({ xs: null });
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      test("[T]! / [T] — array contains null element: CURRENT BEHAVIOR calls serialize(null)", () => {
+        // Symmetric to the read-side cell of the same name. Out of
+        // scope for this PR; correct output would be
+        // `[serialize(10), null, serialize(30)]`.
+        expect(
+          traverser(
+            { xs: [10, null, 30] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          xs: [
+            { serialized: 10 },
+            { serialized: null },
+            { serialized: 30 },
+          ],
+        });
+      });
+    });
+
+    describe("regression #631 — `ca` followed by null sibling", () => {
+      test("read — null sibling decodes to undefined", () => {
+        expect(
+          traverser(
+            { xs: ["a"], q: null },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ xs: ["parsed:a"], q: undefined });
+      });
+
+      test("write — null sibling encodes to null", () => {
+        expect(
+          traverser(
+            { xs: [1], q: null },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({ xs: [{ serialized: 1 }], q: null });
+      });
+    });
+
+    describe("regression #582 — `ca` followed by another `c`", () => {
+      test("write — both converters run", () => {
+        expect(
+          traverser(
+            { xs: [1], y: 2 },
+            { __root: { xs: { ca: SCALAR }, y: { c: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          xs: [{ serialized: 1 }],
+          y: { serialized: 2 },
+        });
+      });
+
+      test("read — both converters run", () => {
+        expect(
+          traverser(
+            { xs: ["a"], y: "b" },
+            { __root: { xs: { ca: SCALAR }, y: { c: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({
+          xs: ["parsed:a"],
+          y: "parsed:b",
+        });
+      });
+    });
+
+    describe("regression #407 — single `c` whose underlying type is an array", () => {
+      // GraphQL type is a single scalar but the ReScript representation
+      // is an array (e.g. `Number = array<int>`). Hits the
+      // `shouldConvertCustomField && Array.isArray(...)` branch at
+      // utils.js:134-138 — not `ca`.
+      test("read — converter receives the whole array as one argument, traversal continues", () => {
+        const wholeArrayConverter = (arr) =>
+          Array.isArray(arr) ? `arr:${arr.length}` : `not-arr:${String(arr)}`;
+        expect(
+          traverser(
+            { x: [1, 2, 3], q: null },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: wholeArrayConverter },
+            undefined
+          )
+        ).toEqual({ x: "arr:3", q: undefined });
+      });
+
+      test("write — converter receives the whole array as one argument, traversal continues", () => {
+        const wholeArrayConverter = (arr) =>
+          Array.isArray(arr) ? arr.reduce((a, b) => a + b, 0) : -1;
+        expect(
+          traverser(
+            { x: [1, 2, 3], q: null },
+            { __root: { x: { c: SCALAR } } },
+            { [SCALAR]: wholeArrayConverter },
+            null
+          )
+        ).toEqual({ x: 6, q: null });
+      });
+    });
+
+    describe("sequencing — `ca` and other fields in the same selection set", () => {
+      test("two `ca` fields in a row — both arrays are converted", () => {
+        expect(
+          traverser(
+            { as: [1, 2], bs: [10, 20] },
+            { __root: { as: { ca: SCALAR }, bs: { ca: SCALAR } } },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          as: [{ serialized: 1 }, { serialized: 2 }],
+          bs: [{ serialized: 10 }, { serialized: 20 }],
+        });
+      });
+
+      test("`ca` followed by a nested object whose fields need conversion — recursive descent still runs", () => {
+        expect(
+          traverser(
+            { xs: [1], inner: { y: 2 } },
+            {
+              __root: {
+                xs: { ca: SCALAR },
+                inner_y: { c: SCALAR },
+              },
+            },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          xs: [{ serialized: 1 }],
+          inner: { y: { serialized: 2 } },
+        });
+      });
+
+      test("null sibling BEFORE `ca` — positive control, no bug to trigger here", () => {
+        // Documents that the bug fixed by this PR was order-sensitive:
+        // it only fired when `ca` came BEFORE other fields, because the
+        // early-`return` skipped the rest of the loop. With the null
+        // sibling first, it's coerced normally and `ca` then runs.
+        expect(
+          traverser(
+            { q: null, xs: ["a"] },
+            { __root: { xs: { ca: SCALAR } } },
+            { [SCALAR]: parse },
+            undefined
+          )
+        ).toEqual({ q: undefined, xs: ["parsed:a"] });
+      });
+    });
+
+    describe("`ca` inside a nested input object", () => {
+      test("ca field followed by plain fields inside an `r` record stays intact", () => {
+        expect(
+          traverser(
+            {
+              input: {
+                ids: [1, 2, 3],
+                take: 1,
+                skip: 0,
+              },
+            },
+            {
+              __root: { input: { r: "searchInput" } },
+              searchInput: { ids: { ca: SCALAR } },
+            },
+            { [SCALAR]: serialize },
+            null
+          )
+        ).toEqual({
+          input: {
+            ids: [{ serialized: 1 }, { serialized: 2 }, { serialized: 3 }],
+            take: 1,
+            skip: 0,
+          },
+        });
+      });
+    });
+  });
 });

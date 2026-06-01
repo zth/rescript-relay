@@ -248,3 +248,15 @@ and input_Location_nullable =
 | @as("byAddress") ByAddress(input_ByAddress_nullable)
 | @as("byLoc") ByLoc(input_ByLoc_nullable)
 | @as("byId") ById(string)
+
+@live
+and input_SerializeMultipleCustomScalars = {
+  os1s: array<TestsUtils.ObjectScalar1.t>,
+  os2?: TestsUtils.ObjectScalar2.t,
+}
+
+@live
+and input_SerializeMultipleCustomScalars_nullable = {
+  os1s: array<TestsUtils.ObjectScalar1.t>,
+  os2?: Null.t<TestsUtils.ObjectScalar2.t>,
+}
