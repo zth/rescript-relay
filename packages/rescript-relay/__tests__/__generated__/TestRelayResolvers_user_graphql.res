@@ -2,10 +2,10 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type fragment = {
-    fullName: option<TestRelayUserResolver.t>,
+    fullName: option<string>,
     isOnline: option<bool>,
   }
 }
@@ -23,7 +23,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -33,7 +33,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestRelayResolvers_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 
@@ -41,8 +41,9 @@ type relayOperationNode
 type operationType = RescriptRelay.fragmentNode<relayOperationNode>
 
 
-%%private(let makeNode = (rescript_module_TestRelayUserResolver): operationType => {
-  ignore(rescript_module_TestRelayUserResolver)
+%%private(let makeNode = (resolverDataInjector, rescript_module_TestRelayUserResolver_fullName): operationType => {
+  ignore(resolverDataInjector)
+  ignore(rescript_module_TestRelayUserResolver_fullName)
   %raw(json`{
   "argumentDefinitions": [],
   "kind": "Fragment",
@@ -66,7 +67,7 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
       },
       "kind": "RelayResolver",
       "name": "fullName",
-      "resolverModule": rescript_module_TestRelayUserResolver,
+      "resolverModule": rescript_module_TestRelayUserResolver_fullName,
       "path": "fullName"
     }
   ],
@@ -74,5 +75,5 @@ type operationType = RescriptRelay.fragmentNode<relayOperationNode>
   "abstractKey": null
 }`)
 })
-let node: operationType = makeNode(TestRelayUserResolver.default)
+let node: operationType = makeNode(RescriptRelay.resolverDataInjector, TestRelayUserResolver.fullName)
 

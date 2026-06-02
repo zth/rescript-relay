@@ -30,6 +30,9 @@ type subscriptionNode<'node>
 /**This type shows all of the fragments that has been spread on this particular object.*/
 type fragmentRefs<'fragments>
 
+/**Internal fragment refs shape used by Relay Resolver schema assets.*/
+type resolverFragmentRefs<'fragments> = fragmentRefs<'fragments>
+
 /**The type of the id Relay uses to identify records in its store.*/
 type dataId
 
@@ -122,6 +125,9 @@ external storeRootType: string = "ROOT_TYPE"
 /**Internal, do not use.*/
 @module("./utils")
 external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
+
+/**Internal, do not use.*/
+let resolverDataInjector: 'resolverDataInjector
 
 /**Read the following section on working with the Relay store: https://relay.dev/docs/en/relay-store*/
 module RecordProxy: {
@@ -844,6 +850,16 @@ type fetchQueryOptions = {
   networkCacheConfig?: cacheConfig,
   fetchPolicy?: fetchPolicy,
 }
+
+type loadQueryConfig = {
+  fetchKey: option<string>,
+  fetchPolicy: option<fetchPolicy>,
+  networkCacheConfig: option<cacheConfig>,
+}
+
+@module("react-relay")
+external loadQuery: (Environment.t, queryNode<'a>, 'variables, loadQueryConfig) => 'queryResponse =
+  "loadQuery"
 
 module type MakeLoadQueryConfig = {
   type variables

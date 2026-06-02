@@ -8,7 +8,9 @@ module Test = {
   @react.component
   let make = () => {
     let data = Query.use(
-      ~variables=Query.makeVariables(~input=Query.make_searchInput(~id=123, ~someOtherId=1.5, ())),
+    ~variables=TestQueryInputObjectsQuery_graphql.Types.makeVariables(
+        ~input=RelaySchemaAssets_graphql.make_SearchInput(~id=123, ~someOtherId=1.5, ()),
+      ),
       (),
     )
 

@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_friendsConnection = {
     totalCount: int,
@@ -27,7 +27,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -37,7 +37,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestPaginationInNode_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 }
 

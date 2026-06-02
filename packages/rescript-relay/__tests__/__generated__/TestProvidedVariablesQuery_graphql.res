@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type inputC = RelaySchemaAssets_graphql.input_InputC
   type rec response_loggedInUser = {
@@ -15,10 +15,14 @@ module Types = {
   type rawResponse = response
   @live
   type variables = unit
+  @live let makeVariables = () => ()
   @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }
+
+
+type queryRef
 
 module Internal = {
   @live
@@ -33,7 +37,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -47,7 +51,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -61,7 +65,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -69,45 +73,36 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_inputC: (
-    ~intStr: TestsUtils.IntString.t,
-    ~recursiveC: inputC=?,
-    unit
-  ) => inputC = ""
-
-
-  @live @obj external makeVariables: unit => unit = ""
 }
-type providedVariable<'t> = { providedVariable: unit => 't, get: unit => 't }
-type providedVariablesType = {
+@live type providedVariable<'t> = { providedVariable: unit => 't, get: unit => 't }
+@live type providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesBool: providedVariable<bool>,
   __relay_internal__pv__ProvidedVariablesInputC: providedVariable<RelaySchemaAssets_graphql.input_InputC>,
   __relay_internal__pv__ProvidedVariablesInputCArr: providedVariable<option<array<RelaySchemaAssets_graphql.input_InputC>>>,
   __relay_internal__pv__ProvidedVariablesIntStr: providedVariable<TestsUtils.IntString.t>,
 }
-let providedVariablesDefinition: providedVariablesType = {
+@live let providedVariablesDefinition: providedVariablesType = {
   __relay_internal__pv__ProvidedVariablesBool: {
     providedVariable: ProvidedVariables.Bool.get,
     get: ProvidedVariables.Bool.get,
   },
   __relay_internal__pv__ProvidedVariablesInputC: {
     providedVariable: ProvidedVariables.InputC.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesInputC", ProvidedVariables.InputC.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__ProvidedVariablesInputC"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesInputC", ProvidedVariables.InputC.get())]))->Js.Dict.get("__relay_internal__pv__ProvidedVariablesInputC")->Belt.Option.getExn,
   },
   __relay_internal__pv__ProvidedVariablesInputCArr: {
     providedVariable: ProvidedVariables.InputCArr.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesInputCArr", ProvidedVariables.InputCArr.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__ProvidedVariablesInputCArr"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesInputCArr", ProvidedVariables.InputCArr.get())]))->Js.Dict.get("__relay_internal__pv__ProvidedVariablesInputCArr")->Belt.Option.getExn,
   },
   __relay_internal__pv__ProvidedVariablesIntStr: {
     providedVariable: ProvidedVariables.IntStr.get,
-    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesIntStr", ProvidedVariables.IntStr.get())]))->Js.Dict.unsafeGet("__relay_internal__pv__ProvidedVariablesIntStr"),
+    get: () => Internal.convertVariables(Js.Dict.fromArray([("__relay_internal__pv__ProvidedVariablesIntStr", ProvidedVariables.IntStr.get())]))->Js.Dict.get("__relay_internal__pv__ProvidedVariablesIntStr")->Belt.Option.getExn,
   },
 }
 
@@ -232,11 +227,44 @@ type operationType = RescriptRelay.queryNode<relayOperationNode>
 })
 let node: operationType = makeNode(providedVariablesDefinition)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

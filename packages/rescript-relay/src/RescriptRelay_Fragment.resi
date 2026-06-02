@@ -26,20 +26,6 @@ type paginationLoadMoreFn = (
   unit,
 ) => Disposable.t
 
-type paginationBlockingFragmentReturn<'fragment, 'refetchVariables> = {
-  data: 'fragment,
-  loadNext: paginationLoadMoreFn,
-  loadPrevious: paginationLoadMoreFn,
-  hasNext: bool,
-  hasPrevious: bool,
-  refetch: (
-    ~variables: 'refetchVariables,
-    ~fetchPolicy: fetchPolicy=?,
-    ~onComplete: option<Js.Exn.t> => unit=?,
-    unit,
-  ) => Disposable.t,
-}
-
 type paginationFragmentReturn<'fragment, 'refetchVariables> = {
   data: 'fragment,
   loadNext: paginationLoadMoreFn,
@@ -62,13 +48,6 @@ let usePaginationFragment: (
   ~convertFragment: 'fragment => 'fragment,
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
 ) => paginationFragmentReturn<'fragment, 'refetchVariables>
-
-let useBlockingPaginationFragment: (
-  ~node: fragmentNode<'a>,
-  ~fRef: 'b,
-  ~convertFragment: 'fragment => 'fragment,
-  ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
-) => paginationBlockingFragmentReturn<'fragment, 'refetchVariables>
 
 let useRefetchableFragment: (
   ~node: fragmentNode<'a>,

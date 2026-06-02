@@ -2,53 +2,47 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec fragment_memberOf_Group_topMember_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-  }
-  and fragment_memberOf_Group = {
-    @live __typename: [ | #Group],
-    name: string,
-    topMember: option<fragment_memberOf_Group_topMember>,
-  }
-  and fragment_memberOf_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-  }
-  and fragment_memberOfSingular_Group = {
-    @live __typename: [ | #Group],
-    name: string,
-  }
-  and fragment_memberOfSingular_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-  }
-  and fragment_memberOf_Group_topMember = [
-    | #User(fragment_memberOf_Group_topMember_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type fragment_memberOf_Group_topMember = 
+    | @live User(
+      {
+        firstName: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
-  and fragment_memberOf = [
-    | #Group(fragment_memberOf_Group)
-    | #User(fragment_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type fragment_memberOf = 
+    | @live Group(
+      {
+        name: string,
+        topMember: option<fragment_memberOf_Group_topMember>,
+      }
+    )
+    | @live User(
+      {
+        firstName: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
-  and fragment_memberOfSingular = [
-    | #Group(fragment_memberOfSingular_Group)
-    | #User(fragment_memberOfSingular_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type fragment_memberOfSingular = 
+    | @live Group(
+      {
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        firstName: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     avatarUrl: option<string>,
     firstName: string,
-    localStatus: option<[
-      | #Off
-      | #On
-    ]>,
+    localStatus: option<RelaySchemaAssets_graphql.enum_LocalStatus_input>,
     memberOf: option<array<option<fragment_memberOf>>>,
     memberOfSingular: option<fragment_memberOfSingular>,
     onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
@@ -56,64 +50,17 @@ module Types = {
 }
 
 @live
-let unwrap_fragment_memberOf_Group_topMember: {. "__typename": string } => [
-  | #User(Types.fragment_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_memberOf_Group_topMember: Types.fragment_memberOf_Group_topMember => Types.fragment_memberOf_Group_topMember = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_fragment_memberOf_Group_topMember: [
-  | #User(Types.fragment_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_memberOf_Group_topMember: Types.fragment_memberOf_Group_topMember => Types.fragment_memberOf_Group_topMember = RescriptRelay_Internal.wrapUnion
 @live
-let unwrap_fragment_memberOf: {. "__typename": string } => [
-  | #Group(Types.fragment_memberOf_Group)
-  | #User(Types.fragment_memberOf_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_memberOf: Types.fragment_memberOf => Types.fragment_memberOf = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_fragment_memberOf: [
-  | #Group(Types.fragment_memberOf_Group)
-  | #User(Types.fragment_memberOf_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_memberOf: Types.fragment_memberOf => Types.fragment_memberOf = RescriptRelay_Internal.wrapUnion
 @live
-let unwrap_fragment_memberOfSingular: {. "__typename": string } => [
-  | #Group(Types.fragment_memberOfSingular_Group)
-  | #User(Types.fragment_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_memberOfSingular: Types.fragment_memberOfSingular => Types.fragment_memberOfSingular = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_fragment_memberOfSingular: [
-  | #Group(Types.fragment_memberOfSingular_Group)
-  | #User(Types.fragment_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_memberOfSingular: Types.fragment_memberOfSingular => Types.fragment_memberOfSingular = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   type fragmentRaw
@@ -131,7 +78,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -141,10 +88,23 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestLocalPayload_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
+  external localStatus_toString: RelaySchemaAssets_graphql.enum_LocalStatus => string = "%identity"
+  @live
   external localStatus_input_toString: RelaySchemaAssets_graphql.enum_LocalStatus_input => string = "%identity"
+  @live
+  let localStatus_decode = (enum: RelaySchemaAssets_graphql.enum_LocalStatus): option<RelaySchemaAssets_graphql.enum_LocalStatus_input> => {
+    switch enum {
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
+    }
+  }
+  @live
+  let localStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_LocalStatus_input> => {
+    localStatus_decode(Obj.magic(str))
+  }
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
@@ -152,8 +112,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -191,7 +151,7 @@ v2 = {
 v3 = {
   "kind": "InlineFragment",
   "selections": [
-    (v0/*: any*/)
+    (v0)
   ],
   "type": "User",
   "abstractKey": null
@@ -202,7 +162,7 @@ return {
   "metadata": null,
   "name": "TestLocalPayload_user",
   "selections": [
-    (v0/*: any*/),
+    (v0),
     {
       "alias": null,
       "args": null,
@@ -225,11 +185,11 @@ return {
       "name": "memberOf",
       "plural": true,
       "selections": [
-        (v1/*: any*/),
+        (v1),
         {
           "kind": "InlineFragment",
           "selections": [
-            (v2/*: any*/),
+            (v2),
             {
               "alias": null,
               "args": null,
@@ -238,8 +198,8 @@ return {
               "name": "topMember",
               "plural": false,
               "selections": [
-                (v1/*: any*/),
-                (v3/*: any*/)
+                (v1),
+                (v3)
               ],
               "storageKey": null
             }
@@ -247,7 +207,7 @@ return {
           "type": "Group",
           "abstractKey": null
         },
-        (v3/*: any*/)
+        (v3)
       ],
       "storageKey": null
     },
@@ -259,16 +219,16 @@ return {
       "name": "memberOfSingular",
       "plural": false,
       "selections": [
-        (v1/*: any*/),
+        (v1),
         {
           "kind": "InlineFragment",
           "selections": [
-            (v2/*: any*/)
+            (v2)
           ],
           "type": "Group",
           "abstractKey": null
         },
-        (v3/*: any*/)
+        (v3)
       ],
       "storageKey": null
     },

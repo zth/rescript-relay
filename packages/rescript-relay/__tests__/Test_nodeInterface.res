@@ -9,7 +9,7 @@ module Query = %relay(`
       node(id: "123") {
         ... on User {
           firstName
-          ...TestNodeInterface_user
+          ...TestNodeInterface_user @alias
         }
       }
     }
@@ -38,7 +38,8 @@ module Test = {
     let query = Query.use(~variables=(), ())
 
     switch query.node {
-    | Some(user) => React.string(user.firstName)
+    | Some(User(user)) => React.string(user.firstName)
+    | Some(UnselectedUnionMember(_)) => React.string("-")
     | None => React.string("-")
     }
   }

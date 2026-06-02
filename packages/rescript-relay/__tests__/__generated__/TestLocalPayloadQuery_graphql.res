@@ -2,67 +2,56 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  @live
-  type rec rawResponse_loggedInUser_memberOf_Group_topMember_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOf_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-    topMember: option<rawResponse_loggedInUser_memberOf_Group_topMember>,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOf_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOfSingular_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-  }
-  @live
-  and rawResponse_loggedInUser_memberOfSingular_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  and rawResponse_loggedInUser_memberOf_Group_topMember = [
-    | #User(rawResponse_loggedInUser_memberOf_Group_topMember_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOf_Group_topMember = 
+    | @live User(
+      {
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
-  and rawResponse_loggedInUser_memberOf = [
-    | #Group(rawResponse_loggedInUser_memberOf_Group)
-    | #User(rawResponse_loggedInUser_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOf = 
+    | @live Group(
+      {
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+        topMember: option<rawResponse_loggedInUser_memberOf_Group_topMember>,
+      }
+    )
+    | @live User(
+      {
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
-  and rawResponse_loggedInUser_memberOfSingular = [
-    | #Group(rawResponse_loggedInUser_memberOfSingular_Group)
-    | #User(rawResponse_loggedInUser_memberOfSingular_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_loggedInUser_memberOfSingular = 
+    | @live Group(
+      {
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_loggedInUser = {
     @live id: string,
-    localStatus: option<[
-      | #Off
-      | #On
-    ]>,
+    localStatus: option<RelaySchemaAssets_graphql.enum_LocalStatus_input>,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestLocalPayload_user]>,
   }
   @live
@@ -70,17 +59,10 @@ module Types = {
     avatarUrl: option<string>,
     firstName: string,
     @live id: string,
-    localStatus: option<[
-      | #Off
-      | #On
-    ]>,
+    localStatus: option<RelaySchemaAssets_graphql.enum_LocalStatus_input>,
     memberOf: option<array<option<rawResponse_loggedInUser_memberOf>>>,
     memberOfSingular: option<rawResponse_loggedInUser_memberOfSingular>,
-    onlineStatus: option<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
   type response = {
     loggedInUser: response_loggedInUser,
@@ -91,70 +73,27 @@ module Types = {
   }
   @live
   type variables = unit
+  @live let makeVariables = () => ()
   @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }
 
 @live
-let unwrap_rawResponse_loggedInUser_memberOf_Group_topMember: {. "__typename": string } => [
-  | #User(Types.rawResponse_loggedInUser_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
+let unwrap_rawResponse_loggedInUser_memberOf_Group_topMember: Types.rawResponse_loggedInUser_memberOf_Group_topMember => Types.rawResponse_loggedInUser_memberOf_Group_topMember = RescriptRelay_Internal.unwrapUnion(_, ["User"])
+@live
+let wrap_rawResponse_loggedInUser_memberOf_Group_topMember: Types.rawResponse_loggedInUser_memberOf_Group_topMember => Types.rawResponse_loggedInUser_memberOf_Group_topMember = RescriptRelay_Internal.wrapUnion
+@live
+let unwrap_rawResponse_loggedInUser_memberOf: Types.rawResponse_loggedInUser_memberOf => Types.rawResponse_loggedInUser_memberOf = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
+@live
+let wrap_rawResponse_loggedInUser_memberOf: Types.rawResponse_loggedInUser_memberOf => Types.rawResponse_loggedInUser_memberOf = RescriptRelay_Internal.wrapUnion
+@live
+let unwrap_rawResponse_loggedInUser_memberOfSingular: Types.rawResponse_loggedInUser_memberOfSingular => Types.rawResponse_loggedInUser_memberOfSingular = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
+@live
+let wrap_rawResponse_loggedInUser_memberOfSingular: Types.rawResponse_loggedInUser_memberOfSingular => Types.rawResponse_loggedInUser_memberOfSingular = RescriptRelay_Internal.wrapUnion
 
-@live
-let wrap_rawResponse_loggedInUser_memberOf_Group_topMember: [
-  | #User(Types.rawResponse_loggedInUser_memberOf_Group_topMember_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
-@live
-let unwrap_rawResponse_loggedInUser_memberOf: {. "__typename": string } => [
-  | #Group(Types.rawResponse_loggedInUser_memberOf_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOf_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
+type queryRef
 
-@live
-let wrap_rawResponse_loggedInUser_memberOf: [
-  | #Group(Types.rawResponse_loggedInUser_memberOf_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOf_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
-@live
-let unwrap_rawResponse_loggedInUser_memberOfSingular: {. "__typename": string } => [
-  | #Group(Types.rawResponse_loggedInUser_memberOfSingular_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
-@live
-let wrap_rawResponse_loggedInUser_memberOfSingular: [
-  | #Group(Types.rawResponse_loggedInUser_memberOfSingular_Group)
-  | #User(Types.rawResponse_loggedInUser_memberOfSingular_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -166,7 +105,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -180,7 +119,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -194,7 +133,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapRawResponseRaw
@@ -212,7 +151,7 @@ module Internal = {
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type rawResponseRaw
@@ -230,17 +169,29 @@ module Internal = {
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
-    Js.undefined
+    None
   )
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
+  external localStatus_toString: RelaySchemaAssets_graphql.enum_LocalStatus => string = "%identity"
+  @live
   external localStatus_input_toString: RelaySchemaAssets_graphql.enum_LocalStatus_input => string = "%identity"
+  @live
+  let localStatus_decode = (enum: RelaySchemaAssets_graphql.enum_LocalStatus): option<RelaySchemaAssets_graphql.enum_LocalStatus_input> => {
+    switch enum {
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
+    }
+  }
+  @live
+  let localStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_LocalStatus_input> => {
+    localStatus_decode(Obj.magic(str))
+  }
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
   @live
@@ -248,15 +199,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: unit => unit = ""
 }
 
 type relayOperationNode
@@ -307,7 +257,7 @@ v4 = {
 v5 = {
   "kind": "InlineFragment",
   "selections": [
-    (v2/*: any*/)
+    (v2)
   ],
   "type": "User",
   "abstractKey": null
@@ -315,7 +265,7 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": [
-    (v0/*: any*/)
+    (v0)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -335,13 +285,13 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
+          (v0),
           {
             "args": null,
             "kind": "FragmentSpread",
             "name": "TestLocalPayload_user"
           },
-          (v1/*: any*/)
+          (v1)
         ],
         "storageKey": null
       }
@@ -363,8 +313,8 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
-          (v2/*: any*/),
+          (v0),
+          (v2),
           {
             "alias": null,
             "args": null,
@@ -387,11 +337,11 @@ return {
             "name": "memberOf",
             "plural": true,
             "selections": [
-              (v3/*: any*/),
+              (v3),
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v4/*: any*/),
+                  (v4),
                   {
                     "alias": null,
                     "args": null,
@@ -400,9 +350,9 @@ return {
                     "name": "topMember",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
-                      (v5/*: any*/),
-                      (v6/*: any*/)
+                      (v3),
+                      (v5),
+                      (v6)
                     ],
                     "storageKey": null
                   }
@@ -410,8 +360,8 @@ return {
                 "type": "Group",
                 "abstractKey": null
               },
-              (v5/*: any*/),
-              (v6/*: any*/)
+              (v5),
+              (v6)
             ],
             "storageKey": null
           },
@@ -423,42 +373,75 @@ return {
             "name": "memberOfSingular",
             "plural": false,
             "selections": [
-              (v3/*: any*/),
+              (v3),
               {
                 "kind": "InlineFragment",
                 "selections": [
-                  (v4/*: any*/)
+                  (v4)
                 ],
                 "type": "Group",
                 "abstractKey": null
               },
-              (v5/*: any*/),
-              (v6/*: any*/)
+              (v5),
+              (v6)
             ],
             "storageKey": null
           },
-          (v1/*: any*/)
+          (v1)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "077471b46af8ca6532731e3e3f851365",
+    "cacheID": "3c79db7eaae7f4b1fa8455bdf7960a6f",
     "id": null,
     "metadata": {},
     "name": "TestLocalPayloadQuery",
     "operationKind": "query",
-    "text": "query TestLocalPayloadQuery {\n  loggedInUser {\n    id\n    ...TestLocalPayload_user\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n  onlineStatus\n  memberOf {\n    __typename\n    ... on Group {\n      name\n      topMember {\n        __typename\n        ... on User {\n          firstName\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n  memberOfSingular {\n    __typename\n    ... on Group {\n      name\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "query TestLocalPayloadQuery {\n  loggedInUser {\n    id\n    ...TestLocalPayload_user\n  }\n}\n\nfragment TestLocalPayload_user on User {\n  firstName\n  avatarUrl\n  onlineStatus\n  memberOf {\n    __typename\n    ... on Group {\n      name\n      topMember {\n        __typename\n        ... on User {\n          firstName\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  memberOfSingular {\n    __typename\n    ... on Group {\n      name\n    }\n    ... on User {\n      firstName\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

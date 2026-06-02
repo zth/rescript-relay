@@ -103,9 +103,9 @@ module Test = {
         data.firstName ++
         (" is " ++
         switch data.onlineStatus {
-        | Some(#Online) => "online"
-        | Some(#Idle) => "idle"
-        | Some(#Offline) => "offline"
+        | Some(Online) => "online"
+        | Some(Idle) => "idle"
+        | Some(Offline) => "offline"
         | _ => "-"
         }),
       )}
@@ -114,7 +114,7 @@ module Test = {
         onClick={_ => {
           let _ = {
             open Mutation
-            commitMutation(~environment, ~variables=makeVariables(~onlineStatus=#Idle), ())
+            commitMutation(~environment, ~variables=TestMutationSetOnlineStatusMutation_graphql.Types.makeVariables(~onlineStatus=Idle), ())
           }
         }}>
         {React.string("Change online status")}
@@ -124,30 +124,26 @@ module Test = {
           open MutationWithOnlyFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=#Idle),
-            ~optimisticResponse=makeOptimisticResponse(
-              ~setOnlineStatus=make_rawResponse_setOnlineStatus(
-                ~user=make_rawResponse_setOnlineStatus_user(
-                  ~id=data.id,
-                  ~firstName=data.firstName,
-                  ~lastName=data.lastName,
-                  ~memberOf=[
-                    Some(
-                      #User({
-                        __typename: #User,
-                        firstName: "test",
-                        id: "123",
-                        __isNode: #User,
-                      }),
-                    ),
-                  ],
-                  ~onlineStatus=#Idle,
-                  (),
-                ),
-                (),
-              ),
-              (),
+            ~variables=TestMutationWithOnlyFragmentSetOnlineStatusMutation_graphql.Types.makeVariables(
+              ~onlineStatus=Idle,
             ),
+            ~optimisticResponse={
+              setOnlineStatus: Some({
+                user: Some({
+                  id: data.id,
+                  firstName: data.firstName,
+                  lastName: data.lastName,
+                  memberOf: Some([
+                    Some(User({
+                      firstName: "test",
+                      id: "123",
+                      __isNode: #User,
+                    })),
+                  ]),
+                  onlineStatus: Some(Idle),
+                }),
+              }),
+            },
             (),
           )->RescriptRelay.Disposable.ignore
         }}>
@@ -158,7 +154,9 @@ module Test = {
           open MutationWithInlineFragment
           commitMutation(
             ~environment,
-            ~variables=makeVariables(~onlineStatus=#Idle),
+            ~variables=TestMutationWithInlineFragmentSetOnlineStatusMutation_graphql.Types.makeVariables(
+              ~onlineStatus=Idle,
+            ),
             ~onCompleted=(response, _) => {
               setInlineStatus(_ => "completed")
               switch response {
@@ -166,9 +164,9 @@ module Test = {
                 let inlineData = InlineFragment.readInline(user.fragmentRefs)
                 setInlineStatus(_ =>
                   switch inlineData.onlineStatus {
-                  | Some(#Online) => "online"
-                  | Some(#Idle) => "idle"
-                  | Some(#Offline) => "offline"
+                  | Some(Online) => "online"
+                  | Some(Idle) => "idle"
+                  | Some(Offline) => "offline"
                   | _ => "unknown"
                   }
                 )
@@ -182,10 +180,12 @@ module Test = {
       </button>
       <button
         onClick={_ => {
-          let _ = {
-            open Mutation
-            mutate(~variables=makeVariables(~onlineStatus=#Idle), ())
-          }
+          let _ = mutate(
+            ~variables=TestMutationSetOnlineStatusMutation_graphql.Types.makeVariables(
+              ~onlineStatus=Idle,
+            ),
+            (),
+          )
         }}>
         {React.string(isMutating ? "Mutating..." : "Change online status via useMutation hook")}
       </button>
@@ -195,18 +195,21 @@ module Test = {
             open ComplexMutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(
+              ~variables=TestMutationSetOnlineStatusComplexMutation_graphql.Types.makeVariables(
                 // The "mess" below is to try and provoke a test failure if
                 // recursive conversion would be broken.
-                ~input=make_setOnlineStatusInput(
-                  ~onlineStatus=#Idle,
+                ~input=RelaySchemaAssets_graphql.make_SetOnlineStatusInput(
+                  ~onlineStatus=Idle,
                   ~someJsonValue,
-                  ~recursed=make_recursiveSetOnlineStatusInput(
+                  ~recursed=RelaySchemaAssets_graphql.make_RecursiveSetOnlineStatusInput(
                     ~someValue=100,
-                    ~setOnlineStatus=make_setOnlineStatusInput(
-                      ~onlineStatus=#Online,
+                    ~setOnlineStatus=RelaySchemaAssets_graphql.make_SetOnlineStatusInput(
+                      ~onlineStatus=Online,
                       ~someJsonValue,
-                      ~recursed=make_recursiveSetOnlineStatusInput(~someValue=100, ()),
+                      ~recursed=RelaySchemaAssets_graphql.make_RecursiveSetOnlineStatusInput(
+                        ~someValue=100,
+                        (),
+                      ),
                       (),
                     ),
                     (),
@@ -226,21 +229,18 @@ module Test = {
             open Mutation
             commitMutation(
               ~environment,
-              ~variables=makeVariables(~onlineStatus=#Idle),
-              ~optimisticResponse=makeOptimisticResponse(
-                ~setOnlineStatus=make_rawResponse_setOnlineStatus(
-                  ~user=make_rawResponse_setOnlineStatus_user(
-                    ~id=data.id,
-                    ~__id=data.id->RescriptRelay.makeDataId,
-                    ~onlineStatus=#Idle,
-                    ~firstName=data.firstName,
-                    ~lastName=data.lastName,
-                    (),
-                  ),
-                  (),
-                ),
-                (),
-              ),
+              ~variables=TestMutationSetOnlineStatusMutation_graphql.Types.makeVariables(~onlineStatus=Idle),
+              ~optimisticResponse={
+                setOnlineStatus: Some({
+                  user: Some({
+                    id: data.id,
+                    __id: Some(data.id->RescriptRelay.makeDataId),
+                    onlineStatus: Some(Idle),
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                  }),
+                }),
+              },
               (),
             )
           }
@@ -251,7 +251,7 @@ module Test = {
         onClick={_ => {
           let _ = Mutation.commitMutation(
             ~environment,
-            ~variables={onlineStatus: #Idle},
+            ~variables={onlineStatus: Idle},
             ~updater=(store, response) =>
               switch (
                 store->RescriptRelay.RecordSourceSelectorProxy.get(
@@ -267,7 +267,7 @@ module Test = {
                 ->RescriptRelay.RecordProxy.setValueString(
                   ~name="onlineStatus",
                   ~value=switch onlineStatus {
-                  | #Idle => "Offline"
+                  | Idle => "Offline"
                   | _ => "Online"
                   },
                   (),

@@ -2,7 +2,7 @@ module Query = %relay(`
     query TestRefetchingInNodeQuery($userId: ID!, $friendsOnlineStatuses: [OnlineStatus!]) {
       node(id: $userId) {
         ... on User {
-          ...TestRefetchingInNode_user @arguments(friendsOnlineStatuses: $friendsOnlineStatuses)
+          ...TestRefetchingInNode_user @arguments(friendsOnlineStatuses: $friendsOnlineStatuses) @alias
         }
       }
     }
@@ -35,7 +35,7 @@ module UserDisplayer = {
         data.firstName ++
         (" is " ++
         switch data.onlineStatus {
-        | Some(#Online) => "online"
+        | Some(Online) => "online"
         | _ => "-"
         }),
       )}
@@ -46,8 +46,6 @@ module UserDisplayer = {
             refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~showOnlineStatus=Some(true),
-                ~friendsOnlineStatuses=None,
-                (),
               ),
               (),
             )->RescriptRelay.Disposable.ignore
@@ -62,10 +60,19 @@ module UserDisplayer = {
 module Test = {
   @react.component
   let make = () => {
-    let query = Query.use(~variables={userId: "user-1", friendsOnlineStatuses: Some([#Online])}, ())
+    let query = Query.use(
+      ~variables=TestRefetchingInNodeQuery_graphql.Types.makeVariables(
+        ~userId="user-1",
+        ~friendsOnlineStatuses=[Online],
+      ),
+      (),
+    )
 
     switch query.node {
-    | Some(user) => <UserDisplayer queryRef=user.fragmentRefs />
+    | Some(User({testRefetchingInNode_user: Some(fragmentRefs)})) =>
+      <UserDisplayer queryRef=fragmentRefs />
+    | Some(User({testRefetchingInNode_user: None}))
+    | Some(UnselectedUnionMember(_)) => React.string("-")
     | None => React.string("-")
     }
   }

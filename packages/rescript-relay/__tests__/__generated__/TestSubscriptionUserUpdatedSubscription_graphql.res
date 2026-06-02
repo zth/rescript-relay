@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_userUpdated_user = {
@@ -24,6 +24,12 @@ module Types = {
   type variables = {
     userId: string,
   }
+  @live let makeVariables = (
+    ~userId: string,
+  ): variables => {
+    userId: userId
+  }
+
 }
 
 module Internal = {
@@ -37,7 +43,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type responseRaw
@@ -51,14 +57,14 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -67,19 +73,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~userId: string,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -117,14 +118,14 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestSubscriptionUserUpdatedSubscription",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "UserUpdatedPayload",
         "kind": "LinkedField",
         "name": "userUpdated",
@@ -138,8 +139,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "args": null,
                 "kind": "FragmentSpread",
@@ -157,13 +158,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestSubscriptionUserUpdatedSubscription",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "UserUpdatedPayload",
         "kind": "LinkedField",
         "name": "userUpdated",
@@ -177,8 +178,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "alias": null,
                 "args": null,

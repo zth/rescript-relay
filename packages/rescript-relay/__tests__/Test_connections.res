@@ -164,10 +164,10 @@ module Test = {
       <button
         onClick={_ => {
           addFriend(
-            ~variables=AddFriendMutation.makeVariables(
+            ~variables=TestConnections_AddFriendMutation_graphql.Types.makeVariables(
               ~connections={
                 open TestConnections_user_graphql
-                [user.__id->makeConnectionId(~beforeDate=makeDate(), ())]
+                [user.__id->makeConnectionId(~beforeDate=makeDate())]
               },
               ~friendId="123",
             ),

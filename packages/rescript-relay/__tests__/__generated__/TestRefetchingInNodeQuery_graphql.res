@@ -2,12 +2,16 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec response_node = {
-    @live __typename: [ | #User],
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>,
-  }
+  @tag("__typename") type response_node = 
+    | @live User(
+      {
+        @as("TestRefetchingInNode_user") testRefetchingInNode_user: option<RescriptRelay.fragmentRefs<[ | #TestRefetchingInNode_user]>>,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
+
   type response = {
     node: option<response_node>,
   }
@@ -15,32 +19,38 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    friendsOnlineStatuses: option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>,
+    friendsOnlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
     userId: string,
   }
+  @live let makeVariables = (
+    ~friendsOnlineStatuses=?,
+    ~userId: string,
+  ): variables => {
+    friendsOnlineStatuses: ?friendsOnlineStatuses,
+    userId: userId
+  }
+
   @live
   type refetchVariables = {
-    friendsOnlineStatuses: option<option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>>,
-    userId: option<string>,
+    friendsOnlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
+    userId?: string,
   }
   @live let makeRefetchVariables = (
     ~friendsOnlineStatuses=?,
     ~userId=?,
-    ()
   ): refetchVariables => {
-    friendsOnlineStatuses: friendsOnlineStatuses,
-    userId: userId
+    friendsOnlineStatuses: ?friendsOnlineStatuses,
+    userId: ?userId
   }
 
 }
+
+@live
+let unwrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.unwrapUnion(_, ["User"])
+@live
+let wrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.wrapUnion
+
+type queryRef
 
 module Internal = {
   @live
@@ -53,35 +63,39 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User_testRefetchingInNode_user":{"k":"TestRefetchingInNode_user"},"node_User_TestRefetchingInNode_user":{"k":"testRefetchingInNode_user"},"node":{"u":"response_node"}}}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "response_node": wrap_response_node,
+  }
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"tnf":"User","f":""}}}`
+    json`{"__root":{"node_User_testRefetchingInNode_user":{"k":"TestRefetchingInNode_user"},"node_User_TestRefetchingInNode_user":{"k":"testRefetchingInNode_user"},"node":{"u":"response_node"}}}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "response_node": unwrap_response_node,
+  }
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -89,12 +103,11 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -103,25 +116,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~friendsOnlineStatuses: array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>=?,
-    ~userId: string,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -156,8 +158,8 @@ v3 = {
 return {
   "fragment": {
     "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/)
+      (v0),
+      (v1)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -165,25 +167,36 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v2),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v3),
           {
             "kind": "InlineFragment",
             "selections": [
               {
-                "args": [
-                  {
-                    "kind": "Variable",
-                    "name": "friendsOnlineStatuses",
-                    "variableName": "friendsOnlineStatuses"
-                  }
-                ],
-                "kind": "FragmentSpread",
+                "fragment": {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "args": [
+                        {
+                          "kind": "Variable",
+                          "name": "friendsOnlineStatuses",
+                          "variableName": "friendsOnlineStatuses"
+                        }
+                      ],
+                      "kind": "FragmentSpread",
+                      "name": "TestRefetchingInNode_user"
+                    }
+                  ],
+                  "type": "User",
+                  "abstractKey": null
+                },
+                "kind": "AliasedInlineFragmentSpread",
                 "name": "TestRefetchingInNode_user"
               }
             ],
@@ -200,21 +213,21 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
+      (v1),
+      (v0)
     ],
     "kind": "Operation",
     "name": "TestRefetchingInNodeQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v2),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v3),
           {
             "alias": null,
             "args": null,
@@ -276,11 +289,44 @@ return {
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

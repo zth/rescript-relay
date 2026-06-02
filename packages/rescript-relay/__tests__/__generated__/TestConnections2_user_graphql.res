@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_member_User_friendsConnection_edges_node = {
     @live id: string,
@@ -13,14 +13,13 @@ module Types = {
   and fragment_member_User_friendsConnection = {
     edges: option<array<option<fragment_member_User_friendsConnection_edges>>>,
   }
-  and fragment_member_User = {
-    @live __typename: [ | #User],
-    friendsConnection: fragment_member_User_friendsConnection,
-  }
-  and fragment_member = [
-    | #User(fragment_member_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") and fragment_member = 
+    | @live User(
+      {
+        friendsConnection: fragment_member_User_friendsConnection,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type fragment = {
     member: option<fragment_member>,
@@ -28,22 +27,9 @@ module Types = {
 }
 
 @live
-let unwrap_fragment_member: {. "__typename": string } => [
-  | #User(Types.fragment_member_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_member: Types.fragment_member => Types.fragment_member = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_fragment_member: [
-  | #User(Types.fragment_member_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_member: Types.fragment_member => Types.fragment_member = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   type fragmentRaw
@@ -59,7 +45,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -78,17 +64,17 @@ let connectionKey = "TestConnections2_user_member_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Js.null<TestsUtils.Datetime.t>=Js.null, ~flt: Js.null<float>=Js.null, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t, ()) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~someInput: option<RelaySchemaAssets_graphql.input_SomeInput>=?, ~datetime: Js.Null.t<TestsUtils.Datetime.t>=Js.Null.empty, ~flt: Js.Null.t<float>=Js.Null.empty, ~datetime2: option<TestsUtils.Datetime.t>=?, ~datetime3: TestsUtils.Datetime.t) => {
   let datetime = datetime->Js.Null.toOption
   let datetime = switch datetime { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
   let flt = flt->Js.Null.toOption
   let datetime2 = switch datetime2 { | None => None | Some(v) => Some(TestsUtils.Datetime.serialize(v)) }
   let datetime3 = Some(TestsUtils.Datetime.serialize(datetime3))
-  let args = {"statuses": Some(Js.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
+  let args = {"statuses": Some(Js.Nullable.null), "objTests": [RescriptRelay_Internal.Arg(Some({"str": Some("123")})), RescriptRelay_Internal.Arg(Some({"bool": Some(true)})), RescriptRelay_Internal.Arg(someInput), RescriptRelay_Internal.Arg(someInput)], "objTest": {"datetime": datetime, "recursive": {"float": flt, "datetime": datetime2, "recursive": {"datetime": datetime3}}}}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 
   @live
@@ -185,7 +171,7 @@ return {
       "name": "member",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
+        (v0),
         {
           "kind": "InlineFragment",
           "selections": [
@@ -289,7 +275,7 @@ return {
                           "name": "id",
                           "storageKey": null
                         },
-                        (v0/*: any*/)
+                        (v0)
                       ],
                       "storageKey": null
                     },

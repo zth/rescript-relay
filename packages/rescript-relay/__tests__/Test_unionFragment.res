@@ -12,7 +12,7 @@ module Fragment = %relay(`
       ... on User {
         firstName
         onlineStatus
-        ...TestUnionFragmentUser_user
+        ...TestUnionFragmentUser_user @alias
       }
       ... on Group {
         name
@@ -32,7 +32,7 @@ module PluralFragment = %relay(`
       ... on User {
         firstName
         onlineStatus
-        ...TestUnionFragmentUser_user
+        ...TestUnionFragmentUser_user @alias
       }
       ... on Group {
         name
@@ -57,14 +57,14 @@ module FragmentRenderer = {
 
     <>
       {switch regular {
-      | #User({onlineStatus: Some(#Online), firstName, fragmentRefs}) => <>
+      | User({onlineStatus: Some(Online), firstName, testUnionFragmentUser_user: Some(fragmentRefs)}) => <>
           <div> {React.string(firstName ++ " is online")} </div>
           <UserFragmentRenderer user=fragmentRefs />
         </>
       | _ => React.null
       }}
       {switch plural {
-      | [#User({onlineStatus: Some(#Online), firstName, fragmentRefs})] => <>
+      | [User({onlineStatus: Some(Online), firstName, testUnionFragmentUser_user: Some(fragmentRefs)})] => <>
           <div> {React.string("plural: " ++ (firstName ++ " is online"))} </div>
           <UserFragmentRenderer prefix="plural: " user=fragmentRefs />
         </>

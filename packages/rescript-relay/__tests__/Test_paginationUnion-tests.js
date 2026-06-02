@@ -29,6 +29,12 @@ describe("Pagination", () => {
                 friendsConnection: {
                   totalCount: 2,
                 },
+                TestPaginationUnion_user: {
+                  firstName: "First",
+                  friendsConnection: {
+                    totalCount: 2,
+                  },
+                },
               },
             },
             {
@@ -83,6 +89,12 @@ describe("Pagination", () => {
                 friendsConnection: {
                   totalCount: 4,
                 },
+                TestPaginationUnion_user: {
+                  firstName: "Second",
+                  friendsConnection: {
+                    totalCount: 4,
+                  },
+                },
               },
             },
           ],
@@ -119,6 +131,12 @@ describe("Pagination", () => {
                 friendsConnection: {
                   totalCount: 2,
                 },
+                TestPaginationUnion_user: {
+                  firstName: "First",
+                  friendsConnection: {
+                    totalCount: 2,
+                  },
+                },
               },
             },
           ],
@@ -153,6 +171,12 @@ describe("Pagination", () => {
                 firstName: "Second",
                 friendsConnection: {
                   totalCount: 4,
+                },
+                TestPaginationUnion_user: {
+                  firstName: "Second",
+                  friendsConnection: {
+                    totalCount: 4,
+                  },
                 },
               },
             },

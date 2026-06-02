@@ -2,13 +2,17 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec response_node = {
-    @live __typename: string,
-    @live id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
-  }
+  @tag("__typename") type response_node = 
+    | @live User(
+      {
+        @as("TestPaginationInNode_query") testPaginationInNode_query: option<RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>>,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
+
   type response = {
     node: option<response_node>,
   }
@@ -18,18 +22,30 @@ module Types = {
   type variables = {
     userId: string,
   }
-  @live
-  type refetchVariables = {
-    userId: option<string>,
-  }
-  @live let makeRefetchVariables = (
-    ~userId=?,
-    ()
-  ): refetchVariables => {
+  @live let makeVariables = (
+    ~userId: string,
+  ): variables => {
     userId: userId
   }
 
+  @live
+  type refetchVariables = {
+    userId?: string,
+  }
+  @live let makeRefetchVariables = (
+    ~userId=?,
+  ): refetchVariables => {
+    userId: ?userId
+  }
+
 }
+
+@live
+let unwrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.unwrapUnion(_, ["User"])
+@live
+let wrap_response_node: Types.response_node => Types.response_node = RescriptRelay_Internal.wrapUnion
+
+type queryRef
 
 module Internal = {
   @live
@@ -42,35 +58,39 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
   @live
   let wrapResponseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":""}}}`
+    json`{"__root":{"node_User_testPaginationInNode_query":{"k":"TestPaginationInNode_query"},"node_User_TestPaginationInNode_query":{"k":"testPaginationInNode_query"},"node":{"u":"response_node"}}}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "response_node": wrap_response_node,
+  }
   @live
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
   @live
   let responseConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"node":{"f":""}}}`
+    json`{"__root":{"node_User_testPaginationInNode_query":{"k":"TestPaginationInNode_query"},"node_User_TestPaginationInNode_query":{"k":"testPaginationInNode_query"},"node":{"u":"response_node"}}}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "response_node": unwrap_response_node,
+  }
   @live
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -78,18 +98,12 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~userId: string,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -139,27 +153,38 @@ v4 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestPaginationInNodeQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v2),
+          (v3),
           {
             "kind": "InlineFragment",
             "selections": [
               {
-                "args": null,
-                "kind": "FragmentSpread",
+                "fragment": {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "TestPaginationInNode_query"
+                    }
+                  ],
+                  "type": "User",
+                  "abstractKey": null
+                },
+                "kind": "AliasedInlineFragmentSpread",
                 "name": "TestPaginationInNode_query"
               }
             ],
@@ -175,26 +200,26 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestPaginationInNodeQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v2),
+          (v3),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v4),
                 "concreteType": "UserConnection",
                 "kind": "LinkedField",
                 "name": "friendsConnection",
@@ -216,7 +241,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/),
+                          (v3),
                           {
                             "alias": null,
                             "args": null,
@@ -248,7 +273,7 @@ return {
                             ],
                             "storageKey": "friendsConnection(first:1)"
                           },
-                          (v2/*: any*/)
+                          (v2)
                         ],
                         "storageKey": null
                       },
@@ -292,7 +317,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v4),
                 "filters": [
                   "statuses"
                 ],
@@ -321,11 +346,44 @@ return {
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

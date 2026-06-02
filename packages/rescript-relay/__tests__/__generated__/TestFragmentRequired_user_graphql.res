@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type fragment_t = {
     onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus,
@@ -23,7 +23,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -33,7 +33,7 @@ external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestFragmentRequired_user]> => fragmentRef = "%identity"
 
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -42,8 +42,8 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
@@ -71,8 +71,7 @@ let node: operationType = %raw(json` {
         "name": "onlineStatus",
         "storageKey": null
       },
-      "action": "NONE",
-      "path": "onlineStatus"
+      "action": "NONE"
     }
   ],
   "type": "User",

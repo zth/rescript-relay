@@ -36,7 +36,7 @@ describe("Fragment", () => {
       variables: {
         id: "user-1",
         showOnlineStatus: true,
-        friendsOnlineStatuses: null,
+        friendsOnlineStatuses: ["Online"],
       },
       data: {
         node: {

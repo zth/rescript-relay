@@ -3,14 +3,11 @@ module.exports = {
   artifactDirectory: "./__tests__/__generated__",
   src: "./__tests__",
   language: "rescript",
-  customScalars: {
+  customScalarTypes: {
     Datetime: "TestsUtils.Datetime",
     IntString: "TestsUtils.IntString",
     JSON: "Js.Json.t",
     Number: "TestsUtils.Number",
-  },
-  featureFlags: {
-    enable_relay_resolver_transform: true,
   },
   schemaExtensions: ["./__tests__"],
 };

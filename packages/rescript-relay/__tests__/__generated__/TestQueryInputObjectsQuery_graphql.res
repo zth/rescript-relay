@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type searchInput = RelaySchemaAssets_graphql.input_SearchInput
   type response = {
@@ -14,18 +14,26 @@ module Types = {
   type variables = {
     input: searchInput,
   }
-  @live
-  type refetchVariables = {
-    input: option<searchInput>,
-  }
-  @live let makeRefetchVariables = (
-    ~input=?,
-    ()
-  ): refetchVariables => {
+  @live let makeVariables = (
+    ~input: searchInput,
+  ): variables => {
     input: input
   }
 
+  @live
+  type refetchVariables = {
+    input?: searchInput,
+  }
+  @live let makeRefetchVariables = (
+    ~input=?,
+  ): refetchVariables => {
+    input: ?input
+  }
+
 }
+
+
+type queryRef
 
 module Internal = {
   @live
@@ -38,7 +46,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -52,7 +60,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -66,7 +74,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -74,26 +82,12 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_searchInput: (
-    ~id: int,
-    ~names: array<option<string>>=?,
-    ~someOtherId: float=?,
-    unit
-  ) => searchInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~input: searchInput,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -125,20 +119,20 @@ v1 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestQueryInputObjectsQuery",
-    "selections": (v1/*: any*/),
+    "selections": (v1),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestQueryInputObjectsQuery",
-    "selections": (v1/*: any*/)
+    "selections": (v1)
   },
   "params": {
     "cacheID": "8441859dad587e683a224cfc73959cdc",
@@ -151,11 +145,44 @@ return {
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}
