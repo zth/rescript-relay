@@ -2,11 +2,10 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_node = {
-    @live __typename: string,
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationInNode_query]>,
   }
   @live
@@ -17,40 +16,46 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    count: option<int>,
-    cursor: option<string>,
+    count?: int,
+    cursor?: string,
     @live id: string,
-    onlineStatuses: option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>,
+    onlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
+  @live let makeVariables = (
+    ~count=?,
+    ~cursor=?,
+    ~id: string,
+    ~onlineStatuses=?,
+  ): variables => {
+    count: ?count,
+    cursor: ?cursor,
+    id: id,
+    onlineStatuses: ?onlineStatuses
+  }
+
   @live
   type refetchVariables = {
-    count: option<option<int>>,
-    cursor: option<option<string>>,
-    @live id: option<string>,
-    onlineStatuses: option<option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>>,
+    count?: option<int>,
+    cursor?: option<string>,
+    @live id?: string,
+    onlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,
     ~cursor=?,
     ~id=?,
     ~onlineStatuses=?,
-    ()
   ): refetchVariables => {
-    count: count,
-    cursor: cursor,
-    id: id,
-    onlineStatuses: onlineStatuses
+    count: ?count,
+    cursor: ?cursor,
+    id: ?id,
+    onlineStatuses: ?onlineStatuses
   }
 
 }
+
+
+type queryRef
 
 module Internal = {
   @live
@@ -63,7 +68,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -77,7 +82,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -91,7 +96,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -99,12 +104,11 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -113,27 +117,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~count: int=?,
-    ~cursor: string=?,
-    ~id: string,
-    ~onlineStatuses: array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>=?,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -202,10 +193,10 @@ v7 = [
 return {
   "fragment": {
     "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/),
-      (v2/*: any*/),
-      (v3/*: any*/)
+      (v0),
+      (v1),
+      (v2),
+      (v3)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -213,13 +204,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v4),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
+          (v5),
           {
             "args": [
               {
@@ -251,30 +242,30 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/),
-      (v3/*: any*/),
-      (v2/*: any*/)
+      (v0),
+      (v1),
+      (v3),
+      (v2)
     ],
     "kind": "Operation",
     "name": "TestPaginationInNodeRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v4),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
-          (v6/*: any*/),
+          (v5),
+          (v6),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v7),
                 "concreteType": "UserConnection",
                 "kind": "LinkedField",
                 "name": "friendsConnection",
@@ -296,7 +287,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v6/*: any*/),
+                          (v6),
                           {
                             "alias": null,
                             "args": null,
@@ -328,7 +319,7 @@ return {
                             ],
                             "storageKey": "friendsConnection(first:1)"
                           },
-                          (v5/*: any*/)
+                          (v5)
                         ],
                         "storageKey": null
                       },
@@ -372,7 +363,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v7),
                 "filters": [
                   "statuses"
                 ],
@@ -401,11 +392,44 @@ return {
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

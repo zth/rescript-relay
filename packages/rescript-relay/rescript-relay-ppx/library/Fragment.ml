@@ -98,14 +98,6 @@ let make ~loc ~moduleName ~refetchableQueryName ~extractedConnectionInfo
                           (fRef
                           |. [%e valFromGeneratedModule ["getFragmentRef"]])
                         ~node:[%e valFromGeneratedModule ["node"]]];
-                  [%stri
-                    let useBlockingPagination fRef =
-                      RescriptRelay_Fragment.useBlockingPaginationFragment
-                        ~convertFragment ~convertRefetchVariables
-                        ~fRef:
-                          (fRef
-                          |. [%e valFromGeneratedModule ["getFragmentRef"]])
-                        ~node:[%e valFromGeneratedModule ["node"]]];
                 ]
               else []);
           ]

@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_friendsConnection_edges_node = {
     @live id: string,
@@ -33,7 +33,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -52,12 +52,12 @@ let connectionKey = "TestPaginationInNode_friendsConnection"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus>>=?) => {
   let args = {"statuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 
   @live
@@ -116,7 +116,7 @@ return {
         "count": "count",
         "cursor": "cursor",
         "direction": "forward",
-        "path": (v0/*: any*/)
+        "path": (v0)
       }
     ],
     "refetch": {
@@ -126,7 +126,7 @@ return {
           "cursor": "cursor"
         },
         "backward": null,
-        "path": (v0/*: any*/)
+        "path": (v0)
       },
       "fragmentPathInResult": [
         "node"
@@ -170,7 +170,7 @@ return {
               "name": "node",
               "plural": false,
               "selections": [
-                (v1/*: any*/),
+                (v1),
                 {
                   "args": null,
                   "kind": "FragmentSpread",
@@ -224,7 +224,7 @@ return {
       ],
       "storageKey": null
     },
-    (v1/*: any*/)
+    (v1)
   ],
   "type": "User",
   "abstractKey": null

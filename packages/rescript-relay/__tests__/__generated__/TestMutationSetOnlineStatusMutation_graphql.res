@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_setOnlineStatus_user = {
@@ -20,11 +20,7 @@ module Types = {
     firstName: string,
     @live id: string,
     lastName: string,
-    onlineStatus: option<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
   @live
   and rawResponse_setOnlineStatus = {
@@ -40,12 +36,14 @@ module Types = {
   }
   @live
   type variables = {
-    onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
+    onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
   }
+  @live let makeVariables = (
+    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
+  ): variables => {
+    onlineStatus: onlineStatus
+  }
+
 }
 
 module Internal = {
@@ -59,7 +57,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -73,7 +71,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -87,7 +85,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapRawResponseRaw
@@ -101,7 +99,7 @@ module Internal = {
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type rawResponseRaw
@@ -115,11 +113,11 @@ module Internal = {
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
-    Js.undefined
+    None
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -128,49 +126,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~setOnlineStatus: rawResponse_setOnlineStatus=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user: (
-    ~__id: RescriptRelay.dataId=?,
-    ~firstName: string,
-    ~id: string,
-    ~lastName: string,
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ]=?,
-    unit
-  ) => rawResponse_setOnlineStatus_user = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus: (
-    ~user: rawResponse_setOnlineStatus_user=?,
-    unit
-  ) => rawResponse_setOnlineStatus = ""
-
-
 }
 
 type relayOperationNode
@@ -208,14 +171,14 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestMutationSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "SetOnlineStatusPayload",
         "kind": "LinkedField",
         "name": "setOnlineStatus",
@@ -229,8 +192,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "args": null,
                 "kind": "FragmentSpread",
@@ -248,13 +211,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestMutationSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "SetOnlineStatusPayload",
         "kind": "LinkedField",
         "name": "setOnlineStatus",
@@ -268,8 +231,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "alias": null,
                 "args": null,

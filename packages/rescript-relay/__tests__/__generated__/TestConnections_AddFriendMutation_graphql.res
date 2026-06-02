@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type rec response_addFriend_addedFriend = {
@@ -23,6 +23,14 @@ module Types = {
     connections: array<RescriptRelay.dataId>,
     friendId: string,
   }
+  @live let makeVariables = (
+    ~connections: array<RescriptRelay.dataId>,
+    ~friendId: string,
+  ): variables => {
+    connections: connections,
+    friendId: friendId
+  }
+
 }
 
 module Internal = {
@@ -36,7 +44,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -50,7 +58,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -64,7 +72,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -74,14 +82,8 @@ module Internal = {
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~connections: array<RescriptRelay.dataId>,
-    ~friendId: string,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -127,8 +129,8 @@ v3 = {
 return {
   "fragment": {
     "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/)
+      (v0),
+      (v1)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -136,13 +138,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v2),
         "concreteType": "AddFriendPayload",
         "kind": "LinkedField",
         "name": "addFriend",
         "plural": false,
         "selections": [
-          (v3/*: any*/)
+          (v3)
         ],
         "storageKey": null
       }
@@ -153,21 +155,21 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
+      (v1),
+      (v0)
     ],
     "kind": "Operation",
     "name": "TestConnections_AddFriendMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v2),
         "concreteType": "AddFriendPayload",
         "kind": "LinkedField",
         "name": "addFriend",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v3),
           {
             "alias": null,
             "args": null,

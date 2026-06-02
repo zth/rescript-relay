@@ -2,16 +2,15 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec response_member_User = {
-    @live __typename: [ | #User],
-    createdAt: TestsUtils.Datetime.t,
-  }
-  and response_member = [
-    | #User(response_member_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_member = 
+    | @live User(
+      {
+        createdAt: TestsUtils.Datetime.t,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_loggedInUser_friends = {
     createdAt: TestsUtils.Datetime.t,
@@ -28,42 +27,39 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    beforeDate: option<TestsUtils.Datetime.t>,
+    beforeDate?: TestsUtils.Datetime.t,
     number: TestsUtils.Number.t,
   }
+  @live let makeVariables = (
+    ~beforeDate=?,
+    ~number: TestsUtils.Number.t,
+  ): variables => {
+    beforeDate: ?beforeDate,
+    number: number
+  }
+
   @live
   type refetchVariables = {
-    beforeDate: option<option<TestsUtils.Datetime.t>>,
-    number: option<TestsUtils.Number.t>,
+    beforeDate?: option<TestsUtils.Datetime.t>,
+    number?: TestsUtils.Number.t,
   }
   @live let makeRefetchVariables = (
     ~beforeDate=?,
     ~number=?,
-    ()
   ): refetchVariables => {
-    beforeDate: beforeDate,
-    number: number
+    beforeDate: ?beforeDate,
+    number: ?number
   }
 
 }
 
 @live
-let unwrap_response_member: {. "__typename": string } => [
-  | #User(Types.response_member_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_response_member: Types.response_member => Types.response_member = RescriptRelay_Internal.unwrapUnion(_, ["User"])
 @live
-let wrap_response_member: [
-  | #User(Types.response_member_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_response_member: Types.response_member => Types.response_member = RescriptRelay_Internal.wrapUnion
+
+type queryRef
+
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -78,7 +74,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -95,7 +91,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -112,7 +108,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -120,20 +116,12 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~beforeDate: TestsUtils.Datetime.t=?,
-    ~number: TestsUtils.Number.t,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -173,7 +161,7 @@ v2 = [
   }
 ],
 v3 = [
-  (v1/*: any*/)
+  (v1)
 ],
 v4 = [
   {
@@ -191,7 +179,7 @@ v5 = {
 },
 v6 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
+  "selections": (v3),
   "type": "User",
   "abstractKey": null
 },
@@ -204,7 +192,7 @@ v7 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestCustomScalarsQuery",
@@ -217,15 +205,15 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
+          (v1),
           {
             "alias": null,
-            "args": (v2/*: any*/),
+            "args": (v2),
             "concreteType": "User",
             "kind": "LinkedField",
             "name": "friends",
             "plural": true,
-            "selections": (v3/*: any*/),
+            "selections": (v3),
             "storageKey": null
           }
         ],
@@ -233,14 +221,14 @@ return {
       },
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v4),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "member",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
-          (v6/*: any*/)
+          (v5),
+          (v6)
         ],
         "storageKey": "member(id:\"user-1\")"
       }
@@ -250,7 +238,7 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestCustomScalarsQuery",
     "selections": [
@@ -262,38 +250,38 @@ return {
         "name": "loggedInUser",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
+          (v1),
           {
             "alias": null,
-            "args": (v2/*: any*/),
+            "args": (v2),
             "concreteType": "User",
             "kind": "LinkedField",
             "name": "friends",
             "plural": true,
             "selections": [
-              (v1/*: any*/),
-              (v7/*: any*/)
+              (v1),
+              (v7)
             ],
             "storageKey": null
           },
-          (v7/*: any*/)
+          (v7)
         ],
         "storageKey": null
       },
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v4),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "member",
         "plural": false,
         "selections": [
-          (v5/*: any*/),
-          (v6/*: any*/),
+          (v5),
+          (v6),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v7/*: any*/)
+              (v7)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -304,21 +292,54 @@ return {
     ]
   },
   "params": {
-    "cacheID": "eb6fcc1cdc3534d168fa96d31831a59d",
+    "cacheID": "8f4f272becdd5571f35c995629b948df",
     "id": null,
     "metadata": {},
     "name": "TestCustomScalarsQuery",
     "operationKind": "query",
-    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n  $number: Number!\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate, number: $number) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "query TestCustomScalarsQuery(\n  $beforeDate: Datetime\n  $number: Number!\n) {\n  loggedInUser {\n    createdAt\n    friends(beforeDate: $beforeDate, number: $number) {\n      createdAt\n      id\n    }\n    id\n  }\n  member(id: \"user-1\") {\n    __typename\n    ... on User {\n      createdAt\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

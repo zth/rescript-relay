@@ -21,10 +21,11 @@ module RenderMe = {
   let make = () => {
     let query = Query.use(~variables=(), ~fetchPolicy=StoreOnly, ())
 
-    switch query.node {
-    | Some(user) => React.string("2: " ++ user.firstName)
-    | None => React.string("-")
-    }
+switch query.node {
+| Some(User(user)) => React.string("2: " ++ user.firstName)
+| Some(UnselectedUnionMember(_)) => React.string("-")
+| None => React.string("-")
+}
   }
 }
 

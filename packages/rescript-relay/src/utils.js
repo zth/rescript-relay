@@ -71,10 +71,16 @@ function traverse(
     var path = getPathName(thisPath);
 
     var instructions = instructionMap[path] || {};
+    var renameKey = instructions["k"];
+
+    if (typeof renameKey === "string" && renameKey !== key) {
+      newObj = getNewObj(newObj, currentObj);
+      newObj[renameKey] = currentObj[key];
+    }
 
     if (currentObj[key] == null) {
       newObj = getNewObj(newObj, currentObj);
-      newObj[key] = nullableValue;
+      newObj[renameKey || key] = nullableValue;
       continue;
     }
 

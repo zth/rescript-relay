@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type someInput = RelaySchemaAssets_graphql.input_SomeInput_nullable
   @live
@@ -25,12 +25,20 @@ module Types = {
     avatarUrl?: Js.Null.t<string>,
     someInput?: Js.Null.t<someInput>,
   }
+  @live let makeVariables = (
+    ~avatarUrl=?,
+    ~someInput=?,
+  ): variables => {
+    avatarUrl: ?avatarUrl,
+    someInput: ?someInput
+  }
+
 }
 
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"someInput":{"recursive":{"r":"someInput"},"datetime":{"c":"TestsUtils.Datetime"}},"__root":{"someInput":{"r":"someInput"}}}`
+    json`{"someInput":{"recursive":{"r":"someInput"},"private_":{"k":"private"},"private":{"k":"private_"},"datetime":{"c":"TestsUtils.Datetime"}},"__root":{"someInput":{"r":"someInput"}}}`
   )
   @live
   let variablesConverterMap = {
@@ -40,7 +48,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type wrapResponseRaw
@@ -54,7 +62,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -68,7 +76,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -78,27 +86,8 @@ module Internal = {
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external make_someInput: (
-    ~bool: bool=?,
-    ~datetime: TestsUtils.Datetime.t=?,
-    ~float: float=?,
-    ~int: int=?,
-    @as("private") ~_private: bool=?,
-    ~recursive: someInput=?,
-    ~str: string=?,
-    unit
-  ) => someInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~avatarUrl: string=?,
-    ~someInput: someInput=?,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -147,14 +136,14 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestNullableVariablesMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "UpdateUserAvatarPayload",
         "kind": "LinkedField",
         "name": "updateUserAvatar",
@@ -168,8 +157,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/)
+              (v2),
+              (v3)
             ],
             "storageKey": null
           }
@@ -182,13 +171,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestNullableVariablesMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "UpdateUserAvatarPayload",
         "kind": "LinkedField",
         "name": "updateUserAvatar",
@@ -202,8 +191,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "alias": null,
                 "args": null,

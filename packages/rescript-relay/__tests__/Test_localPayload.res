@@ -12,7 +12,7 @@ module ViaNodeInterface = %relay(`
     query TestLocalPayloadViaNodeInterfaceQuery($id: ID!) @raw_response_type {
       node(id: $id) {
         ... on User {
-          ...TestLocalPayload_user
+          ...TestLocalPayload_user @alias
         }
       }
     }
@@ -77,12 +77,12 @@ module Test = {
             ->Belt.Option.getWithDefault([])
             ->Belt.Array.keepMap(v => v)
             ->Belt.Array.get(0) {
-            | Some(#Group({name, topMember})) =>
+            | Some(Group({name, topMember})) =>
               `Group ${name}, top member: ${switch topMember {
-                | Some(#User({firstName})) => firstName
+                | Some(User({firstName})) => firstName
                 | _ => "-"
                 }}`
-            | Some(#User({firstName})) => `User ${firstName}`
+            | Some(User({firstName})) => `User ${firstName}`
             | _ => "-"
             }}`,
         )}
@@ -90,8 +90,8 @@ module Test = {
       <div>
         {React.string(
           `(singular) Member of: ${switch user.memberOfSingular {
-            | Some(#Group({name})) => `Group ${name}`
-            | Some(#User({firstName})) => `User ${firstName}`
+            | Some(Group({name})) => `Group ${name}`
+            | Some(User({firstName})) => `User ${firstName}`
             | _ => "-"
             }}`,
         )}
@@ -104,16 +104,15 @@ module Test = {
             ~payload={
               loggedInUser: {
                 id: data.loggedInUser.id,
-                localStatus: Some(#On),
-                onlineStatus: Some(#Online),
+                localStatus: Some(On),
+                onlineStatus: Some(Online),
                 firstName: "AnotherFirst",
                 avatarUrl: None,
                 memberOf: None,
                 memberOfSingular: Some(
-                  #Group({
+                  Group({
                     name: "Another Group",
                     id: "group-2",
-                    __typename: #Group,
                     __isNode: #Group,
                   }),
                 ),
@@ -128,33 +127,30 @@ module Test = {
             ~environment,
             ~variables={id: data.loggedInUser.id},
             ~payload={
-              node: Some({
+              node: Some(User({
                 id: data.loggedInUser.id,
-                localStatus: Some(#On),
+                localStatus: Some(On),
                 firstName: "AnotherFirst",
-                onlineStatus: Some(#Online),
+                onlineStatus: Some(Online),
                 avatarUrl: None,
-                __typename: #User,
                 memberOfSingular: None,
                 memberOf: Some([
                   Some(
-                    #Group({
+                    Group({
                       name: "Some Group",
-                      __typename: #Group,
                       __isNode: #Group,
                       id: "group-1",
                       topMember: Some(
-                        #User({
+                        User({
                           firstName: "Some User",
                           id: "user-2",
-                          __typename: #User,
                           __isNode: #User,
                         }),
                       ),
                     }),
                   ),
                 ]),
-              }),
+              })),
             },
           )}>
         {React.string("Update locally via Node interface")}

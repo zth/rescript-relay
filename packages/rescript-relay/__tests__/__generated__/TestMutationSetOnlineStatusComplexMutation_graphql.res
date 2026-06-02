@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live type setOnlineStatusInput = RelaySchemaAssets_graphql.input_SetOnlineStatusInput
   @live type recursiveSetOnlineStatusInput = RelaySchemaAssets_graphql.input_RecursiveSetOnlineStatusInput
@@ -25,6 +25,12 @@ module Types = {
   type variables = {
     input: setOnlineStatusInput,
   }
+  @live let makeVariables = (
+    ~input: setOnlineStatusInput,
+  ): variables => {
+    input: input
+  }
+
 }
 
 module Internal = {
@@ -40,7 +46,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -54,7 +60,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -68,7 +74,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -78,7 +84,7 @@ module Internal = {
   let convertRawResponse = convertResponse
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -87,38 +93,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external make_setOnlineStatusInput: (
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
-    ~recursed: recursiveSetOnlineStatusInput=?,
-    ~someJsonValue: Js.Json.t,
-    unit
-  ) => setOnlineStatusInput = ""
-
-
-  @live @obj external make_recursiveSetOnlineStatusInput: (
-    ~setOnlineStatus: setOnlineStatusInput=?,
-    ~someValue: TestsUtils.IntString.t,
-    unit
-  ) => recursiveSetOnlineStatusInput = ""
-
-
-  @live @obj external makeVariables: (
-    ~input: setOnlineStatusInput,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -179,20 +161,20 @@ v1 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestMutationSetOnlineStatusComplexMutation",
-    "selections": (v1/*: any*/),
+    "selections": (v1),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestMutationSetOnlineStatusComplexMutation",
-    "selections": (v1/*: any*/)
+    "selections": (v1)
   },
   "params": {
     "cacheID": "20484379745a128851fbf94268a240bf",

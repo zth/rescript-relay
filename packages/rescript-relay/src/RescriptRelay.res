@@ -9,6 +9,7 @@ type mutationNode<'node>
 type subscriptionNode<'node>
 
 type fragmentRefs<'fragments>
+type resolverFragmentRefs<'fragments> = fragmentRefs<'fragments>
 
 type dataId
 type recordSourceRecords = Js.Json.t
@@ -72,6 +73,9 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 
 @module("./utils")
 external convertObj: ('a, Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>>, 'b, 'c) => 'd = "traverser"
+
+@module("relay-runtime/experimental")
+external resolverDataInjector: 'resolverDataInjector = "resolverDataInjector"
 
 let optArrayOfNullableToOptArrayOfOpt: option<array<Js.Nullable.t<'a>>> => option<
   array<option<'a>>,
@@ -589,14 +593,24 @@ module Store = {
 module RequiredFieldLogger = {
   type kind = [#"missing_field.log" | #"missing_field.throw"]
 
-  type arg = {"kind": kind, "owner": string, "fieldPath": string}
+  type arg = {"kind": string, "owner": string, "fieldPath": string}
 
   type js = arg => unit
 
   type t = (~kind: kind, ~owner: string, ~fieldPath: string) => unit
 
-  let toJs: t => js = f => arg =>
-    f(~kind=arg["kind"], ~owner=arg["owner"], ~fieldPath=arg["fieldPath"])
+  let toJs: t => js = f => arg => {
+    let kind = switch arg["kind"] {
+    | "missing_required_field.log" => Some(#"missing_field.log")
+    | "missing_required_field.throw" => Some(#"missing_field.throw")
+    | _ => None
+    }
+
+    switch kind {
+    | Some(kind) => f(~kind, ~owner=arg["owner"], ~fieldPath=arg["fieldPath"])
+    | None => ()
+    }
+  }
 }
 
 module Environment = {
@@ -612,7 +626,7 @@ module Environment = {
     treatMissingFieldsAsNull: bool,
     missingFieldHandlers: array<MissingFieldHandler.t>,
     @optional
-    requiredFieldLogger: RequiredFieldLogger.js,
+    relayFieldLogger: RequiredFieldLogger.js,
     @optional
     isServer: bool,
   }
@@ -640,7 +654,7 @@ module Environment = {
         | Some(handlers) => handlers->Belt.Array.concat([nodeInterfaceMissingFieldHandler])
         | None => [nodeInterfaceMissingFieldHandler]
         },
-        ~requiredFieldLogger=?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
+        ~relayFieldLogger=?requiredFieldLogger->Belt.Option.map(RequiredFieldLogger.toJs),
         ~isServer?,
         (),
       ),

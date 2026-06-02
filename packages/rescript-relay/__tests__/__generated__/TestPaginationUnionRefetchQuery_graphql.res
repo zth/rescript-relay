@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   @live
   type response = {
@@ -12,40 +12,46 @@ module Types = {
   type rawResponse = response
   @live
   type variables = {
-    count: option<int>,
-    cursor: option<string>,
+    count?: int,
+    cursor?: string,
     groupId: string,
-    onlineStatuses: option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>,
+    onlineStatuses?: array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
+  @live let makeVariables = (
+    ~count=?,
+    ~cursor=?,
+    ~groupId: string,
+    ~onlineStatuses=?,
+  ): variables => {
+    count: ?count,
+    cursor: ?cursor,
+    groupId: groupId,
+    onlineStatuses: ?onlineStatuses
+  }
+
   @live
   type refetchVariables = {
-    count: option<option<int>>,
-    cursor: option<option<string>>,
-    groupId: option<string>,
-    onlineStatuses: option<option<array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>>>,
+    count?: option<int>,
+    cursor?: option<string>,
+    groupId?: string,
+    onlineStatuses?: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus_input>>,
   }
   @live let makeRefetchVariables = (
     ~count=?,
     ~cursor=?,
     ~groupId=?,
     ~onlineStatuses=?,
-    ()
   ): refetchVariables => {
-    count: count,
-    cursor: cursor,
-    groupId: groupId,
-    onlineStatuses: onlineStatuses
+    count: ?count,
+    cursor: ?cursor,
+    groupId: ?groupId,
+    onlineStatuses: ?onlineStatuses
   }
 
 }
+
+
+type queryRef
 
 module Internal = {
   @live
@@ -58,7 +64,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -72,7 +78,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -86,7 +92,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -94,12 +100,11 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -108,27 +113,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~count: int=?,
-    ~cursor: string=?,
-    ~groupId: string,
-    ~onlineStatuses: array<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>=?,
-    unit
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -179,8 +171,8 @@ v3 = [
     "name": "first",
     "variableName": "count"
   },
-  (v1/*: any*/),
-  (v2/*: any*/)
+  (v1),
+  (v2)
 ],
 v4 = {
   "alias": null,
@@ -205,7 +197,7 @@ v6 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestPaginationUnionRefetchQuery",
@@ -222,8 +214,8 @@ return {
             "name": "cursor",
             "variableName": "cursor"
           },
-          (v1/*: any*/),
-          (v2/*: any*/)
+          (v1),
+          (v2)
         ],
         "kind": "FragmentSpread",
         "name": "TestPaginationUnion_query"
@@ -234,13 +226,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestPaginationUnionRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v3),
         "concreteType": "MemberConnection",
         "kind": "LinkedField",
         "name": "members",
@@ -272,11 +264,11 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v4/*: any*/),
-                      (v5/*: any*/),
+                      (v4),
+                      (v5),
                       {
                         "alias": null,
-                        "args": (v6/*: any*/),
+                        "args": (v6),
                         "concreteType": "UserConnection",
                         "kind": "LinkedField",
                         "name": "friendsConnection",
@@ -299,7 +291,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v4/*: any*/),
+                      (v4),
                       {
                         "alias": null,
                         "args": null,
@@ -309,7 +301,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v6/*: any*/),
+                        "args": (v6),
                         "concreteType": "UserConnection",
                         "kind": "LinkedField",
                         "name": "adminsConnection",
@@ -331,8 +323,8 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v4/*: any*/),
-                                  (v5/*: any*/)
+                                  (v4),
+                                  (v5)
                                 ],
                                 "storageKey": null
                               }
@@ -349,7 +341,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v4/*: any*/)
+                      (v4)
                     ],
                     "type": "Node",
                     "abstractKey": "__isNode"
@@ -397,7 +389,7 @@ return {
       },
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v3),
         "filters": [
           "groupId",
           "onlineStatuses"
@@ -410,21 +402,54 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6af34d73805cda999d6b6988b06000ee",
+    "cacheID": "66615af413ef07d5369ef0bd94617e92",
     "id": null,
     "metadata": {},
     "name": "TestPaginationUnionRefetchQuery",
     "operationKind": "query",
-    "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
+    "text": "query TestPaginationUnionRefetchQuery(\n  $count: Int = 2\n  $cursor: String = \"\"\n  $groupId: ID!\n  $onlineStatuses: [OnlineStatus!]\n) {\n  ...TestPaginationUnion_query_2z6KWr\n}\n\nfragment TestPaginationUnion_query_2z6KWr on Query {\n  members(groupId: $groupId, onlineStatuses: $onlineStatuses, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          ...TestPaginationUnion_user\n        }\n        ... on Group {\n          id\n          name\n          adminsConnection(first: 1) {\n            edges {\n              node {\n                id\n                firstName\n              }\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment TestPaginationUnion_user on User {\n  firstName\n  friendsConnection(first: 1) {\n    totalCount\n  }\n}\n"
   }
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

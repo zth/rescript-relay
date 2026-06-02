@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec fragment_members_edges_node_Group_adminsConnection_edges_node = {
     firstName: string,
@@ -14,22 +14,21 @@ module Types = {
   and fragment_members_edges_node_Group_adminsConnection = {
     edges: option<array<option<fragment_members_edges_node_Group_adminsConnection_edges>>>,
   }
-  and fragment_members_edges_node_Group = {
-    @live __typename: [ | #Group],
-    adminsConnection: fragment_members_edges_node_Group_adminsConnection,
-    @live id: string,
-    name: string,
-  }
-  and fragment_members_edges_node_User = {
-    @live __typename: [ | #User],
-    @live id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>,
-  }
-  and fragment_members_edges_node = [
-    | #Group(fragment_members_edges_node_Group)
-    | #User(fragment_members_edges_node_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") and fragment_members_edges_node = 
+    | @live Group(
+      {
+        adminsConnection: fragment_members_edges_node_Group_adminsConnection,
+        @live id: string,
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        @as("TestPaginationUnion_user") testPaginationUnion_user: option<RescriptRelay.fragmentRefs<[ | #TestPaginationUnion_user]>>,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec fragment_members_edges = {
     node: option<fragment_members_edges_node>,
@@ -43,32 +42,15 @@ module Types = {
 }
 
 @live
-let unwrap_fragment_members_edges_node: {. "__typename": string } => [
-  | #Group(Types.fragment_members_edges_node_Group)
-  | #User(Types.fragment_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_fragment_members_edges_node: Types.fragment_members_edges_node => Types.fragment_members_edges_node = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_fragment_members_edges_node: [
-  | #Group(Types.fragment_members_edges_node_Group)
-  | #User(Types.fragment_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_fragment_members_edges_node: Types.fragment_members_edges_node => Types.fragment_members_edges_node = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   type fragmentRaw
   @live
   let fragmentConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
-    json`{"__root":{"members_edges_node_User":{"f":""},"members_edges_node":{"u":"fragment_members_edges_node"}}}`
+    json`{"__root":{"members_edges_node_User_testPaginationUnion_user":{"k":"TestPaginationUnion_user"},"members_edges_node_User_TestPaginationUnion_user":{"k":"testPaginationUnion_user"},"members_edges_node":{"u":"fragment_members_edges_node"}}}`
   )
   @live
   let fragmentConverterMap = {
@@ -78,7 +60,7 @@ module Internal = {
   let convertFragment = v => v->RescriptRelay.convertObj(
     fragmentConverter,
     fragmentConverterMap,
-    Js.undefined
+    None
   )
 }
 
@@ -97,13 +79,13 @@ let connectionKey = "TestPaginationUnion_query_members"
 )
 
 @live
-let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<[#Online | #Idle | #Offline]>>=?, ()) => {
+let makeConnectionId = (connectionParentDataId: RescriptRelay.dataId, ~groupId: string, ~onlineStatuses: option<array<RelaySchemaAssets_graphql.enum_OnlineStatus>>=?) => {
   let groupId = Some(groupId)
   let args = {"groupId": groupId, "onlineStatuses": onlineStatuses}
   internal_makeConnectionId(connectionParentDataId, args)
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
 
   @live
@@ -171,7 +153,7 @@ return {
         "count": "count",
         "cursor": "cursor",
         "direction": "forward",
-        "path": (v0/*: any*/)
+        "path": (v0)
       }
     ],
     "refetch": {
@@ -181,7 +163,7 @@ return {
           "cursor": "cursor"
         },
         "backward": null,
-        "path": (v0/*: any*/)
+        "path": (v0)
       },
       "fragmentPathInResult": [],
       "operation": rescript_graphql_node_TestPaginationUnionRefetchQuery
@@ -225,12 +207,30 @@ return {
               "plural": false,
               "selections": [
                 {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
+                },
+                {
                   "kind": "InlineFragment",
                   "selections": [
-                    (v1/*: any*/),
+                    (v1),
                     {
-                      "args": null,
-                      "kind": "FragmentSpread",
+                      "fragment": {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "args": null,
+                            "kind": "FragmentSpread",
+                            "name": "TestPaginationUnion_user"
+                          }
+                        ],
+                        "type": "User",
+                        "abstractKey": null
+                      },
+                      "kind": "AliasedInlineFragmentSpread",
                       "name": "TestPaginationUnion_user"
                     }
                   ],
@@ -240,7 +240,7 @@ return {
                 {
                   "kind": "InlineFragment",
                   "selections": [
-                    (v1/*: any*/),
+                    (v1),
                     {
                       "alias": null,
                       "args": null,
@@ -278,7 +278,7 @@ return {
                               "name": "node",
                               "plural": false,
                               "selections": [
-                                (v1/*: any*/),
+                                (v1),
                                 {
                                   "alias": null,
                                   "args": null,
@@ -298,13 +298,6 @@ return {
                   ],
                   "type": "Group",
                   "abstractKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
                 }
               ],
               "storageKey": null

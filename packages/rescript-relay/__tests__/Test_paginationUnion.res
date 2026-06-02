@@ -33,7 +33,7 @@ module Fragment = %relay(`
           node {
             ... on User {
               id
-              ...TestPaginationUnion_user
+              ...TestPaginationUnion_user @alias
             }
 
             ... on Group {
@@ -84,8 +84,12 @@ module Test = {
       ->Fragment.getConnectionNodes
       ->Belt.Array.mapWithIndex((i, member) =>
         switch member {
-        | #User(user) => <div key=user.id> <UserDisplayer user=user.fragmentRefs /> </div>
-        | #Group(group) =>
+        | User(user) =>
+          switch user.testPaginationUnion_user {
+          | Some(fragmentRefs) => <div key=user.id> <UserDisplayer user=fragmentRefs /> </div>
+          | None => React.null
+          }
+        | Group(group) =>
           <div key=group.id>
             {React.string(
               "Group " ++
@@ -98,7 +102,7 @@ module Test = {
               " admins"))),
             )}
           </div>
-        | #UnselectedUnionMember(_) =>
+        | UnselectedUnionMember(_) =>
           <div key={i->string_of_int}> {React.string("Unknown type")} </div>
         }
       )
@@ -114,8 +118,7 @@ module Test = {
             refetch(
               ~variables=Fragment.makeRefetchVariables(
                 ~groupId,
-                ~onlineStatuses=Some([#Online, #Idle]),
-                (),
+                ~onlineStatuses=Some([Online, Idle]),
               ),
               (),
             )->RescriptRelay.Disposable.ignore

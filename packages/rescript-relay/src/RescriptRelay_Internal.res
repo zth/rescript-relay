@@ -34,4 +34,8 @@ let internal_nullableToOptionalExnHandler = x =>
   | Some(handler) => Some(maybeExn => maybeExn->Js.Nullable.toOption->handler)
   }
 
+external wrapUnion: 'value => 'wrapped = "%identity"
+external unwrapUnionValue: 'value => 'unwrapped = "%identity"
+let unwrapUnion = (value, _memberTypes) => value->unwrapUnionValue
+
 @live @unboxed type rec arg = Arg(_): arg

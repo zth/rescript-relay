@@ -2,27 +2,24 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  @live
-  type rec rawResponse_setOnlineStatus_user_memberOf_Group = {
-    @live __typename: [ | #Group],
-    __isNode: [ | #Group],
-    @live id: string,
-    name: string,
-  }
-  @live
-  and rawResponse_setOnlineStatus_user_memberOf_User = {
-    @live __typename: [ | #User],
-    __isNode: [ | #User],
-    firstName: string,
-    @live id: string,
-  }
-  and rawResponse_setOnlineStatus_user_memberOf = [
-    | #Group(rawResponse_setOnlineStatus_user_memberOf_Group)
-    | #User(rawResponse_setOnlineStatus_user_memberOf_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type rawResponse_setOnlineStatus_user_memberOf = 
+    | @live Group(
+      {
+        __isNode: [ | #Group],
+        @live id: string,
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        __isNode: [ | #User],
+        firstName: string,
+        @live id: string,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   @live
   type rec response_setOnlineStatus_user = {
@@ -38,11 +35,7 @@ module Types = {
     @live id: string,
     lastName: string,
     memberOf: option<array<option<rawResponse_setOnlineStatus_user_memberOf>>>,
-    onlineStatus: option<[
-      | #Idle
-      | #Offline
-      | #Online
-    ]>,
+    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
   }
   @live
   and rawResponse_setOnlineStatus = {
@@ -58,35 +51,20 @@ module Types = {
   }
   @live
   type variables = {
-    onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
+    onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
   }
+  @live let makeVariables = (
+    ~onlineStatus: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
+  ): variables => {
+    onlineStatus: onlineStatus
+  }
+
 }
 
 @live
-let unwrap_rawResponse_setOnlineStatus_user_memberOf: {. "__typename": string } => [
-  | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
-  | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
-
+let unwrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
 @live
-let wrap_rawResponse_setOnlineStatus_user_memberOf: [
-  | #Group(Types.rawResponse_setOnlineStatus_user_memberOf_Group)
-  | #User(Types.rawResponse_setOnlineStatus_user_memberOf_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
+let wrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -98,7 +76,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -112,7 +90,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -126,7 +104,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapRawResponseRaw
@@ -142,7 +120,7 @@ module Internal = {
   let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type rawResponseRaw
@@ -158,11 +136,11 @@ module Internal = {
   let convertRawResponse = v => v->RescriptRelay.convertObj(
     rawResponseConverter,
     rawResponseConverterMap,
-    Js.undefined
+    None
   )
 }
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -171,65 +149,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: (
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ],
-  ) => variables = ""
-
-
-  @live @obj external makeOptimisticResponse: (
-    ~setOnlineStatus: rawResponse_setOnlineStatus=?,
-    unit
-  ) => rawResponse = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_Group: (
-    ~__typename: [ | #Group],
-    ~__isNode: [ | #Group],
-    ~id: string,
-    ~name: string,
-  ) => rawResponse_setOnlineStatus_user_memberOf_Group = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user_memberOf_User: (
-    ~__typename: [ | #User],
-    ~__isNode: [ | #User],
-    ~firstName: string,
-    ~id: string,
-  ) => rawResponse_setOnlineStatus_user_memberOf_User = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus_user: (
-    ~firstName: string,
-    ~id: string,
-    ~lastName: string,
-    ~memberOf: array<option<rawResponse_setOnlineStatus_user_memberOf>>=?,
-    ~onlineStatus: [
-      | #Idle
-      | #Offline
-      | #Online
-    ]=?,
-    unit
-  ) => rawResponse_setOnlineStatus_user = ""
-
-
-  @live @obj external make_rawResponse_setOnlineStatus: (
-    ~user: rawResponse_setOnlineStatus_user=?,
-    unit
-  ) => rawResponse_setOnlineStatus = ""
-
-
 }
 
 type relayOperationNode
@@ -267,14 +194,14 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "SetOnlineStatusPayload",
         "kind": "LinkedField",
         "name": "setOnlineStatus",
@@ -305,13 +232,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v1),
         "concreteType": "SetOnlineStatusPayload",
         "kind": "LinkedField",
         "name": "setOnlineStatus",
@@ -325,8 +252,8 @@ return {
             "name": "user",
             "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
+              (v2),
+              (v3),
               {
                 "alias": null,
                 "args": null,
@@ -359,7 +286,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v3/*: any*/)
+                      (v3)
                     ],
                     "type": "User",
                     "abstractKey": null
@@ -381,7 +308,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v2/*: any*/)
+                      (v2)
                     ],
                     "type": "Node",
                     "abstractKey": "__isNode"
@@ -398,12 +325,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "322a5bb9a0514feff61365f595c40d31",
+    "cacheID": "e0feba611b52ad3b8ccb480d649750c3",
     "id": null,
     "metadata": {},
     "name": "TestMutationWithOnlyFragmentSetOnlineStatusMutation",
     "operationKind": "mutation",
-    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TestMutationWithOnlyFragmentSetOnlineStatusMutation(\n  $onlineStatus: OnlineStatus!\n) {\n  setOnlineStatus(onlineStatus: $onlineStatus) {\n    user {\n      ...TestMutation_user\n      id\n    }\n  }\n}\n\nfragment TestMutation_user on User {\n  id\n  firstName\n  lastName\n  onlineStatus\n  memberOf {\n    __typename\n    ... on User {\n      firstName\n    }\n    ... on Group {\n      name\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })() `)

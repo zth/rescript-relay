@@ -3,7 +3,7 @@ module Query = %relay(`
       node(id: $userId) {
         id
         ... on User {
-          ...TestPaginationInNode_query
+          ...TestPaginationInNode_query @alias
         }
       }
     }
@@ -86,7 +86,7 @@ module UserNodeDisplayer = {
         onClick={_ => {
           startTransition(() => {
             refetch(
-              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([#Online, #Idle]), ()),
+              ~variables=Fragment.makeRefetchVariables(~onlineStatuses=Some([Online, Idle])),
               (),
             )->RescriptRelay.Disposable.ignore
           })
@@ -103,7 +103,10 @@ module Test = {
     let userId = "123"
     let query = Query.use(~variables={userId: userId}, ())
     switch query.node {
-    | Some(node) => <UserNodeDisplayer queryRef=node.fragmentRefs />
+    | Some(User({testPaginationInNode_query: Some(fragmentRefs)})) =>
+      <UserNodeDisplayer queryRef=fragmentRefs />
+    | Some(User({testPaginationInNode_query: None}))
+    | Some(UnselectedUnionMember(_)) => React.string("-")
     | None => React.string("-")
     }
   }

@@ -2,44 +2,42 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
-  type rec response_members_edges_node_Group_members_Group = {
-    @live __typename: [ | #Group],
-    avatarUrl: option<string>,
-    @live id: string,
-    name: string,
-  }
-  and response_members_edges_node_Group_members_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-    @live id: string,
-    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
-  }
-  and response_members_edges_node_Group = {
-    @live __typename: [ | #Group],
-    avatarUrl: option<string>,
-    @live id: string,
-    members: option<array<option<response_members_edges_node_Group_members>>>,
-    name: string,
-  }
-  and response_members_edges_node_User = {
-    @live __typename: [ | #User],
-    firstName: string,
-    @live id: string,
-    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
-  }
-  and response_members_edges_node_Group_members = [
-    | #Group(response_members_edges_node_Group_members_Group)
-    | #User(response_members_edges_node_Group_members_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_members_edges_node_Group_members = 
+    | @live Group(
+      {
+        avatarUrl: option<string>,
+        @live id: string,
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        firstName: string,
+        @live id: string,
+        onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
-  and response_members_edges_node = [
-    | #Group(response_members_edges_node_Group)
-    | #User(response_members_edges_node_User)
-    | #UnselectedUnionMember(string)
-  ]
+  @tag("__typename") type response_members_edges_node = 
+    | @live Group(
+      {
+        avatarUrl: option<string>,
+        @live id: string,
+        members: option<array<option<response_members_edges_node_Group_members>>>,
+        name: string,
+      }
+    )
+    | @live User(
+      {
+        firstName: string,
+        @live id: string,
+        onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+      }
+    )
+    | @live @as("__unselected") UnselectedUnionMember(string)
 
   type rec response_members_edges = {
     node: option<response_members_edges_node>,
@@ -54,53 +52,23 @@ module Types = {
   type rawResponse = response
   @live
   type variables = unit
+  @live let makeVariables = () => ()
   @live
   type refetchVariables = unit
   @live let makeRefetchVariables = () => ()
 }
 
 @live
-let unwrap_response_members_edges_node_Group_members: {. "__typename": string } => [
-  | #Group(Types.response_members_edges_node_Group_members_Group)
-  | #User(Types.response_members_edges_node_Group_members_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
+let unwrap_response_members_edges_node_Group_members: Types.response_members_edges_node_Group_members => Types.response_members_edges_node_Group_members = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
+@live
+let wrap_response_members_edges_node_Group_members: Types.response_members_edges_node_Group_members => Types.response_members_edges_node_Group_members = RescriptRelay_Internal.wrapUnion
+@live
+let unwrap_response_members_edges_node: Types.response_members_edges_node => Types.response_members_edges_node = RescriptRelay_Internal.unwrapUnion(_, ["Group", "User"])
+@live
+let wrap_response_members_edges_node: Types.response_members_edges_node => Types.response_members_edges_node = RescriptRelay_Internal.wrapUnion
 
-@live
-let wrap_response_members_edges_node_Group_members: [
-  | #Group(Types.response_members_edges_node_Group_members_Group)
-  | #User(Types.response_members_edges_node_Group_members_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
-@live
-let unwrap_response_members_edges_node: {. "__typename": string } => [
-  | #Group(Types.response_members_edges_node_Group)
-  | #User(Types.response_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] = u => switch u["__typename"] {
-  | "Group" => #Group(u->Obj.magic)
-  | "User" => #User(u->Obj.magic)
-  | v => #UnselectedUnionMember(v)
-}
+type queryRef
 
-@live
-let wrap_response_members_edges_node: [
-  | #Group(Types.response_members_edges_node_Group)
-  | #User(Types.response_members_edges_node_User)
-  | #UnselectedUnionMember(string)
-] => {. "__typename": string } = v => switch v {
-  | #Group(v) => v->Obj.magic
-  | #User(v) => v->Obj.magic
-  | #UnselectedUnionMember(v) => {"__typename": v}
-}
 module Internal = {
   @live
   let variablesConverter: Js.Dict.t<Js.Dict.t<Js.Dict.t<string>>> = %raw(
@@ -112,7 +80,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -129,7 +97,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -146,7 +114,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -154,12 +122,11 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
   @live
   external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
@@ -168,15 +135,14 @@ module Utils = {
   @live
   let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     switch enum {
-      | #...RelaySchemaAssets_graphql.enum_OnlineStatus_input as valid => Some(valid)
-      | _ => None
+      | FutureAddedValue(_) => None
+      | valid => Some(Obj.magic(valid))
     }
   }
   @live
   let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
     onlineStatus_decode(Obj.magic(str))
   }
-  @live @obj external makeVariables: unit => unit = ""
 }
 
 type relayOperationNode
@@ -208,7 +174,7 @@ v2 = {
 v3 = {
   "kind": "InlineFragment",
   "selections": [
-    (v2/*: any*/),
+    (v2),
     {
       "alias": null,
       "args": null,
@@ -244,9 +210,9 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": [
-    (v2/*: any*/),
-    (v4/*: any*/),
-    (v5/*: any*/)
+    (v2),
+    (v4),
+    (v5)
   ],
   "type": "Group",
   "abstractKey": null
@@ -254,7 +220,7 @@ v6 = {
 v7 = {
   "kind": "InlineFragment",
   "selections": [
-    (v2/*: any*/)
+    (v2)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -268,7 +234,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v0),
         "concreteType": "MemberConnection",
         "kind": "LinkedField",
         "name": "members",
@@ -290,14 +256,14 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
-                  (v3/*: any*/),
+                  (v1),
+                  (v3),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v2/*: any*/),
-                      (v4/*: any*/),
-                      (v5/*: any*/),
+                      (v2),
+                      (v4),
+                      (v5),
                       {
                         "alias": null,
                         "args": null,
@@ -306,9 +272,9 @@ return {
                         "name": "members",
                         "plural": true,
                         "selections": [
-                          (v1/*: any*/),
-                          (v3/*: any*/),
-                          (v6/*: any*/)
+                          (v1),
+                          (v3),
+                          (v6)
                         ],
                         "storageKey": null
                       }
@@ -337,7 +303,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v0),
         "concreteType": "MemberConnection",
         "kind": "LinkedField",
         "name": "members",
@@ -359,14 +325,14 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
-                  (v3/*: any*/),
+                  (v1),
+                  (v3),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v2/*: any*/),
-                      (v4/*: any*/),
-                      (v5/*: any*/),
+                      (v2),
+                      (v4),
+                      (v5),
                       {
                         "alias": null,
                         "args": null,
@@ -375,10 +341,10 @@ return {
                         "name": "members",
                         "plural": true,
                         "selections": [
-                          (v1/*: any*/),
-                          (v3/*: any*/),
-                          (v6/*: any*/),
-                          (v7/*: any*/)
+                          (v1),
+                          (v3),
+                          (v6),
+                          (v7)
                         ],
                         "storageKey": null
                       }
@@ -386,7 +352,7 @@ return {
                     "type": "Group",
                     "abstractKey": null
                   },
-                  (v7/*: any*/)
+                  (v7)
                 ],
                 "storageKey": null
               }
@@ -399,21 +365,54 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7796bda6800b2da0ffac4f5a3b38b745",
+    "cacheID": "464cf1fe26e84aecf1d63a8c3837206c",
     "id": null,
     "metadata": {},
     "name": "TestUnionsQuery",
     "operationKind": "query",
-    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __isNode: __typename\n              __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query TestUnionsQuery {\n  members(groupId: \"123\") {\n    edges {\n      node {\n        __typename\n        ... on User {\n          id\n          firstName\n          onlineStatus\n        }\n        ... on Group {\n          id\n          name\n          avatarUrl\n          members {\n            __typename\n            ... on User {\n              id\n              firstName\n              onlineStatus\n            }\n            ... on Group {\n              id\n              name\n              avatarUrl\n            }\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}

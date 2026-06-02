@@ -2,7 +2,7 @@
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
-  @@ocaml.warning("-30")
+  @@warning("-30")
 
   type rec response_loggedInUser = {
     fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestConnections_user]>,
@@ -16,18 +16,26 @@ module Types = {
   type variables = {
     beforeDate: TestsUtils.Datetime.t,
   }
-  @live
-  type refetchVariables = {
-    beforeDate: option<TestsUtils.Datetime.t>,
-  }
-  @live let makeRefetchVariables = (
-    ~beforeDate=?,
-    ()
-  ): refetchVariables => {
+  @live let makeVariables = (
+    ~beforeDate: TestsUtils.Datetime.t,
+  ): variables => {
     beforeDate: beforeDate
   }
 
+  @live
+  type refetchVariables = {
+    beforeDate?: TestsUtils.Datetime.t,
+  }
+  @live let makeRefetchVariables = (
+    ~beforeDate=?,
+  ): refetchVariables => {
+    beforeDate: ?beforeDate
+  }
+
 }
+
+
+type queryRef
 
 module Internal = {
   @live
@@ -42,7 +50,7 @@ module Internal = {
   let convertVariables = v => v->RescriptRelay.convertObj(
     variablesConverter,
     variablesConverterMap,
-    Js.undefined
+    None
   )
   @live
   type wrapResponseRaw
@@ -56,7 +64,7 @@ module Internal = {
   let convertWrapResponse = v => v->RescriptRelay.convertObj(
     wrapResponseConverter,
     wrapResponseConverterMap,
-    Js.null
+    Js.Nullable.null
   )
   @live
   type responseRaw
@@ -70,7 +78,7 @@ module Internal = {
   let convertResponse = v => v->RescriptRelay.convertObj(
     responseConverter,
     responseConverterMap,
-    Js.undefined
+    None
   )
   type wrapRawResponseRaw = wrapResponseRaw
   @live
@@ -78,18 +86,12 @@ module Internal = {
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse
+  type rawPreloadToken<'response> = {source: Js.Nullable.t<RescriptRelay.Observable.t<'response>>}
+  external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }
-
-type queryRef
-
 module Utils = {
-  @@ocaml.warning("-33")
+  @@warning("-33")
   open Types
-  @live @obj external makeVariables: (
-    ~beforeDate: TestsUtils.Datetime.t,
-  ) => variables = ""
-
-
 }
 
 type relayOperationNode
@@ -115,7 +117,7 @@ v2 = [
     "name": "after",
     "value": ""
   },
-  (v1/*: any*/),
+  (v1),
   {
     "kind": "Literal",
     "name": "first",
@@ -138,7 +140,7 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Fragment",
     "metadata": null,
     "name": "TestConnectionsQuery",
@@ -153,7 +155,7 @@ return {
         "selections": [
           {
             "args": [
-              (v1/*: any*/)
+              (v1)
             ],
             "kind": "FragmentSpread",
             "name": "TestConnections_user"
@@ -167,7 +169,7 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": (v0),
     "kind": "Operation",
     "name": "TestConnectionsQuery",
     "selections": [
@@ -181,7 +183,7 @@ return {
         "selections": [
           {
             "alias": null,
-            "args": (v2/*: any*/),
+            "args": (v2),
             "concreteType": "UserConnection",
             "kind": "LinkedField",
             "name": "friendsConnection",
@@ -203,7 +205,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v3),
                       {
                         "alias": null,
                         "args": null,
@@ -254,7 +256,7 @@ return {
           },
           {
             "alias": null,
-            "args": (v2/*: any*/),
+            "args": (v2),
             "filters": [
               "statuses",
               "beforeDate"
@@ -276,7 +278,7 @@ return {
               }
             ]
           },
-          (v3/*: any*/)
+          (v3)
         ],
         "storageKey": null
       }
@@ -293,11 +295,44 @@ return {
 };
 })() `)
 
-include RescriptRelay.MakeLoadQuery({
-    type variables = Types.variables
-    type loadedQueryRef = queryRef
-    type response = Types.response
-    type node = relayOperationNode
-    let query = node
-    let convertVariables = Internal.convertVariables
-});
+@live let load: (
+  ~environment: RescriptRelay.Environment.t,
+  ~variables: Types.variables,
+  ~fetchPolicy: RescriptRelay.fetchPolicy=?,
+  ~fetchKey: string=?,
+  ~networkCacheConfig: RescriptRelay.cacheConfig=?,
+) => queryRef = (
+  ~environment,
+  ~variables,
+  ~fetchPolicy=?,
+  ~fetchKey=?,
+  ~networkCacheConfig=?,
+) =>
+  RescriptRelay.loadQuery(
+    environment,
+    node,
+    variables->Internal.convertVariables,
+    {
+      fetchKey,
+      fetchPolicy,
+      networkCacheConfig,
+    },
+  )
+
+@live
+let queryRefToObservable = token => {
+  let raw = token->Internal.tokenToRaw
+  raw.source->Js.Nullable.toOption
+}
+  
+@live
+let queryRefToPromise = token => {
+  Js.Promise.make((~resolve, ~reject as _) => {
+    switch token->queryRefToObservable {
+    | None => resolve(Error())
+    | Some(o) =>
+      open RescriptRelay.Observable
+      let _: subscription = o->subscribe(makeObserver(~complete=() => resolve(Ok()), ()))
+    }
+  })
+}
