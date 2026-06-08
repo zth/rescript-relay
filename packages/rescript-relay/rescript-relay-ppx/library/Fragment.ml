@@ -28,11 +28,8 @@ let make ~loc ~moduleName ~refetchableQueryName
               [
                 [%stri
                   module Test = struct
-                    let fromData
-                        (data :
-                          [%t typeFromGeneratedModule ["Types"; "fragment"]]) =
-                      RescriptRelay_TestFragmentRef.make
-                        [%e makeStringExpr ~loc moduleName] data
+                    let fromData =
+                      [%e valFromGeneratedModule ["Test"; "fromData"]]
                   end];
               ]
             | true -> []);
