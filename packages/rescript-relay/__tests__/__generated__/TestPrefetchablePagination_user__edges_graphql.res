@@ -37,6 +37,11 @@ type fragmentRef
 external getFragmentRef:
   array<RescriptRelay.fragmentRefs<[> | #TestPrefetchablePagination_user__edges]>> => fragmentRef = "%identity"
 
+module Test = {
+  let fromData = (data: Types.fragment): array<RescriptRelay.fragmentRefs<[> | #TestPrefetchablePagination_user__edges]>> =>
+    RescriptRelay_TestFragmentRef.make("TestPrefetchablePagination_user__edges", data)
+}
+
 module Utils = {
   @@warning("-33")
   open Types

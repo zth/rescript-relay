@@ -32,6 +32,11 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestFragment_allowUnsafeEnum]> => fragmentRef = "%identity"
 
+module Test = {
+  let fromData = (data: Types.fragment): RescriptRelay.fragmentRefs<[> | #TestFragment_allowUnsafeEnum]> =>
+    RescriptRelay_TestFragmentRef.make("TestFragment_allowUnsafeEnum", data)
+}
+
 module Utils = {
   @@warning("-33")
   open Types

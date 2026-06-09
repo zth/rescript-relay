@@ -42,6 +42,11 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestPaginationInNode_query]> => fragmentRef = "%identity"
 
+module Test = {
+  let fromData = (data: Types.fragment): RescriptRelay.fragmentRefs<[> | #TestPaginationInNode_query]> =>
+    RescriptRelay_TestFragmentRef.make("TestPaginationInNode_query", data)
+}
+
 @live
 @inline
 let connectionKey = "TestPaginationInNode_friendsConnection"

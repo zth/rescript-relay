@@ -94,11 +94,11 @@ module Interleaved = {
 
     <div>
       <Synthetic
-        user={Fragment.Test.fromData({
+        user={TestTestingHelpers_user_graphql.Test.fromData({
           __id: RescriptRelay.makeDataId("interleaved-synthetic-user"),
           firstName: "Interleaved Synthetic",
           onlineStatus: Some(Online),
-          fragmentRefs: SubFragment.Test.fromData({lastName: "User"}),
+          fragmentRefs: TestTestingHelpers_sub_user_graphql.Test.fromData({lastName: "User"}),
         })}
       />
       <Synthetic user=data.loggedInUser.fragmentRefs />
@@ -109,35 +109,36 @@ module Interleaved = {
 @live
 let synthetic = () =>
   <Synthetic
-    user={Fragment.Test.fromData({
+    user={TestTestingHelpers_user_graphql.Test.fromData({
       __id: RescriptRelay.makeDataId("synthetic-user-1"),
       firstName: "Synthetic",
       onlineStatus: Some(Online),
-      fragmentRefs: SubFragment.Test.fromData({lastName: "User"}),
+      fragmentRefs: TestTestingHelpers_sub_user_graphql.Test.fromData({lastName: "User"}),
     })}
   />
 
 @live
 let syntheticOpt = () =>
   <SyntheticOpt
-    user={Fragment.Test.fromData({
+    user={TestTestingHelpers_user_graphql.Test.fromData({
       __id: RescriptRelay.makeDataId("synthetic-user-2"),
       firstName: "Synthetic",
       onlineStatus: Some(Online),
-      fragmentRefs: SubFragment.Test.fromData({lastName: "User"}),
+      fragmentRefs: TestTestingHelpers_sub_user_graphql.Test.fromData({lastName: "User"}),
     })}
   />
 
 @live
 let syntheticPlural = () =>
   <SyntheticPlural
-    users={PluralFragment.Test.fromData([
+    users={TestTestingHelpers_plural_user_graphql.Test.fromData([
       {id: "synthetic-user-3", firstName: "Plural Synthetic", onlineStatus: Some(Online)},
     ])}
   />
 
 @live
-let syntheticEmptyPlural = () => <SyntheticPlural users={PluralFragment.Test.fromData([])} />
+let syntheticEmptyPlural = () =>
+  <SyntheticPlural users={TestTestingHelpers_plural_user_graphql.Test.fromData([])} />
 
 @live
 let environment = () => RescriptRelay_Test.createMockEnvironment()

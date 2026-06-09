@@ -40,6 +40,11 @@ type fragmentRef
 external getFragmentRef:
   RescriptRelay.fragmentRefs<[> | #TestUpdatableFragments_query]> => fragmentRef = "%identity"
 
+module Test = {
+  let fromData = (data: Types.fragment): RescriptRelay.fragmentRefs<[> | #TestUpdatableFragments_query]> =>
+    RescriptRelay_TestFragmentRef.make("TestUpdatableFragments_query", data)
+}
+
 module Utils = {
   @@warning("-33")
   open Types
