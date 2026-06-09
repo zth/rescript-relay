@@ -15,17 +15,35 @@ jobs:
         working-directory: packages/rescript-relay-cli
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: "true"
       - uses: actions/setup-node@v4
         with:
           node-version: 23
         env:
           CI: true
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "4.14"
+          dune-cache: true
+          cache-prefix: "v1"
+      - name: Install PPX dependencies
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam install . --deps-only
+      - name: Build PPX
+        working-directory: packages/rescript-relay/rescript-relay-ppx
+        run: opam exec -- dune build bin/RescriptRelayPpxApp.exe
       - name: Install
         run: |
           yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build
+      - name: Build local Relay compiler
+        working-directory: packages/rescript-relay
+        run: |
+          ./build-compiler-dev.sh
       - name: Test
         run: |
           yarn test

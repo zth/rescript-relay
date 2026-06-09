@@ -1,0 +1,13 @@
+{
+  "name": "remove-unused-fields-monorepo",
+  "sources": [],
+  "dependencies": [
+    "fixture-web"
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": false
+  },
+  "suffix": ".js",
+  "namespace": true
+}

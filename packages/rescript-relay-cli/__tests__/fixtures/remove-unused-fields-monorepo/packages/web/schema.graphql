@@ -1,0 +1,18 @@
+schema {
+  query: Query
+}
+
+interface Node {
+  id: ID!
+}
+
+type Query {
+  organization(id: ID!): Organization
+  currentOrg: Organization!
+}
+
+type Organization implements Node {
+  id: ID!
+  name: String!
+  currentUserIsAdmin: Boolean!
+}
