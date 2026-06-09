@@ -114,7 +114,7 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
           if (debug) {
             console.log(
               `Extracing source locations for ${maybePluralize(
-                "files",
+                "file",
                 Object.keys(processed).length
               )}.`
             );
