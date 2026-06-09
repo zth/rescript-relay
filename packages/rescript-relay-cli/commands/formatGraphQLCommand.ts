@@ -8,6 +8,7 @@ import {
   findSourceFiles,
   getAllGeneratedFiles,
   getRelayArtifactDirectoryLocation,
+  getRelayExcludes,
   loadRelayConfig,
 } from "../fileUtils";
 import { formatOperationsInDocument } from "../formatUtils";
@@ -38,7 +39,11 @@ export const addFormatGraphQLCommands = (program: Command) => {
         sourcesToFind.length
       )}.`;
 
-      const files = await findSourceFiles(sourcesToFind, relayConfig.src);
+      const files = await findSourceFiles(
+        sourcesToFind,
+        relayConfig.src,
+        getRelayExcludes(relayConfig)
+      );
 
       const formatSuccesses = await Promise.all(
         files.map(async (filePath) => {

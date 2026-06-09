@@ -25,6 +25,9 @@ import {
   getRelayArtifactDirectoryLocation,
   sourceLocExtractor,
   findSourceFiles,
+  getRelayExcludes,
+  getReanalyzeCwd,
+  getRescriptToolsCommand,
 } from "../fileUtils";
 
 export const addRemoveUnusedFieldsCommand = (program: Command) => {
@@ -52,10 +55,14 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
         const relayConfig = loadRelayConfig();
         const artifactDirectoryLocation =
           getRelayArtifactDirectoryLocation(relayConfig);
+        const reanalyzeCwd = getReanalyzeCwd(process.cwd());
+        const reanalyzeCommand = getRescriptToolsCommand(reanalyzeCwd);
 
         const spinner = ora("Analyzing ReScript project").start();
 
-        const p = cp.spawn("npx", ["--yes", "@rescript/tools", "reanalyze", "-dce"]);
+        const p = cp.spawn(reanalyzeCommand.command, reanalyzeCommand.args, {
+          cwd: reanalyzeCwd,
+        });
 
         if (p.stdout == null) {
           console.error("Something went wrong.");
@@ -86,7 +93,9 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
 
         p.on("close", async () => {
           spinner.text = "Analyzing GraphQL usage";
-          const processed = processReanalyzeOutput(data);
+          const processed = processReanalyzeOutput(data, {
+            artifactDirectoryLocation,
+          });
 
           if (debug) {
             console.log(
@@ -150,7 +159,8 @@ export const addRemoveUnusedFieldsCommand = (program: Command) => {
 
           const files = await findSourceFiles(
             sourcesToFind.map((s) => s.path),
-            relayConfig.src
+            relayConfig.src,
+            getRelayExcludes(relayConfig)
           );
 
           const filesWithInfo = files.map((absoluteFilePath) => {
