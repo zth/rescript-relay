@@ -250,6 +250,23 @@ external useRefetchableFragment_: (
   'fragmentRef,
 ) => ('fragment, ('refetchVariables, refetchableFnOpts) => Disposable.t) = "useRefetchableFragment"
 
+let internal_noopRefetch = (
+  ~variables as _,
+  ~fetchPolicy as _=?,
+  ~onComplete=?,
+) => {
+  module Disposable = {
+    type t = {dispose: unit => unit}
+    external toOpaqueDisposable: t => Disposable.t = "%identity"
+    let noop = { dispose : () => ()}->toOpaqueDisposable
+  }
+  switch onComplete {
+  | None => ()
+  | Some(complete) => complete(None)
+  }
+  Disposable.noop
+}
+
 /**React hook for using a fragment that you want to refetch. Returns \
              a tuple of `(fragmentData, refetchFn)`.\n\n\
              ### Refetching and variables\n\
@@ -267,22 +284,26 @@ let useRefetchableFragment = (
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
   ~fRef,
 ) => {
-  let (fragmentData, refetchFn) = useRefetchableFragment_(node, fRef)
-  let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, fragmentData)
-  (
-    data,
-    React.useMemo1(
-      () =>
-        (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?) =>
-          refetchFn(
-            RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
-              variables->convertRefetchVariables,
-            )->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-            internal_makeRefetchableFnOpts(~fetchPolicy?, ~onComplete?, ()),
-          ),
-      [refetchFn],
-    ),
-  )
+  switch RescriptRelay_TestFragmentRef.getDataForNode(node, fRef) {
+  | Some(data) => (data, internal_noopRefetch)
+  | None =>
+    let (fragmentData, refetchFn) = useRefetchableFragment_(node, fRef)
+    let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, fragmentData)
+    (
+      data,
+      React.useMemo1(
+        () =>
+          (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?) =>
+            refetchFn(
+              RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
+                variables->convertRefetchVariables,
+              )->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+              internal_makeRefetchableFnOpts(~fetchPolicy?, ~onComplete?, ()),
+            ),
+        [refetchFn],
+      ),
+    )
+  }
 }
 
 @module("relay-runtime/experimental")
