@@ -6,6 +6,7 @@ import {
   findAllSourceFilesFromGeneratedFiles,
   findSourceFiles,
   getSrcCwd,
+  getRelayExcludes,
 } from "../fileUtils";
 
 export const addDebugCommand = (program: Command) => {
@@ -41,7 +42,11 @@ export const addDebugCommand = (program: Command) => {
 
       console.log("Looking up source files..\n");
 
-      const sourceFiles = await findSourceFiles(files, relayConfig.src);
+      const sourceFiles = await findSourceFiles(
+        files,
+        relayConfig.src,
+        getRelayExcludes(relayConfig)
+      );
 
       console.log(
         `Found ${
