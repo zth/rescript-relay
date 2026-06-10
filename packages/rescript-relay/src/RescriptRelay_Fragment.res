@@ -250,16 +250,21 @@ external useRefetchableFragment_: (
   'fragmentRef,
 ) => ('fragment, ('refetchVariables, refetchableFnOpts) => Disposable.t) = "useRefetchableFragment"
 
-@obj external internal_makeDisposable: (~dispose: unit => unit) => Disposable.t = ""
-
-let internal_noopDisposable: Disposable.t = internal_makeDisposable(~dispose=() => ())
-
-let internal_noopRefetch = (~variables as _, ~fetchPolicy as _=?, ~onComplete=?) => {
+let internal_noopRefetch = (
+  ~variables as _,
+  ~fetchPolicy as _=?,
+  ~onComplete=?,
+) => {
+  module Disposable = {
+    type t = {dispose: unit => unit}
+    external toOpaqueDisposable: t => Disposable.t = "%identity"
+    let noop = { dispose : () => ()}->toOpaqueDisposable
+  }
   switch onComplete {
   | None => ()
   | Some(complete) => complete(None)
   }
-  internal_noopDisposable
+  Disposable.noop
 }
 
 /**React hook for using a fragment that you want to refetch. Returns \
