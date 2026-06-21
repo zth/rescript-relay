@@ -1,0 +1,22 @@
+{
+  "name": "fixture-web",
+  "sources": [
+    {
+      "dir": "compiled",
+      "subdirs": true
+    },
+    {
+      "dir": "src/__relay__",
+      "subdirs": true
+    }
+  ],
+  "dependencies": [
+    "rescript-relay"
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": false
+  },
+  "suffix": ".js",
+  "namespace": true
+}

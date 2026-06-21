@@ -3,7 +3,7 @@ import ora from "ora";
 import path from "path";
 import fs from "fs";
 import { cosmiconfigSync } from "cosmiconfig";
-import { Config } from "relay-compiler/lib/bin/RelayCompilerMain";
+import type { Config } from "relay-compiler/lib/bin/RelayCompilerMain";
 
 const config = cosmiconfigSync("relay", {
   searchPlaces: [
@@ -97,7 +97,82 @@ export const findAllSourceFilesFromGeneratedFiles = async (
 export const getSrcCwd = (src: string) =>
   path.resolve(path.join(process.cwd(), src));
 
-export const findSourceFiles = async (fileNames: string[], src: string) => {
+export const getRelayExcludes = (
+  relayConfig: Partial<Config> & { excludes?: string[] }
+): string[] => relayConfig.excludes ?? relayConfig.exclude ?? [];
+
+const findAncestorContaining = (startDir: string, relativeFilePath: string) => {
+  let currentDir = path.resolve(startDir);
+
+  while (true) {
+    const candidate = path.join(currentDir, relativeFilePath);
+
+    if (fs.existsSync(candidate)) {
+      return currentDir;
+    }
+
+    const parentDir = path.dirname(currentDir);
+
+    if (parentDir === currentDir) {
+      return null;
+    }
+
+    currentDir = parentDir;
+  }
+};
+
+export const getReanalyzeCwd = (startDir: string) =>
+  findAncestorContaining(startDir, path.join("lib", "bs", ".sourcedirs.json")) ??
+  startDir;
+
+export const getRescriptToolsCommand = (startDir: string) => {
+  const rescriptToolsRoot = findAncestorContaining(
+    startDir,
+    path.join("node_modules", "rescript", "cli", "rescript-tools.js")
+  );
+
+  if (rescriptToolsRoot != null) {
+    return {
+      command: process.execPath,
+      args: [
+        path.join(
+          rescriptToolsRoot,
+          "node_modules",
+          "rescript",
+          "cli",
+          "rescript-tools.js"
+        ),
+        "reanalyze",
+        "-dce",
+      ],
+    };
+  }
+
+  const binName =
+    process.platform === "win32" ? "rescript-tools.cmd" : "rescript-tools";
+  const packageRoot = findAncestorContaining(
+    startDir,
+    path.join("node_modules", ".bin", binName)
+  );
+
+  if (packageRoot != null) {
+    return {
+      command: path.join(packageRoot, "node_modules", ".bin", binName),
+      args: ["reanalyze", "-dce"],
+    };
+  }
+
+  return {
+    command: "npx",
+    args: ["--yes", "@rescript/tools", "reanalyze", "-dce"],
+  };
+};
+
+export const findSourceFiles = async (
+  fileNames: string[],
+  src: string,
+  excludes: string[] = []
+) => {
   const cwd = getSrcCwd(src);
 
   const files = await glob(
@@ -105,6 +180,7 @@ export const findSourceFiles = async (fileNames: string[], src: string) => {
     {
       cwd,
       absolute: true,
+      ignore: excludes,
       onlyFiles: true,
     }
   );

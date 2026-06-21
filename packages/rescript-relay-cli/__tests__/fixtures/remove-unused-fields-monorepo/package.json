@@ -1,0 +1,25 @@
+{
+  "name": "remove-unused-fields-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "relay": "yarn --cwd packages/web relay",
+    "rescript:build": "rescript build",
+    "reanalyze": "rescript-tools reanalyze -dce"
+  },
+  "dependencies": {
+    "fixture-web": "1.0.0"
+  },
+  "devDependencies": {
+    "@rescript/react": "0.14.0",
+    "graphql": "15.8.0",
+    "react": "18.2.0",
+    "react-relay": "20.1.1",
+    "relay-runtime": "20.1.1",
+    "rescript": "12.3.0",
+    "rescript-relay": "file:../../../../rescript-relay"
+  }
+}

@@ -50,6 +50,9 @@ export const extractGraphQLSourceFromReScript = makeExtractTagsFromSource(
   rescriptGraphQLTagsRegexp
 );
 
+const escapeRegExp = (str: string): string =>
+  str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export function prettify(str: string): string {
   return (
     format(str, {
@@ -410,16 +413,49 @@ export interface IFragmentRepresentationWithSourceLocation
   sourceLocation: string;
 }
 
-const graphqlNameRegexp = new RegExp(
-  /(?<=__generated__\/)[A-Za-z_0-9]+(?=_graphql\.res)/g
-);
 const fieldPathRegexp = new RegExp(
   /(?<=Types\.(fragment|response)[_.])[A-Za-z_.0-9]+(?= )/g
 );
 
 const filterRegexp = new RegExp(/Types\.(fragment|response)/g);
 
-export const processReanalyzeOutput = (output: string) => {
+const extractGeneratedFileNameFromReanalyzeOutput = (
+  output: string,
+  artifactDirectoryLocation?: string
+): string | null => {
+  const normalizedOutput = output.replace(/\\/g, "/");
+
+  if (artifactDirectoryLocation != null) {
+    const normalizedArtifactDirectoryLocation = artifactDirectoryLocation
+      .replace(/\\/g, "/")
+      .replace(/\/$/, "");
+    const artifactRegexp = new RegExp(
+      `${escapeRegExp(
+        normalizedArtifactDirectoryLocation
+      )}/([A-Za-z_0-9]+_graphql\\.res)(?:"|:)`
+    );
+    const explicitArtifactMatch = normalizedOutput.match(artifactRegexp)?.[1];
+
+    if (explicitArtifactMatch != null) {
+      return explicitArtifactMatch;
+    }
+  }
+
+  return (
+    normalizedOutput.match(
+      /(?:__generated__|__relay__)\/([A-Za-z_0-9]+_graphql\.res)(?:"|:)/
+    )?.[1] ?? null
+  );
+};
+
+export const processReanalyzeOutput = (
+  output: string,
+  {
+    artifactDirectoryLocation,
+  }: {
+    artifactDirectoryLocation?: string;
+  } = {}
+) => {
   const processed = output
     // Parse reanalyze output
     .split(/\n\n/g)
@@ -435,9 +471,12 @@ export const processReanalyzeOutput = (output: string) => {
       
       const type = curr.includes("Types.fragment") ? "fragment" : "query";
 
-      const graphqlName = curr.match(graphqlNameRegexp)?.[0];
-      const fileName =
-        graphqlName == null ? null : `${graphqlName}_graphql.res`;
+      const fileName = extractGeneratedFileNameFromReanalyzeOutput(
+        curr,
+        artifactDirectoryLocation
+      );
+      const graphqlName =
+        fileName == null ? null : fileName.replace(/_graphql\.res$/, "");
       const fieldPath = curr.match(fieldPathRegexp)?.[0];
 
       // We only care about queries
