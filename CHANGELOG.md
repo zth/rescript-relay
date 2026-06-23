@@ -1,6 +1,7 @@
 # master
 
 - fix remove-unused-fields command. https://github.com/zth/rescript-relay/pull/636
+- Fix `useRefetchableFragment` and `usePaginationFragment` to be compatible with `fromData`.
 
 # 4.5.1
 

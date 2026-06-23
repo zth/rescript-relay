@@ -113,6 +113,15 @@ module Test = {
   }
 }
 
+module FromDataPaginationComponent = {
+  @react.component
+  let make = (~user) => {
+    let {data} = Fragment.usePagination(user)
+    let friendCount = data.friendsConnection->Fragment.getConnectionNodes->Array.length
+    <div> {React.string(`Test Data has ${friendCount->Int.toString} friends`)} </div>
+  }
+}
+
 @live
 let test_pagination = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
@@ -124,5 +133,41 @@ let test_pagination = () => {
 
   <TestProviders.Wrapper environment>
     <Test />
+  </TestProviders.Wrapper>
+}
+
+@live
+let test_pagination_from_data = () => {
+  let environment = RescriptRelay_Test.createMockEnvironment()
+  <TestProviders.Wrapper environment>
+    <FromDataPaginationComponent
+      user={Fragment.Test.fromData({
+        id: "test-data-user-1",
+        friendsConnection: {
+          edges: Some([
+            Some({
+              node: Some({
+                id: "friend-1",
+                fragmentRefs: UserFragment.Test.fromData({
+                  id: "friend-1",
+                  firstName: "Friend One",
+                  friendsConnection: {totalCount: 0},
+                }),
+              }),
+            }),
+            Some({
+              node: Some({
+                id: "friend-2",
+                fragmentRefs: UserFragment.Test.fromData({
+                  id: "friend-2",
+                  firstName: "Friend Two",
+                  friendsConnection: {totalCount: 0},
+                }),
+              }),
+            }),
+          ]),
+        },
+      })}
+    />
   </TestProviders.Wrapper>
 }

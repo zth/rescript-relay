@@ -83,6 +83,18 @@ module Test = {
   }
 }
 
+module RefetchableComponent = {
+  @react.component
+  let make = (~user) => {
+    let (data, _refetch) = Fragment.useRefetchable(user)
+    <div>
+      {React.string(
+        `${data.firstName} has ${data.friendsConnection.totalCount->Int.toString} friends`,
+      )}
+    </div>
+  }
+}
+
 @live
 let test_refetching = () => {
   let network = RescriptRelay.Network.makePromiseBased(~fetchFunction=RelayEnv.fetchQuery)
@@ -94,5 +106,21 @@ let test_refetching = () => {
 
   <TestProviders.Wrapper environment>
     <Test />
+  </TestProviders.Wrapper>
+}
+
+@live
+let test_refetchable_component = () => {
+  let environment = RescriptRelay_Test.createMockEnvironment()
+  <TestProviders.Wrapper environment>
+    <RefetchableComponent
+      user={Fragment.Test.fromData({
+        id: "test-data-user-1",
+        firstName: "Test Data",
+        onlineStatus: Some(Online),
+        friendsConnection: {totalCount: 3},
+        friends: [{id: "friend-1"}],
+      })}
+    />
   </TestProviders.Wrapper>
 }

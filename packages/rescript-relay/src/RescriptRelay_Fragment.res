@@ -87,8 +87,35 @@ let internal_makeRefetchableFnOpts = (~fetchPolicy=?, ~onComplete=?, ()) => {
   onComplete: ?(onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler),
 }
 
+module InternalNoopDisposable = {
+  type t = {dispose: unit => unit}
+  external toOpaqueDisposable: t => Disposable.t = "%identity"
+  let noop = {dispose: () => ()}->toOpaqueDisposable
+}
+
+let internal_noopRefetch = (
+  ~variables as _,
+  ~fetchPolicy as _=?,
+  ~onComplete=?,
+) => {
+  switch onComplete {
+  | None => ()
+  | Some(complete) => complete(None)
+  }
+  InternalNoopDisposable.noop
+}
+
 type paginationLoadMoreOptions = {onComplete?: Nullable.t<JsExn.t> => unit}
 type paginationLoadMoreFn = (~count: int, ~onComplete: option<JsExn.t> => unit=?) => Disposable.t
+
+let internal_noopLoadMore = (~count as _, ~onComplete=?) => {
+  switch onComplete {
+  | None => ()
+  | Some(complete) => complete(None)
+  }
+  InternalNoopDisposable.noop
+}
+
 type paginationFragmentReturnRaw<'fragment, 'refetchVariables> = {
   data: 'fragment,
   loadNext: (int, paginationLoadMoreOptions) => Disposable.t,
@@ -127,40 +154,53 @@ let usePaginationFragment = (
   ~convertFragment: 'fragment => 'fragment,
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
 ) => {
-  let p = usePaginationFragment_(node, fRef)
-  let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, p.data)
-  {
-    data,
-    loadNext: React.useMemo1(() =>
-      (~count, ~onComplete=?) => {
-        p.loadNext(
-          count,
-          {onComplete: ?(onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler)},
-        )
-      }
-    , [p.loadNext]),
-    loadPrevious: React.useMemo1(() =>
-      (~count, ~onComplete=?) => {
-        p.loadPrevious(
-          count,
-          {onComplete: ?(onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler)},
-        )
-      }
-    , [p.loadPrevious]),
-    hasNext: p.hasNext,
-    hasPrevious: p.hasPrevious,
-    isLoadingNext: p.isLoadingNext,
-    isLoadingPrevious: p.isLoadingPrevious,
-    refetch: React.useMemo1(() =>
-      (~variables, ~fetchPolicy=?, ~onComplete=?) => {
-        p.refetch(
-          RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(
-            variables->convertRefetchVariables,
-          ),
-          internal_makeRefetchableFnOpts(~onComplete?, ~fetchPolicy?, ()),
-        )
-      }
-    , [p.refetch]),
+  switch RescriptRelay_TestFragmentRef.getDataForNode(node, fRef) {
+  | Some(data) => {
+      data,
+      loadNext: internal_noopLoadMore,
+      loadPrevious: internal_noopLoadMore,
+      hasNext: false,
+      hasPrevious: false,
+      isLoadingNext: false,
+      isLoadingPrevious: false,
+      refetch: internal_noopRefetch,
+    }
+  | None =>
+    let p = usePaginationFragment_(node, fRef)
+    let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, p.data)
+    {
+      data,
+      loadNext: React.useMemo1(() =>
+        (~count, ~onComplete=?) => {
+          p.loadNext(
+            count,
+            {onComplete: ?(onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler)},
+          )
+        }
+      , [p.loadNext]),
+      loadPrevious: React.useMemo1(() =>
+        (~count, ~onComplete=?) => {
+          p.loadPrevious(
+            count,
+            {onComplete: ?(onComplete->RescriptRelay_Internal.internal_nullableToOptionalExnHandler)},
+          )
+        }
+      , [p.loadPrevious]),
+      hasNext: p.hasNext,
+      hasPrevious: p.hasPrevious,
+      isLoadingNext: p.isLoadingNext,
+      isLoadingPrevious: p.isLoadingPrevious,
+      refetch: React.useMemo1(() =>
+        (~variables, ~fetchPolicy=?, ~onComplete=?) => {
+          p.refetch(
+            RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw(
+              variables->convertRefetchVariables,
+            ),
+            internal_makeRefetchableFnOpts(~onComplete?, ~fetchPolicy?, ()),
+          )
+        }
+      , [p.refetch]),
+    }
   }
 }
 
@@ -267,22 +307,26 @@ let useRefetchableFragment = (
   ~convertRefetchVariables: 'refetchVariables => 'refetchVariables,
   ~fRef,
 ) => {
-  let (fragmentData, refetchFn) = useRefetchableFragment_(node, fRef)
-  let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, fragmentData)
-  (
-    data,
-    React.useMemo1(
-      () =>
-        (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?) =>
-          refetchFn(
-            RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
-              variables->convertRefetchVariables,
-            )->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
-            internal_makeRefetchableFnOpts(~fetchPolicy?, ~onComplete?, ()),
-          ),
-      [refetchFn],
-    ),
-  )
+  switch RescriptRelay_TestFragmentRef.getDataForNode(node, fRef) {
+  | Some(data) => (data, internal_noopRefetch)
+  | None =>
+    let (fragmentData, refetchFn) = useRefetchableFragment_(node, fRef)
+    let data = RescriptRelay_Internal.internal_useConvertedValue(convertFragment, fragmentData)
+    (
+      data,
+      React.useMemo1(
+        () =>
+          (~variables: 'refetchVariables, ~fetchPolicy=?, ~onComplete=?) =>
+            refetchFn(
+              RescriptRelay_Internal.internal_removeUndefinedAndConvertNullsRaw(
+                variables->convertRefetchVariables,
+              )->RescriptRelay_Internal.internal_cleanObjectFromUndefinedRaw,
+              internal_makeRefetchableFnOpts(~fetchPolicy?, ~onComplete?, ()),
+            ),
+        [refetchFn],
+      ),
+    )
+  }
 }
 
 @module("relay-runtime/experimental")
