@@ -2,12 +2,8 @@ function getNewObj(maybeNewObj, currentObj) {
   return maybeNewObj || Object.assign({}, currentObj);
 }
 
-function getPathName(path) {
-  return path.join("_");
-}
-
-function makeNewPath(currentPath, newKeys) {
-  return [].concat(currentPath, newKeys);
+function appendPath(currentPath, key) {
+  return currentPath === "" ? key : currentPath + "_" + key;
 }
 
 function getTypename(v) {
@@ -68,8 +64,8 @@ function traverse(
     var originalValue = currentObj[key];
 
     // Instructions are stored by the path in the object where they apply
-    var thisPath = makeNewPath(currentPath, [key]);
-    var path = getPathName(thisPath);
+    var thisPath = appendPath(currentPath, key);
+    var path = thisPath;
 
     var instructions = instructionMap[path] || {};
 
@@ -174,10 +170,10 @@ function traverse(
               unionObj = converters[instructions["u"]](v);
             }
 
-            var newPath = makeNewPath(currentPath, [key, typename]);
+            var newPath = appendPath(thisPath, typename);
 
             var unionRootHasFragment =
-              (instructionMap[getPathName(newPath)] || {}).f === "";
+              (instructionMap[newPath] || {}).f === "";
 
             var traversedValue = traverse(
               fullInstructionMap,
@@ -251,10 +247,10 @@ function traverse(
             unionObj = converters[instructions["u"]](v);
           }
 
-          var newPath = makeNewPath(currentPath, [key, typename]);
+          var newPath = appendPath(thisPath, typename);
 
           var unionRootHasFragment =
-            (instructionMap[getPathName(newPath)] || {}).f === "";
+            (instructionMap[newPath] || {}).f === "";
 
           var traversedValue = traverse(
             fullInstructionMap,
@@ -369,13 +365,13 @@ function traverser(
         return nullableValue;
       }
 
-      var n = [];
+      var n = "";
 
       // Since a root level union is treated as a "new root level", we'll need
       // to do a separate check here of whether there's a fragment on the root
       // we need to account for, or not.
       if (unionRootConverter != null) {
-        n = [v.__typename];
+        n = v.__typename;
         fragmentsOnRoot = (instructionMap[v.__typename] || {}).f === "";
       }
 
@@ -398,12 +394,12 @@ function traverser(
 
   var newObj = Object.assign({}, root);
 
-  var n = [];
+  var n = "";
 
   // Same as in the union array check above - if there's a fragment in the new
   // root created by the union, we need to account for that separately here.
   if (unionRootConverter != null) {
-    n = [newObj.__typename];
+    n = newObj.__typename;
     fragmentsOnRoot = (instructionMap[newObj.__typename] || {}).f === "";
   }
 
