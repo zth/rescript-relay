@@ -1,3 +1,5 @@
+const { prepareConversion } = require("./prepareConversion");
+
 // Shared read-only fallback: avoid allocating an empty map for every field.
 var empty = Object.freeze({});
 
@@ -104,8 +106,12 @@ function convertField(
   var customArray =
     typeof instruction.ca === "string" && converters[instruction.ca];
   if (isArray && customArray) {
-    // Preserve Array.map's converter calling convention, including null elements.
-    return value.map(customArray);
+    // GraphQL null elements belong to the list wrapper, not the scalar parser.
+    return value.map((item, index, array) => {
+      if (item == null) return nullable;
+      if (item.BS_PRIVATE_NESTED_SOME_NONE >= 0) return item;
+      return customArray(item, index, array);
+    });
   }
   var blocked = typeof instruction.b === "string";
   if (blocked && instruction.b !== "a") return value;
@@ -256,7 +262,8 @@ function traverser(root, instructionMaps, converters, nullable, rootObjectKey) {
   return convertRoot(root);
 }
 
-module.exports = {
-  traverser,
-  prepareConversion: require("./prepareConversion").prepareConversion,
-};
+function runConversion(convert, value) {
+  return convert(value);
+}
+
+module.exports = { traverser, prepareConversion, runConversion };

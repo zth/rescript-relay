@@ -83,3 +83,17 @@ module ObjectScalar2 = {
     {a: "parsed2"}
   }
 }
+
+// An array-valued scalar distinguishes scalar arrays from GraphQL list layers.
+module ConversionNumber = {
+  type t = array<int>
+
+  let parse = (value: JSON.t): t =>
+    switch value->JSON.Decode.float {
+    | Some(number) => [number->Float.toInt]
+    | None => throw(Malformed_number)
+    }
+
+  let serialize = (value: t): JSON.t =>
+    value->Array.reduce(0, (total, item) => total + item)->JSON.Encode.int
+}

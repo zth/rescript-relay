@@ -6,7 +6,6 @@ const isMetadata = (key) =>
   key !== "__typename" &&
   key !== "__id" &&
   !key.startsWith("__relay_internal");
-const identity = (value) => value;
 
 // Preparation is deliberately separate from response traversal. It validates and
 // snapshots compiler metadata once; the returned functions only visit values.
@@ -69,7 +68,9 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
     throw new Error("Missing conversion root: " + rootName);
   const converters = Object.create(null);
 
+  const nullableOnly = (value) => (value == null ? nullable : value);
   function optional(convert) {
+    if (convert === nullableOnly) return nullableOnly;
     return (value) =>
       value == null ? nullable : isOption(value) ? value : convert(value);
   }
@@ -156,7 +157,7 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
           "Leaf conversion cannot have child fields or fragments",
         );
       if (node.scalar !== undefined) convert = callback(node.scalar);
-      else if (node.opaque) convert = identity;
+      else if (node.opaque) convert = nullableOnly;
       else {
         const target = node.reference;
         if (!hasOwn(roots, target))
@@ -190,10 +191,14 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
   const convert = converters[rootName];
   // Plural fragments share their record/union plan with singular fragments.
   const plural = arrayOf(convert);
+  const root = roots[rootName];
+  const allowPlural =
+    root.list === undefined &&
+    root.scalar === undefined &&
+    root.reference === undefined &&
+    !root.opaque;
   return (value) =>
-    Array.isArray(value) && roots[rootName].list === undefined
-      ? plural(value)
-      : convert(value);
+    Array.isArray(value) && allowPlural ? plural(value) : convert(value);
 }
 
 module.exports = { prepareConversion };

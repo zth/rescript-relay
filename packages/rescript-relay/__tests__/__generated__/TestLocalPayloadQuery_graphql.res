@@ -93,50 +93,56 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+  let variablesConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[]},"version":2}`
   )
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
     variablesConverterMap,
     None
   )
   @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
+  let wrapResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
   )
   @live
   let wrapResponseConverterMap = ()
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
     wrapResponseConverterMap,
     null
   )
   @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
+  @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
+  let responseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
   )
   @live
   let responseConverterMap = ()
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
     responseConverterMap,
     None
   )
   @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
+  @live
   type wrapRawResponseRaw
   @live
-  let wrapRawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_memberOf_Group_topMember":{"u":"rawResponse_loggedInUser_memberOf_Group_topMember"},"loggedInUser_memberOfSingular":{"u":"rawResponse_loggedInUser_memberOfSingular"},"loggedInUser_memberOf":{"u":"rawResponse_loggedInUser_memberOf"}}}`
+  let wrapRawResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["loggedInUser","memberOf"],"union":"rawResponse_loggedInUser_memberOf"},{"path":["loggedInUser","memberOf","Group","topMember"],"union":"rawResponse_loggedInUser_memberOf_Group_topMember"},{"path":["loggedInUser","memberOfSingular"],"union":"rawResponse_loggedInUser_memberOfSingular"}]},"version":2}`
   )
   @live
   let wrapRawResponseConverterMap = {
@@ -145,16 +151,18 @@ module Internal = {
     "rawResponse_loggedInUser_memberOfSingular": wrap_rawResponse_loggedInUser_memberOfSingular,
   }
   @live
-  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     null
   )
   @live
+  let convertWrapRawResponse = value => RescriptRelay.runConversion(preparedWrapRawResponseConverter, value)
+  @live
   type rawResponseRaw
   @live
-  let rawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_memberOf_Group_topMember":{"u":"rawResponse_loggedInUser_memberOf_Group_topMember"},"loggedInUser_memberOfSingular":{"u":"rawResponse_loggedInUser_memberOfSingular"},"loggedInUser_memberOf":{"u":"rawResponse_loggedInUser_memberOf"}}}`
+  let rawResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["loggedInUser","memberOf"],"union":"rawResponse_loggedInUser_memberOf"},{"path":["loggedInUser","memberOf","Group","topMember"],"union":"rawResponse_loggedInUser_memberOf_Group_topMember"},{"path":["loggedInUser","memberOfSingular"],"union":"rawResponse_loggedInUser_memberOfSingular"}]},"version":2}`
   )
   @live
   let rawResponseConverterMap = {
@@ -163,11 +171,13 @@ module Internal = {
     "rawResponse_loggedInUser_memberOfSingular": unwrap_rawResponse_loggedInUser_memberOfSingular,
   }
   @live
-  let convertRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedRawResponseConverter = RescriptRelay.prepareConversion(
     rawResponseConverter,
     rawResponseConverterMap,
     None
   )
+  @live
+  let convertRawResponse = value => RescriptRelay.runConversion(preparedRawResponseConverter, value)
   type rawPreloadToken<'response> = {source: Nullable.t<RescriptRelay.Observable.t<'response>>}
   external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }

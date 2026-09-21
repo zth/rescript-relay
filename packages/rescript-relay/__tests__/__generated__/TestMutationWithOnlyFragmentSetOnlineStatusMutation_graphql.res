@@ -61,77 +61,87 @@ let unwrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlin
 let wrap_rawResponse_setOnlineStatus_user_memberOf: Types.rawResponse_setOnlineStatus_user_memberOf => Types.rawResponse_setOnlineStatus_user_memberOf = RescriptRelay_Internal.wrapUnion
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+  let variablesConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[]},"version":2}`
   )
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
     variablesConverterMap,
     None
   )
   @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
+  let wrapResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`
   )
   @live
   let wrapResponseConverterMap = ()
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
     wrapResponseConverterMap,
     null
   )
   @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
+  @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user":{"f":""}}}`
+  let responseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`
   )
   @live
   let responseConverterMap = ()
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
     responseConverterMap,
     None
   )
   @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
+  @live
   type wrapRawResponseRaw
   @live
-  let wrapRawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
+  let wrapRawResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["setOnlineStatus","user","memberOf"],"union":"rawResponse_setOnlineStatus_user_memberOf"}]},"version":2}`
   )
   @live
   let wrapRawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
   }
   @live
-  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
     wrapRawResponseConverter,
     wrapRawResponseConverterMap,
     null
   )
   @live
+  let convertWrapRawResponse = value => RescriptRelay.runConversion(preparedWrapRawResponseConverter, value)
+  @live
   type rawResponseRaw
   @live
-  let rawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"setOnlineStatus_user_memberOf":{"u":"rawResponse_setOnlineStatus_user_memberOf"}}}`
+  let rawResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["setOnlineStatus","user","memberOf"],"union":"rawResponse_setOnlineStatus_user_memberOf"}]},"version":2}`
   )
   @live
   let rawResponseConverterMap = {
     "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
   }
   @live
-  let convertRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedRawResponseConverter = RescriptRelay.prepareConversion(
     rawResponseConverter,
     rawResponseConverterMap,
     None
   )
+  @live
+  let convertRawResponse = value => RescriptRelay.runConversion(preparedRawResponseConverter, value)
 }
 module Utils = {
   @@warning("-33")

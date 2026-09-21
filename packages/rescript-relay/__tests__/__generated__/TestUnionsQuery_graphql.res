@@ -70,22 +70,24 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+  let variablesConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[]},"version":2}`
   )
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
     variablesConverterMap,
     None
   )
   @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"members_edges_node_Group_members":{"u":"response_members_edges_node_Group_members"},"members_edges_node":{"u":"response_members_edges_node"}}}`
+  let wrapResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"response_members_edges_node"},{"list":1,"path":["members","edges","node","Group","members"],"union":"response_members_edges_node_Group_members"}]},"version":2}`
   )
   @live
   let wrapResponseConverterMap = {
@@ -93,16 +95,18 @@ module Internal = {
     "response_members_edges_node": wrap_response_members_edges_node,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
     wrapResponseConverterMap,
     null
   )
   @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
+  @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"members_edges_node_Group_members":{"u":"response_members_edges_node_Group_members"},"members_edges_node":{"u":"response_members_edges_node"}}}`
+  let responseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"response_members_edges_node"},{"list":1,"path":["members","edges","node","Group","members"],"union":"response_members_edges_node_Group_members"}]},"version":2}`
   )
   @live
   let responseConverterMap = {
@@ -110,11 +114,13 @@ module Internal = {
     "response_members_edges_node": unwrap_response_members_edges_node,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
     responseConverterMap,
     None
   )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

@@ -288,3 +288,24 @@ input SerializeMultipleCustomScalars {
   os1s: [ObjectScalar1!]!
   os2: ObjectScalar2
 }
+
+# Conversion protocol regressions: list depth must not be inferred from JS arrays.
+extend type Query {
+  conversionContract(input: ConversionContractInput): ConversionContract!
+}
+input ConversionContractInput {
+  grid: [[ConversionNumber]]
+  children: [ConversionContractInput]
+}
+type ConversionContract {
+  grid: [[ConversionNumber]]
+  dates: [Datetime]
+  raw: [[JSON]]
+  a_b: ConversionNumber
+  a: ConversionContractNested
+}
+type ConversionContractNested {
+  b: Datetime
+}
+
+scalar ConversionNumber

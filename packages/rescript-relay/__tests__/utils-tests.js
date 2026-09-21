@@ -1012,12 +1012,7 @@ describe("conversion", () => {
         expect(spy).not.toHaveBeenCalled();
       });
 
-      test("[T]! / [T] — array contains a null element: CURRENT BEHAVIOR calls parse(null)", () => {
-        // Locks in current behavior. utils.js:109-113 maps `converter`
-        // over every element with no per-element null check, so a wire
-        // null reaches user code as `parse(null)`. A future fix should
-        // produce `[parse("a"), undefined, parse("b")]` — out of scope
-        // for this PR.
+      test("[T]! / [T] — nullable elements bypass parse", () => {
         expect(
           traverser(
             { xs: ["a", null, "b"] },
@@ -1025,7 +1020,7 @@ describe("conversion", () => {
             { [SCALAR]: parse },
             undefined
           )
-        ).toEqual({ xs: ["parsed:a", "parsed:null", "parsed:b"] });
+        ).toEqual({ xs: ["parsed:a", undefined, "parsed:b"] });
       });
 
       test("BS_PRIVATE_NESTED_SOME_NONE on a ca field passes through unchanged", () => {
@@ -1068,10 +1063,7 @@ describe("conversion", () => {
         expect(spy).not.toHaveBeenCalled();
       });
 
-      test("[T]! / [T] — array contains null element: CURRENT BEHAVIOR calls serialize(null)", () => {
-        // Symmetric to the read-side cell of the same name. Out of
-        // scope for this PR; correct output would be
-        // `[serialize(10), null, serialize(30)]`.
+      test("[T]! / [T] — nullable elements bypass serialize", () => {
         expect(
           traverser(
             { xs: [10, null, 30] },
@@ -1082,7 +1074,7 @@ describe("conversion", () => {
         ).toEqual({
           xs: [
             { serialized: 10 },
-            { serialized: null },
+            null,
             { serialized: 30 },
           ],
         });

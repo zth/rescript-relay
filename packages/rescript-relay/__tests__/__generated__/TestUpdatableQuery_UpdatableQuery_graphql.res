@@ -26,17 +26,19 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+  let variablesConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[]},"version":2}`
   )
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
     variablesConverterMap,
     None
   )
+  @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
 }
 
 

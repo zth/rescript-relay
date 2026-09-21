@@ -68,8 +68,9 @@ those values remain visible on subsequent calls, without retaining Relay data.
 Null/undefined handling, opaque JSON blocking, input unions, nested option
 markers, custom scalar boundaries, and converter order are tested in both
 directions. In particular, `ca` deliberately retains its existing `Array.map`
-semantics: callbacks receive `(value, index, array)`, including null elements.
-Changing nullable custom scalar element behavior is outside this optimization.
+semantics: nonnull callbacks receive `(value, index, array)`. Null elements now bypass
+the callback and normalize to the requested sentinel, as required by the
+GraphQL list wrapper.
 Unchanged roots and arrays may now be returned by identity; consumers must treat
 converted responses as immutable, just like Relay snapshots.
 

@@ -1,4 +1,4 @@
-const { prepareConversion } = require("../src/utils");
+const { prepareConversion, runConversion } = require("../src/utils");
 const {
   object,
   list,
@@ -11,11 +11,12 @@ const {
   freeze,
 } = require("./helpers/conversionModel");
 function prepare(schema, converters = {}, nullable, extra = {}) {
-  return prepareConversion(
+  const convert = prepareConversion(
     encode({ __root: schema, ...extra }),
     converters,
     nullable,
   );
+  return (value) => runConversion(convert, value);
 }
 
 describe.each([undefined, null])(

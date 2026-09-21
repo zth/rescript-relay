@@ -113,8 +113,13 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 external convertObj: ('a, dict<dict<dict<string>>>, 'b, 'c) => 'd = "traverser"
 
 /**Internal: prepare the compiler's versioned conversion plan once.*/
+type preparedConversion
+
 @module("./utils")
-external prepareConversion: (JSON.t, 'converters, 'nullable) => ('input => 'output) = "prepareConversion"
+external prepareConversion: (JSON.t, 'converters, 'nullable) => preparedConversion = "prepareConversion"
+
+@module("./utils")
+external runConversion: (preparedConversion, 'input) => 'output = "runConversion"
 
 
 let optArrayOfNullableToOptArrayOfOpt: option<array<Nullable.t<'a>>> => option<

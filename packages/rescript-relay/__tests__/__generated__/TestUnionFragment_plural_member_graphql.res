@@ -30,19 +30,21 @@ module Internal = {
   @live
   type fragmentRaw
   @live
-  let fragmentConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"User":{"f":""},"":{"u":"fragment"}}}`
+  let fragmentConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"path":[],"union":"fragment"},{"fragments":true,"path":["User"]}]},"version":2}`
   )
   @live
   let fragmentConverterMap = {
     "fragment": unwrap_fragment,
   }
   @live
-  let convertFragment = v => v->RescriptRelay.convertObj(
+  let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
     fragmentConverterMap,
     None
   )
+  @live
+  let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)
 }
 
 type t

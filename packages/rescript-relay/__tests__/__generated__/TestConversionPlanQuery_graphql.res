@@ -1,37 +1,37 @@
-/* @sourceLoc Test_query.res */
+/* @sourceLoc Test_conversionPlan.res */
 /* @generated */
 %%raw("/* @generated */")
 module Types = {
   @@warning("-30")
 
-  type rec response_users_edges_node = {
-    firstName: string,
-    @live id: string,
-    onlineStatus: option<RelaySchemaAssets_graphql.enum_OnlineStatus>,
+  @live type conversionContractInput = RelaySchemaAssets_graphql.input_ConversionContractInput
+  type rec response_conversionContract_a = {
+    b: option<TestsUtils.Datetime.t>,
   }
-  and response_users_edges = {
-    node: option<response_users_edges_node>,
-  }
-  and response_users = {
-    edges: option<array<option<response_users_edges>>>,
+  and response_conversionContract = {
+    a: option<response_conversionContract_a>,
+    a_b: option<TestsUtils.ConversionNumber.t>,
+    dates: option<array<option<TestsUtils.Datetime.t>>>,
+    grid: option<array<option<array<option<TestsUtils.ConversionNumber.t>>>>>,
+    raw: option<array<option<array<option<JSON.t>>>>>,
   }
   type response = {
-    users: option<response_users>,
+    conversionContract: response_conversionContract,
   }
   @live
   type rawResponse = response
   @live
   type variables = {
-    status?: RelaySchemaAssets_graphql.enum_OnlineStatus_input,
+    input?: conversionContractInput,
   }
   @live
   type refetchVariables = {
-    status?: option<RelaySchemaAssets_graphql.enum_OnlineStatus_input>,
+    input?: option<conversionContractInput>,
   }
   @live let makeRefetchVariables = (
-    ~status=?,
+    ~input=?,
   ): refetchVariables => {
-    status: ?status
+    input: ?input
   }
 
 }
@@ -42,10 +42,12 @@ type queryRef
 module Internal = {
   @live
   let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
+    json`{"roots":{"__root":[{"path":["input"],"reference":"conversionContractInput"}],"conversionContractInput":[{"list":1,"path":["children"],"reference":"conversionContractInput"},{"list":2,"path":["grid"],"scalar":"TestsUtils.ConversionNumber"}]},"version":2}`
   )
   @live
-  let variablesConverterMap = ()
+  let variablesConverterMap = {
+    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.serialize,
+  }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
@@ -58,10 +60,13 @@ module Internal = {
   type wrapResponseRaw
   @live
   let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`
+    json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`
   )
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.serialize,
+  }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
@@ -74,10 +79,13 @@ module Internal = {
   type responseRaw
   @live
   let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`
+    json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`
   )
   @live
-  let responseConverterMap = ()
+  let responseConverterMap = {
+    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
+    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.parse,
+  }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
@@ -98,21 +106,6 @@ module Internal = {
 module Utils = {
   @@warning("-33")
   open Types
-  @live
-  external onlineStatus_toString: RelaySchemaAssets_graphql.enum_OnlineStatus => string = "%identity"
-  @live
-  external onlineStatus_input_toString: RelaySchemaAssets_graphql.enum_OnlineStatus_input => string = "%identity"
-  @live
-  let onlineStatus_decode = (enum: RelaySchemaAssets_graphql.enum_OnlineStatus): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
-    switch enum {
-      | FutureAddedValue(_) => None
-      | valid => Some(Obj.magic(valid))
-    }
-  }
-  @live
-  let onlineStatus_fromString = (str: string): option<RelaySchemaAssets_graphql.enum_OnlineStatus_input> => {
-    onlineStatus_decode(Obj.magic(str))
-  }
 }
 
 type relayOperationNode
@@ -124,59 +117,68 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "status"
+    "name": "input"
   }
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "status",
-        "variableName": "status"
-      }
-    ],
-    "concreteType": "UserConnection",
-    "kind": "LinkedField",
-    "name": "users",
-    "plural": false,
+    "kind": "ClientExtension",
     "selections": [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "UserEdge",
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "input",
+            "variableName": "input"
+          }
+        ],
+        "concreteType": "ConversionContract",
         "kind": "LinkedField",
-        "name": "edges",
-        "plural": true,
+        "name": "conversionContract",
+        "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "concreteType": "User",
+            "kind": "ScalarField",
+            "name": "grid",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "dates",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "raw",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "a_b",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "ConversionContractNested",
             "kind": "LinkedField",
-            "name": "node",
+            "name": "a",
             "plural": false,
             "selections": [
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "firstName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "onlineStatus",
+                "name": "b",
                 "storageKey": null
               }
             ],
@@ -185,8 +187,7 @@ v1 = [
         ],
         "storageKey": null
       }
-    ],
-    "storageKey": null
+    ]
   }
 ];
 return {
@@ -194,7 +195,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "TestQuery",
+    "name": "TestConversionPlanQuery",
     "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -203,16 +204,16 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "TestQuery",
+    "name": "TestConversionPlanQuery",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "123064f3c998fd5b717ca05be99d7ee1",
+    "cacheID": "f03d25b7fdf92dbacec1faff37fd288d",
     "id": null,
     "metadata": {},
-    "name": "TestQuery",
+    "name": "TestConversionPlanQuery",
     "operationKind": "query",
-    "text": "query TestQuery(\n  $status: OnlineStatus\n) {\n  users(status: $status) {\n    edges {\n      node {\n        id\n        firstName\n        onlineStatus\n      }\n    }\n  }\n}\n"
+    "text": null
   }
 };
 })() `)

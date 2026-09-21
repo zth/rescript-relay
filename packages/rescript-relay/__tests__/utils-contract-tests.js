@@ -387,3 +387,25 @@ test("recursive array roots are converted exactly once, including nullable scala
   expect(result.after).toBeUndefined();
   expect(scalar).toHaveBeenCalledTimes(1);
 });
+
+test("legacy custom scalar lists normalize nulls and preserve nested option markers without invoking callbacks", () => {
+  const marker = { BS_PRIVATE_NESTED_SOME_NONE: 0 };
+  const scalar = jest.fn((v) => ({ value: v }));
+  const input = freeze({ items: ["a", null, undefined, marker, "b"] });
+  const output = traverser(
+    input,
+    { __root: { items: { ca: "scalar" } } },
+    { scalar },
+  );
+  expect(output.items).toStrictEqual([
+    { value: "a" },
+    undefined,
+    undefined,
+    marker,
+    { value: "b" },
+  ]);
+  expect(scalar.mock.calls).toEqual([
+    ["a", 0, input.items],
+    ["b", 4, input.items],
+  ]);
+});

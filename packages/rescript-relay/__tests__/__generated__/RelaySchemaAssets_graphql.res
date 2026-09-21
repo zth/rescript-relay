@@ -260,3 +260,15 @@ and input_SerializeMultipleCustomScalars_nullable = {
   os1s: array<TestsUtils.ObjectScalar1.t>,
   os2?: Null.t<TestsUtils.ObjectScalar2.t>,
 }
+
+@live
+and input_ConversionContractInput = {
+  grid?: array<option<array<option<TestsUtils.ConversionNumber.t>>>>,
+  children?: array<option<input_ConversionContractInput>>,
+}
+
+@live
+and input_ConversionContractInput_nullable = {
+  grid?: Null.t<array<Null.t<array<Null.t<TestsUtils.ConversionNumber.t>>>>>,
+  children?: Null.t<array<Null.t<input_ConversionContractInput_nullable>>>,
+}

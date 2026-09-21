@@ -34,22 +34,24 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
+  let variablesConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[]},"version":2}`
   )
   @live
   let variablesConverterMap = ()
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
     variablesConverterMap,
     None
   )
   @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"member_value_User_createdAt":{"c":"TestsUtils.Datetime"},"member_value":{"u":"response_member_value"}}}`
+  let wrapResponseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"path":["member","value"],"union":"response_member_value"},{"path":["member","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
   )
   @live
   let wrapResponseConverterMap = {
@@ -57,16 +59,18 @@ module Internal = {
     "response_member_value": wrap_response_member_value,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
     wrapResponseConverterMap,
     null
   )
   @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
+  @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"member_value_User_createdAt":{"c":"TestsUtils.Datetime"},"member_value":{"u":"response_member_value"}}}`
+  let responseConverter: JSON.t = %raw(
+    json`{"roots":{"__root":[{"path":["member","value"],"union":"response_member_value"},{"path":["member","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
   )
   @live
   let responseConverterMap = {
@@ -74,11 +78,13 @@ module Internal = {
     "response_member_value": unwrap_response_member_value,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
     responseConverterMap,
     None
   )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

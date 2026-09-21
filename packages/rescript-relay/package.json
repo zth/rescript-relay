@@ -39,7 +39,9 @@
     "test:ci": "jest --ci --runInBand",
     "test:conversion": "jest --config jest.conversion.config.js --runInBand",
     "test:all": "yarn build && yarn test:ci && ENABLE_PERSISTING=true yarn test:ci && yarn test:conversion",
-    "bench:conversion": "node benchmarks/conversion.js"
+    "bench:conversion": "node benchmarks/conversion.js",
+    "test:conversion:mutations": "node scripts/test-conversion-mutations.js",
+    "bench:conversion:prepared": "node benchmarks/conversion.js --prepared"
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",

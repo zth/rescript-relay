@@ -10,7 +10,7 @@ The audited compiler is submodule `ef6d68326a6661887a2a09fd12028f201e32d78f`:
 `relay-typegen/src/rescript_ast.rs` (`ConverterInstructions`), `rescript.rs`
 (`ast_to_prop_value`, `write_internal_assets`), and `rescript_utils.rs`
 (`instruction_to_key_value_pair`). All checked-in generated artifacts were also
-inspected. Current compiler opcodes are `c`, `ca`, `r`, `u`, `f`, and `b`;
+inspected. Legacy compiler opcodes are `c`, `ca`, `r`, `u`, `f`, and `b`;
 `e` is retained for older artifacts. Nullable conversion happens implicitly,
 regardless of historical `n`/`na` hints. Response/fragment conversion, variables,
 provided variables, mutation/raw responses, and persisted queries use this API.
@@ -71,7 +71,7 @@ they belong to the GraphQL nullable wrapper, not the scalar implementation.
 
 ## Redesign boundary
 
-New artifacts will use a versioned, lossless plan with path segments and explicit
+New artifacts use a versioned, lossless plan with path segments and explicit
 list depth. Plans are prepared once at module initialization into reusable
 converters; response conversion does not construct paths or decode opcodes.
 Prepared converters snapshot their plan and callback bindings; mutating those
@@ -98,3 +98,16 @@ callbacks/references and conflicting instructions during preparation.
 No finite suite proves all possible JavaScript behavior. Confidence depends on
 this explicit supported contract, independent oracles, real integration tests,
 and documented remaining limitations—not a claim of absolute certainty.
+
+## Compiler and package verification
+
+The compiler changes are in [draft zth/relay#40](https://github.com/zth/relay/pull/40),
+pinned by this branch's submodule revision. All 30 compiler library tests pass.
+The broader upstream Flow snapshot suite has 64 failures and 93 passes on both
+the unchanged pinned compiler and this branch, with identical failing test names.
+These existing failures remain outside this conversion change.
+
+The runtime is tested through both CommonJS and native ESM release modules.
+Run `yarn test:all` and `yarn test:conversion:mutations` from the package. The
+mutation check runs isolated copies and requires behavioral test failures for
+13 deliberately introduced faults; it does not claim a comprehensive mutation score.
