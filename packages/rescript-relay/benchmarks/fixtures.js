@@ -117,3 +117,48 @@ const expected = [
 cases.forEach((fixture, i) => {
   fixture.expected = expected[i];
 });
+
+// Version 2 plans for the same workloads, with explicit list depth and segments.
+const field = (path, instruction) => ({ path, ...instruction });
+const plans = [
+  {
+    __root: [
+      field([], { fragments: true }),
+      field(["status"], { scalar: "enum" }),
+    ],
+  },
+  { __root: [] },
+  { __root: [] },
+  {
+    __root: [
+      field(["users", "edges"], { list: 1 }),
+      field(["users", "edges", "node"], { fragments: true }),
+      field(["users", "edges", "node", "status"], { scalar: "enum" }),
+    ],
+  },
+  {
+    __root: [
+      field([], { fragments: true }),
+      field(["status"], { scalar: "enum" }),
+    ],
+  },
+  {
+    __root: [
+      field(["members"], { list: 1, union: "union" }),
+      field(["members", "User"], { fragments: true }),
+      field(["members", "User", "status"], { scalar: "enum" }),
+    ],
+  },
+  { __root: [field(["dates"], { list: 1, scalar: "scalar" })] },
+  { __root: [field(["items"], { list: 1, opaque: true })] },
+  {
+    __root: [field(["input"], { reference: "Input" })],
+    Input: [
+      field(["status"], { scalar: "enum" }),
+      field(["children"], { list: 1, reference: "Input" }),
+    ],
+  },
+];
+cases.forEach((fixture, i) => {
+  fixture.plan = { version: 2, roots: plans[i] };
+});

@@ -256,4 +256,7 @@ function traverser(root, instructionMaps, converters, nullable, rootObjectKey) {
   return convertRoot(root);
 }
 
-module.exports = { traverser };
+module.exports = {
+  traverser,
+  prepareConversion: require("./prepareConversion").prepareConversion,
+};

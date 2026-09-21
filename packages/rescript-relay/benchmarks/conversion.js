@@ -12,7 +12,7 @@ const option = (name) => {
   return i < 0 ? undefined : args[i + 1];
 };
 const implementation = option("--implementation");
-const { traverser } = require(
+const { traverser, prepareConversion } = require(
   implementation ? path.resolve(implementation) : "../src/utils",
 );
 const samples = Number(option("--samples") || 15);
@@ -46,21 +46,28 @@ function objects(value, seen = new Set()) {
   }
   return seen;
 }
+const prepared = args.includes("--prepared");
+if (prepared && !prepareConversion)
+  throw new Error("Implementation has no prepared converter");
 let sink;
 function batch(fixture, count) {
   const start = performance.now();
-  for (let i = 0; i < count; i++)
-    sink = traverser(fixture.root, fixture.maps, converters, fixture.nullable);
+  for (let i = 0; i < count; i++) sink = fixture.convert(fixture.root);
   return performance.now() - start;
 }
 const results = cases.map((fixture) => {
   const before = v8.deserialize(v8.serialize(fixture.root));
-  const converted = traverser(
-    fixture.root,
-    fixture.maps,
-    converters,
-    fixture.nullable,
-  );
+  let preparationNs;
+  if (prepared) {
+    const start = performance.now();
+    for (let i = 0; i < 1000; i++)
+      sink = prepareConversion(fixture.plan, converters, fixture.nullable);
+    preparationNs = ((performance.now() - start) * 1e6) / 1000;
+  }
+  fixture.convert = prepared
+    ? prepareConversion(fixture.plan, converters, fixture.nullable)
+    : (value) => traverser(value, fixture.maps, converters, fixture.nullable);
+  const converted = fixture.convert(fixture.root);
   assert.deepStrictEqual(dataOnly(converted), fixture.expected, fixture.name);
   assert.deepStrictEqual(
     fixture.root,
@@ -83,6 +90,7 @@ const results = cases.map((fixture) => {
     name: fixture.name,
     iterations,
     newOutputObjects,
+    preparationNs,
     medianNs: median,
     p10Ns: values[Math.floor(values.length * 0.1)],
     p90Ns: values[Math.floor(values.length * 0.9)],
@@ -90,7 +98,8 @@ const results = cases.map((fixture) => {
   };
 });
 const report = {
-  fixtureVersion: 1,
+  fixtureVersion: 2,
+  mode: prepared ? "prepared" : "legacy",
   node: process.version,
   platform: `${os.platform()} ${os.arch()}`,
   cpu: os.cpus()[0].model,
