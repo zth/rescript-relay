@@ -13,3 +13,7 @@ _opam
 rescript-relay-compiler
 .now
 .DS_Store
+# Local conversion coverage and profiling output
+coverage/
+*.cpuprofile
+conversion-benchmark.json

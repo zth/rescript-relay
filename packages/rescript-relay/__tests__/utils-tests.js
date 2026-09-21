@@ -85,13 +85,8 @@ describe("conversion", () => {
       undefined
     );
 
-    try {
-      expect(JSON.stringify(traversedObj)).toBeDefined();
-    } catch (e) {
-      console.error(e);
-    }
-
-    expect.assertions(1);
+    expect(() => JSON.stringify(traversedObj)).not.toThrow();
+    expect(traversedObj.fragmentRefs).not.toHaveProperty("fragmentRefs");
   });
 
   it("handles converting enums", () => {

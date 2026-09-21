@@ -36,7 +36,10 @@
     "build:test": "./build-compiler-dev.sh && ./rescript-relay-compiler && ENABLE_PERSISTING=true ./rescript-relay-compiler && rm ./__tests_preloaded__/__generated__/RelaySchemaAssets_graphql.res",
     "postinstall": "node postinstall.js",
     "test": "jest",
-    "test:ci": "jest --ci --runInBand"
+    "test:ci": "jest --ci --runInBand",
+    "test:conversion": "jest --config jest.conversion.config.js --runInBand",
+    "test:all": "yarn build && yarn test:ci && ENABLE_PERSISTING=true yarn test:ci && yarn test:conversion",
+    "bench:conversion": "node benchmarks/conversion.js"
   },
   "devDependencies": {
     "@glennsl/rescript-fetch": "^0.2.0",
