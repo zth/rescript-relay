@@ -4,7 +4,8 @@ Run from `packages/rescript-relay`:
 
 ```sh
 yarn test:all
-yarn bench:conversion --output /tmp/conversion-after.json
+yarn test:conversion:mutations
+yarn bench:conversion:prepared --output /tmp/conversion-after.json
 ```
 
 `test:all` compiles the checked-in generated Relay artifacts and ReScript bindings,
@@ -19,7 +20,7 @@ For a before/after comparison using the **same fixtures and harness**:
 ```sh
 git show 520cac4933c118a85cf0dffcd1a19a5dba34ad4f:packages/rescript-relay/src/utils.js > /tmp/utils-before.cjs
 yarn bench:conversion --implementation /tmp/utils-before.cjs --output /tmp/conversion-before.json
-yarn bench:conversion --compare /tmp/conversion-before.json --output /tmp/conversion-after.json
+yarn bench:conversion:prepared --compare /tmp/conversion-before.json --output /tmp/conversion-after.json
 ```
 
 Run those commands sequentially on an otherwise idle machine, with the same Node
@@ -53,26 +54,26 @@ compiled query/fragment hooks and store updates without relying on timing.
 
 ## Implementation and compatibility
 
-The converter carries encoded string prefixes instead of constructing and
-joining path arrays per field. Plain scalar fields take a short path. Lists are
-traversed once, each member independently, with lazy copying only when an element
-changes. Objects likewise retain identity when nothing changes. Generated
-fragment refs are attached while traversing the original object, so they stay raw
-and are not visited as new data. Both fragment-ref properties share one snapshot.
+New compiler artifacts use version 2 plans: lossless path segments, explicit list
+depths, and named scalar/union/reference operations. `prepareConversion` validates
+and prepares each plan at module initialization. The response path runs composed
+record, list, scalar and union functions without creating paths or interpreting
+opcodes. Preparation time is recorded separately as `preparationNs`; it is not
+included in warm conversion timings. Prepared converters snapshot callback
+bindings and plan metadata; callback state and response data are never cached.
 
-This also removes the old extra recursive-array traversal and the list-wide
-union flag that could cause untyped siblings to be skipped. Conversion does not
-cache inputs, instruction maps, converter maps, or callback results. Changes to
-those values remain visible on subsequent calls, without retaining Relay data.
+Lists and records use lazy copying and preserve unchanged branches. Scalar
+outputs and JSON remain opaque. Both generated fragment-ref properties point to
+one raw snapshot. Null list members bypass scalar callbacks. Union callbacks run
+after member conversion for reads and before it for writes, including root unions.
 
-Null/undefined handling, opaque JSON blocking, input unions, nested option
-markers, custom scalar boundaries, and converter order are tested in both
-directions. In particular, `ca` deliberately retains its existing `Array.map`
-semantics: nonnull callbacks receive `(value, index, array)`. Null elements now bypass
-the callback and normalize to the requested sentinel, as required by the
-GraphQL list wrapper.
-Unchanged roots and arrays may now be returned by identity; consumers must treat
-converted responses as immutable, just like Relay snapshots.
+The legacy `traverser` remains available for existing generated artifacts and can
+be measured with `yarn bench:conversion`. It uses string paths and retains the
+old protocol's ambiguous underscore paths and inability to encode nested list
+depth. Regenerate artifacts with the matching compiler to use prepared plans.
+New generated artifacts require this runtime; old generated artifacts still work
+with it. See [the conversion contract](../docs/conversion-contract.md) for exact
+semantics, intentional bug fixes, supported inputs, and validation boundaries.
 
 The existing bindings already memoize conversions with `useMemo` keyed by the
 Relay snapshot. The mounted regression tests verify unchanged rerenders reuse

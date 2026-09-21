@@ -1,0 +1,93 @@
+{
+  "fixtureVersion": 2,
+  "mode": "legacy",
+  "node": "v24.16.0",
+  "platform": "linux x64",
+  "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+  "samples": 15,
+  "durationMs": 40,
+  "implementation": "/tmp/relay-conversion-audit/first-pass-utils.cjs",
+  "results": [
+    {
+      "name": "small fragment",
+      "iterations": 204800,
+      "newOutputObjects": 3,
+      "medianNs": 261.14952636718755,
+      "p10Ns": 239.84318359375007,
+      "p90Ns": 284.6326367187499,
+      "opsPerSecond": 3829223.8699830407
+    },
+    {
+      "name": "unchanged object",
+      "iterations": 409600,
+      "newOutputObjects": 0,
+      "medianNs": 102.91649658203117,
+      "p10Ns": 100.44872070312516,
+      "p90Ns": 110.95527832031271,
+      "opsPerSecond": 9716615.24839154
+    },
+    {
+      "name": "nullable query",
+      "iterations": 102400,
+      "newOutputObjects": 3,
+      "medianNs": 366.9991210937473,
+      "p10Ns": 361.586357421877,
+      "p90Ns": 380.5079687500035,
+      "opsPerSecond": 2724802.1657919916
+    },
+    {
+      "name": "connection / 100 rows",
+      "iterations": 800,
+      "newOutputObjects": 403,
+      "medianNs": 63887.45624999956,
+      "p10Ns": 62050.64749999963,
+      "p90Ns": 68331.1062499996,
+      "opsPerSecond": 15652.524903900941
+    },
+    {
+      "name": "plural fragment / 100 rows",
+      "iterations": 1600,
+      "newOutputObjects": 301,
+      "medianNs": 27059.063124999906,
+      "p10Ns": 25591.54562499998,
+      "p90Ns": 30144.928125000093,
+      "opsPerSecond": 36956.19450608763
+    },
+    {
+      "name": "union list / 100 rows",
+      "iterations": 800,
+      "newOutputObjects": 302,
+      "medianNs": 61811.29499999997,
+      "p10Ns": 59670.634999999944,
+      "p90Ns": 67804.75000000025,
+      "opsPerSecond": 16178.272919213236
+    },
+    {
+      "name": "custom scalar list",
+      "iterations": 6400,
+      "newOutputObjects": 102,
+      "medianNs": 11185.55546875001,
+      "p10Ns": 10668.467031249946,
+      "p90Ns": 12038.666562499997,
+      "opsPerSecond": 89401.01390527996
+    },
+    {
+      "name": "opaque JSON list",
+      "iterations": 204800,
+      "newOutputObjects": 0,
+      "medianNs": 341.34198242187443,
+      "p10Ns": 329.99998046875146,
+      "p90Ns": 384.9036718750032,
+      "opsPerSecond": 2929613.266158603
+    },
+    {
+      "name": "recursive inputs",
+      "iterations": 1600,
+      "newOutputObjects": 103,
+      "medianNs": 26979.713124999875,
+      "p10Ns": 26147.026250000064,
+      "p90Ns": 32104.163125000014,
+      "opsPerSecond": 37064.88632280462
+    }
+  ]
+}

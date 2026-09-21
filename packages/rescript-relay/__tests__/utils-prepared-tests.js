@@ -546,3 +546,19 @@ test("read/write round trips retain nullable structure, nested lists and opaque 
   expect(write(decoded)).toStrictEqual(wire);
   expect(decoded.json).toBe(wire.json);
 });
+
+// Native scalar lists have list wrappers but no scalar callback instruction.
+test("native scalar list plans preserve primitives and normalize nullable members", () => {
+  const convert = prepareConversion(
+    { version: 2, roots: { __root: [{ path: ["values"], list: 1 }] } },
+    {},
+    undefined,
+  );
+  const unchanged = freeze({
+    values: ["long string", 0, false, "", undefined],
+  });
+  expect(convert(unchanged)).toBe(unchanged);
+  expect(convert(freeze({ values: ["x", null, [null]] }))).toStrictEqual({
+    values: ["x", undefined, [undefined]],
+  });
+});

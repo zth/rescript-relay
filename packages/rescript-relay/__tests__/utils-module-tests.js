@@ -1,16 +1,20 @@
-const fs=require('fs');
-const os=require('os');
-const path=require('path');
-const {execFile}=require('child_process');
-const execFileAsync=require('util').promisify(execFile);
-const {buildConversionModules}=require('../scripts/build-conversion-modules');
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { execFile } = require("child_process");
+const execFileAsync = require("util").promisify(execFile);
+const {
+  buildConversionModules,
+} = require("../scripts/build-conversion-modules");
 
-test('release ESM and CommonJS exports execute the same legacy and prepared conversions',async()=>{
-  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'relay-conversion-modules-'));
+test("release ESM and CommonJS exports execute the same legacy and prepared conversions", async () => {
+  const directory = fs.mkdtempSync(
+    path.join(os.tmpdir(), "relay-conversion-modules-"),
+  );
   try {
     buildConversionModules(directory);
     // Test native ESM, bypassing Jest's dynamic-import-to-require transform.
-    const program=`
+    const program = `
       import assert from 'node:assert/strict';
       import {pathToFileURL} from 'node:url';
       import {createRequire} from 'node:module';
@@ -30,6 +34,18 @@ test('release ESM and CommonJS exports execute the same legacy and prepared conv
       }
       assert.deepEqual(data,{items:['1',null],after:null});
     `;
-    await execFileAsync(process.execPath,['--input-type=module','-e',program,path.join(directory,'utils.mjs'),require.resolve('../src/utils')],{stdio:'pipe'});
-  } finally {fs.rmSync(directory,{recursive:true,force:true});}
+    await execFileAsync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        program,
+        path.join(directory, "utils.mjs"),
+        require.resolve("../src/utils"),
+      ],
+      { stdio: "pipe" },
+    );
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 });

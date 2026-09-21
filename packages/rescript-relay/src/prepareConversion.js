@@ -180,7 +180,12 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
           nullable === null
             ? (value) => (children[value.__typename] || any)(union(value))
             : (value) => union((children[value.__typename] || any)(value));
-      } else convert = record(children, node.fragments === true);
+      } else {
+        convert =
+          names.length === 0 && !node.fragments
+            ? any
+            : record(children, node.fragments === true);
+      }
     }
     convert = optional(convert);
     for (let i = 0; i < depth; i++) convert = optional(arrayOf(convert));
