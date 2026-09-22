@@ -75,3 +75,36 @@ ESM/CommonJS parity, and artifact size budgets pass. The six new tests exercise
 opaque-list nulls/holes/inherited elements/cyclic values and generic-object
 metadata, inherited keys, own-key order and identity preservation in both nullable
 directions. Coverage and mutations provide evidence, not exhaustive correctness.
+
+## Final result against the current default branch
+
+Verified that the remote default branch is still `520cac4933c118a85cf0dffcd1a19a5dba34ad4f`.
+Fresh runs compare its legacy runtime directly with the final prepared runtime at
+`e1b12c7`, using the same version 3 fixtures, Node 24.16.0, 9 samples per case and
+25 ms calibration targets. Run order was baseline/final, then final/baseline;
+CPU affinity was unrestricted. These are measured microbenchmark ranges, not
+application-wide latency claims or products of earlier benchmark ratios.
+
+| Case | Final speedup over current default branch |
+| --- | ---: |
+| Small fragment | 13.4–14.3× |
+| Unchanged object | 17.9–18.9× |
+| Nullable query | 17.0–17.1× |
+| Connection, 100 rows | 41.2–45.3× |
+| Plural fragment, 100 rows | 11.5–11.7× |
+| Union list, 100 rows | 12.9–14.4× |
+| Opaque JSON list | 3.6–3.7× |
+| Recursive inputs | 19.2–23.0× |
+| Custom scalar list | 5–7% more time (slower) |
+
+Raw reports are `results/js-specialization/main-comparison-*.json`.
+The current machine remains noisy; treat these as approximate workload-specific
+results. The scalar fixture is dominated by Date construction.
+
+For the same 129 generated artifacts, combined gzip decreased from 37,573 to
+36,319 bytes (-1,254). The complete CommonJS-entry runtime increased from 1,144
+to 2,409 gzip bytes (+1,265). Adding these separately compressed components gives
+38,717 → 38,728 bytes: effectively size-neutral for this fixture set. This is not
+a measurement of a single compressed application bundle; actual results depend
+on artifact count, splitting, imports and compression. See `SIZE.md` for separate
+artifact bundles and native ESM runtime measurements.
