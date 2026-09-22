@@ -25,9 +25,9 @@ type rec node = {children: dict<node>, instructions: dict<value>}
       fail("Invalid conversion plan: expected version 2 and roots")
     }
     let roots = create()
-    let fields1 = keys(rawRoots)
-    for index1 in 0 to Array.length(fields1) - 1 {
-      let name = unsafeAt(fields1, index1)
+    let rootNames = keys(rawRoots)
+    for rootIndex in 0 to Array.length(rootNames) - 1 {
+      let name = unsafeAt(rootNames, rootIndex)
       let entries: value = get(rawRoots, name)
       if !isArray(entries) {
         fail("Invalid conversion root: " ++ name)
@@ -59,9 +59,9 @@ type rec node = {children: dict<node>, instructions: dict<value>}
             target := child
           }
         }
-        let fields2 = keys(entry)
-        for index2 in 0 to Array.length(fields2) - 1 {
-          let key = unsafeAt(fields2, index2)
+        let instructionKeys = keys(entry)
+        for keyIndex in 0 to Array.length(instructionKeys) - 1 {
+          let key = unsafeAt(instructionKeys, keyIndex)
           switch key {
           | "path" => ()
           | "list" | "scalar" | "union" | "reference" | "opaque" | "fragments" =>
@@ -80,27 +80,6 @@ type rec node = {children: dict<node>, instructions: dict<value>}
     }
     roots
   }
-  let arrayOf = (convert: converter): converter =>
-    values => {
-      let result = ref(jsUndefined)
-      for i in 0 to length(values) - 1 {
-        if hasIndex(i, values) {
-          let value = at(values, i)
-          let next = convert(value)
-          if next !== value {
-            if result.contents === jsUndefined {
-              result := slice(values)
-            }
-            put(result.contents, i, next)
-          }
-        }
-      }
-      if result.contents === jsUndefined {
-        values
-      } else {
-        result.contents
-      }
-    }
 )
 
 let prepareConversion = (
@@ -122,6 +101,27 @@ let prepareConversion = (
     fail("Missing conversion root: " ++ rootName)
   }
   let converters: dict<converter> = create()
+  let arrayOf = (convert: converter): converter =>
+    values => {
+      let result = ref(jsUndefined)
+      for i in 0 to length(values) - 1 {
+        if hasIndex(i, values) {
+          let value = at(values, i)
+          let next = convert(value)
+          if next !== value {
+            if result.contents === jsUndefined {
+              result := slice(values)
+            }
+            put(result.contents, i, next)
+          }
+        }
+      }
+      if result.contents === jsUndefined {
+        values
+      } else {
+        result.contents
+      }
+    }
   let nullableOnly: converter = value =>
     if isNullable(value) {
       nullable
@@ -192,16 +192,15 @@ let prepareConversion = (
     if Array.length(allOperations) > 1 {
       fail("Conflicting conversion operations: " ++ Array.join(allOperations, ", "))
     }
-    let fields4 = operations
-    for index4 in 0 to Array.length(fields4) - 1 {
-      let key = unsafeAt(fields4, index4)
+    for operationIndex in 0 to Array.length(operations) - 1 {
+      let key = unsafeAt(operations, operationIndex)
       if typeOf(get(ops, key)) !== "string" {
         fail("Invalid conversion " ++ key)
       }
     }
-    let fields5 = ["opaque", "fragments"]
-    for index5 in 0 to Array.length(fields5) - 1 {
-      let key = unsafeAt(fields5, index5)
+    let flags = ["opaque", "fragments"]
+    for flagIndex in 0 to Array.length(flags) - 1 {
+      let key = unsafeAt(flags, flagIndex)
       if hasOwn(ops, key) && get(ops, key) !== cast(true) {
         fail("Invalid conversion " ++ key)
       }
@@ -244,9 +243,8 @@ let prepareConversion = (
       }
     } else {
       let children: dict<converter> = create()
-      let fields6 = names
-      for index6 in 0 to Array.length(fields6) - 1 {
-        let name = unsafeAt(fields6, index6)
+      for childIndex in 0 to Array.length(names) - 1 {
+        let name = unsafeAt(names, childIndex)
         set(children, name, compile(get(node.children, name)))
       }
       let union: value = get(ops, "union")
@@ -280,9 +278,9 @@ let prepareConversion = (
     }
     convert.contents
   }
-  let fields7 = keys(roots)
-  for index7 in 0 to Array.length(fields7) - 1 {
-    let name = unsafeAt(fields7, index7)
+  let rootNames = keys(roots)
+  for rootIndex in 0 to Array.length(rootNames) - 1 {
+    let name = unsafeAt(rootNames, rootIndex)
     set(converters, name, compile(get(roots, name)))
   }
   let convert: converter = get(converters, rootName)

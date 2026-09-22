@@ -1,4 +1,4 @@
-// Dynamic Relay values include jsNull, jsUndefined, custom scalar instances and
+// Dynamic Relay values include null, undefined, custom scalar instances and
 // ReScript option markers. Keep unchecked property access at this FFI boundary.
 type value
 type converter = value => value

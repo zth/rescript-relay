@@ -82,3 +82,7 @@ cache or dependency changes were needed.
 
 See [bundle-size measurements and budgets](SIZE.md) for complete generated JS,
 shared/separate bundles, gzip/Brotli reports, and reproduction commands.
+
+See the [ReScript runtime experiment](rescript-runtime/README.md) for a tested
+port of both converters, paired timing results, bundle measurements, and the
+reason the shipping runtime remains JavaScript.

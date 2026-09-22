@@ -1,0 +1,26 @@
+{
+  "esbuild": "0.25.12",
+  "node": "v24.16.0",
+  "results": {
+    "baselineEsm": {
+      "minified": 5578,
+      "gzip": 2238,
+      "brotli": 2032
+    },
+    "candidateEsm": {
+      "minified": 6328,
+      "gzip": 2638,
+      "brotli": 2352
+    },
+    "baselineCjs": {
+      "minified": 5786,
+      "gzip": 2330,
+      "brotli": 2108
+    },
+    "candidateCjs": {
+      "minified": 6426,
+      "gzip": 2689,
+      "brotli": 2387
+    }
+  }
+}
