@@ -4,9 +4,19 @@
 module Types = {
   @@warning("-30")
 
-  type rec response_users_edges_node = {
+  type rec response_members_edges_node = {
+    @live __typename: string,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestConversionPluralNode_node | #TestConversionPluralUnion_member]>,
+  }
+  and response_members_edges = {
+    node: option<response_members_edges_node>,
+  }
+  and response_members = {
+    edges: option<array<option<response_members_edges>>>,
+  }
+  and response_users_edges_node = {
     @live id: string,
-    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestConversionPluralCatch_user | #TestConversionPlural_user]>,
+    fragmentRefs: RescriptRelay.fragmentRefs<[ | #TestConversionPluralCatch_user | #TestConversionPluralNode_node | #TestConversionPluralNullable_user | #TestConversionPlural_user]>,
   }
   and response_users_edges = {
     node: option<response_users_edges_node>,
@@ -15,6 +25,7 @@ module Types = {
     edges: option<array<option<response_users_edges>>>,
   }
   type response = {
+    members: option<response_members>,
     users: option<response_users>,
   }
   @live
@@ -36,7 +47,7 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["users","edges"]},{"fragments":true,"path":["users","edges","node"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"fragments":true,"path":["members","edges","node"]},{"list":1,"path":["users","edges"]},{"fragments":true,"path":["users","edges","node"]}]},"version":2}`)
   @live
   let wrapResponseCallbacks = ()
   @live
@@ -89,6 +100,53 @@ var v0 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v1 = {
+  "args": null,
+  "kind": "FragmentSpread",
+  "name": "TestConversionPluralNode_node"
+},
+v2 = [
+  {
+    "kind": "Literal",
+    "name": "groupId",
+    "value": "group"
+  }
+],
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
+  "storageKey": null
+},
+v6 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    }
+  ],
+  "type": "Group",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -131,7 +189,13 @@ return {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "TestConversionPluralCatch_user"
-                  }
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "TestConversionPluralNullable_user"
+                  },
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -140,6 +204,46 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "MemberConnection",
+        "kind": "LinkedField",
+        "name": "members",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "MemberEdge",
+            "kind": "LinkedField",
+            "name": "edges",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "TestConversionPluralUnion_member"
+                  },
+                  (v1/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": "members(groupId:\"group\")"
       }
     ],
     "type": "Query",
@@ -176,19 +280,16 @@ return {
                 "plural": false,
                 "selections": [
                   (v0/*: any*/),
+                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "firstName",
-                    "storageKey": null
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v3/*: any*/),
+                      (v6/*: any*/)
+                    ],
+                    "type": "Node",
+                    "abstractKey": "__isNode"
                   }
                 ],
                 "storageKey": null
@@ -198,16 +299,72 @@ return {
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": "MemberConnection",
+        "kind": "LinkedField",
+        "name": "members",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "MemberEdge",
+            "kind": "LinkedField",
+            "name": "edges",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v3/*: any*/),
+                  {
+                    "kind": "TypeDiscriminator",
+                    "abstractKey": "__isMember"
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v5/*: any*/),
+                      (v4/*: any*/)
+                    ],
+                    "type": "User",
+                    "abstractKey": null
+                  },
+                  (v6/*: any*/),
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v0/*: any*/)
+                    ],
+                    "type": "Node",
+                    "abstractKey": "__isNode"
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": "members(groupId:\"group\")"
       }
     ]
   },
   "params": {
-    "cacheID": "529ae8acb8b39777f39e2996f143b276",
+    "cacheID": "12b21ea36baea2bc4e53962113b3c70f",
     "id": null,
     "metadata": {},
     "name": "TestConversionPluralQuery",
     "operationKind": "query",
-    "text": "query TestConversionPluralQuery {\n  users {\n    edges {\n      node {\n        id\n        ...TestConversionPlural_user\n        ...TestConversionPluralCatch_user\n      }\n    }\n  }\n}\n\nfragment TestConversionPluralCatch_user on User {\n  firstName\n  id\n  createdAt\n}\n\nfragment TestConversionPlural_user on User {\n  id\n  createdAt\n}\n"
+    "text": "query TestConversionPluralQuery {\n  users {\n    edges {\n      node {\n        id\n        ...TestConversionPlural_user\n        ...TestConversionPluralCatch_user\n        ...TestConversionPluralNullable_user\n        ...TestConversionPluralNode_node\n      }\n    }\n  }\n  members(groupId: \"group\") {\n    edges {\n      node {\n        __typename\n        ...TestConversionPluralUnion_member\n        ...TestConversionPluralNode_node\n        ... on Node {\n          __isNode: __typename\n          __typename\n          id\n        }\n      }\n    }\n  }\n}\n\nfragment TestConversionPluralCatch_user on User {\n  firstName\n  id\n  createdAt\n}\n\nfragment TestConversionPluralNode_node on Node {\n  __isNode: __typename\n  __typename\n  ... on User {\n    createdAt\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestConversionPluralNullable_user on User {\n  firstName\n  createdAt\n}\n\nfragment TestConversionPluralUnion_member on Member {\n  __isMember: __typename\n  __typename\n  ... on User {\n    firstName\n    createdAt\n  }\n  ... on Group {\n    name\n  }\n}\n\nfragment TestConversionPlural_user on User {\n  id\n  createdAt\n}\n"
   }
 };
 })() `)

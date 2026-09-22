@@ -102,7 +102,7 @@ and documented remaining limitations—not a claim of absolute certainty.
 ## Compiler and package verification
 
 The compiler changes are in [draft zth/relay#40](https://github.com/zth/relay/pull/40),
-pinned by this branch's submodule revision. All 34 compiler library tests pass.
+pinned by this branch's submodule revision. All 35 compiler library tests pass.
 The broader upstream Flow snapshot suite has 64 failures and 93 passes on both
 the unchanged pinned compiler and this branch, with identical failing test names.
 These existing failures remain outside this conversion change.
@@ -137,5 +137,6 @@ Plural fragment roots apply their record plan to each element without a redundan
 root list instruction. For plural fragments with `@catch`, each element is a
 `CatchResult`, so the generated type is `array<CatchResult<fragment_t>>` and
 custom scalar paths start inside each result's `value`. Mounted hook tests cover
-successful results, mixed success/error results, store updates, and preservation
+nullable payloads, union/interface payloads, mixed success/error results, store
+updates, and preservation
 of the raw Relay store; a typed ReScript helper checks the generated wrapper.
