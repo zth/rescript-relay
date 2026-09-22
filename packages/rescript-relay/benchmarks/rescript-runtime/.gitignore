@@ -1,0 +1,5 @@
+lib/
+.rescript*
+.bsb.lock
+src/*.mjs
+output/
