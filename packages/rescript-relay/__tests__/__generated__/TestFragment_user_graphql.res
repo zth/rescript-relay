@@ -19,11 +19,11 @@ module Internal = {
   @live
   let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":[]}]},"version":2}`)
   @live
-  let fragmentConverterMap = ()
+  let fragmentCallbacks = ()
   @live
   let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
-    fragmentConverterMap,
+    fragmentCallbacks,
     None
   )
   )

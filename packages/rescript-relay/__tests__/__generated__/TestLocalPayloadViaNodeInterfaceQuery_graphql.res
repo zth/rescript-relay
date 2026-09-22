@@ -123,15 +123,15 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"0"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "response_node": wrap_response_node,
+  let wrapResponseCallbacks = {
+    "0": wrap_response_node,
   }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -143,13 +143,13 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "response_node": unwrap_response_node,
+  let responseCallbacks = {
+    "0": unwrap_response_node,
   }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )
@@ -159,18 +159,18 @@ module Internal = {
   type wrapRawResponseRaw
   %%private(
   @live
-  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"rawResponse_node"},{"list":1,"path":["node","User","memberOf"],"union":"rawResponse_node_User_memberOf"},{"path":["node","User","memberOf","Group","topMember"],"union":"rawResponse_node_User_memberOf_Group_topMember"},{"path":["node","User","memberOfSingular"],"union":"rawResponse_node_User_memberOfSingular"}]},"version":2}`)
+  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"0"},{"list":1,"path":["node","User","memberOf"],"union":"1"},{"path":["node","User","memberOf","Group","topMember"],"union":"3"},{"path":["node","User","memberOfSingular"],"union":"2"}]},"version":2}`)
   @live
-  let wrapRawResponseConverterMap = {
-    "rawResponse_node_User_memberOf_Group_topMember": wrap_rawResponse_node_User_memberOf_Group_topMember,
-    "rawResponse_node_User_memberOf": wrap_rawResponse_node_User_memberOf,
-    "rawResponse_node_User_memberOfSingular": wrap_rawResponse_node_User_memberOfSingular,
-    "rawResponse_node": wrap_rawResponse_node,
+  let wrapRawResponseCallbacks = {
+    "0": wrap_rawResponse_node,
+    "1": wrap_rawResponse_node_User_memberOf,
+    "2": wrap_rawResponse_node_User_memberOfSingular,
+    "3": wrap_rawResponse_node_User_memberOf_Group_topMember,
   }
   @live
   let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
     wrapRawResponseConverter,
-    wrapRawResponseConverterMap,
+    wrapRawResponseCallbacks,
     null
   )
   )
@@ -182,16 +182,16 @@ module Internal = {
   @live
   let rawResponseConverter = wrapRawResponseConverter
   @live
-  let rawResponseConverterMap = {
-    "rawResponse_node_User_memberOf_Group_topMember": unwrap_rawResponse_node_User_memberOf_Group_topMember,
-    "rawResponse_node_User_memberOf": unwrap_rawResponse_node_User_memberOf,
-    "rawResponse_node_User_memberOfSingular": unwrap_rawResponse_node_User_memberOfSingular,
-    "rawResponse_node": unwrap_rawResponse_node,
+  let rawResponseCallbacks = {
+    "0": unwrap_rawResponse_node,
+    "1": unwrap_rawResponse_node_User_memberOf,
+    "2": unwrap_rawResponse_node_User_memberOfSingular,
+    "3": unwrap_rawResponse_node_User_memberOf_Group_topMember,
   }
   @live
   let preparedRawResponseConverter = RescriptRelay.prepareConversion(
     rawResponseConverter,
-    rawResponseConverterMap,
+    rawResponseCallbacks,
     None
   )
   )

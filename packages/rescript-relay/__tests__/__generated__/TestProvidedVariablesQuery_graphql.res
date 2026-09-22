@@ -26,15 +26,15 @@ type queryRef
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"TestsUtils.IntString"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesIntStrArr"],"scalar":"TestsUtils.IntString"}],"inputC":[{"path":["intStr"],"scalar":"TestsUtils.IntString"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"0"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesIntStrArr"],"scalar":"0"}],"inputC":[{"path":["intStr"],"scalar":"0"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.IntString": TestsUtils.IntString.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.IntString.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )
@@ -46,11 +46,11 @@ module Internal = {
   @live
   let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseCallbacks = ()
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -62,11 +62,11 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

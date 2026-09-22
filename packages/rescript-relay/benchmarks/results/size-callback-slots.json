@@ -1,0 +1,792 @@
+{
+  "fixtureVersion": 1,
+  "esbuild": "0.25.12",
+  "node": "v24.16.0",
+  "artifactCount": 129,
+  "combined": {
+    "minified": 274404,
+    "gzip": 36667,
+    "brotli": 26495
+  },
+  "separate": {
+    "minified": 304216,
+    "gzip": 118974,
+    "brotli": 105519
+  },
+  "files": [
+    {
+      "path": "__tests__/__generated__/GroupAvatar_group_graphql.bs.js",
+      "minified": 711,
+      "gzip": 447,
+      "brotli": 384
+    },
+    {
+      "path": "__tests__/__generated__/HasNameComponent_hasName_graphql.bs.js",
+      "minified": 805,
+      "gzip": 467,
+      "brotli": 400
+    },
+    {
+      "path": "__tests__/__generated__/LocalUser____relay_model_instance_graphql.bs.js",
+      "minified": 1059,
+      "gzip": 579,
+      "brotli": 506
+    },
+    {
+      "path": "__tests__/__generated__/LocalUser__id_graphql.bs.js",
+      "minified": 747,
+      "gzip": 462,
+      "brotli": 399
+    },
+    {
+      "path": "__tests__/__generated__/LocalUser_relayResolvers_graphql.bs.js",
+      "minified": 0,
+      "gzip": 20,
+      "brotli": 1
+    },
+    {
+      "path": "__tests__/__generated__/Query_relayResolvers_graphql.bs.js",
+      "minified": 0,
+      "gzip": 20,
+      "brotli": 1
+    },
+    {
+      "path": "__tests__/__generated__/RichContent_content_graphql.bs.js",
+      "minified": 722,
+      "gzip": 447,
+      "brotli": 380
+    },
+    {
+      "path": "__tests__/__generated__/TestAliasedFragmentsQuery_graphql.bs.js",
+      "minified": 3136,
+      "gzip": 1125,
+      "brotli": 1003
+    },
+    {
+      "path": "__tests__/__generated__/TestAliasedFragments_userFirstName_graphql.bs.js",
+      "minified": 732,
+      "gzip": 455,
+      "brotli": 394
+    },
+    {
+      "path": "__tests__/__generated__/TestAliasedFragments_userLastName_graphql.bs.js",
+      "minified": 730,
+      "gzip": 454,
+      "brotli": 391
+    },
+    {
+      "path": "__tests__/__generated__/TestArrayUnderlyingScalarSiblingQuery_graphql.bs.js",
+      "minified": 2930,
+      "gzip": 1217,
+      "brotli": 1073
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchLoggedInUserPropQuery_graphql.bs.js",
+      "minified": 2721,
+      "gzip": 1165,
+      "brotli": 1035
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchMemberPropNestedQuery_graphql.bs.js",
+      "minified": 3889,
+      "gzip": 1386,
+      "brotli": 1260
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchMemberPropQuery_graphql.bs.js",
+      "minified": 3020,
+      "gzip": 1285,
+      "brotli": 1159
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchMembersPropQuery_graphql.bs.js",
+      "minified": 3708,
+      "gzip": 1381,
+      "brotli": 1244
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchUnionMemberQuery_graphql.bs.js",
+      "minified": 3073,
+      "gzip": 1217,
+      "brotli": 1078
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchUnionMember_member_graphql.bs.js",
+      "minified": 1472,
+      "gzip": 691,
+      "brotli": 604
+    },
+    {
+      "path": "__tests__/__generated__/TestCatchUser_user_graphql.bs.js",
+      "minified": 875,
+      "gzip": 542,
+      "brotli": 465
+    },
+    {
+      "path": "__tests__/__generated__/TestCodesplitQuery_graphql.bs.js",
+      "minified": 7005,
+      "gzip": 1782,
+      "brotli": 1615
+    },
+    {
+      "path": "__tests__/__generated__/TestCompileInterfacesFragment_user_graphql.bs.js",
+      "minified": 731,
+      "gzip": 458,
+      "brotli": 393
+    },
+    {
+      "path": "__tests__/__generated__/TestConnections2_user_graphql.bs.js",
+      "minified": 4067,
+      "gzip": 1345,
+      "brotli": 1220
+    },
+    {
+      "path": "__tests__/__generated__/TestConnections3_user_graphql.bs.js",
+      "minified": 2334,
+      "gzip": 860,
+      "brotli": 766
+    },
+    {
+      "path": "__tests__/__generated__/TestConnectionsQuery_graphql.bs.js",
+      "minified": 4183,
+      "gzip": 1508,
+      "brotli": 1348
+    },
+    {
+      "path": "__tests__/__generated__/TestConnections_AddFriendMutation_graphql.bs.js",
+      "minified": 2252,
+      "gzip": 914,
+      "brotli": 809
+    },
+    {
+      "path": "__tests__/__generated__/TestConnections_user_graphql.bs.js",
+      "minified": 2999,
+      "gzip": 1075,
+      "brotli": 966
+    },
+    {
+      "path": "__tests__/__generated__/TestCustomScalarAfterCustomScalarArrayQuery_graphql.bs.js",
+      "minified": 2616,
+      "gzip": 1119,
+      "brotli": 992
+    },
+    {
+      "path": "__tests__/__generated__/TestCustomScalarsQuery_graphql.bs.js",
+      "minified": 4182,
+      "gzip": 1475,
+      "brotli": 1336
+    },
+    {
+      "path": "__tests__/__generated__/TestFragmentQuery_graphql.bs.js",
+      "minified": 4301,
+      "gzip": 1367,
+      "brotli": 1223
+    },
+    {
+      "path": "__tests__/__generated__/TestFragmentRequiredPlural_user_graphql.bs.js",
+      "minified": 903,
+      "gzip": 534,
+      "brotli": 463
+    },
+    {
+      "path": "__tests__/__generated__/TestFragmentRequiredQuery_graphql.bs.js",
+      "minified": 3467,
+      "gzip": 1182,
+      "brotli": 1050
+    },
+    {
+      "path": "__tests__/__generated__/TestFragmentRequired_user_graphql.bs.js",
+      "minified": 890,
+      "gzip": 525,
+      "brotli": 452
+    },
+    {
+      "path": "__tests__/__generated__/TestFragment_allowUnsafeEnum_graphql.bs.js",
+      "minified": 925,
+      "gzip": 524,
+      "brotli": 451
+    },
+    {
+      "path": "__tests__/__generated__/TestFragment_inline_graphql.bs.js",
+      "minified": 694,
+      "gzip": 430,
+      "brotli": 372
+    },
+    {
+      "path": "__tests__/__generated__/TestFragment_plural_user_graphql.bs.js",
+      "minified": 996,
+      "gzip": 531,
+      "brotli": 458
+    },
+    {
+      "path": "__tests__/__generated__/TestFragment_sub_user_graphql.bs.js",
+      "minified": 718,
+      "gzip": 450,
+      "brotli": 387
+    },
+    {
+      "path": "__tests__/__generated__/TestFragment_user_graphql.bs.js",
+      "minified": 1168,
+      "gzip": 600,
+      "brotli": 513
+    },
+    {
+      "path": "__tests__/__generated__/TestInputUnionQuery_graphql.bs.js",
+      "minified": 2163,
+      "gzip": 1037,
+      "brotli": 904
+    },
+    {
+      "path": "__tests__/__generated__/TestLocalPayloadQuery_graphql.bs.js",
+      "minified": 5054,
+      "gzip": 1560,
+      "brotli": 1408
+    },
+    {
+      "path": "__tests__/__generated__/TestLocalPayloadViaNodeInterfaceQuery_graphql.bs.js",
+      "minified": 5686,
+      "gzip": 1693,
+      "brotli": 1525
+    },
+    {
+      "path": "__tests__/__generated__/TestLocalPayload_user_graphql.bs.js",
+      "minified": 2408,
+      "gzip": 847,
+      "brotli": 753
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersLinkedMeQuery_graphql.bs.js",
+      "minified": 2185,
+      "gzip": 961,
+      "brotli": 844
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersLinkedQuery_graphql.bs.js",
+      "minified": 2708,
+      "gzip": 1169,
+      "brotli": 1043
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersPluralBestiesQuery_graphql.bs.js",
+      "minified": 2337,
+      "gzip": 1033,
+      "brotli": 913
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersPluralQuery_graphql.bs.js",
+      "minified": 2325,
+      "gzip": 1033,
+      "brotli": 911
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersScalarMeQuery_graphql.bs.js",
+      "minified": 2183,
+      "gzip": 956,
+      "brotli": 844
+    },
+    {
+      "path": "__tests__/__generated__/TestMissingFieldHandlersScalarQuery_graphql.bs.js",
+      "minified": 2704,
+      "gzip": 1167,
+      "brotli": 1040
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationInline_user_graphql.bs.js",
+      "minified": 698,
+      "gzip": 434,
+      "brotli": 376
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationProvidedVariable_user_graphql.bs.js",
+      "minified": 898,
+      "gzip": 514,
+      "brotli": 443
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationQuery_graphql.bs.js",
+      "minified": 3201,
+      "gzip": 1208,
+      "brotli": 1066
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationSetOnlineStatusComplexMutation_graphql.bs.js",
+      "minified": 2404,
+      "gzip": 990,
+      "brotli": 882
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationSetOnlineStatusMutation_graphql.bs.js",
+      "minified": 2994,
+      "gzip": 1025,
+      "brotli": 923
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationWithInlineFragmentSetOnlineStatusMutation_graphql.bs.js",
+      "minified": 2929,
+      "gzip": 1004,
+      "brotli": 900
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationWithOnlyFragmentSetOnlineStatusMutation_graphql.bs.js",
+      "minified": 3910,
+      "gzip": 1231,
+      "brotli": 1116
+    },
+    {
+      "path": "__tests__/__generated__/TestMutationWithProvidedVariableFragmentMutation_graphql.bs.js",
+      "minified": 2788,
+      "gzip": 967,
+      "brotli": 880
+    },
+    {
+      "path": "__tests__/__generated__/TestMutation_user_graphql.bs.js",
+      "minified": 1757,
+      "gzip": 732,
+      "brotli": 645
+    },
+    {
+      "path": "__tests__/__generated__/TestNodeInterfaceOnAbstractTypeQuery_graphql.bs.js",
+      "minified": 3137,
+      "gzip": 1238,
+      "brotli": 1103
+    },
+    {
+      "path": "__tests__/__generated__/TestNodeInterfaceQuery_graphql.bs.js",
+      "minified": 3720,
+      "gzip": 1318,
+      "brotli": 1193
+    },
+    {
+      "path": "__tests__/__generated__/TestNodeInterface_user_graphql.bs.js",
+      "minified": 720,
+      "gzip": 454,
+      "brotli": 387
+    },
+    {
+      "path": "__tests__/__generated__/TestNonReactQuery_graphql.bs.js",
+      "minified": 2468,
+      "gzip": 1077,
+      "brotli": 944
+    },
+    {
+      "path": "__tests__/__generated__/TestNonReact_user_graphql.bs.js",
+      "minified": 914,
+      "gzip": 519,
+      "brotli": 447
+    },
+    {
+      "path": "__tests__/__generated__/TestNullableScalarsAfterCustomScalarArrayQuery_graphql.bs.js",
+      "minified": 2798,
+      "gzip": 1170,
+      "brotli": 1035
+    },
+    {
+      "path": "__tests__/__generated__/TestNullableVariablesMutation_graphql.bs.js",
+      "minified": 2713,
+      "gzip": 1016,
+      "brotli": 908
+    },
+    {
+      "path": "__tests__/__generated__/TestNullableVariablesQuery_graphql.bs.js",
+      "minified": 2141,
+      "gzip": 948,
+      "brotli": 834
+    },
+    {
+      "path": "__tests__/__generated__/TestObserverQuery_graphql.bs.js",
+      "minified": 1893,
+      "gzip": 922,
+      "brotli": 813
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationInNodeQuery_graphql.bs.js",
+      "minified": 4371,
+      "gzip": 1458,
+      "brotli": 1305
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationInNodeRefetchQuery_graphql.bs.js",
+      "minified": 5073,
+      "gzip": 1630,
+      "brotli": 1473
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationInNode_query_graphql.bs.js",
+      "minified": 2756,
+      "gzip": 1055,
+      "brotli": 940
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationInNode_user_graphql.bs.js",
+      "minified": 1062,
+      "gzip": 549,
+      "brotli": 475
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationUnionQuery_graphql.bs.js",
+      "minified": 4940,
+      "gzip": 1564,
+      "brotli": 1406
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationUnionRefetchQuery_graphql.bs.js",
+      "minified": 5708,
+      "gzip": 1728,
+      "brotli": 1559
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationUnion_query_graphql.bs.js",
+      "minified": 3817,
+      "gzip": 1250,
+      "brotli": 1122
+    },
+    {
+      "path": "__tests__/__generated__/TestPaginationUnion_user_graphql.bs.js",
+      "minified": 993,
+      "gzip": 541,
+      "brotli": 471
+    },
+    {
+      "path": "__tests__/__generated__/TestParseCustomScalarArrayQuery_graphql.bs.js",
+      "minified": 2767,
+      "gzip": 1117,
+      "brotli": 994
+    },
+    {
+      "path": "__tests__/__generated__/TestPrefetchablePaginationQuery_graphql.bs.js",
+      "minified": 3657,
+      "gzip": 1295,
+      "brotli": 1149
+    },
+    {
+      "path": "__tests__/__generated__/TestPrefetchablePaginationRefetchQuery_graphql.bs.js",
+      "minified": 4215,
+      "gzip": 1439,
+      "brotli": 1293
+    },
+    {
+      "path": "__tests__/__generated__/TestPrefetchablePagination_user__edges_graphql.bs.js",
+      "minified": 1106,
+      "gzip": 555,
+      "brotli": 486
+    },
+    {
+      "path": "__tests__/__generated__/TestPrefetchablePagination_user_graphql.bs.js",
+      "minified": 2208,
+      "gzip": 879,
+      "brotli": 776
+    },
+    {
+      "path": "__tests__/__generated__/TestProvidedVariablesQuery_graphql.bs.js",
+      "minified": 5647,
+      "gzip": 1538,
+      "brotli": 1388
+    },
+    {
+      "path": "__tests__/__generated__/TestProvidedVariables_user_graphql.bs.js",
+      "minified": 1581,
+      "gzip": 572,
+      "brotli": 504
+    },
+    {
+      "path": "__tests__/__generated__/TestQueryInputObjectsQuery_graphql.bs.js",
+      "minified": 2084,
+      "gzip": 1030,
+      "brotli": 911
+    },
+    {
+      "path": "__tests__/__generated__/TestQuery_graphql.bs.js",
+      "minified": 2742,
+      "gzip": 1179,
+      "brotli": 1068
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingInNodeQuery_graphql.bs.js",
+      "minified": 3807,
+      "gzip": 1422,
+      "brotli": 1280
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingInNodeRefetchQuery_graphql.bs.js",
+      "minified": 3912,
+      "gzip": 1420,
+      "brotli": 1275
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingInNode_user_graphql.bs.js",
+      "minified": 1705,
+      "gzip": 769,
+      "brotli": 668
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingNoArgsRefetchQuery_graphql.bs.js",
+      "minified": 2193,
+      "gzip": 1016,
+      "brotli": 902
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingNoArgs_query_graphql.bs.js",
+      "minified": 988,
+      "gzip": 558,
+      "brotli": 485
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingQuery_graphql.bs.js",
+      "minified": 3719,
+      "gzip": 1387,
+      "brotli": 1234
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRecordNoArgsRefetchQuery_graphql.bs.js",
+      "minified": 2235,
+      "gzip": 1022,
+      "brotli": 905
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRecordNoArgs_query_graphql.bs.js",
+      "minified": 1000,
+      "gzip": 561,
+      "brotli": 489
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRecordQuery_graphql.bs.js",
+      "minified": 3761,
+      "gzip": 1393,
+      "brotli": 1240
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRecordRefetchQuery_graphql.bs.js",
+      "minified": 4554,
+      "gzip": 1593,
+      "brotli": 1439
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRecord_user_graphql.bs.js",
+      "minified": 2166,
+      "gzip": 874,
+      "brotli": 768
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetchingRefetchQuery_graphql.bs.js",
+      "minified": 4512,
+      "gzip": 1589,
+      "brotli": 1434
+    },
+    {
+      "path": "__tests__/__generated__/TestRefetching_user_graphql.bs.js",
+      "minified": 2154,
+      "gzip": 870,
+      "brotli": 765
+    },
+    {
+      "path": "__tests__/__generated__/TestRelayResolversAllQuery_graphql.bs.js",
+      "minified": 5361,
+      "gzip": 1536,
+      "brotli": 1386
+    },
+    {
+      "path": "__tests__/__generated__/TestRelayResolversQuery_graphql.bs.js",
+      "minified": 3046,
+      "gzip": 1181,
+      "brotli": 1052
+    },
+    {
+      "path": "__tests__/__generated__/TestRelayResolvers_user_graphql.bs.js",
+      "minified": 1300,
+      "gzip": 625,
+      "brotli": 542
+    },
+    {
+      "path": "__tests__/__generated__/TestRelayUserResolver2_graphql.bs.js",
+      "minified": 794,
+      "gzip": 465,
+      "brotli": 395
+    },
+    {
+      "path": "__tests__/__generated__/TestRelayUserResolver_graphql.bs.js",
+      "minified": 793,
+      "gzip": 463,
+      "brotli": 395
+    },
+    {
+      "path": "__tests__/__generated__/TestRequiredFieldLoggerQuery_graphql.bs.js",
+      "minified": 2191,
+      "gzip": 967,
+      "brotli": 855
+    },
+    {
+      "path": "__tests__/__generated__/TestSerializeCustomScalarArrayMutation_graphql.bs.js",
+      "minified": 1796,
+      "gzip": 841,
+      "brotli": 735
+    },
+    {
+      "path": "__tests__/__generated__/TestSerializeMultipleCustomScalarsMutation_graphql.bs.js",
+      "minified": 1829,
+      "gzip": 827,
+      "brotli": 719
+    },
+    {
+      "path": "__tests__/__generated__/TestSubscriptionProvidedVariable_user_graphql.bs.js",
+      "minified": 902,
+      "gzip": 515,
+      "brotli": 443
+    },
+    {
+      "path": "__tests__/__generated__/TestSubscriptionQuery_graphql.bs.js",
+      "minified": 2542,
+      "gzip": 1073,
+      "brotli": 942
+    },
+    {
+      "path": "__tests__/__generated__/TestSubscriptionUserUpdatedSubscription_graphql.bs.js",
+      "minified": 2552,
+      "gzip": 952,
+      "brotli": 837
+    },
+    {
+      "path": "__tests__/__generated__/TestSubscriptionWithProvidedVariableFragmentSubscription_graphql.bs.js",
+      "minified": 3038,
+      "gzip": 1066,
+      "brotli": 953
+    },
+    {
+      "path": "__tests__/__generated__/TestSubscription_user_graphql.bs.js",
+      "minified": 1061,
+      "gzip": 535,
+      "brotli": 455
+    },
+    {
+      "path": "__tests__/__generated__/TestTestingHelpersQuery_graphql.bs.js",
+      "minified": 3448,
+      "gzip": 1298,
+      "brotli": 1170
+    },
+    {
+      "path": "__tests__/__generated__/TestTestingHelpers_plural_user_graphql.bs.js",
+      "minified": 1002,
+      "gzip": 538,
+      "brotli": 466
+    },
+    {
+      "path": "__tests__/__generated__/TestTestingHelpers_sub_user_graphql.bs.js",
+      "minified": 724,
+      "gzip": 458,
+      "brotli": 390
+    },
+    {
+      "path": "__tests__/__generated__/TestTestingHelpers_user_graphql.bs.js",
+      "minified": 1180,
+      "gzip": 607,
+      "brotli": 521
+    },
+    {
+      "path": "__tests__/__generated__/TestUnionFragmentQuery_graphql.bs.js",
+      "minified": 3556,
+      "gzip": 1264,
+      "brotli": 1124
+    },
+    {
+      "path": "__tests__/__generated__/TestUnionFragmentUser_user_graphql.bs.js",
+      "minified": 923,
+      "gzip": 520,
+      "brotli": 448
+    },
+    {
+      "path": "__tests__/__generated__/TestUnionFragment_member_graphql.bs.js",
+      "minified": 1547,
+      "gzip": 696,
+      "brotli": 609
+    },
+    {
+      "path": "__tests__/__generated__/TestUnionFragment_plural_member_graphql.bs.js",
+      "minified": 1561,
+      "gzip": 707,
+      "brotli": 634
+    },
+    {
+      "path": "__tests__/__generated__/TestUnionsQuery_graphql.bs.js",
+      "minified": 5037,
+      "gzip": 1522,
+      "brotli": 1380
+    },
+    {
+      "path": "__tests__/__generated__/TestUpdatableFragmentsQuery_graphql.bs.js",
+      "minified": 2816,
+      "gzip": 1121,
+      "brotli": 997
+    },
+    {
+      "path": "__tests__/__generated__/TestUpdatableFragments_query_graphql.bs.js",
+      "minified": 1248,
+      "gzip": 607,
+      "brotli": 517
+    },
+    {
+      "path": "__tests__/__generated__/TestUpdatableFragments_updatableUser_graphql.bs.js",
+      "minified": 678,
+      "gzip": 363,
+      "brotli": 321
+    },
+    {
+      "path": "__tests__/__generated__/TestUpdatableQuery_UpdatableQuery_graphql.bs.js",
+      "minified": 1298,
+      "gzip": 610,
+      "brotli": 529
+    },
+    {
+      "path": "__tests__/__generated__/TestUpdatableQuery_graphql.bs.js",
+      "minified": 2607,
+      "gzip": 1046,
+      "brotli": 936
+    },
+    {
+      "path": "__tests__/__generated__/UserAvatar_user_graphql.bs.js",
+      "minified": 1049,
+      "gzip": 572,
+      "brotli": 494
+    },
+    {
+      "path": "__tests__/__generated__/UserMeta____relay_model_instance_graphql.bs.js",
+      "minified": 785,
+      "gzip": 476,
+      "brotli": 404
+    },
+    {
+      "path": "__tests__/__generated__/UserMeta_relayResolvers_graphql.bs.js",
+      "minified": 0,
+      "gzip": 20,
+      "brotli": 1
+    },
+    {
+      "path": "__tests__/__generated__/UserName_user_graphql.bs.js",
+      "minified": 785,
+      "gzip": 458,
+      "brotli": 393
+    },
+    {
+      "path": "__tests__/__generated__/User_relayResolvers_graphql.bs.js",
+      "minified": 0,
+      "gzip": 20,
+      "brotli": 1
+    },
+    {
+      "path": "__tests_preloaded__/__generated__/TestPreloadedQueryProvidedVariables_user_graphql.bs.js",
+      "minified": 1418,
+      "gzip": 570,
+      "brotli": 499
+    },
+    {
+      "path": "__tests_preloaded__/__generated__/TestPreloadedQuery_graphql.bs.js",
+      "minified": 5083,
+      "gzip": 1495,
+      "brotli": 1342
+    },
+    {
+      "path": "__tests_preloaded__/__generated__/TestPreloadedQuery_preloadable_graphql.bs.js",
+      "minified": 2236,
+      "gzip": 845,
+      "brotli": 759
+    }
+  ]
+}

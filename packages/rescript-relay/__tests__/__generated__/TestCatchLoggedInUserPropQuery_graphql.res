@@ -31,15 +31,15 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"path":["loggedInUser","createdAt","value"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"path":["loggedInUser","createdAt","value"],"scalar":"0"}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+  let wrapResponseCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
   }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -51,13 +51,13 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
+  let responseCallbacks = {
+    "0": TestsUtils.Datetime.parse,
   }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

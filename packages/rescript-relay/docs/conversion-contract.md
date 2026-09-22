@@ -120,3 +120,9 @@ separate. Empty plans reuse the runtime's callback-free nullable converter, whic
 retains neither inputs nor application callbacks. The named version 2 plan format
 and response semantics are unchanged. See [size measurements](../benchmarks/SIZE.md)
 for complete generated-artifact bundles, separate gzip/Brotli totals, and CI budgets.
+
+Compiler-generated callback keys may be short string IDs such as `"0"`. They are
+local to a conversion's callback table, assigned deterministically across scalar
+and union callbacks, and do not change response traversal. Public preparation
+still accepts named callback keys. Plans may be shared, but callback bindings are
+always prepared against their own table and snapshotted independently.

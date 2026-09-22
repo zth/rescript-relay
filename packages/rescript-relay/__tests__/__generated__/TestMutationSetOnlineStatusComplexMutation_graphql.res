@@ -30,15 +30,15 @@ module Types = {
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"setOnlineStatusInput"}],"recursiveSetOnlineStatusInput":[{"path":["setOnlineStatus"],"reference":"setOnlineStatusInput"},{"path":["someValue"],"scalar":"TestsUtils.IntString"}],"setOnlineStatusInput":[{"path":["recursed"],"reference":"recursiveSetOnlineStatusInput"},{"opaque":true,"path":["someJsonValue"]}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"setOnlineStatusInput"}],"recursiveSetOnlineStatusInput":[{"path":["setOnlineStatus"],"reference":"setOnlineStatusInput"},{"path":["someValue"],"scalar":"0"}],"setOnlineStatusInput":[{"path":["recursed"],"reference":"recursiveSetOnlineStatusInput"},{"opaque":true,"path":["someJsonValue"]}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.IntString": TestsUtils.IntString.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.IntString.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )

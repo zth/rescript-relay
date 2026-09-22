@@ -20,16 +20,16 @@ module Types = {
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"serializeMultipleCustomScalars"}],"serializeMultipleCustomScalars":[{"list":1,"path":["os1s"],"scalar":"TestsUtils.ObjectScalar1"},{"path":["os2"],"scalar":"TestsUtils.ObjectScalar2"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"serializeMultipleCustomScalars"}],"serializeMultipleCustomScalars":[{"list":1,"path":["os1s"],"scalar":"0"},{"path":["os2"],"scalar":"1"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.ObjectScalar1": TestsUtils.ObjectScalar1.serialize,
-    "TestsUtils.ObjectScalar2": TestsUtils.ObjectScalar2.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.ObjectScalar1.serialize,
+    "1": TestsUtils.ObjectScalar2.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )

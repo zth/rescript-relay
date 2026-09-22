@@ -15,15 +15,15 @@ module Internal = {
   type fragmentRaw
   %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["value","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["value","createdAt"],"scalar":"0"}]},"version":2}`)
   @live
-  let fragmentConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
+  let fragmentCallbacks = {
+    "0": TestsUtils.Datetime.parse,
   }
   @live
   let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
-    fragmentConverterMap,
+    fragmentCallbacks,
     None
   )
   )

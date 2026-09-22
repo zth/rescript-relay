@@ -598,3 +598,28 @@ describe.each([null, undefined])(
     });
   },
 );
+
+test("callback slots stay local to each converter and snapshot their bindings", () => {
+  const schema = object({ number: scalar("0"), text: scalar("1") });
+  const callbacks = { 0: (v) => Number(v), 1: (v) => [v] };
+  const first = prepare(schema, callbacks);
+  const second = prepare(schema, {
+    0: (v) => Number(v) + 1,
+    1: (v) => ({ value: v }),
+  });
+  callbacks[0] = () => 999;
+  expect(first({ number: "1", text: "a" })).toStrictEqual({
+    number: 1,
+    text: ["a"],
+  });
+  expect(second({ number: "1", text: "a" })).toStrictEqual({
+    number: 2,
+    text: { value: "a" },
+  });
+  expect(() => prepare(object({ value: scalar("1") }), { 0: Number })).toThrow(
+    /Missing conversion callback/,
+  );
+  expect(() => prepare(object({ value: scalar("toString") }), {})).toThrow(
+    /Missing conversion callback/,
+  );
+});

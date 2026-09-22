@@ -52,17 +52,17 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"response_member"},{"path":["member","User","memberOfSingular","value"],"union":"response_member_User_memberOfSingular_value"},{"path":["member","User","memberOfSingular","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"1"},{"path":["member","User","memberOfSingular","value"],"union":"2"},{"path":["member","User","memberOfSingular","value","User","createdAt"],"scalar":"0"}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "response_member_User_memberOfSingular_value": wrap_response_member_User_memberOfSingular_value,
-    "response_member": wrap_response_member,
+  let wrapResponseCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
+    "1": wrap_response_member,
+    "2": wrap_response_member_User_memberOfSingular_value,
   }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -74,15 +74,15 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
-    "response_member_User_memberOfSingular_value": unwrap_response_member_User_memberOfSingular_value,
-    "response_member": unwrap_response_member,
+  let responseCallbacks = {
+    "0": TestsUtils.Datetime.parse,
+    "1": unwrap_response_member,
+    "2": unwrap_response_member_User_memberOfSingular_value,
   }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

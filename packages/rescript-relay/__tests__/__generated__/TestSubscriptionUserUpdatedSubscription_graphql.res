@@ -35,11 +35,11 @@ module Internal = {
   @live
   let responseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["userUpdated","user"]}]},"version":2}`)
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

@@ -47,11 +47,11 @@ module Internal = {
   @live
   let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["friendsOnlineStatuses"]}]},"version":2}`)
   @live
-  let variablesConverterMap = ()
+  let variablesCallbacks = ()
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )
@@ -63,11 +63,11 @@ module Internal = {
   @live
   let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["node"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseCallbacks = ()
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -79,11 +79,11 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

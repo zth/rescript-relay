@@ -30,15 +30,15 @@ module Types = {
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["someInput"],"reference":"someInput"}],"someInput":[{"path":["datetime"],"scalar":"TestsUtils.Datetime"},{"path":["recursive"],"reference":"someInput"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["someInput"],"reference":"someInput"}],"someInput":[{"path":["datetime"],"scalar":"0"},{"path":["recursive"],"reference":"someInput"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     null
   )
   )

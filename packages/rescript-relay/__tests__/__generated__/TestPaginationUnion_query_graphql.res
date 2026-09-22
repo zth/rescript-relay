@@ -50,15 +50,15 @@ module Internal = {
   type fragmentRaw
   %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"fragment_members_edges_node"},{"list":1,"path":["members","edges","node","Group","adminsConnection","edges"]},{"fragments":true,"path":["members","edges","node","User"]}]},"version":2}`)
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"0"},{"list":1,"path":["members","edges","node","Group","adminsConnection","edges"]},{"fragments":true,"path":["members","edges","node","User"]}]},"version":2}`)
   @live
-  let fragmentConverterMap = {
-    "fragment_members_edges_node": unwrap_fragment_members_edges_node,
+  let fragmentCallbacks = {
+    "0": unwrap_fragment_members_edges_node,
   }
   @live
   let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
-    fragmentConverterMap,
+    fragmentCallbacks,
     None
   )
   )

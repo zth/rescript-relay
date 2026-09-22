@@ -42,15 +42,15 @@ type queryRef
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"conversionContractInput"}],"conversionContractInput":[{"list":1,"path":["children"],"reference":"conversionContractInput"},{"list":2,"path":["grid"],"scalar":"TestsUtils.ConversionNumber"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"conversionContractInput"}],"conversionContractInput":[{"list":1,"path":["children"],"reference":"conversionContractInput"},{"list":2,"path":["grid"],"scalar":"0"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.ConversionNumber.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )
@@ -60,16 +60,16 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"1"},{"path":["conversionContract","a_b"],"scalar":"0"},{"list":1,"path":["conversionContract","dates"],"scalar":"1"},{"list":2,"path":["conversionContract","grid"],"scalar":"0"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.serialize,
+  let wrapResponseCallbacks = {
+    "0": TestsUtils.ConversionNumber.serialize,
+    "1": TestsUtils.Datetime.serialize,
   }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -81,14 +81,14 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
-    "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.parse,
+  let responseCallbacks = {
+    "0": TestsUtils.ConversionNumber.parse,
+    "1": TestsUtils.Datetime.parse,
   }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

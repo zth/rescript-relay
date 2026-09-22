@@ -30,11 +30,11 @@ module Internal = {
   @live
   let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["connections"]}]},"version":2}`)
   @live
-  let variablesConverterMap = ()
+  let variablesCallbacks = ()
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )

@@ -68,11 +68,11 @@ module Internal = {
   @live
   let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseCallbacks = ()
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -84,11 +84,11 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )
@@ -98,15 +98,15 @@ module Internal = {
   type wrapRawResponseRaw
   %%private(
   @live
-  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["setOnlineStatus","user","memberOf"],"union":"rawResponse_setOnlineStatus_user_memberOf"}]},"version":2}`)
+  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["setOnlineStatus","user","memberOf"],"union":"0"}]},"version":2}`)
   @live
-  let wrapRawResponseConverterMap = {
-    "rawResponse_setOnlineStatus_user_memberOf": wrap_rawResponse_setOnlineStatus_user_memberOf,
+  let wrapRawResponseCallbacks = {
+    "0": wrap_rawResponse_setOnlineStatus_user_memberOf,
   }
   @live
   let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
     wrapRawResponseConverter,
-    wrapRawResponseConverterMap,
+    wrapRawResponseCallbacks,
     null
   )
   )
@@ -118,13 +118,13 @@ module Internal = {
   @live
   let rawResponseConverter = wrapRawResponseConverter
   @live
-  let rawResponseConverterMap = {
-    "rawResponse_setOnlineStatus_user_memberOf": unwrap_rawResponse_setOnlineStatus_user_memberOf,
+  let rawResponseCallbacks = {
+    "0": unwrap_rawResponse_setOnlineStatus_user_memberOf,
   }
   @live
   let preparedRawResponseConverter = RescriptRelay.prepareConversion(
     rawResponseConverter,
-    rawResponseConverterMap,
+    rawResponseCallbacks,
     None
   )
   )

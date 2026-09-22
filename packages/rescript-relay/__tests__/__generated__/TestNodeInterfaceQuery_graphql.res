@@ -55,16 +55,16 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["_testExhaustiveInterface"],"union":"response__testExhaustiveInterface"},{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["_testExhaustiveInterface"],"union":"0"},{"path":["node"],"union":"1"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "response__testExhaustiveInterface": wrap_response__testExhaustiveInterface,
-    "response_node": wrap_response_node,
+  let wrapResponseCallbacks = {
+    "0": wrap_response__testExhaustiveInterface,
+    "1": wrap_response_node,
   }
   @live
   let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
   )
@@ -76,14 +76,14 @@ module Internal = {
   @live
   let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "response__testExhaustiveInterface": unwrap_response__testExhaustiveInterface,
-    "response_node": unwrap_response_node,
+  let responseCallbacks = {
+    "0": unwrap_response__testExhaustiveInterface,
+    "1": unwrap_response_node,
   }
   @live
   let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
   )

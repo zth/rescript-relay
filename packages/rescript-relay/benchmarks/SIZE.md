@@ -17,8 +17,9 @@ measured separately below and must not be counted once per artifact.
 | Original (`520cac4`) | 284,957 | 37,573 | 26,976 | 119,093 | 106,076 |
 | First prepared redesign (`e856b90`) | 313,772 | 41,628 | 29,248 | 126,052 | 112,258 |
 | After size optimization | 277,982 | 36,961 | 26,651 | 119,154 | 105,719 |
+| Compact callback IDs | 274,404 | 36,667 | 26,495 | 118,974 | 105,519 |
 
-All numbers are bytes. Relative to the first redesign, this saves 35,790 minified
+All numbers are bytes. The first size optimization (before compact callback IDs) saves 35,790 minified
 bytes / 4,667 gzip bytes in the combined bundle, and 6,898 gzip bytes across the
 separate bundles. Relative to the original, combined gzip is 612 bytes smaller;
 separate gzip is 61 bytes larger. These totals do not promise that each individual
@@ -62,7 +63,7 @@ the new regression query and schema helper. Use separate worktrees or scratch
 packages when compiling historical artifacts; do not overwrite current artifacts.
 
 Bindings CI checks minified, gzip, and Brotli budgets for both bundle layouts and
-uploads the report. Budgets allow 2% headroom over this result. Intentional changes
+uploads the report. Budgets now allow 1% headroom over the compact-callback result. Intentional changes
 to fixture coverage, esbuild version, or budgets need review. The raw reports are
 `results/size-original.json`, `results/size-before.json`, and `results/size-current.json`.
 
@@ -96,3 +97,35 @@ additional speedup or a reliable regression estimate. Nonempty plans use unchang
 response traversal code; empty plans reuse that same generic nullable traversal
 through a shared entry point. Unit, independent-model, mounted, and mutation tests
 pass. A quieter application benchmark is still needed for precise timing deltas.
+
+## Compact callback IDs
+
+The compiler now gives each scalar/union callback a stable, local string ID:
+
+```js
+// Before
+{path: ["createdAt"], scalar: "TestsUtils.Datetime"}
+// After
+{path: ["createdAt"], scalar: "0"}
+// The generated callback table still names the function:
+{"0": TestsUtils.Datetime.parse}
+```
+
+Only callback identifiers change. The runtime already resolves string keys in the
+callback table during preparation, so there is no runtime change or decoder cost.
+Paths, explicit list depth, operation names, and named input references remain
+readable and lossless. Scalar/union callbacks occupy distinct slots even if their
+names coincide; sorting and deduplication make IDs independent of instruction order.
+Slots are scoped to each conversion context, so sharing a plan never shares its
+callback bindings between read/write directions or between modules.
+
+Across the fixed fixture set, literal instruction JSON shrinks from 12,378 to
+10,936 bytes (11.6%). Complete generated bundles shrink by another 3,578 minified
+bytes, 294 gzip bytes combined, or 180 gzip bytes across separate bundles, versus
+`f366d16`. Gzip savings are modest because repeated callback names already compress
+well. `results/size-callback-slots.json` is the new full-artifact measurement.
+
+Experiments with escaped string-path maps and abbreviated operation keys saved
+only 77–150 bytes in the combined gzip bundle before decoder costs; they were not
+adopted. Indexed callback arrays also produced a worse combined gzip result than
+keyed callback tables. The named version 2 protocol remains unchanged.

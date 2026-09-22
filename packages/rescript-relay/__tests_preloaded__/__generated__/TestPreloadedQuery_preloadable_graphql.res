@@ -15,15 +15,15 @@ module Types = {
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"TestsUtils.IntString"}],"inputC":[{"path":["intStr"],"scalar":"TestsUtils.IntString"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"0"}],"inputC":[{"path":["intStr"],"scalar":"0"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.IntString": TestsUtils.IntString.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.IntString.serialize,
   }
   @live
   let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
   )
