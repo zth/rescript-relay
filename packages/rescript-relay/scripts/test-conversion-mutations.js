@@ -32,7 +32,32 @@ const faults = [
     "isOption(value) ? value : convert(value)",
     "isOption(value) ? convert(value) : convert(value)",
   ],
-  ["sparse lists", "if (!(i in values)) continue;", ""],
+  ["opaque sparse lists", "if (!(i in values)) continue;", ""],
+  [
+    "callback sparse lists",
+    "for (let i = 0; i < values.length; i++) {\n        if (!(i in values)) continue;",
+    "for (let i = 0; i < values.length; i++) {",
+  ],
+  [
+    "opaque-list null handling",
+    "const next = value == null ? nullable : value;",
+    "const next = value;",
+  ],
+  [
+    "opaque-list boundary",
+    "const next = value == null ? nullable : value;",
+    "const next = any(value);",
+  ],
+  [
+    "generic object mutation",
+    "const next = any(original);\n      if (next !== original) {\n        if (result === undefined) result = { ...value };",
+    "const next = any(original);\n      if (next !== original) {\n        if (result === undefined) result = value;",
+  ],
+  [
+    "generic metadata boundary",
+    "function plainObject(value) {\n    let result;\n    for (const key in value) {\n      if (!hasOwn(value, key) || isMetadata(key)) continue;",
+    "function plainObject(value) {\n    let result;\n    for (const key in value) {\n      if (!hasOwn(value, key)) continue;",
+  ],
   [
     "callback count",
     "const next = convert(value);",

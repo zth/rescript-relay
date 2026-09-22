@@ -667,3 +667,73 @@ describe.each([null, undefined])(
     );
   },
 );
+
+describe.each([undefined, null])("specialized traversal (%s)", (nullable) => {
+  test("opaque lists normalize only present nullish elements and retain nested identities", () => {
+    const cyclic = { value: null };
+    cyclic.self = cyclic;
+    const nested = [null, undefined];
+    const marker = { BS_PRIVATE_NESTED_SOME_NONE: 0 };
+    const values = [null, , undefined, cyclic, nested, marker, 0, false, "", null, undefined];
+    const input = freeze({ values });
+    const convert = prepare(object({ values: list(opaque) }), {}, nullable);
+    const output = convert(input);
+    expect(output).toStrictEqual({
+      values: [nullable, , nullable, cyclic, nested, marker, 0, false, "", nullable, nullable],
+    });
+    expect(output).not.toBe(input);
+    expect(output.values).not.toBe(values);
+    expect(1 in output.values).toBe(false);
+    for (const index of [3, 4, 5]) expect(output.values[index]).toBe(values[index]);
+    expect(values[0]).toBe(null);
+    expect(values[2]).toBeUndefined();
+    const unchanged = freeze({ values: [nullable, , cyclic, nested, marker] });
+    expect(convert(unchanged)).toBe(unchanged);
+    const empty = freeze({ values: [] });
+    expect(convert(empty)).toBe(empty);
+  });
+
+  test("opaque sparse lists preserve inherited array elements when copying", () => {
+    const inherited = freeze({ value: null });
+    const prototype = Object.create(Array.prototype);
+    prototype[1] = inherited;
+    const values = [null, , undefined];
+    Object.setPrototypeOf(values, prototype);
+    Object.freeze(values);
+    const output = prepare(list(opaque), {}, nullable)(values);
+    expect(output).toStrictEqual([nullable, inherited, nullable]);
+    expect(output[1]).toBe(inherited);
+    expect(Object.prototype.hasOwnProperty.call(values, 1)).toBe(false);
+    expect(values[0]).toBe(null);
+    expect(values[2]).toBeUndefined();
+  });
+
+  test("generic objects skip inherited fields and metadata while preserving own-key order", () => {
+    const metadata = {};
+    metadata.self = metadata;
+    const input = Object.assign(Object.create({ inherited: { value: null } }), {
+      "2": null,
+      z: undefined,
+      __metadata: metadata,
+      stable: { value: 1 },
+      a: null,
+    });
+    Object.defineProperty(input, "__proto__", {
+      value: { value: null, other: undefined },
+      enumerable: true,
+    });
+    freeze(input);
+    const output = prepare(object(), {}, nullable)(input);
+    expect(Object.keys(output)).toEqual(Object.keys(input));
+    expect(output).not.toHaveProperty("inherited");
+    expect(output.__metadata).toBe(metadata);
+    expect(output.stable).toBe(input.stable);
+    expect(Object.getPrototypeOf(output)).toBe(Object.prototype);
+    expect(Object.prototype.hasOwnProperty.call(output, "__proto__")).toBe(true);
+    // Double-underscore keys are opaque metadata, including __proto__.
+    expect(output.__proto__).toBe(input.__proto__);
+    expect(output["2"]).toBe(nullable);
+    expect(output.z).toBe(nullable);
+    expect(output.a).toBe(nullable);
+  });
+});

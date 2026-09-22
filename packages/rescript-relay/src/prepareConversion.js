@@ -74,7 +74,23 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
     return (value) =>
       value == null ? nullable : isOption(value) ? value : convert(value);
   }
+  // Opaque list elements only normalize nullability; no callback dispatch or
+  // traversal is needed, even when an element is itself an object or array.
+  function nullableArray(values) {
+    let result;
+    for (let i = 0; i < values.length; i++) {
+      if (!(i in values)) continue;
+      const value = values[i];
+      const next = value == null ? nullable : value;
+      if (next !== value) {
+        if (result === undefined) result = values.slice();
+        result[i] = next;
+      }
+    }
+    return result === undefined ? values : result;
+  }
   function arrayOf(convert) {
+    if (convert === nullableOnly) return nullableArray;
     return (values) => {
       let result;
       for (let i = 0; i < values.length; i++) {
@@ -89,7 +105,7 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
       return result === undefined ? values : result;
     };
   }
-  const anyArray = arrayOf((value) => any(value));
+  const anyArray = arrayOf(any);
   function any(value) {
     if (value == null) return nullable;
     if (typeof value !== "object" || isOption(value)) return value;
@@ -115,7 +131,21 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
       return result === undefined ? value : result;
     };
   }
-  const plainObject = record(Object.create(null), false);
+  // Generic objects have no field instructions. Avoid a dictionary lookup for
+  // every selected field while retaining property order and lazy copying.
+  function plainObject(value) {
+    let result;
+    for (const key in value) {
+      if (!hasOwn(value, key) || isMetadata(key)) continue;
+      const original = value[key];
+      const next = any(original);
+      if (next !== original) {
+        if (result === undefined) result = { ...value };
+        result[key] = next;
+      }
+    }
+    return result === undefined ? value : result;
+  }
   function callback(name) {
     if (
       !callbacks ||
