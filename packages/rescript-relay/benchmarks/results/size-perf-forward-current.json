@@ -1,0 +1,102 @@
+{
+  "fixtureVersion": 3,
+  "mode": "prepared",
+  "node": "v24.16.0",
+  "platform": "linux x64",
+  "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+  "samples": 15,
+  "durationMs": 40,
+  "implementation": "src/utils.js",
+  "results": [
+    {
+      "name": "small fragment",
+      "iterations": 204800,
+      "newOutputObjects": 3,
+      "preparationNs": 17575.714999999997,
+      "medianNs": 115.46565917968765,
+      "p10Ns": 109.94398925781246,
+      "p90Ns": 217.77763671875007,
+      "opsPerSecond": 8660583.649756853
+    },
+    {
+      "name": "unchanged object",
+      "iterations": 409600,
+      "newOutputObjects": 0,
+      "preparationNs": 0,
+      "medianNs": 66.43720947265619,
+      "p10Ns": 57.158791503906244,
+      "p90Ns": 186.7120776367187,
+      "opsPerSecond": 15051806.17815644
+    },
+    {
+      "name": "nullable query",
+      "iterations": 409600,
+      "newOutputObjects": 3,
+      "preparationNs": 0,
+      "medianNs": 167.93248046874984,
+      "p10Ns": 150.55474609374951,
+      "p90Ns": 261.51394775390634,
+      "opsPerSecond": 5954774.187868247
+    },
+    {
+      "name": "connection / 100 rows",
+      "iterations": 3200,
+      "newOutputObjects": 403,
+      "preparationNs": 3672.4960000001374,
+      "medianNs": 26391.065625000036,
+      "p10Ns": 23787.179374999996,
+      "p90Ns": 45069.14625000008,
+      "opsPerSecond": 37891.61128274822
+    },
+    {
+      "name": "plural fragment / 100 rows",
+      "iterations": 1600,
+      "newOutputObjects": 301,
+      "preparationNs": 2230.7369999998627,
+      "medianNs": 19132.703125000036,
+      "p10Ns": 16630.06875000008,
+      "p90Ns": 33063.09437500033,
+      "opsPerSecond": 52266.52990257999
+    },
+    {
+      "name": "union list / 100 rows",
+      "iterations": 3200,
+      "newOutputObjects": 302,
+      "preparationNs": 3426.3180000007196,
+      "medianNs": 24334.706250000127,
+      "p10Ns": 16858.60843750021,
+      "p90Ns": 37503.3775,
+      "opsPerSecond": 41093.57186097099
+    },
+    {
+      "name": "custom scalar list",
+      "iterations": 6400,
+      "newOutputObjects": 102,
+      "preparationNs": 2098.8369999995484,
+      "medianNs": 12521.882031250016,
+      "p10Ns": 11703.86609375001,
+      "p90Ns": 17578.603593750016,
+      "opsPerSecond": 79860.19972911161
+    },
+    {
+      "name": "opaque JSON list",
+      "iterations": 102400,
+      "newOutputObjects": 0,
+      "preparationNs": 1653.4209999999803,
+      "medianNs": 470.69791992187857,
+      "p10Ns": 430.332587890625,
+      "p90Ns": 794.3403710937513,
+      "opsPerSecond": 2124504.82076906
+    },
+    {
+      "name": "recursive inputs",
+      "iterations": 3200,
+      "newOutputObjects": 103,
+      "preparationNs": 4278.997999999774,
+      "medianNs": 23955.590625000124,
+      "p10Ns": 17811.185625000122,
+      "p90Ns": 29746.338749999948,
+      "opsPerSecond": 41743.909204910065
+    }
+  ]
+}

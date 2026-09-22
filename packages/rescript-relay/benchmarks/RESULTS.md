@@ -23,6 +23,6 @@ Sources:
 - `master`: `520cac4933c118a85cf0dffcd1a19a5dba34ad4f`, extracted `src/utils.js`.
 - `pr-673`: `c451c1afb3193550586f80b36b46b84c8965d355`, extracted `src/utils.js`.
 - `first-pass`: `3770abc`, extracted `src/utils.js`.
-- `legacy` / `prepared`: the runtime checked in alongside these reports.
+- `legacy` / `prepared`: the prepared runtime at `e856b90`, before the later bundle-size optimization.
 
 Use the current fixture-version 2 reports named `forward-*.json` and `reverse-*.json` for comparisons. Earlier `baseline.json`, `optimized.json`, and `pr-673.json` are historical fixture-version 1 measurements and must not be mixed with them. See [the benchmark guide](README.md) for commands.

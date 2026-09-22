@@ -111,3 +111,12 @@ The runtime is tested through both CommonJS and native ESM release modules.
 Run `yarn test:all` and `yarn test:conversion:mutations` from the package. The
 mutation check runs isolated copies and requires behavioral test failures for
 13 deliberately introduced faults; it does not claim a comprehensive mutation score.
+
+## Generated size and sharing
+
+Generated helper metadata and handles are private to each artifact. Equal plans
+can be shared between directions, but callback maps and prepared handles remain
+separate. Empty plans reuse the runtime's callback-free nullable converter, which
+retains neither inputs nor application callbacks. The named version 2 plan format
+and response semantics are unchanged. See [size measurements](../benchmarks/SIZE.md)
+for complete generated-artifact bundles, separate gzip/Brotli totals, and CI budgets.

@@ -81,3 +81,18 @@ prepared runtime is extracted from `e856b90`.
 The runtime remains larger than the original because it supports both protocols.
 Shared nullable converters add a small fixed cost while removing per-artifact
 initialization code. There is no measured full-app bundle result yet.
+
+## Performance recheck
+
+`size-perf-{forward,reverse}-{before,current}.json` records the post-change
+performance check against `e856b90`, using the same version 3 harness for both.
+Version 3 models the compiler's shared empty-plan calls as well as prepared plans;
+it reports zero per-artifact preparation time when the shared converter is used.
+Do not compare these reports to older fixture-version 2 reports with `--compare`.
+
+This run was noisy (host load averaged about 32 runnable tasks); several apparent
+speedups reversed when the run order reversed. It does **not** establish an
+additional speedup or a reliable regression estimate. Nonempty plans use unchanged
+response traversal code; empty plans reuse that same generic nullable traversal
+through a shared entry point. Unit, independent-model, mounted, and mutation tests
+pass. A quieter application benchmark is still needed for precise timing deltas.
