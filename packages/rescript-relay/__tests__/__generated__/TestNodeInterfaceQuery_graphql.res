@@ -50,25 +50,12 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["_testExhaustiveInterface"],"union":"response__testExhaustiveInterface"},{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["_testExhaustiveInterface"],"union":"response__testExhaustiveInterface"},{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = {
     "response__testExhaustiveInterface": wrap_response__testExhaustiveInterface,
@@ -80,14 +67,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["_testExhaustiveInterface"],"union":"response__testExhaustiveInterface"},{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = {
     "response__testExhaustiveInterface": unwrap_response__testExhaustiveInterface,
@@ -98,6 +85,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

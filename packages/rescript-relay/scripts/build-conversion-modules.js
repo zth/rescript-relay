@@ -16,12 +16,12 @@ function buildConversionModules(destination) {
     source = source.replace(exports, "export {$1};\n");
     if (name === "utils") {
       const dependency =
-        'const { prepareConversion } = require("./prepareConversion");';
-      if (!source.includes(dependency))
+        /const\s*\{\s*prepareConversion,\s*convertWithoutPlan,?\s*\}\s*=\s*require\("\.\/prepareConversion"\);/;
+      if (!dependency.test(source))
         throw new Error("Missing prepared-converter import");
       source = source.replace(
         dependency,
-        'import { prepareConversion } from "./prepareConversion.mjs";',
+        'import { prepareConversion, convertWithoutPlan } from "./prepareConversion.mjs";',
       );
     }
     fs.writeFileSync(path.join(destination, name + ".mjs"), source);

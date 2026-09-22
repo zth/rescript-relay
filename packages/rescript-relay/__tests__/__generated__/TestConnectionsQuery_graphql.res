@@ -32,10 +32,9 @@ module Types = {
 type queryRef
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["beforeDate"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["beforeDate"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
   @live
   let variablesConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
@@ -46,14 +45,14 @@ module Internal = {
     variablesConverterMap,
     None
   )
+  )
   @live
   let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = ()
   @live
@@ -62,14 +61,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = ()
   @live
@@ -77,6 +76,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

@@ -206,4 +206,12 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
     Array.isArray(value) && allowPlural ? plural(value) : convert(value);
 }
 
-module.exports = { prepareConversion };
+// Shared converters contain no application callbacks or response cache.
+const emptyPlan = { version: 2, roots: { __root: [] } };
+const readWithoutPlan = prepareConversion(emptyPlan, undefined, undefined);
+const writeWithoutPlan = prepareConversion(emptyPlan, undefined, null);
+function convertWithoutPlan(value, nullable) {
+  return nullable === null ? writeWithoutPlan(value) : readWithoutPlan(value);
+}
+
+module.exports = { prepareConversion, convertWithoutPlan };

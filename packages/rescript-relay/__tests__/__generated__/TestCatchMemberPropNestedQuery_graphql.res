@@ -47,25 +47,12 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["member"],"union":"response_member"},{"path":["member","User","memberOfSingular","value"],"union":"response_member_User_memberOfSingular_value"},{"path":["member","User","memberOfSingular","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"response_member"},{"path":["member","User","memberOfSingular","value"],"union":"response_member_User_memberOfSingular_value"},{"path":["member","User","memberOfSingular","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
   @live
   let wrapResponseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
@@ -78,14 +65,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["member"],"union":"response_member"},{"path":["member","User","memberOfSingular","value"],"union":"response_member_User_memberOfSingular_value"},{"path":["member","User","memberOfSingular","value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
@@ -97,6 +84,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

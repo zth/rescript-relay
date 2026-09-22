@@ -113,6 +113,9 @@ external relayFeatureFlags: featureFlags = "RelayFeatureFlags"
 external convertObj: ('a, dict<dict<dict<string>>>, 'b, 'c) => 'd = "traverser"
 
 /**Internal: prepare the compiler's versioned conversion plan once.*/
+@module("./utils")
+external convertWithoutPlan: ('input, 'nullable) => 'output = "convertWithoutPlan"
+
 type preparedConversion
 
 @module("./utils")

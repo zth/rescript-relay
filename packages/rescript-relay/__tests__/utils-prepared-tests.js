@@ -562,3 +562,39 @@ test("native scalar list plans preserve primitives and normalize nullable member
     values: ["x", undefined, [undefined]],
   });
 });
+
+describe.each([null, undefined])(
+  "shared conversion without instructions (%s)",
+  (nullable) => {
+    test("matches ordinary preparation without retaining or mutating values", () => {
+      const { convertWithoutPlan } = require("../src/utils");
+      const option = { BS_PRIVATE_NESTED_SOME_NONE: 0 };
+      const metadata = { opaque: null };
+      const input = freeze({
+        list: [null, undefined, , { value: null }, option],
+        __metadata: metadata,
+      });
+      const expected = {
+        list: [nullable, nullable, , { value: nullable }, option],
+        __metadata: metadata,
+      };
+      expect(convertWithoutPlan(input, nullable)).toStrictEqual(expected);
+      expect(convertWithoutPlan(input, nullable)).toStrictEqual(
+        prepareConversion(
+          { version: 2, roots: { __root: [] } },
+          {},
+          nullable,
+        )(input),
+      );
+      expect(convertWithoutPlan(null, nullable)).toBe(nullable);
+      expect(convertWithoutPlan([input], nullable)).toStrictEqual([expected]);
+      expect(convertWithoutPlan(option, nullable)).toBe(option);
+      const unchanged = freeze({ values: [0, false, "", nullable] });
+      expect(convertWithoutPlan(unchanged, nullable)).toBe(unchanged);
+      const mutable = { value: null };
+      convertWithoutPlan(mutable, nullable);
+      mutable.value = "updated";
+      expect(convertWithoutPlan(mutable, nullable)).toBe(mutable);
+    });
+  },
+);

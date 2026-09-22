@@ -29,6 +29,7 @@ test("release ESM and CommonJS exports execute the same legacy and prepared conv
         const expected={items:[1,nullable],after:nullable};
         for(const module of [esm,cjs]) {
           assert.deepEqual(module.traverser(data,legacy,{scalar:Number},nullable),expected);
+          assert.deepEqual(module.convertWithoutPlan({value:null},nullable),{value:nullable});
           assert.deepEqual(module.runConversion(module.prepareConversion(plan,{scalar:Number},nullable),data),expected);
         }
       }

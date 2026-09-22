@@ -45,10 +45,9 @@ let wrap_response_node: Types.response_node => Types.response_node = RescriptRel
 type queryRef
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["friendsOnlineStatuses"]}]},"version":2}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["friendsOnlineStatuses"]}]},"version":2}`)
   @live
   let variablesConverterMap = ()
   @live
@@ -57,14 +56,14 @@ module Internal = {
     variablesConverterMap,
     None
   )
+  )
   @live
   let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = {
     "response_node": wrap_response_node,
@@ -75,14 +74,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["node"],"union":"response_node"},{"fragments":true,"path":["node","User"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = {
     "response_node": unwrap_response_node,
@@ -92,6 +91,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

@@ -47,10 +47,9 @@ module Types = {
 type queryRef
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"TestsUtils.IntString"}],"inputC":[{"path":["intStr"],"scalar":"TestsUtils.IntString"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["__relay_internal__pv__ProvidedVariablesInputC"],"reference":"inputC"},{"list":1,"path":["__relay_internal__pv__ProvidedVariablesInputCArr"],"reference":"inputC"},{"path":["__relay_internal__pv__ProvidedVariablesIntStr"],"scalar":"TestsUtils.IntString"}],"inputC":[{"path":["intStr"],"scalar":"TestsUtils.IntString"},{"path":["recursiveC"],"reference":"inputC"}]},"version":2}`)
   @live
   let variablesConverterMap = {
     "TestsUtils.IntString": TestsUtils.IntString.serialize,
@@ -61,14 +60,14 @@ module Internal = {
     variablesConverterMap,
     None
   )
+  )
   @live
   let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"list":1,"path":["users","edges"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"list":1,"path":["users","edges"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = ()
   @live
@@ -77,14 +76,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"list":1,"path":["users","edges"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = ()
   @live
@@ -92,6 +91,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

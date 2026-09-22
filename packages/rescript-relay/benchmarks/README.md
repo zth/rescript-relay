@@ -79,3 +79,6 @@ The existing bindings already memoize conversions with `useMemo` keyed by the
 Relay snapshot. The mounted regression tests verify unchanged rerenders reuse
 that result and store updates produce freshly converted data. No hook-level
 cache or dependency changes were needed.
+
+See [bundle-size measurements and budgets](SIZE.md) for complete generated JS,
+shared/separate bundles, gzip/Brotli reports, and reproduction commands.

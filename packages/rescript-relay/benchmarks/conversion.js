@@ -12,7 +12,7 @@ const option = (name) => {
   return i < 0 ? undefined : args[i + 1];
 };
 const implementation = option("--implementation");
-const { traverser, prepareConversion } = require(
+const { traverser, prepareConversion, convertWithoutPlan } = require(
   implementation ? path.resolve(implementation) : "../src/utils",
 );
 const samples = Number(option("--samples") || 15);
@@ -57,16 +57,24 @@ function batch(fixture, count) {
 }
 const results = cases.map((fixture) => {
   const before = v8.deserialize(v8.serialize(fixture.root));
-  let preparationNs;
-  if (prepared) {
+  // Match generated artifacts: empty plans reuse the shared nullable converter.
+  const withoutPlan =
+    prepared &&
+    convertWithoutPlan &&
+    Object.keys(fixture.plan.roots).length === 1 &&
+    fixture.plan.roots.__root.length === 0;
+  let preparationNs = withoutPlan ? 0 : undefined;
+  if (prepared && !withoutPlan) {
     const start = performance.now();
     for (let i = 0; i < 1000; i++)
       sink = prepareConversion(fixture.plan, converters, fixture.nullable);
     preparationNs = ((performance.now() - start) * 1e6) / 1000;
   }
-  fixture.convert = prepared
-    ? prepareConversion(fixture.plan, converters, fixture.nullable)
-    : (value) => traverser(value, fixture.maps, converters, fixture.nullable);
+  fixture.convert = withoutPlan
+    ? (value) => convertWithoutPlan(value, fixture.nullable)
+    : prepared
+      ? prepareConversion(fixture.plan, converters, fixture.nullable)
+      : (value) => traverser(value, fixture.maps, converters, fixture.nullable);
   const converted = fixture.convert(fixture.root);
   assert.deepStrictEqual(dataOnly(converted), fixture.expected, fixture.name);
   assert.deepStrictEqual(
@@ -98,7 +106,7 @@ const results = cases.map((fixture) => {
   };
 });
 const report = {
-  fixtureVersion: 2,
+  fixtureVersion: 3,
   mode: prepared ? "prepared" : "legacy",
   node: process.version,
   platform: `${os.platform()} ${os.arch()}`,

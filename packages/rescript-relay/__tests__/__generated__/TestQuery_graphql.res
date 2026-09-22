@@ -41,25 +41,12 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = ()
   @live
@@ -68,14 +55,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = ()
   @live
@@ -83,6 +70,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

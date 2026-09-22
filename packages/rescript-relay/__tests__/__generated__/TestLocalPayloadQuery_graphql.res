@@ -93,25 +93,12 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = ()
   @live
@@ -120,14 +107,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = ()
   @live
@@ -136,14 +123,14 @@ module Internal = {
     responseConverterMap,
     None
   )
+  )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   @live
   type wrapRawResponseRaw
+  %%private(
   @live
-  let wrapRawResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["loggedInUser","memberOf"],"union":"rawResponse_loggedInUser_memberOf"},{"path":["loggedInUser","memberOf","Group","topMember"],"union":"rawResponse_loggedInUser_memberOf_Group_topMember"},{"path":["loggedInUser","memberOfSingular"],"union":"rawResponse_loggedInUser_memberOfSingular"}]},"version":2}`
-  )
+  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["loggedInUser","memberOf"],"union":"rawResponse_loggedInUser_memberOf"},{"path":["loggedInUser","memberOf","Group","topMember"],"union":"rawResponse_loggedInUser_memberOf_Group_topMember"},{"path":["loggedInUser","memberOfSingular"],"union":"rawResponse_loggedInUser_memberOfSingular"}]},"version":2}`)
   @live
   let wrapRawResponseConverterMap = {
     "rawResponse_loggedInUser_memberOf_Group_topMember": wrap_rawResponse_loggedInUser_memberOf_Group_topMember,
@@ -156,14 +143,14 @@ module Internal = {
     wrapRawResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapRawResponse = value => RescriptRelay.runConversion(preparedWrapRawResponseConverter, value)
   @live
   type rawResponseRaw
+  %%private(
   @live
-  let rawResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["loggedInUser","memberOf"],"union":"rawResponse_loggedInUser_memberOf"},{"path":["loggedInUser","memberOf","Group","topMember"],"union":"rawResponse_loggedInUser_memberOf_Group_topMember"},{"path":["loggedInUser","memberOfSingular"],"union":"rawResponse_loggedInUser_memberOfSingular"}]},"version":2}`
-  )
+  let rawResponseConverter = wrapRawResponseConverter
   @live
   let rawResponseConverterMap = {
     "rawResponse_loggedInUser_memberOf_Group_topMember": unwrap_rawResponse_loggedInUser_memberOf_Group_topMember,
@@ -175,6 +162,7 @@ module Internal = {
     rawResponseConverter,
     rawResponseConverterMap,
     None
+  )
   )
   @live
   let convertRawResponse = value => RescriptRelay.runConversion(preparedRawResponseConverter, value)

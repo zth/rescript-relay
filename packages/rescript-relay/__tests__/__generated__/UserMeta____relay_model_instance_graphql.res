@@ -11,19 +11,7 @@ module Internal = {
   @live
   type fragmentRaw
   @live
-  let fragmentConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let fragmentConverterMap = ()
-  @live
-  let preparedFragmentConverter = RescriptRelay.prepareConversion(
-    fragmentConverter,
-    fragmentConverterMap,
-    None
-  )
-  @live
-  let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)
+  let convertFragment = value => RescriptRelay.convertWithoutPlan(value, None)
 }
 
 type t

@@ -48,10 +48,9 @@ let wrap_fragment_members_edges_node: Types.fragment_members_edges_node => Types
 module Internal = {
   @live
   type fragmentRaw
+  %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"fragment_members_edges_node"},{"list":1,"path":["members","edges","node","Group","adminsConnection","edges"]},{"fragments":true,"path":["members","edges","node","User"]}]},"version":2}`
-  )
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["members","edges"]},{"path":["members","edges","node"],"union":"fragment_members_edges_node"},{"list":1,"path":["members","edges","node","Group","adminsConnection","edges"]},{"fragments":true,"path":["members","edges","node","User"]}]},"version":2}`)
   @live
   let fragmentConverterMap = {
     "fragment_members_edges_node": unwrap_fragment_members_edges_node,
@@ -61,6 +60,7 @@ module Internal = {
     fragmentConverter,
     fragmentConverterMap,
     None
+  )
   )
   @live
   let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)

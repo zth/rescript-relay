@@ -63,10 +63,9 @@ let wrap_fragment_memberOfSingular: Types.fragment_memberOfSingular => Types.fra
 module Internal = {
   @live
   type fragmentRaw
+  %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"list":1,"path":["memberOf"],"union":"fragment_memberOf"},{"path":["memberOf","Group","topMember"],"union":"fragment_memberOf_Group_topMember"},{"path":["memberOfSingular"],"union":"fragment_memberOfSingular"}]},"version":2}`
-  )
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["memberOf"],"union":"fragment_memberOf"},{"path":["memberOf","Group","topMember"],"union":"fragment_memberOf_Group_topMember"},{"path":["memberOfSingular"],"union":"fragment_memberOfSingular"}]},"version":2}`)
   @live
   let fragmentConverterMap = {
     "fragment_memberOf_Group_topMember": unwrap_fragment_memberOf_Group_topMember,
@@ -78,6 +77,7 @@ module Internal = {
     fragmentConverter,
     fragmentConverterMap,
     None
+  )
   )
   @live
   let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)

@@ -29,10 +29,9 @@ let wrap_fragment_t: Types.fragment_t => Types.fragment_t = RescriptRelay_Intern
 module Internal = {
   @live
   type fragmentRaw
+  %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["value"],"union":"fragment_t"},{"path":["value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`
-  )
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["value"],"union":"fragment_t"},{"path":["value","User","createdAt"],"scalar":"TestsUtils.Datetime"}]},"version":2}`)
   @live
   let fragmentConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
@@ -43,6 +42,7 @@ module Internal = {
     fragmentConverter,
     fragmentConverterMap,
     None
+  )
   )
   @live
   let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)

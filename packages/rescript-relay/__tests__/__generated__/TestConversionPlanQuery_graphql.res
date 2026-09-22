@@ -40,10 +40,9 @@ module Types = {
 type queryRef
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["input"],"reference":"conversionContractInput"}],"conversionContractInput":[{"list":1,"path":["children"],"reference":"conversionContractInput"},{"list":2,"path":["grid"],"scalar":"TestsUtils.ConversionNumber"}]},"version":2}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"conversionContractInput"}],"conversionContractInput":[{"list":1,"path":["children"],"reference":"conversionContractInput"},{"list":2,"path":["grid"],"scalar":"TestsUtils.ConversionNumber"}]},"version":2}`)
   @live
   let variablesConverterMap = {
     "TestsUtils.ConversionNumber": TestsUtils.ConversionNumber.serialize,
@@ -54,14 +53,14 @@ module Internal = {
     variablesConverterMap,
     None
   )
+  )
   @live
   let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
@@ -73,14 +72,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"path":["conversionContract","a","b"],"scalar":"TestsUtils.Datetime"},{"path":["conversionContract","a_b"],"scalar":"TestsUtils.ConversionNumber"},{"list":1,"path":["conversionContract","dates"],"scalar":"TestsUtils.Datetime"},{"list":2,"path":["conversionContract","grid"],"scalar":"TestsUtils.ConversionNumber"},{"list":2,"opaque":true,"path":["conversionContract","raw"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = {
     "TestsUtils.Datetime": TestsUtils.Datetime.parse,
@@ -91,6 +90,7 @@ module Internal = {
     responseConverter,
     responseConverterMap,
     None
+  )
   )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)

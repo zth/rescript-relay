@@ -1,4 +1,7 @@
-const { prepareConversion } = require("./prepareConversion");
+const {
+  prepareConversion,
+  convertWithoutPlan,
+} = require("./prepareConversion");
 
 // Shared read-only fallback: avoid allocating an empty map for every field.
 var empty = Object.freeze({});
@@ -266,4 +269,9 @@ function runConversion(convert, value) {
   return convert(value);
 }
 
-module.exports = { traverser, prepareConversion, runConversion };
+module.exports = {
+  traverser,
+  prepareConversion,
+  runConversion,
+  convertWithoutPlan,
+};

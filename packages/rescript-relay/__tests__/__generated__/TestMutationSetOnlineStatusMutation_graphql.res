@@ -42,25 +42,12 @@ module Types = {
 
 module Internal = {
   @live
-  let variablesConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`)
   @live
   let wrapResponseConverterMap = ()
   @live
@@ -69,14 +56,14 @@ module Internal = {
     wrapResponseConverterMap,
     null
   )
+  )
   @live
   let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[{"fragments":true,"path":["setOnlineStatus","user"]}]},"version":2}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
   let responseConverterMap = ()
   @live
@@ -85,40 +72,17 @@ module Internal = {
     responseConverterMap,
     None
   )
+  )
   @live
   let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   @live
   type wrapRawResponseRaw
   @live
-  let wrapRawResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let wrapRawResponseConverterMap = ()
-  @live
-  let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
-    wrapRawResponseConverter,
-    wrapRawResponseConverterMap,
-    null
-  )
-  @live
-  let convertWrapRawResponse = value => RescriptRelay.runConversion(preparedWrapRawResponseConverter, value)
+  let convertWrapRawResponse = value => RescriptRelay.convertWithoutPlan(value, null)
   @live
   type rawResponseRaw
   @live
-  let rawResponseConverter: JSON.t = %raw(
-    json`{"roots":{"__root":[]},"version":2}`
-  )
-  @live
-  let rawResponseConverterMap = ()
-  @live
-  let preparedRawResponseConverter = RescriptRelay.prepareConversion(
-    rawResponseConverter,
-    rawResponseConverterMap,
-    None
-  )
-  @live
-  let convertRawResponse = value => RescriptRelay.runConversion(preparedRawResponseConverter, value)
+  let convertRawResponse = value => RescriptRelay.convertWithoutPlan(value, None)
 }
 module Utils = {
   @@warning("-33")
