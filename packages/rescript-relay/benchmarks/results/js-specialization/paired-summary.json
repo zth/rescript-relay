@@ -1,0 +1,210 @@
+[
+  {
+    "fixtureVersion": 3,
+    "node": "v24.16.0",
+    "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+    "cpuAffinity": "7",
+    "samples": 31,
+    "targetSampleMs": 20,
+    "initialLoad": [
+      22.3,
+      18.93,
+      19.82
+    ],
+    "finalLoad": [
+      18.66,
+      18.35,
+      19.61
+    ],
+    "implementations": {
+      "baseline": "/tmp/relay-js-sweep/baseline/utils.js",
+      "candidate": "/tmp/rescript-relay-conversion-perf/packages/rescript-relay/src/utils.js"
+    },
+    "sha256": {
+      "baseline": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+      "preparedBaseline": "da045e26c642da31d9b9808b840b65852bd58fbf683d1f5b3ba6ad80e60b2847",
+      "candidate": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+      "preparedCandidate": "db39247dc78284162c7fe25551523d1681c4e469d37fceb7e24912b542a2e5c9",
+      "fixtures": "d660fba22de94a8c016e773830d1c9f1b24fc3ce46bfd2016c5e6d66de57d164"
+    },
+    "results": [
+      {
+        "mode": "prepared",
+        "name": "small fragment",
+        "count": 409600,
+        "baselineNs": 133.1544189453124,
+        "candidateNs": 107.24046142578158,
+        "ratio": 0.9096685277863316
+      },
+      {
+        "mode": "prepared",
+        "name": "unchanged object",
+        "count": 819200,
+        "baselineNs": 58.568532714844416,
+        "candidateNs": 50.305067138671774,
+        "ratio": 0.8502233170869574
+      },
+      {
+        "mode": "prepared",
+        "name": "nullable query",
+        "count": 204800,
+        "baselineNs": 153.67666503906196,
+        "candidateNs": 123.89265136718565,
+        "ratio": 0.8094886849135811
+      },
+      {
+        "mode": "prepared",
+        "name": "connection / 100 rows",
+        "count": 1600,
+        "baselineNs": 20544.051250000164,
+        "candidateNs": 16301.078125000005,
+        "ratio": 0.8018581403398429
+      },
+      {
+        "mode": "prepared",
+        "name": "plural fragment / 100 rows",
+        "count": 3200,
+        "baselineNs": 14444.88906250001,
+        "candidateNs": 12310.415312499572,
+        "ratio": 0.8546198603466574
+      },
+      {
+        "mode": "prepared",
+        "name": "union list / 100 rows",
+        "count": 1600,
+        "baselineNs": 17610.5831250004,
+        "candidateNs": 14483.900000000176,
+        "ratio": 0.8229835643663055
+      },
+      {
+        "mode": "prepared",
+        "name": "custom scalar list",
+        "count": 3200,
+        "baselineNs": 11502.360000000068,
+        "candidateNs": 11730.23124999986,
+        "ratio": 0.9985159326394925
+      },
+      {
+        "mode": "prepared",
+        "name": "opaque JSON list",
+        "count": 204800,
+        "baselineNs": 457.5926562499966,
+        "candidateNs": 152.5702294921949,
+        "ratio": 0.33681605845024465
+      },
+      {
+        "mode": "prepared",
+        "name": "recursive inputs",
+        "count": 1600,
+        "baselineNs": 15661.099999999808,
+        "candidateNs": 14689.069375001509,
+        "ratio": 0.9428667930457257
+      }
+    ],
+    "run": 1
+  },
+  {
+    "fixtureVersion": 3,
+    "node": "v24.16.0",
+    "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+    "cpuAffinity": "7",
+    "samples": 31,
+    "targetSampleMs": 20,
+    "initialLoad": [
+      18.66,
+      18.35,
+      19.61
+    ],
+    "finalLoad": [
+      18.51,
+      18.31,
+      19.56
+    ],
+    "implementations": {
+      "baseline": "/tmp/relay-js-sweep/baseline/utils.js",
+      "candidate": "/tmp/rescript-relay-conversion-perf/packages/rescript-relay/src/utils.js"
+    },
+    "sha256": {
+      "baseline": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+      "preparedBaseline": "da045e26c642da31d9b9808b840b65852bd58fbf683d1f5b3ba6ad80e60b2847",
+      "candidate": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+      "preparedCandidate": "db39247dc78284162c7fe25551523d1681c4e469d37fceb7e24912b542a2e5c9",
+      "fixtures": "d660fba22de94a8c016e773830d1c9f1b24fc3ce46bfd2016c5e6d66de57d164"
+    },
+    "results": [
+      {
+        "mode": "prepared",
+        "name": "small fragment",
+        "count": 409600,
+        "baselineNs": 101.97609375000027,
+        "candidateNs": 93.63988037109361,
+        "ratio": 0.911205684427288
+      },
+      {
+        "mode": "prepared",
+        "name": "unchanged object",
+        "count": 819200,
+        "baselineNs": 57.85585937500004,
+        "candidateNs": 49.18847900390655,
+        "ratio": 0.8518584576886907
+      },
+      {
+        "mode": "prepared",
+        "name": "nullable query",
+        "count": 102400,
+        "baselineNs": 150.39659179687524,
+        "candidateNs": 121.40841796874469,
+        "ratio": 0.8109976437073325
+      },
+      {
+        "mode": "prepared",
+        "name": "connection / 100 rows",
+        "count": 1600,
+        "baselineNs": 20627.377499999966,
+        "candidateNs": 16061.450000000263,
+        "ratio": 0.7978602752308714
+      },
+      {
+        "mode": "prepared",
+        "name": "plural fragment / 100 rows",
+        "count": 3200,
+        "baselineNs": 14628.395000000295,
+        "candidateNs": 12268.573437499981,
+        "ratio": 0.8496155826051577
+      },
+      {
+        "mode": "prepared",
+        "name": "union list / 100 rows",
+        "count": 1600,
+        "baselineNs": 21162.050000000363,
+        "candidateNs": 15568.825624999363,
+        "ratio": 0.749143054513265
+      },
+      {
+        "mode": "prepared",
+        "name": "custom scalar list",
+        "count": 3200,
+        "baselineNs": 12562.147187500159,
+        "candidateNs": 11697.77593750041,
+        "ratio": 0.9771056287453004
+      },
+      {
+        "mode": "prepared",
+        "name": "opaque JSON list",
+        "count": 204800,
+        "baselineNs": 453.7815917968757,
+        "candidateNs": 150.1775781250103,
+        "ratio": 0.3315833786878028
+      },
+      {
+        "mode": "prepared",
+        "name": "recursive inputs",
+        "count": 1600,
+        "baselineNs": 16658.239999999296,
+        "candidateNs": 14884.5762499991,
+        "ratio": 0.8893198241028453
+      }
+    ],
+    "run": 2
+  }
+]

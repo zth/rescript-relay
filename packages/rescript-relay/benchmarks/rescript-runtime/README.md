@@ -42,8 +42,10 @@ production rollout.
 
 Three runs used Node 24.16.0 on AMD RYZEN AI MAX+ 395, with 31 alternating
 baseline/candidate pairs per case. Each pair reverses execution order; calibration
-and preparation are outside warm timings. All comparisons use the same fixture
-version and the JavaScript runtime from `b0f009a`. The shared host was busy, so
+and preparation are outside warm timings. All recorded comparisons use the same fixture
+version and the JavaScript runtime from `b0f009a`. The JavaScript runtime has since
+been optimized further; check out `3de062b` to reproduce these historical results,
+or use the commands above to compare against the current runtime. The shared host was busy, so
 small differences and individual timings are noisy. These are conversion
 microbenchmarks, not app latency measurements or cross-engine guarantees.
 

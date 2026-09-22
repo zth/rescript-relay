@@ -50,10 +50,23 @@ const prepared = args.includes("--prepared");
 if (prepared && !prepareConversion)
   throw new Error("Implementation has no prepared converter");
 let sink;
+const cpuTiming = args.includes("--cpu-time")
+  ? typeof process.threadCpuUsage === "function" ? "thread" : "process"
+  : undefined;
+const readCpu = cpuTiming === "thread"
+  ? process.threadCpuUsage.bind(process)
+  : cpuTiming === "process" ? process.cpuUsage.bind(process) : undefined;
+let lastCpuNs;
 function batch(fixture, count) {
+  const cpuStart = readCpu && readCpu();
   const start = performance.now();
   for (let i = 0; i < count; i++) sink = fixture.convert(fixture.root);
-  return performance.now() - start;
+  const elapsed = performance.now() - start;
+  if (readCpu) {
+    const cpu = readCpu(cpuStart);
+    lastCpuNs = (cpu.user + cpu.system) * 1000;
+  }
+  return elapsed;
 }
 const results = cases.map((fixture) => {
   const before = v8.deserialize(v8.serialize(fixture.root));
@@ -89,10 +102,13 @@ const results = cases.map((fixture) => {
   // Calibrate outside the measured samples; warm the same call site first.
   let iterations = 100;
   while (batch(fixture, iterations) < duration) iterations *= 2;
-  const values = Array.from(
-    { length: samples },
-    () => (batch(fixture, iterations) * 1e6) / iterations,
-  ).sort((a, b) => a - b);
+  const cpuSamples = [];
+  const values = Array.from({ length: samples }, () => {
+    const wallNs = (batch(fixture, iterations) * 1e6) / iterations;
+    if (readCpu) cpuSamples.push({ wallNs, cpuNs: lastCpuNs / iterations });
+    return wallNs;
+  }).sort((a, b) => a - b);
+  const cpuValues = cpuSamples.map(sample => sample.cpuNs).sort((a, b) => a - b);
   const median = values[Math.floor(values.length / 2)];
   return {
     name: fixture.name,
@@ -100,6 +116,8 @@ const results = cases.map((fixture) => {
     newOutputObjects,
     preparationNs,
     medianNs: median,
+    medianCpuNs: readCpu ? cpuValues[Math.floor(cpuValues.length / 2)] : undefined,
+    cpuSamples: readCpu ? cpuSamples : undefined,
     p10Ns: values[Math.floor(values.length * 0.1)],
     p90Ns: values[Math.floor(values.length * 0.9)],
     opsPerSecond: 1e9 / median,
@@ -113,6 +131,7 @@ const report = {
   cpu: os.cpus()[0].model,
   samples,
   durationMs: duration,
+  cpuTiming,
   implementation: implementation || "src/utils.js",
   results,
 };
@@ -120,6 +139,7 @@ console.table(
   results.map((r) => ({
     case: r.name,
     "median ns": Math.round(r.medianNs),
+    ...(readCpu ? { "CPU ns": Math.round(r.medianCpuNs) } : {}),
     "p10 ns": Math.round(r.p10Ns),
     "p90 ns": Math.round(r.p90Ns),
     "ops/sec": Math.round(r.opsPerSecond),

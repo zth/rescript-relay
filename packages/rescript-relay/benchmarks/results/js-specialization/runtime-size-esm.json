@@ -1,0 +1,15 @@
+{
+  "esbuild": "0.25.12",
+  "results": {
+    "before": {
+      "minified": 5578,
+      "gzip": 2238,
+      "brotli": 2032
+    },
+    "after": {
+      "minified": 5847,
+      "gzip": 2320,
+      "brotli": 2101
+    }
+  }
+}

@@ -90,7 +90,6 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
     return result === undefined ? values : result;
   }
   function arrayOf(convert) {
-    if (convert === nullableOnly) return nullableArray;
     return (values) => {
       let result;
       for (let i = 0; i < values.length; i++) {
@@ -105,7 +104,7 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
       return result === undefined ? values : result;
     };
   }
-  const anyArray = arrayOf(any);
+  const anyArray = arrayOf((value) => any(value));
   function any(value) {
     if (value == null) return nullable;
     if (typeof value !== "object" || isOption(value)) return value;
@@ -218,7 +217,9 @@ function prepareConversion(plan, callbacks, nullable, rootName = "__root") {
       }
     }
     convert = optional(convert);
-    for (let i = 0; i < depth; i++) convert = optional(arrayOf(convert));
+    for (let i = 0; i < depth; i++) {
+      convert = optional(convert === nullableOnly ? nullableArray : arrayOf(convert));
+    }
     return convert;
   }
   for (const name of Object.keys(roots))

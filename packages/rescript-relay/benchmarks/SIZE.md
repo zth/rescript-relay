@@ -157,3 +157,18 @@ an independent evaluator at depths 1–3 in both nullable directions, including
 sparse arrays, option markers, and falsey values. The full mounted suite also uses
 the regenerated artifacts. More elaborate format compression was intentionally
 left out.
+
+## JavaScript hot-path specialization
+
+Generic records and opaque lists now use dedicated loops. This adds **79 gzip
+bytes** to the complete CommonJS-entry runtime bundle (2,330 → 2,409), or **82
+bytes** to the equivalent native ESM bundle (2,238 → 2,320). Both measurements use
+esbuild 0.25.12, `bundle: true`, `minify: true`, `format: "esm"`, gzip level 9, and
+retain all four public exports. CommonJS module wrappers explain the different
+absolute sizes. Minified/Brotli details are in
+[`results/js-specialization`](results/js-specialization/).
+
+The 129-artifact generated-code bundles and their budgets are unchanged. This is
+a shared runtime cost, not an additional cost per generated fragment or query.
+See [the performance results](RESULTS.md#further-javascript-specialization-fixture-version-3)
+for measurements and their limits.

@@ -25,4 +25,53 @@ Sources:
 - `first-pass`: `3770abc`, extracted `src/utils.js`.
 - `legacy` / `prepared`: the prepared runtime at `e856b90`, before the later bundle-size optimization.
 
-Use the current fixture-version 2 reports named `forward-*.json` and `reverse-*.json` for comparisons. Earlier `baseline.json`, `optimized.json`, and `pr-673.json` are historical fixture-version 1 measurements and must not be mixed with them. See [the benchmark guide](README.md) for commands.
+For the historical table above, use the fixture-version 2 reports named `forward-*.json` and `reverse-*.json` for comparisons. Earlier `baseline.json`, `optimized.json`, and `pr-673.json` are historical fixture-version 1 measurements and must not be mixed with them. See [the benchmark guide](README.md) for commands.
+
+## Further JavaScript specialization (fixture version 3)
+
+The JavaScript runtime now has two narrow fast paths: generic records bypass
+empty instruction-dictionary lookups, and opaque lists normalize nullability
+without per-element converter calls. The list implementation is selected while
+preparing the plan; ordinary list conversion is unchanged. Sparse-array handling,
+metadata boundaries, callback ordering, lazy copying and output identities retain
+their existing semantics. More aggressive wrapper/inlining changes were not kept.
+
+The baseline is `3de062b`, immediately before this optimization. Two final paired
+runs used Node 24.16.0, 31 alternating pairs per case, and CPU affinity 7 on the
+same AMD host. Negative values mean less conversion time; these are ranges of
+median per-pair time changes, not application latency gains:
+
+| Case | Paired conversion-time change |
+| --- | ---: |
+| Small fragment | -9.0% to -8.9% |
+| Unchanged object | -15.0% to -14.8% |
+| Nullable query | -19.1% to -18.9% |
+| Connection, 100 rows | -20.2% to -19.8% |
+| Plural fragment, 100 rows | -15.0% to -14.5% |
+| Union list, 100 rows | -25.1% to -17.7% |
+| Custom scalar list | -2.3% to -0.1% (approximately unchanged) |
+| Opaque JSON list | -66.8% to -66.3% (about 3× throughput) |
+| Recursive inputs | -11.1% to -5.7% |
+
+Separate-process measurements remained inconsistent, including slower results
+for some cases, even with CPU affinity and CPU-time diagnostics. The shared host,
+JIT warmup and workload mix limit the confidence of those comparisons. The paired
+runs are the evidence for the gains above; they do not establish a universal
+speedup across JS engines or application workloads. Confirm on an idle target
+machine before using the percentages as release guarantees. Reachable output
+object counts are unchanged in all nine fixtures.
+
+[Recorded results](results/js-specialization/) include both paired summaries,
+individual samples from the second run, source hashes, separate-process wall/CPU
+measurements, and bundle sizes. Reproduce with `compare-conversion.js` as described
+in [README.md](README.md); on Linux, prefix commands with `taskset -c <cpu>` to hold
+CPU affinity constant. Default affinity is unrestricted. Do not combine these
+ratios with the older fixture-version 2 table above.
+
+Validation: **249 existing/new JS tests pass** (248 main, one persisted-query),
+including 145 utility tests; both runtime modules retain **100% statement, branch,
+function and line coverage**. All **18 targeted mutation checks**, native
+ESM/CommonJS parity, and artifact size budgets pass. The six new tests exercise
+opaque-list nulls/holes/inherited elements/cyclic values and generic-object
+metadata, inherited keys, own-key order and identity preservation in both nullable
+directions. Coverage and mutations provide evidence, not exhaustive correctness.

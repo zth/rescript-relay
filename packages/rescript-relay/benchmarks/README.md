@@ -23,6 +23,26 @@ yarn bench:conversion --implementation /tmp/utils-before.cjs --output /tmp/conve
 yarn bench:conversion:prepared --compare /tmp/conversion-before.json --output /tmp/conversion-after.json
 ```
 
+For paired comparisons of equivalent prepared runtimes, extract both JavaScript
+modules from the baseline revision and alternate their execution within each
+sample. For example, to reproduce the latest JavaScript optimization:
+
+```sh
+mkdir -p /tmp/relay-conversion-before
+git show 3de062b:packages/rescript-relay/src/utils.js > /tmp/relay-conversion-before/utils.js
+git show 3de062b:packages/rescript-relay/src/prepareConversion.js > /tmp/relay-conversion-before/prepareConversion.js
+node benchmarks/compare-conversion.js --baseline /tmp/relay-conversion-before/utils.js --output /tmp/paired-conversion.json
+```
+
+The paired harness checks complete output equality and input immutability, warms
+both implementations, and collects 31 pairs with alternating execution order.
+Reports retain every pair, source hashes, and host load. `--candidate <path>` can
+select another runtime; `--legacy` compares the legacy API instead. It defaults
+to prepared conversion and requires equivalent behavior from both implementations.
+Historical runtimes with intentionally different semantics need the original
+fixture-based harness above. Pairing reduces temporal bias, but does not remove
+JIT or shared-host noise; also check separate processes and repeat measurements.
+
 Run those commands sequentially on an otherwise idle machine, with the same Node
 version. Repeat in reversed order to check for warmup, CPU frequency, or load
 bias. `--samples` (default 15) and `--duration` (default 40 ms per sample) control
@@ -40,9 +60,16 @@ memory. It excludes temporary objects that are already unreachable. CI uploads
 this report and conversion coverage; timings are informational, while correctness
 and coverage failures block CI.
 
-For CPU and GC investigation:
+For CPU and GC investigation, `--cpu-time` records CPU nanoseconds alongside
+elapsed time and retains individual samples in the JSON report. It uses the
+current thread's CPU time when Node provides it; older Node versions fall back to
+process CPU time, including worker threads. The report identifies which was used.
+CPU time helps diagnose scheduling waits but still varies with frequency,
+contention, GC and JIT behavior. It does not replace elapsed-time measurements.
+
 
 ```sh
+node benchmarks/conversion.js --prepared --cpu-time --output /tmp/conversion-cpu.json
 node --cpu-prof --cpu-prof-dir=/tmp benchmarks/conversion.js
 node --trace-gc benchmarks/conversion.js > /tmp/conversion-gc.log
 ```

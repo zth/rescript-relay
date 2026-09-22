@@ -1,0 +1,1237 @@
+{
+  "fixtureVersion": 3,
+  "node": "v24.16.0",
+  "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+  "cpuAffinity": "7",
+  "samples": 31,
+  "targetSampleMs": 20,
+  "initialLoad": [
+    18.66,
+    18.35,
+    19.61
+  ],
+  "finalLoad": [
+    18.51,
+    18.31,
+    19.56
+  ],
+  "implementations": {
+    "baseline": "/tmp/relay-js-sweep/baseline/utils.js",
+    "candidate": "/tmp/rescript-relay-conversion-perf/packages/rescript-relay/src/utils.js"
+  },
+  "sha256": {
+    "baseline": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+    "preparedBaseline": "da045e26c642da31d9b9808b840b65852bd58fbf683d1f5b3ba6ad80e60b2847",
+    "candidate": "7f68600a1480e8bfa22b754383a9734dcbaaccc55f7fbf923c06489864287294",
+    "preparedCandidate": "db39247dc78284162c7fe25551523d1681c4e469d37fceb7e24912b542a2e5c9",
+    "fixtures": "d660fba22de94a8c016e773830d1c9f1b24fc3ce46bfd2016c5e6d66de57d164"
+  },
+  "results": [
+    {
+      "mode": "prepared",
+      "name": "small fragment",
+      "count": 409600,
+      "baselineNs": 101.97609375000027,
+      "candidateNs": 93.63988037109361,
+      "ratio": 0.911205684427288,
+      "samples": [
+        {
+          "baselineNs": 100.61977294921871,
+          "candidateNs": 90.84837646484378
+        },
+        {
+          "baselineNs": 100.75635742187491,
+          "candidateNs": 91.80976562499998
+        },
+        {
+          "baselineNs": 103.16593994140631,
+          "candidateNs": 93.6941845703125
+        },
+        {
+          "baselineNs": 99.6786108398437,
+          "candidateNs": 92.54249755859368
+        },
+        {
+          "baselineNs": 134.55474365234366,
+          "candidateNs": 111.5397485351563
+        },
+        {
+          "baselineNs": 98.84574218750025,
+          "candidateNs": 90.67483154296868
+        },
+        {
+          "baselineNs": 99.98926025390625,
+          "candidateNs": 90.29442626953127
+        },
+        {
+          "baselineNs": 99.4406372070311,
+          "candidateNs": 90.73456298828108
+        },
+        {
+          "baselineNs": 98.90339355468736,
+          "candidateNs": 95.48519042968745
+        },
+        {
+          "baselineNs": 100.15113525390639,
+          "candidateNs": 90.33111572265607
+        },
+        {
+          "baselineNs": 121.9141601562501,
+          "candidateNs": 122.87283203125054
+        },
+        {
+          "baselineNs": 98.94866943359393,
+          "candidateNs": 90.9881665039064
+        },
+        {
+          "baselineNs": 101.673447265625,
+          "candidateNs": 93.51202880859388
+        },
+        {
+          "baselineNs": 99.20073242187522,
+          "candidateNs": 98.96845703124991
+        },
+        {
+          "baselineNs": 104.69392578125014,
+          "candidateNs": 91.67628417968754
+        },
+        {
+          "baselineNs": 101.97609375000027,
+          "candidateNs": 100.5320556640621
+        },
+        {
+          "baselineNs": 138.60612548828144,
+          "candidateNs": 134.11096191406236
+        },
+        {
+          "baselineNs": 107.09956787109343,
+          "candidateNs": 96.55134033203116
+        },
+        {
+          "baselineNs": 101.21009521484369,
+          "candidateNs": 119.24979980468709
+        },
+        {
+          "baselineNs": 126.60336669921836,
+          "candidateNs": 91.62239746093759
+        },
+        {
+          "baselineNs": 100.39953125,
+          "candidateNs": 119.72046386718783
+        },
+        {
+          "baselineNs": 183.26341064453078,
+          "candidateNs": 95.66017822265627
+        },
+        {
+          "baselineNs": 126.73002197265637,
+          "candidateNs": 93.63988037109361
+        },
+        {
+          "baselineNs": 129.81686279296855,
+          "candidateNs": 92.15538818359347
+        },
+        {
+          "baselineNs": 101.77635253906249,
+          "candidateNs": 94.67819824218738
+        },
+        {
+          "baselineNs": 127.6537646484377,
+          "candidateNs": 103.95960449218755
+        },
+        {
+          "baselineNs": 103.5758935546871,
+          "candidateNs": 94.03039306640659
+        },
+        {
+          "baselineNs": 106.15442382812535,
+          "candidateNs": 149.54958251953033
+        },
+        {
+          "baselineNs": 103.78309814453202,
+          "candidateNs": 92.74028076171948
+        },
+        {
+          "baselineNs": 102.98172851562536,
+          "candidateNs": 92.17762207031188
+        },
+        {
+          "baselineNs": 99.00397216796918,
+          "candidateNs": 90.59088378906232
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "unchanged object",
+      "count": 819200,
+      "baselineNs": 57.85585937500004,
+      "candidateNs": 49.18847900390655,
+      "ratio": 0.8518584576886907,
+      "samples": [
+        {
+          "baselineNs": 57.112375488281295,
+          "candidateNs": 48.563592529296535
+        },
+        {
+          "baselineNs": 56.940970458984054,
+          "candidateNs": 48.91904907226574
+        },
+        {
+          "baselineNs": 58.13724853515611,
+          "candidateNs": 48.95136108398424
+        },
+        {
+          "baselineNs": 58.262864990234476,
+          "candidateNs": 49.48025390624999
+        },
+        {
+          "baselineNs": 57.68380493164082,
+          "candidateNs": 49.63090454101537
+        },
+        {
+          "baselineNs": 63.46085937500024,
+          "candidateNs": 79.54098876953086
+        },
+        {
+          "baselineNs": 62.74087036132803,
+          "candidateNs": 58.41883666992176
+        },
+        {
+          "baselineNs": 68.73973022460954,
+          "candidateNs": 59.7001879882808
+        },
+        {
+          "baselineNs": 66.4359020996097,
+          "candidateNs": 63.16422851562531
+        },
+        {
+          "baselineNs": 67.74928466796837,
+          "candidateNs": 50.83255371093775
+        },
+        {
+          "baselineNs": 78.52408813476598,
+          "candidateNs": 48.905118408202334
+        },
+        {
+          "baselineNs": 56.42544555664153,
+          "candidateNs": 48.873272705077795
+        },
+        {
+          "baselineNs": 57.33201782226472,
+          "candidateNs": 48.2005651855466
+        },
+        {
+          "baselineNs": 57.25826904296904,
+          "candidateNs": 49.00488037109407
+        },
+        {
+          "baselineNs": 57.07322631835931,
+          "candidateNs": 48.61831054687516
+        },
+        {
+          "baselineNs": 76.85287597656188,
+          "candidateNs": 56.13781738281309
+        },
+        {
+          "baselineNs": 56.78581787109338,
+          "candidateNs": 48.43781738281261
+        },
+        {
+          "baselineNs": 57.153603515625036,
+          "candidateNs": 48.66701171875043
+        },
+        {
+          "baselineNs": 58.79461914062523,
+          "candidateNs": 49.29632446289078
+        },
+        {
+          "baselineNs": 58.03193481445312,
+          "candidateNs": 48.39604003906262
+        },
+        {
+          "baselineNs": 57.443836669921474,
+          "candidateNs": 61.369467773437776
+        },
+        {
+          "baselineNs": 56.97390624999966,
+          "candidateNs": 65.04063842773466
+        },
+        {
+          "baselineNs": 57.3483325195312,
+          "candidateNs": 51.23844604492223
+        },
+        {
+          "baselineNs": 58.24804199218825,
+          "candidateNs": 49.18847900390655
+        },
+        {
+          "baselineNs": 57.6477746582027,
+          "candidateNs": 48.99093749999972
+        },
+        {
+          "baselineNs": 56.982393798827864,
+          "candidateNs": 48.69511596679698
+        },
+        {
+          "baselineNs": 78.29868774414051,
+          "candidateNs": 58.60127319335939
+        },
+        {
+          "baselineNs": 57.07952514648507,
+          "candidateNs": 48.54974853515714
+        },
+        {
+          "baselineNs": 57.85585937500004,
+          "candidateNs": 50.296958007812755
+        },
+        {
+          "baselineNs": 61.29579345703129,
+          "candidateNs": 48.92166748046822
+        },
+        {
+          "baselineNs": 58.80549194335894,
+          "candidateNs": 51.6028552246095
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "nullable query",
+      "count": 102400,
+      "baselineNs": 150.39659179687524,
+      "candidateNs": 121.40841796874469,
+      "ratio": 0.8109976437073325,
+      "samples": [
+        {
+          "baselineNs": 150.82689453125298,
+          "candidateNs": 122.490830078128
+        },
+        {
+          "baselineNs": 153.11520507812483,
+          "candidateNs": 126.57667968750452
+        },
+        {
+          "baselineNs": 154.33058593750104,
+          "candidateNs": 124.04954101563172
+        },
+        {
+          "baselineNs": 146.09148437500608,
+          "candidateNs": 122.96360351562006
+        },
+        {
+          "baselineNs": 148.65794921875343,
+          "candidateNs": 118.6480273437507
+        },
+        {
+          "baselineNs": 146.67754882812469,
+          "candidateNs": 118.95514648437633
+        },
+        {
+          "baselineNs": 150.39659179687524,
+          "candidateNs": 123.02005859375242
+        },
+        {
+          "baselineNs": 148.088125000001,
+          "candidateNs": 121.40841796874469
+        },
+        {
+          "baselineNs": 149.74859375000094,
+          "candidateNs": 118.78402343749705
+        },
+        {
+          "baselineNs": 152.00167968749236,
+          "candidateNs": 130.23515625000036
+        },
+        {
+          "baselineNs": 149.78705078124932,
+          "candidateNs": 118.23219726562861
+        },
+        {
+          "baselineNs": 148.54338867187343,
+          "candidateNs": 118.81141601562284
+        },
+        {
+          "baselineNs": 148.29016601562552,
+          "candidateNs": 123.51748046874889
+        },
+        {
+          "baselineNs": 151.31072265624823,
+          "candidateNs": 122.07715820312437
+        },
+        {
+          "baselineNs": 151.28273437500005,
+          "candidateNs": 119.07432617187297
+        },
+        {
+          "baselineNs": 169.55270507812872,
+          "candidateNs": 119.64169921875546
+        },
+        {
+          "baselineNs": 273.3397460937503,
+          "candidateNs": 216.94490234374973
+        },
+        {
+          "baselineNs": 149.42161132812436,
+          "candidateNs": 124.31273437500501
+        },
+        {
+          "baselineNs": 147.00239257813053,
+          "candidateNs": 120.10722656250474
+        },
+        {
+          "baselineNs": 149.32014648437075,
+          "candidateNs": 119.7609667968802
+        },
+        {
+          "baselineNs": 148.5837988281258,
+          "candidateNs": 119.26569335937387
+        },
+        {
+          "baselineNs": 151.40005859374915,
+          "candidateNs": 120.4606347656334
+        },
+        {
+          "baselineNs": 149.3244433593688,
+          "candidateNs": 124.10286132812587
+        },
+        {
+          "baselineNs": 146.8478906250059,
+          "candidateNs": 119.84090820312154
+        },
+        {
+          "baselineNs": 146.6446777343755,
+          "candidateNs": 120.19724609375615
+        },
+        {
+          "baselineNs": 154.2596582031308,
+          "candidateNs": 131.27648437500028
+        },
+        {
+          "baselineNs": 240.52862304687395,
+          "candidateNs": 247.20266601562457
+        },
+        {
+          "baselineNs": 154.96225585938106,
+          "candidateNs": 184.80418945312493
+        },
+        {
+          "baselineNs": 155.35312499999955,
+          "candidateNs": 120.54663085938165
+        },
+        {
+          "baselineNs": 163.4922363281266,
+          "candidateNs": 122.47009765625094
+        },
+        {
+          "baselineNs": 161.0586328125052,
+          "candidateNs": 121.05071289062685
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "connection / 100 rows",
+      "count": 1600,
+      "baselineNs": 20627.377499999966,
+      "candidateNs": 16061.450000000263,
+      "ratio": 0.7978602752308714,
+      "samples": [
+        {
+          "baselineNs": 19792.75687499978,
+          "candidateNs": 15825.009375000149
+        },
+        {
+          "baselineNs": 20442.534375000036,
+          "candidateNs": 16235.904375000133
+        },
+        {
+          "baselineNs": 19411.39249999992,
+          "candidateNs": 15922.431249999818
+        },
+        {
+          "baselineNs": 19921.13687500023,
+          "candidateNs": 15894.283749999546
+        },
+        {
+          "baselineNs": 22088.701874999973,
+          "candidateNs": 16732.956249999803
+        },
+        {
+          "baselineNs": 21853.450624999485,
+          "candidateNs": 15765.38375000041
+        },
+        {
+          "baselineNs": 35173.21999999978,
+          "candidateNs": 17399.35937499979
+        },
+        {
+          "baselineNs": 20438.85875000001,
+          "candidateNs": 16195.784999999889
+        },
+        {
+          "baselineNs": 19944.75687500028,
+          "candidateNs": 16476.20874999973
+        },
+        {
+          "baselineNs": 19709.017499999958,
+          "candidateNs": 15825.166249999826
+        },
+        {
+          "baselineNs": 20073.763124999576,
+          "candidateNs": 15833.381250000117
+        },
+        {
+          "baselineNs": 21501.91124999992,
+          "candidateNs": 16044.85000000011
+        },
+        {
+          "baselineNs": 20068.603125000096,
+          "candidateNs": 16022.620625000172
+        },
+        {
+          "baselineNs": 20122.96187499999,
+          "candidateNs": 16061.450000000263
+        },
+        {
+          "baselineNs": 24133.296250000174,
+          "candidateNs": 27438.598749999983
+        },
+        {
+          "baselineNs": 21772.830000000453,
+          "candidateNs": 18929.32500000029
+        },
+        {
+          "baselineNs": 21122.175000000425,
+          "candidateNs": 16312.711875000334
+        },
+        {
+          "baselineNs": 20627.377499999966,
+          "candidateNs": 16372.988749999422
+        },
+        {
+          "baselineNs": 19893.854375000046,
+          "candidateNs": 15750.431249999792
+        },
+        {
+          "baselineNs": 19688.196875000584,
+          "candidateNs": 16301.516249999395
+        },
+        {
+          "baselineNs": 19562.546875000637,
+          "candidateNs": 16053.459375000331
+        },
+        {
+          "baselineNs": 21263.466875000177,
+          "candidateNs": 16827.979374999133
+        },
+        {
+          "baselineNs": 25625.233749999552,
+          "candidateNs": 25746.213125000846
+        },
+        {
+          "baselineNs": 21296.554374999916,
+          "candidateNs": 15969.331874999853
+        },
+        {
+          "baselineNs": 21001.616249999413,
+          "candidateNs": 15830.37562500067
+        },
+        {
+          "baselineNs": 21021.140624999363,
+          "candidateNs": 15915.574375000004
+        },
+        {
+          "baselineNs": 20868.87812499981,
+          "candidateNs": 16024.235625000074
+        },
+        {
+          "baselineNs": 19349.319374999825,
+          "candidateNs": 15662.690625000549
+        },
+        {
+          "baselineNs": 19805.129999999735,
+          "candidateNs": 16928.78250000035
+        },
+        {
+          "baselineNs": 21146.84062500032,
+          "candidateNs": 17599.04312499998
+        },
+        {
+          "baselineNs": 21598.932499999817,
+          "candidateNs": 28216.625000000022
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "plural fragment / 100 rows",
+      "count": 3200,
+      "baselineNs": 14628.395000000295,
+      "candidateNs": 12268.573437499981,
+      "ratio": 0.8496155826051577,
+      "samples": [
+        {
+          "baselineNs": 14479.191250000555,
+          "candidateNs": 12143.57781250044
+        },
+        {
+          "baselineNs": 14913.865624999971,
+          "candidateNs": 13034.144999999739
+        },
+        {
+          "baselineNs": 14346.249687499721,
+          "candidateNs": 12230.338749999986
+        },
+        {
+          "baselineNs": 15792.00031250025,
+          "candidateNs": 18270.09531249985
+        },
+        {
+          "baselineNs": 14313.494062499785,
+          "candidateNs": 12197.250937499577
+        },
+        {
+          "baselineNs": 14617.76562500006,
+          "candidateNs": 12073.448437500361
+        },
+        {
+          "baselineNs": 14639.92937499995,
+          "candidateNs": 12213.01843750041
+        },
+        {
+          "baselineNs": 14479.229062499711,
+          "candidateNs": 12268.573437499981
+        },
+        {
+          "baselineNs": 14542.614062499979,
+          "candidateNs": 18010.90249999959
+        },
+        {
+          "baselineNs": 14525.50062499995,
+          "candidateNs": 14588.10968749958
+        },
+        {
+          "baselineNs": 17255.262187499626,
+          "candidateNs": 22001.493125000023
+        },
+        {
+          "baselineNs": 22177.06562500041,
+          "candidateNs": 19172.278124999593
+        },
+        {
+          "baselineNs": 26595.33281249992,
+          "candidateNs": 20125.84562500024
+        },
+        {
+          "baselineNs": 14628.395000000295,
+          "candidateNs": 16311.118750000447
+        },
+        {
+          "baselineNs": 14586.33124999949,
+          "candidateNs": 12161.727812500088
+        },
+        {
+          "baselineNs": 14408.958750000238,
+          "candidateNs": 12613.412499999868
+        },
+        {
+          "baselineNs": 14715.597500000398,
+          "candidateNs": 12097.109062499954
+        },
+        {
+          "baselineNs": 14423.645625000177,
+          "candidateNs": 12215.07562499994
+        },
+        {
+          "baselineNs": 21461.2784374998,
+          "candidateNs": 13226.605625000047
+        },
+        {
+          "baselineNs": 14313.424999999712,
+          "candidateNs": 12174.17624999996
+        },
+        {
+          "baselineNs": 14648.010312500333,
+          "candidateNs": 12097.321874999807
+        },
+        {
+          "baselineNs": 14405.702500000074,
+          "candidateNs": 12044.265312499647
+        },
+        {
+          "baselineNs": 14383.113124999909,
+          "candidateNs": 12254.772500000401
+        },
+        {
+          "baselineNs": 20846.720312499656,
+          "candidateNs": 12076.35718749998
+        },
+        {
+          "baselineNs": 16352.972812500184,
+          "candidateNs": 12127.860937500258
+        },
+        {
+          "baselineNs": 14479.13812500019,
+          "candidateNs": 12129.435625000157
+        },
+        {
+          "baselineNs": 14486.909062500217,
+          "candidateNs": 12906.388124999921
+        },
+        {
+          "baselineNs": 16013.111875000162,
+          "candidateNs": 13604.989374999832
+        },
+        {
+          "baselineNs": 16310.123124999904,
+          "candidateNs": 12683.504375000326
+        },
+        {
+          "baselineNs": 15663.601249999601,
+          "candidateNs": 19937.6806250001
+        },
+        {
+          "baselineNs": 14753.719374999719,
+          "candidateNs": 13483.068437499809
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "union list / 100 rows",
+      "count": 1600,
+      "baselineNs": 21162.050000000363,
+      "candidateNs": 15568.825624999363,
+      "ratio": 0.749143054513265,
+      "samples": [
+        {
+          "baselineNs": 19146.31062500007,
+          "candidateNs": 15568.825624999363
+        },
+        {
+          "baselineNs": 21122.18812500032,
+          "candidateNs": 15172.457500000291
+        },
+        {
+          "baselineNs": 20671.642500000187,
+          "candidateNs": 22422.2068749998
+        },
+        {
+          "baselineNs": 22513.12250000069,
+          "candidateNs": 23150.558124999632
+        },
+        {
+          "baselineNs": 20833.99312499978,
+          "candidateNs": 15138.286249999737
+        },
+        {
+          "baselineNs": 26052.51062499974,
+          "candidateNs": 15164.849999999888
+        },
+        {
+          "baselineNs": 21868.841874999132,
+          "candidateNs": 15156.621250000626
+        },
+        {
+          "baselineNs": 20558.52874999914,
+          "candidateNs": 15163.415624999743
+        },
+        {
+          "baselineNs": 20324.36749999988,
+          "candidateNs": 15225.858750000041
+        },
+        {
+          "baselineNs": 20760.0350000007,
+          "candidateNs": 15102.218124999352
+        },
+        {
+          "baselineNs": 20184.215624999524,
+          "candidateNs": 20975.447499999973
+        },
+        {
+          "baselineNs": 21078.974999999216,
+          "candidateNs": 27325.152500000062
+        },
+        {
+          "baselineNs": 20828.626875000962,
+          "candidateNs": 15465.336250000519
+        },
+        {
+          "baselineNs": 21495.380624999143,
+          "candidateNs": 15212.332499999093
+        },
+        {
+          "baselineNs": 24604.242500000735,
+          "candidateNs": 20947.413750000123
+        },
+        {
+          "baselineNs": 22016.308749999782,
+          "candidateNs": 20784.436874999985
+        },
+        {
+          "baselineNs": 22497.418125000197,
+          "candidateNs": 16730.84000000017
+        },
+        {
+          "baselineNs": 23028.82812500002,
+          "candidateNs": 21759.46062499975
+        },
+        {
+          "baselineNs": 28020.641875000365,
+          "candidateNs": 28204.87749999984
+        },
+        {
+          "baselineNs": 19847.403750000012,
+          "candidateNs": 17742.645624999794
+        },
+        {
+          "baselineNs": 19867.44812500092,
+          "candidateNs": 15703.586250000399
+        },
+        {
+          "baselineNs": 20820.310624999365,
+          "candidateNs": 15638.249999999516
+        },
+        {
+          "baselineNs": 21162.050000000363,
+          "candidateNs": 15027.996874999872
+        },
+        {
+          "baselineNs": 21257.706874999938,
+          "candidateNs": 15042.368124999257
+        },
+        {
+          "baselineNs": 21268.908750000715,
+          "candidateNs": 15271.187499999995
+        },
+        {
+          "baselineNs": 21446.03062500096,
+          "candidateNs": 15539.138125000136
+        },
+        {
+          "baselineNs": 29655.70687500076,
+          "candidateNs": 24617.467499999748
+        },
+        {
+          "baselineNs": 24181.02999999974,
+          "candidateNs": 15222.752499998933
+        },
+        {
+          "baselineNs": 24174.33624999944,
+          "candidateNs": 16697.570624999116
+        },
+        {
+          "baselineNs": 21157.229374999813,
+          "candidateNs": 15972.50062500052
+        },
+        {
+          "baselineNs": 19871.875000000047,
+          "candidateNs": 15485.079375000623
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "custom scalar list",
+      "count": 3200,
+      "baselineNs": 12562.147187500159,
+      "candidateNs": 11697.77593750041,
+      "ratio": 0.9771056287453004,
+      "samples": [
+        {
+          "baselineNs": 16881.29281249985,
+          "candidateNs": 17092.47000000005
+        },
+        {
+          "baselineNs": 15612.545624999826,
+          "candidateNs": 12530.336874999648
+        },
+        {
+          "baselineNs": 18303.21093750001,
+          "candidateNs": 17302.5921874995
+        },
+        {
+          "baselineNs": 12956.673749999936,
+          "candidateNs": 12143.530937499918
+        },
+        {
+          "baselineNs": 11887.982499999907,
+          "candidateNs": 12365.262499999972
+        },
+        {
+          "baselineNs": 15013.804687499714,
+          "candidateNs": 11492.751249999741
+        },
+        {
+          "baselineNs": 14586.008750000019,
+          "candidateNs": 11436.232187500082
+        },
+        {
+          "baselineNs": 11767.623750000097,
+          "candidateNs": 11287.322499999846
+        },
+        {
+          "baselineNs": 11417.333750000013,
+          "candidateNs": 11275.615937499879
+        },
+        {
+          "baselineNs": 11450.96281250005,
+          "candidateNs": 11440.956562499876
+        },
+        {
+          "baselineNs": 11412.978749999638,
+          "candidateNs": 11567.96218750003
+        },
+        {
+          "baselineNs": 11925.093125000216,
+          "candidateNs": 11535.688437500085
+        },
+        {
+          "baselineNs": 15404.790312499586,
+          "candidateNs": 16240.607187500018
+        },
+        {
+          "baselineNs": 13510.401249999972,
+          "candidateNs": 12039.371562499924
+        },
+        {
+          "baselineNs": 12562.147187500159,
+          "candidateNs": 12505.624687499901
+        },
+        {
+          "baselineNs": 15173.014687500201,
+          "candidateNs": 11963.80999999974
+        },
+        {
+          "baselineNs": 17733.174374999977,
+          "candidateNs": 17260.39656250009
+        },
+        {
+          "baselineNs": 17526.712499999918,
+          "candidateNs": 18661.125000000422
+        },
+        {
+          "baselineNs": 14729.266874999781,
+          "candidateNs": 12021.021249999534
+        },
+        {
+          "baselineNs": 12276.094062499966,
+          "candidateNs": 12062.706562500125
+        },
+        {
+          "baselineNs": 11218.774062500075,
+          "candidateNs": 11413.147500000492
+        },
+        {
+          "baselineNs": 11370.272812499707,
+          "candidateNs": 11697.77593750041
+        },
+        {
+          "baselineNs": 11998.046562499667,
+          "candidateNs": 11490.262187500093
+        },
+        {
+          "baselineNs": 14933.117812499859,
+          "candidateNs": 11382.809062500883
+        },
+        {
+          "baselineNs": 14374.837812499662,
+          "candidateNs": 11342.695937499911
+        },
+        {
+          "baselineNs": 11475.255937500606,
+          "candidateNs": 11233.583437500556
+        },
+        {
+          "baselineNs": 11390.104062500086,
+          "candidateNs": 11608.022187499499
+        },
+        {
+          "baselineNs": 11405.367500000237,
+          "candidateNs": 11593.920312500359
+        },
+        {
+          "baselineNs": 11743.675312499136,
+          "candidateNs": 11474.81125000013
+        },
+        {
+          "baselineNs": 11790.028437500268,
+          "candidateNs": 12044.15562500003
+        },
+        {
+          "baselineNs": 15054.024375000381,
+          "candidateNs": 14338.61312499971
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "opaque JSON list",
+      "count": 204800,
+      "baselineNs": 453.7815917968757,
+      "candidateNs": 150.1775781250103,
+      "ratio": 0.3315833786878028,
+      "samples": [
+        {
+          "baselineNs": 452.55945800782627,
+          "candidateNs": 150.51562011718644
+        },
+        {
+          "baselineNs": 518.677856445322,
+          "candidateNs": 153.7096435546914
+        },
+        {
+          "baselineNs": 445.0161035156164,
+          "candidateNs": 150.1775781250103
+        },
+        {
+          "baselineNs": 442.2883398437527,
+          "candidateNs": 153.89157714842838
+        },
+        {
+          "baselineNs": 444.2954541015531,
+          "candidateNs": 149.6462011718691
+        },
+        {
+          "baselineNs": 516.1865234375007,
+          "candidateNs": 141.70761718750313
+        },
+        {
+          "baselineNs": 448.1833691406223,
+          "candidateNs": 144.64221679686418
+        },
+        {
+          "baselineNs": 459.2237158203183,
+          "candidateNs": 147.91617187499995
+        },
+        {
+          "baselineNs": 456.26651367186355,
+          "candidateNs": 148.29520996093137
+        },
+        {
+          "baselineNs": 511.9599365234429,
+          "candidateNs": 147.8623144531177
+        },
+        {
+          "baselineNs": 453.7815917968757,
+          "candidateNs": 147.59413085936757
+        },
+        {
+          "baselineNs": 447.130986328137,
+          "candidateNs": 148.21229492188337
+        },
+        {
+          "baselineNs": 449.7703027343824,
+          "candidateNs": 149.54161132813226
+        },
+        {
+          "baselineNs": 510.3443847656131,
+          "candidateNs": 152.52116699219442
+        },
+        {
+          "baselineNs": 449.2248828124978,
+          "candidateNs": 160.91480957031834
+        },
+        {
+          "baselineNs": 525.2454394531192,
+          "candidateNs": 188.54587890626107
+        },
+        {
+          "baselineNs": 522.3197460937535,
+          "candidateNs": 174.7894189453092
+        },
+        {
+          "baselineNs": 579.4645410156285,
+          "candidateNs": 226.95003906250125
+        },
+        {
+          "baselineNs": 523.0420556640603,
+          "candidateNs": 192.31662597656296
+        },
+        {
+          "baselineNs": 535.0109619140575,
+          "candidateNs": 160.61160156251475
+        },
+        {
+          "baselineNs": 509.00253906251083,
+          "candidateNs": 172.4769384765601
+        },
+        {
+          "baselineNs": 490.4406591796828,
+          "candidateNs": 149.83444824219205
+        },
+        {
+          "baselineNs": 446.45265624998484,
+          "candidateNs": 148.20211425780272
+        },
+        {
+          "baselineNs": 449.01408691405464,
+          "candidateNs": 153.78341308593946
+        },
+        {
+          "baselineNs": 520.7912207031385,
+          "candidateNs": 149.05788085938454
+        },
+        {
+          "baselineNs": 448.2649658203108,
+          "candidateNs": 148.6372119140711
+        },
+        {
+          "baselineNs": 449.00009277343503,
+          "candidateNs": 147.7928955078056
+        },
+        {
+          "baselineNs": 449.78248535157303,
+          "candidateNs": 151.11440429688372
+        },
+        {
+          "baselineNs": 516.1109912109474,
+          "candidateNs": 150.75816406248777
+        },
+        {
+          "baselineNs": 452.1954931640515,
+          "candidateNs": 143.58312988282051
+        },
+        {
+          "baselineNs": 451.56920410155624,
+          "candidateNs": 154.2918457031206
+        }
+      ]
+    },
+    {
+      "mode": "prepared",
+      "name": "recursive inputs",
+      "count": 1600,
+      "baselineNs": 16658.239999999296,
+      "candidateNs": 14884.5762499991,
+      "ratio": 0.8893198241028453,
+      "samples": [
+        {
+          "baselineNs": 16436.871875000634,
+          "candidateNs": 21028.798749998714
+        },
+        {
+          "baselineNs": 16804.923750000853,
+          "candidateNs": 23802.214375000403
+        },
+        {
+          "baselineNs": 16233.94499999904,
+          "candidateNs": 14689.657500000521
+        },
+        {
+          "baselineNs": 16380.315000001247,
+          "candidateNs": 16722.486874998594
+        },
+        {
+          "baselineNs": 16407.59750000143,
+          "candidateNs": 15206.146250000074
+        },
+        {
+          "baselineNs": 16327.916249999817,
+          "candidateNs": 14860.899999998765
+        },
+        {
+          "baselineNs": 16647.83937500033,
+          "candidateNs": 14809.885000001941
+        },
+        {
+          "baselineNs": 16569.904999998926,
+          "candidateNs": 14735.944999999901
+        },
+        {
+          "baselineNs": 16912.99625000056,
+          "candidateNs": 14802.345624998452
+        },
+        {
+          "baselineNs": 16560.380625001017,
+          "candidateNs": 14567.783124998641
+        },
+        {
+          "baselineNs": 24449.93187500131,
+          "candidateNs": 21363.143124999624
+        },
+        {
+          "baselineNs": 16488.68875000062,
+          "candidateNs": 14502.76062500052
+        },
+        {
+          "baselineNs": 16658.239999999296,
+          "candidateNs": 14635.204999999587
+        },
+        {
+          "baselineNs": 16543.022500000006,
+          "candidateNs": 14884.5762499991
+        },
+        {
+          "baselineNs": 16459.983749998628,
+          "candidateNs": 14558.647500000461
+        },
+        {
+          "baselineNs": 17080.343749998974,
+          "candidateNs": 14468.051874998764
+        },
+        {
+          "baselineNs": 17039.09062500088,
+          "candidateNs": 14628.85500000084
+        },
+        {
+          "baselineNs": 16625.509375001002,
+          "candidateNs": 14766.077500000847
+        },
+        {
+          "baselineNs": 16614.357500000096,
+          "candidateNs": 14744.836875001965
+        },
+        {
+          "baselineNs": 23301.167499998883,
+          "candidateNs": 14738.05562500047
+        },
+        {
+          "baselineNs": 24263.96187499904,
+          "candidateNs": 15031.72312499828
+        },
+        {
+          "baselineNs": 16700.96437500206,
+          "candidateNs": 14925.948125001016
+        },
+        {
+          "baselineNs": 17312.71437500027,
+          "candidateNs": 15064.58500000008
+        },
+        {
+          "baselineNs": 16936.616250000043,
+          "candidateNs": 15007.020000000466
+        },
+        {
+          "baselineNs": 16516.87875000107,
+          "candidateNs": 14909.485624998524
+        },
+        {
+          "baselineNs": 16909.46500000109,
+          "candidateNs": 15449.725625001063
+        },
+        {
+          "baselineNs": 16645.12187499895,
+          "candidateNs": 15170.071874999849
+        },
+        {
+          "baselineNs": 22187.563750001118,
+          "candidateNs": 20489.116875000946
+        },
+        {
+          "baselineNs": 25374.68562499953,
+          "candidateNs": 23534.834375000173
+        },
+        {
+          "baselineNs": 17893.743125000583,
+          "candidateNs": 18115.894374998334
+        },
+        {
+          "baselineNs": 16722.787500000322,
+          "candidateNs": 14772.194999998192
+        }
+      ]
+    }
+  ]
+}
