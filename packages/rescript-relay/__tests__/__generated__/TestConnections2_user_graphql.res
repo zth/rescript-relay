@@ -35,7 +35,7 @@ module Internal = {
   type fragmentRaw
   %%private(
   @live
-  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"0"},{"list":1,"path":["member","User","friendsConnection","edges"]}]},"version":2}`)
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"0"}]},"version":2}`)
   @live
   let fragmentCallbacks = {
     "0": unwrap_fragment_member,

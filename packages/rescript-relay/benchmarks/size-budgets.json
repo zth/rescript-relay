@@ -1,12 +1,12 @@
 {
   "combined": {
-    "minified": 277148,
-    "gzip": 37034,
-    "brotli": 26760
+    "minified": 275365,
+    "gzip": 36682,
+    "brotli": 26495
   },
   "separate": {
-    "minified": 307258,
-    "gzip": 120164,
-    "brotli": 106574
+    "minified": 305561,
+    "gzip": 119565,
+    "brotli": 106023
   }
 }

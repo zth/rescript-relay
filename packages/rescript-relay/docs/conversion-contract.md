@@ -126,3 +126,9 @@ local to a conversion's callback table, assigned deterministically across scalar
 and union callbacks, and do not change response traversal. Public preparation
 still accepts named callback keys. Plans may be shared, but callback bindings are
 always prepared against their own table and snapshotted independently.
+
+The compiler may omit list-depth hints when no special conversion operation
+exists at or below that path. Generic nullable traversal handles those plain
+lists. List wrappers around scalars, unions, references, opaque values, and
+fragment-bearing records are retained. An entirely empty plan uses the shared
+converter; named input references are never removed by this optimization.

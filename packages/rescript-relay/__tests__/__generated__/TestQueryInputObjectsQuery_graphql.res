@@ -32,7 +32,7 @@ type queryRef
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"searchInput"}],"searchInput":[{"list":1,"path":["names"]}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"searchInput"}],"searchInput":[]},"version":2}`)
   @live
   let variablesCallbacks = ()
   @live

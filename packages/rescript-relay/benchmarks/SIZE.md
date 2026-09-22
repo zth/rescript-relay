@@ -18,6 +18,7 @@ measured separately below and must not be counted once per artifact.
 | First prepared redesign (`e856b90`) | 313,772 | 41,628 | 29,248 | 126,052 | 112,258 |
 | After size optimization | 277,982 | 36,961 | 26,651 | 119,154 | 105,719 |
 | Compact callback IDs | 274,404 | 36,667 | 26,495 | 118,974 | 105,519 |
+| Pruned plain-list hints | 272,639 | 36,319 | 26,233 | 118,381 | 104,973 |
 
 All numbers are bytes. The first size optimization (before compact callback IDs) saves 35,790 minified
 bytes / 4,667 gzip bytes in the combined bundle, and 6,898 gzip bytes across the
@@ -63,7 +64,7 @@ the new regression query and schema helper. Use separate worktrees or scratch
 packages when compiling historical artifacts; do not overwrite current artifacts.
 
 Bindings CI checks minified, gzip, and Brotli budgets for both bundle layouts and
-uploads the report. Budgets now allow 1% headroom over the compact-callback result. Intentional changes
+uploads the report. Budgets now allow 1% headroom over the pruned-list result. Intentional changes
 to fixture coverage, esbuild version, or budgets need review. The raw reports are
 `results/size-original.json`, `results/size-before.json`, and `results/size-current.json`.
 
@@ -129,3 +130,30 @@ Experiments with escaped string-path maps and abbreviated operation keys saved
 only 77–150 bytes in the combined gzip bundle before decoder costs; they were not
 adopted. Indexed callback arrays also produced a worse combined gzip result than
 keyed callback tables. The named version 2 protocol remains unchanged.
+
+## Final pass: omit redundant native-list hints
+
+A list instruction is unnecessary when there is no scalar/union/reference/opaque/
+fragment operation at or below its path. The generic converter already traverses
+plain lists and normalizes nullability. The compiler now omits those hints. When
+this leaves an empty root plan, it emits the existing shared-converter call and
+omits the per-artifact plan and prepared handle as well.
+
+Required list depths are retained, including ancestors of special conversions;
+path comparisons use full segments, so `a_b` cannot be confused with `a.b`. Named
+input references remain explicit even when their target only needs normalization,
+because they can also unwrap input unions. Neither the protocol nor runtime code
+changes.
+
+Relative to compact callback IDs (`3a55220`), this saves another **1,765 minified
+bytes / 348 gzip bytes combined**, or **593 gzip bytes across separate bundles**.
+The final fixture bundles are smaller than original master by 1,254 gzip bytes
+combined and 712 gzip bytes separately, excluding the shared runtime and external
+dependencies as before. `results/size-pruned-lists.json` records the complete result.
+
+Compiler tests cover every retained operation boundary and omission of irrelevant
+siblings/ancestors. JS tests compare omitted versus explicit native-list hints to
+an independent evaluator at depths 1–3 in both nullable directions, including
+sparse arrays, option markers, and falsey values. The full mounted suite also uses
+the regenerated artifacts. More elaborate format compression was intentionally
+left out.

@@ -67,7 +67,7 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"list":1,"path":["users","edges"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`)
   @live
   let wrapResponseCallbacks = ()
   @live

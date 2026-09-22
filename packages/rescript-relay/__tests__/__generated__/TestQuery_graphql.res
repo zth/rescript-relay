@@ -44,36 +44,12 @@ module Internal = {
   let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
-  %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["users","edges"]}]},"version":2}`)
-  @live
-  let wrapResponseCallbacks = ()
-  @live
-  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
-    wrapResponseConverter,
-    wrapResponseCallbacks,
-    null
-  )
-  )
-  @live
-  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
+  let convertWrapResponse = value => RescriptRelay.convertWithoutPlan(value, null)
   @live
   type responseRaw
-  %%private(
   @live
-  let responseConverter = wrapResponseConverter
-  @live
-  let responseCallbacks = ()
-  @live
-  let preparedResponseConverter = RescriptRelay.prepareConversion(
-    responseConverter,
-    responseCallbacks,
-    None
-  )
-  )
-  @live
-  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
+  let convertResponse = value => RescriptRelay.convertWithoutPlan(value, None)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

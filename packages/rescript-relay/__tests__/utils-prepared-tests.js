@@ -623,3 +623,47 @@ test("callback slots stay local to each converter and snapshot their bindings", 
     /Missing conversion callback/,
   );
 });
+
+describe.each([null, undefined])(
+  "omitted native-list hints (nullable=%s)",
+  (nullable) => {
+    test.each([1, 2, 3])(
+      "preserves native values, holes and nullable wrappers at depth %i",
+      (depth) => {
+        const { convertWithoutPlan } = require("../src/utils");
+        let values = [
+          0,
+          false,
+          "",
+          null,
+          undefined,
+          ,
+          { BS_PRIVATE_NESTED_SOME_NONE: 0 },
+        ];
+        let schema = list(scalar("identity"));
+        for (let i = 1; i < depth; i++) {
+          values = [values, null, undefined, , []];
+          schema = list(schema);
+        }
+        const input = freeze({ values, __metadata: { opaque: null } });
+        const expected = evaluate(
+          object({ values: schema }),
+          input,
+          {},
+          { identity: (value) => value },
+          nullable,
+        );
+        const explicit = prepareConversion(
+          {
+            version: 2,
+            roots: { __root: [{ path: ["values"], list: depth }] },
+          },
+          undefined,
+          nullable,
+        );
+        expect(explicit(input)).toStrictEqual(expected);
+        expect(convertWithoutPlan(input, nullable)).toStrictEqual(expected);
+      },
+    );
+  },
+);

@@ -53,7 +53,7 @@ type queryRef
 module Internal = {
   %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["beforeDate"],"scalar":"0"},{"list":1,"path":["friendsOnlineStatuses"]},{"path":["number"],"scalar":"1"}]},"version":2}`)
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["beforeDate"],"scalar":"0"},{"path":["number"],"scalar":"1"}]},"version":2}`)
   @live
   let variablesCallbacks = {
     "0": TestsUtils.Datetime.serialize,

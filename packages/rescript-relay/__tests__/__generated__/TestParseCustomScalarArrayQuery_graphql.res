@@ -32,7 +32,7 @@ module Internal = {
   type wrapResponseRaw
   %%private(
   @live
-  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["loggedInUser","intString"],"scalar":"0"},{"list":1,"path":["loggedInUser","intStrings"],"scalar":"0"},{"list":1,"path":["loggedInUser","justStrings"]}]},"version":2}`)
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["loggedInUser","intString"],"scalar":"0"},{"list":1,"path":["loggedInUser","intStrings"],"scalar":"0"}]},"version":2}`)
   @live
   let wrapResponseCallbacks = {
     "0": TestsUtils.IntString.serialize,

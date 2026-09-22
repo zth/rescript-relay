@@ -45,20 +45,8 @@ let wrap_response_node: Types.response_node => Types.response_node = RescriptRel
 type queryRef
 
 module Internal = {
-  %%private(
   @live
-  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["friendsOnlineStatuses"]}]},"version":2}`)
-  @live
-  let variablesCallbacks = ()
-  @live
-  let preparedVariablesConverter = RescriptRelay.prepareConversion(
-    variablesConverter,
-    variablesCallbacks,
-    None
-  )
-  )
-  @live
-  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
   %%private(
