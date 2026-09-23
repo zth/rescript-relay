@@ -1,6 +1,0 @@
-{
-  "name": "relay-conversion-runtime-experiment",
-  "sources": ["src"],
-  "package-specs": {"module": "esmodule", "in-source": true},
-  "suffix": ".mjs"
-}

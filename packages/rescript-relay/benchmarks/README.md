@@ -110,6 +110,7 @@ cache or dependency changes were needed.
 See [bundle-size measurements and budgets](SIZE.md) for complete generated JS,
 shared/separate bundles, gzip/Brotli reports, and reproduction commands.
 
-See the [ReScript runtime experiment](rescript-runtime/README.md) for a tested
-port of both converters, paired timing results, bundle measurements, and the
-reason the shipping runtime remains JavaScript.
+A ReScript runtime port was evaluated but not adopted: it increased bundle size
+and regressed some conversion workloads. The prototype and its measurements remain
+available in [the experiment commit](https://github.com/zth/rescript-relay/tree/e1b12c732ea258f338defeed058061e8f78609e4/packages/rescript-relay/benchmarks/rescript-runtime).
+The shipping runtime remains JavaScript.
