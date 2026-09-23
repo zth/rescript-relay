@@ -21,48 +21,30 @@ module Types = {
 }
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"input":{"ca":"TestsUtils.IntString"}}}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["input"],"scalar":"0"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.IntString": TestsUtils.IntString.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.IntString.serialize,
   }
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
+  )
+  @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let wrapResponseConverterMap = ()
-  @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter,
-    wrapResponseConverterMap,
-    null
-  )
+  let convertWrapResponse = value => RescriptRelay.convertWithoutPlan(value, null)
   @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let responseConverterMap = ()
-  @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter,
-    responseConverterMap,
-    None
-  )
+  let convertResponse = value => RescriptRelay.convertWithoutPlan(value, None)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

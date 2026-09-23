@@ -13,6 +13,7 @@ module.exports = {
     IntString: "TestsUtils.IntString",
     JSON: "JSON.t",
     Number: "TestsUtils.Number",
+    ConversionNumber: "TestsUtils.ConversionNumber",
     ObjectScalar1: "TestsUtils.ObjectScalar1",
     ObjectScalar2: "TestsUtils.ObjectScalar2",
   },

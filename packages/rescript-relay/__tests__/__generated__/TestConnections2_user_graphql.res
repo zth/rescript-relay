@@ -33,20 +33,22 @@ let wrap_fragment_member: Types.fragment_member => Types.fragment_member = Rescr
 module Internal = {
   @live
   type fragmentRaw
+  %%private(
   @live
-  let fragmentConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"member":{"u":"fragment_member"}}}`
-  )
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["member"],"union":"0"}]},"version":2}`)
   @live
-  let fragmentConverterMap = {
-    "fragment_member": unwrap_fragment_member,
+  let fragmentCallbacks = {
+    "0": unwrap_fragment_member,
   }
   @live
-  let convertFragment = v => v->RescriptRelay.convertObj(
+  let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
-    fragmentConverterMap,
+    fragmentCallbacks,
     None
   )
+  )
+  @live
+  let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)
 }
 
 type t

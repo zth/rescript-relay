@@ -18,49 +18,31 @@ module Types = {
 }
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"serializeMultipleCustomScalars":{"os2":{"c":"TestsUtils.ObjectScalar2"},"os1s":{"ca":"TestsUtils.ObjectScalar1"}},"__root":{"input":{"r":"serializeMultipleCustomScalars"}}}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["input"],"reference":"serializeMultipleCustomScalars"}],"serializeMultipleCustomScalars":[{"list":1,"path":["os1s"],"scalar":"0"},{"path":["os2"],"scalar":"1"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.ObjectScalar1": TestsUtils.ObjectScalar1.serialize,
-    "TestsUtils.ObjectScalar2": TestsUtils.ObjectScalar2.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.ObjectScalar1.serialize,
+    "1": TestsUtils.ObjectScalar2.serialize,
   }
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
+  )
+  @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let wrapResponseConverterMap = ()
-  @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
-    wrapResponseConverter,
-    wrapResponseConverterMap,
-    null
-  )
+  let convertWrapResponse = value => RescriptRelay.convertWithoutPlan(value, null)
   @live
   type responseRaw
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let responseConverterMap = ()
-  @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
-    responseConverter,
-    responseConverterMap,
-    None
-  )
+  let convertResponse = value => RescriptRelay.convertWithoutPlan(value, None)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

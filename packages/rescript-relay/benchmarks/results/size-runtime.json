@@ -1,0 +1,21 @@
+{
+  "esbuild": "0.25.12",
+  "node": "v24.16.0",
+  "results": {
+    "original": {
+      "minified": 2916,
+      "gzip": 1144,
+      "brotli": 1010
+    },
+    "before": {
+      "minified": 5605,
+      "gzip": 2261,
+      "brotli": 2041
+    },
+    "current": {
+      "minified": 5786,
+      "gzip": 2330,
+      "brotli": 2108
+    }
+  }
+}

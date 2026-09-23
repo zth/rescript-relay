@@ -11,7 +11,7 @@ jobs:
     name: PPX Linux
     runs-on: ubuntu-latest
     container:
-      image: debian:bullseye
+      image: debian:bookworm
     steps:
       - name: Install system dependencies
         run: |
@@ -21,6 +21,7 @@ jobs:
             curl \
             ca-certificates \
             git \
+            gnupg \
             unzip \
             bubblewrap
       - uses: actions/checkout@v4
@@ -29,7 +30,7 @@ jobs:
         with:
           ocaml-compiler: "4.14"
           dune-cache: true
-          cache-prefix: "v2-bullseye"
+          cache-prefix: "v3-bookworm"
       - name: Install dependencies
         working-directory: packages/rescript-relay/rescript-relay-ppx
         run: opam install . --deps-only

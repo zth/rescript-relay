@@ -118,87 +118,85 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"0"},{"fragments":true,"path":["node","User"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "response_node": wrap_response_node,
+  let wrapResponseCallbacks = {
+    "0": wrap_response_node,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
+  )
+  @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User":{"f":""},"node":{"u":"response_node"}}}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "response_node": unwrap_response_node,
+  let responseCallbacks = {
+    "0": unwrap_response_node,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
+  )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   @live
   type wrapRawResponseRaw
+  %%private(
   @live
-  let wrapRawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User_memberOf_Group_topMember":{"u":"rawResponse_node_User_memberOf_Group_topMember"},"node_User_memberOfSingular":{"u":"rawResponse_node_User_memberOfSingular"},"node_User_memberOf":{"u":"rawResponse_node_User_memberOf"},"node":{"u":"rawResponse_node"}}}`
-  )
+  let wrapRawResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["node"],"union":"0"},{"list":1,"path":["node","User","memberOf"],"union":"1"},{"path":["node","User","memberOf","Group","topMember"],"union":"3"},{"path":["node","User","memberOfSingular"],"union":"2"}]},"version":2}`)
   @live
-  let wrapRawResponseConverterMap = {
-    "rawResponse_node_User_memberOf_Group_topMember": wrap_rawResponse_node_User_memberOf_Group_topMember,
-    "rawResponse_node_User_memberOf": wrap_rawResponse_node_User_memberOf,
-    "rawResponse_node_User_memberOfSingular": wrap_rawResponse_node_User_memberOfSingular,
-    "rawResponse_node": wrap_rawResponse_node,
+  let wrapRawResponseCallbacks = {
+    "0": wrap_rawResponse_node,
+    "1": wrap_rawResponse_node_User_memberOf,
+    "2": wrap_rawResponse_node_User_memberOfSingular,
+    "3": wrap_rawResponse_node_User_memberOf_Group_topMember,
   }
   @live
-  let convertWrapRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapRawResponseConverter = RescriptRelay.prepareConversion(
     wrapRawResponseConverter,
-    wrapRawResponseConverterMap,
+    wrapRawResponseCallbacks,
     null
   )
+  )
+  @live
+  let convertWrapRawResponse = value => RescriptRelay.runConversion(preparedWrapRawResponseConverter, value)
   @live
   type rawResponseRaw
+  %%private(
   @live
-  let rawResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"node_User_memberOf_Group_topMember":{"u":"rawResponse_node_User_memberOf_Group_topMember"},"node_User_memberOfSingular":{"u":"rawResponse_node_User_memberOfSingular"},"node_User_memberOf":{"u":"rawResponse_node_User_memberOf"},"node":{"u":"rawResponse_node"}}}`
-  )
+  let rawResponseConverter = wrapRawResponseConverter
   @live
-  let rawResponseConverterMap = {
-    "rawResponse_node_User_memberOf_Group_topMember": unwrap_rawResponse_node_User_memberOf_Group_topMember,
-    "rawResponse_node_User_memberOf": unwrap_rawResponse_node_User_memberOf,
-    "rawResponse_node_User_memberOfSingular": unwrap_rawResponse_node_User_memberOfSingular,
-    "rawResponse_node": unwrap_rawResponse_node,
+  let rawResponseCallbacks = {
+    "0": unwrap_rawResponse_node,
+    "1": unwrap_rawResponse_node_User_memberOf,
+    "2": unwrap_rawResponse_node_User_memberOfSingular,
+    "3": unwrap_rawResponse_node_User_memberOf_Group_topMember,
   }
   @live
-  let convertRawResponse = v => v->RescriptRelay.convertObj(
+  let preparedRawResponseConverter = RescriptRelay.prepareConversion(
     rawResponseConverter,
-    rawResponseConverterMap,
+    rawResponseCallbacks,
     None
   )
+  )
+  @live
+  let convertRawResponse = value => RescriptRelay.runConversion(preparedRawResponseConverter, value)
   type rawPreloadToken<'response> = {source: Nullable.t<RescriptRelay.Observable.t<'response>>}
   external tokenToRaw: queryRef => rawPreloadToken<Types.response> = "%identity"
 }

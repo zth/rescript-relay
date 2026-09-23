@@ -1,0 +1,94 @@
+{
+  "fixtureVersion": 1,
+  "node": "v24.16.0",
+  "platform": "linux x64",
+  "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+  "samples": 15,
+  "durationMs": 40,
+  "implementation": "baseline src/utils.js",
+  "results": [
+    {
+      "name": "small fragment",
+      "iterations": 51200,
+      "newOutputObjects": 3,
+      "medianNs": 1385.9065429687512,
+      "p10Ns": 1287.5365039062503,
+      "p90Ns": 1633.2075390625,
+      "opsPerSecond": 721549.3750811649
+    },
+    {
+      "name": "unchanged object",
+      "iterations": 51200,
+      "newOutputObjects": 1,
+      "medianNs": 786.9883593750026,
+      "p10Ns": 746.9491992187471,
+      "p90Ns": 873.8155468750009,
+      "opsPerSecond": 1270666.8251029323
+    },
+    {
+      "name": "nullable query",
+      "iterations": 25600,
+      "newOutputObjects": 3,
+      "medianNs": 2151.13203125,
+      "p10Ns": 2052.9993359375,
+      "p90Ns": 2333.326679687495,
+      "opsPerSecond": 464871.51205633365
+    },
+    {
+      "name": "connection / 100 rows",
+      "iterations": 100,
+      "newOutputObjects": 703,
+      "medianNs": 787343.75,
+      "p10Ns": 757014.3700000016,
+      "p90Ns": 847085.5799999981,
+      "opsPerSecond": 1270.0932724746974
+    },
+    {
+      "name": "plural fragment / 100 rows",
+      "iterations": 400,
+      "newOutputObjects": 301,
+      "medianNs": 141254.90249999985,
+      "p10Ns": 136209.04000000108,
+      "p90Ns": 151119.6025000004,
+      "opsPerSecond": 7079.4003061238955
+    },
+    {
+      "name": "union list / 100 rows",
+      "iterations": 200,
+      "newOutputObjects": 302,
+      "medianNs": 229873.82499999966,
+      "p10Ns": 222922.87500000384,
+      "p90Ns": 255679.87999999788,
+      "opsPerSecond": 4350.212556823299
+    },
+    {
+      "name": "custom scalar list",
+      "iterations": 6400,
+      "newOutputObjects": 102,
+      "medianNs": 12473.766562499974,
+      "p10Ns": 11483.63421875004,
+      "p90Ns": 13477.948750000054,
+      "opsPerSecond": 80168.24709597431
+    },
+    {
+      "name": "opaque JSON list",
+      "iterations": 102400,
+      "newOutputObjects": 2,
+      "medianNs": 600.0888574218699,
+      "p10Ns": 566.5839941406325,
+      "p90Ns": 647.8469628906237,
+      "opsPerSecond": 1666419.8770432887
+    },
+    {
+      "name": "recursive inputs",
+      "iterations": 100,
+      "newOutputObjects": 203,
+      "medianNs": 359820.4699999951,
+      "p10Ns": 337718.6000000074,
+      "p90Ns": 382805.19999998435,
+      "opsPerSecond": 2779.163731290812
+    }
+  ],
+  "baseRevision": "520cac4933c118a85cf0dffcd1a19a5dba34ad4f",
+  "recordedDate": "2026-09-21"
+}

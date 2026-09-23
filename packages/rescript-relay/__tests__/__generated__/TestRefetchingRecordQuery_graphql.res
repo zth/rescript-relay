@@ -40,49 +40,55 @@ module Types = {
 type queryRef
 
 module Internal = {
+  %%private(
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"number":{"c":"TestsUtils.Number"},"beforeDate":{"c":"TestsUtils.Datetime"}}}`
-  )
+  let variablesConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["beforeDate"],"scalar":"0"},{"path":["number"],"scalar":"1"}]},"version":2}`)
   @live
-  let variablesConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.Number": TestsUtils.Number.serialize,
+  let variablesCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
+    "1": TestsUtils.Number.serialize,
   }
   @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
+  let preparedVariablesConverter = RescriptRelay.prepareConversion(
     variablesConverter,
-    variablesConverterMap,
+    variablesCallbacks,
     None
   )
+  )
+  @live
+  let convertVariables = value => RescriptRelay.runConversion(preparedVariablesConverter, value)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = ()
+  let wrapResponseCallbacks = ()
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
+  )
+  @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser":{"f":""}}}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
+  )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

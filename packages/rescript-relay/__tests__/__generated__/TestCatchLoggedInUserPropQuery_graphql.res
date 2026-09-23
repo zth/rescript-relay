@@ -26,49 +26,43 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_createdAt_value":{"c":"TestsUtils.Datetime"},"loggedInUser":{"f":""}}}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["loggedInUser"]},{"path":["loggedInUser","createdAt","value"],"scalar":"0"}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
+  let wrapResponseCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
+  )
+  @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_createdAt_value":{"c":"TestsUtils.Datetime"},"loggedInUser":{"f":""}}}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
+  let responseCallbacks = {
+    "0": TestsUtils.Datetime.parse,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
+  )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

@@ -63,22 +63,24 @@ let wrap_fragment_memberOfSingular: Types.fragment_memberOfSingular => Types.fra
 module Internal = {
   @live
   type fragmentRaw
+  %%private(
   @live
-  let fragmentConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"memberOf_Group_topMember":{"u":"fragment_memberOf_Group_topMember"},"memberOfSingular":{"u":"fragment_memberOfSingular"},"memberOf":{"u":"fragment_memberOf"}}}`
-  )
+  let fragmentConverter: JSON.t = %raw(json`{"roots":{"__root":[{"list":1,"path":["memberOf"],"union":"0"},{"path":["memberOf","Group","topMember"],"union":"2"},{"path":["memberOfSingular"],"union":"1"}]},"version":2}`)
   @live
-  let fragmentConverterMap = {
-    "fragment_memberOf_Group_topMember": unwrap_fragment_memberOf_Group_topMember,
-    "fragment_memberOf": unwrap_fragment_memberOf,
-    "fragment_memberOfSingular": unwrap_fragment_memberOfSingular,
+  let fragmentCallbacks = {
+    "0": unwrap_fragment_memberOf,
+    "1": unwrap_fragment_memberOfSingular,
+    "2": unwrap_fragment_memberOf_Group_topMember,
   }
   @live
-  let convertFragment = v => v->RescriptRelay.convertObj(
+  let preparedFragmentConverter = RescriptRelay.prepareConversion(
     fragmentConverter,
-    fragmentConverterMap,
+    fragmentCallbacks,
     None
   )
+  )
+  @live
+  let convertFragment = value => RescriptRelay.runConversion(preparedFragmentConverter, value)
 }
 
 type t

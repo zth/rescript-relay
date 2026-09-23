@@ -41,3 +41,17 @@ jobs:
       - name: Test
         run: |
           yarn test:ci
+          ENABLE_PERSISTING=true yarn test:ci
+          yarn test:conversion
+          yarn test:conversion:mutations
+      - name: Generated conversion size budget
+        run: yarn size:conversion --check --output conversion-size.json
+      - name: Conversion benchmark (informational)
+        run: yarn bench:conversion:prepared --samples 7 --duration 20 --output conversion-benchmark.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conversion-performance
+          path: |
+            packages/rescript-relay/conversion-benchmark.json
+            packages/rescript-relay/conversion-size.json
+            packages/rescript-relay/coverage/conversion/

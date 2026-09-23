@@ -20,7 +20,7 @@ jobs:
     name: Build PPX for release
     runs-on: ${{ matrix.platform }}
     container:
-      image: debian:bullseye
+      image: debian:bookworm
     defaults:
       run:
         working-directory: packages/rescript-relay/rescript-relay-ppx
@@ -34,6 +34,7 @@ jobs:
             curl \
             ca-certificates \
             git \
+            gnupg \
             unzip \
             bubblewrap
       - uses: actions/checkout@v4
@@ -47,7 +48,7 @@ jobs:
         with:
           ocaml-compiler: "4.14"
           dune-cache: true
-          cache-prefix: "v2-bullseye"
+          cache-prefix: "v3-bookworm"
       - name: Install PPX dependencies
         run: opam install . --deps-only
       - name: Build PPX

@@ -1,61 +1,38 @@
-function getNewObj(maybeNewObj, currentObj) {
-  return maybeNewObj || Object.assign({}, currentObj);
-}
+const {
+  prepareConversion,
+  convertWithoutPlan,
+} = require("./prepareConversion");
 
-function getPathName(path) {
-  return path.join("_");
-}
-
-function makeNewPath(currentPath, newKeys) {
-  return [].concat(currentPath, newKeys);
-}
-
-function getTypename(v) {
-  if (v != null && typeof v === "object" && v.__typename != null) {
-    return v.__typename;
-  }
-}
+// Shared read-only fallback: avoid allocating an empty map for every field.
+var empty = Object.freeze({});
 
 function unwrapInputUnion(obj) {
   if (obj != null && typeof obj === "object" && "__$inputUnion" in obj) {
-    return {
-      [obj["__$inputUnion"]]: obj["_0"],
-    };
+    return { [obj["__$inputUnion"]]: obj._0 };
   }
-
   return obj;
 }
 
-/**
- * Runs on each object in the tree and follows the provided instructions
- * to apply transforms etc.
- */
+function withFragmentRefs(obj) {
+  var result = Object.assign({}, obj);
+  // Both refs describe the original Relay snapshot, before conversions.
+  result.fragmentRefs = Object.assign({}, obj);
+  result.updatableFragmentRefs = result.fragmentRefs;
+  return result;
+}
+
 function traverse(
-  fullInstructionMap,
-  currentPath,
-  currentObj,
-  instructionMap,
+  maps,
+  prefix,
+  obj,
+  instructions,
   converters,
-  nullableValue,
-  instructionPaths,
-  addFragmentOnRoot
+  nullable,
+  fragment,
 ) {
-  // We lazily set up a new object for each "level", as we don't want to mutate
-  // what comes back from the Relay store, and nor do we want to create new
-  // objects unless we need to. And we only need to when we need to change
-  // something.
-  var newObj;
-
-  if (addFragmentOnRoot) {
-    newObj = getNewObj(newObj, currentObj);
-    newObj.fragmentRefs = Object.assign({}, newObj);
-    newObj.updatableFragmentRefs = newObj.fragmentRefs;
-  }
-
-  for (var key in currentObj) {
-    // Ensure we don't move into internal properties coming from Relay, with the
-    // exception of the few names allowed to start with double underscores
-    // ("__typename" and "__id"), and any Relay provided variables.
+  var result = fragment ? withFragmentRefs(obj) : undefined;
+  for (var key in obj) {
+    // Relay metadata may contain cycles and must remain opaque.
     if (
       key.startsWith("__") &&
       key !== "__typename" &&
@@ -64,361 +41,237 @@ function traverse(
     )
       continue;
 
-    var isUnion = false;
-    var originalValue = currentObj[key];
-
-    // Instructions are stored by the path in the object where they apply
-    var thisPath = makeNewPath(currentPath, [key]);
-    var path = getPathName(thisPath);
-
-    var instructions = instructionMap[path] || {};
-
-    if (currentObj[key] == null) {
-      newObj = getNewObj(newObj, currentObj);
-      newObj[key] = nullableValue;
+    var value = obj[key];
+    var converted;
+    if (value == null) {
+      converted = nullable;
+    } else if (value.BS_PRIVATE_NESTED_SOME_NONE >= 0) {
       continue;
-    }
-
-    if (currentObj[key] && currentObj[key].BS_PRIVATE_NESTED_SOME_NONE >= 0) {
-      newObj = getNewObj(newObj, currentObj);
-      newObj[key] = currentObj[key];
-      continue;
-    }
-
-    var shouldConvertRootObj =
-      typeof instructions["r"] === "string" &&
-      fullInstructionMap[instructions["r"]];
-
-    var shouldAddFragmentFn = instructions["f"] === "";
-
-    var shouldConvertEnum =
-      typeof instructions["e"] === "string" && !!converters[instructions["e"]];
-
-    // This is true for non-arrays that are to be converted
-    var shouldConvertCustomField =
-      typeof instructions["c"] === "string" && !!converters[instructions["c"]];
-
-    // This is true for arrays that are to be converted. This and the above
-    // won't be true at the same time.
-    var shouldConvertCustomFieldArray =
-      typeof instructions["ca"] === "string" &&
-      !!converters[instructions["ca"]];
-
-    // Special case when this is a custom field that's an array. Ensures we
-    // don't accidentally move into the array when we're not supposed to.
-    if (shouldConvertCustomFieldArray && Array.isArray(currentObj[key])) {
-      newObj = getNewObj(newObj, currentObj);
-      newObj[key] = currentObj[key].map(converters[instructions["ca"]]);
-      continue;
-    }
-
-    var shouldBlockTraversal = typeof instructions["b"] === "string";
-    var allowGoingIntoArray = shouldBlockTraversal
-      ? instructions["b"] === "a"
-      : true;
-
-    if (shouldBlockTraversal && !allowGoingIntoArray) {
-      newObj = getNewObj(newObj, currentObj);
-      continue;
-    }
-
-    var shouldConvertUnion =
-      typeof instructions["u"] === "string" && !!converters[instructions["u"]];
-
-    /**
-     * Handle arrays
-     */
-
-    // Special case when this is a custom field that's an array. Ensures we
-    // don't accidentally move into the array when we're not supposed to.
-    if (shouldConvertCustomField && Array.isArray(currentObj[key])) {
-      newObj = getNewObj(newObj, currentObj);
-      newObj[key] = converters[instructions["c"]](originalValue);
-      continue;
-    }
-
-    if (Array.isArray(currentObj[key])) {
-      newObj = getNewObj(newObj, currentObj);
-      newObj[key] = currentObj[key].map(function (v) {
-        if (v == null) {
-          return nullableValue;
-        }
-        if (shouldConvertRootObj) {
-          return traverser(
-            unwrapInputUnion(v),
-            fullInstructionMap,
-            converters,
-            nullableValue,
-            instructions["r"]
-          );
-        }
-
-        if (shouldConvertEnum) {
-          return converters[instructions["e"]](v);
-        }
-
-        if (shouldConvertCustomField) {
-          return converters[instructions["c"]](v);
-        }
-
-        if (shouldConvertUnion && v != null && typeof v === "object") {
-          var typename = getTypename(v);
-
-          if (typename != null) {
-            isUnion = true;
-            var unionObj = v;
-
-            // Means we're wrapping, and this will be a ReScript value.
-            if (nullableValue === null) {
-              // Convert it back to a flat JS value
-              unionObj = converters[instructions["u"]](v);
-            }
-
-            var newPath = makeNewPath(currentPath, [key, typename]);
-
-            var unionRootHasFragment =
-              (instructionMap[getPathName(newPath)] || {}).f === "";
-
-            var traversedValue = traverse(
-              fullInstructionMap,
-              newPath,
-              unionObj,
-              instructionMap,
-              converters,
-              nullableValue,
-              instructionPaths,
-              unionRootHasFragment
-            );
-
-            // Undefined means we're going from JS to ReScript, in which case we
-            // need to run the conversion here rather than earlier.
-            return nullableValue === undefined
-              ? converters[instructions["u"]](traversedValue)
-              : traversedValue;
-          }
-        }
-
-        if (shouldAddFragmentFn && typeof v === "object" && !Array.isArray(v)) {
-          var objWithFragmentFn = Object.assign({}, v);
-          objWithFragmentFn.fragmentRefs = Object.assign({}, objWithFragmentFn);
-          objWithFragmentFn.updatableFragmentRefs =
-            objWithFragmentFn.fragmentRefs;
-          return objWithFragmentFn;
-        }
-
-        return v;
-      });
     } else {
-      /**
-       * Handle normal values.
-       */
-      var v = currentObj[key];
-
-      if (shouldConvertRootObj) {
-        newObj = getNewObj(newObj, currentObj);
-        newObj[key] = traverser(
-          unwrapInputUnion(v),
-          fullInstructionMap,
-          converters,
-          nullableValue,
-          instructions["r"]
-        );
-        continue;
-      }
-
-      if (shouldConvertEnum) {
-        newObj = getNewObj(newObj, currentObj);
-        newObj[key] = converters[instructions["e"]](v);
-      }
-
-      if (shouldConvertCustomField) {
-        newObj = getNewObj(newObj, currentObj);
-        newObj[key] = converters[instructions["c"]](v);
-        // Ensure that the custom scalar value itself isn't traversed more.
-        continue;
-      }
-
-      if (shouldConvertUnion && v != null && typeof v === "object") {
-        var typename = getTypename(v);
-
-        if (typename != null) {
-          isUnion = true;
-          var unionObj = v;
-
-          // Means we're wrapping, and this will be a ReScript value.
-          if (nullableValue === null) {
-            // Convert it back to a flat JS value
-            unionObj = converters[instructions["u"]](v);
-          }
-
-          var newPath = makeNewPath(currentPath, [key, typename]);
-
-          var unionRootHasFragment =
-            (instructionMap[getPathName(newPath)] || {}).f === "";
-
-          var traversedValue = traverse(
-            fullInstructionMap,
-            newPath,
-            unionObj,
-            instructionMap,
-            converters,
-            nullableValue,
-            instructionPaths,
-            unionRootHasFragment
-          );
-
-          newObj = getNewObj(newObj, currentObj);
-
-          newObj[key] =
-            // Undefined means we're going from JS to ReScript, in which case we
-            // need to run the conversion here rather than earlier.
-            nullableValue === undefined
-              ? converters[instructions["u"]](traversedValue)
-              : traversedValue;
-        }
-      }
-
-      if (shouldAddFragmentFn && typeof v === "object" && !Array.isArray(v)) {
-        newObj = getNewObj(newObj, currentObj);
-        var objWithFragmentFn = Object.assign({}, v);
-        objWithFragmentFn.fragmentRefs = Object.assign({}, objWithFragmentFn);
-        objWithFragmentFn.updatableFragmentRefs =
-          objWithFragmentFn.fragmentRefs;
-
-        newObj[key] = objWithFragmentFn;
-      }
+      // Carry the encoded prefix rather than allocating and joining path arrays.
+      var path = prefix + key;
+      var instruction = instructions[path];
+      // Most selected scalar fields need no conversion.
+      if (instruction === undefined && typeof value !== "object") continue;
+      instruction = instruction || empty;
+      converted = convertField(
+        value,
+        instruction,
+        maps,
+        path,
+        instructions,
+        converters,
+        nullable,
+      );
     }
-
-    if (originalValue != null && !isUnion) {
-      var nextObj = (newObj && newObj[key]) || currentObj[key];
-
-      if (typeof nextObj === "object" && !Array.isArray(originalValue)) {
-        var traversedObj = traverse(
-          fullInstructionMap,
-          thisPath,
-          nextObj,
-          instructionMap,
-          converters,
-          nullableValue,
-          instructionPaths
-        );
-
-        if (traversedObj !== nextObj) {
-          newObj = getNewObj(newObj, currentObj);
-          newObj[key] = traversedObj;
-        }
-      } else if (Array.isArray(originalValue) && !shouldBlockTraversal) {
-        newObj = getNewObj(newObj, currentObj);
-        newObj[key] = nextObj.map(function (o) {
-          if (typeof o === "object" && o != null && !Array.isArray(o)) {
-            return traverse(
-              fullInstructionMap,
-              thisPath,
-              o,
-              instructionMap,
-              converters,
-              nullableValue,
-              instructionPaths
-            );
-          } else if (o == null) {
-            return nullableValue;
-          } else {
-            return o;
-          }
-        });
-      }
+    if (converted !== value) {
+      if (result === undefined) result = Object.assign({}, obj);
+      result[key] = converted;
     }
   }
+  return result === undefined ? obj : result;
+}
 
-  return newObj || currentObj;
+function convertUnion(
+  value,
+  convert,
+  maps,
+  path,
+  instructions,
+  converters,
+  nullable,
+) {
+  var unionPath = path + "_" + value.__typename;
+  var fragment = (instructions[unionPath] || empty).f === "";
+  var raw = nullable === null ? convert(value) : value;
+  var result = traverse(
+    maps,
+    unionPath + "_",
+    raw,
+    instructions,
+    converters,
+    nullable,
+    fragment,
+  );
+  return nullable === undefined ? convert(result) : result;
+}
+
+function convertField(
+  value,
+  instruction,
+  maps,
+  path,
+  instructions,
+  converters,
+  nullable,
+) {
+  var isArray = Array.isArray(value);
+  var customArray =
+    typeof instruction.ca === "string" && converters[instruction.ca];
+  if (isArray && customArray) {
+    // GraphQL null elements belong to the list wrapper, not the scalar parser.
+    return value.map((item, index, array) => {
+      if (item == null) return nullable;
+      if (item.BS_PRIVATE_NESTED_SOME_NONE >= 0) return item;
+      return customArray(item, index, array);
+    });
+  }
+  var blocked = typeof instruction.b === "string";
+  if (blocked && instruction.b !== "a") return value;
+
+  var custom = typeof instruction.c === "string" && converters[instruction.c];
+  // A scalar can itself be represented by an array. Its result is always opaque.
+  if (isArray && custom) return custom(value);
+
+  var root = typeof instruction.r === "string" && maps[instruction.r];
+  var enumConverter =
+    typeof instruction.e === "string" && converters[instruction.e];
+  var union = typeof instruction.u === "string" && converters[instruction.u];
+  var fragment = instruction.f === "";
+
+  if (isArray) {
+    var result;
+    for (var i = 0; i < value.length; i++) {
+      // Match map's handling of sparse arrays.
+      if (!(i in value)) continue;
+      var item = value[i];
+      var converted = item;
+      if (item == null) {
+        converted = nullable;
+      } else if (root) {
+        converted = traverser(
+          unwrapInputUnion(item),
+          maps,
+          converters,
+          nullable,
+          instruction.r,
+        );
+      } else if (enumConverter) {
+        converted = enumConverter(item);
+      } else if (union && typeof item === "object" && item.__typename != null) {
+        converted = convertUnion(
+          item,
+          union,
+          maps,
+          path,
+          instructions,
+          converters,
+          nullable,
+        );
+      } else if (typeof item === "object" && !Array.isArray(item)) {
+        converted = blocked
+          ? fragment
+            ? withFragmentRefs(item)
+            : item
+          : traverse(
+              maps,
+              path + "_",
+              item,
+              instructions,
+              converters,
+              nullable,
+              fragment,
+            );
+      }
+      if (converted !== item) {
+        if (result === undefined) result = value.slice();
+        result[i] = converted;
+      }
+    }
+    return result === undefined ? value : result;
+  }
+
+  if (root)
+    return traverser(
+      unwrapInputUnion(value),
+      maps,
+      converters,
+      nullable,
+      instruction.r,
+    );
+  if (custom) return custom(value);
+  if (enumConverter) return enumConverter(value);
+  if (typeof value === "object") {
+    if (union && value.__typename != null) {
+      return convertUnion(
+        value,
+        union,
+        maps,
+        path,
+        instructions,
+        converters,
+        nullable,
+      );
+    }
+    return traverse(
+      maps,
+      path + "_",
+      value,
+      instructions,
+      converters,
+      nullable,
+      fragment,
+    );
+  }
+  return value;
 }
 
 /**
- * This function takes an object (snapshot from the Relay store) and applies a
- * set of conversions deeply on the object (instructions coming from "converters"-prop).
- * It converts nullable values either to null or undefined, and it wraps/unwraps enums
- * and unions.
- *
- * It preserves structural integrity where possible, and return new objects where properties
- * have been modified.
+ * Convert Relay snapshots (nullable=undefined) or write payloads (nullable=null).
+ * Instructions and converters are read on each call; neither they nor payloads
+ * are cached or mutated. Unchanged branches retain their original identity.
  */
-function traverser(
-  root,
-  instructionMaps_,
-  theConverters,
-  nullableValue,
-  rootObjectKey
-) {
-  if (!root) {
-    return nullableValue;
+function traverser(root, instructionMaps, converters, nullable, rootObjectKey) {
+  if (!root) return nullable;
+  var maps = instructionMaps || empty;
+  var instructions = maps[rootObjectKey || "__root"] || empty;
+  converters = converters || empty;
+  var rootInstruction = instructions[""] || empty;
+  var union = converters[rootInstruction.u];
+  var fragment = rootInstruction.f === "";
+
+  function convertRoot(value) {
+    if (value == null) return nullable;
+    var prefix = "";
+    var hasFragment = fragment;
+    if (union != null) {
+      prefix = value.__typename + "_";
+      hasFragment = (instructions[value.__typename] || empty).f === "";
+    }
+    var result = traverse(
+      maps,
+      prefix,
+      value,
+      instructions,
+      converters,
+      nullable,
+      hasFragment,
+    );
+    return union != null ? union(result) : result;
   }
-
-  var instructionMaps = instructionMaps_ || {};
-  var instructionMap = instructionMaps[rootObjectKey || "__root"] || {};
-
-  var converters = theConverters == null ? {} : theConverters;
-  var instructionPaths = Object.keys(instructionMap);
-
-  // We'll add the fragmentRefs reference to the root if needed here.
-  var fragmentsOnRoot = (instructionMap[""] || {}).f === "";
-  var unionRootConverter = converters[(instructionMap[""] || {}).u];
 
   if (Array.isArray(root)) {
-    return root.map(function (v) {
-      if (v == null) {
-        return nullableValue;
+    var result;
+    for (var i = 0; i < root.length; i++) {
+      if (!(i in root)) continue;
+      var converted = convertRoot(root[i]);
+      if (converted !== root[i]) {
+        if (result === undefined) result = root.slice();
+        result[i] = converted;
       }
-
-      var n = [];
-
-      // Since a root level union is treated as a "new root level", we'll need
-      // to do a separate check here of whether there's a fragment on the root
-      // we need to account for, or not.
-      if (unionRootConverter != null) {
-        n = [v.__typename];
-        fragmentsOnRoot = (instructionMap[v.__typename] || {}).f === "";
-      }
-
-      var traversedObj = traverse(
-        instructionMaps,
-        n,
-        v,
-        instructionMap,
-        converters,
-        nullableValue,
-        instructionPaths,
-        fragmentsOnRoot
-      );
-
-      return unionRootConverter != null
-        ? unionRootConverter(traversedObj)
-        : traversedObj;
-    });
+    }
+    return result === undefined ? root : result;
   }
-
-  var newObj = Object.assign({}, root);
-
-  var n = [];
-
-  // Same as in the union array check above - if there's a fragment in the new
-  // root created by the union, we need to account for that separately here.
-  if (unionRootConverter != null) {
-    n = [newObj.__typename];
-    fragmentsOnRoot = (instructionMap[newObj.__typename] || {}).f === "";
-  }
-
-  var v = traverse(
-    instructionMaps,
-    n,
-    newObj,
-    instructionMap,
-    converters,
-    nullableValue,
-    instructionPaths,
-    fragmentsOnRoot
-  );
-
-  return unionRootConverter != null ? unionRootConverter(v) : v;
+  return convertRoot(root);
 }
 
-module.exports = { traverser };
+function runConversion(convert, value) {
+  return convert(value);
+}
+
+module.exports = {
+  traverser,
+  prepareConversion,
+  runConversion,
+  convertWithoutPlan,
+};

@@ -28,31 +28,23 @@ module Types = {
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"userUpdated_user":{"f":""}}}`
-  )
+  let responseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"fragments":true,"path":["userUpdated","user"]}]},"version":2}`)
   @live
-  let responseConverterMap = ()
+  let responseCallbacks = ()
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
+  )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type rawResponseRaw = responseRaw
   @live
   let convertRawResponse = convertResponse

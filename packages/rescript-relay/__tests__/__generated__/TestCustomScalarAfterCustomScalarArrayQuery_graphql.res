@@ -25,51 +25,45 @@ type queryRef
 
 module Internal = {
   @live
-  let variablesConverter: dict<dict<dict<string>>> = %raw(
-    json`{}`
-  )
-  @live
-  let variablesConverterMap = ()
-  @live
-  let convertVariables = v => v->RescriptRelay.convertObj(
-    variablesConverter,
-    variablesConverterMap,
-    None
-  )
+  let convertVariables = value => RescriptRelay.convertWithoutPlan(value, None)
   @live
   type wrapResponseRaw
+  %%private(
   @live
-  let wrapResponseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_intStrings":{"ca":"TestsUtils.IntString"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
-  )
+  let wrapResponseConverter: JSON.t = %raw(json`{"roots":{"__root":[{"path":["loggedInUser","createdAt"],"scalar":"0"},{"list":1,"path":["loggedInUser","intStrings"],"scalar":"1"}]},"version":2}`)
   @live
-  let wrapResponseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.serialize,
-    "TestsUtils.IntString": TestsUtils.IntString.serialize,
+  let wrapResponseCallbacks = {
+    "0": TestsUtils.Datetime.serialize,
+    "1": TestsUtils.IntString.serialize,
   }
   @live
-  let convertWrapResponse = v => v->RescriptRelay.convertObj(
+  let preparedWrapResponseConverter = RescriptRelay.prepareConversion(
     wrapResponseConverter,
-    wrapResponseConverterMap,
+    wrapResponseCallbacks,
     null
   )
+  )
+  @live
+  let convertWrapResponse = value => RescriptRelay.runConversion(preparedWrapResponseConverter, value)
   @live
   type responseRaw
+  %%private(
   @live
-  let responseConverter: dict<dict<dict<string>>> = %raw(
-    json`{"__root":{"loggedInUser_intStrings":{"ca":"TestsUtils.IntString"},"loggedInUser_createdAt":{"c":"TestsUtils.Datetime"}}}`
-  )
+  let responseConverter = wrapResponseConverter
   @live
-  let responseConverterMap = {
-    "TestsUtils.Datetime": TestsUtils.Datetime.parse,
-    "TestsUtils.IntString": TestsUtils.IntString.parse,
+  let responseCallbacks = {
+    "0": TestsUtils.Datetime.parse,
+    "1": TestsUtils.IntString.parse,
   }
   @live
-  let convertResponse = v => v->RescriptRelay.convertObj(
+  let preparedResponseConverter = RescriptRelay.prepareConversion(
     responseConverter,
-    responseConverterMap,
+    responseCallbacks,
     None
   )
+  )
+  @live
+  let convertResponse = value => RescriptRelay.runConversion(preparedResponseConverter, value)
   type wrapRawResponseRaw = wrapResponseRaw
   @live
   let convertWrapRawResponse = convertWrapResponse

@@ -210,6 +210,19 @@ external storeRootType: string = "ROOT_TYPE"
 @module("./utils")
 external convertObj: ('a, dict<dict<dict<string>>>, 'b, 'c) => 'd = "traverser"
 
+/**Internal: prepare the compiler's versioned conversion plan once.*/
+@module("./utils")
+external convertWithoutPlan: ('input, 'nullable) => 'output = "convertWithoutPlan"
+
+type preparedConversion
+
+@module("./utils")
+external prepareConversion: (JSON.t, 'converters, 'nullable) => preparedConversion = "prepareConversion"
+
+@module("./utils")
+external runConversion: (preparedConversion, 'input) => 'output = "runConversion"
+
+
 /**Read the following section on working with the Relay store: https://relay.dev/docs/en/relay-store*/
 module RecordProxy: {
   /**Read the following section on working with the Relay store: https://relay.dev/docs/en/relay-store*/
