@@ -9,3 +9,15 @@ module Query = %relay(`
     }
   }
 `)
+
+module ReverseQuery = %relay(`
+  query TestConversionPlanReverseQuery($input: ConversionContractInput) {
+    conversionContract(input: $input) {
+      a { b }
+      a_b
+      raw
+      dates
+      grid
+    }
+  }
+`)

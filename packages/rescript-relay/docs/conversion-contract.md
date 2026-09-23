@@ -110,7 +110,7 @@ These existing failures remain outside this conversion change.
 The runtime is tested through both CommonJS and native ESM release modules.
 Run `yarn test:all` and `yarn test:conversion:mutations` from the package. The
 mutation check runs isolated copies and requires behavioral test failures for
-18 deliberately introduced faults; it does not claim a comprehensive mutation score.
+20 deliberately introduced faults; it does not claim a comprehensive mutation score.
 
 ## Generated size and sharing
 
@@ -140,3 +140,22 @@ custom scalar paths start inside each result's `value`. Mounted hook tests cover
 nullable payloads, union/interface payloads, mixed success/error results, store
 updates, and preservation
 of the raw Relay store; a typed ReScript helper checks the generated wrapper.
+
+## Custom scalar ordering follow-up
+
+`utils-scalar-ordering-tests.js` enumerates all 120 orders of five sibling fields
+(single array-backed scalar, scalar list, referenced input, nullable field, and
+another scalar), with forward/reversed instruction order, both nullable
+directions, and both legacy/prepared runtimes. Each of the 960 combinations runs
+twice against frozen input, checking exact callback order/count, result identity,
+source preservation, sparse lists, and continued sibling conversion.
+
+Additional cases distinguish empty array-backed scalars from empty GraphQL
+lists; preserve falsey/null/undefined/object/array/Date/option callback results at
+root, field, and list positions; and verify that a failing list callback stops
+later elements/siblings without poisoning a subsequent call. Mounted compiled
+queries select the same mixed scalar/list fields in opposite orders and verify
+read conversion, recursive variable serialization, write conversion, nullable
+store updates, and raw-store preservation. Targeted mutations explicitly restore
+the historical sibling early return and incorrectly normalize scalar results;
+both must fail behavioral assertions.

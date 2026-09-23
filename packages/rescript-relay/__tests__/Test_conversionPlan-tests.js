@@ -4,10 +4,15 @@ const { render, screen, act } = require("@testing-library/react");
 const { RelayEnvironmentProvider } = require("react-relay");
 const { createMockEnvironment } = require("relay-test-utils");
 const { createOperationDescriptor } = require("relay-runtime");
-const { Query } = require("./Test_conversionPlan.bs");
+const { Query, ReverseQuery } = require("./Test_conversionPlan.bs");
 const generated = require("./__generated__/TestConversionPlanQuery_graphql.bs");
 
-test("compiler plans preserve nulls, nested list depth and distinct paths through mounted hooks and writes", () => {
+const reverseGenerated = require("./__generated__/TestConversionPlanReverseQuery_graphql.bs");
+
+test.each([
+  ["original", Query, generated],
+  ["reversed", ReverseQuery, reverseGenerated],
+])("%s selection order preserves scalars, nulls and nested lists through mounted hooks and writes", (_, Query, generated) => {
   const environment = createMockEnvironment();
   const variables = {
     input: {

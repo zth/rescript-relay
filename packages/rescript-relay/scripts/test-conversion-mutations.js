@@ -19,7 +19,7 @@ const config = {
   bail: false,
   collectCoverage: false,
   roots: [path.join(root, "__tests__")],
-  testRegex: "/utils-prepared-tests.js$",
+  testRegex: "/utils-(prepared|scalar-ordering)-tests.js$",
 };
 const faults = [
   [
@@ -77,6 +77,16 @@ const faults = [
     "scalar boundary",
     "convert = callback(node.scalar);",
     "convert = value => any(callback(node.scalar)(value));",
+  ],
+  [
+    "scalar result nullability",
+    "convert = callback(node.scalar);",
+    "convert = value => callback(node.scalar)(value) ?? nullable;",
+  ],
+  [
+    "early return after converted sibling",
+    "result[key] = next;\n        }\n      }",
+    "result[key] = next;\n        }\n        if (convert !== undefined) return result === undefined ? value : result;\n      }",
   ],
   [
     "union ordering",
