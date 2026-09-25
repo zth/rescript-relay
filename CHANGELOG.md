@@ -5,6 +5,7 @@
 - Speed up response and variable conversion with prepared conversion plans and smaller generated instructions. Fix custom-scalar, nested-list, union, and plural `@catch` conversion edge cases; expand regression coverage and add performance/bundle-size benchmarks.
 
 - fix remove-unused-fields command. https://github.com/zth/rescript-relay/pull/636
+- Fix `useRefetchableFragment` and `usePaginationFragment` to be compatible with `fromData`.
 
 # 4.5.1
 

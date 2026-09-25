@@ -4,7 +4,7 @@ const ReactTestUtils = require("react-dom/test-utils");
 const React = require("react");
 const queryMock = require("./queryMock");
 
-const { test_pagination } = require("./Test_paginationInNode.bs");
+const { test_pagination, test_pagination_from_data } = require("./Test_paginationInNode.bs");
 
 describe("Pagination nested in node", () => {
   test("paginating works", async () => {
@@ -179,5 +179,10 @@ describe("Pagination nested in node", () => {
 
     await t.screen.findByText("User Second has 3 friends");
     expect(t.screen.queryByText("User First has 2 friends")).toBeFalsy();
+  });
+
+  test("usePagination supports `fromData`", async () => {
+    t.render(test_pagination_from_data());
+    await t.screen.findByText("Test Data has 2 friends");
   });
 });
