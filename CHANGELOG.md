@@ -1,5 +1,9 @@
 # master
 
+# 4.6.1
+
+- Update the Relay compiler fork to fix architecture-dependent ordering of converter input objects, producing consistent generated output on x86_64 and ARM64. https://github.com/zth/relay/pull/41
+
 # 4.6.0
 
 - Speed up response and variable conversion with prepared conversion plans and smaller generated instructions. Fix custom-scalar, nested-list, union, and plural `@catch` conversion edge cases; expand regression coverage and add performance/bundle-size benchmarks.
