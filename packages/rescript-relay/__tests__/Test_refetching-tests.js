@@ -4,7 +4,7 @@ const React = require("react");
 const queryMock = require("./queryMock");
 const ReactTestUtils = require("react-dom/test-utils");
 
-const { test_refetching } = require("./Test_refetching.bs");
+const { test_refetching, test_refetchable_component } = require("./Test_refetching.bs");
 
 describe("Fragment", () => {
   test("refetching works", async () => {
@@ -69,5 +69,10 @@ describe("Fragment", () => {
 
     await t.screen.findByText("First is online");
     await t.screen.findByText("Friends: 10");
+  });
+
+  test("useRefetchable supports `fromData`", async () => {
+    t.render(test_refetchable_component());
+    await t.screen.findByText("Test Data has 3 friends");
   });
 });
